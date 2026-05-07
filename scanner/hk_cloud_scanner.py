@@ -51,6 +51,10 @@ HKEXNEWS_BASE = "https://www.hkexnews.hk"
 MAX_STOCKS = int(os.getenv("MAX_STOCKS", "0"))
 # POC-specific cap. If unset, falls back to MAX_STOCKS. 0 = no cap.
 POC_MAX_STOCKS_PER_RUN = int(os.getenv("POC_MAX_STOCKS_PER_RUN", "0"))
+# Sharding: split the HK stock universe into POC_SHARD_COUNT contiguous slices
+# and only scan slice POC_SHARD_INDEX (0-based). 1/0 = scan everything.
+POC_SHARD_COUNT = max(int(os.getenv("POC_SHARD_COUNT", "1")), 1)
+POC_SHARD_INDEX = max(int(os.getenv("POC_SHARD_INDEX", "0")), 0)
 MIN_LISTING_DAYS = int(os.getenv("MIN_LISTING_DAYS", "5"))
 MAX_LISTING_DAYS = int(os.getenv("MAX_LISTING_DAYS", "0"))
 POC_LOOKBACK_DAYS_6M = int(os.getenv("POC_LOOKBACK_DAYS_6M", "126"))
@@ -833,11 +837,25 @@ def _emit_poc_hit(result: dict[str, Any], df: pd.DataFrame) -> None:
 
 
 def run_poc() -> None:
+    stocks = get_hk_stock_list()
+    universe_size = len(stocks)
+    shard_count = POC_SHARD_COUNT
+    shard_index = POC_SHARD_INDEX if POC_SHARD_INDEX < shard_count else 0
+    shard_label = f"{shard_index + 1}/{shard_count}"
+    if shard_count > 1:
+        # Contiguous slice keyed by sorted code so the slicing is deterministic
+        # across runs even if the upstream HKEX list reorders.
+        stocks = stocks.sort_values("code").reset_index(drop=True)
+        chunk_size = (universe_size + shard_count - 1) // shard_count
+        start = shard_index * chunk_size
+        end = min(start + chunk_size, universe_size)
+        stocks = stocks.iloc[start:end].copy()
+        print(f"POC shard {shard_label}: stocks {start}-{end} of {universe_size}")
     send_telegram_message(
         f"<b>POC突破掃描開始</b> · {datetime.now():%Y-%m-%d %H:%M}\n"
-        f"條件：股價向上突破 半年／1年／2年／3年 POC"
+        f"條件：股價向上突破 半年／1年／2年／3年 POC\n"
+        f"批次：{shard_label}（{len(stocks)} / {universe_size}）"
     )
-    stocks = get_hk_stock_list()
     poc_cap = POC_MAX_STOCKS_PER_RUN if POC_MAX_STOCKS_PER_RUN > 0 else 0
     if poc_cap and len(stocks) > poc_cap:
         stocks = stocks.head(poc_cap).copy()
@@ -848,7 +866,7 @@ def run_poc() -> None:
     processed = 0
     aborted = False
     started = time.monotonic()
-    print(f"POC scan starting: {total} stocks, batch={YF_BATCH_SIZE}, threads={YF_BATCH_THREADS}, period={YF_POC_PERIOD}")
+    print(f"POC scan starting: shard={shard_label} stocks={total} batch={YF_BATCH_SIZE} threads={YF_BATCH_THREADS} period={YF_POC_PERIOD}")
 
     for batch_start in range(0, total, YF_BATCH_SIZE):
         if POC_TIME_BUDGET_SEC and (time.monotonic() - started) > POC_TIME_BUDGET_SEC:
@@ -895,7 +913,10 @@ def run_poc() -> None:
             time.sleep(SLEEP_SEC)
 
     elapsed = time.monotonic() - started
-    summary = f"POC突破掃描完成，共 {hits} 隻符合（掃描 {processed}/{total}，用時 {elapsed:.0f}s）"
+    summary = (
+        f"POC突破掃描完成（批次 {shard_label}），共 {hits} 隻符合"
+        f"（掃描 {processed}/{total}，用時 {elapsed:.0f}s）"
+    )
     if aborted:
         summary += "（已達時間上限提前結束）"
     print(summary)
