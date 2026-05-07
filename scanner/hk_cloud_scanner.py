@@ -5,7 +5,8 @@ Cloud version for GitHub Actions:
 - No AKShare
 - HK stock list from HKEX official ListOfSecurities.xlsx
 - Price history from Yahoo Finance / yfinance
-- Alerts to Telegram and Google Apps Script webhook
+- Alerts to Telegram (single message per alert, with chart image when feasible)
+  and Google Apps Script webhook
 
 Signals:
 1. IPO first-day high breakout
@@ -19,6 +20,7 @@ from __future__ import annotations
 import json
 import os
 import sys
+import tempfile
 import time
 import warnings
 from datetime import datetime
@@ -30,6 +32,18 @@ import yfinance as yf
 from bs4 import BeautifulSoup
 
 warnings.filterwarnings("ignore")
+
+# Matplotlib is optional - if it fails to import we fall back to text-only alerts.
+try:
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.dates as mdates
+    import matplotlib.pyplot as plt
+    from matplotlib.patches import Rectangle
+    _MPL_OK = True
+except Exception as _mpl_exc:  # pragma: no cover
+    print(f"[chart] matplotlib unavailable: {_mpl_exc}")
+    _MPL_OK = False
 
 HKEX_LIST_URL = "https://www.hkex.com.hk/eng/services/trading/securities/securitieslists/ListOfSecurities.xlsx"
 HKEXNEWS_BASE = "https://www.hkexnews.hk"
@@ -47,11 +61,15 @@ RETRY_COUNT = int(os.getenv("RETRY_COUNT", "2"))
 RETRY_SLEEP = int(os.getenv("RETRY_SLEEP", "3"))
 YF_IPO_PERIOD = os.getenv("YF_IPO_PERIOD", "max")
 YF_POC_PERIOD = os.getenv("YF_POC_PERIOD", "3y")
+CHART_LOOKBACK_DAYS = int(os.getenv("CHART_LOOKBACK_DAYS", "180"))
 
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN", "")
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "")
 GAS_WEBHOOK_URL = os.getenv("GAS_WEBHOOK_URL", "")
 GAS_SECRET = os.getenv("GAS_SECRET", "")
+
+# Telegram caption max length is 1024 chars; keep some headroom.
+_TG_CAPTION_LIMIT = 1000
 
 
 def hk_code_to_yahoo(code: str) -> str:
@@ -64,21 +82,61 @@ def tradingview_url(code: str) -> str:
     return f"https://www.tradingview.com/chart/?symbol=HKEX%3A{symbol}"
 
 
-def send_telegram(message: str) -> bool:
+def send_telegram_message(message: str) -> bool:
+    """Send a plain HTML text message (used for scan-status pings only)."""
     if not TELEGRAM_TOKEN or not TELEGRAM_CHAT_ID:
         print("[Telegram] not configured")
         return False
     url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
-    payload = {"chat_id": TELEGRAM_CHAT_ID, "text": message, "parse_mode": "HTML", "disable_web_page_preview": False}
+    payload = {
+        "chat_id": TELEGRAM_CHAT_ID,
+        "text": message,
+        "parse_mode": "HTML",
+        "disable_web_page_preview": False,
+    }
     try:
         r = requests.post(url, json=payload, timeout=20)
         if r.status_code == 200:
-            print("[Telegram] sent")
+            print("[Telegram] message sent")
             return True
-        print(f"[Telegram] failed: {r.status_code} {r.text[:300]}")
+        print(f"[Telegram] message failed: {r.status_code} {r.text[:300]}")
     except Exception as exc:
-        print(f"[Telegram] error: {exc}")
+        print(f"[Telegram] message error: {exc}")
     return False
+
+
+def send_telegram_photo(photo_path: str, caption: str) -> bool:
+    if not TELEGRAM_TOKEN or not TELEGRAM_CHAT_ID:
+        print("[Telegram] not configured")
+        return False
+    url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendPhoto"
+    if len(caption) > _TG_CAPTION_LIMIT:
+        caption = caption[: _TG_CAPTION_LIMIT - 1] + "…"
+    try:
+        with open(photo_path, "rb") as f:
+            files = {"photo": f}
+            data = {
+                "chat_id": TELEGRAM_CHAT_ID,
+                "caption": caption,
+                "parse_mode": "HTML",
+            }
+            r = requests.post(url, data=data, files=files, timeout=30)
+        if r.status_code == 200:
+            print("[Telegram] photo sent")
+            return True
+        print(f"[Telegram] photo failed: {r.status_code} {r.text[:300]}")
+    except Exception as exc:
+        print(f"[Telegram] photo error: {exc}")
+    return False
+
+
+def send_telegram_alert(caption_html: str, photo_path: str | None) -> bool:
+    """Single Telegram alert: photo+caption when chart is available, otherwise one text message."""
+    if photo_path and os.path.exists(photo_path):
+        if send_telegram_photo(photo_path, caption_html):
+            return True
+        # Photo failed - fall back to one text message.
+    return send_telegram_message(caption_html)
 
 
 def post_gas_alert(payload: dict[str, Any]) -> bool:
@@ -99,10 +157,112 @@ def post_gas_alert(payload: dict[str, Any]) -> bool:
     return False
 
 
-def emit_alert(payload: dict[str, Any], telegram_html: str) -> None:
+def emit_alert(payload: dict[str, Any], caption_html: str, chart_path: str | None) -> None:
     payload.setdefault("created_at", datetime.now().isoformat(timespec="seconds"))
     post_gas_alert(payload)
-    send_telegram(telegram_html)
+    send_telegram_alert(caption_html, chart_path)
+    if chart_path:
+        try:
+            os.remove(chart_path)
+        except OSError:
+            pass
+
+
+def render_chart(
+    df: pd.DataFrame,
+    code: str,
+    name: str,
+    title_suffix: str,
+    levels: list[tuple[str, float, str]] | None = None,
+    lookback_days: int | None = None,
+) -> str | None:
+    """Render an OHLC candlestick chart with horizontal reference levels.
+
+    levels: list of (label, price, color)
+    Returns the saved PNG path, or None if rendering failed.
+    """
+    if not _MPL_OK or df is None or df.empty:
+        return None
+    try:
+        plot_df = df.copy()
+        if lookback_days and len(plot_df) > lookback_days:
+            plot_df = plot_df.iloc[-lookback_days:].copy()
+        if plot_df.empty:
+            return None
+        plot_df = plot_df.reset_index(drop=True)
+
+        fig, ax = plt.subplots(figsize=(9, 5), dpi=130)
+        fig.patch.set_facecolor("#0b1220")
+        ax.set_facecolor("#0b1220")
+
+        # Candlesticks drawn against integer x positions for compactness.
+        width = 0.6
+        for i, row in plot_df.iterrows():
+            o, h, l, c = row["open"], row["high"], row["low"], row["close"]
+            up = c >= o
+            color = "#22c55e" if up else "#ef4444"
+            ax.vlines(i, l, h, color=color, linewidth=0.8)
+            body_low = min(o, c)
+            body_h = max(abs(c - o), (h - l) * 0.001 if h > l else 0.0001)
+            ax.add_patch(
+                Rectangle(
+                    (i - width / 2, body_low),
+                    width,
+                    body_h,
+                    facecolor=color,
+                    edgecolor=color,
+                    linewidth=0.5,
+                )
+            )
+
+        # Horizontal reference lines (POC / IPO high / etc.).
+        for label, price, color in levels or []:
+            if price is None or pd.isna(price):
+                continue
+            ax.axhline(price, color=color, linewidth=1.2, linestyle="--", alpha=0.9)
+            ax.text(
+                len(plot_df) - 1,
+                price,
+                f" {label} {price:.3f}",
+                color=color,
+                fontsize=8,
+                va="bottom",
+                ha="right",
+            )
+
+        # X tick labels: a handful of dates.
+        n = len(plot_df)
+        tick_idx = list(range(0, n, max(1, n // 6)))
+        if tick_idx[-1] != n - 1:
+            tick_idx.append(n - 1)
+        ax.set_xticks(tick_idx)
+        ax.set_xticklabels(
+            [plot_df["date"].iloc[i].strftime("%Y-%m-%d") for i in tick_idx],
+            color="#94a3b8",
+            fontsize=8,
+            rotation=0,
+        )
+        ax.tick_params(axis="y", colors="#94a3b8", labelsize=8)
+        for spine in ax.spines.values():
+            spine.set_color("#1f2937")
+        ax.grid(True, color="#1f2937", linewidth=0.5, alpha=0.6)
+        ax.set_xlim(-1, n)
+
+        title = f"{code} {name} · {title_suffix}"
+        ax.set_title(title, color="#e5e7eb", fontsize=11, loc="left", pad=10)
+        fig.tight_layout()
+
+        tmp = tempfile.NamedTemporaryFile(suffix=".png", delete=False)
+        fig.savefig(tmp.name, facecolor=fig.get_facecolor(), bbox_inches="tight")
+        plt.close(fig)
+        return tmp.name
+    except Exception as exc:
+        print(f"[chart] render failed for {code}: {exc}")
+        try:
+            plt.close("all")
+        except Exception:
+            pass
+        return None
 
 
 CORP_ACTION_KEYWORDS = {
@@ -223,10 +383,14 @@ def fetch_corp_action_announcements() -> list[dict[str, Any]]:
 
 
 def run_corp_actions() -> None:
-    send_telegram(f"<b>披露易公告雲端掃描開始</b>\\n時間：{datetime.now():%Y-%m-%d %H:%M}\\n類型：供股 / 配股 / 股東增持")
+    send_telegram_message(
+        f"<b>披露易公告雲端掃描開始</b>\n"
+        f"時間：{datetime.now():%Y-%m-%d %H:%M}\n"
+        f"類型：供股 / 配股 / 股東增持"
+    )
     anns = fetch_corp_action_announcements()
     if not anns:
-        send_telegram("披露易公告掃描完成，暫時沒有供股 / 配股 / 股東增持相關公告。")
+        send_telegram_message("披露易公告掃描完成，暫時沒有供股 / 配股 / 股東增持相關公告。")
         return
     for ann in anns:
         types = " / ".join(ann["types"])
@@ -246,16 +410,32 @@ def run_corp_actions() -> None:
             "priority": 1,
             "raw": json.dumps(ann, ensure_ascii=False),
         }
-        msg = (
-            f"<b>港交所披露易 - {types}</b>\\n\\n"
-            f"代號：{ann['code']} {ann['name']}\\n"
-            f"{ann['title']}\\n"
-            f"時間：{ann['release_time']}\\n"
-            f"查看原文：{ann['url']}"
+        caption = (
+            f"<b>港交所披露易 · {types}</b>\n"
+            f"代號：{ann['code']} {ann['name']}\n"
+            f"分類：{types}\n"
+            f"標題：{ann['title']}\n"
+            f"時間：{ann['release_time']}\n"
+            f"原文：<a href=\"{ann['url']}\">HKEXnews</a>"
         )
-        emit_alert(payload, msg)
+        # Try to render a chart so the corp-action alert also stays in one Telegram message.
+        chart_path: str | None = None
+        try:
+            df = get_daily_history(ann["code"], "1y")
+            if not df.empty:
+                chart_path = render_chart(
+                    df,
+                    ann["code"],
+                    ann["name"],
+                    f"披露易 · {types}",
+                    levels=[],
+                    lookback_days=CHART_LOOKBACK_DAYS,
+                )
+        except Exception as exc:
+            print(f"[chart] corp action chart failed for {ann['code']}: {exc}")
+        emit_alert(payload, caption, chart_path)
         time.sleep(0.5)
-    send_telegram(f"披露易公告掃描完成，共 {len(anns)} 則命中。")
+    send_telegram_message(f"披露易公告掃描完成，共 {len(anns)} 則命中。")
 
 
 def clean_stock_list(df: pd.DataFrame) -> pd.DataFrame:
@@ -263,7 +443,7 @@ def clean_stock_list(df: pd.DataFrame) -> pd.DataFrame:
     df["code"] = df["code"].astype(str).str.replace(".0", "", regex=False).str.strip().str.zfill(5)
     df["name"] = df["name"].astype(str).str.strip()
     df = df.dropna(subset=["code", "name"])
-    df = df[df["code"].str.match(r"^\\d{5}$")]
+    df = df[df["code"].str.match(r"^\d{5}$")]
     df = df[df["name"] != ""]
     df = df[df["code"].astype(int) <= 9999]
     return df.drop_duplicates(subset=["code"]).reset_index(drop=True)
@@ -336,7 +516,7 @@ def calculate_poc(profile_df: pd.DataFrame) -> float | None:
     return round((poc_interval.left + poc_interval.right) / 2, 4)
 
 
-def check_ipo_breakout(code: str, name: str) -> dict[str, Any] | None:
+def check_ipo_breakout(code: str, name: str) -> tuple[dict[str, Any], pd.DataFrame] | None:
     df = get_daily_history(code, YF_IPO_PERIOD)
     if df.empty or len(df) < MIN_LISTING_DAYS:
         return None
@@ -347,21 +527,24 @@ def check_ipo_breakout(code: str, name: str) -> dict[str, Any] | None:
     prev_high = df.iloc[-2]["high"]
     today = df.iloc[-1]
     if today["high"] > ipo_high and prev_high <= ipo_high and ipo_high > 0:
-        return {
-            "Code": code,
-            "Name": name,
-            "IPO Date": df.iloc[0]["date"].strftime("%Y-%m-%d"),
-            "Listed Days": listing_days,
-            "IPO High": round(ipo_high, 3),
-            "Today High": round(today["high"], 3),
-            "Today Close": round(today["close"], 3),
-            "Break %": round((today["high"] / ipo_high - 1) * 100, 2),
-            "Data Date": today["date"].strftime("%Y-%m-%d"),
-        }
+        return (
+            {
+                "Code": code,
+                "Name": name,
+                "IPO Date": df.iloc[0]["date"].strftime("%Y-%m-%d"),
+                "Listed Days": listing_days,
+                "IPO High": round(ipo_high, 3),
+                "Today High": round(today["high"], 3),
+                "Today Close": round(today["close"], 3),
+                "Break %": round((today["high"] / ipo_high - 1) * 100, 2),
+                "Data Date": today["date"].strftime("%Y-%m-%d"),
+            },
+            df,
+        )
     return None
 
 
-def check_poc_breakout(code: str, name: str) -> dict[str, Any] | None:
+def check_poc_breakout(code: str, name: str) -> tuple[dict[str, Any], pd.DataFrame] | None:
     df = get_daily_history(code, YF_POC_PERIOD)
     min_needed = max(POC_LOOKBACK_DAYS_6M, POC_LOOKBACK_DAYS_12M) + 2
     if df.empty or len(df) < min_needed:
@@ -383,33 +566,42 @@ def check_poc_breakout(code: str, name: str) -> dict[str, Any] | None:
     if not crossed:
         return None
     main = crossed[0]
-    return {
-        "Code": code,
-        "Name": name,
-        "Signal": " + ".join(x["label"] for x in crossed),
-        "POC": main["poc"],
-        "POC 6M": next((x["poc"] for x in poc_results if x["label"] == "半年POC"), None),
-        "POC 12M": next((x["poc"] for x in poc_results if x["label"] == "12個月POC"), None),
-        "Today High": round(today["high"], 3),
-        "Today Close": round(today["close"], 3),
-        "Break Field": field,
-        "Break Value": round(today_value, 3),
-        "Break %": main["break_pct"],
-        "Data Date": today["date"].strftime("%Y-%m-%d"),
-    }
+    return (
+        {
+            "Code": code,
+            "Name": name,
+            "Signal": " + ".join(x["label"] for x in crossed),
+            "POC": main["poc"],
+            "POC 6M": next((x["poc"] for x in poc_results if x["label"] == "半年POC"), None),
+            "POC 12M": next((x["poc"] for x in poc_results if x["label"] == "12個月POC"), None),
+            "Today High": round(today["high"], 3),
+            "Today Close": round(today["close"], 3),
+            "Break Field": field,
+            "Break Value": round(today_value, 3),
+            "Break %": main["break_pct"],
+            "Data Date": today["date"].strftime("%Y-%m-%d"),
+        },
+        df,
+    )
 
 
 def run_ipo() -> None:
-    send_telegram(f"<b>IPO首日突破雲端掃描開始</b>\\n時間：{datetime.now():%Y-%m-%d %H:%M}\\n資料源：HKEX + Yahoo Finance")
+    send_telegram_message(
+        f"<b>IPO首日突破雲端掃描開始</b>\n"
+        f"時間：{datetime.now():%Y-%m-%d %H:%M}\n"
+        f"資料源：HKEX + Yahoo Finance"
+    )
     stocks = get_hk_stock_list()
     hits = 0
     for n, row in enumerate(stocks.to_dict("records"), start=1):
         if n % 100 == 0:
             print(f"IPO progress {n}/{len(stocks)} hits={hits}")
-        result = check_ipo_breakout(row["code"], row["name"])
-        if result:
+        outcome = check_ipo_breakout(row["code"], row["name"])
+        if outcome:
+            result, df = outcome
             hits += 1
             code = result["Code"]
+            tv_url = tradingview_url(code)
             payload = {
                 "source": "cloud_scanner",
                 "category": "ipo",
@@ -419,40 +611,57 @@ def run_ipo() -> None:
                 "signal": "IPO首日高突破",
                 "timeframe": "1D",
                 "price": result["Today Close"],
-                "message": f"IPO日期：{result['IPO Date']}；IPO首日高：{result['IPO High']}；今日最高：{result['Today High']}；突破幅度：{result['Break %']}%",
+                "message": (
+                    f"IPO日期：{result['IPO Date']}；IPO首日高：{result['IPO High']}；"
+                    f"今日最高：{result['Today High']}；突破幅度：{result['Break %']}%"
+                ),
                 "strategy": "IPO First Day High Breakout",
-                "chart_url": tradingview_url(code),
-                "source_url": tradingview_url(code),
+                "chart_url": tv_url,
+                "source_url": tv_url,
                 "tags": ["IPO", "Breakout"],
                 "priority": 2,
                 "raw": json.dumps(result, ensure_ascii=False),
             }
-            msg = (
-                f"<b>IPO首日突破</b>\\n"
-                f"股票：{code} {result['Name']}\\n"
-                f"IPO日期：{result['IPO Date']}（資料交易日{result['Listed Days']}日）\\n"
-                f"IPO首日高：{result['IPO High']}\\n"
-                f"今日最高：{result['Today High']}\\n"
-                f"今日收市：{result['Today Close']}\\n"
-                f"突破幅度：{result['Break %']}%\\n"
-                f"圖表：{tradingview_url(code)}"
+            caption = (
+                f"<b>IPO首日高突破</b>\n"
+                f"股票：{code} {result['Name']}\n"
+                f"資料日期：{result['Data Date']}（時框 1D）\n"
+                f"IPO日期：{result['IPO Date']}（上市第 {result['Listed Days']} 個交易日）\n"
+                f"IPO首日高：{result['IPO High']}\n"
+                f"今日最高：{result['Today High']}　今日收市：{result['Today Close']}\n"
+                f"突破幅度：{result['Break %']}%\n"
+                f"<a href=\"{tv_url}\">TradingView 圖表</a>"
             )
-            emit_alert(payload, msg)
+            chart_path = render_chart(
+                df,
+                code,
+                result["Name"],
+                "IPO首日高突破",
+                levels=[("IPO首日高", result["IPO High"], "#fbbf24")],
+                lookback_days=min(len(df), max(60, result["Listed Days"] + 5)),
+            )
+            emit_alert(payload, caption, chart_path)
         time.sleep(SLEEP_SEC)
-    send_telegram(f"IPO首日突破雲端掃描完成，共 {hits} 隻符合。")
+    send_telegram_message(f"IPO首日突破雲端掃描完成，共 {hits} 隻符合。")
 
 
 def run_poc() -> None:
-    send_telegram(f"<b>POC突破雲端掃描開始</b>\\n時間：{datetime.now():%Y-%m-%d %H:%M}\\n條件：突破半年或12個月 POC")
+    send_telegram_message(
+        f"<b>POC突破雲端掃描開始</b>\n"
+        f"時間：{datetime.now():%Y-%m-%d %H:%M}\n"
+        f"條件：突破半年或12個月 POC"
+    )
     stocks = get_hk_stock_list()
     hits = 0
     for n, row in enumerate(stocks.to_dict("records"), start=1):
         if n % 100 == 0:
             print(f"POC progress {n}/{len(stocks)} hits={hits}")
-        result = check_poc_breakout(row["code"], row["name"])
-        if result:
+        outcome = check_poc_breakout(row["code"], row["name"])
+        if outcome:
+            result, df = outcome
             hits += 1
             code = result["Code"]
+            tv_url = tradingview_url(code)
             payload = {
                 "source": "cloud_scanner",
                 "category": "poc",
@@ -462,31 +671,43 @@ def run_poc() -> None:
                 "signal": result["Signal"],
                 "timeframe": "1D",
                 "price": result["Today Close"],
-                "message": f"突破欄位：{result['Break Field']}；突破價：{result['Break Value']}；今日最高：{result['Today High']}；突破幅度：{result['Break %']}%",
+                "message": (
+                    f"突破欄位：{result['Break Field']}；突破價：{result['Break Value']}；"
+                    f"今日最高：{result['Today High']}；突破幅度：{result['Break %']}%"
+                ),
                 "strategy": "POC Breakout",
-                "chart_url": tradingview_url(code),
-                "source_url": tradingview_url(code),
+                "chart_url": tv_url,
+                "source_url": tv_url,
                 "tags": ["POC", "Breakout", result["Signal"]],
                 "poc_6m": result["POC 6M"],
                 "poc_12m": result["POC 12M"],
                 "priority": 2 if " + " in result["Signal"] else 1,
                 "raw": json.dumps(result, ensure_ascii=False),
             }
-            msg = (
-                f"<b>POC突破</b>\\n"
-                f"股票：{code} {result['Name']}\\n"
-                f"資料日期：{result['Data Date']}\\n"
-                f"訊號：{result['Signal']}\\n"
-                f"半年POC：{result['POC 6M']}\\n"
-                f"12個月POC：{result['POC 12M']}\\n"
-                f"今日最高：{result['Today High']}\\n"
-                f"今日收市：{result['Today Close']}\\n"
-                f"突破幅度：{result['Break %']}%\\n"
-                f"圖表：{tradingview_url(code)}"
+            caption = (
+                f"<b>POC突破 · {result['Signal']}</b>\n"
+                f"股票：{code} {result['Name']}\n"
+                f"資料日期：{result['Data Date']}（時框 1D）\n"
+                f"半年POC：{result['POC 6M']}　12個月POC：{result['POC 12M']}\n"
+                f"今日最高：{result['Today High']}　今日收市：{result['Today Close']}\n"
+                f"突破欄位：{result['Break Field']}　突破價：{result['Break Value']}\n"
+                f"突破幅度：{result['Break %']}%\n"
+                f"<a href=\"{tv_url}\">TradingView 圖表</a>"
             )
-            emit_alert(payload, msg)
+            chart_path = render_chart(
+                df,
+                code,
+                result["Name"],
+                f"POC突破 · {result['Signal']}",
+                levels=[
+                    ("半年POC", result["POC 6M"], "#60a5fa"),
+                    ("12個月POC", result["POC 12M"], "#f472b6"),
+                ],
+                lookback_days=CHART_LOOKBACK_DAYS,
+            )
+            emit_alert(payload, caption, chart_path)
         time.sleep(SLEEP_SEC)
-    send_telegram(f"POC突破雲端掃描完成，共 {hits} 隻符合。")
+    send_telegram_message(f"POC突破雲端掃描完成，共 {hits} 隻符合。")
 
 
 def main() -> None:

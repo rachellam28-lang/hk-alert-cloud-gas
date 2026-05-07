@@ -3,3 +3,4 @@ requests
 openpyxl
 yfinance
 beautifulsoup4
+matplotlib
