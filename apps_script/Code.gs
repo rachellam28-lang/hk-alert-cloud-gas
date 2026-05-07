@@ -1,5 +1,6 @@
 const SPREADSHEET_ID = '129IieKTIfssX18O_PfnRoxbx3c12UoCPQ_MxxBizgeA';
 const ALERT_SHEET = 'Alerts';
+const CHART_FOLDER_NAME = 'HK Alert Charts';
 
 // GAS_SECRET is read from Script Properties at runtime; never hardcode it here.
 // In Apps Script editor: Project Settings → Script Properties → add key "GAS_SECRET".
@@ -14,7 +15,8 @@ function getGasSecret_() {
 const HEADERS = [
   'created_at', 'source', 'category', 'code', 'symbol', 'name', 'signal',
   'timeframe', 'price', 'message', 'strategy', 'chart_url', 'source_url',
-  'tags', 'poc_6m', 'poc_12m', 'priority', 'raw'
+  'tags', 'poc_6m', 'poc_12m', 'poc_2y', 'poc_3y',
+  'chart_image_url', 'chart_drive_id', 'priority', 'raw'
 ];
 
 function doPost(e) {
@@ -24,19 +26,68 @@ function doPost(e) {
     if (expected && payload.secret !== expected) {
       return json_({ ok: false, error: 'secret_mismatch' });
     }
+    // Save chart PNG to Drive when scanner sent base64 chart bytes; on any failure
+    // the alert still records without a chart image (fallback to sparkline in UI).
+    const chartInfo = saveChartToDrive_(payload);
+    if (chartInfo) {
+      payload.chart_image_url = chartInfo.url;
+      payload.chart_drive_id = chartInfo.id;
+    }
+    delete payload.chart_image_b64;
+    delete payload.chart_image_name;
     const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
     const sh = ensureSheet_(ss);
-    const row = HEADERS.map(h => {
+    const headers = readHeaders_(sh);
+    const row = headers.map(h => {
       if (h === 'created_at') return payload.created_at || new Date().toISOString();
       if (h === 'tags' && Array.isArray(payload.tags)) return payload.tags.join(',');
       if (h === 'raw') return payload.raw || JSON.stringify(payload);
       return payload[h] == null ? '' : payload[h];
     });
     sh.appendRow(row);
-    return json_({ ok: true });
+    return json_({ ok: true, chart_image_url: payload.chart_image_url || '' });
   } catch (err) {
     return json_({ ok: false, error: String(err) });
   }
+}
+
+function saveChartToDrive_(payload) {
+  try {
+    const b64 = payload && payload.chart_image_b64;
+    if (!b64) return null;
+    const fileName = (payload.chart_image_name && String(payload.chart_image_name)) ||
+      ((payload.code || 'chart') + '_' + Date.now() + '.png');
+    const bytes = Utilities.base64Decode(b64);
+    const blob = Utilities.newBlob(bytes, 'image/png', fileName);
+    const folder = getOrCreateFolder_(CHART_FOLDER_NAME);
+    const file = folder.createFile(blob);
+    try {
+      file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    } catch (shareErr) {
+      // Some Workspace policies block link-sharing; we still keep the file ID
+      // and the UI will gracefully fall back to the sparkline.
+    }
+    const id = file.getId();
+    return { id: id, url: 'https://drive.google.com/uc?export=view&id=' + id };
+  } catch (err) {
+    return null;
+  }
+}
+
+function getOrCreateFolder_(name) {
+  const it = DriveApp.getFoldersByName(name);
+  if (it.hasNext()) return it.next();
+  return DriveApp.createFolder(name);
+}
+
+function readHeaders_(sh) {
+  const maxCol = sh.getMaxColumns();
+  const target = Math.min(maxCol, Math.max(sh.getLastColumn(), HEADERS.length));
+  if (target <= 0) return HEADERS.slice();
+  const first = sh.getRange(1, 1, 1, target).getValues()[0].map(String);
+  // Drop trailing empty cells past the canonical header so appendRow stays aligned.
+  while (first.length > HEADERS.length && first[first.length - 1] === '') first.pop();
+  return first;
 }
 
 function doGet() {
@@ -50,9 +101,30 @@ function doGet() {
 function ensureSheet_(ss) {
   let sh = ss.getSheetByName(ALERT_SHEET);
   if (!sh) sh = ss.insertSheet(ALERT_SHEET);
-  const first = sh.getRange(1, 1, 1, HEADERS.length).getValues()[0];
-  if (first.join('') === '') {
+  const lastCol = sh.getLastColumn();
+  if (lastCol === 0) {
     sh.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]);
+    sh.setFrozenRows(1);
+    return sh;
+  }
+  const maxCol = sh.getMaxColumns();
+  const readCols = Math.min(maxCol, Math.max(lastCol, HEADERS.length));
+  const first = sh.getRange(1, 1, 1, readCols).getValues()[0].map(String);
+  // If first row is fully blank, write our canonical header.
+  if (first.every(function (v) { return v === ''; })) {
+    sh.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]);
+    sh.setFrozenRows(1);
+    return sh;
+  }
+  // Append any missing canonical headers to the right WITHOUT touching existing data.
+  const existing = {};
+  first.forEach(function (h) { if (h) existing[h] = true; });
+  const missing = HEADERS.filter(function (h) { return !existing[h]; });
+  if (missing.length) {
+    let nextCol = first.length + 1;
+    // Strip trailing empty cells in the header row before appending.
+    while (nextCol > 1 && (first[nextCol - 2] === '' || first[nextCol - 2] == null)) nextCol--;
+    sh.getRange(1, nextCol, 1, missing.length).setValues([missing]);
     sh.setFrozenRows(1);
   }
   return sh;
@@ -304,7 +376,9 @@ function render_(alerts, snap) {
         latest: 0,              // most-recent created_at timestamp
         latestRaw: '',
         tvLink: '',
-        hkexLink: ''
+        hkexLink: '',
+        chartImageUrl: '',
+        chartCaption: ''
       };
     }
     const g = groupsMap[code];
@@ -312,7 +386,22 @@ function render_(alerts, snap) {
     g.items.push(a);
 
     const ts = a.created_at ? new Date(a.created_at).getTime() : 0;
-    if (ts > g.latest) { g.latest = ts; g.latestRaw = a.created_at; }
+    if (ts > g.latest) {
+      g.latest = ts;
+      g.latestRaw = a.created_at;
+      // Adopt the latest alert's saved chart image as the row thumbnail.
+      const url = String(a.chart_image_url || '').trim();
+      if (url) {
+        g.chartImageUrl = url;
+        g.chartCaption = String(a.signal || a.category || '');
+      }
+    } else if (!g.chartImageUrl) {
+      const url = String(a.chart_image_url || '').trim();
+      if (url) {
+        g.chartImageUrl = url;
+        g.chartCaption = String(a.signal || a.category || '');
+      }
+    }
 
     const isCorp = a.category === 'corp_action';
     if (isCorp) {
@@ -366,7 +455,13 @@ function render_(alerts, snap) {
     const p = priceMap[codeStr];
     let chartHtml = '<span class="nochart">—</span>';
     let priceHtml = '';
-    if (p && p.series && p.series.length >= 2) {
+    // Prefer the scanner's saved real chart (matplotlib OHLC sent via Telegram + Drive).
+    if (g.chartImageUrl) {
+      const cap = g.chartCaption ? esc_(g.chartCaption) : (esc_(codeStr) + ' chart');
+      chartHtml = '<a class="chartimg-link" href="' + esc_(g.chartImageUrl) + '" target="_blank" rel="noopener">'
+        + '<img class="chartimg" src="' + esc_(g.chartImageUrl) + '" alt="' + cap + '" loading="lazy" referrerpolicy="no-referrer">'
+        + '</a>';
+    } else if (p && p.series && p.series.length >= 2) {
       const first = p.series[0], last = p.series[p.series.length - 1];
       const dir = last > first ? 'up' : (last < first ? 'down' : 'flat');
       chartHtml = '<div class="minichart minichart-' + dir + '">' + sparkline_(p.series, dir, 110, 36) + '</div>';
@@ -532,11 +627,14 @@ function render_(alerts, snap) {
     + '.cell-code{min-width:120px}\n'
     + '.cell-code .code{font:600 13px var(--font-mono);color:var(--text);font-variant-numeric:tabular-nums}\n'
     + '.cell-code .name{font-size:12px;color:var(--mute);margin-top:2px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}\n'
-    + '.cell-chart{width:124px}\n'
+    + '.cell-chart{width:148px}\n'
     + '.minichart{display:block;width:110px;height:36px;border-radius:6px;background:var(--surface-soft);border:1px solid var(--line-soft);padding:1px;overflow:hidden}\n'
     + '.minichart .spark{display:block;width:100%;height:100%}\n'
     + '.minichart-up{border-color:var(--up-border)}\n'
     + '.minichart-down{border-color:var(--down-border)}\n'
+    + '.chartimg-link{display:block;line-height:0}\n'
+    + '.chartimg{display:block;width:140px;height:60px;object-fit:cover;border-radius:6px;border:1px solid var(--line-soft);background:#0b1220}\n'
+    + '.chartimg-link:hover .chartimg{border-color:var(--primary-border);box-shadow:0 0 0 2px rgba(2,132,199,.18)}\n'
     + '.nochart{font-size:10px;color:var(--mute-2)}\n'
     + '.cell-price{width:96px;white-space:nowrap}\n'
     + '.price{display:flex;flex-direction:column;align-items:flex-start;gap:1px;font-variant-numeric:tabular-nums}\n'
