@@ -94,6 +94,53 @@ function fetchYahoo_(symbol) {
   }
 }
 
+// Batch-fetch closing series for many HK stock symbols in one parallel call.
+// Returns map: code -> { value, changePct, series }. Missing/failed symbols are omitted.
+function fetchYahooBatch_(codes) {
+  if (!codes || !codes.length) return {};
+  const symbols = codes.map(function (c) {
+    const num = String(c || '').replace(/[^0-9]/g, '');
+    if (!num) return null;
+    const padded = ('0000' + num).slice(-4);
+    return { code: c, symbol: padded + '.HK' };
+  }).filter(function (x) { return !!x; });
+  const requests = symbols.map(function (s) {
+    return {
+      url: 'https://query1.finance.yahoo.com/v8/finance/chart/' + encodeURIComponent(s.symbol) + '?interval=1d&range=30d',
+      muteHttpExceptions: true
+    };
+  });
+  const out = {};
+  if (!requests.length) return out;
+  let responses;
+  try {
+    responses = UrlFetchApp.fetchAll(requests);
+  } catch (err) {
+    return out;
+  }
+  for (let i = 0; i < responses.length; i++) {
+    const s = symbols[i];
+    try {
+      const j = JSON.parse(responses[i].getContentText());
+      const r = j.chart && j.chart.result && j.chart.result[0];
+      if (!r) continue;
+      const meta = r.meta || {};
+      const last = meta.regularMarketPrice;
+      const prev = meta.chartPreviousClose || meta.previousClose;
+      const changePct = (last != null && prev) ? (last - prev) / prev * 100 : null;
+      let series = [];
+      const closes = r.indicators && r.indicators.quote && r.indicators.quote[0] && r.indicators.quote[0].close;
+      if (Array.isArray(closes)) {
+        series = closes.filter(function (v) { return v != null && !isNaN(v); }).slice(-20);
+      }
+      out[s.code] = { value: last == null ? null : Number(last), changePct: changePct, series: series, symbol: s.symbol };
+    } catch (e) {
+      // skip; row will render without sparkline
+    }
+  }
+  return out;
+}
+
 function getHsiPe_() {
   try {
     const html = UrlFetchApp.fetch('https://worldperatio.com/area/hong-kong/', { muteHttpExceptions: true }).getContentText();
@@ -152,9 +199,10 @@ function fmtDate_(s) {
   }
 }
 
-function sparkline_(series, up) {
+function sparkline_(series, up, w, h) {
+  w = w || 96; h = h || 28;
   if (!series || series.length < 2) return '';
-  const w = 96, h = 28, pad = 2;
+  const pad = 2;
   let min = Infinity, max = -Infinity;
   for (let i = 0; i < series.length; i++) {
     const v = series[i];
@@ -178,6 +226,37 @@ function sparkline_(series, up) {
     + '</svg>';
 }
 
+// Render OHLC-like bars from a closing series: each bar's height shows day-over-day change magnitude,
+// colored green/red. This is real data (close-to-close), not fabricated candles.
+function microBars_(series, w, h) {
+  w = w || 88; h = h || 28;
+  if (!series || series.length < 2) return '';
+  const pad = 1;
+  const diffs = [];
+  for (let i = 1; i < series.length; i++) diffs.push(series[i] - series[i - 1]);
+  let maxAbs = 0;
+  for (let i = 0; i < diffs.length; i++) { const a = Math.abs(diffs[i]); if (a > maxAbs) maxAbs = a; }
+  if (maxAbs === 0) maxAbs = 1;
+  const n = diffs.length;
+  const slot = (w - pad * 2) / n;
+  const barW = Math.max(1.4, slot - 0.8);
+  const mid = h / 2;
+  let svg = '<svg class="bars" width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '" preserveAspectRatio="none">';
+  svg += '<line x1="' + pad + '" y1="' + mid.toFixed(1) + '" x2="' + (w - pad) + '" y2="' + mid.toFixed(1) + '" stroke="#e2e8f0" stroke-width="0.6"/>';
+  for (let i = 0; i < n; i++) {
+    const d = diffs[i];
+    const halfMag = (Math.abs(d) / maxAbs) * (mid - pad);
+    const x = pad + i * slot + (slot - barW) / 2;
+    const up = d >= 0;
+    const y = up ? (mid - halfMag) : mid;
+    const bh = halfMag < 0.6 ? 0.6 : halfMag;
+    const color = up ? '#16a34a' : '#dc2626';
+    svg += '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + barW.toFixed(1) + '" height="' + bh.toFixed(1) + '" fill="' + color + '"/>';
+  }
+  svg += '</svg>';
+  return svg;
+}
+
 function kpi_(label, hint, item, decimals) {
   const v = n_(item.value, decimals);
   let chgHtml = '';
@@ -190,12 +269,11 @@ function kpi_(label, hint, item, decimals) {
     chgHtml = '<span class="kchg ' + (up ? 'up' : 'down') + '">' + arrow
       + '<span class="kchgnum">' + n_(Math.abs(item.changePct), 2) + '%</span></span>';
   }
-  // Sparkline tone follows series direction (first→last) when available, else changePct sign.
   let sparkUp = up == null ? true : up;
   if (item.series && item.series.length >= 2) {
     sparkUp = item.series[item.series.length - 1] >= item.series[0];
   }
-  const spark = sparkline_(item.series || [], sparkUp);
+  const spark = sparkline_(item.series || [], sparkUp, 96, 28);
   const stale = item.stale ? '<span class="stale">stale</span>' : '';
   return '<div class="kpi">'
     + '<div class="krow">'
@@ -213,7 +291,6 @@ function kpi_(label, hint, item, decimals) {
 
 // --- Corp action helpers (HKEX disclosure) ---
 function corpType_(a) {
-  // Look at tags first then signal text. Returns 'placement' | 'increase' | 'rights' | 'other'.
   const tags = String(a.tags || '');
   const sig = String(a.signal || '') + ' ' + String(a.message || '');
   const blob = (tags + ' ' + sig);
@@ -231,91 +308,162 @@ function corpTypeLabel_(t) {
 }
 
 function render_(alerts, snap) {
-  // Split alerts.
-  const corpAlerts = [];
-  const techAlerts = [];
-  alerts.forEach(function (a) {
-    if (a.category === 'corp_action') corpAlerts.push(a);
-    else techAlerts.push(a);
-  });
-
-  // Corp counts.
-  let cntPlacement = 0, cntIncrease = 0, cntRights = 0;
-  const corpRows = corpAlerts.map(function (a) {
-    const t = corpType_(a);
-    if (t === 'placement') cntPlacement++;
-    else if (t === 'increase') cntIncrease++;
-    else if (t === 'rights') cntRights++;
-    const link = a.source_url || a.chart_url || '';
-    const codeStr = String(a.code || '').trim();
-    const tv = codeStr ? 'https://www.tradingview.com/chart/?symbol=HKEX%3A' + encodeURIComponent(codeStr.replace(/^0+/, '')) : '';
-    return ''
-      + '<tr class="crow" data-type="' + t + '" data-code="' + esc_(codeStr) + '" data-name="' + esc_(a.name || '') + '">'
-      + '<td class="cell-code"><div class="code">' + esc_(codeStr || '—') + '</div><div class="name">' + esc_(a.name || '') + '</div></td>'
-      + '<td><span class="cpill cpill-' + t + '">' + corpTypeLabel_(t) + '</span></td>'
-      + '<td class="cell-msg">' + esc_(a.message || a.signal || '') + '</td>'
-      + '<td class="cell-time">' + esc_(fmtTime_(a.created_at)) + '</td>'
-      + '<td class="cell-link">'
-      + (link ? '<a href="' + esc_(link) + '" target="_blank" rel="noopener">原文</a>' : '')
-      + (tv ? ' · <a href="' + esc_(tv) + '" target="_blank" rel="noopener">TV</a>' : '')
-      + '</td>'
-      + '</tr>';
-  }).join('');
-
-  // Group technical signals by code.
+  // Group every alert by stock code into a single unified row per code.
+  // Each group tracks: technical signal labels, corp-action types, latest time, links.
   const groupsMap = {};
-  techAlerts.forEach(function (a) {
-    const code = String(a.code || '').trim() || '—';
+  alerts.forEach(function (a) {
+    const code = String(a.code || '').trim();
+    if (!code) return; // unified table is per-code; skip rows without a code
     if (!groupsMap[code]) {
-      groupsMap[code] = { code: code, name: String(a.name || ''), items: [] };
+      groupsMap[code] = {
+        code: code,
+        name: String(a.name || ''),
+        items: [],
+        techCount: 0,
+        corpCount: 0,
+        signals: [],            // ordered unique technical-signal labels (with link)
+        signalSeen: {},
+        corpTypes: {},          // 'placement'|'increase'|'rights'|'other' -> { count, link }
+        latest: 0,              // most-recent created_at timestamp
+        latestRaw: '',
+        tvLink: '',
+        hkexLink: ''
+      };
     }
-    if (!groupsMap[code].name && a.name) groupsMap[code].name = String(a.name);
-    groupsMap[code].items.push(a);
-  });
-  const techGroups = Object.keys(groupsMap).map(function (k) { return groupsMap[k]; });
-  techGroups.sort(function (a, b) {
-    const ta = a.items[0] && a.items[0].created_at ? new Date(a.items[0].created_at).getTime() : 0;
-    const tb = b.items[0] && b.items[0].created_at ? new Date(b.items[0].created_at).getTime() : 0;
-    return tb - ta;
+    const g = groupsMap[code];
+    if (!g.name && a.name) g.name = String(a.name);
+    g.items.push(a);
+
+    const ts = a.created_at ? new Date(a.created_at).getTime() : 0;
+    if (ts > g.latest) { g.latest = ts; g.latestRaw = a.created_at; }
+
+    const isCorp = a.category === 'corp_action';
+    if (isCorp) {
+      g.corpCount++;
+      const t = corpType_(a);
+      if (!g.corpTypes[t]) g.corpTypes[t] = { count: 0, link: '' };
+      g.corpTypes[t].count++;
+      const cl = a.source_url || a.chart_url || '';
+      if (cl && !g.corpTypes[t].link) g.corpTypes[t].link = cl;
+      if (cl && !g.hkexLink) g.hkexLink = cl;
+    } else {
+      g.techCount++;
+      const label = String(a.signal || a.category || '').trim() || '訊號';
+      if (!g.signalSeen[label]) {
+        g.signalSeen[label] = true;
+        const link = a.chart_url || a.source_url || '';
+        g.signals.push({ label: label, link: link });
+      }
+      if (!g.tvLink) {
+        const cu = a.chart_url || '';
+        if (cu) g.tvLink = cu;
+      }
+    }
   });
 
-  const techRows = techGroups.map(function (g) {
-    const last = g.items[0] || {};
+  const groups = Object.keys(groupsMap).map(function (k) { return groupsMap[k]; });
+  groups.sort(function (a, b) { return b.latest - a.latest; });
+
+  // Aggregate corp-action counts for the toolbar summary.
+  let cntPlacement = 0, cntIncrease = 0, cntRights = 0;
+  groups.forEach(function (g) {
+    if (g.corpTypes.placement) cntPlacement += g.corpTypes.placement.count;
+    if (g.corpTypes.increase) cntIncrease += g.corpTypes.increase.count;
+    if (g.corpTypes.rights) cntRights += g.corpTypes.rights.count;
+  });
+
+  // Batch-fetch real price + 20d series for every code in one parallel call.
+  const codes = groups.map(function (g) { return g.code; });
+  const priceMap = fetchYahooBatch_(codes);
+
+  const rows = groups.map(function (g) {
     const codeStr = String(g.code || '').trim();
-    const tv = codeStr && codeStr !== '—'
-      ? 'https://www.tradingview.com/chart/?symbol=HKEX%3A' + encodeURIComponent(codeStr.replace(/^0+/, ''))
+    const codeNum = codeStr.replace(/^0+/, '');
+    const tvFallback = codeNum
+      ? 'https://www.tradingview.com/chart/?symbol=HKEX%3A' + encodeURIComponent(codeNum)
       : '';
-    // Up to 4 recent unique signal labels as pills.
-    const seen = {};
-    const pills = [];
-    for (let i = 0; i < g.items.length && pills.length < 4; i++) {
-      const a = g.items[i];
-      const label = String(a.signal || a.category || '').trim() || '訊號';
-      if (seen[label]) continue;
-      seen[label] = true;
-      const link = a.chart_url || a.source_url || '';
-      const pillBody = '<span class="spill">' + esc_(label) + '</span>';
-      pills.push(link
-        ? '<a class="splink" href="' + esc_(link) + '" target="_blank" rel="noopener">' + pillBody + '</a>'
-        : pillBody);
+    const tvHref = g.tvLink || tvFallback;
+    const hkexHref = g.hkexLink || '';
+
+    // Real price + chart from Yahoo batch (if available).
+    const p = priceMap[codeStr];
+    let chartHtml = '<span class="nochart">—</span>';
+    let priceHtml = '';
+    if (p && p.series && p.series.length >= 2) {
+      const up = p.series[p.series.length - 1] >= p.series[0];
+      chartHtml = microBars_(p.series, 88, 30);
+      const sp = sparkline_(p.series, up, 88, 14);
+      chartHtml = '<div class="minichart">' + chartHtml + sp + '</div>';
+    } else if (p && p.series && p.series.length === 1) {
+      chartHtml = '<span class="nochart">單點</span>';
     }
-    const lastDate = fmtDate_(last.created_at);
-    const lastTime = fmtTime_(last.created_at);
+    if (p && p.value != null) {
+      const pct = (p.changePct == null) ? null : p.changePct;
+      const dir = pct == null ? 'flat' : (pct >= 0 ? 'up' : 'down');
+      const pctStr = pct == null ? '' : (pct >= 0 ? '+' : '') + n_(pct, 2) + '%';
+      priceHtml = '<div class="price ' + dir + '">'
+        + '<span class="pv">' + n_(p.value, 2) + '</span>'
+        + (pctStr ? '<span class="pc">' + pctStr + '</span>' : '')
+        + '</div>';
+    }
+
+    // Signal pills (technical).
+    const sigPills = g.signals.slice(0, 4).map(function (s) {
+      const body = '<span class="spill">' + esc_(s.label) + '</span>';
+      return s.link
+        ? '<a class="splink" href="' + esc_(s.link) + '" target="_blank" rel="noopener">' + body + '</a>'
+        : body;
+    }).join(' ');
+
+    // HKEX corp-action pills (no long content, only labels with link).
+    const corpOrder = ['placement', 'increase', 'rights', 'other'];
+    const corpPills = corpOrder.filter(function (t) { return g.corpTypes[t]; }).map(function (t) {
+      const c = g.corpTypes[t];
+      const body = '<span class="cpill cpill-' + t + '">'
+        + corpTypeLabel_(t)
+        + (c.count > 1 ? ' <em>×' + c.count + '</em>' : '')
+        + '</span>';
+      return c.link
+        ? '<a class="cplink" href="' + esc_(c.link) + '" target="_blank" rel="noopener">' + body + '</a>'
+        : body;
+    }).join(' ');
+
+    const hasCorp = g.corpCount > 0 ? '1' : '0';
+    const hasTech = g.techCount > 0 ? '1' : '0';
+
+    const lastTime = fmtTime_(g.latestRaw);
+    const lastDate = fmtDate_(g.latestRaw);
+
+    const linkBits = [];
+    if (tvHref) linkBits.push('<a class="lnk lnk-tv" href="' + esc_(tvHref) + '" target="_blank" rel="noopener" title="TradingView">TV</a>');
+    if (hkexHref) linkBits.push('<a class="lnk lnk-hk" href="' + esc_(hkexHref) + '" target="_blank" rel="noopener" title="HKEX 披露易">HKEX</a>');
+
     return ''
-      + '<tr class="trow" data-code="' + esc_(codeStr) + '" data-name="' + esc_(g.name) + '" data-date="' + esc_(lastDate) + '">'
-      + '<td class="cell-code"><div class="code">' + esc_(codeStr) + '</div><div class="name">' + esc_(g.name) + '</div></td>'
-      + '<td class="cell-num">' + g.items.length + '</td>'
-      + '<td class="cell-pills">' + pills.join(' ') + '</td>'
-      + '<td class="cell-link">' + (tv ? '<a href="' + esc_(tv) + '" target="_blank" rel="noopener">TradingView</a>' : '—') + '</td>'
+      + '<tr class="urow"'
+      + ' data-code="' + esc_(codeStr) + '"'
+      + ' data-name="' + esc_(g.name) + '"'
+      + ' data-date="' + esc_(lastDate) + '"'
+      + ' data-corp="' + hasCorp + '"'
+      + ' data-tech="' + hasTech + '"'
+      + '>'
+      + '<td class="cell-code">'
+      +   '<div class="code">' + esc_(codeStr) + '</div>'
+      +   (g.name ? '<div class="name">' + esc_(g.name) + '</div>' : '')
+      + '</td>'
+      + '<td class="cell-chart">' + chartHtml + '</td>'
+      + '<td class="cell-price">' + (priceHtml || '<span class="muted">—</span>') + '</td>'
+      + '<td class="cell-pills">'
+      +   (sigPills || '<span class="muted">—</span>')
+      +   (corpPills ? '<div class="cpillrow">' + corpPills + '</div>' : '')
+      + '</td>'
+      + '<td class="cell-num"><span class="cnum">' + (g.techCount + g.corpCount) + '</span></td>'
       + '<td class="cell-time">' + esc_(lastTime) + '</td>'
+      + '<td class="cell-link">' + (linkBits.join(' ') || '—') + '</td>'
       + '</tr>';
   }).join('');
 
-  const corpEmpty = corpAlerts.length === 0
-    ? '<tr><td colspan="5" class="empty">暫無披露易公告</td></tr>'
-    : '';
-  const techEmpty = techGroups.length === 0
-    ? '<tr><td colspan="5" class="empty">暫無技術信號</td></tr>'
+  const empty = groups.length === 0
+    ? '<tr><td colspan="7" class="empty">暫無代號數據 · No stock data yet</td></tr>'
     : '';
 
   return '<!doctype html>\n'
@@ -342,8 +490,8 @@ function render_(alerts, snap) {
     + 'body{background:var(--bg);color:var(--text);font:14px/1.55 var(--font-sans);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}\n'
     + 'a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}\n'
     + '.tabular{font-variant-numeric:tabular-nums}\n'
-    + /* Header */
-    '.topbar{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(8px);-webkit-backdrop-filter:saturate(180%) blur(8px);border-bottom:1px solid var(--line)}\n'
+    + '.muted{color:var(--mute-2)}\n'
+    + '.topbar{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(8px);-webkit-backdrop-filter:saturate(180%) blur(8px);border-bottom:1px solid var(--line)}\n'
     + '.topbar-inner{max-width:1440px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px}\n'
     + '.brand{display:flex;align-items:center;gap:10px;min-width:0}\n'
     + '.brand .logo{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#0284c7,#0ea5e9);display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}\n'
@@ -354,13 +502,11 @@ function render_(alerts, snap) {
     + '.topright{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--mute);white-space:nowrap}\n'
     + '.dot{width:7px;height:7px;border-radius:999px;background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.18)}\n'
     + '.refresh-tag{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:11px;color:var(--text-soft)}\n'
-    + /* Layout */
-    '.wrap{max-width:1440px;margin:0 auto;padding:18px 20px 36px}\n'
+    + '.wrap{max-width:1440px;margin:0 auto;padding:18px 20px 36px}\n'
     + '.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:20px 0 10px}\n'
     + '.section-head h2{margin:0;display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.16em}\n'
     + '.section-head h2 .ico{display:inline-flex;width:18px;height:18px;border-radius:6px;background:var(--primary-soft);color:var(--primary);align-items:center;justify-content:center}\n'
-    + /* KPI cards */
-    '.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}\n'
+    + '.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}\n'
     + '.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px 14px 12px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:8px}\n'
     + '.kpi .krow{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}\n'
     + '.klabels{display:flex;flex-direction:column;gap:2px;min-width:0}\n'
@@ -377,8 +523,7 @@ function render_(alerts, snap) {
     + '.kfoot{display:flex;align-items:flex-end;justify-content:space-between;gap:8px;margin-top:2px}\n'
     + '.spark{display:block}\n'
     + '.ksource{font-size:10px;color:var(--mute-2);text-align:right;line-height:1.3;max-width:55%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}\n'
-    + /* Card / sections */
-    '.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}\n'
+    + '.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}\n'
     + '.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line);background:var(--surface)}\n'
     + '.tlabel{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--text)}\n'
     + '.summary{display:flex;flex-wrap:wrap;align-items:center;gap:6px}\n'
@@ -403,36 +548,52 @@ function render_(alerts, snap) {
     + '.input[type=date]{font-family:var(--font-mono);font-size:12px}\n'
     + '.btn-ghost{appearance:none;background:transparent;border:1px solid var(--line);color:var(--text-soft);padding:5px 10px;border-radius:8px;font:500 12px var(--font-sans);cursor:pointer}\n'
     + '.btn-ghost:hover{background:var(--surface-soft);color:var(--text)}\n'
-    + /* Table */
-    'table{width:100%;border-collapse:collapse}\n'
-    + 'thead th{background:var(--surface-soft);color:var(--mute);font-size:10px;text-align:left;padding:9px 14px;text-transform:uppercase;letter-spacing:.14em;font-weight:600;border-bottom:1px solid var(--line)}\n'
-    + 'tbody td{padding:11px 14px;border-bottom:1px solid var(--line-soft);vertical-align:middle}\n'
+    + 'table{width:100%;border-collapse:collapse;table-layout:auto}\n'
+    + 'thead th{background:var(--surface-soft);color:var(--mute);font-size:10px;text-align:left;padding:9px 14px;text-transform:uppercase;letter-spacing:.14em;font-weight:600;border-bottom:1px solid var(--line);white-space:nowrap}\n'
+    + 'tbody td{padding:10px 14px;border-bottom:1px solid var(--line-soft);vertical-align:middle}\n'
     + 'tbody tr:last-child td{border-bottom:none}\n'
     + 'tbody tr:hover{background:var(--surface-soft)}\n'
+    + '.cell-code{min-width:120px}\n'
     + '.cell-code .code{font:600 13px var(--font-mono);color:var(--text);font-variant-numeric:tabular-nums}\n'
-    + '.cell-code .name{font-size:12px;color:var(--mute);margin-top:2px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}\n'
+    + '.cell-code .name{font-size:12px;color:var(--mute);margin-top:2px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}\n'
+    + '.cell-chart{width:100px}\n'
+    + '.minichart{display:flex;flex-direction:column;align-items:flex-start;gap:1px;width:88px}\n'
+    + '.minichart .bars{display:block}\n'
+    + '.minichart .spark{display:block;opacity:.85}\n'
+    + '.nochart{font-size:10px;color:var(--mute-2)}\n'
+    + '.cell-price{width:96px;white-space:nowrap}\n'
+    + '.price{display:flex;flex-direction:column;align-items:flex-start;gap:1px;font-variant-numeric:tabular-nums}\n'
+    + '.price .pv{font:600 13px var(--font-mono);color:var(--text)}\n'
+    + '.price .pc{font:600 11px var(--font-mono)}\n'
+    + '.price.up .pc{color:var(--up)}\n'
+    + '.price.down .pc{color:var(--down)}\n'
+    + '.price.flat .pc{color:var(--mute-2)}\n'
+    + '.cell-pills{min-width:220px}\n'
     + '.cell-time{color:var(--mute);font:500 12px var(--font-mono);font-variant-numeric:tabular-nums;white-space:nowrap}\n'
-    + '.cell-num{font:600 13px var(--font-mono);color:var(--text);font-variant-numeric:tabular-nums}\n'
-    + '.cell-msg{color:var(--text-soft);font-size:13px;max-width:560px;line-height:1.5}\n'
+    + '.cell-num{font:600 13px var(--font-mono);color:var(--text);font-variant-numeric:tabular-nums;text-align:center}\n'
+    + '.cell-num .cnum{display:inline-flex;align-items:center;justify-content:center;min-width:24px;padding:2px 8px;border-radius:999px;background:var(--surface-soft);border:1px solid var(--line);font-size:11px}\n'
     + '.cell-link{font-size:12px;white-space:nowrap}\n'
-    + '.cell-link a{display:inline-flex;align-items:center;gap:3px}\n'
-    + /* Pills */
-    '.spill{display:inline-flex;align-items:center;background:var(--primary-soft);color:#075985;border:1px solid var(--primary-border);font-size:11px;font-weight:600;padding:2px 9px;border-radius:999px;margin:1px 3px 1px 0;line-height:1.5;white-space:nowrap}\n'
+    + '.cell-link .lnk{display:inline-flex;align-items:center;justify-content:center;padding:3px 8px;border-radius:6px;border:1px solid var(--line);background:var(--surface);font:600 10px var(--font-sans);letter-spacing:.06em;color:var(--text-soft);margin-right:4px;text-decoration:none}\n'
+    + '.cell-link .lnk:hover{border-color:var(--primary-border);background:var(--primary-soft);color:var(--primary);text-decoration:none}\n'
+    + '.cell-link .lnk-hk:hover{border-color:var(--violet-border);background:var(--violet-soft);color:var(--violet)}\n'
+    + '.spill{display:inline-flex;align-items:center;background:var(--primary-soft);color:#075985;border:1px solid var(--primary-border);font-size:11px;font-weight:600;padding:2px 9px;border-radius:999px;margin:1px 3px 1px 0;line-height:1.5;white-space:nowrap}\n'
     + '.splink{text-decoration:none}.splink:hover .spill{filter:brightness(.97)}\n'
-    + '.cpill{display:inline-flex;align-items:center;font-size:11px;font-weight:600;padding:2px 9px;border-radius:999px;line-height:1.5;border:1px solid transparent}\n'
+    + '.cpillrow{margin-top:4px;display:flex;flex-wrap:wrap;gap:3px}\n'
+    + '.cplink{text-decoration:none}.cplink:hover .cpill{filter:brightness(.97)}\n'
+    + '.cpill{display:inline-flex;align-items:center;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:999px;line-height:1.5;border:1px solid transparent;letter-spacing:.02em}\n'
+    + '.cpill em{font-style:normal;font-weight:600;margin-left:3px;opacity:.85}\n'
     + '.cpill-placement{background:var(--down-soft);color:var(--down);border-color:var(--down-border)}\n'
     + '.cpill-increase{background:var(--up-soft);color:var(--up);border-color:var(--up-border)}\n'
     + '.cpill-rights{background:var(--violet-soft);color:var(--violet);border-color:var(--violet-border)}\n'
     + '.cpill-other{background:var(--surface-soft);color:var(--mute);border-color:var(--line)}\n'
     + '.empty{text-align:center;color:var(--mute);padding:40px 16px;font-size:13px}\n'
-    + /* Footer */
-    '.foot{margin-top:24px;padding-top:14px;border-top:1px solid var(--line);text-align:center;color:var(--mute-2);font-size:11px}\n'
-    + /* Responsive */
-    '@media (max-width:1024px){.kpis{grid-template-columns:repeat(2,1fr)}}\n'
-    + '@media (max-width:720px){.topbar-inner{padding:10px 14px;gap:10px}.brand-sub{display:none}.refresh-tag{display:none}.wrap{padding:14px}.toolbar{padding:10px}.input.search-in{min-width:160px}.cell-msg{max-width:none}.cell-link,.cell-num{display:none}thead th:nth-child(2),thead th:nth-child(4){display:none}}\n'
+    + '.foot{margin-top:24px;padding-top:14px;border-top:1px solid var(--line);text-align:center;color:var(--mute-2);font-size:11px}\n'
+    + '@media (max-width:1024px){.kpis{grid-template-columns:repeat(2,1fr)}}\n'
+    + '@media (max-width:820px){.cell-num,thead th:nth-child(5){display:none}}\n'
+    + '@media (max-width:720px){.topbar-inner{padding:10px 14px;gap:10px}.brand-sub{display:none}.refresh-tag{display:none}.wrap{padding:14px}.toolbar{padding:10px}.input.search-in{min-width:140px}.cell-price,thead th:nth-child(3){display:none}.cell-time,thead th:nth-child(6){display:none}}\n'
+    + '@media (max-width:520px){.cell-chart,thead th:nth-child(2){display:none}}\n'
     + '</style></head><body>\n'
-    + /* Header */
-    '<header class="topbar"><div class="topbar-inner">\n'
+    + '<header class="topbar"><div class="topbar-inner">\n'
     + '<div class="brand">'
     + '<div class="logo"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg></div>'
     + '<div class="brand-meta">'
@@ -446,42 +607,31 @@ function render_(alerts, snap) {
     + '</div>\n'
     + '</div></header>\n'
     + '<main class="wrap">\n'
-    + /* KPIs section */
-    '<div class="section-head"><h2><span class="ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>市場快照 · Market Snapshot</h2></div>\n'
+    + '<div class="section-head"><h2><span class="ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>市場快照 · Market Snapshot</h2></div>\n'
     + '<section class="kpis">'
     + kpi_('恒生指數', 'Hang Seng Index', snap.hsi, 0)
     + kpi_('恒指 PE', 'HK Market PE', snap.hsi_pe, 2)
     + kpi_('美匯指數', 'Dollar Index', snap.dxy, 2)
     + kpi_('波動指數', 'Volatility (VIX)', snap.vix, 2)
     + '</section>\n'
-    + /* Corp actions section */
-    '<div class="section-head"><h2><span class="ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V8l7-5 7 5v13"/><path d="M9 21V12h6v9"/></svg></span>港交所掘番易 · HKEX Disclosures</h2></div>\n'
+    + '<div class="section-head"><h2><span class="ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>代號彙總 · Stocks (Signals + HKEX)</h2></div>\n'
     + '<section class="card">\n'
     + '<div class="toolbar">\n'
-    + '<div class="tlabel">披露易公告</div>\n'
+    + '<div class="tlabel">代號彙總</div>\n'
     + '<div class="summary">'
     + '<span class="cnt placement">配股 <b>' + cntPlacement + '</b></span>'
     + '<span class="cnt increase">增持 <b>' + cntIncrease + '</b></span>'
     + '<span class="cnt rights">供股 <b>' + cntRights + '</b></span>'
     + '</div>\n'
     + '<div class="spacer"></div>\n'
-    + '<div class="tabs" id="ctabs" role="tablist">'
-    + '<button class="tab active" data-ctype="all">全部</button>'
-    + '<button class="tab" data-ctype="placement">配股</button>'
-    + '<button class="tab" data-ctype="increase">增持</button>'
-    + '<button class="tab" data-ctype="rights">供股</button>'
+    + '<div class="tabs" id="ftabs" role="tablist">'
+    + '<button class="tab active" data-ftype="all">全部</button>'
+    + '<button class="tab" data-ftype="tech">技術信號</button>'
+    + '<button class="tab" data-ftype="corp">披露易</button>'
+    + '<button class="tab" data-ftype="placement">配股</button>'
+    + '<button class="tab" data-ftype="increase">增持</button>'
+    + '<button class="tab" data-ftype="rights">供股</button>'
     + '</div>\n'
-    + '</div>\n'
-    + '<table><thead><tr>'
-    + '<th>代號 / 名稱</th><th>類型</th><th>內容</th><th>時間</th><th>連結</th>'
-    + '</tr></thead><tbody id="crows">' + corpRows + corpEmpty + '</tbody></table>\n'
-    + '</section>\n'
-    + /* Tech signals section */
-    '<div class="section-head"><h2><span class="ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>TradingView 技術信號 · Signals</h2></div>\n'
-    + '<section class="card">\n'
-    + '<div class="toolbar">\n'
-    + '<div class="tlabel">代號彙總</div>\n'
-    + '<div class="spacer"></div>\n'
     + '<div class="search">'
     + '<input id="tq" class="input search-in" type="search" placeholder="搜尋代號 / 名稱…" autocomplete="off">'
     + '<input id="tdate" class="input" type="date" title="篩選日期">'
@@ -489,22 +639,52 @@ function render_(alerts, snap) {
     + '</div>\n'
     + '</div>\n'
     + '<table><thead><tr>'
-    + '<th>代號</th><th>次數</th><th>最近信號</th><th>掘番</th><th>最後出現</th>'
-    + '</tr></thead><tbody id="trows">' + techRows + techEmpty + '</tbody></table>\n'
+    + '<th>代號 / 名稱</th>'
+    + '<th>走勢圖</th>'
+    + '<th>價格</th>'
+    + '<th>信號 / 公告</th>'
+    + '<th>次數</th>'
+    + '<th>最後出現</th>'
+    + '<th>連結</th>'
+    + '</tr></thead><tbody id="urows">' + rows + empty + '</tbody></table>\n'
     + '</section>\n'
     + '<div class="foot">HK Alert Cloud · Google Apps Script · Real data only</div>\n'
     + '</main>\n'
     + '<script>\n'
     + '(function(){\n'
-    + 'var ctype="all";\n'
-    + 'var crows=document.querySelectorAll("#crows .crow");\n'
-    + 'var ctabs=document.querySelectorAll("#ctabs .tab");\n'
-    + 'function applyC(){crows.forEach(function(r){var t=r.getAttribute("data-type")||"other";r.style.display=(ctype==="all"||ctype===t)?"":"none";});}\n'
-    + 'ctabs.forEach(function(t){t.addEventListener("click",function(){ctabs.forEach(function(x){x.classList.remove("active");});t.classList.add("active");ctype=t.getAttribute("data-ctype")||"all";applyC();});});\n'
-    + 'var tq=document.getElementById("tq");var td=document.getElementById("tdate");var tc=document.getElementById("tclear");\n'
-    + 'var trows=document.querySelectorAll("#trows .trow");\n'
-    + 'function applyT(){var q=(tq&&tq.value||"").trim().toLowerCase();var d=(td&&td.value||"").trim();trows.forEach(function(r){var name=(r.getAttribute("data-name")||"").toLowerCase();var code=(r.getAttribute("data-code")||"").toLowerCase();var date=(r.getAttribute("data-date")||"");var mq=(!q||name.indexOf(q)>=0||code.indexOf(q)>=0);var md=(!d||date===d);r.style.display=(mq&&md)?"":"none";});}\n'
-    + 'if(tq)tq.addEventListener("input",applyT);if(td)td.addEventListener("change",applyT);if(tc)tc.addEventListener("click",function(){if(tq)tq.value="";if(td)td.value="";applyT();});\n'
+    + 'var rows=document.querySelectorAll("#urows .urow");\n'
+    + 'var ftabs=document.querySelectorAll("#ftabs .tab");\n'
+    + 'var tq=document.getElementById("tq");\n'
+    + 'var td=document.getElementById("tdate");\n'
+    + 'var tc=document.getElementById("tclear");\n'
+    + 'var ftype="all";\n'
+    + 'function apply(){\n'
+    + '  var q=(tq&&tq.value||"").trim().toLowerCase();\n'
+    + '  var d=(td&&td.value||"").trim();\n'
+    + '  rows.forEach(function(r){\n'
+    + '    var name=(r.getAttribute("data-name")||"").toLowerCase();\n'
+    + '    var code=(r.getAttribute("data-code")||"").toLowerCase();\n'
+    + '    var date=(r.getAttribute("data-date")||"");\n'
+    + '    var hasCorp=r.getAttribute("data-corp")==="1";\n'
+    + '    var hasTech=r.getAttribute("data-tech")==="1";\n'
+    + '    var hasPlacement=!!r.querySelector(".cpill-placement");\n'
+    + '    var hasIncrease=!!r.querySelector(".cpill-increase");\n'
+    + '    var hasRights=!!r.querySelector(".cpill-rights");\n'
+    + '    var ftOK=true;\n'
+    + '    if(ftype==="tech")ftOK=hasTech;\n'
+    + '    else if(ftype==="corp")ftOK=hasCorp;\n'
+    + '    else if(ftype==="placement")ftOK=hasPlacement;\n'
+    + '    else if(ftype==="increase")ftOK=hasIncrease;\n'
+    + '    else if(ftype==="rights")ftOK=hasRights;\n'
+    + '    var mq=(!q||name.indexOf(q)>=0||code.indexOf(q)>=0);\n'
+    + '    var md=(!d||date===d);\n'
+    + '    r.style.display=(ftOK&&mq&&md)?"":"none";\n'
+    + '  });\n'
+    + '}\n'
+    + 'ftabs.forEach(function(t){t.addEventListener("click",function(){ftabs.forEach(function(x){x.classList.remove("active");});t.classList.add("active");ftype=t.getAttribute("data-ftype")||"all";apply();});});\n'
+    + 'if(tq)tq.addEventListener("input",apply);\n'
+    + 'if(td)td.addEventListener("change",apply);\n'
+    + 'if(tc)tc.addEventListener("click",function(){if(tq)tq.value="";if(td)td.value="";ftabs.forEach(function(x){x.classList.remove("active");});var allBtn=document.querySelector("#ftabs .tab[data-ftype=\\"all\\"]");if(allBtn)allBtn.classList.add("active");ftype="all";apply();});\n'
     + '})();\n'
     + '</script>\n'
     + '</body></html>';
