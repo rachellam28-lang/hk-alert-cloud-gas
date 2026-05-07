@@ -28,7 +28,10 @@ on:
 jobs:
   scan:
     runs-on: ubuntu-latest
-    timeout-minutes: 350
+    # Hard ceiling so a stuck scan can't run forever and burn CI minutes.
+    # POC scan is the heaviest path; budget allows for ~2700 HK stocks at
+    # batched yfinance throughput plus a safety margin.
+    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -57,11 +60,19 @@ jobs:
         run: pip install -r scanner/requirements.txt
 
       - name: Run scanner
+        # Step-level timeout below the job timeout so logs flush and we get a
+        # clean failure rather than an aborted job.
+        timeout-minutes: 28
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           GAS_WEBHOOK_URL: ${{ secrets.GAS_WEBHOOK_URL }}
           GAS_SECRET: ${{ secrets.GAS_SECRET }}
           MAX_STOCKS: ${{ vars.MAX_STOCKS || '0' }}
+          POC_MAX_STOCKS_PER_RUN: ${{ vars.POC_MAX_STOCKS_PER_RUN || '0' }}
+          POC_TIME_BUDGET_SEC: ${{ vars.POC_TIME_BUDGET_SEC || '1500' }}
+          YF_HTTP_TIMEOUT: ${{ vars.YF_HTTP_TIMEOUT || '10' }}
+          YF_BATCH_SIZE: ${{ vars.YF_BATCH_SIZE || '60' }}
+          YF_BATCH_THREADS: ${{ vars.YF_BATCH_THREADS || '8' }}
           BREAKOUT_FIELD: ${{ vars.BREAKOUT_FIELD || 'high' }}
-        run: python scanner/hk_cloud_scanner.py "${{ steps.mode.outputs.mode }}"
+        run: python -u scanner/hk_cloud_scanner.py "${{ steps.mode.outputs.mode }}"
