@@ -5,7 +5,7 @@
 1. 打開 [Google Apps Script](https://script.google.com/)
 2. New project
 3. 將 `Code.gs` 的全部內容貼入
-4. 將 `GAS_SECRET` 改成 GitHub repo secret 入面的同一個值
+4. 將 `GAS_SECRET` 由 `CHANGE_ME_TO_REPO_SECRET` 改成你自己 GitHub repo secret 入面 `GAS_SECRET` 的同一個值（請貼自己嘅 secret，唔好 commit 落 public repo）
 5. Deploy → New deployment
 6. Type 選 `Web app`
 7. Execute as: `Me`

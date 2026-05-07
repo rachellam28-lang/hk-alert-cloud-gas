@@ -1,6 +1,6 @@
 const SPREADSHEET_ID = '129IieKTIfssX18O_PfnRoxbx3c12UoCPQ_MxxBizgeA';
 const ALERT_SHEET = 'Alerts';
-const GAS_SECRET = '7cd29b9c7ca4a36fca73f36fb841787bdc274a088700e688';
+const GAS_SECRET = 'CHANGE_ME_TO_REPO_SECRET';
 
 const HEADERS = [
   'created_at', 'source', 'category', 'code', 'symbol', 'name', 'signal',
