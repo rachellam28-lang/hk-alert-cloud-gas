@@ -199,10 +199,12 @@ function fmtDate_(s) {
   }
 }
 
-function sparkline_(series, up, w, h) {
-  w = w || 96; h = h || 28;
+// Render a clean close-price sparkline (line + soft area fill) from a real closing series.
+// Color is chosen by caller via `dir`: 'up' (green), 'down' (red), or 'flat' (grey).
+function sparkline_(series, dir, w, h) {
+  w = w || 110; h = h || 36;
   if (!series || series.length < 2) return '';
-  const pad = 2;
+  const pad = 3;
   let min = Infinity, max = -Infinity;
   for (let i = 0; i < series.length; i++) {
     const v = series[i];
@@ -217,44 +219,18 @@ function sparkline_(series, up, w, h) {
     return [x, y];
   });
   const pts = coords.map(function (p) { return p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' ');
-  const stroke = up ? '#16a34a' : '#dc2626';
-  const fill = up ? 'rgba(22,163,74,0.10)' : 'rgba(220,38,38,0.10)';
-  const area = pts + ' ' + (pad + (series.length - 1) * stepX).toFixed(1) + ',' + (h - pad).toFixed(1) + ' ' + pad.toFixed(1) + ',' + (h - pad).toFixed(1);
+  let stroke = '#94a3b8', fill = 'rgba(148,163,184,0.12)';
+  if (dir === 'up')   { stroke = '#16a34a'; fill = 'rgba(22,163,74,0.12)'; }
+  if (dir === 'down') { stroke = '#dc2626'; fill = 'rgba(220,38,38,0.12)'; }
+  const lastX = (pad + (series.length - 1) * stepX).toFixed(1);
+  const baseY = (h - pad).toFixed(1);
+  const area = pts + ' ' + lastX + ',' + baseY + ' ' + pad.toFixed(1) + ',' + baseY;
+  const lastPt = coords[coords.length - 1];
   return '<svg class="spark" width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '" preserveAspectRatio="none">'
     + '<polygon points="' + area + '" fill="' + fill + '" stroke="none"/>'
     + '<polyline fill="none" stroke="' + stroke + '" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" points="' + pts + '"/>'
+    + '<circle cx="' + lastPt[0].toFixed(1) + '" cy="' + lastPt[1].toFixed(1) + '" r="1.8" fill="' + stroke + '"/>'
     + '</svg>';
-}
-
-// Render OHLC-like bars from a closing series: each bar's height shows day-over-day change magnitude,
-// colored green/red. This is real data (close-to-close), not fabricated candles.
-function microBars_(series, w, h) {
-  w = w || 88; h = h || 28;
-  if (!series || series.length < 2) return '';
-  const pad = 1;
-  const diffs = [];
-  for (let i = 1; i < series.length; i++) diffs.push(series[i] - series[i - 1]);
-  let maxAbs = 0;
-  for (let i = 0; i < diffs.length; i++) { const a = Math.abs(diffs[i]); if (a > maxAbs) maxAbs = a; }
-  if (maxAbs === 0) maxAbs = 1;
-  const n = diffs.length;
-  const slot = (w - pad * 2) / n;
-  const barW = Math.max(1.4, slot - 0.8);
-  const mid = h / 2;
-  let svg = '<svg class="bars" width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '" preserveAspectRatio="none">';
-  svg += '<line x1="' + pad + '" y1="' + mid.toFixed(1) + '" x2="' + (w - pad) + '" y2="' + mid.toFixed(1) + '" stroke="#e2e8f0" stroke-width="0.6"/>';
-  for (let i = 0; i < n; i++) {
-    const d = diffs[i];
-    const halfMag = (Math.abs(d) / maxAbs) * (mid - pad);
-    const x = pad + i * slot + (slot - barW) / 2;
-    const up = d >= 0;
-    const y = up ? (mid - halfMag) : mid;
-    const bh = halfMag < 0.6 ? 0.6 : halfMag;
-    const color = up ? '#16a34a' : '#dc2626';
-    svg += '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + barW.toFixed(1) + '" height="' + bh.toFixed(1) + '" fill="' + color + '"/>';
-  }
-  svg += '</svg>';
-  return svg;
 }
 
 function kpi_(label, hint, item, decimals) {
@@ -269,11 +245,12 @@ function kpi_(label, hint, item, decimals) {
     chgHtml = '<span class="kchg ' + (up ? 'up' : 'down') + '">' + arrow
       + '<span class="kchgnum">' + n_(Math.abs(item.changePct), 2) + '%</span></span>';
   }
-  let sparkUp = up == null ? true : up;
+  let sparkDir = up == null ? 'flat' : (up ? 'up' : 'down');
   if (item.series && item.series.length >= 2) {
-    sparkUp = item.series[item.series.length - 1] >= item.series[0];
+    const first = item.series[0], last = item.series[item.series.length - 1];
+    sparkDir = last > first ? 'up' : (last < first ? 'down' : 'flat');
   }
-  const spark = sparkline_(item.series || [], sparkUp, 96, 28);
+  const spark = sparkline_(item.series || [], sparkDir, 96, 28);
   const stale = item.stale ? '<span class="stale">stale</span>' : '';
   return '<div class="kpi">'
     + '<div class="krow">'
@@ -390,10 +367,9 @@ function render_(alerts, snap) {
     let chartHtml = '<span class="nochart">—</span>';
     let priceHtml = '';
     if (p && p.series && p.series.length >= 2) {
-      const up = p.series[p.series.length - 1] >= p.series[0];
-      chartHtml = microBars_(p.series, 88, 30);
-      const sp = sparkline_(p.series, up, 88, 14);
-      chartHtml = '<div class="minichart">' + chartHtml + sp + '</div>';
+      const first = p.series[0], last = p.series[p.series.length - 1];
+      const dir = last > first ? 'up' : (last < first ? 'down' : 'flat');
+      chartHtml = '<div class="minichart minichart-' + dir + '">' + sparkline_(p.series, dir, 110, 36) + '</div>';
     } else if (p && p.series && p.series.length === 1) {
       chartHtml = '<span class="nochart">單點</span>';
     }
@@ -556,10 +532,11 @@ function render_(alerts, snap) {
     + '.cell-code{min-width:120px}\n'
     + '.cell-code .code{font:600 13px var(--font-mono);color:var(--text);font-variant-numeric:tabular-nums}\n'
     + '.cell-code .name{font-size:12px;color:var(--mute);margin-top:2px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}\n'
-    + '.cell-chart{width:100px}\n'
-    + '.minichart{display:flex;flex-direction:column;align-items:flex-start;gap:1px;width:88px}\n'
-    + '.minichart .bars{display:block}\n'
-    + '.minichart .spark{display:block;opacity:.85}\n'
+    + '.cell-chart{width:124px}\n'
+    + '.minichart{display:block;width:110px;height:36px;border-radius:6px;background:var(--surface-soft);border:1px solid var(--line-soft);padding:1px;overflow:hidden}\n'
+    + '.minichart .spark{display:block;width:100%;height:100%}\n'
+    + '.minichart-up{border-color:var(--up-border)}\n'
+    + '.minichart-down{border-color:var(--down-border)}\n'
     + '.nochart{font-size:10px;color:var(--mute-2)}\n'
     + '.cell-price{width:96px;white-space:nowrap}\n'
     + '.price{display:flex;flex-direction:column;align-items:flex-start;gap:1px;font-variant-numeric:tabular-nums}\n'
