@@ -49,6 +49,8 @@ HKEX_LIST_URL = "https://www.hkex.com.hk/eng/services/trading/securities/securit
 HKEXNEWS_BASE = "https://www.hkexnews.hk"
 
 MAX_STOCKS = int(os.getenv("MAX_STOCKS", "0"))
+# POC-specific cap. If unset, falls back to MAX_STOCKS. 0 = no cap.
+POC_MAX_STOCKS_PER_RUN = int(os.getenv("POC_MAX_STOCKS_PER_RUN", "0"))
 MIN_LISTING_DAYS = int(os.getenv("MIN_LISTING_DAYS", "5"))
 MAX_LISTING_DAYS = int(os.getenv("MAX_LISTING_DAYS", "0"))
 POC_LOOKBACK_DAYS_6M = int(os.getenv("POC_LOOKBACK_DAYS_6M", "126"))
@@ -58,11 +60,19 @@ POC_LOOKBACK_DAYS_3Y = int(os.getenv("POC_LOOKBACK_DAYS_3Y", "756"))
 POC_BINS = int(os.getenv("POC_BINS", "80"))
 BREAKOUT_FIELD = os.getenv("BREAKOUT_FIELD", "high").lower().strip()
 ANNOUNCEMENT_RANGE_DAYS = int(os.getenv("ANNOUNCEMENT_RANGE_DAYS", "7"))
-SLEEP_SEC = float(os.getenv("SLEEP_SEC", "0.15"))
-RETRY_COUNT = int(os.getenv("RETRY_COUNT", "2"))
-RETRY_SLEEP = int(os.getenv("RETRY_SLEEP", "3"))
+SLEEP_SEC = float(os.getenv("SLEEP_SEC", "0.0"))
+RETRY_COUNT = int(os.getenv("RETRY_COUNT", "1"))
+RETRY_SLEEP = int(os.getenv("RETRY_SLEEP", "2"))
+# Per-HTTP-request timeout for yfinance calls. Caps how long any one ticker can hang.
+YF_HTTP_TIMEOUT = float(os.getenv("YF_HTTP_TIMEOUT", "10"))
 YF_IPO_PERIOD = os.getenv("YF_IPO_PERIOD", "max")
-YF_POC_PERIOD = os.getenv("YF_POC_PERIOD", "5y")
+YF_POC_PERIOD = os.getenv("YF_POC_PERIOD", "4y")
+# Batch size for yfinance multi-ticker downloads (POC scan). Yahoo accepts large batches
+# but very large ones increase per-request cost and reduce parallelism benefits.
+YF_BATCH_SIZE = int(os.getenv("YF_BATCH_SIZE", "60"))
+YF_BATCH_THREADS = int(os.getenv("YF_BATCH_THREADS", "8"))
+# Hard wall-clock budget for the POC scan (seconds). 0 = no budget.
+POC_TIME_BUDGET_SEC = int(os.getenv("POC_TIME_BUDGET_SEC", "1500"))
 CHART_LOOKBACK_DAYS = int(os.getenv("CHART_LOOKBACK_DAYS", "180"))
 # Cap base64 image size sent to GAS so we don't blow up the Drive upload payload.
 GAS_CHART_MAX_BYTES = int(os.getenv("GAS_CHART_MAX_BYTES", "350000"))
@@ -512,7 +522,15 @@ def get_daily_history(code: str, period: str) -> pd.DataFrame:
     ticker = hk_code_to_yahoo(code)
     for attempt in range(1, RETRY_COUNT + 1):
         try:
-            raw = yf.download(ticker, period=period, interval="1d", auto_adjust=False, progress=False, threads=False)
+            raw = yf.download(
+                ticker,
+                period=period,
+                interval="1d",
+                auto_adjust=False,
+                progress=False,
+                threads=False,
+                timeout=YF_HTTP_TIMEOUT,
+            )
             df = normalize_yfinance_df(raw)
             if not df.empty:
                 return df
@@ -521,6 +539,54 @@ def get_daily_history(code: str, period: str) -> pd.DataFrame:
         if attempt < RETRY_COUNT:
             time.sleep(RETRY_SLEEP)
     return pd.DataFrame()
+
+
+def get_daily_history_batch(codes: list[str], period: str) -> dict[str, pd.DataFrame]:
+    """Download daily OHLC for many tickers in one yfinance call.
+
+    yfinance returns a column-multi-indexed frame keyed by ticker when given a list.
+    Splitting it client-side is far cheaper than N sequential HTTP calls.
+    Tickers with no data are simply omitted from the result map.
+    """
+    if not codes:
+        return {}
+    ticker_map = {hk_code_to_yahoo(c): c for c in codes}
+    tickers = list(ticker_map.keys())
+    out: dict[str, pd.DataFrame] = {}
+    try:
+        raw = yf.download(
+            tickers=tickers,
+            period=period,
+            interval="1d",
+            auto_adjust=False,
+            progress=False,
+            threads=YF_BATCH_THREADS,
+            group_by="ticker",
+            timeout=YF_HTTP_TIMEOUT,
+        )
+    except Exception as exc:
+        print(f"[batch] yfinance batch of {len(tickers)} failed: {exc}")
+        return out
+    if raw is None or raw.empty:
+        return out
+    # Single ticker: yfinance returns a flat frame (no top-level ticker index).
+    if not isinstance(raw.columns, pd.MultiIndex):
+        only_code = ticker_map[tickers[0]]
+        df = normalize_yfinance_df(raw)
+        if not df.empty:
+            out[only_code] = df
+        return out
+    for ticker in tickers:
+        try:
+            sub = raw[ticker]
+        except KeyError:
+            continue
+        if sub is None or sub.dropna(how="all").empty:
+            continue
+        df = normalize_yfinance_df(sub.copy())
+        if not df.empty:
+            out[ticker_map[ticker]] = df
+    return out
 
 
 def calculate_poc(profile_df: pd.DataFrame) -> float | None:
@@ -578,8 +644,13 @@ POC_WINDOWS = [
 ]
 
 
-def check_poc_breakout(code: str, name: str) -> tuple[dict[str, Any], pd.DataFrame] | None:
-    df = get_daily_history(code, YF_POC_PERIOD)
+def check_poc_breakout(
+    code: str,
+    name: str,
+    df: pd.DataFrame | None = None,
+) -> tuple[dict[str, Any], pd.DataFrame] | None:
+    if df is None:
+        df = get_daily_history(code, YF_POC_PERIOD)
     if df.empty or len(df) < POC_LOOKBACK_DAYS_6M + 2:
         return None
     field = BREAKOUT_FIELD if BREAKOUT_FIELD in ["high", "close"] else "high"
@@ -641,10 +712,14 @@ def run_ipo() -> None:
         f"<b>IPO首日突破掃描開始</b> · {datetime.now():%Y-%m-%d %H:%M}"
     )
     stocks = get_hk_stock_list()
+    total = len(stocks)
     hits = 0
+    started = time.monotonic()
     for n, row in enumerate(stocks.to_dict("records"), start=1):
-        if n % 100 == 0:
-            print(f"IPO progress {n}/{len(stocks)} hits={hits}")
+        if n % 50 == 0:
+            elapsed = time.monotonic() - started
+            rate = n / elapsed if elapsed > 0 else 0
+            print(f"IPO progress {n}/{total} hits={hits} rate={rate:.1f}/s", flush=True)
         outcome = check_ipo_breakout(row["code"], row["name"])
         if outcome:
             result, df = outcome
@@ -703,73 +778,128 @@ def _fmt_poc_line(result: dict[str, Any]) -> str:
     return "｜".join(parts) if parts else "—"
 
 
+def _emit_poc_hit(result: dict[str, Any], df: pd.DataFrame) -> None:
+    code = result["Code"]
+    tv_url = tradingview_url(code)
+    crossed_short = result["Crossed Short"]
+    payload = {
+        "source": "cloud_scanner",
+        "category": "poc",
+        "code": code,
+        "symbol": hk_code_to_yahoo(code),
+        "name": result["Name"],
+        "signal": result["Signal"],
+        "timeframe": "1D",
+        "price": result["Today Close"],
+        "message": (
+            f"觸發 {crossed_short}；突破價 {result['Break Value']}；"
+            f"高 {result['Today High']}；幅度 {result['Break %']}%"
+        ),
+        "strategy": "POC Breakout",
+        "chart_url": tv_url,
+        "source_url": tv_url,
+        "tags": ["POC", "Breakout", result["Signal"]],
+        "poc_6m": result["POC 6M"],
+        "poc_12m": result["POC 12M"],
+        "poc_2y": result["POC 2Y"],
+        "poc_3y": result["POC 3Y"],
+        "priority": 2 if "+" in result["Signal"] else 1,
+        "raw": json.dumps(result, ensure_ascii=False, default=str),
+    }
+    caption = (
+        f"📈 <b>POC突破</b>\n"
+        f"{code} {result['Name']}\n"
+        f"觸發：{crossed_short}\n"
+        f"價：{result['Today Close']}　高：{result['Today High']}\n"
+        f"POC：{_fmt_poc_line(result)}\n"
+        f"幅度：{'+' if result['Break %'] >= 0 else ''}{result['Break %']}%\n"
+        f"<a href=\"{tv_url}\">TV</a>"
+    )
+    chart_levels = []
+    key_map = {"6M": "POC 6M", "12M": "POC 12M", "2Y": "POC 2Y", "3Y": "POC 3Y"}
+    for label, short, _days, color in POC_WINDOWS:
+        val = result.get(key_map[short])
+        if val is not None and not pd.isna(val):
+            chart_levels.append((label, val, color))
+    chart_path = render_chart(
+        df,
+        code,
+        result["Name"],
+        f"POC突破 · {crossed_short}",
+        levels=chart_levels,
+        lookback_days=CHART_LOOKBACK_DAYS,
+    )
+    emit_alert(payload, caption, chart_path)
+
+
 def run_poc() -> None:
     send_telegram_message(
         f"<b>POC突破掃描開始</b> · {datetime.now():%Y-%m-%d %H:%M}\n"
         f"條件：股價向上突破 半年／1年／2年／3年 POC"
     )
     stocks = get_hk_stock_list()
+    poc_cap = POC_MAX_STOCKS_PER_RUN if POC_MAX_STOCKS_PER_RUN > 0 else 0
+    if poc_cap and len(stocks) > poc_cap:
+        stocks = stocks.head(poc_cap).copy()
+        print(f"POC capped to {poc_cap} stocks")
+    records = stocks.to_dict("records")
+    total = len(records)
     hits = 0
-    for n, row in enumerate(stocks.to_dict("records"), start=1):
-        if n % 100 == 0:
-            print(f"POC progress {n}/{len(stocks)} hits={hits}")
-        outcome = check_poc_breakout(row["code"], row["name"])
-        if outcome:
-            result, df = outcome
-            hits += 1
-            code = result["Code"]
-            tv_url = tradingview_url(code)
-            crossed_short = result["Crossed Short"]  # e.g. "12M / 2Y"
-            payload = {
-                "source": "cloud_scanner",
-                "category": "poc",
-                "code": code,
-                "symbol": hk_code_to_yahoo(code),
-                "name": result["Name"],
-                "signal": result["Signal"],
-                "timeframe": "1D",
-                "price": result["Today Close"],
-                "message": (
-                    f"觸發 {crossed_short}；突破價 {result['Break Value']}；"
-                    f"高 {result['Today High']}；幅度 {result['Break %']}%"
-                ),
-                "strategy": "POC Breakout",
-                "chart_url": tv_url,
-                "source_url": tv_url,
-                "tags": ["POC", "Breakout", result["Signal"]],
-                "poc_6m": result["POC 6M"],
-                "poc_12m": result["POC 12M"],
-                "poc_2y": result["POC 2Y"],
-                "poc_3y": result["POC 3Y"],
-                "priority": 2 if "+" in result["Signal"] else 1,
-                "raw": json.dumps(result, ensure_ascii=False, default=str),
-            }
-            caption = (
-                f"📈 <b>POC突破</b>\n"
-                f"{code} {result['Name']}\n"
-                f"觸發：{crossed_short}\n"
-                f"價：{result['Today Close']}　高：{result['Today High']}\n"
-                f"POC：{_fmt_poc_line(result)}\n"
-                f"幅度：{'+' if result['Break %'] >= 0 else ''}{result['Break %']}%\n"
-                f"<a href=\"{tv_url}\">TV</a>"
-            )
-            chart_levels = []
-            for label, short, _days, color in POC_WINDOWS:
-                key_map = {"6M": "POC 6M", "12M": "POC 12M", "2Y": "POC 2Y", "3Y": "POC 3Y"}
-                val = result.get(key_map[short])
-                if val is not None and not pd.isna(val):
-                    chart_levels.append((label, val, color))
-            chart_path = render_chart(
-                df,
-                code,
-                result["Name"],
-                f"POC突破 · {crossed_short}",
-                levels=chart_levels,
-                lookback_days=CHART_LOOKBACK_DAYS,
-            )
-            emit_alert(payload, caption, chart_path)
-        time.sleep(SLEEP_SEC)
-    send_telegram_message(f"POC突破掃描完成，共 {hits} 隻符合。")
+    processed = 0
+    aborted = False
+    started = time.monotonic()
+    print(f"POC scan starting: {total} stocks, batch={YF_BATCH_SIZE}, threads={YF_BATCH_THREADS}, period={YF_POC_PERIOD}")
+
+    for batch_start in range(0, total, YF_BATCH_SIZE):
+        if POC_TIME_BUDGET_SEC and (time.monotonic() - started) > POC_TIME_BUDGET_SEC:
+            print(f"POC time budget exceeded at {processed}/{total}, stopping early")
+            aborted = True
+            break
+        chunk = records[batch_start: batch_start + YF_BATCH_SIZE]
+        chunk_codes = [row["code"] for row in chunk]
+        t0 = time.monotonic()
+        try:
+            data = get_daily_history_batch(chunk_codes, YF_POC_PERIOD)
+        except Exception as exc:
+            print(f"[batch] {batch_start}-{batch_start + len(chunk)} crashed: {exc}; skipping")
+            data = {}
+        dl_secs = time.monotonic() - t0
+        chunk_hits = 0
+        for row in chunk:
+            processed += 1
+            code = row["code"]
+            df = data.get(code)
+            if df is None or df.empty:
+                continue
+            try:
+                outcome = check_poc_breakout(code, row["name"], df=df)
+            except Exception as exc:
+                print(f"{code} POC check failed: {exc}")
+                continue
+            if outcome:
+                hits += 1
+                chunk_hits += 1
+                try:
+                    _emit_poc_hit(*outcome)
+                except Exception as exc:
+                    print(f"{code} emit failed: {exc}")
+        elapsed = time.monotonic() - started
+        rate = processed / elapsed if elapsed > 0 else 0
+        eta = (total - processed) / rate if rate > 0 else 0
+        print(
+            f"POC progress {processed}/{total} hits={hits} "
+            f"(chunk dl={dl_secs:.1f}s hits={chunk_hits} rate={rate:.1f}/s eta={eta:.0f}s)",
+            flush=True,
+        )
+        if SLEEP_SEC > 0:
+            time.sleep(SLEEP_SEC)
+
+    elapsed = time.monotonic() - started
+    summary = f"POC突破掃描完成，共 {hits} 隻符合（掃描 {processed}/{total}，用時 {elapsed:.0f}s）"
+    if aborted:
+        summary += "（已達時間上限提前結束）"
+    print(summary)
+    send_telegram_message(summary)
 
 
 def main() -> None:

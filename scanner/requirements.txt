@@ -1,6 +1,6 @@
 pandas
 requests
 openpyxl
-yfinance
+yfinance>=0.2.40
 beautifulsoup4
 matplotlib
