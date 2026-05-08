@@ -10,7 +10,7 @@ Cloud version for GitHub Actions:
 
 Signals:
 1. IPO first-day high breakout
-2. POC breakout (6M / 12M / 2Y / 3Y)
+2. POC breakout (6M / 12M / 3Y)
 3. HKEXnews corporate action: rights issue / placing / shareholder increase
 """
 
@@ -59,7 +59,6 @@ MIN_LISTING_DAYS = int(os.getenv("MIN_LISTING_DAYS", "5"))
 MAX_LISTING_DAYS = int(os.getenv("MAX_LISTING_DAYS", "0"))
 POC_LOOKBACK_DAYS_6M = int(os.getenv("POC_LOOKBACK_DAYS_6M", "126"))
 POC_LOOKBACK_DAYS_12M = int(os.getenv("POC_LOOKBACK_DAYS_12M", "252"))
-POC_LOOKBACK_DAYS_2Y = int(os.getenv("POC_LOOKBACK_DAYS_2Y", "504"))
 POC_LOOKBACK_DAYS_3Y = int(os.getenv("POC_LOOKBACK_DAYS_3Y", "756"))
 POC_BINS = int(os.getenv("POC_BINS", "80"))
 BREAKOUT_FIELD = os.getenv("BREAKOUT_FIELD", "high").lower().strip()
@@ -643,7 +642,6 @@ def check_ipo_breakout(code: str, name: str) -> tuple[dict[str, Any], pd.DataFra
 POC_WINDOWS = [
     ("半年POC", "6M", POC_LOOKBACK_DAYS_6M, "#60a5fa"),
     ("12個月POC", "12M", POC_LOOKBACK_DAYS_12M, "#f472b6"),
-    ("2年POC", "2Y", POC_LOOKBACK_DAYS_2Y, "#fbbf24"),
     ("3年POC", "3Y", POC_LOOKBACK_DAYS_3Y, "#a78bfa"),
 ]
 
@@ -774,7 +772,7 @@ def run_ipo() -> None:
 def _fmt_poc_line(result: dict[str, Any]) -> str:
     parts: list[str] = []
     pairs = [("6M", result.get("POC 6M")), ("12M", result.get("POC 12M")),
-             ("2Y", result.get("POC 2Y")), ("3Y", result.get("POC 3Y"))]
+             ("3Y", result.get("POC 3Y"))]
     for short, val in pairs:
         if val is None or pd.isna(val):
             continue
@@ -820,7 +818,7 @@ def _emit_poc_hit(result: dict[str, Any], df: pd.DataFrame) -> None:
         f"<a href=\"{tv_url}\">TV</a>"
     )
     chart_levels = []
-    key_map = {"6M": "POC 6M", "12M": "POC 12M", "2Y": "POC 2Y", "3Y": "POC 3Y"}
+    key_map = {"6M": "POC 6M", "12M": "POC 12M", "3Y": "POC 3Y"}
     for label, short, _days, color in POC_WINDOWS:
         val = result.get(key_map[short])
         if val is not None and not pd.isna(val):
@@ -853,7 +851,7 @@ def run_poc() -> None:
         print(f"POC shard {shard_label}: stocks {start}-{end} of {universe_size}")
     send_telegram_message(
         f"<b>POC突破掃描開始</b> · {datetime.now():%Y-%m-%d %H:%M}\n"
-        f"條件：股價向上突破 半年／1年／2年／3年 POC\n"
+        f"條件：股價向上突破 半年／1年／3年 POC\n"
         f"批次：{shard_label}（{len(stocks)} / {universe_size}）"
     )
     poc_cap = POC_MAX_STOCKS_PER_RUN if POC_MAX_STOCKS_PER_RUN > 0 else 0
