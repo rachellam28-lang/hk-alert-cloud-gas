@@ -398,6 +398,128 @@ def should_skip_announcement_title(title: str) -> bool:
     return False
 
 
+# Ordered phrase map for English -> Traditional Chinese normalization of HKEXnews
+# corporate-action announcement titles. Order matters: longer / more specific
+# phrases must appear before their shorter substrings (e.g. "PLACING OF NEW SHARES"
+# before "PLACING"). Keys are lower-cased for case-insensitive matching.
+TITLE_PHRASE_MAP: list[tuple[str, str]] = [
+    # Specific multi-word phrases first
+    ("very substantial acquisition", "非常重大收購"),
+    ("very substantial disposal", "非常重大出售"),
+    ("major transaction", "主要交易"),
+    ("discloseable transaction", "須予披露交易"),
+    ("connected transaction", "關連交易"),
+    ("supplemental announcement in relation to", "補充公告："),
+    ("supplemental announcement", "補充公告"),
+    ("clarification announcement", "澄清公告"),
+    ("further announcement in relation to", "進一步公告："),
+    ("further announcement", "進一步公告"),
+    ("inside information", "內幕消息"),
+    ("voluntary announcement", "自願公告"),
+    ("announcement in relation to", "公告："),
+    ("in relation to", "有關"),
+    ("under specific mandate", "（特別授權）"),
+    ("under general mandate", "（一般授權）"),
+    ("specific mandate", "特別授權"),
+    ("general mandate", "一般授權"),
+    # Placing / subscription / issuance
+    ("completion of placing", "配股完成"),
+    ("completion of the placing", "配股完成"),
+    ("completion of subscription", "認購完成"),
+    ("termination of placing", "終止配股"),
+    ("termination of the placing", "終止配股"),
+    ("termination of issue of shares", "終止發行股份"),
+    ("termination of issue", "終止發行"),
+    ("placing of new shares", "配售新股"),
+    ("placing of shares", "配售股份"),
+    ("placing agreement", "配售協議"),
+    ("subscription of new shares", "認購新股"),
+    ("subscription agreement", "認購協議"),
+    ("issue of new shares", "發行新股"),
+    ("issue of shares", "發行股份"),
+    ("placing", "配股"),
+    # Rights issue / open offer
+    ("rights issue", "供股"),
+    ("open offer", "公開發售"),
+    # Repurchases
+    ("share repurchase", "股份回購"),
+    ("repurchase mandate", "回購授權"),
+    ("repurchase of shares", "股份回購"),
+    ("buy-back", "回購"),
+    ("buyback", "回購"),
+    # Shareholding changes
+    ("proposed shareholding increase", "擬增持"),
+    ("shareholding increase", "股東增持"),
+    ("increase in shareholding", "股東增持"),
+    ("rights to acquire shares", "認購股份權利"),
+    ("acquire shares", "收購股份"),
+    # Block trade / off-market
+    ("block trade", "大手轉倉"),
+    ("off-market transfer", "場外轉讓"),
+    ("off-exchange transfer", "場外轉讓"),
+    ("transfer of beneficial interest", "實益權益轉讓"),
+    ("transfer of shares", "股份轉讓"),
+    # Generic announcement glue words (last so above wins)
+    ("announcement", "公告"),
+]
+
+_GENERIC_TITLE_FALLBACK = "公司公告"
+_TITLE_MAX_LEN = 80
+
+
+def translate_title_cn(title: str) -> str:
+    """Translate / normalize an HKEXnews English title into concise Traditional Chinese.
+
+    Rule-based: replaces known phrases, then strips residual ASCII words. If the
+    output ends up empty or still mostly English, falls back to a generic
+    "公司公告：<original>" form so we never silently drop information.
+    """
+    if not title:
+        return ""
+    raw = " ".join(str(title).split())
+    # If the title is already mostly Chinese, pass it through unchanged (trimmed).
+    han_count = sum(1 for ch in raw if "一" <= ch <= "鿿")
+    if han_count >= 2 and han_count >= len(raw.replace(" ", "")) * 0.5:
+        return raw[:_TITLE_MAX_LEN] + ("…" if len(raw) > _TITLE_MAX_LEN else "")
+
+    working = raw
+    lower = working.lower()
+    # Replace phrases case-insensitively while preserving non-matching segments.
+    out_parts: list[str] = []
+    i = 0
+    while i < len(working):
+        matched = False
+        for needle, repl in TITLE_PHRASE_MAP:
+            if lower.startswith(needle, i):
+                out_parts.append(repl)
+                i += len(needle)
+                matched = True
+                break
+        if not matched:
+            out_parts.append(working[i])
+            i += 1
+    translated = "".join(out_parts)
+
+    # Clean up: collapse whitespace, drop stray ASCII connector words.
+    translated = " ".join(translated.split())
+    # Strip residual standalone English connectors that look noisy in Chinese text.
+    for junk in [" of ", " the ", " a ", " an ", " and ", " for ", " to ", " in ", " on "]:
+        translated = translated.replace(junk, "")
+    translated = translated.replace(" ：", "：").replace("： ", "：")
+    translated = translated.replace(" （", "（").replace("） ", "）")
+    translated = " ".join(translated.split()).strip(" :,-")
+
+    # If translation still looks mostly English, fall back to generic form.
+    han_after = sum(1 for ch in translated if "一" <= ch <= "鿿")
+    ascii_letters = sum(1 for ch in translated if ch.isascii() and ch.isalpha())
+    if not translated or han_after == 0 or ascii_letters > han_after * 2:
+        translated = f"{_GENERIC_TITLE_FALLBACK}：{raw}"
+
+    if len(translated) > _TITLE_MAX_LEN:
+        translated = translated[: _TITLE_MAX_LEN - 1] + "…"
+    return translated
+
+
 def get_hkexnews_json_urls() -> list[str]:
     range_flag = "7" if ANNOUNCEMENT_RANGE_DAYS >= 7 else "1"
     first_url = f"{HKEXNEWS_BASE}/ncms/json/eds/lcisehk{range_flag}relsde_1.json"
@@ -458,6 +580,7 @@ def run_corp_actions() -> None:
         return
     for ann in anns:
         types = " / ".join(ann["types"])
+        title_cn = translate_title_cn(ann["title"])
         payload = {
             "source": "hkexnews",
             "category": "corp_action",
@@ -466,7 +589,8 @@ def run_corp_actions() -> None:
             "name": ann["name"],
             "signal": f"披露易公告 - {types}",
             "timeframe": "公告",
-            "message": ann["title"],
+            "message": title_cn,
+            "title_original": ann["title"],
             "strategy": "HKEXnews Corp Action",
             "chart_url": tradingview_url(ann["code"]),
             "source_url": ann["url"],
@@ -474,13 +598,10 @@ def run_corp_actions() -> None:
             "priority": 1,
             "raw": json.dumps(ann, ensure_ascii=False),
         }
-        title_short = ann["title"]
-        if len(title_short) > 80:
-            title_short = title_short[:79] + "…"
         caption = (
             f"📰 <b>披露易 · {types}</b>\n"
             f"{ann['code']} {ann['name']}\n"
-            f"{title_short}\n"
+            f"{title_cn}\n"
             f"<a href=\"{ann['url']}\">HKEXnews</a>"
         )
         # Try to render a chart so the corp-action alert also stays in one Telegram message.
