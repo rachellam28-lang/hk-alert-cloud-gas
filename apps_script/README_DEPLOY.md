@@ -41,6 +41,23 @@
 - Table 按股票 code grouping。**走勢圖**欄顯示同 Telegram 一模一樣嘅真實 OHLC chart 縮圖（matplotlib + yfinance），如果未有圖則 fallback 用 20 日 close sparkline
 - 每 120 秒自動 refresh，所有資料來自 `Alerts` sheet（由 GitHub Actions scanner 寫入），絕無 demo / fake data
 
+## 速度優化（手機 Chrome 開得到）
+
+舊版 `doGet` 對每隻股票都打一次 Yahoo Finance（過百個 HTTP request 串行行），手機 Chrome 30 秒前未行完就 timeout。新版做咗以下優化，目標係手機首屏 ~10 秒以內：
+
+- **CacheService HTML cache（90 秒）**：第一個 request 渲染好之後 cache 整頁 HTML，之後 90 秒內所有 request 即時返回，唔再讀 Sheet 唔再 fetch Yahoo。
+- **Market snapshot cache（5 分鐘）**：HSI / HSI PE / DXY / VIX 用 `UrlFetchApp.fetchAll` 並行抓，再 cache 5 分鐘，唔再因 worldperatio.com 慢就拖死成個頁。
+- **限制初始 row 數**：每次只取 sheet 尾 600 條 alert，group by code 後最多顯示 120 隻最新股票。Sheet 全部歷史照樣保留，只係首屏唔會 dump 出嚟。
+- **走勢圖優先用 scanner 已存嘅 chart_image_url**：如果某隻股有 Drive 上嘅真實 chart 縮圖（由 `doPost` 寫入），就直接 `<img loading="lazy">` lazy load，唔會 server-side 再 fetch Yahoo。只有冇圖嘅股先 fallback Yahoo（最多 25 隻）。
+- **圖片 fallback**：`<img onerror>` 處理 Drive 權限失敗 / 圖檔被刪 / 機構政策 block link sharing 等情況——會即時換成「—」placeholder，唔會塞死 layout。
+- **固定 `<img width/height>` + `loading="lazy"` + `decoding="async"`**：減少 reflow 同 main-thread block。
+
+### 部署後驗證
+
+1. 第一次開 Web app URL（cache miss）：渲染時間視乎 sheet rows，一般 5–10 秒。
+2. 第二次開（90 秒內）：cache hit，1 秒內返回。
+3. 手機 Chrome 開得到 = 成功。如果仍然 timeout，去 Apps Script editor → Executions 睇邊段 timeout，通常係 Drive 權限未 authorize。
+
 ## POC 訊號
 
 - 半年 POC（126 trading days）

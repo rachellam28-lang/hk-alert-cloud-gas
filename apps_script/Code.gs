@@ -90,12 +90,47 @@ function readHeaders_(sh) {
   return first;
 }
 
+// Initial render is capped to the latest N grouped stock codes so doGet returns
+// quickly on mobile. Older history stays in the sheet but is not embedded in
+// the first paint to keep DOM and outbound fetches bounded.
+const DASHBOARD_MAX_GROUPS = 120;
+// Read at most this many recent alert rows from the sheet before grouping.
+// 600 rows * (≤4 alerts per code) gives a comfortable headroom for ~120 groups.
+const DASHBOARD_MAX_ALERTS = 600;
+// Cache TTLs (seconds). HTML cache absorbs repeat loads; snapshot cache shields
+// us from upstream Yahoo / worldperatio latency on every page load.
+const HTML_CACHE_TTL_SECONDS = 90;
+const SNAPSHOT_CACHE_TTL_SECONDS = 300;
+// Hard upper-bound on how many codes we batch-query Yahoo for as a fallback
+// when the scanner did not save a chart_image_url. Each adds an outbound HTTP
+// request, so we keep this small to avoid blocking doGet on mobile.
+const YAHOO_FALLBACK_MAX_CODES = 25;
+
 function doGet() {
+  // Serve a cached HTML payload when fresh — this is the difference between
+  // sub-second mobile loads and the previous 30s+ timeouts.
+  const cache = safeCache_();
+  if (cache) {
+    const cached = cache.get('dashboard_html_v2');
+    if (cached) {
+      return HtmlService.createHtmlOutput(cached)
+        .setTitle('Signal Dashboard Pro')
+        .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+    }
+  }
   const alerts = getAlerts_();
-  const snap = getMarketSnapshot_();
-  return HtmlService.createHtmlOutput(render_(alerts, snap))
+  const snap = getMarketSnapshotCached_();
+  const html = render_(alerts, snap);
+  if (cache) {
+    try { cache.put('dashboard_html_v2', html, HTML_CACHE_TTL_SECONDS); } catch (e) { /* ignore */ }
+  }
+  return HtmlService.createHtmlOutput(html)
     .setTitle('Signal Dashboard Pro')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+}
+
+function safeCache_() {
+  try { return CacheService.getScriptCache(); } catch (e) { return null; }
 }
 
 function ensureSheet_(ss) {
@@ -133,37 +168,24 @@ function ensureSheet_(ss) {
 function getAlerts_() {
   const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
   const sh = ensureSheet_(ss);
-  const values = sh.getDataRange().getValues();
-  if (values.length <= 1) return [];
-  const headers = values[0].map(String);
-  return values.slice(1).map(r => {
+  const lastRow = sh.getLastRow();
+  const lastCol = sh.getLastColumn();
+  if (lastRow <= 1 || lastCol <= 0) return [];
+  const headers = sh.getRange(1, 1, 1, lastCol).getValues()[0].map(String);
+  // Read only the trailing window we actually need, instead of the whole sheet.
+  const startRow = Math.max(2, lastRow - DASHBOARD_MAX_ALERTS + 1);
+  const numRows = lastRow - startRow + 1;
+  if (numRows <= 0) return [];
+  const values = sh.getRange(startRow, 1, numRows, lastCol).getValues();
+  const out = new Array(values.length);
+  for (let i = 0; i < values.length; i++) {
+    const r = values[i];
     const o = {};
-    headers.forEach((h, i) => o[h] = r[i]);
-    return o;
-  }).reverse().slice(0, 500);
-}
-
-function fetchYahoo_(symbol) {
-  try {
-    const url = 'https://query1.finance.yahoo.com/v8/finance/chart/' + encodeURIComponent(symbol) + '?interval=1d&range=30d';
-    const json = JSON.parse(UrlFetchApp.fetch(url, { muteHttpExceptions: true }).getContentText());
-    const r = json.chart.result[0];
-    const meta = r.meta;
-    const last = meta.regularMarketPrice;
-    const prev = meta.chartPreviousClose || meta.previousClose;
-    const change = (last != null && prev) ? last - prev : null;
-    const changePct = (change != null && prev) ? change / prev * 100 : null;
-    let series = [];
-    try {
-      const closes = r.indicators && r.indicators.quote && r.indicators.quote[0] && r.indicators.quote[0].close;
-      if (Array.isArray(closes)) {
-        series = closes.filter(function (v) { return v != null && !isNaN(v); }).slice(-20);
-      }
-    } catch (innerErr) { series = []; }
-    return { value: last, change: change, changePct: changePct, source: 'Yahoo (' + symbol + ')', stale: false, series: series };
-  } catch (err) {
-    return { value: null, change: null, changePct: null, source: 'Yahoo (' + symbol + ')', stale: true, series: [] };
+    for (let j = 0; j < headers.length; j++) o[headers[j]] = r[j];
+    out[i] = o;
   }
+  // Newest-first so grouping picks up the latest chart_image_url per code.
+  return out.reverse();
 }
 
 // Batch-fetch closing series for many HK stock symbols in one parallel call.
@@ -213,26 +235,74 @@ function fetchYahooBatch_(codes) {
   return out;
 }
 
-function getHsiPe_() {
+function getMarketSnapshot_() {
+  // Run the four upstream calls in parallel via fetchAll so a slow source
+  // (notably worldperatio.com) cannot serialize doGet latency.
+  const yahooReqs = [
+    { url: 'https://query1.finance.yahoo.com/v8/finance/chart/' + encodeURIComponent('^HSI') + '?interval=1d&range=30d', muteHttpExceptions: true },
+    { url: 'https://query1.finance.yahoo.com/v8/finance/chart/' + encodeURIComponent('DX-Y.NYB') + '?interval=1d&range=30d', muteHttpExceptions: true },
+    { url: 'https://query1.finance.yahoo.com/v8/finance/chart/' + encodeURIComponent('^VIX') + '?interval=1d&range=30d', muteHttpExceptions: true },
+    { url: 'https://worldperatio.com/area/hong-kong/', muteHttpExceptions: true }
+  ];
+  let responses = [];
+  try { responses = UrlFetchApp.fetchAll(yahooReqs); } catch (e) { responses = []; }
+  return {
+    hsi: parseYahooResp_(responses[0], '^HSI'),
+    dxy: parseYahooResp_(responses[1], 'DX-Y.NYB'),
+    vix: parseYahooResp_(responses[2], '^VIX'),
+    hsi_pe: parseHsiPeResp_(responses[3]),
+    updated_at: new Date().toISOString()
+  };
+}
+
+function parseYahooResp_(resp, symbol) {
   try {
-    const html = UrlFetchApp.fetch('https://worldperatio.com/area/hong-kong/', { muteHttpExceptions: true }).getContentText();
+    if (!resp) return { value: null, change: null, changePct: null, source: 'Yahoo (' + symbol + ')', stale: true, series: [] };
+    const j = JSON.parse(resp.getContentText());
+    const r = j.chart && j.chart.result && j.chart.result[0];
+    if (!r) return { value: null, change: null, changePct: null, source: 'Yahoo (' + symbol + ')', stale: true, series: [] };
+    const meta = r.meta || {};
+    const last = meta.regularMarketPrice;
+    const prev = meta.chartPreviousClose || meta.previousClose;
+    const change = (last != null && prev) ? last - prev : null;
+    const changePct = (change != null && prev) ? change / prev * 100 : null;
+    let series = [];
+    const closes = r.indicators && r.indicators.quote && r.indicators.quote[0] && r.indicators.quote[0].close;
+    if (Array.isArray(closes)) {
+      series = closes.filter(function (v) { return v != null && !isNaN(v); }).slice(-20);
+    }
+    return { value: last, change: change, changePct: changePct, source: 'Yahoo (' + symbol + ')', stale: false, series: series };
+  } catch (e) {
+    return { value: null, change: null, changePct: null, source: 'Yahoo (' + symbol + ')', stale: true, series: [] };
+  }
+}
+
+function parseHsiPeResp_(resp) {
+  try {
+    if (!resp) return { value: null, change: null, changePct: null, source: 'World PE Ratio', stale: true, series: [] };
+    const html = resp.getContentText();
     const m = html.match(/Hong Kong Stock Market[\s\S]{0,600}?P\/E Ratio[\s\S]{0,300}?(\d{1,3}\.\d{1,2})/i)
       || html.match(/Hong Kong Stock Market[\s\S]{0,600}?(\d{1,3}\.\d{1,2})/i)
       || html.match(/P\/E Ratio[\s\S]{0,300}?(\d{1,3}\.\d{1,2})/i);
     return { value: m ? Number(m[1]) : null, change: null, changePct: null, source: 'World PE Ratio', stale: !m, series: [] };
-  } catch (err) {
+  } catch (e) {
     return { value: null, change: null, changePct: null, source: 'World PE Ratio', stale: true, series: [] };
   }
 }
 
-function getMarketSnapshot_() {
-  return {
-    hsi: fetchYahoo_('^HSI'),
-    hsi_pe: getHsiPe_(),
-    dxy: fetchYahoo_('DX-Y.NYB'),
-    vix: fetchYahoo_('^VIX'),
-    updated_at: new Date().toISOString()
-  };
+function getMarketSnapshotCached_() {
+  const cache = safeCache_();
+  if (cache) {
+    const raw = cache.get('market_snapshot_v2');
+    if (raw) {
+      try { return JSON.parse(raw); } catch (e) { /* fall through */ }
+    }
+  }
+  const snap = getMarketSnapshot_();
+  if (cache) {
+    try { cache.put('market_snapshot_v2', JSON.stringify(snap), SNAPSHOT_CACHE_TTL_SECONDS); } catch (e) { /* ignore */ }
+  }
+  return snap;
 }
 
 function n_(v, d) {
@@ -427,10 +497,13 @@ function render_(alerts, snap) {
     }
   });
 
-  const groups = Object.keys(groupsMap).map(function (k) { return groupsMap[k]; });
+  let groups = Object.keys(groupsMap).map(function (k) { return groupsMap[k]; });
   groups.sort(function (a, b) { return b.latest - a.latest; });
+  // Cap initial render to the latest N groups so doGet stays fast on mobile.
+  // Older entries remain in the sheet and reappear once newer rows expire.
+  if (groups.length > DASHBOARD_MAX_GROUPS) groups = groups.slice(0, DASHBOARD_MAX_GROUPS);
 
-  // Aggregate corp-action counts for the toolbar summary.
+  // Aggregate corp-action counts for the toolbar summary (over rendered groups).
   let cntPlacement = 0, cntIncrease = 0, cntRights = 0;
   groups.forEach(function (g) {
     if (g.corpTypes.placement) cntPlacement += g.corpTypes.placement.count;
@@ -438,9 +511,14 @@ function render_(alerts, snap) {
     if (g.corpTypes.rights) cntRights += g.corpTypes.rights.count;
   });
 
-  // Batch-fetch real price + 20d series for every code in one parallel call.
-  const codes = groups.map(function (g) { return g.code; });
-  const priceMap = fetchYahooBatch_(codes);
+  // Only fall back to Yahoo for codes that have no scanner-saved chart image.
+  // Skipping codes with chart_image_url avoids hundreds of HTTP requests on
+  // page load — the dominant cause of the previous mobile timeout.
+  const codesNeedingPrice = [];
+  groups.forEach(function (g) {
+    if (!g.chartImageUrl && g.code) codesNeedingPrice.push(g.code);
+  });
+  const priceMap = fetchYahooBatch_(codesNeedingPrice.slice(0, YAHOO_FALLBACK_MAX_CODES));
 
   const rows = groups.map(function (g) {
     const codeStr = String(g.code || '').trim();
@@ -458,8 +536,11 @@ function render_(alerts, snap) {
     // Prefer the scanner's saved real chart (matplotlib OHLC sent via Telegram + Drive).
     if (g.chartImageUrl) {
       const cap = g.chartCaption ? esc_(g.chartCaption) : (esc_(codeStr) + ' chart');
+      // onerror swaps the broken image for a "no chart" placeholder so a
+      // missing/forbidden Drive file never breaks page layout.
       chartHtml = '<a class="chartimg-link" href="' + esc_(g.chartImageUrl) + '" target="_blank" rel="noopener">'
-        + '<img class="chartimg" src="' + esc_(g.chartImageUrl) + '" alt="' + cap + '" loading="lazy" referrerpolicy="no-referrer">'
+        + '<img class="chartimg" src="' + esc_(g.chartImageUrl) + '" alt="' + cap + '" loading="lazy" decoding="async" width="140" height="60" referrerpolicy="no-referrer"'
+        + ' onerror="this.onerror=null;this.parentNode.outerHTML=&quot;<span class=\\&quot;nochart\\&quot;>—</span>&quot;;">'
         + '</a>';
     } else if (p && p.series && p.series.length >= 2) {
       const first = p.series[0], last = p.series[p.series.length - 1];
