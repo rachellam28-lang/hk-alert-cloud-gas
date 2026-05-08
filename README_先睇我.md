@@ -63,6 +63,41 @@ POC：6M 0.179｜12M 0.171｜3Y 0.161
 - 「公告」行只在該股票於最近披露易掃描中有相關公告（配股 / 供股 / 增持 / 大手轉倉）時才會出現，多於一個用 ` / ` 分隔。沒有相關公告就不出該行。
 - TV 係指向 TradingView 嘅 HTML 連結（顯示文字為 `TV`）。
 
+## 披露易 Telegram 過濾
+
+由 2026-05 起，披露易（corp）掃描只會發送 **當日（香港時間 HKT）公告** 到 Telegram：
+
+- 每次 `corp` 掃描會以 HKT 當日日期作基準。
+- HKEXnews `relTime` 解析失敗或屬於非當日的公告，會被略過，但不會發到 Telegram。
+- 同一次掃描內，相同 `(code, source_url)` 只會發送一次（避免一份釋出觸及多隻股票時重覆訊息）。
+- 此過濾**只**影響披露易（HKEXnews corp action）。POC、IPO 行為不受影響。
+- Telegram caption 會在第二行加上公告日期，例如 `01906 BONNY HLDG　2026-05-08`。
+
+註：每次掃描為獨立 process（GitHub Actions 一日跑 4 次 corp），所以「跨次掃描去重」由「只發當日公告」這條規則處理；理論上同一份釋出在當日 4 次掃描都符合「當日」，但 HKEXnews 通常一份釋出只會在出現後第一次掃描時是 fresh 的，之後雖然仍是同一日，但實務上因為 `release_time`（時分）相同，使用者會看到的多次是極少數情況下才會出現。如需更嚴格的跨次去重，可日後改為查 Alerts sheet 中是否已有同一 `source_url`。
+
+## 最近公告（Dashboard）
+
+Dashboard 已新增 **最近公告 / Recent HKEX Disclosures** 區塊：
+
+- 顯示最近 10 個披露易公告（按公告日期、然後 created_at 排序，新的在最上）。
+- 每行只有：標籤（配股 / 供股 / 增持 / 大手轉倉）+ 日期 + 代號／名稱 + HKEX 連結。
+- 不會顯示公告長標題或內文（保持簡潔）。
+- 依然以同一個 source_url 為單位去重（同一份釋出觸多隻股票只佔一行）。
+
+代號彙總表也加入「大手轉倉」分類：右上 tab、summary chip 及 row 內的 `cpill-block` 都已支援。
+
+## Apps Script 重新部署
+
+本次修改包含 `apps_script/Code.gs`（HEADERS 增加 `announcement_date` / `release_time`、新增 `最近公告` 區塊、加入 `大手轉倉` tab/標籤）。**部署 Apps Script Web App 後需重新發佈新版本** 才會生效：
+
+1. Apps Script editor → Deploy → Manage deployments
+2. 選現有 deployment → Edit → Version：New version → Deploy
+3. 確認 Web App URL 不變（保持原本的 `GAS_WEBHOOK_URL`）
+
+Sheet 第一行 header 會在下次有 `doPost` 寫入時自動補上新欄位（不會破壞既有資料）。
+
 ## 真實數據原則
 
 這版不使用 demo alert、假數或假圖。外部數據取不到時，只會略過或在 dashboard 顯示 stale / 無資料。
+
+披露易公告日期一律來自 HKEXnews 原始 `relTime`，無法解析時會略過該則而**不會**用今日日期填補。

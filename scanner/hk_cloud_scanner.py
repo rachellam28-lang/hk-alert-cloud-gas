@@ -23,7 +23,7 @@ import sys
 import tempfile
 import time
 import warnings
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from typing import Any
 
 import pandas as pd
@@ -520,6 +520,30 @@ def translate_title_cn(title: str) -> str:
     return translated
 
 
+HKT_TZ = timezone(timedelta(hours=8))
+
+
+def hkt_today_str() -> str:
+    return datetime.now(HKT_TZ).strftime("%Y-%m-%d")
+
+
+def parse_rel_time_date(rel_time: str) -> str | None:
+    """Parse HKEXnews relTime ('dd/mm/yyyy HH:MM') to 'YYYY-MM-DD' (HKT, naive).
+
+    Returns None if the value cannot be parsed; callers must treat unparseable
+    timestamps as not-same-day rather than fabricating a date.
+    """
+    if not rel_time:
+        return None
+    s = str(rel_time).strip()
+    for fmt in ("%d/%m/%Y %H:%M", "%d/%m/%Y", "%Y-%m-%d %H:%M", "%Y-%m-%d"):
+        try:
+            return datetime.strptime(s, fmt).strftime("%Y-%m-%d")
+        except ValueError:
+            continue
+    return None
+
+
 def get_hkexnews_json_urls() -> list[str]:
     range_flag = "7" if ANNOUNCEMENT_RANGE_DAYS >= 7 else "1"
     first_url = f"{HKEXNEWS_BASE}/ncms/json/eds/lcisehk{range_flag}relsde_1.json"
@@ -554,6 +578,8 @@ def fetch_corp_action_announcements() -> list[dict[str, Any]]:
                 continue
             web_path = str(row.get("webPath", ""))
             doc_url = web_path if web_path.startswith("http") else HKEXNEWS_BASE + web_path
+            rel_time = row.get("relTime", "")
+            release_date = parse_rel_time_date(rel_time)
             for stock in row.get("stock", []):
                 code = str(stock.get("sc", "")).zfill(5)
                 name = html_to_text(stock.get("sn", ""))
@@ -562,7 +588,8 @@ def fetch_corp_action_announcements() -> list[dict[str, Any]]:
                     "name": name,
                     "types": action_types,
                     "title": title or headline,
-                    "release_time": row.get("relTime", ""),
+                    "release_time": rel_time,
+                    "release_date": release_date,
                     "url": doc_url,
                 })
     print(f"HKEXnews hits: {len(announcements)}")
@@ -570,17 +597,47 @@ def fetch_corp_action_announcements() -> list[dict[str, Any]]:
 
 
 def run_corp_actions() -> None:
+    today_hkt = hkt_today_str()
     send_telegram_message(
-        f"<b>披露易掃描開始</b> · {datetime.now():%Y-%m-%d %H:%M}\n"
-        f"類型：配股 / 供股 / 增持 / 大手轉倉"
+        f"<b>披露易掃描開始</b> · {datetime.now(HKT_TZ):%Y-%m-%d %H:%M} HKT\n"
+        f"類型：配股 / 供股 / 增持 / 大手轉倉（只發送當日 {today_hkt} 公告）"
     )
-    anns = fetch_corp_action_announcements()
+    raw_anns = fetch_corp_action_announcements()
+    # Same-day-only filter: drop anything whose HKT release date is not today.
+    # Unparseable release_date is treated as not-same-day rather than guessing.
+    anns: list[dict[str, Any]] = []
+    skipped_old = 0
+    skipped_unknown = 0
+    seen_urls: set[str] = set()
+    for ann in raw_anns:
+        rd = ann.get("release_date")
+        if rd is None:
+            skipped_unknown += 1
+            continue
+        if rd != today_hkt:
+            skipped_old += 1
+            continue
+        # Per-run dedupe: a single source_url often covers multiple stocks; we
+        # still emit one alert per (code, url) so each stock gets its own card,
+        # but we never emit the same (code, url) twice in one run.
+        key = f"{ann.get('code', '')}|{ann.get('url', '')}"
+        if key in seen_urls:
+            continue
+        seen_urls.add(key)
+        anns.append(ann)
+    print(
+        f"corp filter: kept={len(anns)} skipped_old={skipped_old} "
+        f"skipped_unknown_date={skipped_unknown} today_hkt={today_hkt}"
+    )
     if not anns:
-        send_telegram_message("披露易掃描完成，無相關公告。")
+        send_telegram_message(
+            f"披露易掃描完成，無 {today_hkt} 當日相關公告。"
+        )
         return
     for ann in anns:
         types = " / ".join(ann["types"])
         title_cn = translate_title_cn(ann["title"])
+        ann_date = ann.get("release_date") or ""
         payload = {
             "source": "hkexnews",
             "category": "corp_action",
@@ -594,13 +651,15 @@ def run_corp_actions() -> None:
             "strategy": "HKEXnews Corp Action",
             "chart_url": tradingview_url(ann["code"]),
             "source_url": ann["url"],
+            "announcement_date": ann_date,
+            "release_time": ann.get("release_time", ""),
             "tags": ["公告", *ann["types"]],
             "priority": 1,
             "raw": json.dumps(ann, ensure_ascii=False),
         }
         caption = (
             f"📰 <b>披露易 · {types}</b>\n"
-            f"{ann['code']} {ann['name']}\n"
+            f"{ann['code']} {ann['name']}　{ann_date}\n"
             f"{title_cn}\n"
             f"<a href=\"{ann['url']}\">HKEXnews</a>"
         )

@@ -16,7 +16,8 @@ const HEADERS = [
   'created_at', 'source', 'category', 'code', 'symbol', 'name', 'signal',
   'timeframe', 'price', 'message', 'strategy', 'chart_url', 'source_url',
   'tags', 'poc_6m', 'poc_12m', 'poc_2y', 'poc_3y',
-  'chart_image_url', 'chart_drive_id', 'priority', 'raw'
+  'chart_image_url', 'chart_drive_id', 'priority', 'announcement_date',
+  'release_time', 'raw'
 ];
 
 function doPost(e) {
@@ -105,6 +106,9 @@ const SNAPSHOT_CACHE_TTL_SECONDS = 300;
 // when the scanner did not save a chart_image_url. Each adds an outbound HTTP
 // request, so we keep this small to avoid blocking doGet on mobile.
 const YAHOO_FALLBACK_MAX_CODES = 25;
+// 最近公告 list size — the N most recent HKEXnews corp-action alerts shown on
+// the dashboard with date + label + HKEX link only (no long titles).
+const RECENT_CORPS_LIMIT = 10;
 
 function doGet() {
   // Serve a cached HTML payload when fresh — this is the difference between
@@ -413,6 +417,7 @@ function corpType_(a) {
   const tags = String(a.tags || '');
   const sig = String(a.signal || '') + ' ' + String(a.message || '');
   const blob = (tags + ' ' + sig);
+  if (/大手轉倉|大宗交易|場外轉讓|股份轉讓/.test(blob)) return 'block';
   if (/股東增持|增持/.test(blob)) return 'increase';
   if (/配股|配售|認購新股|發行股份|認購事項/.test(blob)) return 'placement';
   if (/供股|公開發售/.test(blob)) return 'rights';
@@ -423,7 +428,26 @@ function corpTypeLabel_(t) {
   if (t === 'placement') return '配股';
   if (t === 'increase') return '增持';
   if (t === 'rights') return '供股';
+  if (t === 'block') return '大手轉倉';
   return '公告';
+}
+
+// Best-effort: pull the announcement's release date out of the row. Prefers
+// the explicit announcement_date column, then release_time (HKEXnews
+// dd/mm/yyyy format), then the alert's created_at as last resort.
+function corpAnnouncementDate_(a) {
+  const explicit = String(a.announcement_date || '').trim();
+  if (explicit) {
+    if (/^\d{4}-\d{2}-\d{2}/.test(explicit)) return explicit.slice(0, 10);
+    const m = explicit.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
+    if (m) return m[3] + '-' + m[2] + '-' + m[1];
+  }
+  const rt = String(a.release_time || '').trim();
+  if (rt) {
+    const m = rt.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
+    if (m) return m[3] + '-' + m[2] + '-' + m[1];
+  }
+  return fmtDate_(a.created_at);
 }
 
 function render_(alerts, snap) {
@@ -497,6 +521,34 @@ function render_(alerts, snap) {
     }
   });
 
+  // Build "最近公告" list: latest N HKEX corp-action alerts with date + label +
+  // HKEX link only (no long titles). Dedupe by source_url so the same release
+  // touching N stocks renders once. Alerts list is already newest-first, so a
+  // simple forward pass preserves recency.
+  const recentCorps = [];
+  const seenCorpUrls = {};
+  for (let i = 0; i < alerts.length && recentCorps.length < RECENT_CORPS_LIMIT; i++) {
+    const a = alerts[i];
+    if (!a || a.category !== 'corp_action') continue;
+    const url = String(a.source_url || a.chart_url || '').trim();
+    const dedupeKey = url || ('row|' + i);
+    if (seenCorpUrls[dedupeKey]) continue;
+    seenCorpUrls[dedupeKey] = true;
+    recentCorps.push({
+      code: String(a.code || '').trim(),
+      name: String(a.name || ''),
+      type: corpType_(a),
+      date: corpAnnouncementDate_(a),
+      url: url,
+      created_at: a.created_at || ''
+    });
+  }
+  recentCorps.sort(function (x, y) {
+    if (x.date < y.date) return 1;
+    if (x.date > y.date) return -1;
+    return String(y.created_at).localeCompare(String(x.created_at));
+  });
+
   let groups = Object.keys(groupsMap).map(function (k) { return groupsMap[k]; });
   groups.sort(function (a, b) { return b.latest - a.latest; });
   // Cap initial render to the latest N groups so doGet stays fast on mobile.
@@ -504,11 +556,12 @@ function render_(alerts, snap) {
   if (groups.length > DASHBOARD_MAX_GROUPS) groups = groups.slice(0, DASHBOARD_MAX_GROUPS);
 
   // Aggregate corp-action counts for the toolbar summary (over rendered groups).
-  let cntPlacement = 0, cntIncrease = 0, cntRights = 0;
+  let cntPlacement = 0, cntIncrease = 0, cntRights = 0, cntBlock = 0;
   groups.forEach(function (g) {
     if (g.corpTypes.placement) cntPlacement += g.corpTypes.placement.count;
     if (g.corpTypes.increase) cntIncrease += g.corpTypes.increase.count;
     if (g.corpTypes.rights) cntRights += g.corpTypes.rights.count;
+    if (g.corpTypes.block) cntBlock += g.corpTypes.block.count;
   });
 
   // Only fall back to Yahoo for codes that have no scanner-saved chart image.
@@ -568,7 +621,7 @@ function render_(alerts, snap) {
     }).join(' ');
 
     // HKEX corp-action pills (no long content, only labels with link).
-    const corpOrder = ['placement', 'increase', 'rights', 'other'];
+    const corpOrder = ['placement', 'increase', 'rights', 'block', 'other'];
     const corpPills = corpOrder.filter(function (t) { return g.corpTypes[t]; }).map(function (t) {
       const c = g.corpTypes[t];
       const body = '<span class="cpill cpill-' + t + '">'
@@ -617,6 +670,30 @@ function render_(alerts, snap) {
   const empty = groups.length === 0
     ? '<tr><td colspan="7" class="empty">暫無代號數據 · No stock data yet</td></tr>'
     : '';
+
+  // 最近公告: compact list of latest HKEX corp-action releases. Shows only
+  // label + date + code/name + HKEX link. No long titles or message bodies.
+  const recentRows = recentCorps.map(function (r) {
+    const t = r.type;
+    const labelHtml = '<span class="cpill cpill-' + t + '">' + corpTypeLabel_(t) + '</span>';
+    const codeBlock = r.code
+      ? '<span class="ra-code">' + esc_(r.code) + '</span>'
+        + (r.name ? '<span class="ra-name">' + esc_(r.name) + '</span>' : '')
+      : '<span class="muted">—</span>';
+    const dateHtml = '<span class="ra-date">' + esc_(r.date || '—') + '</span>';
+    const linkHtml = r.url
+      ? '<a class="ra-link" href="' + esc_(r.url) + '" target="_blank" rel="noopener">HKEX</a>'
+      : '<span class="muted">—</span>';
+    return '<li class="ra-item">'
+      + '<span class="ra-label">' + labelHtml + '</span>'
+      + dateHtml
+      + '<span class="ra-stk">' + codeBlock + '</span>'
+      + linkHtml
+      + '</li>';
+  }).join('');
+  const recentHtml = recentCorps.length
+    ? '<ul class="ra-list">' + recentRows + '</ul>'
+    : '<div class="ra-empty">暫無公告 · No recent announcements</div>';
 
   return '<!doctype html>\n'
     + '<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">\n'
@@ -741,7 +818,23 @@ function render_(alerts, snap) {
     + '.cpill-placement{background:var(--down-soft);color:var(--down);border-color:var(--down-border)}\n'
     + '.cpill-increase{background:var(--up-soft);color:var(--up);border-color:var(--up-border)}\n'
     + '.cpill-rights{background:var(--violet-soft);color:var(--violet);border-color:var(--violet-border)}\n'
+    + '.cpill-block{background:var(--amber-soft);color:var(--amber);border-color:var(--amber-border)}\n'
     + '.cpill-other{background:var(--surface-soft);color:var(--mute);border-color:var(--line)}\n'
+    + '.cnt.block{border-color:var(--amber-border);background:var(--amber-soft);color:var(--amber)}\n'
+    + '.cnt.block b{color:var(--amber)}\n'
+    + '.recent-card{padding:4px 0}\n'
+    + '.ra-list{list-style:none;margin:0;padding:0}\n'
+    + '.ra-item{display:flex;align-items:center;gap:12px;padding:9px 14px;border-bottom:1px solid var(--line-soft);font-size:12.5px}\n'
+    + '.ra-item:last-child{border-bottom:none}\n'
+    + '.ra-label{flex:0 0 auto;min-width:78px}\n'
+    + '.ra-date{flex:0 0 auto;font:600 12px var(--font-mono);color:var(--text-soft);font-variant-numeric:tabular-nums;min-width:96px}\n'
+    + '.ra-stk{flex:1 1 auto;display:flex;align-items:baseline;gap:8px;min-width:0;overflow:hidden}\n'
+    + '.ra-code{font:600 12.5px var(--font-mono);color:var(--text);font-variant-numeric:tabular-nums}\n'
+    + '.ra-name{color:var(--mute);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}\n'
+    + '.ra-link{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;padding:3px 9px;border-radius:6px;border:1px solid var(--violet-border);background:var(--violet-soft);color:var(--violet);font:600 10px var(--font-sans);letter-spacing:.06em;text-decoration:none}\n'
+    + '.ra-link:hover{filter:brightness(.97);text-decoration:none}\n'
+    + '.ra-empty{padding:18px;color:var(--mute);text-align:center;font-size:12.5px}\n'
+    + '@media (max-width:520px){.ra-item{flex-wrap:wrap;gap:6px}.ra-name{max-width:100%}}\n'
     + '.empty{text-align:center;color:var(--mute);padding:40px 16px;font-size:13px}\n'
     + '.foot{margin-top:24px;padding-top:14px;border-top:1px solid var(--line);text-align:center;color:var(--mute-2);font-size:11px}\n'
     + '@media (max-width:1024px){.kpis{grid-template-columns:repeat(2,1fr)}}\n'
@@ -770,6 +863,8 @@ function render_(alerts, snap) {
     + kpi_('美匯指數', 'Dollar Index', snap.dxy, 2)
     + kpi_('波動指數', 'Volatility (VIX)', snap.vix, 2)
     + '</section>\n'
+    + '<div class="section-head"><h2><span class="ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-8-8 18-2-8-8-2z"/></svg></span>最近公告 · Recent HKEX Disclosures (' + recentCorps.length + '/' + RECENT_CORPS_LIMIT + ')</h2></div>\n'
+    + '<section class="card recent-card">' + recentHtml + '</section>\n'
     + '<div class="section-head"><h2><span class="ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>代號彙總 · Stocks (Signals + HKEX)</h2></div>\n'
     + '<section class="card">\n'
     + '<div class="toolbar">\n'
@@ -778,6 +873,7 @@ function render_(alerts, snap) {
     + '<span class="cnt placement">配股 <b>' + cntPlacement + '</b></span>'
     + '<span class="cnt increase">增持 <b>' + cntIncrease + '</b></span>'
     + '<span class="cnt rights">供股 <b>' + cntRights + '</b></span>'
+    + '<span class="cnt block">大手轉倉 <b>' + cntBlock + '</b></span>'
     + '</div>\n'
     + '<div class="spacer"></div>\n'
     + '<div class="tabs" id="ftabs" role="tablist">'
@@ -787,6 +883,7 @@ function render_(alerts, snap) {
     + '<button class="tab" data-ftype="placement">配股</button>'
     + '<button class="tab" data-ftype="increase">增持</button>'
     + '<button class="tab" data-ftype="rights">供股</button>'
+    + '<button class="tab" data-ftype="block">大手轉倉</button>'
     + '</div>\n'
     + '<div class="search">'
     + '<input id="tq" class="input search-in" type="search" placeholder="搜尋代號 / 名稱…" autocomplete="off">'
@@ -826,12 +923,14 @@ function render_(alerts, snap) {
     + '    var hasPlacement=!!r.querySelector(".cpill-placement");\n'
     + '    var hasIncrease=!!r.querySelector(".cpill-increase");\n'
     + '    var hasRights=!!r.querySelector(".cpill-rights");\n'
+    + '    var hasBlock=!!r.querySelector(".cpill-block");\n'
     + '    var ftOK=true;\n'
     + '    if(ftype==="tech")ftOK=hasTech;\n'
     + '    else if(ftype==="corp")ftOK=hasCorp;\n'
     + '    else if(ftype==="placement")ftOK=hasPlacement;\n'
     + '    else if(ftype==="increase")ftOK=hasIncrease;\n'
     + '    else if(ftype==="rights")ftOK=hasRights;\n'
+    + '    else if(ftype==="block")ftOK=hasBlock;\n'
     + '    var mq=(!q||name.indexOf(q)>=0||code.indexOf(q)>=0);\n'
     + '    var md=(!d||date===d);\n'
     + '    r.style.display=(ftOK&&mq&&md)?"":"none";\n'
