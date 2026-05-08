@@ -1,4 +1,4 @@
-const SPREADSHEET_ID = '129IieKTIfssX18O_PfnRoxbx3c12UoCPQ_MxxBizgeA';
+﻿const SPREADSHEET_ID = '129IieKTIfssX18O_PfnRoxbx3c12UoCPQ_MxxBizgeA';
 const ALERT_SHEET = 'Alerts';
 const CHART_FOLDER_NAME = 'HK Alert Charts';
 
@@ -100,7 +100,7 @@ const DASHBOARD_MAX_GROUPS = 120;
 const DASHBOARD_MAX_ALERTS = 600;
 // Cache TTLs (seconds). HTML cache absorbs repeat loads; snapshot cache shields
 // us from upstream Yahoo / worldperatio latency on every page load.
-const HTML_CACHE_TTL_SECONDS = 90;
+const HTML_CACHE_TTL_SECONDS = 115;
 const SNAPSHOT_CACHE_TTL_SECONDS = 300;
 // Hard upper-bound on how many codes we batch-query Yahoo for as a fallback
 // when the scanner did not save a chart_image_url. Each adds an outbound HTTP
@@ -108,7 +108,7 @@ const SNAPSHOT_CACHE_TTL_SECONDS = 300;
 const YAHOO_FALLBACK_MAX_CODES = 25;
 // 最近公告 list size — the N most recent HKEXnews corp-action alerts shown on
 // the dashboard with date + label + HKEX link only (no long titles).
-const RECENT_CORPS_LIMIT = 10;
+const RECENT_CORPS_LIMIT = 20;
 
 function doGet() {
   // Serve a cached HTML payload when fresh — this is the difference between
@@ -697,7 +697,7 @@ function render_(alerts, snap) {
 
   return '<!doctype html>\n'
     + '<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">\n'
-    + '<meta http-equiv="refresh" content="120">\n'
+    + '<!-- auto-refresh via JS to preserve scroll position -->\n'
     + '<title>Signal Dashboard Pro</title>\n'
     + '<link rel="preconnect" href="https://fonts.googleapis.com">\n'
     + '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
@@ -841,6 +841,22 @@ function render_(alerts, snap) {
     + '@media (max-width:820px){.cell-num,thead th:nth-child(5){display:none}}\n'
     + '@media (max-width:720px){.topbar-inner{padding:10px 14px;gap:10px}.brand-sub{display:none}.refresh-tag{display:none}.wrap{padding:14px}.toolbar{padding:10px}.input.search-in{min-width:140px}.cell-price,thead th:nth-child(3){display:none}.cell-time,thead th:nth-child(6){display:none}}\n'
     + '@media (max-width:520px){.cell-chart,thead th:nth-child(2){display:none}}\n'
+    + '@media (prefers-color-scheme:dark){'
+    + ':root{'
+    + '--bg:#0f172a;--surface:#1e293b;--surface-soft:#162032;'
+    + '--text:#f1f5f9;--text-soft:#cbd5e1;--mute:#64748b;--mute-2:#475569;'
+    + '--line:#334155;--line-soft:#1e293b;'
+    + '--primary:#38bdf8;--primary-soft:#0c2d44;--primary-border:#0369a1;'
+    + '--up:#4ade80;--up-soft:#052e16;--up-border:#166534;'
+    + '--down:#f87171;--down-soft:#2d0a0a;--down-border:#991b1b;'
+    + '--violet:#a78bfa;--violet-soft:#1e1040;--violet-border:#5b21b6;'
+    + '--amber:#fbbf24;--amber-soft:#1c0f00;--amber-border:#92400e}'
+    + '.topbar{background:rgba(15,23,42,.92)}'
+    + '.tabs{background:#1e293b}'
+    + '.tab.active{background:#0f172a}'
+    + '.input{background:var(--surface);color:var(--text)}'
+    + 'tbody tr:hover{background:#162032}'
+    + '}\n'
     + '</style></head><body>\n'
     + '<header class="topbar"><div class="topbar-inner">\n'
     + '<div class="brand">'
@@ -940,6 +956,11 @@ function render_(alerts, snap) {
     + 'if(tq)tq.addEventListener("input",apply);\n'
     + 'if(td)td.addEventListener("change",apply);\n'
     + 'if(tc)tc.addEventListener("click",function(){if(tq)tq.value="";if(td)td.value="";ftabs.forEach(function(x){x.classList.remove("active");});var allBtn=document.querySelector("#ftabs .tab[data-ftype=\\"all\\"]");if(allBtn)allBtn.classList.add("active");ftype="all";apply();});\n'
+    + '})();\n'
+    + '(function(){\n'
+    + 'var saved=sessionStorage.getItem("dashScroll");\n'
+    + 'if(saved){window.scrollTo(0,parseInt(saved,10));sessionStorage.removeItem("dashScroll");}\n'
+    + 'setTimeout(function(){sessionStorage.setItem("dashScroll",String(window.scrollY));location.reload();},120000);\n'
     + '})();\n'
     + '</script>\n'
     + '</body></html>';
