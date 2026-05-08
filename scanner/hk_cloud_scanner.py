@@ -656,7 +656,45 @@ def get_hkexnews_json_urls() -> list[str]:
     return [f"{HKEXNEWS_BASE}/ncms/json/eds/lcisehk{range_flag}relsde_{page}.json" for page in range(1, max_files + 1)]
 
 
+def fetch_cn_title_map() -> dict[str, str]:
+    """Fetch the HKEXnews Chinese feed and return {webPath: chinese_title}.
+
+    HKEXnews publishes parallel Chinese-language JSON feeds at the same URL
+    with prefix 'c' instead of 'l'  (e.g. ccisehk1relsde_1.json).  We use
+    these to get the official Traditional-Chinese title for each announcement,
+    falling back to rule-based translate_title_cn() when unavailable.
+    """
+    range_flag = "7" if ANNOUNCEMENT_RANGE_DAYS >= 7 else "1"
+    first_url = f"{HKEXNEWS_BASE}/ncms/json/eds/ccisehk{range_flag}relsde_1.json"
+    try:
+        first = requests.get(first_url, timeout=20).json()
+        max_files = int(first.get("maxNumOfFile", 1))
+    except Exception as exc:
+        print(f"HKEXnews CN first page failed: {exc}")
+        return {}
+    cn_map: dict[str, str] = {}
+    for page in range(1, max_files + 1):
+        url = f"{HKEXNEWS_BASE}/ncms/json/eds/ccisehk{range_flag}relsde_{page}.json"
+        try:
+            rows = requests.get(url, timeout=20).json().get("newsInfoLst", [])
+        except Exception as exc:
+            print(f"HKEXnews CN page {page} failed: {exc}")
+            continue
+        for row in rows:
+            web_path = str(row.get("webPath", "")).strip()
+            if not web_path:
+                continue
+            cn_title = html_to_text(row.get("title", "")) or html_to_text(row.get("lTxt", ""))
+            if cn_title:
+                cn_map[web_path] = cn_title
+    print(f"HKEXnews CN title map: {len(cn_map)} entries")
+    return cn_map
+
+
 def fetch_corp_action_announcements() -> list[dict[str, Any]]:
+    # Fetch Chinese title map first (parallel would be ideal but keep it simple).
+    cn_title_map = fetch_cn_title_map()
+
     announcements: list[dict[str, Any]] = []
     for url in get_hkexnews_json_urls():
         try:
@@ -680,6 +718,8 @@ def fetch_corp_action_announcements() -> list[dict[str, Any]]:
             doc_url = web_path if web_path.startswith("http") else HKEXNEWS_BASE + web_path
             rel_time = row.get("relTime", "")
             release_date = parse_rel_time_date(rel_time)
+            # Use official Chinese title from CN feed; fall back to rule-based translation.
+            cn_title = cn_title_map.get(web_path) or translate_title_cn(title or headline)
             for stock in row.get("stock", []):
                 code = str(stock.get("sc", "")).zfill(5)
                 name = html_to_text(stock.get("sn", ""))
@@ -687,7 +727,8 @@ def fetch_corp_action_announcements() -> list[dict[str, Any]]:
                     "code": code,
                     "name": name,
                     "types": action_types,
-                    "title": title or headline,
+                    "title": cn_title,
+                    "title_en": title or headline,
                     "release_time": rel_time,
                     "release_date": release_date,
                     "url": doc_url,
@@ -736,7 +777,7 @@ def run_corp_actions() -> None:
         code = ann["code"]
         types_list = ann["types"]
         types = " / ".join(types_list)
-        title_cn = translate_title_cn(ann["title"])
+        title_cn = ann["title"]  # already Chinese (from CN feed or rule-based fallback)
         ann_date = ann.get("release_date") or ""
         corp_tv_url = tradingview_url(code)
 
