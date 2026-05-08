@@ -671,11 +671,11 @@ def run_corp_actions() -> None:
             f"📰 <b>披露易 · {types}</b>\n"
             f"{ann['code']} {ann['name']}　{ann_date}\n"
             f"{title_cn}\n"
-            f"<a href=\"{ann['url']}\">HKEXnews</a>　<a href=\"{corp_tv_url}\">TV</a>"
+            f"<a href=\"{ann['url']}\">披露易</a>　<a href=\"{corp_tv_url}\">走勢圖</a>"
         )
         corp_kb = build_inline_keyboard_([
-            ("📰 HKEXnews", ann["url"]),
-            ("📊 TradingView", corp_tv_url),
+            ("📰 披露易", ann["url"]),
+            ("📊 走勢圖", corp_tv_url),
         ])
         # Try to render a chart so the corp-action alert also stays in one Telegram message.
         chart_path: str | None = None
@@ -974,7 +974,7 @@ def run_ipo() -> None:
                 f"IPO首日高：{result['IPO High']}（{result['IPO Date']}）\n"
                 f"突破：{result['Today High']}　<b>{break_sign}{result['Break %']}%</b>\n"
                 f"收：{result['Today Close']}\n"
-                f"<a href=\"{tv_url}\">TradingView</a>"
+                f"<a href=\"{tv_url}\">走勢圖</a>"
             )
             chart_path = render_chart(
                 df,
@@ -984,7 +984,7 @@ def run_ipo() -> None:
                 levels=[("IPO首日高", result["IPO High"], "#fbbf24")],
                 lookback_days=min(len(df), max(60, result["Listed Days"] + 5)),
             )
-            ipo_kb = build_inline_keyboard_([("📊 TradingView", tv_url)])
+            ipo_kb = build_inline_keyboard_([("📊 走勢圖", tv_url)])
             emit_alert(payload, caption, chart_path, reply_markup=ipo_kb)
         time.sleep(SLEEP_SEC)
     send_telegram_message(f"IPO首日突破掃描完成，共 {hits} 隻。")
@@ -1067,7 +1067,7 @@ def _emit_poc_hit(
     break_sign = "+" if (result.get("Break %") or 0) >= 0 else ""
     caption_lines = [
         f"📈 <b>POC突破</b>　⚡ 觸發：{crossed_short}",
-        f"{code} {result['Name']}　<a href=\"{tv_url}\">TV</a>",
+        f"{code} {result['Name']}　<a href=\"{tv_url}\">走勢圖</a>",
         "",
         f"突破：{result['Break Value']}　<b>{break_sign}{result['Break %']}%</b>",
         f"POC：{_fmt_poc_line(result)}",
@@ -1089,7 +1089,7 @@ def _emit_poc_hit(
         levels=chart_levels,
         lookback_days=CHART_LOOKBACK_DAYS,
     )
-    poc_kb = build_inline_keyboard_([("📊 TradingView", tv_url)])
+    poc_kb = build_inline_keyboard_([("📊 走勢圖", tv_url)])
     emit_alert(payload, caption, chart_path, reply_markup=poc_kb)
 
 
