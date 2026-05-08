@@ -1,0 +1,32 @@
+name: HK Alert Corp Actions
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Hong Kong time = UTC+8. Cron is in UTC. Avoid :00/:30 marks since
+    # GitHub-hosted scheduled runs on those high-contention minutes are
+    # frequently delayed or skipped.
+    - cron: "32 1 * * 1-5"   # 09:32 HKT
+    - cron: "32 4 * * 1-5"   # 12:32 HKT
+    - cron: "32 8 * * 1-5"   # 16:32 HKT
+    - cron: "2 12 * * 1-5"   # 20:02 HKT
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+      - run: pip install -r scanner/requirements.txt
+      - name: Run corp scan
+        timeout-minutes: 18
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GAS_WEBHOOK_URL: ${{ secrets.GAS_WEBHOOK_URL }}
+          GAS_SECRET: ${{ secrets.GAS_SECRET }}
+        run: python -u scanner/hk_cloud_scanner.py corp
