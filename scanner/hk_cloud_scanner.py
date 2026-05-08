@@ -85,8 +85,23 @@ TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "")
 GAS_WEBHOOK_URL = os.getenv("GAS_WEBHOOK_URL", "")
 GAS_SECRET = os.getenv("GAS_SECRET", "")
 
+WATCHLIST_EXPIRY_DAYS = int(os.getenv("WATCHLIST_EXPIRY_DAYS", "5"))
+VOLUME_MULTIPLIER = float(os.getenv("VOLUME_MULTIPLIER", "1.5"))
+VOLUME_AVG_DAYS = int(os.getenv("VOLUME_AVG_DAYS", "20"))
+
 # Telegram caption max length is 1024 chars for photos, 4096 for text messages.
 _TG_CAPTION_LIMIT = 1024
+
+# Corp action types that always trigger an immediate alert regardless of volume.
+_IMMEDIATE_ALERT_TYPES: frozenset[str] = frozenset({"股東增持"})
+
+# Alert priority by corp action type (higher = more urgent).
+_CORP_TYPE_PRIORITY: dict[str, int] = {
+    "股東增持": 3,
+    "大手轉倉": 2,
+    "供股": 2,
+    "配股": 1,
+}
 
 
 def hk_code_to_yahoo(code: str) -> str:
@@ -214,6 +229,82 @@ def emit_alert(payload: dict[str, Any], caption_html: str, chart_path: str | Non
             os.remove(chart_path)
         except OSError:
             pass
+
+
+def compute_volume_ratio(df: pd.DataFrame) -> float | None:
+    """Return today's volume divided by the VOLUME_AVG_DAYS-day average. None if insufficient data."""
+    if df.empty or len(df) < VOLUME_AVG_DAYS + 2:
+        return None
+    today_vol = float(df.iloc[-1]["volume"])
+    hist = df.iloc[-(VOLUME_AVG_DAYS + 1):-1]["volume"].dropna()
+    avg = float(hist.mean()) if not hist.empty else 0.0
+    if avg == 0:
+        return None
+    return round(today_vol / avg, 2)
+
+
+def format_volume_ratio(ratio: float | None) -> str:
+    """Format volume ratio as a display string for Telegram captions."""
+    if ratio is None:
+        return ""
+    if ratio >= 2.0:
+        return f"量比：🔥 {ratio:.1f}x"
+    if ratio >= VOLUME_MULTIPLIER:
+        return f"量比：⬆️ {ratio:.1f}x"
+    return f"量比：⬇️ {ratio:.1f}x"
+
+
+def fetch_watchlist_from_gas() -> dict[str, dict]:
+    """Fetch active watched stocks from GAS. Returns {code: entry} dict."""
+    if not GAS_WEBHOOK_URL:
+        return {}
+    params: dict[str, str] = {"mode": "watchlist"}
+    if GAS_SECRET:
+        params["secret"] = GAS_SECRET
+    try:
+        r = requests.get(GAS_WEBHOOK_URL, params=params, timeout=15)
+        if r.status_code == 200:
+            data = r.json()
+            entries = data if isinstance(data, list) else data.get("watchlist", [])
+            out: dict[str, dict] = {}
+            if isinstance(entries, dict):
+                # Already a {code: entry} map
+                for code, entry in entries.items():
+                    out[str(code).zfill(5)] = entry
+            else:
+                for entry in entries:
+                    code = str(entry.get("code", "")).zfill(5)
+                    if code:
+                        out[code] = entry
+            print(f"[watchlist] fetched {len(out)} active entries")
+            return out
+    except Exception as exc:
+        print(f"[watchlist] fetch failed: {exc}")
+    return {}
+
+
+def post_watchlist_to_gas(code: str, name: str, types: list[str], ann_date: str) -> None:
+    """Add a stock to the GAS watchlist for N-day follow-up tracking."""
+    if not GAS_WEBHOOK_URL:
+        return
+    body: dict[str, Any] = {
+        "type": "watchlist",
+        "code": code,
+        "name": name,
+        "types": types,
+        "ann_date": ann_date,
+        "expiry_days": WATCHLIST_EXPIRY_DAYS,
+    }
+    if GAS_SECRET:
+        body["secret"] = GAS_SECRET
+    try:
+        r = requests.post(GAS_WEBHOOK_URL, json=body, timeout=15)
+        if r.status_code == 200:
+            print(f"[watchlist] added {code} ({', '.join(types)})")
+        else:
+            print(f"[watchlist] add failed {code}: {r.status_code} {r.text[:200]}")
+    except Exception as exc:
+        print(f"[watchlist] add error {code}: {exc}")
 
 
 def render_chart(
@@ -609,11 +700,11 @@ def run_corp_actions() -> None:
     today_hkt = hkt_today_str()
     send_telegram_message(
         f"<b>披露易掃描開始</b> · {datetime.now(HKT_TZ):%Y-%m-%d %H:%M} HKT\n"
-        f"類型：配股 / 供股 / 增持 / 大手轉倉（只發送當日 {today_hkt} 公告）"
+        f"類型：配股 / 供股 / 增持 / 大手轉倉（只發送當日 {today_hkt} 公告）\n"
+        f"量比確認：{VOLUME_MULTIPLIER}x · 觀察期：{WATCHLIST_EXPIRY_DAYS} 日"
     )
     raw_anns = fetch_corp_action_announcements()
     # Same-day-only filter: drop anything whose HKT release date is not today.
-    # Unparseable release_date is treated as not-same-day rather than guessing.
     anns: list[dict[str, Any]] = []
     skipped_old = 0
     skipped_unknown = 0
@@ -626,9 +717,6 @@ def run_corp_actions() -> None:
         if rd != today_hkt:
             skipped_old += 1
             continue
-        # Per-run dedupe: a single source_url often covers multiple stocks; we
-        # still emit one alert per (code, url) so each stock gets its own card,
-        # but we never emit the same (code, url) twice in one run.
         key = f"{ann.get('code', '')}|{ann.get('url', '')}"
         if key in seen_urls:
             continue
@@ -639,37 +727,70 @@ def run_corp_actions() -> None:
         f"skipped_unknown_date={skipped_unknown} today_hkt={today_hkt}"
     )
     if not anns:
-        send_telegram_message(
-            f"披露易掃描完成，無 {today_hkt} 當日相關公告。"
-        )
+        send_telegram_message(f"披露易掃描完成，無 {today_hkt} 當日相關公告。")
         return
+
+    alerted = 0
+    watchlisted = 0
     for ann in anns:
-        types = " / ".join(ann["types"])
+        code = ann["code"]
+        types_list = ann["types"]
+        types = " / ".join(types_list)
         title_cn = translate_title_cn(ann["title"])
         ann_date = ann.get("release_date") or ""
-        payload = {
+        corp_tv_url = tradingview_url(code)
+
+        # Determine priority and whether this type always alerts immediately.
+        priority = max((_CORP_TYPE_PRIORITY.get(t, 1) for t in types_list), default=1)
+        immediate = any(t in _IMMEDIATE_ALERT_TYPES for t in types_list)
+
+        # Fetch price history once — used for both volume check and chart.
+        df: pd.DataFrame = pd.DataFrame()
+        vol_ratio: float | None = None
+        try:
+            df = get_daily_history(code, "1y")
+            if not df.empty:
+                vol_ratio = compute_volume_ratio(df)
+                if vol_ratio is not None and vol_ratio >= VOLUME_MULTIPLIER:
+                    immediate = True
+        except Exception as exc:
+            print(f"[corp] price fetch failed for {code}: {exc}")
+
+        # Always add to watchlist for N-day follow-up regardless of immediate flag.
+        post_watchlist_to_gas(code, ann["name"], types_list, ann_date)
+        watchlisted += 1
+
+        if not immediate:
+            vol_str = f"{vol_ratio:.1f}x" if vol_ratio is not None else "N/A"
+            print(f"[corp] {code} watchlist-only — volume={vol_str} types={types_list}")
+            continue
+
+        alerted += 1
+        vol_line = format_volume_ratio(vol_ratio)
+
+        payload: dict[str, Any] = {
             "source": "hkexnews",
             "category": "corp_action",
-            "code": ann["code"],
-            "symbol": hk_code_to_yahoo(ann["code"]),
+            "code": code,
+            "symbol": hk_code_to_yahoo(code),
             "name": ann["name"],
             "signal": f"披露易公告 - {types}",
             "timeframe": "公告",
             "message": title_cn,
             "title_original": ann["title"],
             "strategy": "HKEXnews Corp Action",
-            "chart_url": tradingview_url(ann["code"]),
+            "chart_url": corp_tv_url,
             "source_url": ann["url"],
             "announcement_date": ann_date,
             "release_time": ann.get("release_time", ""),
-            "tags": ["公告", *ann["types"]],
-            "priority": 1,
+            "tags": ["公告", *types_list],
+            "priority": priority,
             "raw": json.dumps(ann, ensure_ascii=False),
         }
-        corp_tv_url = tradingview_url(ann["code"])
+        vol_part = f"\n{vol_line}" if vol_line else ""
         caption = (
             f"📰 <b>披露易 · {types}</b>\n"
-            f"{ann['code']} {ann['name']}　{ann_date}\n"
+            f"{code} {ann['name']}　{ann_date}{vol_part}\n"
             f"{title_cn}\n"
             f"<a href=\"{ann['url']}\">披露易</a>　<a href=\"{corp_tv_url}\">走勢圖</a>"
         )
@@ -677,24 +798,23 @@ def run_corp_actions() -> None:
             ("📰 披露易", ann["url"]),
             ("📊 走勢圖", corp_tv_url),
         ])
-        # Try to render a chart so the corp-action alert also stays in one Telegram message.
         chart_path: str | None = None
         try:
-            df = get_daily_history(ann["code"], "1y")
             if not df.empty:
                 chart_path = render_chart(
-                    df,
-                    ann["code"],
-                    ann["name"],
+                    df, code, ann["name"],
                     f"披露易 · {types}",
                     levels=[],
                     lookback_days=CHART_LOOKBACK_DAYS,
                 )
         except Exception as exc:
-            print(f"[chart] corp action chart failed for {ann['code']}: {exc}")
+            print(f"[chart] corp action chart failed for {code}: {exc}")
         emit_alert(payload, caption, chart_path, reply_markup=corp_kb)
         time.sleep(0.5)
-    send_telegram_message(f"披露易掃描完成，共 {len(anns)} 則。")
+
+    send_telegram_message(
+        f"披露易掃描完成：即時提醒 {alerted} 則，加入觀察 {watchlisted} 則。"
+    )
 
 
 def clean_stock_list(df: pd.DataFrame) -> pd.DataFrame:
@@ -933,6 +1053,13 @@ def run_ipo() -> None:
         f"<b>IPO首日突破掃描開始</b> · {datetime.now():%Y-%m-%d %H:%M}"
     )
     stocks = get_hk_stock_list()
+    # Fetch watchlist once for high-conviction 公告後突破 detection.
+    try:
+        watchlist_map = fetch_watchlist_from_gas()
+    except Exception as exc:
+        print(f"[ipo] watchlist fetch failed: {exc}")
+        watchlist_map = {}
+    print(f"IPO watchlist: {len(watchlist_map)} active entries")
     total = len(stocks)
     hits = 0
     started = time.monotonic()
@@ -947,6 +1074,22 @@ def run_ipo() -> None:
             hits += 1
             code = result["Code"]
             tv_url = tradingview_url(code)
+
+            wl_entry = watchlist_map.get(code)
+            on_watchlist = wl_entry is not None
+            if on_watchlist:
+                wl_types = " / ".join(wl_entry.get("types") or [])
+                wl_date = wl_entry.get("ann_date") or wl_entry.get("announcement_date", "")
+                wl_line = f"⭐ 公告後突破 · {wl_types}（{wl_date}）\n"
+                title_prefix = "⭐🚀"
+                priority = 3
+                tags = ["IPO", "Breakout", "公告後突破"]
+            else:
+                wl_line = ""
+                title_prefix = "🚀"
+                priority = 2
+                tags = ["IPO", "Breakout"]
+
             payload = {
                 "source": "cloud_scanner",
                 "category": "ipo",
@@ -963,13 +1106,14 @@ def run_ipo() -> None:
                 "strategy": "IPO First Day High Breakout",
                 "chart_url": tv_url,
                 "source_url": tv_url,
-                "tags": ["IPO", "Breakout"],
-                "priority": 2,
+                "tags": tags,
+                "priority": priority,
                 "raw": json.dumps(result, ensure_ascii=False),
             }
             break_sign = "+" if result["Break %"] >= 0 else ""
             caption = (
-                f"🚀 <b>IPO首日高突破</b>\n"
+                f"{title_prefix} <b>IPO首日高突破</b>\n"
+                f"{wl_line}"
                 f"{code} {result['Name']}\n"
                 f"IPO首日高：{result['IPO High']}（{result['IPO Date']}）\n"
                 f"突破：{result['Today High']}　<b>{break_sign}{result['Break %']}%</b>\n"
@@ -1033,6 +1177,7 @@ def _emit_poc_hit(
     result: dict[str, Any],
     df: pd.DataFrame,
     announcement_labels: list[str] | None = None,
+    watchlist_entry: dict | None = None,
 ) -> None:
     code = result["Code"]
     tv_url = tradingview_url(code)
@@ -1040,6 +1185,19 @@ def _emit_poc_hit(
     labels = list(announcement_labels or [])
     tags = ["POC", "Breakout", result["Signal"]]
     tags.extend(labels)
+
+    on_watchlist = watchlist_entry is not None
+    if on_watchlist:
+        wl_types = " / ".join(watchlist_entry.get("types") or [])
+        wl_date = watchlist_entry.get("ann_date") or watchlist_entry.get("announcement_date", "")
+        wl_line = f"⭐ 公告後突破 · {wl_types}（{wl_date}）"
+        tags.append("公告後突破")
+    else:
+        wl_line = ""
+
+    base_priority = 2 if "+" in result["Signal"] else 1
+    priority = (base_priority + 1) if on_watchlist else base_priority
+
     payload = {
         "source": "cloud_scanner",
         "category": "poc",
@@ -1061,12 +1219,13 @@ def _emit_poc_hit(
         "poc_12m": result["POC 12M"],
         "poc_3y": result["POC 3Y"],
         "announcement_labels": labels,
-        "priority": 2 if "+" in result["Signal"] else 1,
+        "priority": priority,
         "raw": json.dumps(result, ensure_ascii=False, default=str),
     }
     break_sign = "+" if (result.get("Break %") or 0) >= 0 else ""
+    title_prefix = "⭐📈" if on_watchlist else "📈"
     caption_lines = [
-        f"📈 <b>POC突破</b>　⚡ 觸發：{crossed_short}",
+        f"{title_prefix} <b>POC突破</b>　⚡ 觸發：{crossed_short}",
         f"{code} {result['Name']}　<a href=\"{tv_url}\">走勢圖</a>",
         "",
         f"突破：{result['Break Value']}　<b>{break_sign}{result['Break %']}%</b>",
@@ -1074,6 +1233,8 @@ def _emit_poc_hit(
     ]
     if labels:
         caption_lines.append(f"公告：{' / '.join(labels)}")
+    if wl_line:
+        caption_lines.append(wl_line)
     caption = "\n".join(caption_lines)
     chart_levels = []
     key_map = {"6M": "POC 6M", "12M": "POC 12M", "3Y": "POC 3Y"}
@@ -1116,6 +1277,13 @@ def run_poc() -> None:
         print(f"[poc] announcement enrichment failed: {exc}")
         ann_map = {}
     print(f"POC announcement label map size: {len(ann_map)}")
+    # Fetch persisted watchlist for cross-run 公告後突破 detection.
+    try:
+        watchlist_map = fetch_watchlist_from_gas()
+    except Exception as exc:
+        print(f"[poc] watchlist fetch failed: {exc}")
+        watchlist_map = {}
+    print(f"POC watchlist: {len(watchlist_map)} active entries")
     send_telegram_message(
         f"<b>POC突破掃描開始</b> · {datetime.now():%Y-%m-%d %H:%M}\n"
         f"條件：股價向上突破 半年／1年／3年 POC\n"
@@ -1163,7 +1331,16 @@ def run_poc() -> None:
                 hits += 1
                 chunk_hits += 1
                 try:
-                    _emit_poc_hit(*outcome, announcement_labels=ann_map.get(code))
+                    # Watchlist entry: prefer persisted watchlist; synthesise from
+                    # current-run ann_map so same-day corp+POC also gets ⭐.
+                    wl_entry = watchlist_map.get(code)
+                    if wl_entry is None and ann_map.get(code):
+                        wl_entry = {"types": ann_map[code], "ann_date": hkt_today_str()}
+                    _emit_poc_hit(
+                        *outcome,
+                        announcement_labels=ann_map.get(code),
+                        watchlist_entry=wl_entry,
+                    )
                 except Exception as exc:
                     print(f"{code} emit failed: {exc}")
         elapsed = time.monotonic() - started
