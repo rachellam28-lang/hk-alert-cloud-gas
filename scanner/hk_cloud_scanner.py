@@ -1,4 +1,4 @@
-"""
+﻿"""
 HK Alert Cloud Scanner
 
 Cloud version for GitHub Actions:
@@ -85,8 +85,8 @@ TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "")
 GAS_WEBHOOK_URL = os.getenv("GAS_WEBHOOK_URL", "")
 GAS_SECRET = os.getenv("GAS_SECRET", "")
 
-# Telegram caption max length is 1024 chars; keep some headroom.
-_TG_CAPTION_LIMIT = 1000
+# Telegram caption max length is 1024 chars for photos, 4096 for text messages.
+_TG_CAPTION_LIMIT = 1024
 
 
 def hk_code_to_yahoo(code: str) -> str:
@@ -99,18 +99,25 @@ def tradingview_url(code: str) -> str:
     return f"https://www.tradingview.com/chart/?symbol=HKEX%3A{symbol}"
 
 
-def send_telegram_message(message: str) -> bool:
+def build_inline_keyboard_(buttons: list[tuple[str, str]]) -> dict:
+    """Build a single-row Telegram InlineKeyboardMarkup from (text, url) pairs."""
+    return {"inline_keyboard": [[{"text": t, "url": u} for t, u in buttons]]}
+
+
+def send_telegram_message(message: str, reply_markup: dict | None = None) -> bool:
     """Send a plain HTML text message (used for scan-status pings only)."""
     if not TELEGRAM_TOKEN or not TELEGRAM_CHAT_ID:
         print("[Telegram] not configured")
         return False
     url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
-    payload = {
+    payload: dict[str, Any] = {
         "chat_id": TELEGRAM_CHAT_ID,
         "text": message,
         "parse_mode": "HTML",
         "disable_web_page_preview": False,
     }
+    if reply_markup:
+        payload["reply_markup"] = reply_markup
     try:
         r = requests.post(url, json=payload, timeout=20)
         if r.status_code == 200:
@@ -122,7 +129,7 @@ def send_telegram_message(message: str) -> bool:
     return False
 
 
-def send_telegram_photo(photo_path: str, caption: str) -> bool:
+def send_telegram_photo(photo_path: str, caption: str, reply_markup: dict | None = None) -> bool:
     if not TELEGRAM_TOKEN or not TELEGRAM_CHAT_ID:
         print("[Telegram] not configured")
         return False
@@ -132,11 +139,13 @@ def send_telegram_photo(photo_path: str, caption: str) -> bool:
     try:
         with open(photo_path, "rb") as f:
             files = {"photo": f}
-            data = {
+            data: dict[str, Any] = {
                 "chat_id": TELEGRAM_CHAT_ID,
                 "caption": caption,
                 "parse_mode": "HTML",
             }
+            if reply_markup:
+                data["reply_markup"] = json.dumps(reply_markup, ensure_ascii=False)
             r = requests.post(url, data=data, files=files, timeout=30)
         if r.status_code == 200:
             print("[Telegram] photo sent")
@@ -147,13 +156,13 @@ def send_telegram_photo(photo_path: str, caption: str) -> bool:
     return False
 
 
-def send_telegram_alert(caption_html: str, photo_path: str | None) -> bool:
+def send_telegram_alert(caption_html: str, photo_path: str | None, reply_markup: dict | None = None) -> bool:
     """Single Telegram alert: photo+caption when chart is available, otherwise one text message."""
     if photo_path and os.path.exists(photo_path):
-        if send_telegram_photo(photo_path, caption_html):
+        if send_telegram_photo(photo_path, caption_html, reply_markup=reply_markup):
             return True
         # Photo failed - fall back to one text message.
-    return send_telegram_message(caption_html)
+    return send_telegram_message(caption_html, reply_markup=reply_markup)
 
 
 def post_gas_alert(payload: dict[str, Any]) -> bool:
@@ -192,14 +201,14 @@ def encode_chart_for_gas(chart_path: str | None) -> tuple[str | None, str | None
         return None, None
 
 
-def emit_alert(payload: dict[str, Any], caption_html: str, chart_path: str | None) -> None:
+def emit_alert(payload: dict[str, Any], caption_html: str, chart_path: str | None, reply_markup: dict | None = None) -> None:
     payload.setdefault("created_at", datetime.now().isoformat(timespec="seconds"))
     chart_b64, chart_name = encode_chart_for_gas(chart_path)
     if chart_b64:
         payload["chart_image_b64"] = chart_b64
         payload["chart_image_name"] = chart_name
     post_gas_alert(payload)
-    send_telegram_alert(caption_html, chart_path)
+    send_telegram_alert(caption_html, chart_path, reply_markup=reply_markup)
     if chart_path:
         try:
             os.remove(chart_path)
@@ -657,12 +666,17 @@ def run_corp_actions() -> None:
             "priority": 1,
             "raw": json.dumps(ann, ensure_ascii=False),
         }
+        corp_tv_url = tradingview_url(ann["code"])
         caption = (
             f"📰 <b>披露易 · {types}</b>\n"
             f"{ann['code']} {ann['name']}　{ann_date}\n"
             f"{title_cn}\n"
-            f"<a href=\"{ann['url']}\">HKEXnews</a>"
+            f"<a href=\"{ann['url']}\">HKEXnews</a>　<a href=\"{corp_tv_url}\">TV</a>"
         )
+        corp_kb = build_inline_keyboard_([
+            ("📰 HKEXnews", ann["url"]),
+            ("📊 TradingView", corp_tv_url),
+        ])
         # Try to render a chart so the corp-action alert also stays in one Telegram message.
         chart_path: str | None = None
         try:
@@ -678,7 +692,7 @@ def run_corp_actions() -> None:
                 )
         except Exception as exc:
             print(f"[chart] corp action chart failed for {ann['code']}: {exc}")
-        emit_alert(payload, caption, chart_path)
+        emit_alert(payload, caption, chart_path, reply_markup=corp_kb)
         time.sleep(0.5)
     send_telegram_message(f"披露易掃描完成，共 {len(anns)} 則。")
 
@@ -953,13 +967,14 @@ def run_ipo() -> None:
                 "priority": 2,
                 "raw": json.dumps(result, ensure_ascii=False),
             }
+            break_sign = "+" if result["Break %"] >= 0 else ""
             caption = (
                 f"🚀 <b>IPO首日高突破</b>\n"
                 f"{code} {result['Name']}\n"
                 f"IPO首日高：{result['IPO High']}（{result['IPO Date']}）\n"
-                f"價：{result['Today Close']}　高：{result['Today High']}\n"
-                f"幅度：{'+' if result['Break %'] >= 0 else ''}{result['Break %']}%\n"
-                f"<a href=\"{tv_url}\">TV</a>"
+                f"突破：{result['Today High']}　<b>{break_sign}{result['Break %']}%</b>\n"
+                f"收：{result['Today Close']}\n"
+                f"<a href=\"{tv_url}\">TradingView</a>"
             )
             chart_path = render_chart(
                 df,
@@ -969,7 +984,8 @@ def run_ipo() -> None:
                 levels=[("IPO首日高", result["IPO High"], "#fbbf24")],
                 lookback_days=min(len(df), max(60, result["Listed Days"] + 5)),
             )
-            emit_alert(payload, caption, chart_path)
+            ipo_kb = build_inline_keyboard_([("📊 TradingView", tv_url)])
+            emit_alert(payload, caption, chart_path, reply_markup=ipo_kb)
         time.sleep(SLEEP_SEC)
     send_telegram_message(f"IPO首日突破掃描完成，共 {hits} 隻。")
 
@@ -1048,10 +1064,12 @@ def _emit_poc_hit(
         "priority": 2 if "+" in result["Signal"] else 1,
         "raw": json.dumps(result, ensure_ascii=False, default=str),
     }
+    break_sign = "+" if (result.get("Break %") or 0) >= 0 else ""
     caption_lines = [
         f"📈 <b>POC突破</b>　⚡ 觸發：{crossed_short}",
         f"{code} {result['Name']}　<a href=\"{tv_url}\">TV</a>",
         "",
+        f"突破：{result['Break Value']}　<b>{break_sign}{result['Break %']}%</b>",
         f"POC：{_fmt_poc_line(result)}",
     ]
     if labels:
@@ -1071,7 +1089,8 @@ def _emit_poc_hit(
         levels=chart_levels,
         lookback_days=CHART_LOOKBACK_DAYS,
     )
-    emit_alert(payload, caption, chart_path)
+    poc_kb = build_inline_keyboard_([("📊 TradingView", tv_url)])
+    emit_alert(payload, caption, chart_path, reply_markup=poc_kb)
 
 
 def run_poc() -> None:
@@ -1187,3 +1206,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
