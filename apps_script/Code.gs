@@ -1,6 +1,8 @@
 ﻿const SPREADSHEET_ID = '129IieKTIfssX18O_PfnRoxbx3c12UoCPQ_MxxBizgeA';
 const ALERT_SHEET = 'Alerts';
 const CHART_FOLDER_NAME = 'HK Alert Charts';
+const WATCHLIST_SHEET = 'Watchlist';
+const WATCHLIST_HEADERS = ['code', 'name', 'types', 'ann_date', 'added_at'];
 
 // GAS_SECRET is read from Script Properties at runtime; never hardcode it here.
 // In Apps Script editor: Project Settings → Script Properties → add key "GAS_SECRET".
@@ -20,12 +22,49 @@ const HEADERS = [
   'release_time', 'raw'
 ];
 
+function doGet(e) {
+  e = e || {};
+  const params = e.parameter || {};
+  if (params.mode === 'watchlist') {
+    const expected = getGasSecret_();
+    if (expected && params.secret !== expected) {
+      return ContentService.createTextOutput(JSON.stringify({ error: 'unauthorized' }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    return ContentService.createTextOutput(JSON.stringify(getActiveWatchlist_()))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+  // Existing dashboard serving (unchanged below).
+  const cache = safeCache_();
+  if (cache) {
+    const cached = cache.get('dashboard_html_v2');
+    if (cached) {
+      return HtmlService.createHtmlOutput(cached)
+        .setTitle('Signal Dashboard Pro')
+        .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+    }
+  }
+  const alerts = getAlerts_();
+  const snap = getMarketSnapshotCached_();
+  const html = render_(alerts, snap);
+  if (cache) {
+    try { cache.put('dashboard_html_v2', html, HTML_CACHE_TTL_SECONDS); } catch (e) { /* ignore */ }
+  }
+  return HtmlService.createHtmlOutput(html)
+    .setTitle('Signal Dashboard Pro')
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+}
+
 function doPost(e) {
   try {
     const payload = JSON.parse(e.postData.contents || '{}');
     const expected = getGasSecret_();
     if (expected && payload.secret !== expected) {
       return json_({ ok: false, error: 'secret_mismatch' });
+    }
+    // Route watchlist entries to separate handler.
+    if (payload.type === 'watchlist') {
+      return handleWatchlistPost_(payload);
     }
     // Save chart PNG to Drive when scanner sent base64 chart bytes; on any failure
     // the alert still records without a chart image (fallback to sparkline in UI).
@@ -81,6 +120,75 @@ function getOrCreateFolder_(name) {
   return DriveApp.createFolder(name);
 }
 
+function ensureWatchlistSheet_(ss) {
+  ss = ss || SpreadsheetApp.openById(SPREADSHEET_ID);
+  let sh = ss.getSheetByName(WATCHLIST_SHEET);
+  if (!sh) {
+    sh = ss.insertSheet(WATCHLIST_SHEET);
+    sh.getRange(1, 1, 1, WATCHLIST_HEADERS.length).setValues([WATCHLIST_HEADERS]);
+    sh.setFrozenRows(1);
+  }
+  return sh;
+}
+
+function handleWatchlistPost_(payload) {
+  try {
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const sh = ensureWatchlistSheet_(ss);
+    const code = String(payload.code || '').padStart(5, '0');
+    const name = payload.name || '';
+    const types = Array.isArray(payload.types) ? payload.types.join(',') : String(payload.types || '');
+    const annDate = payload.ann_date || '';
+    const addedAt = new Date().toISOString();
+    // Dedupe: overwrite existing row for this code if present.
+    const lastRow = sh.getLastRow();
+    if (lastRow > 1) {
+      const codes = sh.getRange(2, 1, lastRow - 1, 1).getValues().map(function(r) { return String(r[0]); });
+      const idx = codes.indexOf(code);
+      if (idx >= 0) {
+        const dataRow = idx + 2;
+        sh.getRange(dataRow, 1, 1, WATCHLIST_HEADERS.length).setValues([[code, name, types, annDate, addedAt]]);
+        return json_({ ok: true, action: 'updated' });
+      }
+    }
+    sh.appendRow([code, name, types, annDate, addedAt]);
+    return json_({ ok: true, action: 'added' });
+  } catch (err) {
+    return json_({ ok: false, error: String(err) });
+  }
+}
+
+function getActiveWatchlist_() {
+  try {
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const sh = ss.getSheetByName(WATCHLIST_SHEET);
+    if (!sh || sh.getLastRow() <= 1) return [];
+    const expiryDays = 5;
+    const cutoff = new Date(Date.now() - expiryDays * 86400000);
+    const lastRow = sh.getLastRow();
+    const data = sh.getRange(2, 1, lastRow - 1, WATCHLIST_HEADERS.length).getValues();
+    const out = [];
+    for (let i = 0; i < data.length; i++) {
+      const row = data[i];
+      const code = String(row[0] || '').padStart(5, '0');
+      if (!code || code === '00000') continue;
+      const addedAt = row[4] ? new Date(row[4]) : null;
+      if (addedAt && addedAt < cutoff) continue;
+      const typesRaw = String(row[2] || '');
+      out.push({
+        code: code,
+        name: String(row[1] || ''),
+        types: typesRaw ? typesRaw.split(',') : [],
+        ann_date: String(row[3] || ''),
+        added_at: row[4] ? String(row[4]) : '',
+      });
+    }
+    return out;
+  } catch (err) {
+    return [];
+  }
+}
+
 function readHeaders_(sh) {
   const maxCol = sh.getMaxColumns();
   const target = Math.min(maxCol, Math.max(sh.getLastColumn(), HEADERS.length));
@@ -110,28 +218,6 @@ const YAHOO_FALLBACK_MAX_CODES = 25;
 // the dashboard with date + label + HKEX link only (no long titles).
 const RECENT_CORPS_LIMIT = 20;
 
-function doGet() {
-  // Serve a cached HTML payload when fresh — this is the difference between
-  // sub-second mobile loads and the previous 30s+ timeouts.
-  const cache = safeCache_();
-  if (cache) {
-    const cached = cache.get('dashboard_html_v2');
-    if (cached) {
-      return HtmlService.createHtmlOutput(cached)
-        .setTitle('Signal Dashboard Pro')
-        .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
-    }
-  }
-  const alerts = getAlerts_();
-  const snap = getMarketSnapshotCached_();
-  const html = render_(alerts, snap);
-  if (cache) {
-    try { cache.put('dashboard_html_v2', html, HTML_CACHE_TTL_SECONDS); } catch (e) { /* ignore */ }
-  }
-  return HtmlService.createHtmlOutput(html)
-    .setTitle('Signal Dashboard Pro')
-    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
-}
 
 function safeCache_() {
   try { return CacheService.getScriptCache(); } catch (e) { return null; }
