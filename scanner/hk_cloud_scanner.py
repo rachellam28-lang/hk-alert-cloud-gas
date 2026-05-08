@@ -326,6 +326,26 @@ CORP_ACTION_KEYWORDS = {
         "股權增加",
         "董事權利",
     ],
+    "大手轉倉": [
+        "block trade",
+        "off-market transfer",
+        "off-exchange transfer",
+        "transfer of shares",
+        "transfer of beneficial interest",
+        "大手轉倉",
+        "大宗交易",
+        "場外轉讓",
+        "股份轉讓",
+    ],
+}
+
+# Short labels shown alongside POC alerts. Map the full classification key to
+# the concise label the user wants to see in Telegram.
+POC_ANNOUNCEMENT_LABELS = {
+    "供股": "供股",
+    "配股": "配股",
+    "股東增持": "增持",
+    "大手轉倉": "大手轉倉",
 }
 
 
@@ -363,9 +383,15 @@ def should_skip_announcement_title(title: str) -> bool:
         "issue of shares",
         "increase in shareholding",
         "acquire shares",
+        "block trade",
+        "off-market transfer",
+        "off-exchange transfer",
         "供股",
         "配售",
         "增持",
+        "大手轉倉",
+        "大宗交易",
+        "場外轉讓",
     ]
     if any(word in lower_title for word in skip_words):
         return not any(word in lower_title for word in strong_words)
@@ -424,7 +450,7 @@ def fetch_corp_action_announcements() -> list[dict[str, Any]]:
 def run_corp_actions() -> None:
     send_telegram_message(
         f"<b>披露易掃描開始</b> · {datetime.now():%Y-%m-%d %H:%M}\n"
-        f"類型：供股 / 配股 / 股東增持"
+        f"類型：配股 / 供股 / 增持 / 大手轉倉"
     )
     anns = fetch_corp_action_announcements()
     if not anns:
@@ -695,7 +721,6 @@ def check_poc_breakout(
             "POC": main["poc"],
             "POC 6M": _by("6M"),
             "POC 12M": _by("12M"),
-            "POC 2Y": _by("2Y"),
             "POC 3Y": _by("3Y"),
             "Today High": round(today["high"], 3),
             "Today Close": round(today["close"], 3),
@@ -780,10 +805,45 @@ def _fmt_poc_line(result: dict[str, Any]) -> str:
     return "｜".join(parts) if parts else "—"
 
 
-def _emit_poc_hit(result: dict[str, Any], df: pd.DataFrame) -> None:
+def build_announcement_label_map(
+    announcements: list[dict[str, Any]] | None,
+) -> dict[str, list[str]]:
+    """Map zero-padded HK code -> ordered unique short labels for POC enrichment.
+
+    Labels are 配股 / 供股 / 增持 / 大手轉倉. Missing or unknown classifications
+    are dropped so we never fabricate a label.
+    """
+    out: dict[str, list[str]] = {}
+    for ann in announcements or []:
+        raw_code = str(ann.get("code", "")).strip()
+        if not raw_code:
+            continue
+        code = raw_code.zfill(5)
+        short_labels: list[str] = []
+        for t in ann.get("types", []) or []:
+            label = POC_ANNOUNCEMENT_LABELS.get(t)
+            if label:
+                short_labels.append(label)
+        if not short_labels:
+            continue
+        bucket = out.setdefault(code, [])
+        for label in short_labels:
+            if label not in bucket:
+                bucket.append(label)
+    return out
+
+
+def _emit_poc_hit(
+    result: dict[str, Any],
+    df: pd.DataFrame,
+    announcement_labels: list[str] | None = None,
+) -> None:
     code = result["Code"]
     tv_url = tradingview_url(code)
     crossed_short = result["Crossed Short"]
+    labels = list(announcement_labels or [])
+    tags = ["POC", "Breakout", result["Signal"]]
+    tags.extend(labels)
     payload = {
         "source": "cloud_scanner",
         "category": "poc",
@@ -800,23 +860,23 @@ def _emit_poc_hit(result: dict[str, Any], df: pd.DataFrame) -> None:
         "strategy": "POC Breakout",
         "chart_url": tv_url,
         "source_url": tv_url,
-        "tags": ["POC", "Breakout", result["Signal"]],
+        "tags": tags,
         "poc_6m": result["POC 6M"],
         "poc_12m": result["POC 12M"],
-        "poc_2y": result["POC 2Y"],
         "poc_3y": result["POC 3Y"],
+        "announcement_labels": labels,
         "priority": 2 if "+" in result["Signal"] else 1,
         "raw": json.dumps(result, ensure_ascii=False, default=str),
     }
-    caption = (
-        f"📈 <b>POC突破</b>\n"
-        f"{code} {result['Name']}\n"
-        f"觸發：{crossed_short}\n"
-        f"價：{result['Today Close']}　高：{result['Today High']}\n"
-        f"POC：{_fmt_poc_line(result)}\n"
-        f"幅度：{'+' if result['Break %'] >= 0 else ''}{result['Break %']}%\n"
-        f"<a href=\"{tv_url}\">TV</a>"
-    )
+    caption_lines = [
+        f"📈 <b>POC突破</b>　⚡ 觸發：{crossed_short}",
+        f"{code} {result['Name']}　<a href=\"{tv_url}\">TV</a>",
+        "",
+        f"POC：{_fmt_poc_line(result)}",
+    ]
+    if labels:
+        caption_lines.append(f"公告：{' / '.join(labels)}")
+    caption = "\n".join(caption_lines)
     chart_levels = []
     key_map = {"6M": "POC 6M", "12M": "POC 12M", "3Y": "POC 3Y"}
     for label, short, _days, color in POC_WINDOWS:
@@ -849,6 +909,14 @@ def run_poc() -> None:
         end = min(start + chunk_size, universe_size)
         stocks = stocks.iloc[start:end].copy()
         print(f"POC shard {shard_label}: stocks {start}-{end} of {universe_size}")
+    # Pull the recent HKEXnews corp-action map once per run so each POC hit can
+    # be enriched with a 公告 label line without paying per-stock lookup cost.
+    try:
+        ann_map = build_announcement_label_map(fetch_corp_action_announcements())
+    except Exception as exc:
+        print(f"[poc] announcement enrichment failed: {exc}")
+        ann_map = {}
+    print(f"POC announcement label map size: {len(ann_map)}")
     send_telegram_message(
         f"<b>POC突破掃描開始</b> · {datetime.now():%Y-%m-%d %H:%M}\n"
         f"條件：股價向上突破 半年／1年／3年 POC\n"
@@ -896,7 +964,7 @@ def run_poc() -> None:
                 hits += 1
                 chunk_hits += 1
                 try:
-                    _emit_poc_hit(*outcome)
+                    _emit_poc_hit(*outcome, announcement_labels=ann_map.get(code))
                 except Exception as exc:
                     print(f"{code} emit failed: {exc}")
         elapsed = time.monotonic() - started
