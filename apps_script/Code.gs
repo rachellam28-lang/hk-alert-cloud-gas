@@ -108,7 +108,7 @@ function saveChartToDrive_(payload) {
       // and the UI will gracefully fall back to the sparkline.
     }
     const id = file.getId();
-    return { id: id, url: 'https://drive.google.com/uc?export=view&id=' + id };
+    return { id: id, url: 'https://drive.google.com/thumbnail?id=' + id + '&sz=w300' };
   } catch (err) {
     return null;
   }
@@ -773,7 +773,8 @@ function render_(alerts, snap) {
       ? '<span class="ra-code">' + esc_(r.code) + '</span>'
         + (r.name ? '<span class="ra-name">' + esc_(r.name) + '</span>' : '')
       : '<span class="muted">—</span>';
-    const dateHtml = '<span class="ra-date">' + esc_(r.date || '—') + '</span>';
+    const shortDate = r.date ? r.date.slice(5) : '—';  // YYYY-MM-DD → MM-DD
+    const dateHtml = '<span class="ra-date" title="' + esc_(r.date || '') + '">' + esc_(shortDate) + '</span>';
     const linkHtml = r.url
       ? '<a class="ra-link" href="' + esc_(r.url) + '" target="_blank" rel="noopener">HKEX</a>'
       : '<span class="muted">—</span>';
@@ -915,19 +916,19 @@ function render_(alerts, snap) {
     + '.cpill-other{background:var(--surface-soft);color:var(--mute);border-color:var(--line)}\n'
     + '.cnt.block{border-color:var(--amber-border);background:var(--amber-soft);color:var(--amber)}\n'
     + '.cnt.block b{color:var(--amber)}\n'
-    + '.recent-card{padding:4px 0}\n'
-    + '.ra-list{list-style:none;margin:0;padding:0}\n'
-    + '.ra-item{display:flex;align-items:center;gap:12px;padding:9px 14px;border-bottom:1px solid var(--line-soft);font-size:12.5px}\n'
+    + '.recent-card{padding:2px 0}\n'
+    + '.ra-list{list-style:none;margin:0;padding:4px 10px;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:0}\n'
+    + '.ra-item{display:flex;align-items:center;gap:7px;padding:4px 4px;font-size:11.5px;border-bottom:1px solid var(--line-soft);min-width:0}\n'
     + '.ra-item:last-child{border-bottom:none}\n'
-    + '.ra-label{flex:0 0 auto;min-width:78px}\n'
-    + '.ra-date{flex:0 0 auto;font:600 12px var(--font-mono);color:var(--text-soft);font-variant-numeric:tabular-nums;min-width:96px}\n'
-    + '.ra-stk{flex:1 1 auto;display:flex;align-items:baseline;gap:8px;min-width:0;overflow:hidden}\n'
-    + '.ra-code{font:600 12.5px var(--font-mono);color:var(--text);font-variant-numeric:tabular-nums}\n'
-    + '.ra-name{color:var(--mute);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}\n'
-    + '.ra-link{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;padding:3px 9px;border-radius:6px;border:1px solid var(--violet-border);background:var(--violet-soft);color:var(--violet);font:600 10px var(--font-sans);letter-spacing:.06em;text-decoration:none}\n'
+    + '.ra-label{flex:0 0 auto}\n'
+    + '.ra-date{flex:0 0 auto;font:600 11px var(--font-mono);color:var(--text-soft);font-variant-numeric:tabular-nums;min-width:44px}\n'
+    + '.ra-stk{flex:1 1 auto;display:flex;align-items:baseline;gap:5px;min-width:0;overflow:hidden}\n'
+    + '.ra-code{font:600 11.5px var(--font-mono);color:var(--text);font-variant-numeric:tabular-nums}\n'
+    + '.ra-name{color:var(--mute);font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}\n'
+    + '.ra-link{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;padding:2px 6px;border-radius:5px;border:1px solid var(--violet-border);background:var(--violet-soft);color:var(--violet);font:600 9px var(--font-sans);letter-spacing:.06em;text-decoration:none}\n'
     + '.ra-link:hover{filter:brightness(.97);text-decoration:none}\n'
-    + '.ra-empty{padding:18px;color:var(--mute);text-align:center;font-size:12.5px}\n'
-    + '@media (max-width:520px){.ra-item{flex-wrap:wrap;gap:6px}.ra-name{max-width:100%}}\n'
+    + '.ra-empty{padding:12px;color:var(--mute);text-align:center;font-size:12px}\n'
+    + '@media (max-width:520px){.ra-list{grid-template-columns:1fr}}\n'
     + '.empty{text-align:center;color:var(--mute);padding:40px 16px;font-size:13px}\n'
     + '.foot{margin-top:24px;padding-top:14px;border-top:1px solid var(--line);text-align:center;color:var(--mute-2);font-size:11px}\n'
     + '@media (max-width:1024px){.kpis{grid-template-columns:repeat(2,1fr)}}\n'
@@ -972,8 +973,6 @@ function render_(alerts, snap) {
     + kpi_('美匯指數', '美匯指數 (DXY)', snap.dxy, 2)
     + kpi_('波幅指數', '波幅指數 (VIX)', snap.vix, 2)
     + '</section>\n'
-    + '<div class="section-head"><h2><span class="ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-8-8 18-2-8-8-2z"/></svg></span>最近公告 (' + recentCorps.length + '/' + RECENT_CORPS_LIMIT + ')</h2></div>\n'
-    + '<section class="card recent-card">' + recentHtml + '</section>\n'
     + '<div class="section-head"><h2><span class="ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>代號彙總</h2></div>\n'
     + '<section class="card">\n'
     + '<div class="toolbar">\n'
@@ -1010,6 +1009,8 @@ function render_(alerts, snap) {
     + '<th>連結</th>'
     + '</tr></thead><tbody id="urows">' + rows + empty + '</tbody></table>\n'
     + '</section>\n'
+    + '<div class="section-head"><h2><span class="ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-8-8 18-2-8-8-2z"/></svg></span>最近公告 (' + recentCorps.length + '/' + RECENT_CORPS_LIMIT + ')</h2></div>\n'
+    + '<section class="card recent-card">' + recentHtml + '</section>\n'
     + '<div class="foot">港股訊號雲 · Google Apps Script · 真實數據</div>\n'
     + '</main>\n'
     + '<script>\n'
