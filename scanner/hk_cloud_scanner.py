@@ -17,6 +17,7 @@ Signals:
 from __future__ import annotations
 
 import base64
+import concurrent.futures
 import json
 import os
 import sys
@@ -88,6 +89,22 @@ GAS_SECRET = os.getenv("GAS_SECRET", "")
 WATCHLIST_EXPIRY_DAYS = int(os.getenv("WATCHLIST_EXPIRY_DAYS", "5"))
 VOLUME_MULTIPLIER = float(os.getenv("VOLUME_MULTIPLIER", "1.5"))
 VOLUME_AVG_DAYS = int(os.getenv("VOLUME_AVG_DAYS", "20"))
+
+# ── Futu OpenD settings ────────────────────────────────────────────────────────
+# Set USE_FUTU=true to use FutuOpenD as primary data source (falls back to
+# yfinance if OpenD is unavailable or a fetch fails).
+# FutuOpenD must be running at FUTU_HOST:FUTU_PORT.  Default: localhost:11111.
+USE_FUTU = os.getenv("USE_FUTU", "false").lower() in ("1", "true", "yes")
+FUTU_HOST = os.getenv("FUTU_HOST", "127.0.0.1")
+FUTU_PORT = int(os.getenv("FUTU_PORT", "11111"))
+
+try:
+    from futu import OpenQuoteContext, KLType, AuType, KL_FIELD, RET_OK as _FUTU_RET_OK  # type: ignore
+    _FUTU_AVAILABLE = True
+except ImportError:
+    _FUTU_AVAILABLE = False
+    if USE_FUTU:
+        print("[futu] futu-api not installed; falling back to yfinance. pip install futu-api")
 
 # Telegram caption max length is 1024 chars for photos, 4096 for text messages.
 _TG_CAPTION_LIMIT = 1024
@@ -902,7 +919,100 @@ def normalize_yfinance_df(df: pd.DataFrame) -> pd.DataFrame:
     return df.sort_values("date").reset_index(drop=True)
 
 
+def _period_to_years(period: str) -> int:
+    """Convert yfinance period string ('4y', 'max', '1y') to integer years for Futu."""
+    p = str(period).lower().strip()
+    if p == "max":
+        return 20
+    for suffix, mult in [("y", 1.0), ("mo", 1 / 12.0)]:
+        if p.endswith(suffix):
+            try:
+                return max(1, round(float(p[: -len(suffix)]) * mult))
+            except ValueError:
+                break
+    return 4
+
+
+def _normalize_futu_df(df: pd.DataFrame) -> pd.DataFrame:
+    """Normalize a Futu get_history_kline result to the internal OHLCV format."""
+    if df is None or df.empty:
+        return pd.DataFrame()
+    try:
+        df = df.copy()
+        if "time_key" in df.columns:
+            df = df.rename(columns={"time_key": "date"})
+        df["date"] = pd.to_datetime(df["date"]).dt.tz_localize(None)
+        for col in ["open", "high", "low", "close", "volume"]:
+            if col in df.columns:
+                df[col] = pd.to_numeric(df[col], errors="coerce")
+        df = df.dropna(subset=["date", "open", "high", "low", "close"])
+        df = df[df["close"] > 0]
+        df["volume"] = df["volume"].fillna(0)
+        return df[["date", "open", "high", "low", "close", "volume"]].sort_values("date").reset_index(drop=True)
+    except Exception as exc:
+        print(f"[futu] normalize failed: {exc}")
+        return pd.DataFrame()
+
+
+def get_daily_history_futu(code: str, years: int = 4) -> pd.DataFrame:
+    """Fetch daily OHLCV from Futu OpenD.  Requires FutuOpenD running locally.
+
+    Returns empty DataFrame on any error so callers can fall back to yfinance.
+    """
+    if not _FUTU_AVAILABLE or not USE_FUTU:
+        return pd.DataFrame()
+    futu_code = f"HK.{code}"
+    end_str = datetime.now(HKT_TZ).strftime("%Y-%m-%d")
+    start_str = (datetime.now(HKT_TZ) - timedelta(days=365 * years + 30)).strftime("%Y-%m-%d")
+    try:
+        ctx = OpenQuoteContext(host=FUTU_HOST, port=FUTU_PORT)
+        try:
+            ret, df, _ = ctx.get_history_kline(
+                futu_code,
+                start=start_str,
+                end=end_str,
+                ktype=KLType.K_DAY,
+                autype=AuType.QFQ,
+                fields=[
+                    KL_FIELD.DATE_TIME, KL_FIELD.OPEN, KL_FIELD.HIGH,
+                    KL_FIELD.LOW, KL_FIELD.CLOSE, KL_FIELD.VOLUME,
+                ],
+                max_count=5000,
+            )
+        finally:
+            ctx.close()
+        if ret != _FUTU_RET_OK:
+            return pd.DataFrame()
+        return _normalize_futu_df(df)
+    except Exception as exc:
+        print(f"[futu] {code} failed: {exc}")
+        return pd.DataFrame()
+
+
+def _get_daily_history_batch_futu(codes: list[str], years: int) -> dict[str, pd.DataFrame]:
+    """Parallel Futu batch download using a thread pool.  Each thread opens its own
+    OpenQuoteContext (Futu recommends one context per thread)."""
+    if not _FUTU_AVAILABLE or not USE_FUTU or not codes:
+        return {}
+    workers = min(YF_BATCH_THREADS, len(codes), 8)
+
+    def _fetch(code: str) -> tuple[str, pd.DataFrame]:
+        return code, get_daily_history_futu(code, years)
+
+    out: dict[str, pd.DataFrame] = {}
+    with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as pool:
+        for code, df in pool.map(_fetch, codes):
+            if not df.empty:
+                out[code] = df
+    return out
+
+
 def get_daily_history(code: str, period: str) -> pd.DataFrame:
+    # Futu first (if enabled), fall back to yfinance.
+    if USE_FUTU and _FUTU_AVAILABLE:
+        df = get_daily_history_futu(code, _period_to_years(period))
+        if not df.empty:
+            return df
     ticker = hk_code_to_yahoo(code)
     for attempt in range(1, RETRY_COUNT + 1):
         try:
@@ -926,14 +1036,18 @@ def get_daily_history(code: str, period: str) -> pd.DataFrame:
 
 
 def get_daily_history_batch(codes: list[str], period: str) -> dict[str, pd.DataFrame]:
-    """Download daily OHLC for many tickers in one yfinance call.
+    """Download daily OHLC for many tickers.
 
-    yfinance returns a column-multi-indexed frame keyed by ticker when given a list.
-    Splitting it client-side is far cheaper than N sequential HTTP calls.
-    Tickers with no data are simply omitted from the result map.
+    Uses Futu OpenD parallel batch if USE_FUTU=true; otherwise yfinance bulk download.
+    Tickers with no data are omitted from the result map.
     """
     if not codes:
         return {}
+    if USE_FUTU and _FUTU_AVAILABLE:
+        result = _get_daily_history_batch_futu(codes, _period_to_years(period))
+        if result:
+            return result
+        # If Futu returned nothing (OpenD down?), fall through to yfinance.
     ticker_map = {hk_code_to_yahoo(c): c for c in codes}
     tickers = list(ticker_map.keys())
     out: dict[str, pd.DataFrame] = {}
@@ -992,8 +1106,14 @@ def calculate_poc(profile_df: pd.DataFrame) -> float | None:
     return round((poc_interval.left + poc_interval.right) / 2, 4)
 
 
-def check_ipo_breakout(code: str, name: str) -> tuple[dict[str, Any], pd.DataFrame] | None:
-    df = get_daily_history(code, YF_IPO_PERIOD)
+def check_ipo_breakout(
+    code: str,
+    name: str,
+    df: pd.DataFrame | None = None,
+) -> tuple[dict[str, Any], pd.DataFrame] | None:
+    """Check for IPO first-day HIGH breakout.  Pass pre-fetched df to avoid double fetch."""
+    if df is None:
+        df = get_daily_history(code, YF_IPO_PERIOD)
     if df.empty or len(df) < MIN_LISTING_DAYS:
         return None
     listing_days = len(df)
@@ -1018,6 +1138,41 @@ def check_ipo_breakout(code: str, name: str) -> tuple[dict[str, Any], pd.DataFra
             df,
         )
     return None
+
+
+def check_ipo_open_breakout(
+    code: str,
+    name: str,
+    df: pd.DataFrame,
+) -> dict[str, Any] | None:
+    """Check if today's close crosses above IPO first-day OPEN price.
+
+    Lower barrier than the first-day HIGH — signals stock returning to IPO starting price.
+    Requires pre-fetched df (share with check_ipo_breakout to avoid double fetch).
+    """
+    if df.empty or len(df) < MIN_LISTING_DAYS + 1:
+        return None
+    listing_days = len(df)
+    if MAX_LISTING_DAYS > 0 and listing_days > MAX_LISTING_DAYS:
+        return None
+    ipo_open = float(df.iloc[0]["open"])
+    if ipo_open <= 0:
+        return None
+    today = df.iloc[-1]
+    prev = df.iloc[-2]
+    # Breakout: close crosses from below to above IPO open
+    if float(today["close"]) > ipo_open and float(prev["close"]) <= ipo_open:
+        return {
+            "Code": code,
+            "Name": name,
+            "IPO Date": df.iloc[0]["date"].strftime("%Y-%m-%d"),
+            "Listed Days": listing_days,
+            "IPO Open": round(ipo_open, 3),
+            "Today High": round(float(today["high"]), 3),
+            "Today Close": round(float(today["close"]), 3),
+            "Break %": round((float(today["close"]) / ipo_open - 1) * 100, 2),
+            "Data Date": today["date"].strftime("%Y-%m-%d"),
+        }
 
 
 POC_WINDOWS = [
@@ -1089,12 +1244,119 @@ def check_poc_breakout(
     )
 
 
+def _emit_ipo_high_hit(result: dict[str, Any], df: pd.DataFrame, wl_entry: dict | None) -> None:
+    code = result["Code"]
+    tv_url = tradingview_url(code)
+    on_watchlist = wl_entry is not None
+    if on_watchlist:
+        wl_types = " / ".join(wl_entry.get("types") or [])
+        wl_date = wl_entry.get("ann_date") or wl_entry.get("announcement_date", "")
+        wl_line = f"⭐ 公告後突破 · {wl_types}（{wl_date}）\n"
+        title_prefix = "⭐🚀"
+        priority = 3
+        tags = ["IPO", "IPO首日高突破", "公告後突破"]
+    else:
+        wl_line = ""
+        title_prefix = "🚀"
+        priority = 2
+        tags = ["IPO", "IPO首日高突破"]
+    payload = {
+        "source": "cloud_scanner",
+        "category": "ipo",
+        "code": code,
+        "symbol": hk_code_to_yahoo(code),
+        "name": result["Name"],
+        "signal": "IPO首日高突破",
+        "timeframe": "1D",
+        "price": result["Today Close"],
+        "message": (
+            f"IPO日期：{result['IPO Date']}；IPO首日高：{result['IPO High']}；"
+            f"今日最高：{result['Today High']}；突破幅度：{result['Break %']}%"
+        ),
+        "strategy": "IPO First Day High Breakout",
+        "chart_url": "",
+        "source_url": "",
+        "tags": tags,
+        "priority": priority,
+        "raw": json.dumps(result, ensure_ascii=False),
+    }
+    break_sign = "+" if result["Break %"] >= 0 else ""
+    caption = (
+        f"{title_prefix} <b>IPO首日高突破</b>\n"
+        f"{wl_line}"
+        f"{code} {result['Name']}\n"
+        f"IPO首日高：{result['IPO High']}（{result['IPO Date']}）\n"
+        f"突破：{result['Today High']}　<b>{break_sign}{result['Break %']}%</b>\n"
+        f"收：{result['Today Close']}\n"
+        f"<a href=\"{tv_url}\">走勢圖</a>"
+    )
+    chart_path = render_chart(
+        df, code, result["Name"], "IPO首日高突破",
+        levels=[("IPO首日高", result["IPO High"], "#fbbf24")],
+        lookback_days=min(len(df), max(60, result["Listed Days"] + 5)),
+    )
+    emit_alert(payload, caption, chart_path, reply_markup=build_inline_keyboard_([("📊 走勢圖", tv_url)]))
+
+
+def _emit_ipo_open_hit(result: dict[str, Any], df: pd.DataFrame, wl_entry: dict | None) -> None:
+    code = result["Code"]
+    tv_url = tradingview_url(code)
+    on_watchlist = wl_entry is not None
+    if on_watchlist:
+        wl_types = " / ".join(wl_entry.get("types") or [])
+        wl_date = wl_entry.get("ann_date") or wl_entry.get("announcement_date", "")
+        wl_line = f"⭐ 公告後突破 · {wl_types}（{wl_date}）\n"
+        title_prefix = "⭐🚀"
+        priority = 3
+        tags = ["IPO", "IPO首日開突破", "公告後突破"]
+    else:
+        wl_line = ""
+        title_prefix = "🚀"
+        priority = 2
+        tags = ["IPO", "IPO首日開突破"]
+    break_sign = "+" if result["Break %"] >= 0 else ""
+    payload = {
+        "source": "cloud_scanner",
+        "category": "ipo",
+        "code": code,
+        "symbol": hk_code_to_yahoo(code),
+        "name": result["Name"],
+        "signal": "IPO首日開突破",
+        "timeframe": "1D",
+        "price": result["Today Close"],
+        "message": (
+            f"IPO日期：{result['IPO Date']}；IPO首日開：{result['IPO Open']}；"
+            f"今日收：{result['Today Close']}；突破幅度：{result['Break %']}%"
+        ),
+        "strategy": "IPO First Day Open Breakout",
+        "chart_url": "",
+        "source_url": "",
+        "tags": tags,
+        "priority": priority,
+        "raw": json.dumps(result, ensure_ascii=False),
+    }
+    caption = (
+        f"{title_prefix} <b>IPO首日開突破</b>\n"
+        f"{wl_line}"
+        f"{code} {result['Name']}\n"
+        f"IPO首日開：{result['IPO Open']}（{result['IPO Date']}）\n"
+        f"今日收：{result['Today Close']}　<b>{break_sign}{result['Break %']}%</b>\n"
+        f"<a href=\"{tv_url}\">走勢圖</a>"
+    )
+    chart_path = render_chart(
+        df, code, result["Name"], "IPO首日開突破",
+        levels=[("IPO首日開", result["IPO Open"], "#a78bfa")],
+        lookback_days=min(len(df), max(60, result["Listed Days"] + 5)),
+    )
+    emit_alert(payload, caption, chart_path, reply_markup=build_inline_keyboard_([("📊 走勢圖", tv_url)]))
+
+
 def run_ipo() -> None:
     send_telegram_message(
-        f"<b>IPO首日突破掃描開始</b> · {datetime.now():%Y-%m-%d %H:%M}"
+        f"<b>IPO首日突破掃描開始</b> · {datetime.now():%Y-%m-%d %H:%M}\n"
+        f"信號：首日高突破 + 首日開突破"
     )
     stocks = get_hk_stock_list()
-    # Fetch watchlist once for high-conviction 公告後突破 detection.
     try:
         watchlist_map = fetch_watchlist_from_gas()
     except Exception as exc:
@@ -1109,70 +1371,26 @@ def run_ipo() -> None:
             elapsed = time.monotonic() - started
             rate = n / elapsed if elapsed > 0 else 0
             print(f"IPO progress {n}/{total} hits={hits} rate={rate:.1f}/s", flush=True)
-        outcome = check_ipo_breakout(row["code"], row["name"])
-        if outcome:
-            result, df = outcome
+        code, name = row["code"], row["name"]
+        # Fetch once, share df across both checks.
+        df = get_daily_history(code, YF_IPO_PERIOD)
+        if df.empty:
+            time.sleep(SLEEP_SEC)
+            continue
+        wl_entry = watchlist_map.get(code)
+        # ── IPO first-day HIGH breakout ──────────────────────────────────────
+        high_outcome = check_ipo_breakout(code, name, df=df)
+        if high_outcome:
+            result, _ = high_outcome
             hits += 1
-            code = result["Code"]
-            tv_url = tradingview_url(code)
-
-            wl_entry = watchlist_map.get(code)
-            on_watchlist = wl_entry is not None
-            if on_watchlist:
-                wl_types = " / ".join(wl_entry.get("types") or [])
-                wl_date = wl_entry.get("ann_date") or wl_entry.get("announcement_date", "")
-                wl_line = f"⭐ 公告後突破 · {wl_types}（{wl_date}）\n"
-                title_prefix = "⭐🚀"
-                priority = 3
-                tags = ["IPO", "Breakout", "公告後突破"]
-            else:
-                wl_line = ""
-                title_prefix = "🚀"
-                priority = 2
-                tags = ["IPO", "Breakout"]
-
-            payload = {
-                "source": "cloud_scanner",
-                "category": "ipo",
-                "code": code,
-                "symbol": hk_code_to_yahoo(code),
-                "name": result["Name"],
-                "signal": "IPO首日高突破",
-                "timeframe": "1D",
-                "price": result["Today Close"],
-                "message": (
-                    f"IPO日期：{result['IPO Date']}；IPO首日高：{result['IPO High']}；"
-                    f"今日最高：{result['Today High']}；突破幅度：{result['Break %']}%"
-                ),
-                "strategy": "IPO First Day High Breakout",
-                "chart_url": "",
-                "source_url": "",
-                "tags": tags,
-                "priority": priority,
-                "raw": json.dumps(result, ensure_ascii=False),
-            }
-            break_sign = "+" if result["Break %"] >= 0 else ""
-            caption = (
-                f"{title_prefix} <b>IPO首日高突破</b>\n"
-                f"{wl_line}"
-                f"{code} {result['Name']}\n"
-                f"IPO首日高：{result['IPO High']}（{result['IPO Date']}）\n"
-                f"突破：{result['Today High']}　<b>{break_sign}{result['Break %']}%</b>\n"
-                f"收：{result['Today Close']}\n"
-                f"<a href=\"{tv_url}\">走勢圖</a>"
-            )
-            chart_path = render_chart(
-                df,
-                code,
-                result["Name"],
-                "IPO首日高突破",
-                levels=[("IPO首日高", result["IPO High"], "#fbbf24")],
-                lookback_days=min(len(df), max(60, result["Listed Days"] + 5)),
-            )
-            ipo_kb = build_inline_keyboard_([("📊 走勢圖", tv_url)])
-            emit_alert(payload, caption, chart_path, reply_markup=ipo_kb)
+            _emit_ipo_high_hit(result, df, wl_entry)
+        # ── IPO first-day OPEN breakout ──────────────────────────────────────
+        open_result = check_ipo_open_breakout(code, name, df)
+        if open_result:
+            hits += 1
+            _emit_ipo_open_hit(open_result, df, wl_entry)
         time.sleep(SLEEP_SEC)
-    send_telegram_message(f"IPO首日突破掃描完成，共 {hits} 隻。")
+    send_telegram_message(f"IPO首日突破掃描完成，共 {hits} 隻（首日高＋首日開合計）。")
 
 
 def _fmt_poc_line(result: dict[str, Any]) -> str:
@@ -1406,6 +1624,152 @@ def run_poc() -> None:
     send_telegram_message(summary)
 
 
+def check_year_open_breakout(
+    code: str,
+    name: str,
+    df: pd.DataFrame,
+) -> dict[str, Any] | None:
+    """Check if today's price crosses above the current year's first trading-day open.
+
+    Signal: bullish momentum reclaiming the annual starting price.
+    Uses BREAKOUT_FIELD (high or close) consistent with POC scan.
+    """
+    if df is None or df.empty or len(df) < 3:
+        return None
+    current_year = datetime.now(HKT_TZ).year
+    year_mask = df["date"].dt.year == current_year
+    year_data = df[year_mask]
+    if year_data.empty:
+        return None
+    year_open = float(year_data.iloc[0]["open"])
+    year_open_date = year_data.iloc[0]["date"].strftime("%Y-%m-%d")
+    if year_open <= 0:
+        return None
+    today = df.iloc[-1]
+    prev = df.iloc[-2]
+    field = BREAKOUT_FIELD if BREAKOUT_FIELD in ["high", "close"] else "high"
+    today_val = float(today[field])
+    prev_val = float(prev[field])
+    if today_val > year_open and prev_val <= year_open:
+        return {
+            "Code": code,
+            "Name": name,
+            "Year": current_year,
+            "Year Open Date": year_open_date,
+            "Year Open": round(year_open, 3),
+            "Break Field": field,
+            "Break Value": round(today_val, 3),
+            "Today High": round(float(today["high"]), 3),
+            "Today Close": round(float(today["close"]), 3),
+            "Break %": round((today_val / year_open - 1) * 100, 2),
+            "Data Date": today["date"].strftime("%Y-%m-%d"),
+        }
+    return None
+
+
+def run_year_open_breakout() -> None:
+    """Scan all HK stocks for price crossing above current-year first-day open."""
+    current_year = datetime.now(HKT_TZ).year
+    send_telegram_message(
+        f"<b>年開突破掃描開始</b> · {datetime.now():%Y-%m-%d %H:%M}\n"
+        f"條件：股價向上穿越 {current_year} 年首個交易日開市價"
+    )
+    stocks = get_hk_stock_list()
+    try:
+        watchlist_map = fetch_watchlist_from_gas()
+    except Exception as exc:
+        print(f"[year_open] watchlist fetch failed: {exc}")
+        watchlist_map = {}
+
+    records = stocks.to_dict("records")
+    total = len(records)
+    hits = 0
+    processed = 0
+    started = time.monotonic()
+
+    for batch_start in range(0, total, YF_BATCH_SIZE):
+        chunk = records[batch_start: batch_start + YF_BATCH_SIZE]
+        chunk_codes = [r["code"] for r in chunk]
+        try:
+            data = get_daily_history_batch(chunk_codes, "1y")
+        except Exception as exc:
+            print(f"[year_open] batch failed: {exc}")
+            data = {}
+        for row in chunk:
+            processed += 1
+            code = row["code"]
+            df = data.get(code)
+            if df is None or df.empty:
+                continue
+            try:
+                result = check_year_open_breakout(code, row["name"], df)
+            except Exception as exc:
+                print(f"[year_open] {code} check failed: {exc}")
+                continue
+            if not result:
+                continue
+            hits += 1
+            tv_url = tradingview_url(code)
+            wl_entry = watchlist_map.get(code)
+            on_watchlist = wl_entry is not None
+            if on_watchlist:
+                wl_types = " / ".join(wl_entry.get("types") or [])
+                wl_date = wl_entry.get("ann_date") or wl_entry.get("announcement_date", "")
+                wl_line = f"⭐ 公告後突破 · {wl_types}（{wl_date}）\n"
+                title_prefix = "⭐📅"
+                priority = 3
+                tags = ["年開突破", "公告後突破"]
+            else:
+                wl_line = ""
+                title_prefix = "📅"
+                priority = 1
+                tags = ["年開突破"]
+            break_sign = "+" if result["Break %"] >= 0 else ""
+            payload = {
+                "source": "cloud_scanner",
+                "category": "year_open",
+                "code": code,
+                "symbol": hk_code_to_yahoo(code),
+                "name": result["Name"],
+                "signal": "年開突破",
+                "timeframe": "1D",
+                "price": result["Today Close"],
+                "message": (
+                    f"{current_year}年首日開：{result['Year Open']}（{result['Year Open Date']}）；"
+                    f"突破幅度：{result['Break %']}%"
+                ),
+                "strategy": "Year Open Breakout",
+                "chart_url": "",
+                "source_url": "",
+                "tags": tags,
+                "priority": priority,
+                "raw": json.dumps(result, ensure_ascii=False),
+            }
+            caption = (
+                f"{title_prefix} <b>年開突破</b>\n"
+                f"{wl_line}"
+                f"{code} {result['Name']}\n"
+                f"{current_year}年首日開：{result['Year Open']}（{result['Year Open Date']}）\n"
+                f"突破：{result['Break Value']}　<b>{break_sign}{result['Break %']}%</b>\n"
+                f"收：{result['Today Close']}\n"
+                f"<a href=\"{tv_url}\">走勢圖</a>"
+            )
+            chart_path = render_chart(
+                df, code, result["Name"], f"年開突破 {current_year}",
+                levels=[(f"{current_year}年首日開", result["Year Open"], "#f59e0b")],
+                lookback_days=CHART_LOOKBACK_DAYS,
+            )
+            emit_alert(payload, caption, chart_path, reply_markup=build_inline_keyboard_([("📊 走勢圖", tv_url)]))
+        elapsed = time.monotonic() - started
+        rate = processed / elapsed if elapsed > 0 else 0
+        if batch_start % (YF_BATCH_SIZE * 5) == 0:
+            print(f"年開突破 {processed}/{total} hits={hits} rate={rate:.1f}/s", flush=True)
+        if SLEEP_SEC > 0:
+            time.sleep(SLEEP_SEC)
+
+    send_telegram_message(f"年開突破掃描完成，共 {hits} 隻（掃描 {processed}/{total}）。")
+
+
 def main() -> None:
     mode = sys.argv[1] if len(sys.argv) > 1 else "all"
     if mode == "corp":
@@ -1414,12 +1778,17 @@ def main() -> None:
         run_ipo()
     elif mode == "poc":
         run_poc()
+    elif mode == "year_open":
+        run_year_open_breakout()
     elif mode == "all":
         run_corp_actions()
         run_ipo()
         run_poc()
+        run_year_open_breakout()
     else:
-        raise SystemExit("Usage: python scanner/hk_cloud_scanner.py [corp|ipo|poc|all]")
+        raise SystemExit(
+            "Usage: python scanner/hk_cloud_scanner.py [corp|ipo|poc|year_open|all]"
+        )
 
 
 if __name__ == "__main__":
