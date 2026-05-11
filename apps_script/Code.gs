@@ -34,22 +34,27 @@ function doGet(e) {
     return ContentService.createTextOutput(JSON.stringify(getActiveWatchlist_()))
       .setMimeType(ContentService.MimeType.JSON);
   }
-  // Existing dashboard serving (unchanged below).
-  const cache = safeCache_();
-  if (cache) {
-    const cached = cache.get('dashboard_html_v3');
-    if (cached) {
-      return HtmlService.createHtmlOutput(cached)
-        .setTitle('港股訊號儀表板')
-        .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
-    }
-  }
+  // Everything inside try-catch so any runtime error surfaces as a red debug page.
   try {
+    const cache = safeCache_();
+    // Purge stale keys from previous deploys on first hit after a new deploy.
+    if (cache) {
+      try { cache.remove('dashboard_html_v3'); } catch (e) { /* ok */ }
+      try { cache.remove('dashboard_html_v2'); } catch (e) { /* ok */ }
+    }
+    if (cache) {
+      const cached = cache.get('dashboard_html_v4');
+      if (cached) {
+        return HtmlService.createHtmlOutput(cached)
+          .setTitle('港股訊號儀表板')
+          .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+      }
+    }
     const alerts = getAlerts_();
     const snap = getMarketSnapshotCached_();
     const html = render_(alerts, snap);
     if (cache) {
-      try { cache.put('dashboard_html_v3', html, HTML_CACHE_TTL_SECONDS); } catch (e) { /* ignore */ }
+      try { cache.put('dashboard_html_v4', html, HTML_CACHE_TTL_SECONDS); } catch (e) { /* ignore */ }
     }
     return HtmlService.createHtmlOutput(html)
       .setTitle('港股訊號儀表板')
