@@ -1531,11 +1531,9 @@ def _emit_poc_hit(
     break_sign = "+" if (result.get("Break %") or 0) >= 0 else ""
     title_prefix = "⭐📈" if on_watchlist else "📈"
     caption_lines = [
-        f"{title_prefix} <b>POC突破</b>",
-        f"{code} {result['Name']}",
-        f"⚡ 觸發：{crossed_short}",
+        f"⚡觸發：{crossed_short}",
+        f"📈{code} {result['Name']}",
         f"突破：{result['Break Value']}　<b>{break_sign}{result['Break %']}%</b>",
-        f"POC：{_fmt_poc_line(result)}",
     ]
     if labels:
         caption_lines.append(f"公告：{' / '.join(labels)}")
