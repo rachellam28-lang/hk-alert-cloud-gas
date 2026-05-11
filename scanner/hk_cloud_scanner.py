@@ -166,7 +166,10 @@ def get_prev_week_low(df: pd.DataFrame) -> float | None:
 def sl_yr_line(pw_low: float | None, price: float, df: pd.DataFrame) -> str:
     """Return the stop-loss + year-open indicator line, or empty string if no data."""
     yr_open = get_year_open_price(df)
-    yr_mark = " ✓年開" if (yr_open is not None and price > yr_open) else ""
+    if yr_open is not None:
+        yr_mark = " 🔺年開" if price > yr_open else " 🔻年開"
+    else:
+        yr_mark = ""
     if pw_low is not None:
         return f"止蝕：{pw_low}{yr_mark}"
     if yr_mark:
