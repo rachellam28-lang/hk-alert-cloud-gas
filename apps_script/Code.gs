@@ -37,7 +37,7 @@ function doGet(e) {
   // Existing dashboard serving (unchanged below).
   const cache = safeCache_();
   if (cache) {
-    const cached = cache.get('dashboard_html_v2');
+    const cached = cache.get('dashboard_html_v3');
     if (cached) {
       return HtmlService.createHtmlOutput(cached)
         .setTitle('港股訊號儀表板')
@@ -48,7 +48,7 @@ function doGet(e) {
   const snap = getMarketSnapshotCached_();
   const html = render_(alerts, snap);
   if (cache) {
-    try { cache.put('dashboard_html_v2', html, HTML_CACHE_TTL_SECONDS); } catch (e) { /* ignore */ }
+    try { cache.put('dashboard_html_v3', html, HTML_CACHE_TTL_SECONDS); } catch (e) { /* ignore */ }
   }
   return HtmlService.createHtmlOutput(html)
     .setTitle('港股訊號儀表板')
