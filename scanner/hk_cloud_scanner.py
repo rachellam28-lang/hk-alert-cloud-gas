@@ -865,11 +865,10 @@ def run_corp_actions() -> None:
             "priority": priority,
             "raw": json.dumps(ann, ensure_ascii=False),
         }
-        vol_part = f"\n量比：{vol_line}" if vol_line else ""
+        vol_part = f"　量比：{vol_line}" if vol_line else ""
         caption = (
-            f"📰 <b>披露易 · {types}</b>\n"
+            f"📰{types}　{ann_date}{vol_part}\n"
             f"{code} {ann['name']}\n"
-            f"📅 {ann_date}{vol_part}\n"
             f"{title_cn}"
         )
         corp_kb = build_inline_keyboard_([
@@ -1331,12 +1330,10 @@ def _emit_ipo_high_hit(result: dict[str, Any], df: pd.DataFrame, wl_entry: dict 
     }
     break_sign = "+" if result["Break %"] >= 0 else ""
     caption = (
-        f"{title_prefix} <b>IPO首日高突破</b>\n"
+        f"🚀首日高：{result['IPO High']}（{result['IPO Date']}）\n"
         f"{code} {result['Name']}\n"
         + (f"{wl_line.strip()}\n" if wl_line else "")
-        + f"IPO首日高：{result['IPO High']}（{result['IPO Date']}）\n"
-        f"突破：{result['Today High']}　<b>{break_sign}{result['Break %']}%</b>\n"
-        f"收：{result['Today Close']}"
+        + f"突破：{result['Today High']}　<b>{break_sign}{result['Break %']}%</b>"
     )
     chart_path = render_chart(
         df, code, result["Name"], "IPO首日高突破",
@@ -1384,11 +1381,10 @@ def _emit_ipo_open_hit(result: dict[str, Any], df: pd.DataFrame, wl_entry: dict 
         "raw": json.dumps(result, ensure_ascii=False),
     }
     caption = (
-        f"{title_prefix} <b>IPO首日開突破</b>\n"
+        f"🚀首日開：{result['IPO Open']}（{result['IPO Date']}）\n"
         f"{code} {result['Name']}\n"
         + (f"{wl_line.strip()}\n" if wl_line else "")
-        + f"IPO首日開：{result['IPO Open']}（{result['IPO Date']}）\n"
-        f"今日收：{result['Today Close']}　<b>{break_sign}{result['Break %']}%</b>"
+        + f"今日收：{result['Today Close']}　<b>{break_sign}{result['Break %']}%</b>"
     )
     chart_path = render_chart(
         df, code, result["Name"], "IPO首日開突破",
@@ -1791,12 +1787,10 @@ def run_year_open_breakout() -> None:
                 "raw": json.dumps(result, ensure_ascii=False),
             }
             caption = (
-                f"{title_prefix} <b>年開突破</b>\n"
+                f"📅{current_year}年開：{result['Year Open']}（{result['Year Open Date']}）\n"
                 f"{code} {result['Name']}\n"
                 + (f"{wl_line.strip()}\n" if wl_line else "")
-                + f"{current_year}年首日開：{result['Year Open']}（{result['Year Open Date']}）\n"
-                f"突破：{result['Break Value']}　<b>{break_sign}{result['Break %']}%</b>\n"
-                f"收：{result['Today Close']}"
+                + f"突破：{result['Break Value']}　<b>{break_sign}{result['Break %']}%</b>"
             )
             chart_path = render_chart(
                 df, code, result["Name"], f"年開突破 {current_year}",
