@@ -132,6 +132,26 @@ def tradingview_url(code: str) -> str:
     return f"https://www.tradingview.com/chart/?symbol=HKEX%3A{symbol}"
 
 
+def get_prev_week_low(df: pd.DataFrame) -> float | None:
+    """Return the lowest low of the previous complete trading week (Mon–Fri).
+
+    Uses HKT 'today' to determine week boundaries.  Returns None if no data
+    exists for that period (e.g. newly-listed stock or df is empty).
+    """
+    if df is None or df.empty or "low" not in df.columns or "date" not in df.columns:
+        return None
+    today = datetime.now(HKT_TZ).date()
+    days_since_monday = today.weekday()          # Mon=0 … Sun=6
+    current_monday = today - timedelta(days=days_since_monday)
+    prev_monday = current_monday - timedelta(days=7)
+    prev_sunday = current_monday - timedelta(days=1)   # Fri is the last trading day
+    mask = (df["date"].dt.date >= prev_monday) & (df["date"].dt.date <= prev_sunday)
+    prev_week = df[mask]
+    if prev_week.empty:
+        return None
+    return round(float(prev_week["low"].min()), 3)
+
+
 def build_inline_keyboard_(buttons: list[tuple[str, str]]) -> dict:
     """Build a single-row Telegram InlineKeyboardMarkup from (text, url) pairs."""
     return {"inline_keyboard": [[{"text": t, "url": u} for t, u in buttons]]}
@@ -866,22 +886,25 @@ def run_corp_actions() -> None:
             "raw": json.dumps(ann, ensure_ascii=False),
         }
         vol_part = f"　量比：{vol_line}" if vol_line else ""
+        pw_low = get_prev_week_low(df) if not df.empty else None
+        sl_part = f"\n止蝕：{pw_low}" if pw_low is not None else ""
         caption = (
             f"📰{types}　{ann_date}{vol_part}\n"
             f"{code} {ann['name']}\n"
-            f"{title_cn}"
+            f"{title_cn}{sl_part}"
         )
         corp_kb = build_inline_keyboard_([
             ("📰 披露易", ann["url"]),
             ("📊 走勢圖", corp_tv_url),
         ])
         chart_path: str | None = None
+        corp_levels = [("前周低", pw_low, "#ef4444")] if pw_low is not None else []
         try:
             if not df.empty:
                 chart_path = render_chart(
                     df, code, ann["name"],
                     f"披露易 · {types}",
-                    levels=[],
+                    levels=corp_levels,
                     lookback_days=CHART_LOOKBACK_DAYS,
                 )
         except Exception as exc:
@@ -1329,15 +1352,20 @@ def _emit_ipo_high_hit(result: dict[str, Any], df: pd.DataFrame, wl_entry: dict 
         "raw": json.dumps(result, ensure_ascii=False),
     }
     break_sign = "+" if result["Break %"] >= 0 else ""
+    pw_low = get_prev_week_low(df)
+    sl_line = f"\n止蝕：{pw_low}" if pw_low is not None else ""
     caption = (
         f"🚀首日高：{result['IPO High']}（{result['IPO Date']}）\n"
         f"{code} {result['Name']}\n"
         + (f"{wl_line.strip()}\n" if wl_line else "")
-        + f"突破：{result['Today High']}　<b>{break_sign}{result['Break %']}%</b>"
+        + f"突破：{result['Today High']}　<b>{break_sign}{result['Break %']}%</b>{sl_line}"
     )
+    ipo_high_levels = [("IPO首日高", result["IPO High"], "#fbbf24")]
+    if pw_low is not None:
+        ipo_high_levels.append(("前周低", pw_low, "#ef4444"))
     chart_path = render_chart(
         df, code, result["Name"], "IPO首日高突破",
-        levels=[("IPO首日高", result["IPO High"], "#fbbf24")],
+        levels=ipo_high_levels,
         lookback_days=min(len(df), max(60, result["Listed Days"] + 5)),
     )
     emit_alert(payload, caption, chart_path, reply_markup=build_inline_keyboard_([("📊 走勢圖", tv_url)]))
@@ -1380,15 +1408,20 @@ def _emit_ipo_open_hit(result: dict[str, Any], df: pd.DataFrame, wl_entry: dict 
         "priority": priority,
         "raw": json.dumps(result, ensure_ascii=False),
     }
+    pw_low = get_prev_week_low(df)
+    sl_line = f"\n止蝕：{pw_low}" if pw_low is not None else ""
     caption = (
         f"🚀首日開：{result['IPO Open']}（{result['IPO Date']}）\n"
         f"{code} {result['Name']}\n"
         + (f"{wl_line.strip()}\n" if wl_line else "")
-        + f"今日收：{result['Today Close']}　<b>{break_sign}{result['Break %']}%</b>"
+        + f"今日收：{result['Today Close']}　<b>{break_sign}{result['Break %']}%</b>{sl_line}"
     )
+    ipo_open_levels = [("IPO首日開", result["IPO Open"], "#a78bfa")]
+    if pw_low is not None:
+        ipo_open_levels.append(("前周低", pw_low, "#ef4444"))
     chart_path = render_chart(
         df, code, result["Name"], "IPO首日開突破",
-        levels=[("IPO首日開", result["IPO Open"], "#a78bfa")],
+        levels=ipo_open_levels,
         lookback_days=min(len(df), max(60, result["Listed Days"] + 5)),
     )
     emit_alert(payload, caption, chart_path, reply_markup=build_inline_keyboard_([("📊 走勢圖", tv_url)]))
@@ -1526,11 +1559,14 @@ def _emit_poc_hit(
     }
     break_sign = "+" if (result.get("Break %") or 0) >= 0 else ""
     title_prefix = "⭐📈" if on_watchlist else "📈"
+    pw_low = get_prev_week_low(df)
     caption_lines = [
         f"⚡觸發：{crossed_short}",
         f"📈{code} {result['Name']}",
         f"突破：{result['Break Value']}　<b>{break_sign}{result['Break %']}%</b>",
     ]
+    if pw_low is not None:
+        caption_lines.append(f"止蝕：{pw_low}")
     if labels:
         caption_lines.append(f"公告：{' / '.join(labels)}")
     if wl_line:
@@ -1542,6 +1578,8 @@ def _emit_poc_hit(
         val = result.get(key_map[short])
         if val is not None and not pd.isna(val):
             chart_levels.append((label, val, color))
+    if pw_low is not None:
+        chart_levels.append(("前周低", pw_low, "#ef4444"))
     chart_path = render_chart(
         df,
         code,
@@ -1786,15 +1824,20 @@ def run_year_open_breakout() -> None:
                 "priority": priority,
                 "raw": json.dumps(result, ensure_ascii=False),
             }
+            pw_low = get_prev_week_low(df)
+            sl_line = f"\n止蝕：{pw_low}" if pw_low is not None else ""
             caption = (
                 f"📅{current_year}年開：{result['Year Open']}（{result['Year Open Date']}）\n"
                 f"{code} {result['Name']}\n"
                 + (f"{wl_line.strip()}\n" if wl_line else "")
-                + f"突破：{result['Break Value']}　<b>{break_sign}{result['Break %']}%</b>"
+                + f"突破：{result['Break Value']}　<b>{break_sign}{result['Break %']}%</b>{sl_line}"
             )
+            yr_levels = [(f"{current_year}年首日開", result["Year Open"], "#f59e0b")]
+            if pw_low is not None:
+                yr_levels.append(("前周低", pw_low, "#ef4444"))
             chart_path = render_chart(
                 df, code, result["Name"], f"年開突破 {current_year}",
-                levels=[(f"{current_year}年首日開", result["Year Open"], "#f59e0b")],
+                levels=yr_levels,
                 lookback_days=CHART_LOOKBACK_DAYS,
             )
             emit_alert(payload, caption, chart_path, reply_markup=build_inline_keyboard_([("📊 走勢圖", tv_url)]))
