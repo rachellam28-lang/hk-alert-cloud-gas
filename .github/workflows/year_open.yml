@@ -1,0 +1,30 @@
+name: HK Alert Year Open Breakout
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "5 9 * * 1-5"   # 17:05 HKT (after market close)
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+      - run: pip install -r scanner/requirements.txt
+      - name: Run Year Open Breakout scan
+        timeout-minutes: 28
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GAS_WEBHOOK_URL: ${{ secrets.GAS_WEBHOOK_URL }}
+          GAS_SECRET: ${{ secrets.GAS_SECRET }}
+          MAX_STOCKS: ${{ vars.MAX_STOCKS || '0' }}
+          YF_HTTP_TIMEOUT: ${{ vars.YF_HTTP_TIMEOUT || '10' }}
+          YF_BATCH_SIZE: ${{ vars.YF_BATCH_SIZE || '60' }}
+          YF_BATCH_THREADS: ${{ vars.YF_BATCH_THREADS || '8' }}
+        run: python -u scanner/hk_cloud_scanner.py year_open
