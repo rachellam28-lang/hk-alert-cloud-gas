@@ -132,6 +132,17 @@ def tradingview_url(code: str) -> str:
     return f"https://www.tradingview.com/chart/?symbol=HKEX%3A{symbol}"
 
 
+def get_year_open_price(df: pd.DataFrame) -> float | None:
+    """Return the current year's first trading-day open price."""
+    if df is None or df.empty or "open" not in df.columns or "date" not in df.columns:
+        return None
+    current_year = datetime.now(HKT_TZ).year
+    year_data = df[df["date"].dt.year == current_year]
+    if year_data.empty:
+        return None
+    return round(float(year_data.iloc[0]["open"]), 3)
+
+
 def get_prev_week_low(df: pd.DataFrame) -> float | None:
     """Return the lowest low of the previous complete trading week (Mon–Fri).
 
@@ -150,6 +161,17 @@ def get_prev_week_low(df: pd.DataFrame) -> float | None:
     if prev_week.empty:
         return None
     return round(float(prev_week["low"].min()), 3)
+
+
+def sl_yr_line(pw_low: float | None, price: float, df: pd.DataFrame) -> str:
+    """Return the stop-loss + year-open indicator line, or empty string if no data."""
+    yr_open = get_year_open_price(df)
+    yr_mark = " ✓年開" if (yr_open is not None and price > yr_open) else ""
+    if pw_low is not None:
+        return f"止蝕：{pw_low}{yr_mark}"
+    if yr_mark:
+        return yr_mark.strip()
+    return ""
 
 
 def build_inline_keyboard_(buttons: list[tuple[str, str]]) -> dict:
@@ -887,7 +909,9 @@ def run_corp_actions() -> None:
         }
         vol_part = f"　量比：{vol_line}" if vol_line else ""
         pw_low = get_prev_week_low(df) if not df.empty else None
-        sl_part = f"\n止蝕：{pw_low}" if pw_low is not None else ""
+        cur_price = float(df.iloc[-1]["close"]) if not df.empty else 0.0
+        _sl = sl_yr_line(pw_low, cur_price, df) if not df.empty else ""
+        sl_part = f"\n{_sl}" if _sl else ""
         caption = (
             f"📰{types}　{ann_date}{vol_part}\n"
             f"{code} {ann['name']}\n"
@@ -1353,7 +1377,8 @@ def _emit_ipo_high_hit(result: dict[str, Any], df: pd.DataFrame, wl_entry: dict 
     }
     break_sign = "+" if result["Break %"] >= 0 else ""
     pw_low = get_prev_week_low(df)
-    sl_line = f"\n止蝕：{pw_low}" if pw_low is not None else ""
+    _sl = sl_yr_line(pw_low, float(result["Today Close"]), df)
+    sl_line = f"\n{_sl}" if _sl else ""
     caption = (
         f"🚀首日高：{result['IPO High']}（{result['IPO Date']}）\n"
         f"{code} {result['Name']}\n"
@@ -1409,7 +1434,8 @@ def _emit_ipo_open_hit(result: dict[str, Any], df: pd.DataFrame, wl_entry: dict 
         "raw": json.dumps(result, ensure_ascii=False),
     }
     pw_low = get_prev_week_low(df)
-    sl_line = f"\n止蝕：{pw_low}" if pw_low is not None else ""
+    _sl = sl_yr_line(pw_low, float(result["Today Close"]), df)
+    sl_line = f"\n{_sl}" if _sl else ""
     caption = (
         f"🚀首日開：{result['IPO Open']}（{result['IPO Date']}）\n"
         f"{code} {result['Name']}\n"
@@ -1560,13 +1586,14 @@ def _emit_poc_hit(
     break_sign = "+" if (result.get("Break %") or 0) >= 0 else ""
     title_prefix = "⭐📈" if on_watchlist else "📈"
     pw_low = get_prev_week_low(df)
+    _sl = sl_yr_line(pw_low, float(result["Today Close"]), df)
     caption_lines = [
         f"⚡觸發：{crossed_short}",
         f"📈{code} {result['Name']}",
         f"突破：{result['Break Value']}　<b>{break_sign}{result['Break %']}%</b>",
     ]
-    if pw_low is not None:
-        caption_lines.append(f"止蝕：{pw_low}")
+    if _sl:
+        caption_lines.append(_sl)
     if labels:
         caption_lines.append(f"公告：{' / '.join(labels)}")
     if wl_line:
@@ -1825,7 +1852,8 @@ def run_year_open_breakout() -> None:
                 "raw": json.dumps(result, ensure_ascii=False),
             }
             pw_low = get_prev_week_low(df)
-            sl_line = f"\n止蝕：{pw_low}" if pw_low is not None else ""
+            _sl = sl_yr_line(pw_low, float(result["Today Close"]), df)
+            sl_line = f"\n{_sl}" if _sl else ""
             caption = (
                 f"📅{current_year}年開：{result['Year Open']}（{result['Year Open Date']}）\n"
                 f"{code} {result['Name']}\n"
