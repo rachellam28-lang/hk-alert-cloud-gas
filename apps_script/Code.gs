@@ -1,4 +1,4 @@
-﻿const SPREADSHEET_ID = '129IieKTIfssX18O_PfnRoxbx3c12UoCPQ_MxxBizgeA';
+const SPREADSHEET_ID = '129IieKTIfssX18O_PfnRoxbx3c12UoCPQ_MxxBizgeA';
 const ALERT_SHEET = 'Alerts';
 const CHART_FOLDER_NAME = 'HK Alert Charts';
 const WATCHLIST_SHEET = 'Watchlist';
@@ -44,15 +44,23 @@ function doGet(e) {
         .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
     }
   }
-  const alerts = getAlerts_();
-  const snap = getMarketSnapshotCached_();
-  const html = render_(alerts, snap);
-  if (cache) {
-    try { cache.put('dashboard_html_v3', html, HTML_CACHE_TTL_SECONDS); } catch (e) { /* ignore */ }
+  try {
+    const alerts = getAlerts_();
+    const snap = getMarketSnapshotCached_();
+    const html = render_(alerts, snap);
+    if (cache) {
+      try { cache.put('dashboard_html_v3', html, HTML_CACHE_TTL_SECONDS); } catch (e) { /* ignore */ }
+    }
+    return HtmlService.createHtmlOutput(html)
+      .setTitle('港股訊號儀表板')
+      .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+  } catch (err) {
+    return HtmlService.createHtmlOutput(
+      '<pre style="color:red;font-family:monospace;padding:20px;white-space:pre-wrap">'
+      + 'Dashboard Error:\n' + String(err) + '\n\nStack:\n' + (err.stack || 'n/a')
+      + '</pre>'
+    ).setTitle('Error').setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
   }
-  return HtmlService.createHtmlOutput(html)
-    .setTitle('港股訊號儀表板')
-    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
 function doPost(e) {
