@@ -47,6 +47,7 @@ except Exception as _mpl_exc:  # pragma: no cover
     _MPL_OK = False
 
 HKEX_LIST_URL = "https://www.hkex.com.hk/eng/services/trading/securities/securitieslists/ListOfSecurities.xlsx"
+HKEX_LIST_URL_CN = "https://www.hkex.com.hk/chi/services/trading/securities/securitieslists/ListOfSecurities_c.xlsx"
 HKEXNEWS_BASE = "https://www.hkexnews.hk"
 
 MAX_STOCKS = int(os.getenv("MAX_STOCKS", "0"))
@@ -886,6 +887,29 @@ def clean_stock_list(df: pd.DataFrame) -> pd.DataFrame:
     return df.drop_duplicates(subset=["code"]).reset_index(drop=True)
 
 
+def _fetch_cn_name_map() -> dict[str, str]:
+    """Fetch HKEX Chinese securities list; return {zero-padded-code: chinese_name}."""
+    try:
+        df = pd.read_excel(HKEX_LIST_URL_CN, header=2)
+        # Column names are in Chinese; find by keywords.
+        code_col = next((c for c in df.columns if any(k in str(c) for k in ["代號", "代码", "Code", "號"])), None)
+        name_col = next((c for c in df.columns if any(k in str(c) for k in ["名稱", "名称", "Name"])), None)
+        if code_col is None or name_col is None:
+            print(f"[cn_names] columns not found: {list(df.columns)}")
+            return {}
+        df = df[[code_col, name_col]].copy()
+        df.columns = ["code", "name"]
+        df["code"] = df["code"].astype(str).str.replace(".0", "", regex=False).str.strip().str.zfill(5)
+        df["name"] = df["name"].astype(str).str.strip()
+        df = df[df["code"].str.match(r"^\d{5}$") & (df["name"] != "") & (df["name"] != "nan")]
+        result = dict(zip(df["code"], df["name"]))
+        print(f"[cn_names] loaded {len(result)} Chinese names")
+        return result
+    except Exception as exc:
+        print(f"[cn_names] fetch failed: {exc}")
+        return {}
+
+
 def get_hk_stock_list() -> pd.DataFrame:
     df = pd.read_excel(HKEX_LIST_URL, header=2)
     df = df[df["Category"].astype(str).str.strip() == "Equity"].copy()
@@ -894,6 +918,12 @@ def get_hk_stock_list() -> pd.DataFrame:
     df = df[["Stock Code", "Name of Securities"]].copy()
     df.columns = ["code", "name"]
     out = clean_stock_list(df)
+    # Overwrite English names with official Chinese names from HKEX Chinese list.
+    cn_map = _fetch_cn_name_map()
+    if cn_map:
+        out["name"] = out["code"].map(cn_map).fillna(out["name"])
+        merged = out["code"].isin(cn_map).sum()
+        print(f"[cn_names] merged {merged}/{len(out)} Chinese company names")
     if MAX_STOCKS > 0:
         out = out.head(MAX_STOCKS).copy()
     print(f"HK stock count: {len(out)}")
