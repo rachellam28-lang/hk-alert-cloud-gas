@@ -40,7 +40,7 @@ function doGet(e) {
     const cached = cache.get('dashboard_html_v2');
     if (cached) {
       return HtmlService.createHtmlOutput(cached)
-        .setTitle('Signal Dashboard Pro')
+        .setTitle('港股訊號儀表板')
         .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
     }
   }
@@ -51,7 +51,7 @@ function doGet(e) {
     try { cache.put('dashboard_html_v2', html, HTML_CACHE_TTL_SECONDS); } catch (e) { /* ignore */ }
   }
   return HtmlService.createHtmlOutput(html)
-    .setTitle('Signal Dashboard Pro')
+    .setTitle('港股訊號儀表板')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
@@ -483,7 +483,7 @@ function kpi_(label, hint, item, decimals) {
     sparkDir = last > first ? 'up' : (last < first ? 'down' : 'flat');
   }
   const spark = sparkline_(item.series || [], sparkDir, 96, 28);
-  const stale = item.stale ? '<span class="stale">stale</span>' : '';
+  const stale = item.stale ? '<span class="stale">過時</span>' : '';
   return '<div class="kpi">'
     + '<div class="krow">'
     + '<div class="klabels"><div class="klabel">' + esc_(label) + '</div>'
@@ -558,7 +558,8 @@ function render_(alerts, snap) {
         tvLink: '',
         hkexLink: '',
         chartImageUrl: '',
-        chartCaption: ''
+        chartCaption: '',
+        latestPrice: null
       };
     }
     const g = groupsMap[code];
@@ -569,6 +570,9 @@ function render_(alerts, snap) {
     if (ts > g.latest) {
       g.latest = ts;
       g.latestRaw = a.created_at;
+      // Track the alert price (scanner-verified, same as Telegram message).
+      const ap = parseFloat(a.price);
+      if (!isNaN(ap) && ap > 0) g.latestPrice = ap;
       // Adopt the latest alert's saved chart image as the row thumbnail.
       const url = String(a.chart_image_url || '').trim();
       if (url) {
@@ -684,12 +688,20 @@ function render_(alerts, snap) {
     } else if (p && p.series && p.series.length === 1) {
       chartHtml = '<span class="nochart">單點</span>';
     }
-    if (p && p.value != null) {
-      const pct = (p.changePct == null) ? null : p.changePct;
+    // Use alert payload price (scanner-verified, same as Telegram) as primary source.
+    // Fall back to Yahoo Finance value only if no alert price is available.
+    const alertPrice = g.latestPrice;
+    if (alertPrice != null && alertPrice > 0) {
+      priceHtml = '<div class="price flat">'
+        + '<span class="pv">' + n_(alertPrice, (alertPrice < 1 ? 3 : 2)) + '</span>'
+        + '</div>';
+    } else if (p && p.value != null) {
+      // Sanity-check Yahoo % change — values > 30% are almost certainly stale/wrong data.
+      const pct = (p.changePct == null || Math.abs(p.changePct) > 30) ? null : p.changePct;
       const dir = pct == null ? 'flat' : (pct >= 0 ? 'up' : 'down');
       const pctStr = pct == null ? '' : (pct >= 0 ? '+' : '') + n_(pct, 2) + '%';
       priceHtml = '<div class="price ' + dir + '">'
-        + '<span class="pv">' + n_(p.value, 2) + '</span>'
+        + '<span class="pv">' + n_(p.value, (p.value < 1 ? 3 : 2)) + '</span>'
         + (pctStr ? '<span class="pc">' + pctStr + '</span>' : '')
         + '</div>';
     }
@@ -749,7 +761,7 @@ function render_(alerts, snap) {
   }).join('');
 
   const empty = groups.length === 0
-    ? '<tr><td colspan="7" class="empty">暫無代號數據 · No stock data yet</td></tr>'
+    ? '<tr><td colspan="7" class="empty">暫無代號數據</td></tr>'
     : '';
 
   // 最近公告: compact list of latest HKEX corp-action releases. Shows only
@@ -774,12 +786,12 @@ function render_(alerts, snap) {
   }).join('');
   const recentHtml = recentCorps.length
     ? '<ul class="ra-list">' + recentRows + '</ul>'
-    : '<div class="ra-empty">暫無公告 · No recent announcements</div>';
+    : '<div class="ra-empty">暫無公告</div>';
 
   return '<!doctype html>\n'
     + '<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">\n'
     + '<!-- auto-refresh via JS to preserve scroll position -->\n'
-    + '<title>Signal Dashboard Pro</title>\n'
+    + '<title>港股訊號儀表板</title>\n'
     + '<link rel="preconnect" href="https://fonts.googleapis.com">\n'
     + '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
     + '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">\n'
@@ -943,26 +955,26 @@ function render_(alerts, snap) {
     + '<div class="brand">'
     + '<div class="logo"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg></div>'
     + '<div class="brand-meta">'
-    + '<span class="brand-title">Signal Dashboard Pro</span>'
-    + '<span class="brand-sub">POC · HKEX</span>'
+    + '<span class="brand-title">港股訊號儀表板</span>'
+    + '<span class="brand-sub">港股訊號 · HKEX</span>'
     + '</div></div>\n'
     + '<div class="topright">'
     + '<span class="dot" aria-hidden="true"></span>'
-    + '<span class="tabular">Updated ' + esc_(fmtTime_(snap.updated_at)) + '</span>'
-    + '<span class="refresh-tag">Auto-refresh 120s</span>'
+    + '<span class="tabular">更新於 ' + esc_(fmtTime_(snap.updated_at)) + '</span>'
+    + '<span class="refresh-tag">自動更新 120秒</span>'
     + '</div>\n'
     + '</div></header>\n'
     + '<main class="wrap">\n'
-    + '<div class="section-head"><h2><span class="ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>市場快照 · Market Snapshot</h2></div>\n'
+    + '<div class="section-head"><h2><span class="ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>市場快照</h2></div>\n'
     + '<section class="kpis">'
-    + kpi_('恒生指數', 'Hang Seng Index', snap.hsi, 0)
-    + kpi_('恒指 PE', 'HK Market PE', snap.hsi_pe, 2)
-    + kpi_('美匯指數', 'Dollar Index', snap.dxy, 2)
-    + kpi_('波動指數', 'Volatility (VIX)', snap.vix, 2)
+    + kpi_('恒生指數', '恒指', snap.hsi, 0)
+    + kpi_('恒指市盈率', '港股市盈率', snap.hsi_pe, 2)
+    + kpi_('美匯指數', '美匯指數 (DXY)', snap.dxy, 2)
+    + kpi_('波幅指數', '波幅指數 (VIX)', snap.vix, 2)
     + '</section>\n'
-    + '<div class="section-head"><h2><span class="ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-8-8 18-2-8-8-2z"/></svg></span>最近公告 · Recent HKEX Disclosures (' + recentCorps.length + '/' + RECENT_CORPS_LIMIT + ')</h2></div>\n'
+    + '<div class="section-head"><h2><span class="ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-8-8 18-2-8-8-2z"/></svg></span>最近公告 (' + recentCorps.length + '/' + RECENT_CORPS_LIMIT + ')</h2></div>\n'
     + '<section class="card recent-card">' + recentHtml + '</section>\n'
-    + '<div class="section-head"><h2><span class="ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>代號彙總 · Stocks (Signals + HKEX)</h2></div>\n'
+    + '<div class="section-head"><h2><span class="ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>代號彙總</h2></div>\n'
     + '<section class="card">\n'
     + '<div class="toolbar">\n'
     + '<div class="tlabel">代號彙總</div>\n'
@@ -998,7 +1010,7 @@ function render_(alerts, snap) {
     + '<th>連結</th>'
     + '</tr></thead><tbody id="urows">' + rows + empty + '</tbody></table>\n'
     + '</section>\n'
-    + '<div class="foot">HK Alert Cloud · Google Apps Script · Real data only</div>\n'
+    + '<div class="foot">港股訊號雲 · Google Apps Script · 真實數據</div>\n'
     + '</main>\n'
     + '<script>\n'
     + '(function(){\n'
