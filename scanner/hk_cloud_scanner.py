@@ -865,12 +865,12 @@ def run_corp_actions() -> None:
             "priority": priority,
             "raw": json.dumps(ann, ensure_ascii=False),
         }
-        vol_part = f"\n{vol_line}" if vol_line else ""
+        vol_part = f"\n量比：{vol_line}" if vol_line else ""
         caption = (
             f"📰 <b>披露易 · {types}</b>\n"
-            f"{code} {ann['name']}　{ann_date}{vol_part}\n"
-            f"{title_cn}\n"
-            f"<a href=\"{ann['url']}\">披露易</a>　<a href=\"{corp_tv_url}\">走勢圖</a>"
+            f"{code} {ann['name']}\n"
+            f"📅 {ann_date}{vol_part}\n"
+            f"{title_cn}"
         )
         corp_kb = build_inline_keyboard_([
             ("📰 披露易", ann["url"]),
@@ -1332,12 +1332,11 @@ def _emit_ipo_high_hit(result: dict[str, Any], df: pd.DataFrame, wl_entry: dict 
     break_sign = "+" if result["Break %"] >= 0 else ""
     caption = (
         f"{title_prefix} <b>IPO首日高突破</b>\n"
-        f"{wl_line}"
         f"{code} {result['Name']}\n"
-        f"IPO首日高：{result['IPO High']}（{result['IPO Date']}）\n"
+        + (f"{wl_line.strip()}\n" if wl_line else "")
+        + f"IPO首日高：{result['IPO High']}（{result['IPO Date']}）\n"
         f"突破：{result['Today High']}　<b>{break_sign}{result['Break %']}%</b>\n"
-        f"收：{result['Today Close']}\n"
-        f"<a href=\"{tv_url}\">走勢圖</a>"
+        f"收：{result['Today Close']}"
     )
     chart_path = render_chart(
         df, code, result["Name"], "IPO首日高突破",
@@ -1386,11 +1385,10 @@ def _emit_ipo_open_hit(result: dict[str, Any], df: pd.DataFrame, wl_entry: dict 
     }
     caption = (
         f"{title_prefix} <b>IPO首日開突破</b>\n"
-        f"{wl_line}"
         f"{code} {result['Name']}\n"
-        f"IPO首日開：{result['IPO Open']}（{result['IPO Date']}）\n"
-        f"今日收：{result['Today Close']}　<b>{break_sign}{result['Break %']}%</b>\n"
-        f"<a href=\"{tv_url}\">走勢圖</a>"
+        + (f"{wl_line.strip()}\n" if wl_line else "")
+        + f"IPO首日開：{result['IPO Open']}（{result['IPO Date']}）\n"
+        f"今日收：{result['Today Close']}　<b>{break_sign}{result['Break %']}%</b>"
     )
     chart_path = render_chart(
         df, code, result["Name"], "IPO首日開突破",
@@ -1533,16 +1531,16 @@ def _emit_poc_hit(
     break_sign = "+" if (result.get("Break %") or 0) >= 0 else ""
     title_prefix = "⭐📈" if on_watchlist else "📈"
     caption_lines = [
-        f"{title_prefix} <b>POC突破</b>　⚡ 觸發：{crossed_short}",
-        f"{code} {result['Name']}　<a href=\"{tv_url}\">走勢圖</a>",
-        "",
+        f"{title_prefix} <b>POC突破</b>",
+        f"{code} {result['Name']}",
+        f"⚡ 觸發：{crossed_short}",
         f"突破：{result['Break Value']}　<b>{break_sign}{result['Break %']}%</b>",
         f"POC：{_fmt_poc_line(result)}",
     ]
     if labels:
         caption_lines.append(f"公告：{' / '.join(labels)}")
     if wl_line:
-        caption_lines.append(wl_line)
+        caption_lines.append(wl_line.strip())
     caption = "\n".join(caption_lines)
     chart_levels = []
     key_map = {"6M": "POC 6M", "12M": "POC 12M", "3Y": "POC 3Y"}
@@ -1796,12 +1794,11 @@ def run_year_open_breakout() -> None:
             }
             caption = (
                 f"{title_prefix} <b>年開突破</b>\n"
-                f"{wl_line}"
                 f"{code} {result['Name']}\n"
-                f"{current_year}年首日開：{result['Year Open']}（{result['Year Open Date']}）\n"
+                + (f"{wl_line.strip()}\n" if wl_line else "")
+                + f"{current_year}年首日開：{result['Year Open']}（{result['Year Open Date']}）\n"
                 f"突破：{result['Break Value']}　<b>{break_sign}{result['Break %']}%</b>\n"
-                f"收：{result['Today Close']}\n"
-                f"<a href=\"{tv_url}\">走勢圖</a>"
+                f"收：{result['Today Close']}"
             )
             chart_path = render_chart(
                 df, code, result["Name"], f"年開突破 {current_year}",
