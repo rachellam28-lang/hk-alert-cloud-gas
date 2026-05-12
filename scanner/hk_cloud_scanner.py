@@ -1618,10 +1618,17 @@ def _emit_poc_hit(
     title_prefix = "⭐📈" if on_watchlist else "📈"
     pw_low = get_prev_week_low(df)
     _sl = sl_yr_line(pw_low, float(result["Today Close"]), df)
+    _trig_map = {"6M": "POC 6M", "12M": "POC 12M", "3Y": "POC 3Y"}
+    _trig_parts = []
+    for _sh in crossed_short.split(" / "):
+        _sh = _sh.strip()
+        _v = result.get(_trig_map.get(_sh, ""))
+        _trig_parts.append(f"{_sh} {_v}" if _v is not None and not pd.isna(_v) else _sh)
+    _trig_line = "/ ".join(_trig_parts)
     caption_lines = [
-        f"⚡觸發：{crossed_short}",
+        f"⚡觸發：{_trig_line}",
         f"📈{code} {result['Name']}",
-        f"突破：{result['Break Value']}　<b>{break_sign}{result['Break %']}%</b>",
+        f"高於觸發：<b>{break_sign}{result['Break %']}%</b> ({result['Break Value']})",
     ]
     if _sl:
         caption_lines.append(_sl)
