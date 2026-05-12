@@ -4,6 +4,15 @@ const CHART_FOLDER_NAME = 'HK Alert Charts';
 const WATCHLIST_SHEET = 'Watchlist';
 const WATCHLIST_HEADERS = ['code', 'name', 'types', 'ann_date', 'added_at'];
 
+// Run this function ONCE in the GAS editor to authorize all required scopes.
+function authorizeAllScopes() {
+  SpreadsheetApp.openById(SPREADSHEET_ID);
+  DriveApp.getFoldersByName(CHART_FOLDER_NAME);
+  CacheService.getScriptCache();
+  PropertiesService.getScriptProperties();
+  Logger.log('Authorization complete. You can now use the web app.');
+}
+
 // GAS_SECRET is read from Script Properties at runtime; never hardcode it here.
 // In Apps Script editor: Project Settings → Script Properties → add key "GAS_SECRET".
 function getGasSecret_() {
@@ -34,38 +43,87 @@ function doGet(e) {
     return ContentService.createTextOutput(JSON.stringify(getActiveWatchlist_()))
       .setMimeType(ContentService.MimeType.JSON);
   }
-  // Everything inside try-catch so any runtime error surfaces as a red debug page.
+  // JSON API for GitHub Pages dashboard
+  if (params.format === 'json') {
+    return handleJsonApi_();
+  }
+  return ContentService.createTextOutput(JSON.stringify({ ok: true, hint: 'add ?format=json for dashboard data' }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function handleJsonApi_() {
   try {
-    const cache = safeCache_();
-    // Purge stale keys from previous deploys on first hit after a new deploy.
-    if (cache) {
-      try { cache.remove('dashboard_html_v3'); } catch (e) { /* ok */ }
-      try { cache.remove('dashboard_html_v2'); } catch (e) { /* ok */ }
+    const alerts = getAlerts_();
+    const grouped = buildGroupsForJson_(alerts);
+    return ContentService.createTextOutput(JSON.stringify({
+      ok: true,
+      groups: grouped.groups,
+      recentCorps: grouped.recentCorps,
+      updatedAt: new Date().toISOString()
+    })).setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({ ok: false, error: String(err) }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function buildGroupsForJson_(alerts) {
+  const groupsMap = {};
+  alerts.forEach(function (a) {
+    const code = String(a.code || '').trim();
+    if (!code) return;
+    if (!groupsMap[code]) {
+      groupsMap[code] = { code: code, name: String(a.name || ''), techCount: 0, corpCount: 0,
+        signals: [], signalSeen: {}, corpTypes: {}, latest: 0, latestRaw: '',
+        hkexLink: '', chartImageUrl: '', latestPrice: null };
     }
-    if (cache) {
-      const cached = cache.get('dashboard_html_v4');
-      if (cached) {
-        return HtmlService.createHtmlOutput(cached)
-          .setTitle('港股訊號儀表板')
-          .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+    const g = groupsMap[code];
+    if (!g.name && a.name) g.name = String(a.name);
+    const ts = a.created_at ? new Date(a.created_at).getTime() : 0;
+    if (ts > g.latest) {
+      g.latest = ts; g.latestRaw = a.created_at;
+      const ap = parseFloat(a.price);
+      if (!isNaN(ap) && ap > 0) g.latestPrice = ap;
+      const url = String(a.chart_image_url || '').trim();
+      if (url) { g.chartImageUrl = url; g.chartCaption = String(a.signal || a.category || ''); }
+    } else if (!g.chartImageUrl) {
+      const url = String(a.chart_image_url || '').trim();
+      if (url) { g.chartImageUrl = url; g.chartCaption = String(a.signal || a.category || ''); }
+    }
+    if (a.category === 'corp_action') {
+      g.corpCount++;
+      const t = corpType_(a);
+      if (!g.corpTypes[t]) g.corpTypes[t] = { count: 0, link: '' };
+      g.corpTypes[t].count++;
+      const cl = a.source_url || a.chart_url || '';
+      if (cl && !g.corpTypes[t].link) g.corpTypes[t].link = cl;
+      if (cl && !g.hkexLink) g.hkexLink = cl;
+    } else {
+      g.techCount++;
+      const label = String(a.signal || a.category || '').trim() || '訊號';
+      if (!g.signalSeen[label]) {
+        g.signalSeen[label] = true;
+        g.signals.push({ label: label, link: a.chart_url || a.source_url || '' });
       }
     }
-    const alerts = getAlerts_();
-    const snap = getMarketSnapshotCached_();
-    const html = render_(alerts, snap);
-    if (cache) {
-      try { cache.put('dashboard_html_v4', html, HTML_CACHE_TTL_SECONDS); } catch (e) { /* ignore */ }
-    }
-    return HtmlService.createHtmlOutput(html)
-      .setTitle('港股訊號儀表板')
-      .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
-  } catch (err) {
-    return HtmlService.createHtmlOutput(
-      '<pre style="color:red;font-family:monospace;padding:20px;white-space:pre-wrap">'
-      + 'Dashboard Error:\n' + String(err) + '\n\nStack:\n' + (err.stack || 'n/a')
-      + '</pre>'
-    ).setTitle('Error').setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+  });
+  const recentCorps = [];
+  const seenUrls = {};
+  for (let i = 0; i < alerts.length && recentCorps.length < RECENT_CORPS_LIMIT; i++) {
+    const a = alerts[i];
+    if (!a || a.category !== 'corp_action') continue;
+    const url = String(a.source_url || a.chart_url || '').trim();
+    const key = url || ('row|' + i);
+    if (seenUrls[key]) continue;
+    seenUrls[key] = true;
+    recentCorps.push({ code: String(a.code || '').trim(), name: String(a.name || ''),
+      type: corpType_(a), date: corpAnnouncementDate_(a), url: url });
   }
+  recentCorps.sort(function (x, y) { return x.date < y.date ? 1 : x.date > y.date ? -1 : 0; });
+  let groups = Object.keys(groupsMap).map(function (k) { return groupsMap[k]; });
+  groups.sort(function (a, b) { return b.latest - a.latest; });
+  if (groups.length > DASHBOARD_MAX_GROUPS) groups = groups.slice(0, DASHBOARD_MAX_GROUPS);
+  return { groups: groups, recentCorps: recentCorps };
 }
 
 function doPost(e) {
@@ -221,12 +279,13 @@ const DASHBOARD_MAX_GROUPS = 120;
 const DASHBOARD_MAX_ALERTS = 600;
 // Cache TTLs (seconds). HTML cache absorbs repeat loads; snapshot cache shields
 // us from upstream Yahoo / worldperatio latency on every page load.
-const HTML_CACHE_TTL_SECONDS = 115;
-const SNAPSHOT_CACHE_TTL_SECONDS = 300;
-// Hard upper-bound on how many codes we batch-query Yahoo for as a fallback
-// when the scanner did not save a chart_image_url. Each adds an outbound HTTP
-// request, so we keep this small to avoid blocking doGet on mobile.
-const YAHOO_FALLBACK_MAX_CODES = 25;
+const HTML_CACHE_TTL_SECONDS = 600;      // 10 min — prevents UrlFetch quota burn
+const SNAPSHOT_CACHE_TTL_SECONDS = 600;  // 10 min — HSI/DXY/VIX snapshot
+// Yahoo batch fallback is DISABLED (0) because:
+// 1. Scanner already saves prices in alert rows → g.latestPrice is preferred
+// 2. Each Yahoo call counts against the 20k/day UrlFetch quota
+// 3. The auto-reload loop was exhausting the quota within one day
+const YAHOO_FALLBACK_MAX_CODES = 0;
 // 最近公告 list size — the N most recent HKEXnews corp-action alerts shown on
 // the dashboard with date + label + HKEX link only (no long titles).
 const RECENT_CORPS_LIMIT = 20;
@@ -401,11 +460,10 @@ function getMarketSnapshotCached_() {
       try { return JSON.parse(raw); } catch (e) { /* fall through */ }
     }
   }
-  const snap = getMarketSnapshot_();
-  if (cache) {
-    try { cache.put('market_snapshot_v2', JSON.stringify(snap), SNAPSHOT_CACHE_TTL_SECONDS); } catch (e) { /* ignore */ }
-  }
-  return snap;
+  // Cache miss: return empty immediately — never block doGet on a live UrlFetch.
+  // Market data is refreshed by the refreshMarketSnapshot_ time trigger (separate).
+  const e_ = { value: null, change: null, changePct: null, stale: true, series: [] };
+  return { hsi: e_, dxy: e_, vix: e_, hsi_pe: e_, updated_at: new Date().toISOString() };
 }
 
 function n_(v, d) {
@@ -749,6 +807,8 @@ function render_(alerts, snap) {
     const linkBits = [];
     if (hkexHref) linkBits.push('<a class="lnk lnk-hk" href="' + esc_(hkexHref) + '" target="_blank" rel="noopener" title="HKEX 披露易">HKEX</a>');
 
+    const rowPrice = alertPrice != null ? alertPrice : (p && p.value != null ? p.value : 0);
+    const rowCount = g.techCount + g.corpCount;
     return ''
       + '<tr class="urow"'
       + ' data-code="' + esc_(codeStr) + '"'
@@ -756,6 +816,8 @@ function render_(alerts, snap) {
       + ' data-date="' + esc_(lastDate) + '"'
       + ' data-corp="' + hasCorp + '"'
       + ' data-tech="' + hasTech + '"'
+      + ' data-price="' + rowPrice + '"'
+      + ' data-count="' + rowCount + '"'
       + '>'
       + '<td class="cell-code">'
       +   '<div class="code">' + esc_(codeStr) + '</div>'
@@ -943,6 +1005,8 @@ function render_(alerts, snap) {
     + '.ra-empty{padding:12px;color:var(--mute);text-align:center;font-size:12px}\n'
     + '@media (max-width:520px){.ra-list{grid-template-columns:1fr}}\n'
     + '.empty{text-align:center;color:var(--mute);padding:40px 16px;font-size:13px}\n'
+    + 'th.sortable{cursor:pointer;user-select:none}th.sortable:hover{color:var(--text);background:var(--primary-soft)}\n'
+    + 'th.sort-active{color:var(--primary)}th .sort-icon{margin-left:4px;font-size:9px;opacity:.7}\n'
     + '.foot{margin-top:24px;padding-top:14px;border-top:1px solid var(--line);text-align:center;color:var(--mute-2);font-size:11px}\n'
     + '@media (max-width:1024px){.kpis{grid-template-columns:repeat(2,1fr)}}\n'
     + '@media (max-width:820px){.cell-num,thead th:nth-child(5){display:none}}\n'
@@ -975,7 +1039,7 @@ function render_(alerts, snap) {
     + '<div class="topright">'
     + '<span class="dot" aria-hidden="true"></span>'
     + '<span class="tabular">更新於 ' + esc_(fmtTime_(snap.updated_at)) + '</span>'
-    + '<span class="refresh-tag">自動更新 120秒</span>'
+    + '<span class="refresh-tag">自動更新 10分鐘</span>'
     + '</div>\n'
     + '</div></header>\n'
     + '<main class="wrap">\n'
@@ -1013,12 +1077,12 @@ function render_(alerts, snap) {
     + '</div>\n'
     + '</div>\n'
     + '<table><thead><tr>'
-    + '<th>代號 / 名稱</th>'
+    + '<th class="sortable" data-sort="code">代號 / 名稱<span class="sort-icon"></span></th>'
     + '<th>走勢圖</th>'
-    + '<th>價格</th>'
+    + '<th class="sortable" data-sort="price">價格<span class="sort-icon"></span></th>'
     + '<th>信號 / 公告</th>'
-    + '<th>次數</th>'
-    + '<th>最後出現</th>'
+    + '<th class="sortable" data-sort="count">次數<span class="sort-icon"></span></th>'
+    + '<th class="sortable sort-active sort-desc" data-sort="date">最後出現<span class="sort-icon">▼</span></th>'
     + '<th>連結</th>'
     + '</tr></thead><tbody id="urows">' + rows + empty + '</tbody></table>\n'
     + '</section>\n'
@@ -1028,13 +1092,32 @@ function render_(alerts, snap) {
     + '</main>\n'
     + '<script>\n'
     + '(function(){\n'
-    + 'var rows=document.querySelectorAll("#urows .urow");\n'
+    + 'var tbody=document.getElementById("urows");\n'
     + 'var ftabs=document.querySelectorAll("#ftabs .tab");\n'
     + 'var tq=document.getElementById("tq");\n'
     + 'var td=document.getElementById("tdate");\n'
     + 'var tc=document.getElementById("tclear");\n'
     + 'var ftype="all";\n'
+    + 'var sortCol="date",sortDir=-1;\n'
+    + 'function getVal(r,col){\n'
+    + '  if(col==="code")return r.getAttribute("data-code")||"";\n'
+    + '  if(col==="date")return r.getAttribute("data-date")||"";\n'
+    + '  if(col==="price")return parseFloat(r.getAttribute("data-price")||"0");\n'
+    + '  if(col==="count")return parseInt(r.getAttribute("data-count")||"0",10);\n'
+    + '  return "";\n'
+    + '}\n'
+    + 'function sortRows(){\n'
+    + '  var arr=Array.prototype.slice.call(tbody.querySelectorAll(".urow"));\n'
+    + '  arr.sort(function(a,b){\n'
+    + '    var av=getVal(a,sortCol),bv=getVal(b,sortCol);\n'
+    + '    if(av<bv)return sortDir;\n'
+    + '    if(av>bv)return -sortDir;\n'
+    + '    return 0;\n'
+    + '  });\n'
+    + '  arr.forEach(function(r){tbody.appendChild(r);});\n'
+    + '}\n'
     + 'function apply(){\n'
+    + '  var rows=tbody.querySelectorAll(".urow");\n'
     + '  var q=(tq&&tq.value||"").trim().toLowerCase();\n'
     + '  var d=(td&&td.value||"").trim();\n'
     + '  rows.forEach(function(r){\n'
@@ -1059,6 +1142,19 @@ function render_(alerts, snap) {
     + '    r.style.display=(ftOK&&mq&&md)?"":"none";\n'
     + '  });\n'
     + '}\n'
+    + 'document.querySelectorAll("th.sortable").forEach(function(th){\n'
+    + '  th.addEventListener("click",function(){\n'
+    + '    var col=th.getAttribute("data-sort");\n'
+    + '    if(sortCol===col){sortDir*=-1;}else{sortCol=col;sortDir=(col==="date"||col==="count"||col==="price")?-1:1;}\n'
+    + '    document.querySelectorAll("th.sortable").forEach(function(x){\n'
+    + '      x.classList.remove("sort-active","sort-asc","sort-desc");\n'
+    + '      x.querySelector(".sort-icon").textContent="";\n'
+    + '    });\n'
+    + '    th.classList.add("sort-active",sortDir===1?"sort-asc":"sort-desc");\n'
+    + '    th.querySelector(".sort-icon").textContent=sortDir===1?"▲":"▼";\n'
+    + '    sortRows();apply();\n'
+    + '  });\n'
+    + '});\n'
     + 'ftabs.forEach(function(t){t.addEventListener("click",function(){ftabs.forEach(function(x){x.classList.remove("active");});t.classList.add("active");ftype=t.getAttribute("data-ftype")||"all";apply();});});\n'
     + 'if(tq)tq.addEventListener("input",apply);\n'
     + 'if(td)td.addEventListener("change",apply);\n'
@@ -1067,7 +1163,7 @@ function render_(alerts, snap) {
     + '(function(){\n'
     + 'var saved=sessionStorage.getItem("dashScroll");\n'
     + 'if(saved){window.scrollTo(0,parseInt(saved,10));sessionStorage.removeItem("dashScroll");}\n'
-    + 'setTimeout(function(){sessionStorage.setItem("dashScroll",String(window.scrollY));location.reload();},120000);\n'
+    + 'setTimeout(function(){sessionStorage.setItem("dashScroll",String(window.scrollY));location.reload();},600000);\n'
     + '})();\n'
     + '</script>\n'
     + '</body></html>';
@@ -1075,4 +1171,18 @@ function render_(alerts, snap) {
 
 function json_(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
+}
+
+// Run this via a time-based trigger (every 10 min) to keep market snapshot warm.
+// Completely separate from doGet so UrlFetch quota issues never block the dashboard.
+function refreshMarketSnapshot() {
+  try {
+    const snap = getMarketSnapshot_();
+    const cache = safeCache_();
+    if (cache) {
+      cache.put('market_snapshot_v2', JSON.stringify(snap), SNAPSHOT_CACHE_TTL_SECONDS);
+    }
+  } catch (e) {
+    Logger.log('refreshMarketSnapshot failed: ' + e);
+  }
 }
