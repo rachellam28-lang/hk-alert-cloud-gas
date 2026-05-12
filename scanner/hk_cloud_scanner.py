@@ -167,7 +167,7 @@ def sl_yr_line(pw_low: float | None, price: float, df: pd.DataFrame) -> str:
     """Return the stop-loss + year-open indicator line, or empty string if no data."""
     yr_open = get_year_open_price(df)
     if yr_open is not None:
-        yr_mark = " 🔺年開" if price > yr_open else " 🔻年開"
+        yr_mark = f" 🔺年開：{yr_open}" if price > yr_open else f" 🔻年開：{yr_open}"
     else:
         yr_mark = ""
     if pw_low is not None:
@@ -1471,7 +1471,7 @@ def _emit_ipo_open_hit(result: dict[str, Any], df: pd.DataFrame, wl_entry: dict 
         f"🚀首日開：{result['IPO Open']}（{result['IPO Date']}）\n"
         f"{code} {result['Name']}\n"
         + (f"{wl_line.strip()}\n" if wl_line else "")
-        + f"今日收：{result['Today Close']}　<b>{break_sign}{result['Break %']}%</b>{sl_line}"
+        + f"突破：{result['Today Close']}　<b>{break_sign}{result['Break %']}%</b>{sl_line}"
     )
     ipo_open_levels = [("IPO首日開", result["IPO Open"], "#a78bfa")]
     if pw_low is not None:
