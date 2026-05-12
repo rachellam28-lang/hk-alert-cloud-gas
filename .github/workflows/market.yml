@@ -8,7 +8,7 @@ on:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
         with:
@@ -17,7 +17,7 @@ jobs:
         with:
           python-version: "3.11"
           cache: "pip"
-      - run: pip install yfinance requests
+      - run: pip install yfinance requests pandas
       - name: Fetch market data
         run: python .github/scripts/fetch_market.py
       - name: Commit market.json

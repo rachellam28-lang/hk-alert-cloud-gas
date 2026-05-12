@@ -99,6 +99,14 @@ th.sort-active{color:var(--primary)}.sort-icon{margin-left:4px;font-size:9px}
 .ev-orange{background:#431407;color:#fb923c;border-radius:4px;padding:1px 5px;font-weight:600}
 .ev-red{background:#2d0a0a;color:#f87171;border-radius:4px;padding:1px 5px;font-weight:600}
 @media(max-width:520px){.mbar{gap:8px}.mchip{padding:8px 10px;min-width:80px;flex:1}.mchip-val{font-size:14px}}
+.breadth-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:10px 14px;margin-bottom:12px}
+.breadth-head{font-size:10px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.14em;margin-bottom:8px}
+.breadth-row{display:flex;align-items:center;gap:10px;margin-bottom:6px}.breadth-row:last-child{margin-bottom:0}
+.breadth-lbl{font-size:11px;font-weight:600;color:var(--text-soft);width:28px;flex-shrink:0}
+.breadth-bar{flex:1;height:12px;border-radius:6px;overflow:hidden;display:flex;background:var(--surface-soft)}
+.bs-h{background:#16a34a}.bs-m{background:#94a3b8}.bs-l{background:#dc2626}
+.breadth-stats{font-size:10px;white-space:nowrap;display:flex;gap:5px}
+.bs-hi{color:#16a34a;font-weight:600}.bs-lo{color:#dc2626;font-weight:600}.bs-n{color:var(--mute-2)}
 </style>
 </head><body>
 <header class="topbar"><div class="topbar-inner">
@@ -115,6 +123,7 @@ th.sort-active{color:var(--primary)}.sort-icon{margin-left:4px;font-size:9px}
 
 <main class="wrap">
   <div class="mbar" id="mbar"></div>
+  <div class="breadth-card" id="breadthCard" style="display:none"><div class="breadth-head">市場寬度 · 52周高低位分布</div><div id="breadthRows"></div></div>
 
   <div class="section-head"><h2><span class="ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>代號彙總</h2></div>
   <section class="card">
@@ -310,6 +319,32 @@ function attachSort(){
   });
 }
 
+function renderBreadth(snap){
+  const card=document.getElementById('breadthCard');
+  if(!card)return;
+  if(!snap||!snap.breadth){card.style.display='none';return;}
+  function row(lbl,b){
+    if(!b||!b.count)return '';
+    return '<div class="breadth-row">'
+      +'<span class="breadth-lbl">'+lbl+'</span>'
+      +'<div class="breadth-bar">'
+        +'<div class="bs-h" style="width:'+b.high+'%"></div>'
+        +'<div class="bs-m" style="width:'+b.mid+'%"></div>'
+        +'<div class="bs-l" style="width:'+b.low+'%"></div>'
+      +'</div>'
+      +'<div class="breadth-stats">'
+        +'<span class="bs-hi">高'+b.high+'%</span>'
+        +'<span>中'+b.mid+'%</span>'
+        +'<span class="bs-lo">低'+b.low+'%</span>'
+        +'<span class="bs-n">(n='+b.count+')</span>'
+      +'</div>'
+    +'</div>';
+  }
+  const rows=row('港股',snap.breadth.hk)+row('美股',snap.breadth.us);
+  if(!rows){card.style.display='none';return;}
+  document.getElementById('breadthRows').innerHTML=rows;
+  card.style.display='';
+}
 function renderMarket(snap){
   if(!snap) return;
   const bar=document.getElementById('mbar');
@@ -348,7 +383,7 @@ async function loadData(){
     renderRecent(data.recentCorps||[]);
     fetch('./market.json?_='+Date.now())
       .then(r=>r.ok?r.json():null)
-      .then(m=>renderMarket(m))
+      .then(m=>{renderMarket(m);renderBreadth(m);})
       .catch(()=>{});
     const t=new Date(data.updatedAt);
     const p=n=>n<10?'0'+n:''+n;

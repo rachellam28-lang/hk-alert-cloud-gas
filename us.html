@@ -75,6 +75,27 @@ td{padding:10px 14px;vertical-align:top}
   .etag-buy{background:#052e16;color:#4ade80}.etag-place{background:#2d0a0a;color:#f87171}
   .etag-rights{background:#1c0f00;color:#fbbf24}.etag-13d{background:#1e1040;color:#a78bfa}
 }
+
+.mbar{display:flex;gap:12px;flex-wrap:wrap;padding:8px 0 12px;margin-bottom:4px}
+.mchip{display:flex;flex-direction:column;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 16px;min-width:110px;flex:1;gap:3px}
+.mchip-label{font-size:10px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.12em}
+.mchip-val{font-size:17px;font-weight:700;color:var(--text)}
+.mchip-val.stale{color:var(--mute)}
+.mchip-sub{font-size:9px;margin-top:1px;display:flex;align-items:center;gap:4px}
+.mchip-avg{color:var(--mute)}
+.ev-green{background:#14532d;color:#4ade80;border-radius:4px;padding:1px 5px;font-weight:600}
+.ev-neutral{background:#1e293b;color:#94a3b8;border-radius:4px;padding:1px 5px;font-weight:600}
+.ev-orange{background:#431407;color:#fb923c;border-radius:4px;padding:1px 5px;font-weight:600}
+.ev-red{background:#2d0a0a;color:#f87171;border-radius:4px;padding:1px 5px;font-weight:600}
+@media(max-width:520px){.mbar{gap:8px}.mchip{padding:8px 10px;min-width:80px;flex:1}.mchip-val{font-size:14px}}
+.breadth-card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin-bottom:12px}
+.breadth-head{font-size:10px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.14em;margin-bottom:8px}
+.breadth-row{display:flex;align-items:center;gap:10px;margin-bottom:6px}.breadth-row:last-child{margin-bottom:0}
+.breadth-lbl{font-size:11px;font-weight:600;color:var(--mute);width:28px;flex-shrink:0}
+.breadth-bar{flex:1;height:12px;border-radius:6px;overflow:hidden;display:flex;background:var(--surface-soft)}
+.bs-h{background:#16a34a}.bs-m{background:#94a3b8}.bs-l{background:#dc2626}
+.breadth-stats{font-size:10px;white-space:nowrap;display:flex;gap:5px}
+.bs-hi{color:#16a34a;font-weight:600}.bs-lo{color:#dc2626;font-weight:600}.bs-n{color:var(--mute-2)}
 </style>
 </head>
 <body>
@@ -95,7 +116,10 @@ td{padding:10px 14px;vertical-align:top}
 </div></header>
 
 <main class="wrap">
-  <div class="card">
+  
+  <div class="mbar" id="mbar"></div>
+  <div class="breadth-card" id="breadthCard" style="display:none"><div class="breadth-head">市場寬度 · 52周高低位分布</div><div id="breadthRows"></div></div>
+<div class="card">
     <div class="toolbar">
       <div class="tlabel">美股事件</div>
       <div class="summary" id="summary"></div>
@@ -238,6 +262,53 @@ async function loadData(){
     document.getElementById('tableWrap').innerHTML=`<div class="loading-msg" style="color:#ef4444">載入失敗：${esc(err.message)}</div>`;
   }
 }
+
+function fmtNum(v,d){return v==null?'—':Number(v).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});}
+function chgHtml(pct){if(pct==null)return '';const s=pct>=0?'+':'';return '<span style="font-size:10px;color:'+(pct>=0?'var(--up)':'var(--down)')+'">'+s+pct.toFixed(2)+'%</span>';}
+function evBadge(ev){if(!ev)return '';return '<span class="ev-'+ev.color+'">'+ev.label+'</span>';}
+function renderMarket(snap){
+  if(!snap)return;
+  const bar=document.getElementById('mbar');if(!bar)return;
+  function chip(label,val,chgPct,stale,dp,ev,avg5y){
+    const valStr=fmtNum(val,dp??2);
+    const sub=(evBadge(ev)||(avg5y!=null?'<span class="mchip-avg">均'+fmtNum(avg5y,2)+'</span>':''))?'<span class="mchip-sub">'+evBadge(ev)+(avg5y!=null?'<span class="mchip-avg">均'+fmtNum(avg5y,2)+'</span>':'')+'</span>':'';
+    return '<div class="mchip"><span class="mchip-label">'+label+'</span><span class="mchip-val'+(stale?' stale':'')+'">'+valStr+' '+chgHtml(chgPct)+'</span>'+sub+'</div>';
+  }
+  const h=snap.hsi||{},d=snap.dxy||{},v=snap.vix||{},hp=snap.hsi_pe||{},sp=snap.spx_pe||{};
+  bar.innerHTML=[
+    chip('恒指',h.value,h.changePct,h.stale,0),
+    chip('DXY',d.value,d.changePct,d.stale,2),
+    chip('VIX',v.value,v.changePct,v.stale,2,v.eval),
+    chip('港股P/E',hp.value,null,hp.stale,2,hp.eval,hp.avg5y_mid),
+    chip('美股P/E',sp.value,null,sp.stale,2,sp.eval,sp.avg5y_mid),
+  ].join('');
+}
+function renderBreadth(snap){
+  const card=document.getElementById('breadthCard');if(!card)return;
+  if(!snap||!snap.breadth){card.style.display='none';return;}
+  function row(lbl,b){
+    if(!b||!b.count)return '';
+    return '<div class="breadth-row">'
+      +'<span class="breadth-lbl">'+lbl+'</span>'
+      +'<div class="breadth-bar">'
+        +'<div class="bs-h" style="width:'+b.high+'%"></div>'
+        +'<div class="bs-m" style="width:'+b.mid+'%"></div>'
+        +'<div class="bs-l" style="width:'+b.low+'%"></div>'
+      +'</div>'
+      +'<div class="breadth-stats">'
+        +'<span class="bs-hi">高'+b.high+'%</span>'
+        +'<span>中'+b.mid+'%</span>'
+        +'<span class="bs-lo">低'+b.low+'%</span>'
+        +'<span class="bs-n">(n='+b.count+')</span>'
+      +'</div>'
+    +'</div>';
+  }
+  const rows=row('港股',snap.breadth.hk)+row('美股',snap.breadth.us);
+  if(!rows){card.style.display='none';return;}
+  document.getElementById('breadthRows').innerHTML=rows;
+  card.style.display='';
+}
+fetch('./market.json?_='+Date.now()).then(r=>r.ok?r.json():null).then(m=>{renderMarket(m);renderBreadth(m);}).catch(()=>{});
 loadData();
 setTimeout(()=>location.reload(),REFRESH_MS);
 </script>
