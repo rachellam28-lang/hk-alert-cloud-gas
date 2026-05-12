@@ -87,6 +87,12 @@ th.sort-active{color:var(--primary)}.sort-icon{margin-left:4px;font-size:9px}
 @media(max-width:720px){.cell-price,thead th:nth-child(3){display:none}.cell-time,thead th:nth-child(6){display:none}.tabs{overflow-x:auto}.input.search-in{min-width:130px}}
 @media(max-width:520px){.cell-chart,thead th:nth-child(2){display:none}.ra-list{grid-template-columns:1fr}}
 @media(prefers-color-scheme:dark){:root{--bg:#0f172a;--surface:#1e293b;--surface-soft:#162032;--text:#f1f5f9;--text-soft:#cbd5e1;--mute:#64748b;--mute-2:#475569;--line:#334155;--line-soft:#1e293b;--primary:#38bdf8;--primary-soft:#0c2d44;--primary-border:#0369a1;--up:#4ade80;--up-soft:#052e16;--up-border:#166534;--down:#f87171;--down-soft:#2d0a0a;--down-border:#991b1b;--violet:#a78bfa;--violet-soft:#1e1040;--violet-border:#5b21b6;--amber:#fbbf24;--amber-soft:#1c0f00;--amber-border:#92400e}.topbar{background:rgba(15,23,42,.92)}.tabs{background:#1e293b}.tab.active{background:#0f172a}}
+.mbar{display:flex;gap:12px;flex-wrap:wrap;padding:6px 0 10px;margin-bottom:2px}
+.mchip{display:flex;flex-direction:column;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:6px 14px;min-width:80px;gap:2px}
+.mchip-label{font-size:9px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.12em}
+.mchip-val{font-size:15px;font-weight:700;color:var(--text)}
+.mchip-val.stale{color:var(--mute)}
+@media(max-width:520px){.mbar{gap:8px}.mchip{padding:5px 10px;min-width:68px}.mchip-val{font-size:13px}}
 </style>
 </head><body>
 <header class="topbar"><div class="topbar-inner">
@@ -102,6 +108,8 @@ th.sort-active{color:var(--primary)}.sort-icon{margin-left:4px;font-size:9px}
 </div></header>
 
 <main class="wrap">
+  <div class="mbar" id="mbar"></div>
+
   <div class="section-head"><h2><span class="ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>代號彙總</h2></div>
   <section class="card">
     <div class="toolbar">
@@ -296,6 +304,21 @@ function attachSort(){
   });
 }
 
+function renderMarket(snap){
+  if(!snap) return;
+  const bar=document.getElementById('mbar');
+  if(!bar) return;
+  function chip(label,val,stale){
+    const v=val==null?'—':(typeof val==='number'?val.toFixed(2):val);
+    return `<div class="mchip"><span class="mchip-label">${label}</span><span class="mchip-val${stale?' stale':''}">${v}</span></div>`;
+  }
+  bar.innerHTML=[
+    chip('恒指P/E', snap.hsi_pe&&snap.hsi_pe.value, snap.hsi_pe&&snap.hsi_pe.stale),
+    chip('美股P/E', snap.spx_pe&&snap.spx_pe.value, snap.spx_pe&&snap.spx_pe.stale),
+    chip('VIX', snap.vix&&snap.vix.value, snap.vix&&snap.vix.stale),
+  ].join('');
+}
+
 // --- Data fetch ---
 async function loadData(){
   const dot=document.getElementById('statusDot');
@@ -309,6 +332,7 @@ async function loadData(){
     renderSummary(data.groups||[]);
     renderTable(data.groups||[]);
     renderRecent(data.recentCorps||[]);
+    renderMarket(data.snap||null);
     const t=new Date(data.updatedAt);
     const p=n=>n<10?'0'+n:''+n;
     upd.textContent='更新於 '+t.getFullYear()+'-'+p(t.getMonth()+1)+'-'+p(t.getDate())+' '+p(t.getHours())+':'+p(t.getMinutes());

@@ -59,6 +59,7 @@ function handleJsonApi_() {
       ok: true,
       groups: grouped.groups,
       recentCorps: grouped.recentCorps,
+      snap: getMarketSnapshotCached_(),
       updatedAt: new Date().toISOString()
     })).setMimeType(ContentService.MimeType.JSON);
   } catch (err) {
@@ -404,7 +405,8 @@ function getMarketSnapshot_() {
     { url: 'https://query1.finance.yahoo.com/v8/finance/chart/' + encodeURIComponent('^HSI') + '?interval=1d&range=30d', muteHttpExceptions: true },
     { url: 'https://query1.finance.yahoo.com/v8/finance/chart/' + encodeURIComponent('DX-Y.NYB') + '?interval=1d&range=30d', muteHttpExceptions: true },
     { url: 'https://query1.finance.yahoo.com/v8/finance/chart/' + encodeURIComponent('^VIX') + '?interval=1d&range=30d', muteHttpExceptions: true },
-    { url: 'https://worldperatio.com/area/hong-kong/', muteHttpExceptions: true }
+    { url: 'https://worldperatio.com/area/hong-kong/', muteHttpExceptions: true },
+    { url: 'https://worldperatio.com/area/usa/', muteHttpExceptions: true }
   ];
   let responses = [];
   try { responses = UrlFetchApp.fetchAll(yahooReqs); } catch (e) { responses = []; }
@@ -413,6 +415,7 @@ function getMarketSnapshot_() {
     dxy: parseYahooResp_(responses[1], 'DX-Y.NYB'),
     vix: parseYahooResp_(responses[2], '^VIX'),
     hsi_pe: parseHsiPeResp_(responses[3]),
+    spx_pe: parseWorldPeResp_(responses[4], 'United States'),
     updated_at: new Date().toISOString()
   };
 }
@@ -452,6 +455,19 @@ function parseHsiPeResp_(resp) {
   }
 }
 
+function parseWorldPeResp_(resp, marketName) {
+  try {
+    if (!resp) return { value: null, change: null, changePct: null, source: 'World PE Ratio', stale: true, series: [] };
+    const html = resp.getContentText();
+    const escaped = marketName.replace(/[.*+?^${}()|[\]\]/g, '\$&');
+    const m = html.match(new RegExp(escaped + '[\s\S]{0,800}?P\/E Ratio[\s\S]{0,400}?(\d{1,3}\.\d{1,2})', 'i'))
+      || html.match(/P\/E Ratio[\s\S]{0,400}?(\d{1,3}\.\d{1,2})/i);
+    return { value: m ? Number(m[1]) : null, change: null, changePct: null, source: 'World PE Ratio', stale: !m, series: [] };
+  } catch (e) {
+    return { value: null, change: null, changePct: null, source: 'World PE Ratio', stale: true, series: [] };
+  }
+}
+
 function getMarketSnapshotCached_() {
   const cache = safeCache_();
   if (cache) {
@@ -463,7 +479,7 @@ function getMarketSnapshotCached_() {
   // Cache miss: return empty immediately — never block doGet on a live UrlFetch.
   // Market data is refreshed by the refreshMarketSnapshot_ time trigger (separate).
   const e_ = { value: null, change: null, changePct: null, stale: true, series: [] };
-  return { hsi: e_, dxy: e_, vix: e_, hsi_pe: e_, updated_at: new Date().toISOString() };
+  return { hsi: e_, dxy: e_, vix: e_, hsi_pe: e_, spx_pe: e_, updated_at: new Date().toISOString() };
 }
 
 function n_(v, d) {
