@@ -327,17 +327,14 @@ function renderBreadth(snap){
     if(!b||!b.count)return '';
     return '<div class="breadth-row">'
       +'<span class="breadth-lbl">'+lbl+'</span>'
+      +'<span class="bs-hi" style="flex-shrink:0;font-size:10px">高'+b.high+'%</span>'
       +'<div class="breadth-bar">'
         +'<div class="bs-h" style="width:'+b.high+'%"></div>'
         +'<div class="bs-m" style="width:'+b.mid+'%"></div>'
         +'<div class="bs-l" style="width:'+b.low+'%"></div>'
       +'</div>'
-      +'<div class="breadth-stats">'
-        +'<span class="bs-hi">高'+b.high+'%</span>'
-        +'<span>中'+b.mid+'%</span>'
-        +'<span class="bs-lo">低'+b.low+'%</span>'
-        +'<span class="bs-n">(n='+b.count+')</span>'
-      +'</div>'
+      +'<span class="bs-lo" style="flex-shrink:0;font-size:10px">低'+b.low+'%</span>'
+      +'<span class="bs-n" style="font-size:10px">(n='+b.count+')</span>'
     +'</div>';
   }
   const rows=row('港股',snap.breadth.hk)+row('美股',snap.breadth.us);
