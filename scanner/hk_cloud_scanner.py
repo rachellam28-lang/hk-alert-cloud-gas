@@ -868,7 +868,7 @@ def run_corp_actions() -> None:
             vol_str = f"{vol_ratio:.1f}x" if vol_ratio is not None else "N/A"
             print(f"[corp] {code} watchlist-only — volume={vol_str} types={types_list}")
             # Post low-priority record to Alerts sheet so it appears in dashboard 最近公告.
-            post_to_gas({
+            post_gas_alert({
                 "source": "hkexnews",
                 "category": "corp_action",
                 "code": code,
