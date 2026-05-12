@@ -190,15 +190,15 @@ function renderTable(groups){
     ? groups.map(renderRow).join('')
     : '<tr><td colspan="7" class="empty">暫無代號數據</td></tr>';
   document.getElementById('tableWrap').innerHTML =
-    `<table><thead><tr>
-<th class="sortable sort-active sort-desc" data-sort="date">代號 / 名稱<span class="sort-icon">▼</span></th>
+    `<div style="overflow-x:auto;-webkit-overflow-scrolling:touch"><table><thead><tr>
+<th class="sortable" data-sort="code">代號 / 名稱<span class="sort-icon"></span></th>
 <th>走勢圖</th>
 <th class="sortable" data-sort="price">價格<span class="sort-icon"></span></th>
 <th>信號 / 公告</th>
 <th class="sortable" data-sort="count">次數<span class="sort-icon"></span></th>
-<th class="sortable" data-sort="date">最後出現<span class="sort-icon"></span></th>
+<th class="sortable sort-active sort-desc" data-sort="date">最後出現<span class="sort-icon">▼</span></th>
 <th>連結</th>
-</tr></thead><tbody id="urows">${html}</tbody></table>`;
+</tr></thead><tbody id="urows">${html}</tbody></table></div>`;
   attachSort();
 }
 
