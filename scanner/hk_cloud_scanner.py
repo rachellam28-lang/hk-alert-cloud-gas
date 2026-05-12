@@ -910,15 +910,17 @@ def run_corp_actions() -> None:
             "priority": priority,
             "raw": json.dumps(ann, ensure_ascii=False),
         }
-        vol_part = f"　量比：{vol_line}" if vol_line else ""
+        vol_line_str = f"量比：{vol_line}" if vol_line else ""
+        date_vol = f"{ann_date}　{vol_line_str}" if vol_line_str else ann_date
         pw_low = get_prev_week_low(df) if not df.empty else None
         cur_price = float(df.iloc[-1]["close"]) if not df.empty else 0.0
         _sl = sl_yr_line(pw_low, cur_price, df) if not df.empty else ""
-        sl_part = f"\n{_sl}" if _sl else ""
+        sl_part = f"\n\n{_sl}" if _sl else ""
         caption = (
-            f"📰{types}　{ann_date}{vol_part}\n"
-            f"{code} {ann['name']}\n"
-            f"{title_cn}{sl_part}"
+            f"📰{types}\n"
+            f"{date_vol}\n"
+            f"{code} {ann['name']}"
+            f"{sl_part}"
         )
         corp_kb = build_inline_keyboard_([
             ("📰 披露易", ann["url"]),
@@ -927,12 +929,14 @@ def run_corp_actions() -> None:
         chart_path: str | None = None
         corp_levels = [("前周低", pw_low, "#ef4444")] if pw_low is not None else []
         try:
-            if not df.empty:
+            df_weekly = get_weekly_history(code, "2y")
+            chart_df = df_weekly if not df_weekly.empty else df
+            if not chart_df.empty:
                 chart_path = render_chart(
-                    df, code, ann["name"],
-                    f"披露易 · {types}",
+                    chart_df, code, ann["name"],
+                    f"披露易 · {types}（周線）",
                     levels=corp_levels,
-                    lookback_days=CHART_LOOKBACK_DAYS,
+                    lookback_days=None,
                 )
         except Exception as exc:
             print(f"[chart] corp action chart failed for {code}: {exc}")
@@ -1128,6 +1132,30 @@ def get_daily_history(code: str, period: str) -> pd.DataFrame:
                 return df
         except Exception as exc:
             print(f"{code} {ticker} yfinance failed {attempt}/{RETRY_COUNT}: {exc}")
+        if attempt < RETRY_COUNT:
+            time.sleep(RETRY_SLEEP)
+    return pd.DataFrame()
+
+
+def get_weekly_history(code: str, period: str = "2y") -> pd.DataFrame:
+    """Download weekly OHLC (interval=1wk) for chart rendering."""
+    ticker = hk_code_to_yahoo(code)
+    for attempt in range(1, RETRY_COUNT + 1):
+        try:
+            raw = yf.download(
+                ticker,
+                period=period,
+                interval="1wk",
+                auto_adjust=False,
+                progress=False,
+                threads=False,
+                timeout=YF_HTTP_TIMEOUT,
+            )
+            df = normalize_yfinance_df(raw)
+            if not df.empty:
+                return df
+        except Exception as exc:
+            print(f"{code} {ticker} weekly yfinance failed {attempt}/{RETRY_COUNT}: {exc}")
         if attempt < RETRY_COUNT:
             time.sleep(RETRY_SLEEP)
     return pd.DataFrame()
