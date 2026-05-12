@@ -167,7 +167,7 @@ def sl_yr_line(pw_low: float | None, price: float, df: pd.DataFrame) -> str:
     """Return the stop-loss + year-open indicator line, or empty string if no data."""
     yr_open = get_year_open_price(df)
     if yr_open is not None:
-        yr_mark = f" 🔺年開：{yr_open}" if price > yr_open else f" 🔻年開：{yr_open}"
+        yr_mark = f" 🔺高於年開：{yr_open}" if price > yr_open else f" 🔻低於年開：{yr_open}"
     else:
         yr_mark = ""
     if pw_low is not None:
