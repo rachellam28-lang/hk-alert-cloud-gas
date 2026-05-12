@@ -1,0 +1,29 @@
+name: Update Market Data
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "7 */1 * * 1-5"   # every hour on weekdays
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+      - run: pip install yfinance requests
+      - name: Fetch market data
+        run: python .github/scripts/fetch_market.py
+      - name: Commit market.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add market.json
+          git diff --cached --quiet || git commit -m "chore: update market.json [skip ci]"
+          git push

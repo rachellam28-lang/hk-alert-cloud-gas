@@ -336,7 +336,10 @@ async function loadData(){
     renderSummary(data.groups||[]);
     renderTable(data.groups||[]);
     renderRecent(data.recentCorps||[]);
-    renderMarket(data.snap||null);
+    fetch('./market.json?_='+Date.now())
+      .then(r=>r.ok?r.json():null)
+      .then(m=>renderMarket(m))
+      .catch(()=>{});
     const t=new Date(data.updatedAt);
     const p=n=>n<10?'0'+n:''+n;
     upd.textContent='更新於 '+t.getFullYear()+'-'+p(t.getMonth()+1)+'-'+p(t.getDate())+' '+p(t.getHours())+':'+p(t.getMinutes());
