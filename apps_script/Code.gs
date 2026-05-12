@@ -59,7 +59,7 @@ function handleJsonApi_() {
       ok: true,
       groups: grouped.groups,
       recentCorps: grouped.recentCorps,
-      snap: getMarketSnapshotCached_(),
+      snap: getMarketSnapshot_(),
       updatedAt: new Date().toISOString()
     })).setMimeType(ContentService.MimeType.JSON);
   } catch (err) {

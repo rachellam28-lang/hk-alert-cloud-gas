@@ -308,14 +308,18 @@ function renderMarket(snap){
   if(!snap) return;
   const bar=document.getElementById('mbar');
   if(!bar) return;
-  function chip(label,val,stale){
-    const v=val==null?'—':(typeof val==='number'?val.toFixed(2):val);
-    return `<div class="mchip"><span class="mchip-label">${label}</span><span class="mchip-val${stale?' stale':''}">${v}</span></div>`;
+  function fmtVal(v,d){return v==null?'—':Number(v).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});}
+  function fmtChg(pct){if(pct==null)return '';const s=pct>=0?'+':'';return ` <span style="font-size:10px;color:${pct>=0?'var(--up)':'var(--down)'}">${s}${pct.toFixed(2)}%</span>`;}
+  function chip(label,val,chgPct,stale,dp){
+    return `<div class="mchip"><span class="mchip-label">${label}</span><span class="mchip-val${stale?' stale':''}">${fmtVal(val,dp??2)}${chgPct!=null?fmtChg(chgPct):''}</span></div>`;
   }
+  const h=snap.hsi||{},d=snap.dxy||{},v=snap.vix||{},hp=snap.hsi_pe||{},sp=snap.spx_pe||{};
   bar.innerHTML=[
-    chip('恒指P/E', snap.hsi_pe&&snap.hsi_pe.value, snap.hsi_pe&&snap.hsi_pe.stale),
-    chip('美股P/E', snap.spx_pe&&snap.spx_pe.value, snap.spx_pe&&snap.spx_pe.stale),
-    chip('VIX', snap.vix&&snap.vix.value, snap.vix&&snap.vix.stale),
+    chip('恒指', h.value, h.changePct, h.stale, 0),
+    chip('DXY', d.value, d.changePct, d.stale, 2),
+    chip('VIX', v.value, v.changePct, v.stale, 2),
+    chip('港股P/E', hp.value, null, hp.stale, 2),
+    chip('美股P/E', sp.value, null, sp.stale, 2),
   ].join('');
 }
 
