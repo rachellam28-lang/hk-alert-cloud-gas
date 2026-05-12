@@ -1920,6 +1920,9 @@ def main() -> None:
         run_poc()
     elif mode == "year_open":
         run_year_open_breakout()
+    elif mode == "us":
+        from us_scanner import run_us_corp_actions
+        run_us_corp_actions()
     elif mode == "all":
         run_corp_actions()
         run_ipo()
@@ -1927,7 +1930,7 @@ def main() -> None:
         run_year_open_breakout()
     else:
         raise SystemExit(
-            "Usage: python scanner/hk_cloud_scanner.py [corp|ipo|poc|year_open|all]"
+            "Usage: python scanner/hk_cloud_scanner.py [corp|ipo|poc|year_open|us|all]"
         )
 
 

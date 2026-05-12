@@ -1,0 +1,29 @@
+name: US Small-Cap Corp Events
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "37 21 * * 1-5"   # 05:37 HKT next day (after US market close 4pm ET)
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+      - run: pip install -r scanner/requirements.txt
+      - name: Run US corp events scan
+        timeout-minutes: 23
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GAS_WEBHOOK_URL: ${{ secrets.GAS_WEBHOOK_URL }}
+          GAS_SECRET: ${{ secrets.GAS_SECRET }}
+          US_SMALL_CAP_USD: "2000000000"
+          US_MIN_INSIDER_USD: "50000"
+          US_LOOKBACK_DAYS: "1"
+        run: python -u scanner/hk_cloud_scanner.py us

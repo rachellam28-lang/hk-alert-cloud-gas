@@ -188,7 +188,7 @@ function renderRow(g){
   const hasTech = g.techCount>0?'1':'0';
   const rowCount = (g.techCount||0)+(g.corpCount||0);
 
-  return `<tr class="urow" data-code="${esc(codeStr)}" data-name="${esc(g.name||'')}" data-date="${esc(lastDate)}" data-corp="${hasCorp}" data-tech="${hasTech}" data-price="${price||0}" data-count="${rowCount}">
+  return `<tr class="urow" data-code="${esc(codeStr)}" data-name="${esc(g.name||'')}" data-date="${esc(lastDate)}" data-corp="${hasCorp}" data-tech="${hasTech}" data-price="${price||0}" data-count="${rowCount}" data-market="${g.market||''}" data-tags="${(g.tags||[]).join(',')}">
 <td class="cell-code"><div class="code">${esc(codeStr)}</div>${g.name?`<div class="name">${esc(g.name)}</div>`:''}</td>
 <td class="cell-chart">${chartHtml}</td>
 <td class="cell-price">${priceHtml}</td>
@@ -267,6 +267,7 @@ function applyFilter(){
     else if(ftype==='increase')ftOK=hasI;
     else if(ftype==='rights')ftOK=hasR;
     else if(ftype==='block')ftOK=hasB;
+    else if(ftype==='us')ftOK=(r.dataset.market==='US'||r.dataset.tags?.includes('美股'));
     const mq=!q||name.includes(q)||code.includes(q);
     r.style.display=(ftOK&&mq)?'':'none';
   });
