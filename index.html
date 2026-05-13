@@ -280,7 +280,7 @@ function renderTable(groups){
 <th class="sortable" data-sort="code">代號 / 名稱<span class="sort-icon"></span></th>
 <th>走勢圖</th>
 <th class="sortable" data-sort="price">價格<span class="sort-icon"></span></th>
-<th class="sortable" data-sort="signal">信號 / 公告<select id="sigFilter" class="th-filter" onclick="event.stopPropagation()" onchange="ftype=this.value;applyFilter()"><option value="all">全部</option><option value="tech">技術信號</option><option value="corp">披露易</option><option value="placement">配股</option><option value="increase">增持</option><option value="rights">供股</option><option value="block">大手轉倉</option></select><span class="sort-icon"></span></th>
+<th class="sortable" data-sort="signal">信號 / 公告<select id="sigFilter" class="th-filter" onclick="event.stopPropagation()" onchange="ftype=this.value;applyFilter()"><option value="all">全部</option><option value="poc3">半年+12月+3年POC</option><option value="poc_half">半年POC</option><option value="yearopen">年開突破</option><option value="fvg">FVG</option><option value="placement">配股</option><option value="rights">供股</option></select><span class="sort-icon"></span></th>
 <th class="sortable" data-sort="count">次數<span class="sort-icon"></span></th>
 <th class="sortable sort-active sort-desc" data-sort="date">最後出現<span class="sort-icon">▼</span></th>
 <th>連結</th>
@@ -330,16 +330,16 @@ function applyFilter(){
     const hasCorp=r.dataset.corp==='1';
     const hasTech=r.dataset.tech==='1';
     const hasP=!!r.querySelector('.cpill-placement');
-    const hasI=!!r.querySelector('.cpill-increase');
     const hasR=!!r.querySelector('.cpill-rights');
-    const hasB=!!r.querySelector('.cpill-block');
+    const sigText=Array.from(r.querySelectorAll('.spill')).map(s=>s.textContent).join(' ');
+    const hasSig=kw=>sigText.indexOf(kw)>=0;
     let ftOK=true;
-    if(ftype==='tech')ftOK=hasTech;
-    else if(ftype==='corp')ftOK=hasCorp;
+    if(ftype==='poc3')ftOK=hasSig('3年');
+    else if(ftype==='poc_half')ftOK=hasSig('半年POC');
+    else if(ftype==='yearopen')ftOK=hasSig('年開突破');
+    else if(ftype==='fvg')ftOK=hasSig('FVG');
     else if(ftype==='placement')ftOK=hasP;
-    else if(ftype==='increase')ftOK=hasI;
     else if(ftype==='rights')ftOK=hasR;
-    else if(ftype==='block')ftOK=hasB;
     const mq=!q||name.includes(q)||code.includes(q);
     r.style.display=(ftOK&&mq)?'':'none';
   });
