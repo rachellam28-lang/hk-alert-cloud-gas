@@ -103,7 +103,7 @@ function buildGroupsForJson_(alerts) {
       const label = String(a.signal || a.category || '').trim() || '訊號';
       if (!g.signalSeen[label]) {
         g.signalSeen[label] = true;
-        g.signals.push({ label: label, link: a.chart_url || a.source_url || '' });
+        g.signals.push({ label: label, link: a.chart_url || a.source_url || '', date: a.created_at || '' });
       }
     }
   });
@@ -688,7 +688,7 @@ function render_(alerts, snap) {
       if (!g.signalSeen[label]) {
         g.signalSeen[label] = true;
         const link = a.chart_url || a.source_url || '';
-        g.signals.push({ label: label, link: link });
+        g.signals.push({ label: label, link: link, date: a.created_at || '' });
       }
       if (!g.tvLink) {
         const cu = a.chart_url || '';
