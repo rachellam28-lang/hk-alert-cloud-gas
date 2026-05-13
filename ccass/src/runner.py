@@ -45,7 +45,7 @@ def should_refresh_universe(force: bool = False) -> bool:
         row = conn.execute(
             "SELECT COUNT(*) AS n FROM stock_universe WHERE is_active = 1"
         ).fetchone()
-        if row["n"] == 0:
+        if row["n"] < 100:
             return True
     return today_hk().weekday() == 0  # Monday
 

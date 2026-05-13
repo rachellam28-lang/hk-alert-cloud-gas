@@ -145,9 +145,19 @@ class CCASSScraper:
 
         # 1. 偵測「冇數據」: HKEX 會 render error message
         err_block = soup.find("div", class_="ccass-search-msg")
-        if err_block and "no record" in err_block.get_text(strip=True).lower():
-            logger.info("No CCASS data for %s on %s", stock_code, query_date)
-            return None
+        if err_block:
+            msg_text = err_block.get_text(strip=True).lower()
+            if "no record" in msg_text or "no data" in msg_text or "not found" in msg_text:
+                logger.info("No CCASS data for %s on %s", stock_code, query_date)
+                return None
+            logger.debug("CCASS msg for %s: %s", stock_code, err_block.get_text(strip=True)[:200])
+        # Detect anti-bot / access-denied pages
+        page_title = soup.find("title")
+        if page_title:
+            title_lc = page_title.get_text(strip=True).lower()
+            if any(k in title_lc for k in ("access denied", "captcha", "403", "blocked")):
+                logger.warning("Possible anti-bot page for %s: %s", stock_code, page_title.get_text(strip=True)[:100])
+                return None
 
         # 2. 攞 total shareholding
         # HKEX 用 <div class="ccass-search-total"> 包總數
@@ -159,10 +169,16 @@ class CCASSScraper:
         total_pct = self._extract_total_pct(soup)
 
         if total_shares is None:
+            total_shares = self._extract_total_from_text(html)
+            if total_shares:
+                logger.debug("Used regex fallback total_shares for %s: %d", stock_code, total_shares)
+
+        if total_shares is None:
             self._save_debug_html(stock_code, query_date, html)
+            body_snip = BeautifulSoup(html, "lxml").get_text(separator=" ", strip=True)[:400]
             logger.warning(
-                "Schema validation failed for %s on %s: total_shares not found",
-                stock_code, query_date,
+                "Schema validation failed for %s on %s: total_shares not found. Snippet: %s",
+                stock_code, query_date, body_snip,
             )
             return None
 
@@ -222,6 +238,23 @@ class CCASSScraper:
                     if num and num > 0:
                         total += num
         return total if total > 0 else None
+
+    @staticmethod
+    def _extract_total_from_text(html: str) -> Optional[int]:
+        """Last-resort: find most-frequent large number (>=10M) in raw HTML — likely total shares."""
+        from collections import Counter
+        candidates = re.findall(r'(?<![0-9])([0-9]{1,3}(?:,[0-9]{3}){2,})', html)
+        nums = []
+        for c in candidates:
+            try:
+                n = int(c.replace(',', ''))
+                if n >= 10_000_000:
+                    nums.append(n)
+            except ValueError:
+                pass
+        if not nums:
+            return None
+        return Counter(nums).most_common(1)[0][0]
 
     @staticmethod
     def _extract_total_pct(soup: BeautifulSoup) -> Optional[float]:
