@@ -125,21 +125,6 @@ th.sort-active{color:var(--primary)}.sort-icon{margin-left:4px;font-size:9px}
 .ccass-delta{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
 .ccass-delta.up{color:#16a34a}.ccass-delta.dn{color:#dc2626}
 .ccass-streak{font-size:10px;color:var(--mute-2);margin-left:4px}
-.fvg-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:10px 14px;margin-bottom:12px}
-.fvg-head{font-size:10px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.14em;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
-.fvg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:6px}
-.fvg-item{background:var(--surface-soft);border:1px solid var(--line);border-radius:8px;padding:5px 10px;display:flex;align-items:center;gap:8px}
-.fvg-item.status-in{border-color:#16a34a;background:#f0fdf4}
-.fvg-item.status-near{border-color:#f59e0b;background:#fffbeb}
-.fvg-left{flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-start;gap:2px}
-.fvg-ticker{font:600 12px "JetBrains Mono",ui-monospace,monospace;display:flex;align-items:center;gap:4px}
-.fvg-tf{font-size:10px;font-weight:700;padding:1px 5px;border-radius:4px;background:#e0f2fe;color:#0284c7}
-.fvg-right{flex:1;min-width:0;font-size:11px;color:var(--text-soft);font-variant-numeric:tabular-nums;line-height:1.5}
-.fvg-status{font-size:10px;font-weight:600}
-.fvg-status.in{color:#16a34a}.fvg-status.near{color:#b45309}
-.fvg-tabs{display:inline-flex;gap:2px;padding:3px;background:#eef2f7;border-radius:8px;margin-bottom:8px}
-.fvg-tab{appearance:none;background:transparent;border:0;color:var(--text-soft);padding:4px 10px;border-radius:6px;font:500 11px inherit;cursor:pointer}
-.fvg-tab.active{background:var(--surface);color:var(--text);box-shadow:0 1px 2px rgba(15,23,42,.06);font-weight:600}
 </style>
 </head><body>
 <header class="topbar"><div class="topbar-inner">
@@ -158,17 +143,6 @@ th.sort-active{color:var(--primary)}.sort-icon{margin-left:4px;font-size:9px}
 <main class="wrap">
   <div class="mbar" id="mbar"></div>
   <div class="breadth-card" id="breadthCard" style="display:none"><div class="breadth-head">市場寬度 · 52周高低位分布</div><div id="breadthRows"></div></div>
-  <div class="fvg-card" id="fvgCard" style="display:none">
-    <div class="fvg-head"><span>📐 Bullish FVG 回測</span><span id="fvgUpdated" style="font-weight:400;color:var(--mute-2)"></span></div>
-    <div class="fvg-tabs">
-      <button class="fvg-tab active" onclick="fvgFilter('all',this)">全部</button>
-      <button class="fvg-tab" onclick="fvgFilter('日線',this)">日線</button>
-      <button class="fvg-tab" onclick="fvgFilter('周線',this)">周線</button>
-      <button class="fvg-tab" onclick="fvgFilter('月線',this)">月線</button>
-    </div>
-    <div class="fvg-grid" id="fvgGrid"></div>
-  </div>
-
   <div class="ccass-card" id="ccassCard" style="display:none">
     <div class="ccass-head"><span>📦 CCASS 持倉異動（5日）</span><span id="ccassDate" style="font-weight:400;color:var(--mute-2)"></span></div>
     <div class="ccass-cols">
@@ -189,15 +163,15 @@ th.sort-active{color:var(--primary)}.sort-icon{margin-left:4px;font-size:9px}
       <div class="tlabel">代號彙總</div>
       <div class="summary" id="summary"></div>
       <div class="spacer"></div>
-      <div class="tabs" id="ftabs">
-        <button class="tab active" data-ftype="all">全部</button>
-        <button class="tab" data-ftype="tech">技術信號</button>
-        <button class="tab" data-ftype="corp">披露易</button>
-        <button class="tab" data-ftype="placement">配股</button>
-        <button class="tab" data-ftype="increase">增持</button>
-        <button class="tab" data-ftype="rights">供股</button>
-        <button class="tab" data-ftype="block">大手轉倉</button>
-      </div>
+      <select id="ftabs" class="input">
+        <option value="all">全部</option>
+        <option value="tech">技術信號</option>
+        <option value="corp">披露易</option>
+        <option value="placement">配股</option>
+        <option value="increase">增持</option>
+        <option value="rights">供股</option>
+        <option value="block">大手轉倉</option>
+      </select>
       <div class="search">
         <input id="tq" class="input search-in" type="search" placeholder="搜尋代號 / 名稱…" autocomplete="off">
         <button class="btn-ghost" id="tclear">清除</button>
@@ -284,8 +258,9 @@ function renderRow(g){
   const hasCorp = g.corpCount>0?'1':'0';
   const hasTech = g.techCount>0?'1':'0';
   const rowCount = (g.techCount||0)+(g.corpCount||0);
+  const firstSig = (g.signals&&g.signals[0])?g.signals[0].label:(corpOrder.find(t=>g.corpTypes&&g.corpTypes[t])?corpLabel(corpOrder.find(t=>g.corpTypes&&g.corpTypes[t])):'');
 
-  return `<tr class="urow" data-code="${esc(codeStr)}" data-name="${esc(g.name||'')}" data-date="${esc(lastDate)}" data-corp="${hasCorp}" data-tech="${hasTech}" data-price="${price||0}" data-count="${rowCount}">
+  return `<tr class="urow" data-code="${esc(codeStr)}" data-name="${esc(g.name||'')}" data-date="${esc(lastDate)}" data-corp="${hasCorp}" data-tech="${hasTech}" data-price="${price||0}" data-count="${rowCount}" data-signal="${esc(firstSig)}">
 <td class="cell-code"><div class="code">${esc(codeStr)}</div>${g.name?`<div class="name">${esc(g.name)}</div>`:''}</td>
 <td class="cell-chart">${chartHtml}</td>
 <td class="cell-price">${priceHtml}</td>
@@ -305,7 +280,7 @@ function renderTable(groups){
 <th class="sortable" data-sort="code">代號 / 名稱<span class="sort-icon"></span></th>
 <th>走勢圖</th>
 <th class="sortable" data-sort="price">價格<span class="sort-icon"></span></th>
-<th>信號 / 公告</th>
+<th class="sortable" data-sort="signal">信號 / 公告<span class="sort-icon"></span></th>
 <th class="sortable" data-sort="count">次數<span class="sort-icon"></span></th>
 <th class="sortable sort-active sort-desc" data-sort="date">最後出現<span class="sort-icon">▼</span></th>
 <th>連結</th>
@@ -368,16 +343,13 @@ function applyFilter(){
     r.style.display=(ftOK&&mq)?'':'none';
   });
 }
-document.getElementById('ftabs').addEventListener('click',e=>{
-  const t=e.target.closest('.tab');if(!t)return;
-  document.querySelectorAll('#ftabs .tab').forEach(x=>x.classList.remove('active'));
-  t.classList.add('active');ftype=t.dataset.ftype||'all';applyFilter();
+document.getElementById('ftabs').addEventListener('change',e=>{
+  ftype=e.target.value||'all';applyFilter();
 });
 document.getElementById('tq').addEventListener('input',applyFilter);
 document.getElementById('tclear').addEventListener('click',()=>{
   document.getElementById('tq').value='';
-  document.querySelectorAll('#ftabs .tab').forEach(x=>x.classList.remove('active'));
-  document.querySelector('#ftabs .tab[data-ftype="all"]').classList.add('active');
+  document.getElementById('ftabs').value='all';
   ftype='all';applyFilter();
 });
 
@@ -388,6 +360,7 @@ function getVal(r,col){
   if(col==='date')return r.dataset.date||'';
   if(col==='price')return parseFloat(r.dataset.price||'0');
   if(col==='count')return parseInt(r.dataset.count||'0',10);
+  if(col==='signal')return r.dataset.signal||'';
   return '';
 }
 function attachSort(){
@@ -407,43 +380,6 @@ function attachSort(){
   });
 }
 
-let _fvgData=[];
-function fvgFilter(tf,btn){
-  document.querySelectorAll('.fvg-tab').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  const arr=tf==='all'?_fvgData:_fvgData.filter(a=>a.timeframe===tf);
-  _renderFvgGrid(arr);
-}
-function _renderFvgGrid(arr){
-  const grid=document.getElementById('fvgGrid');
-  if(!arr.length){grid.innerHTML='<div style="color:var(--mute-2);font-size:11px;padding:6px 0">暫無回測中 FVG</div>';return;}
-  grid.innerHTML=arr.map(a=>{
-    const flag=a.market==='HK'?'🇭🇰':'🇺🇸';
-    const code=a.market==='HK'?a.ticker.replace('.HK',''):a.ticker;
-    const tvSym=a.market==='HK'?'HKEX%3A'+code:code;
-    const statusLbl=a.status==='in'?'🎯 FVG內':'⬇️ 接近FVG';
-    const pctAbove=a.status==='near'?((a.current-a.gap_high)/a.gap_high*100).toFixed(2)+'%上方':'在FVG內';
-    return '<a class="fvg-item status-'+a.status+'" href="https://www.tradingview.com/chart/?symbol='+tvSym+'" target="_blank" style="text-decoration:none">'
-      +'<div class="fvg-left">'
-        +'<div class="fvg-ticker">'+flag+' '+code+'</div>'
-        +'<span class="fvg-tf">'+a.timeframe+'</span>'
-        +'<span class="fvg-status '+a.status+'">'+statusLbl+'</span>'
-      +'</div>'
-      +'<div class="fvg-right">'
-        +'FVG '+a.gap_low+' – '+a.gap_high+'<br>'
-        +'現價 <b>'+a.current+'</b> ('+pctAbove+')'
-      +'</div>'
-      +'</a>';
-  }).join('');
-}
-function renderFVG(d){
-  const card=document.getElementById('fvgCard');
-  if(!d||!d.alerts||!d.alerts.length){card.style.display='none';return;}
-  _fvgData=d.alerts;
-  card.style.display='';
-  document.getElementById('fvgUpdated').textContent=d.updated||'';
-  _renderFvgGrid(_fvgData);
-}
 function renderCCASS(c){
   const card=document.getElementById('ccassCard');
   if(!c||(!c.top_increase?.length&&!c.top_decrease?.length)){card.style.display='none';return;}
@@ -531,10 +467,6 @@ async function loadData(){
     fetch('./ccass.json?_='+Date.now())
       .then(r=>r.ok?r.json():null)
       .then(c=>renderCCASS(c))
-      .catch(()=>{});
-    fetch('./fvg.json?_='+Date.now())
-      .then(r=>r.ok?r.json():null)
-      .then(d=>renderFVG(d))
       .catch(()=>{});
     const t=new Date(data.updatedAt);
     const p=n=>n<10?'0'+n:''+n;

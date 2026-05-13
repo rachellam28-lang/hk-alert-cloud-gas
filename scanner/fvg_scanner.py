@@ -160,34 +160,62 @@ def _build_name_map(tickers: list[str]) -> dict[str, str]:
     return names
 
 
-# ── Telegram ──────────────────────────────────────────────────────────────────
+# ── Telegram + GAS ────────────────────────────────────────────────────────────
+
+def _tv_url(alert: dict) -> str:
+    sym = alert["ticker"].replace(".HK", "")
+    if alert["market"] == "HK":
+        return f"https://www.tradingview.com/chart/?symbol=HKEX%3A{sym}"
+    return f"https://www.tradingview.com/chart/?symbol={sym}"
+
 
 def _emit_telegram(alert: dict) -> None:
     sys.path.insert(0, os.path.dirname(__file__))
     from hk_cloud_scanner import send_telegram_alert, build_inline_keyboard_
 
-    flag   = "🇭🇰" if alert["market"] == "HK" else "🇺🇸"
+    flag        = "🇭🇰" if alert["market"] == "HK" else "🇺🇸"
     status_icon = "🎯 FVG內" if alert["status"] == "in" else "⬇️接近FVG"
     pct_from_top = round((alert["current"] - alert["gap_high"]) / alert["gap_high"] * 100, 2)
-    dist_str = (f"{pct_from_top:.2f}%上方"
-                if alert["status"] == "near"
-                else "在FVG內")
+    dist_str = (f"{pct_from_top:.2f}%上方" if alert["status"] == "near" else "在FVG內")
 
     caption = (
         f"📐 {flag} <b>{alert['ticker']}</b> {alert['timeframe']} {status_icon}\n"
         f"FVG {alert['gap_low']} – {alert['gap_high']}  現價 {alert['current']} ({dist_str})"
     )
 
-    ticker_sym = alert["ticker"].replace(".HK", "")
-    if alert["market"] == "HK":
-        tv_url = f"https://www.tradingview.com/chart/?symbol=HKEX%3A{ticker_sym}"
-    else:
-        tv_url = f"https://www.tradingview.com/chart/?symbol={ticker_sym}"
-
+    tv_url = _tv_url(alert)
     send_telegram_alert(caption, None, reply_markup=build_inline_keyboard_([
         ("📊 走勢圖", tv_url),
     ]))
     time.sleep(0.5)
+
+
+def _post_to_gas(alert: dict) -> None:
+    sys.path.insert(0, os.path.dirname(__file__))
+    from hk_cloud_scanner import post_gas_alert
+
+    if alert["market"] == "HK":
+        code = alert["ticker"].replace(".HK", "").zfill(5)
+    else:
+        code = alert["ticker"]
+
+    dist_str = (
+        f"{(alert['current'] - alert['gap_high']) / alert['gap_high'] * 100:.2f}%上方"
+        if alert["status"] == "near" else "在FVG內"
+    )
+
+    post_gas_alert({
+        "source":    "fvg_scanner",
+        "category":  "tech",
+        "code":      code,
+        "name":      alert.get("name") or code,
+        "signal":    f"Bullish FVG {alert['timeframe']}",
+        "timeframe": alert["timeframe"],
+        "price":     alert["current"],
+        "chart_url": _tv_url(alert),
+        "message":   f"FVG {alert['gap_low']}–{alert['gap_high']} 現價{alert['current']} ({dist_str})",
+        "tags":      "FVG",
+    })
 
 
 # ── JSON export ───────────────────────────────────────────────────────────────
@@ -224,6 +252,10 @@ def run_fvg_scan(market: str = "both") -> None:
         for a in alerts:
             print(f"[FVG] ALERT {a['ticker']} {a['timeframe']} {a['status']}  "
                   f"FVG={a['gap_low']:.2f}–{a['gap_high']:.2f}  now={a['current']:.2f}")
+            try:
+                _post_to_gas(a)
+            except Exception as e:
+                print(f"[FVG] GAS error {ticker}: {e}")
             try:
                 _emit_telegram(a)
             except Exception as e:
