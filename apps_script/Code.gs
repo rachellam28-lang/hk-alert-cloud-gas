@@ -515,9 +515,7 @@ function parseWorldPeResp_(resp, marketName) {
   try {
     if (!resp) return { value: null, change: null, changePct: null, source: 'World PE Ratio', stale: true, series: [] };
     const html = resp.getContentText();
-    const escaped = marketName.replace(/[.*+?^${}()|[\]\]/g, '\$&');
-    const m = html.match(new RegExp(escaped + '[\s\S]{0,800}?P\/E Ratio[\s\S]{0,400}?(\d{1,3}\.\d{1,2})', 'i'))
-      || html.match(/P\/E Ratio[\s\S]{0,400}?(\d{1,3}\.\d{1,2})/i);
+    const m = html.match(/P\/E Ratio[\s\S]{0,400}?(\d{1,3}\.\d{1,2})/i);
     return { value: m ? Number(m[1]) : null, change: null, changePct: null, source: 'World PE Ratio', stale: !m, series: [] };
   } catch (e) {
     return { value: null, change: null, changePct: null, source: 'World PE Ratio', stale: true, series: [] };
