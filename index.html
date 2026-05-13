@@ -427,7 +427,7 @@ function _renderFvgGrid(arr){
       +'<div class="fvg-ticker">'+flag+' '+code+' <span class="fvg-tf">'+a.timeframe+'</span></div>'
       +'<div class="fvg-name">'+a.name+'</div>'
       +'<div class="fvg-zone">FVG '+a.gap_low+' – '+a.gap_high+'</div>'
-      +'<div class="fvg-zone">現價 <b>'+a.current+'</b>'+(pctAbove?' ('+pctAbove+')')+'</div>'
+      +'<div class="fvg-zone">現價 <b>'+a.current+'</b>'+(pctAbove?' ('+pctAbove+')':'')+'</div>'
       +'<div class="fvg-status '+a.status+'">'+statusLbl+'</div>'
       +'</a>';
   }).join('');
