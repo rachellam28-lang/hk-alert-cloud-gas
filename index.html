@@ -85,6 +85,8 @@ th.sort-active{color:var(--primary)}.sort-icon{margin-left:4px;font-size:9px}
 .foot{margin-top:24px;padding-top:14px;border-top:1px solid var(--line);text-align:center;color:var(--mute-2);font-size:11px}
 .btn-save{appearance:none;background:transparent;border:none;cursor:pointer;font-size:14px;line-height:1;padding:2px 4px;color:var(--mute-2);transition:color .15s}
 .btn-save:hover{color:#f59e0b}.btn-save.saved{color:#f59e0b}
+.th-filter{appearance:none;-webkit-appearance:none;background:var(--surface-soft);border:1px solid var(--line);color:var(--text-soft);font:500 10px/1.4 inherit;padding:2px 18px 2px 6px;border-radius:4px;cursor:pointer;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='5'><path d='M0 0L8 0L4 5Z' fill='%2364748b'/></svg>");background-repeat:no-repeat;background-position:right 4px center;margin-left:4px;vertical-align:middle}
+.th-filter:focus{outline:none;border-color:var(--primary)}
 .section-toggle{appearance:none;background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:8px;padding:0;width:100%;text-align:left}
 .section-toggle h2{margin:0;display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.16em}
 .toggle-arrow{font-size:10px;color:var(--mute-2);transition:transform .2s;margin-left:4px}
@@ -166,15 +168,6 @@ th.sort-active{color:var(--primary)}.sort-icon{margin-left:4px;font-size:9px}
       <div class="tlabel">代號彙總</div>
       <div class="summary" id="summary"></div>
       <div class="spacer"></div>
-      <select id="ftabs" class="input">
-        <option value="all">全部</option>
-        <option value="tech">技術信號</option>
-        <option value="corp">披露易</option>
-        <option value="placement">配股</option>
-        <option value="increase">增持</option>
-        <option value="rights">供股</option>
-        <option value="block">大手轉倉</option>
-      </select>
       <div class="search">
         <input id="tq" class="input search-in" type="search" placeholder="搜尋代號 / 名稱…" autocomplete="off">
         <button class="btn-ghost" id="tclear">清除</button>
@@ -286,12 +279,13 @@ function renderTable(groups){
 <th class="sortable" data-sort="code">代號 / 名稱<span class="sort-icon"></span></th>
 <th>走勢圖</th>
 <th class="sortable" data-sort="price">價格<span class="sort-icon"></span></th>
-<th class="sortable" data-sort="signal">信號 / 公告<span class="sort-icon"></span></th>
+<th class="sortable" data-sort="signal">信號 / 公告<select id="sigFilter" class="th-filter" onclick="event.stopPropagation()" onchange="ftype=this.value;applyFilter()"><option value="all">全部</option><option value="tech">技術信號</option><option value="corp">披露易</option><option value="placement">配股</option><option value="increase">增持</option><option value="rights">供股</option><option value="block">大手轉倉</option></select><span class="sort-icon"></span></th>
 <th class="sortable" data-sort="count">次數<span class="sort-icon"></span></th>
 <th class="sortable sort-active sort-desc" data-sort="date">最後出現<span class="sort-icon">▼</span></th>
 <th>連結</th>
 </tr></thead><tbody id="urows">${html}</tbody></table></div>`;
   attachSort();
+  const sf=document.getElementById('sigFilter');if(sf)sf.value=ftype;
 }
 
 function renderRecent(recentCorps){
@@ -349,13 +343,10 @@ function applyFilter(){
     r.style.display=(ftOK&&mq)?'':'none';
   });
 }
-document.getElementById('ftabs').addEventListener('change',e=>{
-  ftype=e.target.value||'all';applyFilter();
-});
 document.getElementById('tq').addEventListener('input',applyFilter);
 document.getElementById('tclear').addEventListener('click',()=>{
   document.getElementById('tq').value='';
-  document.getElementById('ftabs').value='all';
+  const sf=document.getElementById('sigFilter');if(sf)sf.value='all';
   ftype='all';applyFilter();
 });
 
