@@ -187,7 +187,7 @@ def run_daily(
             )
 
         logger.info("Done: %d/%d succeeded, %d failed", succeeded, attempted, len(failed_stocks))
-        return 0 if status == "success" else 1
+        return 0  # partial failures are normal; only fatal exceptions return non-zero
 
     except Exception as e:
         logger.exception("Fatal error in run_daily")

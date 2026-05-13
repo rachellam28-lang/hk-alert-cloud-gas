@@ -40,27 +40,31 @@ def fetch_all_hk_stocks_from_ccass() -> list[tuple[str, str]]:
         logger.error("Failed to fetch HKEX stock list: %s", e)
         raise
 
-    # Parse xlsx
+    # Parse xlsx — scan all sheets, pick the one with most stock codes
     import io
     from openpyxl import load_workbook
     wb = load_workbook(io.BytesIO(resp.content), read_only=True, data_only=True)
-    ws = wb.active
+    logger.info("Sheets in xlsx: %s", wb.sheetnames)
 
-    stocks: list[tuple[str, str]] = []
-    # HKEX 個 xlsx 有 header rows，stock code 喺第 1 col，name 第 2 col
-    # 跳前 2-3 row header (HKEX 偶爾改 layout，所以用 heuristic)
-    for row in ws.iter_rows(values_only=True):
-        if not row or row[0] is None:
-            continue
-        first = str(row[0]).strip()
-        # Stock code 係純數字，長度 1-5
-        if first.isdigit() and 1 <= len(first) <= 5:
-            code = first.zfill(5)
-            name = str(row[1]).strip() if len(row) > 1 and row[1] else ""
-            stocks.append((code, name))
+    best_stocks: list[tuple[str, str]] = []
+    for sheet_name in wb.sheetnames:
+        ws = wb[sheet_name]
+        stocks: list[tuple[str, str]] = []
+        for row in ws.iter_rows(values_only=True):
+            if not row or row[0] is None:
+                continue
+            first = str(row[0]).strip()
+            # Stock code: pure digits, length 1-5
+            if first.isdigit() and 1 <= len(first) <= 5:
+                code = first.zfill(5)
+                name = str(row[1]).strip() if len(row) > 1 and row[1] else ""
+                stocks.append((code, name))
+        logger.info("Sheet '%s': %d stocks found", sheet_name, len(stocks))
+        if len(stocks) > len(best_stocks):
+            best_stocks = stocks
 
-    logger.info("Found %d stocks", len(stocks))
-    return stocks
+    logger.info("Found %d stocks total (best sheet)", len(best_stocks))
+    return best_stocks
 
 
 def refresh_universe() -> int:
