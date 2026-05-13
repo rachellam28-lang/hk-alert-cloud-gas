@@ -26,6 +26,8 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .input.search-in{min-width:220px;padding-left:30px;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='8'/><path d='m21 21-4.3-4.3'/></svg>");background-repeat:no-repeat;background-position:10px center}
 .btn-ghost{appearance:none;background:transparent;border:1px solid var(--line);color:var(--text-soft);padding:5px 10px;border-radius:8px;font:500 12px inherit;cursor:pointer}
 .btn-ghost:hover{background:var(--surface-soft)}
+.th-filter{appearance:none;-webkit-appearance:none;background:var(--surface);border:1px solid var(--line);color:var(--text-soft);font:500 12px/1.4 inherit;padding:5px 28px 5px 10px;border-radius:8px;cursor:pointer;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='5'><path d='M0 0L8 0L4 5Z' fill='%2364748b'/></svg>");background-repeat:no-repeat;background-position:right 8px center}
+.th-filter:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(2,132,199,.15)}
 .loading-msg{text-align:center;padding:60px 20px;color:var(--mute)}
 .day-section{margin-bottom:10px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);overflow:hidden}
 .day-header{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;user-select:none;background:var(--surface-soft);border-bottom:1px solid var(--line)}
@@ -84,7 +86,16 @@ tbody tr:hover{background:var(--surface-soft)}
     </div>
   </div>
   <div class="toolbar">
-    <input id="q" class="input search-in" type="search" placeholder="搜尋代號 / 名稱 / 訊號…" autocomplete="off">
+    <input id="q" class="input search-in" type="search" placeholder="搜尋代號 / 名稱…" autocomplete="off">
+    <select id="sigFilter" class="th-filter">
+      <option value="all">訊號：全部</option>
+      <option value="poc3">半年+12月+3年POC</option>
+      <option value="poc_half">半年POC</option>
+      <option value="yearopen">年開突破</option>
+      <option value="fvg">FVG</option>
+      <option value="placement">配股</option>
+      <option value="rights">供股</option>
+    </select>
     <input id="dFrom" class="input" type="date" title="由日期" style="font-family:monospace;font-size:12px">
     <input id="dTo" class="input" type="date" title="至日期" style="font-family:monospace;font-size:12px">
     <button class="btn-ghost" id="clearBtn">清除</button>
@@ -101,12 +112,28 @@ const root = document.getElementById('historyRoot');
 const dot  = document.getElementById('statusDot');
 const upd  = document.getElementById('updatedAt');
 const qEl  = document.getElementById('q');
+const sfEl = document.getElementById('sigFilter');
 const dFrom= document.getElementById('dFrom');
 const dTo  = document.getElementById('dTo');
 const clrBtn=document.getElementById('clearBtn');
 const cntEl= document.getElementById('matchCount');
 
 let allDays = [];
+
+function matchSigType(a, sigType) {
+  if (!sigType || sigType === 'all') return true;
+  const sig  = (a.signal   || '').toLowerCase();
+  const tags = (a.tags     || '').toLowerCase();
+  const cat  = (a.category || '');
+  const blob = sig + ' ' + tags;
+  if (sigType === 'poc3')     return blob.includes('3年');
+  if (sigType === 'poc_half') return blob.includes('半年poc');
+  if (sigType === 'yearopen') return blob.includes('年開突破');
+  if (sigType === 'fvg')      return blob.includes('fvg');
+  if (sigType === 'placement') return cat === 'corp_action' && (blob.includes('配股') || blob.includes('配售'));
+  if (sigType === 'rights')    return cat === 'corp_action' && blob.includes('供股');
+  return true;
+}
 
 const WEEKDAY = ['日','一','二','三','四','五','六'];
 
@@ -148,8 +175,9 @@ function esc(s) {
   return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
 }
 
-function renderDay(day, filter) {
+function renderDay(day, filter, sigType) {
   const alerts = day.alerts.filter(a => {
+    if (!matchSigType(a, sigType)) return false;
     if (!filter) return true;
     const f = filter.toLowerCase();
     return (a.code||'').toLowerCase().includes(f)
@@ -192,30 +220,35 @@ function renderDay(day, filter) {
     + '</div></div>';
 }
 
-function render(filter, fromDate, toDate) {
+function render(filter, sigType, fromDate, toDate) {
   let html = '';
   let total = 0;
   let daysShown = 0;
   allDays.forEach(day => {
     if (fromDate && day.date < fromDate) return;
     if (toDate   && day.date > toDate)   return;
-    const s = renderDay(day, filter);
-    if (s) { html += s; total += day.alerts.filter(a => {
-      if (!filter) return true;
-      const f = filter.toLowerCase();
-      return (a.code||'').toLowerCase().includes(f)||(a.name||'').toLowerCase().includes(f)
-            ||(a.signal||'').toLowerCase().includes(f)||(a.message||'').toLowerCase().includes(f);
-    }).length; daysShown++; }
+    const s = renderDay(day, filter, sigType);
+    if (s) {
+      total += day.alerts.filter(a => {
+        if (!matchSigType(a, sigType)) return false;
+        if (!filter) return true;
+        const f = filter.toLowerCase();
+        return (a.code||'').toLowerCase().includes(f)||(a.name||'').toLowerCase().includes(f)
+              ||(a.signal||'').toLowerCase().includes(f)||(a.message||'').toLowerCase().includes(f);
+      }).length;
+      html += s; daysShown++;
+    }
   });
   if (!html) html = '<div class="no-results">沒有符合條件的訊號</div>';
   root.innerHTML = html;
-  cntEl.textContent = filter || fromDate || toDate
+  const hasFilter = filter || (sigType && sigType !== 'all') || fromDate || toDate;
+  cntEl.textContent = hasFilter
     ? daysShown + ' 天 · ' + total + ' 條訊號'
     : allDays.length + ' 天 · ' + allDays.reduce((s,d)=>s+d.count,0) + ' 條訊號';
 }
 
 function applyFilter() {
-  render((qEl.value||'').trim(), dFrom.value||'', dTo.value||'');
+  render((qEl.value||'').trim(), sfEl.value||'all', dFrom.value||'', dTo.value||'');
 }
 
 window.toggleDay = function(hdr) {
@@ -225,10 +258,11 @@ window.toggleDay = function(hdr) {
 };
 
 qEl.addEventListener('input', applyFilter);
+sfEl.addEventListener('change', applyFilter);
 dFrom.addEventListener('change', applyFilter);
 dTo.addEventListener('change', applyFilter);
 clrBtn.addEventListener('click', function(){
-  qEl.value=''; dFrom.value=''; dTo.value='';
+  qEl.value=''; sfEl.value='all'; dFrom.value=''; dTo.value='';
   applyFilter();
 });
 
