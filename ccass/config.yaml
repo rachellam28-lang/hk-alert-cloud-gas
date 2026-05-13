@@ -1,0 +1,31 @@
+# CCASS Tracker 配置
+
+universe: all_hk    # 全港股 ~2700 隻
+
+scraping:
+  delay_min_seconds: 1.0
+  delay_max_seconds: 3.0
+  timeout_seconds: 30
+  max_retries: 3
+  retry_backoff_base: 2
+  user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+  parallel_workers: 1   # FATAL-003
+
+trend_windows: [5, 20]
+
+alerts:
+  spike_threshold_pct: 5.0       # 5日 total_pct 變化 ≥ 呢個 trigger
+  consecutive_days: 3            # 連續 N 日同方向
+  consecutive_min_daily_pct: 1.0 # 每日 ≥ 呢個 % 先計
+  max_alerts_per_batch: 20       # FATAL-001
+  telegram_throttle_seconds: 3
+  summary_only_threshold: 50     # 超過呢個數淨係 send summary
+
+logging:
+  level: INFO
+  retention_days: 30
+  dir: logs
+
+database:
+  path: ccass.db
+  backup_dir: backups

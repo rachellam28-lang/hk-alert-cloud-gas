@@ -2,3 +2,10 @@
 __pycache__/
 *.pyc
 .DS_Store
+.env
+
+# CCASS
+ccass/ccass.db
+ccass/backups/
+ccass/logs/
+ccass/debug/
