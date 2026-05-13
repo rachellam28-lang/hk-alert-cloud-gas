@@ -257,13 +257,13 @@ function renderRow(g, wl){
     return c.link?`<a class="cplink" href="${esc(c.link)}" target="_blank" rel="noopener">${body}</a>`:body;
   }).join(' ');
 
-  const hkexLnk = g.hkexLink?`<a class="lnk" href="${esc(g.hkexLink)}" target="_blank" rel="noopener" title="HKEX 披露易">HKEX</a>`:'';
-  const saved = wl&&wl.has(codeStr);
-  const saveBtn = `<button class="btn-save${saved?' saved':''}" data-code="${esc(codeStr)}" data-name="${esc(g.name||'')}" data-signal="${esc(firstSig)}" data-date="${esc(lastDate)}" title="加入自選">${saved?'★':'☆'}</button>`;
+  const firstSig = (g.signals&&g.signals[0])?g.signals[0].label:(corpOrder.find(t=>g.corpTypes&&g.corpTypes[t])?corpLabel(corpOrder.find(t=>g.corpTypes&&g.corpTypes[t])):'');
   const hasCorp = g.corpCount>0?'1':'0';
   const hasTech = g.techCount>0?'1':'0';
   const rowCount = (g.techCount||0)+(g.corpCount||0);
-  const firstSig = (g.signals&&g.signals[0])?g.signals[0].label:(corpOrder.find(t=>g.corpTypes&&g.corpTypes[t])?corpLabel(corpOrder.find(t=>g.corpTypes&&g.corpTypes[t])):'');
+  const hkexLnk = g.hkexLink?`<a class="lnk" href="${esc(g.hkexLink)}" target="_blank" rel="noopener" title="HKEX 披露易">HKEX</a>`:'';
+  const saved = wl&&wl.has(codeStr);
+  const saveBtn = `<button class="btn-save${saved?' saved':''}" data-code="${esc(codeStr)}" data-name="${esc(g.name||'')}" data-signal="${esc(firstSig)}" data-date="${esc(lastDate)}" title="加入自選">${saved?'★':'☆'}</button>`;
 
   return `<tr class="urow" data-code="${esc(codeStr)}" data-name="${esc(g.name||'')}" data-date="${esc(lastDate)}" data-corp="${hasCorp}" data-tech="${hasTech}" data-price="${price||0}" data-count="${rowCount}" data-signal="${esc(firstSig)}">
 <td class="cell-code"><div class="code">${esc(codeStr)}</div>${g.name?`<div class="name">${esc(g.name)}</div>`:''}</td>
