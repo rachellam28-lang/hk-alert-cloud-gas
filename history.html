@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="zh-HK"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>訊號歷史 — 港股訊號儀表板</title>
+<style>
+:root{--bg:#f5f7fa;--surface:#fff;--surface-soft:#f8fafc;--text:#0f172a;--text-soft:#334155;--mute:#64748b;--mute-2:#94a3b8;--line:#e2e8f0;--line-soft:#eef1f6;--primary:#0284c7;--primary-soft:#e0f2fe;--primary-border:#bae6fd;--up:#15803d;--up-soft:#dcfce7;--up-border:#86efac;--down:#b91c1c;--down-soft:#fee2e2;--down-border:#fca5a5;--violet:#6d28d9;--violet-soft:#ede9fe;--violet-border:#c4b5fd;--amber:#b45309;--amber-soft:#fef3c7;--amber-border:#fcd34d;--radius:10px;--shadow:0 1px 2px rgba(15,23,42,.04)}
+*{box-sizing:border-box}html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font:14px/1.55 Inter,system-ui,"PingFang TC","Noto Sans TC",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
+.topbar{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.88);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topbar-inner{max-width:1200px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:10px}
+.logo{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#0284c7,#0ea5e9);display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+.brand-title{font-size:14px;font-weight:600}.brand-sub{font-size:10px;color:var(--mute);text-transform:uppercase;letter-spacing:.16em}
+.topright{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--mute)}
+.dot{width:7px;height:7px;border-radius:999px;background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.18)}
+.dot.loading{background:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.18)}
+.dot.error{background:#ef4444;box-shadow:0 0 0 3px rgba(239,68,68,.18)}
+.wrap{max-width:1200px;margin:0 auto;padding:18px 20px 40px}
+.page-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+.page-title{font-size:18px;font-weight:700;color:var(--text)}
+.page-sub{font-size:12px;color:var(--mute);margin-top:2px}
+.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:14px}
+.input{background:var(--surface);border:1px solid var(--line);color:var(--text);padding:6px 10px;border-radius:8px;font:400 12.5px inherit;outline:none}
+.input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(2,132,199,.15)}
+.input.search-in{min-width:220px;padding-left:30px;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='8'/><path d='m21 21-4.3-4.3'/></svg>");background-repeat:no-repeat;background-position:10px center}
+.btn-ghost{appearance:none;background:transparent;border:1px solid var(--line);color:var(--text-soft);padding:5px 10px;border-radius:8px;font:500 12px inherit;cursor:pointer}
+.btn-ghost:hover{background:var(--surface-soft)}
+.loading-msg{text-align:center;padding:60px 20px;color:var(--mute)}
+.day-section{margin-bottom:10px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);overflow:hidden}
+.day-header{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;user-select:none;background:var(--surface-soft);border-bottom:1px solid var(--line)}
+.day-header:hover{background:var(--primary-soft)}
+.day-date{font:700 13px "JetBrains Mono",ui-monospace,monospace;color:var(--text);font-variant-numeric:tabular-nums;min-width:90px}
+.day-weekday{font-size:11px;color:var(--mute)}
+.day-cnt{margin-left:auto;font-size:11px;color:var(--mute);background:var(--surface);border:1px solid var(--line);padding:2px 8px;border-radius:999px;font-variant-numeric:tabular-nums}
+.day-arrow{font-size:10px;color:var(--mute-2);transition:transform .2s;margin-left:6px}
+.day-header.collapsed .day-arrow{transform:rotate(-90deg)}
+.day-body{overflow:hidden}
+.day-body.collapsed{display:none}
+table{width:100%;border-collapse:collapse;table-layout:auto}
+thead th{background:var(--surface-soft);color:var(--mute);font-size:10px;text-align:left;padding:7px 12px;text-transform:uppercase;letter-spacing:.14em;font-weight:600;border-bottom:1px solid var(--line);white-space:nowrap}
+tbody td{padding:8px 12px;border-bottom:1px solid var(--line-soft);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--surface-soft)}
+.code{font:600 12px "JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.name{font-size:11px;color:var(--mute);margin-top:1px;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.spill{display:inline-flex;align-items:center;background:var(--primary-soft);color:#075985;border:1px solid var(--primary-border);font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.cpill{display:inline-flex;align-items:center;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.cpill-placement{background:var(--down-soft);color:var(--down);border-color:var(--down-border)}
+.cpill-increase{background:var(--up-soft);color:var(--up);border-color:var(--up-border)}
+.cpill-rights{background:var(--violet-soft);color:var(--violet);border-color:var(--violet-border)}
+.cpill-block{background:var(--amber-soft);color:var(--amber);border-color:var(--amber-border)}
+.cpill-other{background:var(--surface-soft);color:var(--mute);border-color:var(--line)}
+.time-cell{font:500 11px "JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;color:var(--mute);white-space:nowrap}
+.msg-cell{font-size:11px;color:var(--text-soft);max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lnk{display:inline-flex;padding:2px 7px;border-radius:5px;border:1px solid var(--line);background:var(--surface);font:600 9px inherit;color:var(--text-soft);text-decoration:none;white-space:nowrap}
+.lnk:hover{border-color:var(--primary-border);background:var(--primary-soft);color:var(--primary);text-decoration:none}
+.foot{margin-top:24px;padding-top:14px;border-top:1px solid var(--line);text-align:center;color:var(--mute-2);font-size:11px}
+.empty{text-align:center;color:var(--mute);padding:40px 16px;font-size:13px}
+.no-results{text-align:center;padding:40px 20px;color:var(--mute);font-size:13px}
+@media(max-width:720px){.msg-cell{display:none}thead th:nth-child(4){display:none}.input.search-in{min-width:140px}}
+@media(max-width:520px){.time-cell{display:none}thead th:nth-child(5){display:none}}
+@media(prefers-color-scheme:dark){:root{--bg:#0f172a;--surface:#1e293b;--surface-soft:#162032;--text:#f1f5f9;--text-soft:#cbd5e1;--mute:#64748b;--mute-2:#475569;--line:#334155;--line-soft:#1e293b;--primary:#38bdf8;--primary-soft:#0c2d44;--primary-border:#0369a1;--up:#4ade80;--up-soft:#052e16;--up-border:#166534;--down:#f87171;--down-soft:#2d0a0a;--down-border:#991b1b;--violet:#a78bfa;--violet-soft:#1e1040;--violet-border:#5b21b6;--amber:#fbbf24;--amber-soft:#1c0f00;--amber-border:#92400e}.topbar{background:rgba(15,23,42,.92)}}
+</style>
+</head><body>
+<header class="topbar"><div class="topbar-inner">
+  <div class="brand">
+    <div class="logo"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg></div>
+    <div><div class="brand-title">訊號歷史</div><div class="brand-sub">港股訊號 · 歷史回顧</div></div>
+    <a style="font-size:12px;color:var(--primary);margin-left:8px;padding:3px 9px;border:1px solid var(--primary-border);border-radius:6px;white-space:nowrap;font-weight:600" href="./index.html">← 返回主頁</a>
+    <a style="font-size:12px;color:#b45309;margin-left:4px;padding:3px 9px;border:1px solid #fcd34d;border-radius:6px;white-space:nowrap;font-weight:600" href="./watchlist.html">⭐ 自選</a>
+  </div>
+  <div class="topright">
+    <span class="dot loading" id="statusDot"></span>
+    <span id="updatedAt">載入中…</span>
+  </div>
+</div></header>
+
+<main class="wrap">
+  <div class="page-head">
+    <div>
+      <div class="page-title">每日訊號 / 公告歷史</div>
+      <div class="page-sub">按日期分組，最新在最前 · 技術信號 + 披露易公告</div>
+    </div>
+  </div>
+  <div class="toolbar">
+    <input id="q" class="input search-in" type="search" placeholder="搜尋代號 / 名稱 / 訊號…" autocomplete="off">
+    <input id="dFrom" class="input" type="date" title="由日期" style="font-family:monospace;font-size:12px">
+    <input id="dTo" class="input" type="date" title="至日期" style="font-family:monospace;font-size:12px">
+    <button class="btn-ghost" id="clearBtn">清除</button>
+    <span id="matchCount" style="font-size:11px;color:var(--mute);margin-left:4px"></span>
+  </div>
+  <div id="historyRoot"><div class="loading-msg">載入訊號歷史…</div></div>
+  <div class="foot">港股訊號雲 · 歷史回顧 · Google Apps Script</div>
+</main>
+
+<script>
+(function(){
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbxov_zEI5TvIp0Xg4ie937Rci_PEfFrUEyk7YH8RKVPz07i0RNS0fqkythLn-iErjVqZA/exec';
+const root = document.getElementById('historyRoot');
+const dot  = document.getElementById('statusDot');
+const upd  = document.getElementById('updatedAt');
+const qEl  = document.getElementById('q');
+const dFrom= document.getElementById('dFrom');
+const dTo  = document.getElementById('dTo');
+const clrBtn=document.getElementById('clearBtn');
+const cntEl= document.getElementById('matchCount');
+
+let allDays = [];
+
+const WEEKDAY = ['日','一','二','三','四','五','六'];
+
+function fmtTime(s) {
+  if (!s) return '';
+  try {
+    const d = new Date(s);
+    if (isNaN(d.getTime())) return s;
+    const p = n => n < 10 ? '0'+n : n;
+    return p(d.getHours()) + ':' + p(d.getMinutes());
+  } catch(e) { return s; }
+}
+
+function weekday(dateStr) {
+  try {
+    const d = new Date(dateStr + 'T00:00:00');
+    return '星期' + WEEKDAY[d.getDay()];
+  } catch(e) { return ''; }
+}
+
+function pillHtml(a) {
+  const sig  = (a.signal || '').trim();
+  const cat  = (a.category || '').trim();
+  const tags = (a.tags || '').toLowerCase();
+  const blob = sig + ' ' + tags;
+  let cls = 'spill';
+  if (cat === 'corp_action') {
+    if (/配股|配售|認購/.test(blob))          cls = 'cpill cpill-placement';
+    else if (/增持/.test(blob))               cls = 'cpill cpill-increase';
+    else if (/供股|公開發售/.test(blob))       cls = 'cpill cpill-rights';
+    else if (/大手轉倉|大宗/.test(blob))       cls = 'cpill cpill-block';
+    else                                      cls = 'cpill cpill-other';
+  }
+  const label = sig || cat || '訊號';
+  return '<span class="' + cls + '">' + esc(label) + '</span>';
+}
+
+function esc(s) {
+  return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+}
+
+function renderDay(day, filter) {
+  const alerts = day.alerts.filter(a => {
+    if (!filter) return true;
+    const f = filter.toLowerCase();
+    return (a.code||'').toLowerCase().includes(f)
+        || (a.name||'').toLowerCase().includes(f)
+        || (a.signal||'').toLowerCase().includes(f)
+        || (a.message||'').toLowerCase().includes(f);
+  });
+  if (!alerts.length) return '';
+
+  const rows = alerts.map(a => {
+    const code = a.code || '';
+    const name = a.name || '';
+    const t    = fmtTime(a.created_at);
+    const msg  = a.message || '';
+    const url  = a.chart_url || '';
+    const linkHtml = url
+      ? '<a class="lnk" href="' + esc(url) + '" target="_blank" rel="noopener">查看</a>'
+      : '<span style="color:var(--mute-2)">—</span>';
+    return '<tr>'
+      + '<td><div class="code">' + esc(code) + '</div>'
+      +       (name ? '<div class="name">' + esc(name) + '</div>' : '') + '</td>'
+      + '<td>' + pillHtml(a) + '</td>'
+      + '<td class="msg-cell">' + esc(msg) + '</td>'
+      + '<td class="time-cell">' + esc(t) + '</td>'
+      + '<td>' + linkHtml + '</td>'
+      + '</tr>';
+  }).join('');
+
+  return '<div class="day-section" data-date="' + esc(day.date) + '">'
+    + '<div class="day-header" onclick="toggleDay(this)">'
+    +   '<span class="day-date">' + esc(day.date) + '</span>'
+    +   '<span class="day-weekday">' + weekday(day.date) + '</span>'
+    +   '<span class="day-cnt">' + alerts.length + ' 條</span>'
+    +   '<span class="day-arrow">▼</span>'
+    + '</div>'
+    + '<div class="day-body">'
+    +   '<table><thead><tr>'
+    +     '<th>代號 / 名稱</th><th>訊號 / 類型</th><th>備注</th><th>時間</th><th>連結</th>'
+    +   '</tr></thead><tbody>' + rows + '</tbody></table>'
+    + '</div></div>';
+}
+
+function render(filter, fromDate, toDate) {
+  let html = '';
+  let total = 0;
+  let daysShown = 0;
+  allDays.forEach(day => {
+    if (fromDate && day.date < fromDate) return;
+    if (toDate   && day.date > toDate)   return;
+    const s = renderDay(day, filter);
+    if (s) { html += s; total += day.alerts.filter(a => {
+      if (!filter) return true;
+      const f = filter.toLowerCase();
+      return (a.code||'').toLowerCase().includes(f)||(a.name||'').toLowerCase().includes(f)
+            ||(a.signal||'').toLowerCase().includes(f)||(a.message||'').toLowerCase().includes(f);
+    }).length; daysShown++; }
+  });
+  if (!html) html = '<div class="no-results">沒有符合條件的訊號</div>';
+  root.innerHTML = html;
+  cntEl.textContent = filter || fromDate || toDate
+    ? daysShown + ' 天 · ' + total + ' 條訊號'
+    : allDays.length + ' 天 · ' + allDays.reduce((s,d)=>s+d.count,0) + ' 條訊號';
+}
+
+function applyFilter() {
+  render((qEl.value||'').trim(), dFrom.value||'', dTo.value||'');
+}
+
+window.toggleDay = function(hdr) {
+  hdr.classList.toggle('collapsed');
+  const body = hdr.nextElementSibling;
+  if (body) body.classList.toggle('collapsed');
+};
+
+qEl.addEventListener('input', applyFilter);
+dFrom.addEventListener('change', applyFilter);
+dTo.addEventListener('change', applyFilter);
+clrBtn.addEventListener('click', function(){
+  qEl.value=''; dFrom.value=''; dTo.value='';
+  applyFilter();
+});
+
+async function load() {
+  try {
+    dot.className = 'dot loading';
+    const res = await fetch(GAS_URL + '?format=history');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || 'GAS error');
+    allDays = data.days || [];
+    dot.className = 'dot';
+    upd.textContent = '共 ' + allDays.length + ' 天 · ' + (data.total||0) + ' 條記錄';
+    render('', '', '');
+  } catch(e) {
+    dot.className = 'dot error';
+    upd.textContent = '載入失敗';
+    root.innerHTML = '<div class="no-results">載入失敗：' + esc(String(e)) + '</div>';
+  }
+}
+
+load();
+})();
+</script>
+</body></html>

@@ -47,8 +47,65 @@ function doGet(e) {
   if (params.format === 'json') {
     return handleJsonApi_();
   }
+  if (params.format === 'history') {
+    return handleHistoryApi_();
+  }
   return ContentService.createTextOutput(JSON.stringify({ ok: true, hint: 'add ?format=json for dashboard data' }))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+function handleHistoryApi_() {
+  try {
+    const alerts = getAlertsForHistory_();
+    const daysMap = {};
+    alerts.forEach(function(a) {
+      const d = fmtDate_(a.created_at);
+      if (d === '—' || !d) return;
+      if (!daysMap[d]) daysMap[d] = [];
+      daysMap[d].push({
+        code:       String(a.code || '').trim(),
+        name:       String(a.name || ''),
+        signal:     String(a.signal || a.category || ''),
+        category:   String(a.category || ''),
+        message:    String(a.message || ''),
+        chart_url:  String(a.chart_url || a.source_url || ''),
+        created_at: String(a.created_at || ''),
+        tags:       String(a.tags || ''),
+      });
+    });
+    const days = Object.keys(daysMap).sort(function(a, b) {
+      return a < b ? 1 : a > b ? -1 : 0;
+    }).map(function(d) {
+      return { date: d, count: daysMap[d].length, alerts: daysMap[d] };
+    });
+    return ContentService.createTextOutput(JSON.stringify({
+      ok: true, total: alerts.length, days: days,
+    })).setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({ ok: false, error: String(err) }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function getAlertsForHistory_() {
+  const HISTORY_MAX_ROWS = 3000;
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sh = ensureSheet_(ss);
+  const lastRow = sh.getLastRow();
+  const lastCol = sh.getLastColumn();
+  if (lastRow <= 1 || lastCol <= 0) return [];
+  const headers = sh.getRange(1, 1, 1, lastCol).getValues()[0].map(String);
+  const startRow = Math.max(2, lastRow - HISTORY_MAX_ROWS + 1);
+  const numRows = lastRow - startRow + 1;
+  if (numRows <= 0) return [];
+  const values = sh.getRange(startRow, 1, numRows, lastCol).getValues();
+  const out = [];
+  for (let i = 0; i < values.length; i++) {
+    const r = values[i]; const o = {};
+    for (let j = 0; j < headers.length; j++) o[headers[j]] = r[j];
+    out.push(o);
+  }
+  return out.reverse();
 }
 
 function handleJsonApi_() {
