@@ -120,8 +120,12 @@ def scan_ticker(ticker: str, name: str = "", market: str = "HK") -> list[dict]:
                              progress=False, auto_adjust=True, multi_level_index=False)
             if df is None or df.empty or len(df) < 3:
                 continue
+            # Only care about FVGs formed on the LATEST candle
+            last_date = str(df.index[-1].date())
             fvgs = _find_fresh_bullish_fvgs(df)
             for fvg in fvgs:
+                if fvg["date"] != last_date:
+                    continue  # skip old FVGs
                 prox = _proximity(fvg)
                 if prox:
                     alerts.append({
@@ -134,7 +138,7 @@ def scan_ticker(ticker: str, name: str = "", market: str = "HK") -> list[dict]:
                         "gap_high":  fvg["gap_high"],
                         "current":   fvg["current"],
                         "fvg_date":  fvg["date"],
-                        "status":    prox,  # 'in' or 'near'
+                        "status":    prox,
                     })
         except Exception as e:
             print(f"[FVG] {ticker} {tf}: {e}")
@@ -163,18 +167,15 @@ def _emit_telegram(alert: dict) -> None:
     from hk_cloud_scanner import send_telegram_alert, build_inline_keyboard_
 
     flag   = "🇭🇰" if alert["market"] == "HK" else "🇺🇸"
-    status = "FVG內 🎯" if alert["status"] == "in" else "接近FVG ⬇️"
+    status_icon = "🎯 FVG內" if alert["status"] == "in" else "⬇️接近FVG"
     pct_from_top = round((alert["current"] - alert["gap_high"]) / alert["gap_high"] * 100, 2)
-    dist_str = (f"距FVG頂 +{pct_from_top:.2f}%"
+    dist_str = (f"{pct_from_top:.2f}%上方"
                 if alert["status"] == "near"
-                else f"現價在FVG內")
+                else "在FVG內")
 
     caption = (
-        f"📐 <b>Bullish FVG · {alert['timeframe']}</b>\n"
-        f"{flag} <b>{alert['ticker']}</b>  {alert['name']}\n"
-        f"FVG：{alert['gap_low']} – {alert['gap_high']}\n"
-        f"現價：{alert['current']}  ({dist_str})\n"
-        f"FVG形成日：{alert['fvg_date']}"
+        f"📐 {flag} <b>{alert['ticker']}</b> {alert['timeframe']} {status_icon}\n"
+        f"FVG {alert['gap_low']} – {alert['gap_high']}  現價 {alert['current']} ({dist_str})"
     )
 
     ticker_sym = alert["ticker"].replace(".HK", "")

@@ -99,14 +99,14 @@ td{padding:10px 14px;vertical-align:top}
 .fvg-card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin-bottom:12px}
 .fvg-head{font-size:10px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.14em;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
 .fvg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:6px}
-.fvg-item{background:var(--surface-soft);border:1px solid var(--line);border-radius:8px;padding:7px 10px}
+.fvg-item{background:var(--surface-soft);border:1px solid var(--line);border-radius:8px;padding:5px 10px;display:flex;align-items:center;gap:8px}
 .fvg-item.status-in{border-color:#16a34a;background:#f0fdf4}
 .fvg-item.status-near{border-color:#f59e0b;background:#fffbeb}
-.fvg-ticker{font:600 12px "JetBrains Mono",ui-monospace,monospace;display:flex;align-items:center;gap:5px}
+.fvg-left{flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-start;gap:2px}
+.fvg-ticker{font:600 12px "JetBrains Mono",ui-monospace,monospace;display:flex;align-items:center;gap:4px}
 .fvg-tf{font-size:10px;font-weight:700;padding:1px 5px;border-radius:4px;background:#e0f2fe;color:#0284c7}
-.fvg-name{font-size:11px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:2px 0}
-.fvg-zone{font-size:11px;color:var(--text-soft);font-variant-numeric:tabular-nums}
-.fvg-status{font-size:10px;font-weight:600;margin-top:3px}
+.fvg-right{flex:1;min-width:0;font-size:11px;color:var(--text-soft);font-variant-numeric:tabular-nums;line-height:1.5}
+.fvg-status{font-size:10px;font-weight:600}
 .fvg-status.in{color:#16a34a}.fvg-status.near{color:#b45309}
 .fvg-tabs{display:inline-flex;gap:2px;padding:3px;background:#eef2f7;border-radius:8px;margin-bottom:8px}
 .fvg-tab{appearance:none;background:transparent;border:0;color:var(--text-soft);padding:4px 10px;border-radius:6px;font:500 11px inherit;cursor:pointer}
@@ -349,13 +349,17 @@ function _renderFvgGrid(arr){
     const code=a.market==='HK'?a.ticker.replace('.HK',''):a.ticker;
     const tvSym=a.market==='HK'?'HKEX%3A'+code:code;
     const statusLbl=a.status==='in'?'🎯 FVG內':'⬇️ 接近FVG';
-    const pctAbove=a.status==='near'?((a.current-a.gap_high)/a.gap_high*100).toFixed(2)+'%上方':'';
-    return '<a class="fvg-item status-'+a.status+'" href="https://www.tradingview.com/chart/?symbol='+tvSym+'" target="_blank" style="text-decoration:none;display:block">'
-      +'<div class="fvg-ticker">'+flag+' '+code+' <span class="fvg-tf">'+a.timeframe+'</span></div>'
-      +'<div class="fvg-name">'+a.name+'</div>'
-      +'<div class="fvg-zone">FVG '+a.gap_low+' – '+a.gap_high+'</div>'
-      +'<div class="fvg-zone">現價 <b>'+a.current+'</b>'+(pctAbove?' ('+pctAbove+')':'')+'</div>'
-      +'<div class="fvg-status '+a.status+'">'+statusLbl+'</div>'
+    const pctAbove=a.status==='near'?((a.current-a.gap_high)/a.gap_high*100).toFixed(2)+'%上方':'在FVG內';
+    return '<a class="fvg-item status-'+a.status+'" href="https://www.tradingview.com/chart/?symbol='+tvSym+'" target="_blank" style="text-decoration:none">'
+      +'<div class="fvg-left">'
+        +'<div class="fvg-ticker">'+flag+' '+code+'</div>'
+        +'<span class="fvg-tf">'+a.timeframe+'</span>'
+        +'<span class="fvg-status '+a.status+'">'+statusLbl+'</span>'
+      +'</div>'
+      +'<div class="fvg-right">'
+        +'FVG '+a.gap_low+' – '+a.gap_high+'<br>'
+        +'現價 <b>'+a.current+'</b> ('+pctAbove+')'
+      +'</div>'
       +'</a>';
   }).join('');
 }
