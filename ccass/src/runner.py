@@ -11,6 +11,7 @@ Workflow:
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 import time
 import traceback
@@ -89,6 +90,7 @@ def run_daily(
     failed_stocks: list[str] = []
     succeeded = 0
     attempted = 0
+    alerts_found: list[dict] = []
 
     try:
         # 2. Universe
@@ -187,6 +189,7 @@ def run_daily(
             )
 
         logger.info("Done: %d/%d succeeded, %d failed", succeeded, attempted, len(failed_stocks))
+        _export_json(query_date, len(alerts_found))
         return 0  # partial failures are normal; only fatal exceptions return non-zero
 
     except Exception as e:
@@ -201,6 +204,56 @@ def run_daily(
             )
         send_admin_alert(f"❌ CCASS daily run 失敗:\n{traceback.format_exc()[:1500]}")
         return 2
+
+
+def _export_json(query_date: date, alerts_today: int) -> None:
+    """Export top movers to ccass.json in repo root for dashboard."""
+    date_str = query_date.strftime("%Y-%m-%d")
+    top_increase: list[dict] = []
+    top_decrease: list[dict] = []
+
+    try:
+        with get_conn() as conn:
+            rows = conn.execute(
+                """SELECT t.stock_code, u.stock_name, t.delta_5d_pct, t.delta_20d_pct,
+                          d.total_pct, t.consecutive_increase_days, t.consecutive_decrease_days
+                   FROM ccass_trends t
+                   LEFT JOIN stock_universe u ON u.stock_code = t.stock_code
+                   LEFT JOIN ccass_daily d ON d.stock_code = t.stock_code AND d.trade_date = t.trade_date
+                   WHERE t.trade_date = ? AND t.delta_5d_pct IS NOT NULL
+                   ORDER BY t.delta_5d_pct DESC""",
+                (date_str,),
+            ).fetchall()
+
+        for r in rows:
+            entry = {
+                "code": r["stock_code"],
+                "name": r["stock_name"] or r["stock_code"],
+                "delta_5d": round(r["delta_5d_pct"], 2),
+                "delta_20d": round(r["delta_20d_pct"] or 0, 2),
+                "total_pct": round(r["total_pct"] or 0, 2),
+                "streak_up": r["consecutive_increase_days"] or 0,
+                "streak_dn": r["consecutive_decrease_days"] or 0,
+            }
+            if r["delta_5d_pct"] > 0:
+                top_increase.append(entry)
+            else:
+                top_decrease.append(entry)
+
+        top_increase = top_increase[:10]
+        top_decrease = sorted(top_decrease, key=lambda x: x["delta_5d"])[:10]
+
+        payload = {
+            "updated": date_str,
+            "alerts_today": alerts_today,
+            "top_increase": top_increase,
+            "top_decrease": top_decrease,
+        }
+        out_path = Path(__file__).parent.parent.parent / "ccass.json"
+        out_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+        logger.info("Exported ccass.json (%d up, %d down)", len(top_increase), len(top_decrease))
+    except Exception as e:
+        logger.warning("ccass.json export failed: %s", e)
 
 
 def main():
