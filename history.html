@@ -93,6 +93,8 @@ tbody tr:hover{background:var(--surface-soft)}
       <option value="poc_half">半年POC</option>
       <option value="yearopen">年開突破</option>
       <option value="fvg">FVG</option>
+      <option value="ccass_up">CCASS增持</option>
+      <option value="ccass_dn">CCASS減持</option>
       <option value="placement">配股</option>
       <option value="rights">供股</option>
     </select>
@@ -130,6 +132,8 @@ function matchSigType(a, sigType) {
   if (sigType === 'poc_half') return blob.includes('半年poc');
   if (sigType === 'yearopen') return blob.includes('年開突破');
   if (sigType === 'fvg')      return blob.includes('fvg');
+  if (sigType === 'ccass_up') return blob.includes('ccass增持');
+  if (sigType === 'ccass_dn') return blob.includes('ccass減持');
   if (sigType === 'placement') return cat === 'corp_action' && (blob.includes('配股') || blob.includes('配售'));
   if (sigType === 'rights')    return cat === 'corp_action' && blob.includes('供股');
   return true;
