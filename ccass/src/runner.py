@@ -252,8 +252,52 @@ def _export_json(query_date: date, alerts_today: int) -> None:
         out_path = Path(__file__).parent.parent.parent / "ccass.json"
         out_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
         logger.info("Exported ccass.json (%d up, %d down)", len(top_increase), len(top_decrease))
+        _post_movers_to_gas(top_increase, top_decrease, date_str)
     except Exception as e:
         logger.warning("ccass.json export failed: %s", e)
+
+
+def _post_movers_to_gas(
+    top_increase: list[dict],
+    top_decrease: list[dict],
+    date_str: str,
+) -> None:
+    import os
+    import requests as _req
+    webhook_url = os.getenv("GAS_WEBHOOK_URL", "")
+    secret = os.getenv("GAS_SECRET", "")
+    if not webhook_url:
+        logger.debug("GAS_WEBHOOK_URL not set, skip CCASS GAS post")
+        return
+    created_at = date_str + "T17:00:00"
+
+    def _post(entry: dict, signal: str) -> None:
+        code = str(entry["code"]).zfill(5)
+        pct5 = entry.get("delta_5d", 0)
+        pct20 = entry.get("delta_20d", 0)
+        body: dict = {
+            "source":     "ccass",
+            "category":   "tech",
+            "code":       code,
+            "name":       entry.get("name") or code,
+            "signal":     signal,
+            "created_at": created_at,
+            "message":    f"5日持倉 {pct5:+.1f}%（20日 {pct20:+.1f}%）",
+            "tags":       "CCASS",
+        }
+        if secret:
+            body["secret"] = secret
+        try:
+            r = _req.post(webhook_url, json=body, timeout=30)
+            logger.debug("GAS %s %s → %s", code, signal, r.status_code)
+        except Exception as exc:
+            logger.warning("GAS post failed %s: %s", code, exc)
+
+    for e in top_increase:
+        _post(e, "CCASS增持")
+    for e in top_decrease:
+        _post(e, "CCASS減持")
+    logger.info("Posted %d CCASS signals to GAS", len(top_increase) + len(top_decrease))
 
 
 def main():
