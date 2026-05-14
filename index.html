@@ -65,6 +65,7 @@ th.sort-active{color:var(--primary)}.sort-icon{margin-left:4px;font-size:9px}
 .cpill-rights{background:var(--violet-soft);color:var(--violet);border-color:var(--violet-border)}
 .cpill-block{background:var(--amber-soft);color:var(--amber);border-color:var(--amber-border)}
 .cpill-other{background:var(--surface-soft);color:var(--mute);border-color:var(--line)}
+.urow.ipo-highlight{background:linear-gradient(90deg,var(--amber-soft),transparent 50%)!important;border-left:3px solid var(--amber)}
 .cplink{text-decoration:none}
 .cell-num{font:600 13px "JetBrains Mono",ui-monospace,monospace;text-align:center}
 .cnum{display:inline-flex;align-items:center;justify-content:center;min-width:24px;padding:2px 8px;border-radius:999px;background:var(--surface-soft);border:1px solid var(--line);font-size:11px}
@@ -97,6 +98,7 @@ th.sort-active{color:var(--primary)}.sort-icon{margin-left:4px;font-size:9px}
 @media(max-width:720px){.cell-price,thead th:nth-child(3){display:none}.cell-time,thead th:nth-child(6){display:none}.tabs{overflow-x:auto}.input.search-in{min-width:130px}}
 @media(max-width:520px){.cell-chart,thead th:nth-child(2){display:none}.ra-list{grid-template-columns:1fr}.topbar-inner{padding:6px 10px;gap:8px}.brand{gap:6px;flex-shrink:0}.brand>a{display:none}.logo{display:none}.brand-title{font-size:12px;white-space:nowrap}.brand-sub{display:none}.topright{gap:3px;font-size:10px}.refresh-tag{display:none}.topright span:last-child{font-size:9px;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}@media(max-width:400px){.topbar-inner{padding:4px 6px;gap:4px}.brand-title{font-size:11px}.topright span:last-child{font-size:8px;max-width:70px}}
 @media(prefers-color-scheme:dark){:root{--bg:#0f172a;--surface:#1e293b;--surface-soft:#162032;--text:#f1f5f9;--text-soft:#cbd5e1;--mute:#64748b;--mute-2:#475569;--line:#334155;--line-soft:#1e293b;--primary:#38bdf8;--primary-soft:#0c2d44;--primary-border:#0369a1;--up:#4ade80;--up-soft:#052e16;--up-border:#166534;--down:#f87171;--down-soft:#2d0a0a;--down-border:#991b1b;--violet:#a78bfa;--violet-soft:#1e1040;--violet-border:#5b21b6;--amber:#fbbf24;--amber-soft:#1c0f00;--amber-border:#92400e}.topbar{background:rgba(15,23,42,.92)}.tabs{background:#1e293b}.tab.active{background:#0f172a}}
+.ipo-card{margin-bottom:8px}.ipo-inner{display:flex;align-items:center;gap:12px;padding:6px 12px;background:var(--amber-soft);border:1px solid var(--amber-border);border-radius:var(--radius);flex-wrap:wrap}.ipo-label{font-size:10px;font-weight:600;color:var(--amber);text-transform:uppercase;letter-spacing:.12em}.ipo-tag{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:2px 10px;border-radius:999px;background:var(--surface);border:1px solid var(--amber-border);color:var(--amber)}.ipo-tag b{color:var(--text);font-weight:700;margin:0 2px}
 .mbar{display:flex;gap:12px;flex-wrap:wrap;padding:8px 0 12px;margin-bottom:4px}
 .mchip{display:flex;flex-direction:column;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 16px;min-width:110px;flex:1;gap:3px}
 .mchip-label{font-size:10px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.12em}
@@ -157,6 +159,8 @@ th.sort-active{color:var(--primary)}.sort-icon{margin-left:4px;font-size:9px}
     </div>
   </div>
 
+  <div id="ipoCard" class="ipo-card" style="display:none"><div class="ipo-inner"><span class="ipo-label">🚀 IPO突破</span><span id="ipoTags"></span></div></div>
+
   <div class="section-head">
     <button class="section-toggle" onclick="toggleSection('signals',this)" id="toggle-signals">
       <h2><span class="ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>訊號彙總</h2>
@@ -179,6 +183,8 @@ th.sort-active{color:var(--primary)}.sort-icon{margin-left:4px;font-size:9px}
     </div>
   </section>
   </div>
+
+ 
 
   <div class="section-head">
     <button class="section-toggle" onclick="toggleSection('corps',this)" id="toggle-corps">
@@ -259,7 +265,8 @@ function renderRow(g, wl){
   const saved = wl&&wl.has(codeStr);
   const saveBtn = `<button class="btn-save${saved?' saved':''}" data-code="${esc(codeStr)}" data-name="${esc(g.name||'')}" data-signal="${esc(firstSig)}" data-date="${esc(lastDate)}" title="加入自選">${saved?'★':'☆'}</button>`;
 
-  return `<tr class="urow" data-code="${esc(codeStr)}" data-name="${esc(g.name||'')}" data-date="${esc(lastDate)}" data-corp="${hasCorp}" data-tech="${hasTech}" data-price="${price||0}" data-count="${rowCount}" data-signal="${esc(firstSig)}">
+  const ipoBreak = (g.signals||[]).some(s=>s.label&&s.label.indexOf('IPO首日')>=0);
+  return `<tr class="urow${ipoBreak?' ipo-highlight':''}" data-code="${esc(codeStr)}" data-name="${esc(g.name||'')}" data-date="${esc(lastDate)}" data-corp="${hasCorp}" data-tech="${hasTech}" data-price="${price||0}" data-count="${rowCount}" data-signal="${esc(firstSig)}">
 <td class="cell-code"><div class="code">${esc(codeStr)}</div>${g.name?`<div class="name">${esc(g.name)}</div>`:''}</td>
 <td class="cell-chart">${chartHtml}</td>
 <td class="cell-price">${priceHtml}</td>
@@ -280,7 +287,7 @@ function renderTable(groups){
 <th class="sortable" data-sort="code">代號 / 名稱<span class="sort-icon"></span></th>
 <th>走勢圖</th>
 <th class="sortable" data-sort="price">價格<span class="sort-icon"></span></th>
-<th class="sortable" data-sort="signal">信號 / 公告<select id="sigFilter" class="th-filter" onclick="event.stopPropagation()" onchange="ftype=this.value;applyFilter()"><option value="all">全部</option><option value="poc3">半年+12月+3年POC</option><option value="poc_half">半年POC</option><option value="yearopen">年開突破</option><option value="fvg">FVG</option><option value="ipo_high">IPO首日高突破</option><option value="ipo_open">IPO首日開突破</option><option value="ccass_up">CCASS增持</option><option value="ccass_dn">CCASS減持</option><option value="placement">配股</option><option value="increase">增持</option><option value="rights">供股</option><option value="block">大宗交易</option></select><span class="sort-icon"></span></th>
+<th class="sortable" data-sort="signal">信號 / 公告<select id="sigFilter" class="th-filter" onclick="event.stopPropagation()" onchange="ftype=this.value;applyFilter()"><option value="all">全部</option><option value="ipo_high">🚀 IPO首日高突破</option><option value="ipo_open">🚀 IPO首日開突破</option><option value="poc3">半年+12月+3年POC</option><option value="poc_half">半年POC</option><option value="yearopen">年開突破</option><option value="fvg">FVG</option><option value="ccass_up">CCASS增持</option><option value="ccass_dn">CCASS減持</option><option value="placement">配股</option><option value="increase">增持</option><option value="rights">供股</option><option value="block">大宗交易</option></select><span class="sort-icon"></span></th>
 <th class="sortable" data-sort="count">次數<span class="sort-icon"></span></th>
 <th class="sortable sort-active sort-desc" data-sort="date">最後出現<span class="sort-icon">▼</span></th>
 <th>連結</th>
@@ -301,6 +308,20 @@ function renderRecent(recentCorps){
     return `<li class="ra-item"><span class="ra-label"><span class="cpill cpill-${r.type}">${corpLabel(r.type)}</span></span><span class="ra-date" title="${esc(r.date||'')}">${esc(shortDate)}</span><span class="ra-stk">${codeBlock}</span>${linkHtml}</li>`;
   }).join('');
   document.getElementById('recentWrap').innerHTML = `<ul class="ra-list">${items}</ul>`;
+}
+
+function renderIPO(groups){
+  var card=document.getElementById('ipoCard');
+  var tags=document.getElementById('ipoTags');
+  if(!card||!tags)return;
+  var ipoGroups=groups.filter(function(g){return (g.signals||[]).some(function(s){return s.label&&s.label.indexOf('IPO首日')>=0;});});
+  if(!ipoGroups.length){card.style.display='none';return;}
+  var counts={};
+  ipoGroups.forEach(function(g){(g.signals||[]).filter(function(s){return s.label&&s.label.indexOf('IPO首日')>=0;}).forEach(function(s){counts[s.label]=(counts[s.label]||0)+1;});});
+  var chips=Object.entries(counts).map(function(e){return '<span class="ipo-tag">'+esc(e[0])+' <b>'+e[1]+'</b></span>';}).join('');
+  var codes=ipoGroups.map(function(g){return '<a href="#'+esc(g.code)+'" style="font:600 11px monospace;color:var(--amber);text-decoration:none;padding:1px 5px;border-radius:4px;background:rgba(180,83,9,.1)">'+esc(g.code)+'</a>';}).join(' ');
+  tags.innerHTML=chips+' <span style="color:var(--mute-2);font-size:10px">|</span> '+codes;
+  card.style.display='';
 }
 
 function renderSummary(groups){
@@ -473,6 +494,7 @@ async function loadData(){
       return true;
     });
     renderSummary(hkGroups);
+    renderIPO(hkGroups);
     renderTable(hkGroups);
     renderRecent(data.recentCorps||[]);
     fetch('./market.json?_='+Date.now())
