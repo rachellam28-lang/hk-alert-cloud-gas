@@ -212,9 +212,10 @@ def _post_to_gas(alert: dict) -> None:
         "signal":    f"Bullish FVG {alert['timeframe']}",
         "timeframe": alert["timeframe"],
         "price":     alert["current"],
+        "market":    alert["market"],
         "chart_url": _tv_url(alert),
         "message":   f"FVG {alert['gap_low']}–{alert['gap_high']} 現價{alert['current']} ({dist_str})",
-        "tags":      "FVG",
+        "tags":      "FVG" if alert["market"] == "HK" else "FVG,美股",
     })
 
 

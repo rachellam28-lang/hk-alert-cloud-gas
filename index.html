@@ -457,7 +457,15 @@ async function loadData(){
     const res = await fetch(GAS_URL+'?format=json');
     const data = await res.json();
     if(!data.ok) throw new Error(data.error||'API error');
-    const hkGroups=(data.groups||[]).filter(g=>g.market!=='US'&&!(g.tags||[]).includes('美股')&&g.category!=='us_corp');
+    const hkGroups=(data.groups||[]).filter(g=>{
+      if(g.market==='US'||g.category==='us_corp') return false;
+      const tags=typeof g.tags==='string'?g.tags:(g.tags||[]).join(',');
+      if(tags.includes('美股')) return false;
+      // US tickers are alphabetic (ADI, AAPL); HK codes are numeric or end .HK
+      const c=(g.code||g.symbol||'');
+      if(/^[A-Z]{1,6}(-[A-Z])?$/.test(c)) return false;
+      return true;
+    });
     renderSummary(hkGroups);
     renderTable(hkGroups);
     renderRecent(data.recentCorps||[]);
