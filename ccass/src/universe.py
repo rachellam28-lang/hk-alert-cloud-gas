@@ -43,7 +43,7 @@ def fetch_all_hk_stocks_from_ccass() -> list[tuple[str, str]]:
     # Parse xlsx — scan all sheets, pick the one with most stock codes
     import io
     from openpyxl import load_workbook
-    wb = load_workbook(io.BytesIO(resp.content), read_only=True, data_only=True)
+    wb = load_workbook(io.BytesIO(resp.content), data_only=True)  # read_only skips rows past dimension tag
     logger.info("Sheets in xlsx: %s", wb.sheetnames)
 
     best_stocks: list[tuple[str, str]] = []
@@ -69,14 +69,22 @@ def fetch_all_hk_stocks_from_ccass() -> list[tuple[str, str]]:
                     continue
                 first = str(raw)
             else:
-                first = str(raw).strip()
+                first = str(raw).strip().lstrip("'")  # xlsx stores as "'00001'" with apostrophe
                 if first.endswith('.0'):
                     first = first[:-2]
+            # Skip header rows (e.g. "Stock Code", "List of Securities")
+            if not first or not first[0].isdigit():
+                continue
             # Stock code: pure digits, length 1-5
-            if first.isdigit() and 1 <= len(first) <= 5:
-                code = first.zfill(5)
-                name = str(row[1]).strip() if len(row) > 1 and row[1] else ""
-                stocks.append((code, name))
+            if not (first.isdigit() and 1 <= len(first) <= 5):
+                continue
+            # Filter: Equity + REITs only (skip warrants DW CBBCs debt)
+            category = str(row[2]).strip() if len(row) > 2 and row[2] else ""
+            if category not in ("Equity", "Real Estate Investment Trusts", ""):
+                continue
+            code = first.zfill(5)
+            name = str(row[1]).strip() if len(row) > 1 and row[1] else ""
+            stocks.append((code, name))
         logger.info("Sheet '%s': %d rows total, %d stocks found", sheet_name, row_count, len(stocks))
         if len(stocks) > len(best_stocks):
             best_stocks = stocks

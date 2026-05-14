@@ -107,13 +107,13 @@ class CCASSScraper:
                 self._refresh_form_tokens()
                 payload = {
                     **self._form_tokens,
-                    "__EVENTTARGET": "",        # empty for regular submit button
+                    "__EVENTTARGET": "btnSearch",  # <a> tag calls __doPostBack('btnSearch','')
                     "__EVENTARGUMENT": "",
                     "txtShareholdingDate": date_str,
                     "txtStockCode": stock_code,
+                    "txtStockName": "",
                     "txtParticipantID": "",
                     "txtParticipantName": "",
-                    "btnSearch": "Search",      # include button as regular form field
                 }
                 resp = self.session.post(SDW_URL, data=payload, timeout=self.timeout)
 
