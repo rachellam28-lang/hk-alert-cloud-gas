@@ -2,14 +2,14 @@
 
 逐日 scrape 過去 N 個交易日（唔 send alerts，唔重複已有數據）。
 用法:
-    python -m src.backfill --days 10
+    python -m src.backfill --days 5
 """
 from __future__ import annotations
 
 import argparse
 import subprocess
-from pathlib import Path
 import sys
+from pathlib import Path
 
 from src.db import init_db, get_conn
 from src.logger import setup_logger
@@ -28,9 +28,6 @@ def already_scraped(trade_date) -> bool:
             (date_str,),
         ).fetchone()
         return row["n"] >= 10
-
-
-def main():
 
 
 def _commit_ccass_json(trade_date: str, day_idx: int, total: int) -> None:
@@ -60,7 +57,9 @@ def _commit_ccass_json(trade_date: str, day_idx: int, total: int) -> None:
                                cwd=repo_root, capture_output=True, timeout=30)
     except Exception as e:
         logger.warning("ccass.json commit failed: %s", e)
-    
+
+
+def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--days", type=int, default=5,
                         help="過去幾多個交易日 (default: 5)")
@@ -115,8 +114,8 @@ def _commit_ccass_json(trade_date: str, day_idx: int, total: int) -> None:
             target_date=latest,
             skip_scrape=True,
             skip_alerts=False,
-        _commit_ccass_json(latest.strftime("%Y-%m-%d"), len(trading_days), len(trading_days))
         )
+        _commit_ccass_json(latest.strftime("%Y-%m-%d"), len(trading_days), len(trading_days))
 
     sys.exit(0 if failed == 0 else 1)
 
