@@ -384,16 +384,24 @@ class CCASSScraper:
 def save_snapshot(snap: CCASSSnapshot) -> None:
     """Write snapshot to DB. Idempotent (UPSERT)."""
     now_iso = datetime.utcnow().isoformat()
+    # Compute top5/top10 concentration
+    sorted_shares = sorted([h["shares"] for h in snap.holdings if h.get("shares")], reverse=True)
+    top5 = sum(sorted_shares[:5])
+    top10 = sum(sorted_shares[:10])
+    top5_pct = round(top5 / snap.total_shares * 100, 2) if snap.total_shares > 0 else None
+    top10_pct = round(top10 / snap.total_shares * 100, 2) if snap.total_shares > 0 else None
     with get_conn() as conn:
         conn.execute(
             """INSERT INTO ccass_daily
                  (stock_code, trade_date, total_shares, total_pct,
-                  num_participants, scraped_at, validation_failed)
-               VALUES (?, ?, ?, ?, ?, ?, 0)
+                  num_participants, top5_pct, top10_pct, scraped_at, validation_failed)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0)
                ON CONFLICT(stock_code, trade_date) DO UPDATE SET
                  total_shares = excluded.total_shares,
                  total_pct = excluded.total_pct,
                  num_participants = excluded.num_participants,
+                 top5_pct = excluded.top5_pct,
+                 top10_pct = excluded.top10_pct,
                  scraped_at = excluded.scraped_at,
                  validation_failed = 0""",
             (
@@ -402,6 +410,8 @@ def save_snapshot(snap: CCASSSnapshot) -> None:
                 snap.total_shares,
                 snap.total_pct,
                 snap.num_participants,
+                top5_pct,
+                top10_pct,
                 now_iso,
             ),
         )

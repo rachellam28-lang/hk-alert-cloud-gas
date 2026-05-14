@@ -8,7 +8,9 @@ CREATE TABLE IF NOT EXISTS ccass_daily (
     total_shares INTEGER NOT NULL,      -- CCASS 總持倉股數
     total_pct REAL,                     -- 佔已發行 %
     num_participants INTEGER,
-    scraped_at TEXT NOT NULL,           -- ISO8601 UTC
+    top5_pct REAL,
+    top10_pct REAL,
+    scraped_at TEXT NOT NULL,
     validation_failed INTEGER DEFAULT 0,
     PRIMARY KEY (stock_code, trade_date)
 );

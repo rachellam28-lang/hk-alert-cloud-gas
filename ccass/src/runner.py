@@ -216,7 +216,8 @@ def _export_json(query_date: date, alerts_today: int) -> None:
         with get_conn() as conn:
             rows = conn.execute(
                 """SELECT t.stock_code, u.stock_name, t.delta_5d_pct, t.delta_20d_pct,
-                          d.total_pct, t.consecutive_increase_days, t.consecutive_decrease_days
+                          d.total_pct, d.top5_pct, d.top10_pct,
+                          t.consecutive_increase_days, t.consecutive_decrease_days
                    FROM ccass_trends t
                    LEFT JOIN stock_universe u ON u.stock_code = t.stock_code
                    LEFT JOIN ccass_daily d ON d.stock_code = t.stock_code AND d.trade_date = t.trade_date
@@ -232,6 +233,8 @@ def _export_json(query_date: date, alerts_today: int) -> None:
                 "delta_5d": round(r["delta_5d_pct"], 2),
                 "delta_20d": round(r["delta_20d_pct"] or 0, 2),
                 "total_pct": round(r["total_pct"] or 0, 2),
+                "top5_pct": round(r["top5_pct"] or 0, 2),
+                "top10_pct": round(r["top10_pct"] or 0, 2),
                 "streak_up": r["consecutive_increase_days"] or 0,
                 "streak_dn": r["consecutive_decrease_days"] or 0,
             }
