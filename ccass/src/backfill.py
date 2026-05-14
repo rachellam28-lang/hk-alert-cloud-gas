@@ -7,6 +7,8 @@
 from __future__ import annotations
 
 import argparse
+import subprocess
+from pathlib import Path
 import sys
 
 from src.db import init_db, get_conn
@@ -29,9 +31,39 @@ def already_scraped(trade_date) -> bool:
 
 
 def main():
+
+
+def _commit_ccass_json(trade_date: str, day_idx: int, total: int) -> None:
+    """每 scraped 一日就 commit ccass.json，dashboard 逐步更新。"""
+    repo_root = Path(__file__).parent.parent.parent
+    try:
+        subprocess.run(["git", "add", "ccass.json"], cwd=repo_root,
+                       capture_output=True, timeout=30, check=True)
+        r = subprocess.run(["git", "diff", "--cached", "--quiet"],
+                           cwd=repo_root, capture_output=True, timeout=30)
+        if r.returncode == 0:
+            logger.info("ccass.json unchanged, skip commit")
+            return
+        msg = f"chore: update ccass.json day {day_idx}/{total} ({trade_date}) [skip ci]"
+        subprocess.run(["git", "commit", "-m", msg], cwd=repo_root,
+                       capture_output=True, timeout=30, check=True)
+        for attempt in range(3):
+            r = subprocess.run(["git", "push", "origin", "HEAD:main"],
+                               cwd=repo_root, capture_output=True, timeout=60)
+            if r.returncode == 0:
+                logger.info("Committed ccass.json for %s", trade_date)
+                return
+            if attempt < 2:
+                subprocess.run(["git", "fetch", "origin", "main"],
+                               cwd=repo_root, capture_output=True, timeout=30)
+                subprocess.run(["git", "rebase", "origin/main"],
+                               cwd=repo_root, capture_output=True, timeout=30)
+    except Exception as e:
+        logger.warning("ccass.json commit failed: %s", e)
+    
     parser = argparse.ArgumentParser()
-    parser.add_argument("--days", type=int, default=10,
-                        help="過去幾多個交易日 (default: 10)")
+    parser.add_argument("--days", type=int, default=5,
+                        help="過去幾多個交易日 (default: 5)")
     parser.add_argument("--force", action="store_true",
                         help="強制重新 scrape 已有數據")
     args = parser.parse_args()
@@ -65,6 +97,7 @@ def main():
         )
         if rc in (0, 1):
             success += 1
+            _commit_ccass_json(td.strftime("%Y-%m-%d"), i, len(trading_days))
         else:
             failed += 1
             logger.error("  Failed for %s", td)
@@ -82,6 +115,7 @@ def main():
             target_date=latest,
             skip_scrape=True,
             skip_alerts=False,
+        _commit_ccass_json(latest.strftime("%Y-%m-%d"), len(trading_days), len(trading_days))
         )
 
     sys.exit(0 if failed == 0 else 1)

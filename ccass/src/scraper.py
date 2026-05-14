@@ -22,7 +22,8 @@ from datetime import date, datetime
 from pathlib import Path
 from typing import Optional
 
-import requests
+import cloudscraper
+from requests.exceptions import RequestException
 from bs4 import BeautifulSoup
 
 from src.db import get_conn
@@ -58,7 +59,7 @@ class CCASSScraper:
         self.delay_max = delay_max
         self.timeout = timeout
         self.max_retries = max_retries
-        self.session = requests.Session()
+        self.session = cloudscraper.create_scraper()
         self.session.headers.update({"User-Agent": user_agent})
         self._form_tokens: dict[str, str] = {}
         self._last_token_refresh: float = 0
@@ -130,7 +131,7 @@ class CCASSScraper:
                 self._polite_sleep()
                 return snapshot
 
-            except (requests.RequestException, RuntimeError) as e:
+            except (RequestException, RuntimeError) as e:
                 last_err = e
                 backoff = 2 ** attempt
                 logger.warning(
