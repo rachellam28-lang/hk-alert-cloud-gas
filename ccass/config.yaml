@@ -3,8 +3,8 @@
 universe: all_hk    # 全港股 ~2700 隻
 
 scraping:
-  delay_min_seconds: 1.0
-  delay_max_seconds: 3.0
+  delay_min_seconds: 0.5
+  delay_max_seconds: 1.5   # ~2700 stocks × 1s avg = ~45min pure delay, fits in 170min timeout
   timeout_seconds: 30
   max_retries: 3
   retry_backoff_base: 2
