@@ -216,31 +216,45 @@ class CCASSScraper:
 
     @staticmethod
     def _extract_total_shares(soup: BeautifulSoup) -> Optional[int]:
-        """Strategy 1: 搵 explicit Total label。Strategy 2: sum intermediaries + investors。"""
-        for label_text in ["Total number of CCASS Shareholding", "Total Issued Shares"]:
-            el = soup.find(string=re.compile(re.escape(label_text), re.I))
-            if el:
-                parent = el.find_parent()
-                body = (parent.find("div", class_="mobile-list-body") or
-                        parent.find_next("div", class_="value") or
-                        parent.find_next("td"))
-                if body:
-                    num = CCASSScraper._parse_number(body.get_text(strip=True))
-                    if num and num > 0:
-                        return num
-        # Fallback: sum Market Intermediaries + Investor Participants
+        """多層次 strategy 搵 CCASS total shareholding count。
+
+        Strategy 1: 搵 ccass-search-total row 嘅 shareholding value
+        Strategy 2: 搵 "Total number of Issued Shares/Warrants/Units" summary value
+        Strategy 3: sum Market Intermediaries + Investor Participants
+        """
+        # Strategy 1: ccass-search-total row
+        total_row = soup.find("div", class_="ccass-search-total")
+        if total_row:
+            val = total_row.find("div", class_="value")
+            if val:
+                num = CCASSScraper._parse_number(val.get_text(strip=True))
+                if num and num > 0:
+                    return num
+        # Strategy 2: Total number of Issued Shares/Warrants/Units
+        label = soup.find(string=re.compile(
+            r"Total number of Issued Shares", re.I))
+        if label:
+            summary_val = label.find_next("div", class_="summary-value")
+            if summary_val:
+                num = CCASSScraper._parse_number(
+                    summary_val.get_text(strip=True))
+                if num and num > 0:
+                    return num
+        # Strategy 3: sum participants (old page layout fallback)
         total = 0
         for label_text in ["Market Intermediaries",
                             "Consenting Investor Participants",
                             "Non-consenting Investor Participants"]:
-            el = soup.find(string=re.compile(re.escape(label_text), re.I))
+            el = soup.find(string=re.compile(
+                re.escape(label_text), re.I))
             if el:
                 parent = el.find_parent()
                 body = (parent.find("div", class_="mobile-list-body") or
                         parent.find_next("div", class_="value") or
                         parent.find_next("td"))
                 if body:
-                    num = CCASSScraper._parse_number(body.get_text(strip=True))
+                    num = CCASSScraper._parse_number(
+                        body.get_text(strip=True))
                     if num and num > 0:
                         total += num
         return total if total > 0 else None
@@ -264,6 +278,19 @@ class CCASSScraper:
 
     @staticmethod
     def _extract_total_pct(soup: BeautifulSoup) -> Optional[float]:
+        # Try Total row first
+        total_row = soup.find("div", class_="ccass-search-total")
+        if total_row:
+            pct_div = total_row.find("div", class_="percent-of-participants")
+            if pct_div:
+                val = pct_div.find("div", class_="value")
+                if val:
+                    txt = val.get_text(strip=True).rstrip("%").strip()
+                    try:
+                        return float(txt)
+                    except ValueError:
+                        pass
+        # Fallback: find any % label and get next value
         el = soup.find(string=re.compile(r"% of the total number of Issued Shares", re.I))
         if el:
             parent = el.find_parent()
@@ -278,7 +305,7 @@ class CCASSScraper:
 
     @staticmethod
     def _extract_holdings(soup: BeautifulSoup) -> list[dict]:
-        """攞 participant table。用 CSS class 提取，兼容 HKEX 現有 5-column 結構。"""
+        """攞 participant table。用 CSS class 提取，兼容 HKEX 現有結構。"""
         table = None
         for t in soup.find_all("table"):
             if t.find("td", class_=re.compile("col-participant", re.I)):
@@ -302,17 +329,23 @@ class CCASSScraper:
                 continue
             pid_td   = tr.find("td", class_=re.compile(r"col-participant-id", re.I))
             name_td  = tr.find("td", class_=re.compile(r"col-participant-name", re.I))
-            share_td = tr.find("td", class_=re.compile(r"col-shareholding$|col-shareholding text", re.I))
+            share_td = tr.find("td", class_=re.compile(r"col-shareholding", re.I))
             pct_td   = tr.find("td", class_=re.compile(r"col-shareholding-percent", re.I))
             if pid_td and share_td:
                 pid        = _cell_val(pid_td)
                 name       = _cell_val(name_td) if name_td else ""
                 shares_txt = _cell_val(share_td)
                 pct_txt    = _cell_val(pct_td) if pct_td else ""
+            elif len(tds) >= 5:
+                pid, name, _, shares_txt, pct_txt = (
+                    _cell_val(tds[0]), _cell_val(tds[1]),
+                    _cell_val(tds[2]), _cell_val(tds[3]),
+                    _cell_val(tds[4]),
+                )
             elif len(tds) >= 4:
                 pid, name, shares_txt, pct_txt = (
                     _cell_val(tds[0]), _cell_val(tds[1]),
-                    _cell_val(tds[2]), _cell_val(tds[3])
+                    _cell_val(tds[2]), _cell_val(tds[3]),
                 )
             else:
                 continue
