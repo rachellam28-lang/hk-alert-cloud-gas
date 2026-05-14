@@ -50,14 +50,19 @@ def fetch_all_hk_stocks_from_ccass() -> list[tuple[str, str]]:
     for sheet_name in wb.sheetnames:
         ws = wb[sheet_name]
         stocks: list[tuple[str, str]] = []
+        row_count = 0
         for row in ws.iter_rows(values_only=True):
+            row_count += 1
+            # Log first 5 rows so we can see actual xlsx structure
+            if row_count <= 5:
+                logger.info("xlsx row %d: %s", row_count, [repr(c) for c in (row[:5] if row else [])])
             if not row or row[0] is None:
                 continue
             raw = row[0]
             # Handle float (e.g. 1.0), int (1), or string ('00001')
             if isinstance(raw, float):
                 if raw != int(raw):
-                    continue  # non-integer float, skip
+                    continue
                 raw = int(raw)
             if isinstance(raw, int):
                 if raw <= 0 or raw > 99999:
@@ -65,7 +70,6 @@ def fetch_all_hk_stocks_from_ccass() -> list[tuple[str, str]]:
                 first = str(raw)
             else:
                 first = str(raw).strip()
-                # Strip trailing .0 if any
                 if first.endswith('.0'):
                     first = first[:-2]
             # Stock code: pure digits, length 1-5
@@ -73,7 +77,7 @@ def fetch_all_hk_stocks_from_ccass() -> list[tuple[str, str]]:
                 code = first.zfill(5)
                 name = str(row[1]).strip() if len(row) > 1 and row[1] else ""
                 stocks.append((code, name))
-        logger.info("Sheet '%s': %d stocks found", sheet_name, len(stocks))
+        logger.info("Sheet '%s': %d rows total, %d stocks found", sheet_name, row_count, len(stocks))
         if len(stocks) > len(best_stocks):
             best_stocks = stocks
 

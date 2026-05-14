@@ -45,6 +45,15 @@ jobs:
           cd ccass
           python -m src.runner
 
+      - name: Upload debug HTML artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ccass-debug-html
+          path: ccass/debug/
+          if-no-files-found: ignore
+          retention-days: 3
+
       - name: Commit ccass.json
         run: |
           git config user.name "github-actions[bot]"

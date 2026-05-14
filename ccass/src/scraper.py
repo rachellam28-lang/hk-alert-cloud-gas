@@ -82,7 +82,11 @@ class CCASSScraper:
             logger.warning("No __VIEWSTATE found. Page title: %s",
                            (soup.find("title") or "").get_text()[:80] if soup.find("title") else "")
             raise RuntimeError("Cannot find __VIEWSTATE on CCASS search page")
-        logger.debug("Got %d form tokens: %s", len(tokens), list(tokens.keys()))
+        logger.info("Got %d form tokens: %s", len(tokens), list(tokens.keys()))
+        # Log form field names to diagnose structure changes
+        all_inputs = [(el.get("name",""), el.get("type",""), el.get("value","")[:30] if el.get("value") else "")
+                      for el in soup.find_all("input")]
+        logger.info("All form inputs: %s", all_inputs)
         self._form_tokens = tokens
         self._last_token_refresh = now
 
