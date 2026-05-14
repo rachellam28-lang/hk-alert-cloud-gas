@@ -457,8 +457,9 @@ async function loadData(){
     const res = await fetch(GAS_URL+'?format=json');
     const data = await res.json();
     if(!data.ok) throw new Error(data.error||'API error');
-    renderSummary(data.groups||[]);
-    renderTable(data.groups||[]);
+    const hkGroups=(data.groups||[]).filter(g=>g.market!=='US'&&!(g.tags||[]).includes('美股')&&g.category!=='us_corp');
+    renderSummary(hkGroups);
+    renderTable(hkGroups);
     renderRecent(data.recentCorps||[]);
     fetch('./market.json?_='+Date.now())
       .then(r=>r.ok?r.json():null)

@@ -277,7 +277,11 @@ async function load() {
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
     if (!data.ok) throw new Error(data.error || 'GAS error');
-    allDays = data.days || [];
+    // 港股歷史頁：排除美股信號
+    allDays = (data.days || []).map(day => ({
+      ...day,
+      alerts: day.alerts.filter(a => a.category !== 'us_corp' && a.market !== 'US' && !(a.tags||'').includes('美股'))
+    })).filter(day => day.alerts.length > 0);
     dot.className = 'dot';
     upd.textContent = '共 ' + allDays.length + ' 天 · ' + (data.total||0) + ' 條記錄';
     render('', '', '');
