@@ -1,6 +1,6 @@
 {
-  "updated": "2026-05-13 23:10 UTC",
-  "count": 38,
+  "updated": "2026-05-14 11:22 UTC",
+  "count": 35,
   "alerts": [
     {
       "ticker": "0017.HK",
@@ -9,9 +9,21 @@
       "timeframe": "周線",
       "tf_short": "W",
       "gap_low": 8.79,
-      "gap_high": 9.29,
-      "current": 9.35,
+      "gap_high": 8.91,
+      "current": 8.95,
       "fvg_date": "2026-05-11",
+      "status": "near"
+    },
+    {
+      "ticker": "0027.HK",
+      "name": "0027.HK",
+      "market": "HK",
+      "timeframe": "日線",
+      "tf_short": "D",
+      "gap_low": 32.82,
+      "gap_high": 33.560001,
+      "current": 33.82,
+      "fvg_date": "2026-05-14",
       "status": "near"
     },
     {
@@ -27,14 +39,14 @@
       "status": "near"
     },
     {
-      "ticker": "0316.HK",
-      "name": "0316.HK",
+      "ticker": "0669.HK",
+      "name": "0669.HK",
       "market": "HK",
       "timeframe": "周線",
       "tf_short": "W",
-      "gap_low": 138.5,
-      "gap_high": 139.100006,
-      "current": 140.300003,
+      "gap_low": 113.286025,
+      "gap_high": 119.800003,
+      "current": 120.199997,
       "fvg_date": "2026-05-11",
       "status": "near"
     },
@@ -46,7 +58,7 @@
       "tf_short": "W",
       "gap_low": 7.46,
       "gap_high": 7.59,
-      "current": 7.79,
+      "current": 7.8,
       "fvg_date": "2026-05-11",
       "status": "near"
     },
@@ -58,32 +70,8 @@
       "tf_short": "W",
       "gap_low": 39.540001,
       "gap_high": 40.84,
-      "current": 41.419998,
+      "current": 41.959999,
       "fvg_date": "2026-05-11",
-      "status": "near"
-    },
-    {
-      "ticker": "0857.HK",
-      "name": "0857.HK",
-      "market": "HK",
-      "timeframe": "日線",
-      "tf_short": "D",
-      "gap_low": 10.76,
-      "gap_high": 11.01,
-      "current": 11.06,
-      "fvg_date": "2026-05-13",
-      "status": "near"
-    },
-    {
-      "ticker": "0916.HK",
-      "name": "0916.HK",
-      "market": "HK",
-      "timeframe": "日線",
-      "tf_short": "D",
-      "gap_low": 6.95,
-      "gap_high": 7.01,
-      "current": 7.06,
-      "fvg_date": "2026-05-13",
       "status": "near"
     },
     {
@@ -99,30 +87,6 @@
       "status": "near"
     },
     {
-      "ticker": "0968.HK",
-      "name": "0968.HK",
-      "market": "HK",
-      "timeframe": "周線",
-      "tf_short": "W",
-      "gap_low": 3.07,
-      "gap_high": 3.1,
-      "current": 3.12,
-      "fvg_date": "2026-05-11",
-      "status": "near"
-    },
-    {
-      "ticker": "0992.HK",
-      "name": "0992.HK",
-      "market": "HK",
-      "timeframe": "周線",
-      "tf_short": "W",
-      "gap_low": 12.27,
-      "gap_high": 12.59,
-      "current": 12.94,
-      "fvg_date": "2026-05-11",
-      "status": "near"
-    },
-    {
       "ticker": "1113.HK",
       "name": "1113.HK",
       "market": "HK",
@@ -130,7 +94,7 @@
       "tf_short": "W",
       "gap_low": 49.380001,
       "gap_high": 50.200001,
-      "current": 50.5,
+      "current": 51.5,
       "fvg_date": "2026-05-11",
       "status": "near"
     },
@@ -141,21 +105,9 @@
       "timeframe": "周線",
       "tf_short": "W",
       "gap_low": 48.040001,
-      "gap_high": 49.419998,
-      "current": 50.25,
+      "gap_high": 49.080002,
+      "current": 49.619999,
       "fvg_date": "2026-05-11",
-      "status": "near"
-    },
-    {
-      "ticker": "1398.HK",
-      "name": "1398.HK",
-      "market": "HK",
-      "timeframe": "月線",
-      "tf_short": "M",
-      "gap_low": 6.695184,
-      "gap_high": 6.81,
-      "current": 7.0,
-      "fvg_date": "2026-05-01",
       "status": "near"
     },
     {
@@ -165,8 +117,8 @@
       "timeframe": "周線",
       "tf_short": "W",
       "gap_low": 7.75,
-      "gap_high": 7.87,
-      "current": 7.89,
+      "gap_high": 7.83,
+      "current": 7.86,
       "fvg_date": "2026-05-11",
       "status": "near"
     },
@@ -177,9 +129,33 @@
       "timeframe": "周線",
       "tf_short": "W",
       "gap_low": 11.08,
-      "gap_high": 11.34,
-      "current": 11.47,
+      "gap_high": 11.28,
+      "current": 11.31,
       "fvg_date": "2026-05-11",
+      "status": "near"
+    },
+    {
+      "ticker": "2313.HK",
+      "name": "2313.HK",
+      "market": "HK",
+      "timeframe": "日線",
+      "tf_short": "D",
+      "gap_low": 46.959999,
+      "gap_high": 47.119999,
+      "current": 47.599998,
+      "fvg_date": "2026-05-14",
+      "status": "near"
+    },
+    {
+      "ticker": "2382.HK",
+      "name": "2382.HK",
+      "market": "HK",
+      "timeframe": "日線",
+      "tf_short": "D",
+      "gap_low": 65.199997,
+      "gap_high": 65.349998,
+      "current": 66.400002,
+      "fvg_date": "2026-05-14",
       "status": "near"
     },
     {
@@ -190,7 +166,7 @@
       "tf_short": "W",
       "gap_low": 45.174522,
       "gap_high": 45.279999,
-      "current": 46.360001,
+      "current": 46.200001,
       "fvg_date": "2026-05-11",
       "status": "near"
     },
@@ -202,20 +178,8 @@
       "tf_short": "W",
       "gap_low": 29.18,
       "gap_high": 29.280001,
-      "current": 29.959999,
+      "current": 29.879999,
       "fvg_date": "2026-05-11",
-      "status": "near"
-    },
-    {
-      "ticker": "3988.HK",
-      "name": "3988.HK",
-      "market": "HK",
-      "timeframe": "日線",
-      "tf_short": "D",
-      "gap_low": 5.19,
-      "gap_high": 5.21,
-      "current": 5.22,
-      "fvg_date": "2026-05-13",
       "status": "near"
     },
     {
@@ -226,7 +190,7 @@
       "tf_short": "W",
       "gap_low": 6.29,
       "gap_high": 6.35,
-      "current": 6.45,
+      "current": 6.46,
       "fvg_date": "2026-05-11",
       "status": "near"
     },
@@ -238,32 +202,32 @@
       "tf_short": "W",
       "gap_low": 14.6,
       "gap_high": 14.69,
-      "current": 15.04,
+      "current": 15.0,
       "fvg_date": "2026-05-11",
       "status": "near"
     },
     {
-      "ticker": "6969.HK",
-      "name": "6969.HK",
+      "ticker": "9618.HK",
+      "name": "9618.HK",
       "market": "HK",
       "timeframe": "日線",
       "tf_short": "D",
-      "gap_low": 10.22,
-      "gap_high": 10.75,
-      "current": 11.06,
-      "fvg_date": "2026-05-13",
+      "gap_low": 119.599998,
+      "gap_high": 130.0,
+      "current": 130.100006,
+      "fvg_date": "2026-05-14",
       "status": "near"
     },
     {
-      "ticker": "9888.HK",
-      "name": "9888.HK",
+      "ticker": "9988.HK",
+      "name": "9988.HK",
       "market": "HK",
-      "timeframe": "周線",
-      "tf_short": "W",
-      "gap_low": 127.699997,
-      "gap_high": 135.300003,
-      "current": 137.5,
-      "fvg_date": "2026-05-11",
+      "timeframe": "日線",
+      "tf_short": "D",
+      "gap_low": 136.0,
+      "gap_high": 137.399994,
+      "current": 137.899994,
+      "fvg_date": "2026-05-14",
       "status": "near"
     },
     {
@@ -297,7 +261,7 @@
       "timeframe": "日線",
       "tf_short": "D",
       "gap_low": 480.399994,
-      "gap_high": 480.806396,
+      "gap_high": 480.809998,
       "current": 485.519989,
       "fvg_date": "2026-05-13",
       "status": "near"
@@ -321,7 +285,7 @@
       "timeframe": "日線",
       "tf_short": "D",
       "gap_low": 384.809998,
-      "gap_high": 393.01001,
+      "gap_high": 393.0,
       "current": 401.160004,
       "fvg_date": "2026-05-13",
       "status": "near"
@@ -345,7 +309,7 @@
       "timeframe": "日線",
       "tf_short": "D",
       "gap_low": 223.279999,
-      "gap_high": 225.438202,
+      "gap_high": 225.440002,
       "current": 230.419998,
       "fvg_date": "2026-05-13",
       "status": "near"
@@ -357,7 +321,7 @@
       "timeframe": "日線",
       "tf_short": "D",
       "gap_low": 78.730003,
-      "gap_high": 79.845001,
+      "gap_high": 79.839996,
       "current": 80.260002,
       "fvg_date": "2026-05-13",
       "status": "near"
@@ -453,7 +417,7 @@
       "timeframe": "日線",
       "tf_short": "D",
       "gap_low": 422.880005,
-      "gap_high": 426.01001,
+      "gap_high": 426.0,
       "current": 432.390015,
       "fvg_date": "2026-05-13",
       "status": "near"
