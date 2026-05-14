@@ -53,7 +53,21 @@ def fetch_all_hk_stocks_from_ccass() -> list[tuple[str, str]]:
         for row in ws.iter_rows(values_only=True):
             if not row or row[0] is None:
                 continue
-            first = str(row[0]).strip()
+            raw = row[0]
+            # Handle float (e.g. 1.0), int (1), or string ('00001')
+            if isinstance(raw, float):
+                if raw != int(raw):
+                    continue  # non-integer float, skip
+                raw = int(raw)
+            if isinstance(raw, int):
+                if raw <= 0 or raw > 99999:
+                    continue
+                first = str(raw)
+            else:
+                first = str(raw).strip()
+                # Strip trailing .0 if any
+                if first.endswith('.0'):
+                    first = first[:-2]
             # Stock code: pure digits, length 1-5
             if first.isdigit() and 1 <= len(first) <= 5:
                 code = first.zfill(5)

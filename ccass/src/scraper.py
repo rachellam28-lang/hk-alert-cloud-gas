@@ -72,17 +72,17 @@ class CCASSScraper:
         resp = self.session.get(SDW_URL, timeout=self.timeout)
         resp.raise_for_status()
         soup = BeautifulSoup(resp.text, "lxml")
+        # Extract ALL hidden fields (catches any new ASP.NET tokens)
         tokens = {}
-        for field in [
-            "__VIEWSTATE",
-            "__VIEWSTATEGENERATOR",
-            "__EVENTVALIDATION",
-        ]:
-            el = soup.find("input", {"name": field})
-            if el and el.get("value"):
-                tokens[field] = el["value"]
+        for el in soup.find_all("input", {"type": "hidden"}):
+            name = el.get("name", "")
+            if name:
+                tokens[name] = el.get("value", "")
         if "__VIEWSTATE" not in tokens:
+            logger.warning("No __VIEWSTATE found. Page title: %s",
+                           (soup.find("title") or "").get_text()[:80] if soup.find("title") else "")
             raise RuntimeError("Cannot find __VIEWSTATE on CCASS search page")
+        logger.debug("Got %d form tokens: %s", len(tokens), list(tokens.keys()))
         self._form_tokens = tokens
         self._last_token_refresh = now
 
@@ -103,12 +103,13 @@ class CCASSScraper:
                 self._refresh_form_tokens()
                 payload = {
                     **self._form_tokens,
-                    "__EVENTTARGET": "btnSearch",
+                    "__EVENTTARGET": "",        # empty for regular submit button
                     "__EVENTARGUMENT": "",
                     "txtShareholdingDate": date_str,
                     "txtStockCode": stock_code,
                     "txtParticipantID": "",
                     "txtParticipantName": "",
+                    "btnSearch": "Search",      # include button as regular form field
                 }
                 resp = self.session.post(SDW_URL, data=payload, timeout=self.timeout)
 
