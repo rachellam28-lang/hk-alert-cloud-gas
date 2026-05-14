@@ -98,7 +98,7 @@ th.sort-active{color:var(--primary)}.sort-icon{margin-left:4px;font-size:9px}
 @media(max-width:720px){.cell-price,thead th:nth-child(3){display:none}.cell-time,thead th:nth-child(6){display:none}.tabs{overflow-x:auto}.input.search-in{min-width:130px}}
 @media(max-width:520px){.cell-chart,thead th:nth-child(2){display:none}.ra-list{grid-template-columns:1fr}.topbar-inner{padding:6px 10px;gap:8px}.brand{gap:6px;flex-shrink:0}.brand>a{display:none}.logo{display:none}.brand-title{font-size:12px;white-space:nowrap}.brand-sub{display:none}.topright{gap:3px;font-size:10px}.refresh-tag{display:none}.topright span:last-child{font-size:9px;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}@media(max-width:400px){.topbar-inner{padding:4px 6px;gap:4px}.brand-title{font-size:11px}.topright span:last-child{font-size:8px;max-width:70px}}
 @media(prefers-color-scheme:dark){:root{--bg:#0f172a;--surface:#1e293b;--surface-soft:#162032;--text:#f1f5f9;--text-soft:#cbd5e1;--mute:#64748b;--mute-2:#475569;--line:#334155;--line-soft:#1e293b;--primary:#38bdf8;--primary-soft:#0c2d44;--primary-border:#0369a1;--up:#4ade80;--up-soft:#052e16;--up-border:#166534;--down:#f87171;--down-soft:#2d0a0a;--down-border:#991b1b;--violet:#a78bfa;--violet-soft:#1e1040;--violet-border:#5b21b6;--amber:#fbbf24;--amber-soft:#1c0f00;--amber-border:#92400e}.topbar{background:rgba(15,23,42,.92)}.tabs{background:#1e293b}.tab.active{background:#0f172a}}
-.ipo-card{margin-bottom:10px;background:var(--surface);border:1px solid var(--amber-border);border-radius:var(--radius);padding:7px 14px}.ipo-row{display:flex;align-items:center;gap:8px;padding:5px 0}.ipo-row:first-child{padding-top:0}.ipo-row:last-child{padding-bottom:0}.ipo-row .ipo-label{font-size:11px;font-weight:700;color:var(--amber);white-space:nowrap;flex-shrink:0;min-width:150px}.ipo-row .ipo-codes{font:600 11px monospace;display:flex;flex-wrap:wrap;gap:3px}.ipo-row .ipo-codes a{color:var(--text);text-decoration:none;padding:2px 8px;border-radius:5px;background:var(--amber-soft);border:1px solid var(--amber-border);transition:background .15s}.ipo-row .ipo-codes a:hover{background:var(--amber);color:#fff}
+.ipo-card{margin-bottom:10px;background:var(--surface);border:1px solid var(--amber-border);border-radius:var(--radius);overflow:hidden}.ipo-head{display:flex;align-items:center;justify-content:space-between;padding:8px 14px 6px;font-size:12px;font-weight:700;color:var(--amber)}.ipo-count{font-size:10px;font-weight:600;color:var(--mute);background:var(--amber-soft);padding:1px 8px;border-radius:10px;border:1px solid var(--amber-border)}.ipo-tbl{width:100%;border-collapse:collapse;font-size:12px}.ipo-tbl th{text-align:left;padding:4px 14px;font-size:10px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.1em;border-top:1px solid var(--amber-border);background:rgba(251,191,36,.04)}.ipo-tbl td{padding:5px 14px;border-bottom:1px solid var(--line-soft)}.ipo-tbl tr:last-child td{border-bottom:none}.ipo-tbl a{color:var(--text);text-decoration:none;font-weight:600}.ipo-tbl a:hover{color:var(--amber)}.ipo-tbl .name{color:var(--text-soft);font-size:11px}.badge{display:inline-block;font-size:10px;font-weight:600;padding:1px 8px;border-radius:4px;line-height:1.5}.badge-high{background:var(--amber-soft);color:var(--amber);border:1px solid var(--amber-border)}.badge-open{background:var(--primary-soft);color:var(--primary);border:1px solid var(--primary-border)}
 .mbar{display:flex;gap:12px;flex-wrap:wrap;padding:8px 0 12px;margin-bottom:4px}
 .mchip{display:flex;flex-direction:column;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 16px;min-width:110px;flex:1;gap:3px}
 .mchip-label{font-size:10px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.12em}
@@ -160,8 +160,11 @@ th.sort-active{color:var(--primary)}.sort-icon{margin-left:4px;font-size:9px}
   </div>
 
   <div id="ipoCard" class="ipo-card" style="display:none">
-    <div class="ipo-row" id="ipoRowHigh"><span class="ipo-label">🚀 IPO首日高突破</span><span class="ipo-codes" id="ipoCodesHigh"></span></div>
-    <div class="ipo-row" id="ipoRowOpen"><span class="ipo-label">🚀 IPO首日開突破</span><span class="ipo-codes" id="ipoCodesOpen"></span></div>
+    <div class="ipo-head"><span>🚀 IPO 首日突破</span><span class="ipo-count" id="ipoCount"></span></div>
+    <table class="ipo-tbl">
+      <thead><tr><th>代碼</th><th>名稱</th><th>類型</th></tr></thead>
+      <tbody id="ipoBody"></tbody>
+    </table>
   </div>
 
   <div class="section-head">
@@ -315,17 +318,28 @@ function renderRecent(recentCorps){
 
 function renderIPO(groups){
   var card=document.getElementById('ipoCard');
-  var rowHigh=document.getElementById('ipoRowHigh');
-  var rowOpen=document.getElementById('ipoRowOpen');
-  var codesHigh=document.getElementById('ipoCodesHigh');
-  var codesOpen=document.getElementById('ipoCodesOpen');
-  if(!card||!codesHigh||!codesOpen)return;
-  var high=groups.filter(function(g){return (g.signals||[]).some(function(s){return s.label&&s.label.indexOf('IPO首日高突破')>=0;});});
-  var open=groups.filter(function(g){return (g.signals||[]).some(function(s){return s.label&&s.label.indexOf('IPO首日開突破')>=0;});});
-  if(!high.length&&!open.length){card.style.display='none';return;}
-  var link=function(g){return '<a href="#'+esc(g.code)+'">'+esc(g.code)+'</a>';};
-  if(high.length){codesHigh.innerHTML=high.map(link).join(' ');rowHigh.style.display='';}else{rowHigh.style.display='none';}
-  if(open.length){codesOpen.innerHTML=open.map(link).join(' ');rowOpen.style.display='';}else{rowOpen.style.display='none';}
+  var body=document.getElementById('ipoBody');
+  var count=document.getElementById('ipoCount');
+  if(!card||!body)return;
+  var rows=[];
+  groups.forEach(function(g){
+    (g.signals||[]).forEach(function(s){
+      if(!s.label)return;
+      if(s.label.indexOf('IPO首日高突破')>=0){
+        rows.push({code:g.code,name:g.name||g.code,type:'high',label:'高突破'});
+      }else if(s.label.indexOf('IPO首日開突破')>=0){
+        rows.push({code:g.code,name:g.name||g.code,type:'open',label:'開突破'});
+      }
+    });
+  });
+  if(!rows.length){card.style.display='none';return;}
+  body.innerHTML=rows.map(function(r){
+    var badgeCls=r.type==='high'?'badge badge-high':'badge badge-open';
+    return '<tr><td><a href="#'+esc(r.code)+'">'+esc(r.code)+'</a></td>'
+      +'<td class="name">'+esc(r.name)+'</td>'
+      +'<td><span class="'+badgeCls+'">🚀'+esc(r.label)+'</span></td></tr>';
+  }).join('');
+  count.textContent=rows.length+'隻';
   card.style.display='';
 }
 
