@@ -143,12 +143,12 @@ def run_daily(
         return 0
 
     # CCASS 通常公布前一個 trading day 嘅 data
-    # 所以「今日 8am 跑」實際上係 query 噚日 trading day
-    query_date = previous_trading_day(target_date + timedelta(days=1))
+    # 所以 query_date = 對上一次 trading day
+    query_date = previous_trading_day(target_date)
     logger.info("Querying CCASS data for %s", query_date)
 
     # 1. Start run log
-    now_iso = datetime.utcnow().isoformat()
+    now_iso = datetime.now(tz=__import__("pytz").timezone("Asia/Hong_Kong")).isoformat()
     with get_conn() as conn:
         cur = conn.execute(
             """INSERT INTO scrape_runs (run_date, started_at, status)

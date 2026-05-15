@@ -2,5 +2,116 @@
   "updated": "2026-05-14",
   "alerts_today": 0,
   "top_increase": [],
-  "top_decrease": []
+  "top_decrease": [
+    {
+      "code": "00700",
+      "name": "TENCENT",
+      "delta_5d": 0.0,
+      "delta_20d": 0,
+      "total_pct": 77.44,
+      "top5_pct": 70.98,
+      "top10_pct": 89.75,
+      "streak_up": 0,
+      "streak_dn": 0
+    },
+    {
+      "code": "00005",
+      "name": "HSBC HOLDINGS",
+      "delta_5d": 0.0,
+      "delta_20d": 0,
+      "total_pct": 38.22,
+      "top5_pct": 68.31,
+      "top10_pct": 79.99,
+      "streak_up": 0,
+      "streak_dn": 0
+    },
+    {
+      "code": "00001",
+      "name": "CKH HOLDINGS",
+      "delta_5d": 0.0,
+      "delta_20d": 0,
+      "total_pct": 66.7,
+      "top5_pct": 76.53,
+      "top10_pct": 85.98,
+      "streak_up": 0,
+      "streak_dn": 0
+    },
+    {
+      "code": "00002",
+      "name": "CLP HOLDINGS",
+      "delta_5d": 0.0,
+      "delta_20d": 0,
+      "total_pct": 57.08,
+      "top5_pct": 67.03,
+      "top10_pct": 78.59,
+      "streak_up": 0,
+      "streak_dn": 0
+    },
+    {
+      "code": "00003",
+      "name": "HK & CHINA GAS",
+      "delta_5d": 0.0,
+      "delta_20d": 0,
+      "total_pct": 52.6,
+      "top5_pct": 67.9,
+      "top10_pct": 77.93,
+      "streak_up": 0,
+      "streak_dn": 0
+    },
+    {
+      "code": "00004",
+      "name": "WHARF HOLDINGS",
+      "delta_5d": 0.0,
+      "delta_20d": 0,
+      "total_pct": 53.59,
+      "top5_pct": 89.71,
+      "top10_pct": 95.51,
+      "streak_up": 0,
+      "streak_dn": 0
+    },
+    {
+      "code": "00006",
+      "name": "POWER ASSETS",
+      "delta_5d": 0.0,
+      "delta_20d": 0,
+      "total_pct": 58.4,
+      "top5_pct": 76.18,
+      "top10_pct": 87.04,
+      "streak_up": 0,
+      "streak_dn": 0
+    },
+    {
+      "code": "00007",
+      "name": "WISDOM WEALTH",
+      "delta_5d": 0.0,
+      "delta_20d": 0,
+      "total_pct": 77.65,
+      "top5_pct": 55.47,
+      "top10_pct": 70.85,
+      "streak_up": 0,
+      "streak_dn": 0
+    },
+    {
+      "code": "00008",
+      "name": "PCCW",
+      "delta_5d": 0.0,
+      "delta_20d": 0,
+      "total_pct": 61.08,
+      "top5_pct": 57.98,
+      "top10_pct": 76.17,
+      "streak_up": 0,
+      "streak_dn": 0
+    },
+    {
+      "code": "00010",
+      "name": "HANG LUNG GROUP",
+      "delta_5d": 0.0,
+      "delta_20d": 0,
+      "total_pct": 65.78,
+      "top5_pct": 79.03,
+      "top10_pct": 90.55,
+      "streak_up": 0,
+      "streak_dn": 0
+    }
+  ]
 }

@@ -20,7 +20,7 @@ jobs:
         with:
           python-version: "3.11"
           cache: "pip"
-      - run: pip install yfinance requests pandas
+      - run: pip install yfinance requests pandas cloudscraper beautifulsoup4 lxml
       - name: Fetch market data
         run: python .github/scripts/fetch_market.py
       - name: Commit market.json
