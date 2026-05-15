@@ -193,7 +193,7 @@ let filtered=[];
 let sortCol='code';
 let sortDir=-1; // -1 = desc
 let searchVal='';
-let filterMode='all'; // all, up, dn, concentrated
+let activeFilters=new Set();
 let page=0;
 const PAGE_SIZE=200;
 const GAS_URL='https://script.google.com/macros/s/AKfycbxov_zEI5TvIp0Xg4ie937Rci_PEfFrUEyk7YH8RKVPz07i0RNS0fqkythLn-iErjVqZA/exec';
@@ -271,15 +271,17 @@ function applyFilters(){
   const q=searchVal.toLowerCase().trim();
   filtered=allStocks.filter(s=>{
     if(q && !s.c.includes(q) && !s.n.toLowerCase().includes(q)) return false;
-    if(filterMode==='up' && (s.d5===null || s.d5<=0)) return false;
-    if(filterMode==='dn' && (s.d5===null || s.d5>=0)) return false;
-    if(filterMode==='concentrated' && s.t5<50) return false;
-    const sm=signalMap.get(s.c);
-    if(filterMode==='placement'){if(!sm||!sm.pl)return false;}
-    if(filterMode==='rights'){if(!sm||!sm.ri)return false;}
-    if(filterMode==='small_mc' && (s.mc===null || s.mc>=20)) return false;
-    if(filterMode==='mid_mc' && (s.mc===null || s.mc<20 || s.mc>=100)) return false;
-    if(filterMode==='large_mc' && (s.mc===null || s.mc<100)) return false;
+    if(activeFilters.size===0) return true;
+    for(const mode of activeFilters){
+      if(mode==='up' && (s.d5===null || s.d5<=0)) return false;
+      if(mode==='dn' && (s.d5===null || s.d5>=0)) return false;
+      if(mode==='concentrated' && s.t5<50) return false;
+      if(mode==='placement'){const sm=signalMap.get(s.c);if(!sm||!sm.pl)return false;}
+      if(mode==='rights'){const sm=signalMap.get(s.c);if(!sm||!sm.ri)return false;}
+      if(mode==='small_mc' && (s.mc===null || s.mc>=20)) return false;
+      if(mode==='mid_mc' && (s.mc===null || s.mc<20 || s.mc>=100)) return false;
+      if(mode==='large_mc' && (s.mc===null || s.mc<100)) return false;
+    }
     return true;
   });
   // Sort
@@ -382,31 +384,32 @@ document.getElementById('dirBtn').addEventListener('click',()=>{
   applyFilters();
 });
 
-// --- filter buttons ---
-function setFilter(mode){
-  filterMode=mode;
-  document.querySelectorAll('.toolbar-sect .btn-ghost').forEach(b=>b.classList.remove('active'));
-  if(mode==='all') document.getElementById('filterAll').classList.add('active');
-  else if(mode==='up') document.getElementById('filterUp').classList.add('active');
-  else if(mode==='dn') document.getElementById('filterDn').classList.add('active');
-  else if(mode==='concentrated') document.getElementById('filterConcentrated').classList.add('active');
-  else if(mode==='placement') document.getElementById('filterPlacement').classList.add('active');
-  else if(mode==='rights') document.getElementById('filterRights').classList.add('active');
-  else if(mode==='small_mc') document.getElementById('filterSmallMC').classList.add('active');
-  else if(mode==='mid_mc') document.getElementById('filterMidMC').classList.add('active');
-  else if(mode==='large_mc') document.getElementById('filterLargeMC').classList.add('active');
-  applyFilters();
+// --- filter buttons (multi-select) ---
+const FILTER_IDS={filterAll:'all',filterUp:'up',filterDn:'dn',filterConcentrated:'concentrated',filterPlacement:'placement',filterRights:'rights',filterSmallMC:'small_mc',filterMidMC:'mid_mc',filterLargeMC:'large_mc'};
+
+function toggleFilter(mode){
+  if(mode==='all'){activeFilters.clear();updateFilterUI();applyFilters();return;}
+  // Toggle off if already active (return early so exclusivity cleanup doesn't interfere)
+  if(activeFilters.has(mode)){activeFilters.delete(mode);updateFilterUI();applyFilters();return;}
+  // Mutual exclusivity groups — remove other modes in the same group
+  if(mode==='up'||mode==='dn'){activeFilters.delete('up');activeFilters.delete('dn');}
+  else if(mode==='small_mc'||mode==='mid_mc'||mode==='large_mc'){
+    activeFilters.delete('small_mc');activeFilters.delete('mid_mc');activeFilters.delete('large_mc');}
+  activeFilters.add(mode);
+  updateFilterUI();applyFilters();
 }
-document.getElementById('filterAll').addEventListener('click',()=>setFilter('all'));
-document.getElementById('filterUp').addEventListener('click',()=>setFilter('up'));
-document.getElementById('filterDn').addEventListener('click',()=>setFilter('dn'));
-document.getElementById('filterConcentrated').addEventListener('click',()=>setFilter('concentrated'));
-document.getElementById('filterPlacement').addEventListener('click',()=>setFilter('placement'));
-document.getElementById('filterRights').addEventListener('click',()=>setFilter('rights'));
-document.getElementById('filterSmallMC').addEventListener('click',()=>setFilter('small_mc'));
-document.getElementById('filterMidMC').addEventListener('click',()=>setFilter('mid_mc'));
-document.getElementById('filterLargeMC').addEventListener('click',()=>setFilter('large_mc'));
-document.getElementById('filterAll').classList.add('active');
+
+function updateFilterUI(){
+  document.querySelectorAll('.toolbar-sect .btn-ghost').forEach(b=>{
+    const m=FILTER_IDS[b.id];
+    if(m==='all')b.classList.toggle('active',activeFilters.size===0);
+    else b.classList.toggle('active',activeFilters.has(m));
+  });
+}
+
+Object.entries(FILTER_IDS).forEach(([id,m])=>{
+  document.getElementById(id).addEventListener('click',()=>toggleFilter(m));
+});
 
 // --- main load ---
 async function loadData(){

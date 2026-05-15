@@ -9,3 +9,4 @@ ccass/ccass.db
 ccass/backups/
 ccass/logs/
 ccass/debug/
+ccass/cache/
