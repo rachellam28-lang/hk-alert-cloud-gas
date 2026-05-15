@@ -282,6 +282,61 @@ def run_daily(
         return 2
 
 
+def _fetch_market_caps(codes: list[str]) -> dict[str, float]:
+    """Fetch market caps for HK stock codes via yfinance with caching.
+
+    Uses ThreadPoolExecutor for parallel fetches. Results (including None
+    for failed lookups) are cached in ccass/cache/market_caps.json to
+    minimise re-fetches on subsequent runs.
+    """
+    cache_dir = Path(__file__).parent.parent / "cache"
+    cache_path = cache_dir / "market_caps.json"
+    cache: dict = {}
+    if cache_path.exists():
+        try:
+            cache = json.loads(cache_path.read_text())
+        except Exception:
+            cache = {}
+
+    # Only fetch codes not yet in cache (including those cached as null)
+    uncached = [c for c in codes if c not in cache]
+    if uncached:
+        import logging as _logging
+        _logging.getLogger("yfinance").setLevel(_logging.CRITICAL)
+        import yfinance as yf
+        from concurrent.futures import ThreadPoolExecutor, as_completed
+
+        def _yf_symbol(code: str) -> str:
+            return f"{code.lstrip('0').zfill(4)}.HK"
+
+        def _fetch_one(code: str) -> tuple[str, float | None]:
+            try:
+                t = yf.Ticker(_yf_symbol(code))
+                info = t.info if hasattr(t, 'info') else {}
+                mc = info.get("marketCap") if isinstance(info, dict) else None
+                if mc is not None:
+                    return code, round(float(mc) / 1e8, 2)
+            except Exception:
+                pass
+            return code, None
+
+        with ThreadPoolExecutor(max_workers=4) as pool:
+            futures = {pool.submit(_fetch_one, c): c for c in uncached}
+            for fut in as_completed(futures):
+                code, mc = fut.result()
+                cache[code] = mc  # cache both hits and misses
+
+        cache_dir.mkdir(parents=True, exist_ok=True)
+        cache_path.write_text(json.dumps(cache, ensure_ascii=False))
+        logger.info(
+            "Fetched market caps: %d/%d in cache (%.0f%% with data)",
+            len(cache), len(codes),
+            sum(1 for v in cache.values() if v is not None) / max(len(cache), 1) * 100,
+        )
+
+    return cache
+
+
 def _export_json(query_date: date, alerts_today: int) -> None:
     """Export all stocks + top movers to ccass.json in repo root for dashboard."""
     date_str = query_date.strftime("%Y-%m-%d")
@@ -334,6 +389,14 @@ def _export_json(query_date: date, alerts_today: int) -> None:
                 top_increase.append(entry)
             else:
                 top_decrease.append(entry)
+
+        # Enrich stocks with market cap from Yahoo Finance
+        try:
+            mc_map = _fetch_market_caps([s["c"] for s in stocks])
+            for s in stocks:
+                s["mc"] = mc_map.get(s["c"])
+        except Exception:
+            pass  # non-fatal if market cap fetch fails
 
         top_increase = top_increase[:10]
         top_decrease = sorted(top_decrease, key=lambda x: x["delta_5d"])[:10]
