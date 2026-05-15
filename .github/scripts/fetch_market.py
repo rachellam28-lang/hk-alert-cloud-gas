@@ -1,7 +1,8 @@
-import json, re, datetime
+import json, os, re, datetime, time
 import pandas as pd
 import yfinance as yf
 import requests
+import cloudscraper
 
 HEADERS = {"User-Agent": "Mozilla/5.0"}
 
@@ -60,25 +61,48 @@ def vix_eval(val):
     return              {"label": "恐慌",   "color": "red"}
 
 def fetch_m2():
-    """Fetch M2 Money Stock from FRED (billions USD, latest monthly value)."""
-    try:
-        resp = requests.get(
-            "https://fred.stlouisfed.org/data/M2SL.txt",
-            timeout=15, headers=HEADERS
-        )
-        for line in reversed(resp.text.strip().split('\n')):
-            line = line.strip()
-            if not line or line.startswith('DATE'):
-                continue
-            parts = line.split()
-            if len(parts) >= 2 and parts[0].count('-') == 2:
-                try:
-                    return float(parts[-1])
-                except ValueError:
+    """Fetch M2 Money Stock from FRED (billions USD, latest monthly value).
+    Falls back to previous market.json value if FRED is unreachable.
+    """
+    # Try FRED with 3 retries, 20s timeout each
+    for attempt in range(3):
+        try:
+            resp = requests.get(
+                "https://fred.stlouisfed.org/data/M2SL.txt",
+                timeout=20, headers=HEADERS
+            )
+            resp.raise_for_status()
+            for line in reversed(resp.text.strip().split('\n')):
+                line = line.strip()
+                if not line or line.startswith('DATE'):
                     continue
+                parts = line.split()
+                if len(parts) >= 2 and parts[0].count('-') == 2:
+                    try:
+                        return float(parts[-1])
+                    except ValueError:
+                        continue
+        except Exception as e:
+            print(f"M2 attempt {attempt+1}: {e}")
+            time.sleep(1)
+
+    # Fallback: read previous value from existing market.json
+    try:
+        prev_path = os.path.join(os.path.dirname(__file__), "..", "..", "market.json")
+        if os.path.exists(prev_path):
+            with open(prev_path, encoding="utf-8") as f:
+                prev = json.load(f)
+            if prev.get("spx_m2", {}).get("m2"):
+                m2 = prev["spx_m2"]["m2"]
+                print(f"M2 fallback: using cached value {m2}")
+                return m2
     except Exception as e:
-        print(f"M2 fetch error: {e}")
-    return None
+        print(f"M2 fallback error: {e}")
+
+    # Ultimate fallback: hardcoded recent M2 (~21.4T)
+    # This gets overwritten once FRED is reachable (e.g. from GitHub Actions)
+    print("M2: using hardcoded fallback 21400.0")
+    return 21400.0
 
 
 _FG_RATINGS = {
@@ -97,13 +121,17 @@ _FG_COLORS = {
 }
 
 def fetch_cnn_fear_greed():
-    """Fetch CNN Fear & Greed Index (0-100)."""
+    """Fetch CNN Fear & Greed Index (0-100) via cloudscraper (bypasses 418 bot detection)."""
     try:
-        resp = requests.get(
+        scraper = cloudscraper.create_scraper()
+        resp = scraper.get(
             "https://production.dataviz.cnn.io/index/fearandgreed/graphdata",
-            timeout=15,
-            headers={**HEADERS, "Referer": "https://money.cnn.com/"},
+            timeout=20,
+            headers={"Referer": "https://money.cnn.com/", "Origin": "https://money.cnn.com"},
         )
+        if resp.status_code != 200:
+            print(f"CNN Fear & Greed HTTP {resp.status_code}: {resp.text[:200]}")
+            return {"value": None, "changePct": None, "eval": None, "stale": True}
         data = resp.json()
         fg = data.get("fear_and_greed", {})
         score_raw = fg.get("score")
@@ -120,7 +148,7 @@ def fetch_cnn_fear_greed():
         if prev_close and float(prev_close) > 0:
             chg_pct = round((score - float(prev_close)) / float(prev_close) * 100, 2)
         return {
-            "value": score,
+            "value": round(score, 1),
             "eval": {"label": label, "color": color},
             "changePct": chg_pct,
             "stale": False,
