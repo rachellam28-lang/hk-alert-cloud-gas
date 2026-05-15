@@ -397,12 +397,14 @@ function renderMarket(snap){
     const sub=(evBadge(ev)||avgHtml(avg5y))?`<span class="mchip-sub">${evBadge(ev)}${avgHtml(avg5y)}</span>`:'';
     return `<div class="mchip"><span class="mchip-label">${label}</span><span class="mchip-val${stale?' stale':''}">${valStr} ${chgHtml(chgPct)}</span>${sub}</div>`;
   }
-  const sp=snap.spx||{},d=snap.dxy||{},v=snap.vix||{},hp=snap.hsi_pe||{},sp_pe=snap.spx_pe||{};
+  const sp=snap.spx||{},d=snap.dxy||{},v=snap.vix||{},sp_pe=snap.spx_pe||{},sm=snap.spx_m2||{},fg=snap.fear_greed||{};
   bar.innerHTML=[
     chip('SPX', sp.value, sp.changePct, sp.stale, 0),
     chip('DXY', d.value, d.changePct, d.stale, 2),
     chip('VIX', v.value, v.changePct, v.stale, 2, v.eval),
     chip('美股P/E', sp_pe.value, null, sp_pe.stale, 2, sp_pe.eval, sp_pe.avg5y_mid),
+    chip('SPX/M2', sm.value, null, sm.stale, 0, sm.eval),
+    chip('恐懼貪婪', fg.value, fg.changePct, fg.stale, 0, fg.eval),
   ].join('');
 }
 function renderBreadth(snap){

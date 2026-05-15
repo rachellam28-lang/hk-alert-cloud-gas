@@ -59,6 +59,100 @@ def vix_eval(val):
     if val < 30:    return {"label": "偏高",   "color": "orange"}
     return              {"label": "恐慌",   "color": "red"}
 
+def fetch_m2():
+    """Fetch M2 Money Stock from FRED (billions USD, latest monthly value)."""
+    try:
+        resp = requests.get(
+            "https://fred.stlouisfed.org/data/M2SL.txt",
+            timeout=15, headers=HEADERS
+        )
+        for line in reversed(resp.text.strip().split('\n')):
+            line = line.strip()
+            if not line or line.startswith('DATE'):
+                continue
+            parts = line.split()
+            if len(parts) >= 2 and parts[0].count('-') == 2:
+                try:
+                    return float(parts[-1])
+                except ValueError:
+                    continue
+    except Exception as e:
+        print(f"M2 fetch error: {e}")
+    return None
+
+
+_FG_RATINGS = {
+    "extreme fear": "極度恐懼",
+    "fear":         "恐懼",
+    "neutral":      "中立",
+    "greed":        "貪婪",
+    "extreme greed":"極度貪婪",
+}
+_FG_COLORS = {
+    "extreme fear": "green",
+    "fear":         "green",
+    "neutral":      "neutral",
+    "greed":        "orange",
+    "extreme greed":"red",
+}
+
+def fetch_cnn_fear_greed():
+    """Fetch CNN Fear & Greed Index (0-100)."""
+    try:
+        resp = requests.get(
+            "https://production.dataviz.cnn.io/index/fearandgreed/graphdata",
+            timeout=15,
+            headers={**HEADERS, "Referer": "https://money.cnn.com/"},
+        )
+        data = resp.json()
+        fg = data.get("fear_and_greed", {})
+        score_raw = fg.get("score")
+        if score_raw is None:
+            score_raw = fg.get("value")
+        if score_raw is None:
+            return {"value": None, "changePct": None, "eval": None, "stale": True}
+        score = float(score_raw)
+        rating_en = (fg.get("rating") or "").lower()
+        label = _FG_RATINGS.get(rating_en, rating_en.capitalize() if rating_en else score_to_label(score))
+        color = _FG_COLORS.get(rating_en, score_to_color(score))
+        prev_close = fg.get("previous_close")
+        chg_pct = None
+        if prev_close and float(prev_close) > 0:
+            chg_pct = round((score - float(prev_close)) / float(prev_close) * 100, 2)
+        return {
+            "value": score,
+            "eval": {"label": label, "color": color},
+            "changePct": chg_pct,
+            "stale": False,
+        }
+    except Exception as e:
+        print(f"CNN Fear & Greed error: {e}")
+    return {"value": None, "changePct": None, "eval": None, "stale": True}
+
+
+def score_to_label(s):
+    if s >= 75: return "極度貪婪"
+    if s >= 55: return "貪婪"
+    if s >= 45: return "中立"
+    if s >= 25: return "恐懼"
+    return "極度恐懼"
+
+def score_to_color(s):
+    if s >= 75: return "red"
+    if s >= 55: return "orange"
+    if s >= 45: return "neutral"
+    if s >= 25: return "green"
+    return "green"
+
+
+def spx_m2_assessment(ratio):
+    """Very rough SPX/M2 valuation bands (based on ~20y range ~90–280)."""
+    if ratio < 140:  return {"label": "偏低", "color": "green"}
+    if ratio < 180:  return {"label": "合理", "color": "neutral"}
+    if ratio < 230:  return {"label": "偏高", "color": "orange"}
+    return                 {"label": "昂貴", "color": "red"}
+
+
 def worldpe(url):
     try:
         r = requests.get(url, timeout=15, headers=HEADERS)
@@ -143,21 +237,41 @@ def fetch_breadth(tickers, label):
 
 # ── Main ──────────────────────────────────────────────────────────────────
 hsi   = yf_quote("^HSI", 0)
+spx   = yf_quote("^GSPC", 2)
 dxy   = yf_quote("DX-Y.NYB", 2)
 vix_d = yf_quote("^VIX", 2)
 vix_d["eval"] = vix_eval(vix_d["value"])
 hsi_pe = worldpe("https://worldperatio.com/area/hong-kong/")
 spx_pe = worldpe("https://worldperatio.com/area/united-states/")
 
+# SPX/M2 ratio
+spx_m2_val = None
+m2_val = fetch_m2()
+if spx.get("value") and m2_val:
+    # Normalize: SPX / (M2 in trillions) — yields ~90–280 over last 20y
+    spx_m2_val = round(spx["value"] / (m2_val / 1000), 1)
+spx_m2 = {
+    "value": spx_m2_val,
+    "m2": round(m2_val, 1) if m2_val else None,
+    "eval": spx_m2_assessment(spx_m2_val) if spx_m2_val else None,
+    "stale": spx_m2_val is None,
+}
+
+# CNN Fear & Greed
+fear_greed = fetch_cnn_fear_greed()
+
 breadth_hk = fetch_breadth(_HK_TICKERS, "HK")
 breadth_us = fetch_breadth(_US_TICKERS, "US")
 
 out = {
     "hsi":    hsi,
+    "spx":    spx,
     "dxy":    dxy,
     "vix":    vix_d,
     "hsi_pe": hsi_pe,
     "spx_pe": spx_pe,
+    "spx_m2": spx_m2,
+    "fear_greed": fear_greed,
     "breadth": {"hk": breadth_hk, "us": breadth_us},
     "updated_at": datetime.datetime.now(datetime.timezone.utc).isoformat()
 }
