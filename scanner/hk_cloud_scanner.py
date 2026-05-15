@@ -1930,6 +1930,9 @@ def main() -> None:
     elif mode == "us":
         from us_scanner import run_us_corp_actions
         run_us_corp_actions()
+    elif mode == "us_all":
+        from us_scanner import run_us_all
+        run_us_all()
     elif mode == "all":
         run_corp_actions()
         run_ipo()

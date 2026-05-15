@@ -1,4 +1,4 @@
-name: US Small-Cap Corp Events
+name: US Stock Scan
 
 on:
   workflow_dispatch:
@@ -8,7 +8,7 @@ on:
 jobs:
   scan:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -16,8 +16,8 @@ jobs:
           python-version: "3.11"
           cache: "pip"
       - run: pip install -r scanner/requirements.txt
-      - name: Run US corp events scan
-        timeout-minutes: 23
+      - name: Run US scan (corp + POC + holdings)
+        timeout-minutes: 28
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
@@ -26,4 +26,4 @@ jobs:
           US_SMALL_CAP_USD: "2000000000"
           US_MIN_INSIDER_USD: "50000"
           US_LOOKBACK_DAYS: "1"
-        run: python -u scanner/hk_cloud_scanner.py us
+        run: python -u scanner/hk_cloud_scanner.py us_all
