@@ -194,6 +194,30 @@ th.sort-active{color:var(--primary)}.sort-icon{margin-left:4px;font-size:9px}
 <script>
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbxov_zEI5TvIp0Xg4ie937Rci_PEfFrUEyk7YH8RKVPz07i0RNS0fqkythLn-iErjVqZA/exec';
 const REFRESH_MS = 600000;
+const CORP_CACHE_KEY='hk_corp_signal_cache_v2';
+
+function extractDateFromLink(link){
+  if(!link) return null;
+  const m=link.match(/\/(\d{4})\/(\d{2})(\d{2})\//);
+  return m ? m[1]+'-'+m[2]+'-'+m[3] : null;
+}
+function loadCorpCache(){
+  try{return JSON.parse(localStorage.getItem(CORP_CACHE_KEY)||'{}');}catch{return {};}
+}
+function saveCorpCache(c){localStorage.setItem(CORP_CACHE_KEY,JSON.stringify(c));}
+function pruneCorpCache(){
+  const cache=loadCorpCache();
+  const cut=new Date(); cut.setMonth(cut.getMonth()-9);
+  let ch=false;
+  Object.keys(cache).forEach(code=>{
+    Object.keys(cache[code]).forEach(t=>{
+      if(cache[code][t].date && new Date(cache[code][t].date)<cut){delete cache[code][t];ch=true;}
+    });
+    if(Object.keys(cache[code]).length===0){delete cache[code];ch=true;}
+  });
+  if(ch) saveCorpCache(cache);
+  return cache;
+}
 
 function toggleSection(id, btn) {
   const body = document.getElementById('body-' + id);
@@ -251,7 +275,8 @@ function renderRow(g, wl){
   const corpOrder=['placement','increase','rights','block','other'];
   const corpPills = corpOrder.filter(t=>g.corpTypes&&g.corpTypes[t]).map(t=>{
     const c=g.corpTypes[t];
-    const body=`<span class="cpill cpill-${t}">${corpLabel(t)}${c.count>1?` <em>×${c.count}</em>`:''}</span>`;
+    const date=extractDateFromLink(c.link);
+    const body=`<span class="cpill cpill-${t}">${corpLabel(t)}${c.count>1?` <em>×${c.count}</em>`:''}${date?` <em>${date.slice(5)}</em>`:''}</span>`;
     return c.link?`<a class="cplink" href="${esc(c.link)}" target="_blank" rel="noopener">${body}</a>`:body;
   }).join(' ');
 
@@ -483,15 +508,76 @@ async function loadData(){
     const res = await fetch(GAS_URL+'?format=json');
     const data = await res.json();
     if(!data.ok) throw new Error(data.error||'API error');
-    const hkGroups=(data.groups||[]).filter(g=>{
+    let hkGroups=(data.groups||[]).filter(g=>{
       if(g.market==='US'||g.category==='us_corp') return false;
       const tags=typeof g.tags==='string'?g.tags:(g.tags||[]).join(',');
       if(tags.includes('美股')) return false;
-      // US tickers are alphabetic (ADI, AAPL); HK codes are numeric or end .HK
       const c=(g.code||g.symbol||'');
       if(/^[A-Z]{1,6}(-[A-Z])?$/.test(c)) return false;
       return true;
     });
+
+    // Merge corp cache for 9-month retention
+    const cache=pruneCorpCache();
+    // Update cache with fresh GAS data
+    hkGroups.forEach(g=>{
+      const ct=g.corpTypes||{};
+      const code=String(g.code||"").padStart(5,"0");
+      ['placement','rights','increase','block'].forEach(t=>{
+        if(ct[t]&&ct[t].link){
+          const date=extractDateFromLink(ct[t].link);
+          if(date){
+            if(!cache[code]) cache[code]={};
+            const existing=cache[code][t];
+            if(!existing||date>existing.date)
+              cache[code][t]={count:ct[t].count,link:ct[t].link,date};
+          }
+        }
+      });
+    });
+    saveCorpCache(cache);
+
+    // Enrich groups with cached dates (for stocks in GAS response)
+    hkGroups.forEach(g=>{
+      const code=String(g.code||"").padStart(5,"0");
+      if(cache[code]){
+        ['placement','rights'].forEach(t=>{
+          if(cache[code][t] && !g.corpTypes) g.corpTypes={};
+          if(cache[code][t] && !g.corpTypes[t]) g.corpTypes[t]={count:0,link:''};
+          // date is extracted at render time from link
+        });
+      }
+    });
+
+    // Add synthetic entries for cached stocks not in current GAS response
+    Object.keys(cache).forEach(code=>{
+      if(code==='lastFetched') return;
+      if(hkGroups.some(g=>String(g.code||'').padStart(5,"0")===code)) return;
+      const e=cache[code];
+      const types=Object.keys(e);
+      if(!types.length) return;
+      // Create minimal synthetic group
+      const synCorpTypes={};
+      types.forEach(t=>{
+        synCorpTypes[t]={count:e[t].count,link:e[t].link};
+      });
+      const firstDate=e[types[0]]?.date||'';
+      const synthGroup={
+        code:code,
+        name:code,
+        corpTypes:synCorpTypes,
+        corpCount:types.length,
+        techCount:0,
+        signals:[],
+        latestRaw:firstDate+'T09:00:00.000Z',
+        latest:new Date(firstDate).getTime(),
+        hkexLink:e[types[0]]?.link||'',
+        chartImageUrl:'',
+        latestPrice:null,
+      };
+      hkGroups.push(synthGroup);
+    });
+
     renderSummary(hkGroups);
     renderIPO(hkGroups);
     renderTable(hkGroups);

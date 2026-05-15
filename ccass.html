@@ -198,6 +198,30 @@ let page=0;
 const PAGE_SIZE=200;
 const GAS_URL='https://script.google.com/macros/s/AKfycbxov_zEI5TvIp0Xg4ie937Rci_PEfFrUEyk7YH8RKVPz07i0RNS0fqkythLn-iErjVqZA/exec';
 let signalMap=new Map();
+const CORP_CACHE_KEY='hk_corp_signal_cache_v2';
+
+function extractDateFromLink(link){
+  if(!link) return null;
+  const m=link.match(/\/(\d{4})\/(\d{2})(\d{2})\//);
+  return m ? m[1]+'-'+m[2]+'-'+m[3] : null;
+}
+function loadCorpCache(){
+  try{return JSON.parse(localStorage.getItem(CORP_CACHE_KEY)||'{}');}catch{return {};}
+}
+function saveCorpCache(c){localStorage.setItem(CORP_CACHE_KEY,JSON.stringify(c));}
+function pruneCorpCache(){
+  const cache=loadCorpCache();
+  const cut=new Date(); cut.setMonth(cut.getMonth()-9);
+  let ch=false;
+  Object.keys(cache).forEach(code=>{
+    Object.keys(cache[code]).forEach(t=>{
+      if(cache[code][t].date && new Date(cache[code][t].date)<cut){delete cache[code][t];ch=true;}
+    });
+    if(Object.keys(cache[code]).length===0){delete cache[code];ch=true;}
+  });
+  if(ch) saveCorpCache(cache);
+  return cache;
+}
 
 function renderSummaryBar(data){
   const bar=document.getElementById('summaryBar');
@@ -229,8 +253,8 @@ function renderTable(){
     const sig=signalMap.get(s.c);
     let sigHtml='';
     if(sig){
-      if(sig.pl) sigHtml+='<span class="cpill cpill-placement">配股</span>';
-      if(sig.ri) sigHtml+='<span class="cpill cpill-rights">供股</span>';
+      if(sig.pl) sigHtml+='<span class="cpill cpill-placement">配股'+(sig.plDate?' <em>'+sig.plDate.slice(5)+'</em>':'')+'</span>';
+      if(sig.ri) sigHtml+='<span class="cpill cpill-rights">供股'+(sig.riDate?' <em>'+sig.riDate.slice(5)+'</em>':'')+'</span>';
       if(sig.inc) sigHtml+='<span class="cpill cpill-increase">增持</span>';
       if(sig.bl) sigHtml+='<span class="cpill cpill-block">轉倉</span>';
     }
@@ -318,6 +342,16 @@ async function showDetail(code){
   const d5html=s.d5!==null?`<span class="dmeta-val ${s.d5>0?'up':'dn'}">${fmtPct(s.d5)}</span><span class="dmeta-sub">5日變化</span>`:'<span class="dmeta-val delta-null">—</span><span class="dmeta-sub">5日變化</span>';
   const d20html=s.d20!==null?`<span class="dmeta-val ${s.d20>0?'up':'dn'}">${fmtPct(s.d20)}</span><span class="dmeta-sub">20日變化</span>`:'<span class="dmeta-val delta-null">—</span><span class="dmeta-sub">20日變化</span>';
 
+  // Build signal HTML for drawer
+  const sig=signalMap.get(s.c);
+  let dsigHtml='';
+  if(sig){
+    if(sig.pl) dsigHtml+='<span class="cpill cpill-placement">配股'+(sig.plDate?' <em>'+sig.plDate.slice(5)+'</em>':'')+'</span>';
+    if(sig.ri) dsigHtml+='<span class="cpill cpill-rights">供股'+(sig.riDate?' <em>'+sig.riDate.slice(5)+'</em>':'')+'</span>';
+    if(sig.inc) dsigHtml+='<span class="cpill cpill-increase">增持</span>';
+    if(sig.bl) dsigHtml+='<span class="cpill cpill-block">轉倉</span>';
+  }
+
   document.getElementById('drawerBody').innerHTML=
     '<div class="drawer-meta">'
     +'<div class="dmeta"><span class="dmeta-label">CCASS%</span><span class="dmeta-val">'+s.tp.toFixed(2)+'%</span></div>'
@@ -332,6 +366,7 @@ async function showDetail(code){
     +'<div class="dmeta">'+(s.su>1?'<span class="dmeta-val up">🔥 '+s.su+'日</span><span class="dmeta-sub">連續增持</span>':'<span class="dmeta-val" style="color:var(--mute-2)">—</span><span class="dmeta-sub">連續增持</span>')+'</div>'
     +'<div class="dmeta">'+(s.sd>1?'<span class="dmeta-val dn">❄️ '+s.sd+'日</span><span class="dmeta-sub">連續減持</span>':'<span class="dmeta-val" style="color:var(--mute-2)">—</span><span class="dmeta-sub">連續減持</span>')+'</div>'
     +'</div>'
+    +(dsigHtml?'<div class="drawer-meta"><div class="dmeta" style="flex-direction:row;gap:6px;flex-wrap:wrap;padding:8px 14px;min-width:100%"><span class="dmeta-label" style="width:100%">訊號</span>'+dsigHtml+'</div></div>':'')
     +'<div class="dsection"><div class="dsection-title">持倉分布</div>'
     +'<div id="holdingsTable"><div class="loading-msg" style="padding:20px">載入股東明細…</div></div></div>';
 
@@ -428,12 +463,49 @@ async function loadData(){
       .then(r=>r.ok?r.json():null)
       .then(d=>{
         if(d&&d.groups){
+          // Merge GAS data into localStorage cache (9-month retention)
+          const cache=pruneCorpCache();
           d.groups.forEach(g=>{
             const ct=g.corpTypes||{};
             const code=String(g.code||"").padStart(5,"0");
-            signalMap.set(code,
-              {pl:ct.placement?.count>0, ri:ct.rights?.count>0,
-               inc:ct.increase?.count>0, bl:ct.block?.count>0});
+            ['placement','rights','increase','block'].forEach(t=>{
+              if(ct[t]&&ct[t].link){
+                const date=extractDateFromLink(ct[t].link);
+                if(date){
+                  if(!cache[code]) cache[code]={};
+                  const existing=cache[code][t];
+                  if(!existing||date>existing.date)
+                    cache[code][t]={count:ct[t].count,link:ct[t].link,date};
+                }
+              }
+            });
+          });
+          saveCorpCache(cache);
+
+          // Build signalMap from cache (fresh + historical within 9mo)
+          signalMap.clear();
+          d.groups.forEach(g=>{
+            const ct=g.corpTypes||{};
+            const code=String(g.code||"").padStart(5,"0");
+            const e=cache[code]||{};
+            signalMap.set(code,{
+              pl:!!ct.placement,ri:!!ct.rights,inc:!!ct.increase,bl:!!ct.block,
+              plDate:e.placement?.date||null,riDate:e.rights?.date||null,
+              plCount:e.placement?.count||0,riCount:e.rights?.count||0,
+              incCount:e.increase?.count||0,blCount:e.block?.count||0,
+            });
+          });
+          // Also add cache-only codes not in fresh GAS response
+          Object.keys(cache).forEach(code=>{
+            if(!signalMap.has(code)){
+              const e=cache[code];
+              signalMap.set(code,{
+                pl:!!e.placement,ri:!!e.rights,inc:!!e.increase,bl:!!e.block,
+                plDate:e.placement?.date||null,riDate:e.rights?.date||null,
+                plCount:e.placement?.count||0,riCount:e.rights?.count||0,
+                incCount:e.increase?.count||0,blCount:e.block?.count||0,
+              });
+            }
           });
         }
         renderSummaryBar(data);
