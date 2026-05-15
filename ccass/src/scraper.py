@@ -121,9 +121,9 @@ class CCASSScraper:
                 # Rate limit response
                 if resp.status_code in (429, 503):
                     logger.warning(
-                        "Rate limited (%d) on %s, sleeping 5 min", resp.status_code, stock_code
+                        "Rate limited (%d) on %s, sleeping 30s", resp.status_code, stock_code
                     )
-                    time.sleep(300)
+                    time.sleep(30)
                     continue
                 resp.raise_for_status()
 
