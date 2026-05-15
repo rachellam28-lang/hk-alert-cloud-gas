@@ -283,7 +283,7 @@ def run_daily(
 
 
 def _export_json(query_date: date, alerts_today: int) -> None:
-    """Export top movers to ccass.json in repo root for dashboard."""
+    """Export all stocks + top movers to ccass.json in repo root for dashboard."""
     date_str = query_date.strftime("%Y-%m-%d")
     top_increase: list[dict] = []
     top_decrease: list[dict] = []
@@ -292,29 +292,45 @@ def _export_json(query_date: date, alerts_today: int) -> None:
         with get_conn() as conn:
             rows = conn.execute(
                 """SELECT t.stock_code, u.stock_name, t.delta_5d_pct, t.delta_20d_pct,
-                          d.total_pct, d.top5_pct, d.top10_pct,
+                          d.total_pct, d.top5_pct, d.top10_pct, d.num_participants,
                           t.consecutive_increase_days, t.consecutive_decrease_days
                    FROM ccass_trends t
                    LEFT JOIN stock_universe u ON u.stock_code = t.stock_code
                    LEFT JOIN ccass_daily d ON d.stock_code = t.stock_code AND d.trade_date = t.trade_date
-                   WHERE t.trade_date = ? AND t.delta_5d_pct IS NOT NULL
+                   WHERE t.trade_date = ?
                    ORDER BY t.delta_5d_pct DESC""",
                 (date_str,),
             ).fetchall()
 
+        # Full stocks array for standalone page (short keys to minimise size)
+        stocks: list[dict] = []
         for r in rows:
+            stocks.append({
+                "c": r["stock_code"],
+                "n": r["stock_name"] or r["stock_code"],
+                "tp": round(r["total_pct"] or 0, 2),
+                "t5": round(r["top5_pct"] or 0, 2),
+                "t10": round(r["top10_pct"] or 0, 2),
+                "d5": round(r["delta_5d_pct"], 2) if r["delta_5d_pct"] is not None else None,
+                "d20": round(r["delta_20d_pct"] or 0, 2) if r["delta_20d_pct"] is not None else None,
+                "su": r["consecutive_increase_days"] or 0,
+                "sd": r["consecutive_decrease_days"] or 0,
+                "np": r["num_participants"] or 0,
+            })
+            # Backward compat top_increase/top_decrease
             entry = {
                 "code": r["stock_code"],
                 "name": r["stock_name"] or r["stock_code"],
-                "delta_5d": round(r["delta_5d_pct"], 2),
-                "delta_20d": round(r["delta_20d_pct"] or 0, 2),
+                "delta_5d": round(r["delta_5d_pct"], 2) if r["delta_5d_pct"] is not None else 0,
+                "delta_20d": round(r["delta_20d_pct"] or 0, 2) if r["delta_20d_pct"] is not None else 0,
                 "total_pct": round(r["total_pct"] or 0, 2),
                 "top5_pct": round(r["top5_pct"] or 0, 2),
                 "top10_pct": round(r["top10_pct"] or 0, 2),
                 "streak_up": r["consecutive_increase_days"] or 0,
                 "streak_dn": r["consecutive_decrease_days"] or 0,
             }
-            if r["delta_5d_pct"] > 0:
+            delta = r["delta_5d_pct"]
+            if delta is not None and delta > 0:
                 top_increase.append(entry)
             else:
                 top_decrease.append(entry)
@@ -322,15 +338,30 @@ def _export_json(query_date: date, alerts_today: int) -> None:
         top_increase = top_increase[:10]
         top_decrease = sorted(top_decrease, key=lambda x: x["delta_5d"])[:10]
 
+        # Aggregate stats for the standalone page
+        total_participants = sum(s["np"] for s in stocks) if stocks else 0
+        with get_conn() as conn:
+            min_date_row = conn.execute(
+                "SELECT MIN(trade_date) AS md FROM ccass_daily"
+            ).fetchone()
+            first_date = min_date_row["md"] if min_date_row and min_date_row["md"] else date_str
+
         payload = {
             "updated": date_str,
+            "first_date": first_date,
             "alerts_today": alerts_today,
+            "total_stocks": len(stocks),
+            "total_participants": total_participants,
+            "stocks": stocks,
             "top_increase": top_increase,
             "top_decrease": top_decrease,
         }
         out_path = Path(__file__).parent.parent.parent / "ccass.json"
-        out_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
-        logger.info("Exported ccass.json (%d up, %d down)", len(top_increase), len(top_decrease))
+        out_path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+        logger.info(
+            "Exported ccass.json (%d stocks, %d up, %d down)",
+            len(stocks), len(top_increase), len(top_decrease),
+        )
         _post_movers_to_gas(top_increase, top_decrease, date_str)
     except Exception as e:
         logger.warning("ccass.json export failed: %s", e)

@@ -123,18 +123,6 @@ th.sort-active{color:var(--primary)}.sort-icon{margin-left:4px;font-size:9px}
 .bs-h{background:#16a34a}.bs-m{background:#94a3b8}.bs-l{background:#dc2626}
 .breadth-stats{font-size:10px;white-space:nowrap;display:flex;gap:5px}
 .bs-hi{color:#16a34a;font-weight:600}.bs-lo{color:#dc2626;font-weight:600}.bs-n{color:var(--mute-2)}
-.ccass-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:10px 14px;margin-bottom:12px}
-.ccass-head{font-size:10px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.14em;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
-.ccass-cols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-@media(max-width:600px){.ccass-cols{grid-template-columns:1fr}}
-.ccass-col-head{font-size:10px;font-weight:600;margin-bottom:4px}
-.ccass-col-head.up{color:#16a34a}.ccass-col-head.dn{color:#dc2626}
-.ccass-row{display:flex;align-items:center;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--line-soft);font-size:12px}
-.ccass-row:last-child{border-bottom:none}
-.ccass-name{color:var(--text-soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px}.ccass-conc{font-size:10px;color:var(--mute-2);white-space:nowrap;margin:0 6px;flex-shrink:0}
-.ccass-delta{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
-.ccass-delta.up{color:#16a34a}.ccass-delta.dn{color:#dc2626}
-.ccass-streak{font-size:10px;color:var(--mute-2);margin-left:4px}
 </style>
 </head><body>
 <header class="topbar"><div class="topbar-inner">
@@ -144,6 +132,7 @@ th.sort-active{color:var(--primary)}.sort-icon{margin-left:4px;font-size:9px}
     <a style="font-size:12px;color:#dc2626;margin-left:6px;padding:3px 9px;border:1px solid #dc2626;border-radius:6px;white-space:nowrap;font-weight:600" href="./us.html">🇺🇸 美股版 →</a>
     <a style="font-size:12px;color:#b45309;margin-left:4px;padding:3px 9px;border:1px solid #fcd34d;border-radius:6px;white-space:nowrap;font-weight:600" href="./watchlist.html">⭐ 自選 →</a>
     <a style="font-size:12px;color:#6d28d9;margin-left:4px;padding:3px 9px;border:1px solid #c4b5fd;border-radius:6px;white-space:nowrap;font-weight:600" href="./history.html">🕐 歷史 →</a>
+    <a style="font-size:12px;color:#0284c7;margin-left:4px;padding:3px 9px;border:1px solid #86efac;border-radius:6px;white-space:nowrap;font-weight:600" href="./ccass.html">📦 CCASS →</a>
   </div>
   <div class="topright">
     <span class="dot loading" id="statusDot"></span>
@@ -155,13 +144,6 @@ th.sort-active{color:var(--primary)}.sort-icon{margin-left:4px;font-size:9px}
 <main class="wrap">
   <div class="mbar" id="mbar"></div>
   <div class="breadth-card" id="breadthCard" style="display:none"><div class="breadth-head">市場寬度 · 52周高低位分布</div><div id="breadthRows"></div></div>
-  <div class="ccass-card" id="ccassCard" style="display:none">
-    <div class="ccass-head"><span>📦 CCASS 持倉異動（5日）</span><span id="ccassDate" style="font-weight:400;color:var(--mute-2)"></span></div>
-    <div class="ccass-cols">
-      <div><div class="ccass-col-head up">▲ 大手增持</div><div id="ccassUp"></div></div>
-      <div><div class="ccass-col-head dn">▼ 大手減持</div><div id="ccassDn"></div></div>
-    </div>
-  </div>
 
   <div id="ipoCard" class="ipo-card" style="display:none">
     <div class="ipo-head"><span>🚀 IPO 首日突破</span><span class="ipo-count" id="ipoCount"></span></div>
@@ -442,29 +424,6 @@ function attachSort(){
   });
 }
 
-function renderCCASS(c){
-  const card=document.getElementById('ccassCard');
-  if(!c||(!c.top_increase?.length&&!c.top_decrease?.length)){card.style.display='none';return;}
-  card.style.display='';
-  document.getElementById('ccassDate').textContent=c.updated||'';
-  function rows(arr,cls){
-    if(!arr||!arr.length)return '<div style="color:var(--mute-2);font-size:11px;padding:6px 0">暫無數據</div>';
-    return arr.map(r=>{
-      const streak=r.streak_up>1?'🔥'+r.streak_up+'日':r.streak_dn>1?'❄️'+r.streak_dn+'日':'';
-      const conc=r.top5_pct?'<span class="ccass-conc">T5:'+r.top5_pct+'% T10:'+r.top10_pct+'%</span>':'';
-      return '<div class="ccass-row">'
-        +'<span class="code" style="font-size:11px;min-width:46px">'+r.code+'</span>'
-        +'<span class="ccass-name" title="'+r.name+'">'+r.name+'</span>'
-        +conc
-        +'<span class="ccass-delta '+cls+'">'+(r.delta_5d>0?'+':'')+r.delta_5d+'%'
-        +(streak?'<span class="ccass-streak">'+streak+'</span>':'')
-        +'</span>'
-        +'</div>';
-    }).join('');
-  }
-  document.getElementById('ccassUp').innerHTML=rows(c.top_increase,'up');
-  document.getElementById('ccassDn').innerHTML=rows(c.top_decrease,'dn');
-}
 function renderBreadth(snap){
   const card=document.getElementById('breadthCard');
   if(!card)return;
@@ -540,10 +499,6 @@ async function loadData(){
     fetch('./market.json?_='+Date.now())
       .then(r=>r.ok?r.json():null)
       .then(m=>{renderMarket(m);renderBreadth(m);})
-      .catch(()=>{});
-    fetch('./ccass.json?_='+Date.now())
-      .then(r=>r.ok?r.json():null)
-      .then(c=>renderCCASS(c))
       .catch(()=>{});
     const t=new Date(data.updatedAt);
     const p=n=>n<10?'0'+n:''+n;
