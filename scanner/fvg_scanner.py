@@ -21,8 +21,9 @@ import pandas as pd
 import yfinance as yf
 
 # ── Config ────────────────────────────────────────────────────────────────────
-NEAR_PCT   = float(os.getenv("FVG_NEAR_PCT", "0.03"))   # 3% above FVG top = "near"
-RATE_SLEEP = float(os.getenv("FVG_SLEEP", "0.15"))
+NEAR_PCT     = float(os.getenv("FVG_NEAR_PCT", "0.01"))   # 1% above FVG top = "near" (was 3%, too noisy)
+RATE_SLEEP   = float(os.getenv("FVG_SLEEP", "0.15"))
+MAX_TG_ALERTS = int(os.getenv("FVG_MAX_TG", "10"))         # max Telegram alerts per run (rest → JSON only)
 
 # ── Ticker universes (same as fetch_market.py) ────────────────────────────────
 HK_TICKERS = [
@@ -246,6 +247,7 @@ def run_fvg_scan(market: str = "both") -> None:
         tasks += [(t, "", "US") for t in US_TICKERS]
 
     all_alerts: list[dict] = []
+    tg_sent = 0
     for i, (ticker, name, mkt) in enumerate(tasks, 1):
         if i % 20 == 0:
             print(f"[FVG] progress {i}/{len(tasks)}")
@@ -257,14 +259,21 @@ def run_fvg_scan(market: str = "both") -> None:
                 _post_to_gas(a)
             except Exception as e:
                 print(f"[FVG] GAS error {ticker}: {e}")
-            try:
-                _emit_telegram(a)
-            except Exception as e:
-                print(f"[FVG] telegram error {ticker}: {e}")
+            # Telegram: only send daily "near" + any "in"; skip weekly/monthly "near" (too noisy)
+            send_tg = (
+                a["status"] == "in"
+                or (a["status"] == "near" and a["timeframe"] == "日線")
+            )
+            if send_tg and tg_sent < MAX_TG_ALERTS:
+                try:
+                    _emit_telegram(a)
+                    tg_sent += 1
+                except Exception as e:
+                    print(f"[FVG] telegram error {ticker}: {e}")
         all_alerts.extend(alerts)
 
     _export_json(all_alerts)
-    print(f"[FVG] done  total_alerts={len(all_alerts)}")
+    print(f"[FVG] done  total_alerts={len(all_alerts)}  tg_sent={tg_sent}")
 
 
 if __name__ == "__main__":
