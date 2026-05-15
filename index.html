@@ -494,7 +494,7 @@ function renderMarket(snap){
   const h=snap.hsi||{},dow=snap.dow||{},d=snap.dxy||{},v=snap.vix||{},hp=snap.hsi_pe||{},sp=snap.spx_pe||{},sm=snap.spx_m2||{},fg=snap.fear_greed||{};
   bar.innerHTML=[
     chip('恒指', h.value, h.changePct, h.stale, 0),
-    chip('道指', d.value, d.changePct, d.stale, 0),
+    chip('道指', dow.value, dow.changePct, dow.stale, 0),
     chip('DXY', d.value, d.changePct, d.stale, 2),
     chip('VIX', v.value, v.changePct, v.stale, 2, v.eval),
     chip('港股P/E', hp.value, null, hp.stale, 2, hp.eval, hp.avg5y_mid),
