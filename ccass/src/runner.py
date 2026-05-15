@@ -15,6 +15,7 @@ import json
 import sys
 import time
 import traceback
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, date, timedelta
 from pathlib import Path
 
@@ -48,6 +49,75 @@ def should_refresh_universe(force: bool = False) -> bool:
         if row["n"] < 100:
             return True
     return today_hk().weekday() == 0  # Monday
+
+
+def _scrape_parallel(
+    stocks: list[str],
+    query_date: date,
+    sc_cfg: dict,
+    n_workers: int,
+) -> tuple[int, int, list[str]]:
+    """Scrape stocks with N parallel workers (each worker = own cloudscraper session)."""
+    total = len(stocks)
+    attempted = 0
+    succeeded = 0
+    failed_stocks: list[str] = []
+    lock = __import__("threading").Lock()
+    progress_lock = __import__("threading").Lock()
+    done_count = 0
+
+    # Create one scraper per worker (each has its own cloudscraper session)
+    scrapers = [
+        CCASSScraper(
+            user_agent=sc_cfg["user_agent"],
+            delay_min=sc_cfg["delay_min_seconds"],
+            delay_max=sc_cfg["delay_max_seconds"],
+            timeout=sc_cfg["timeout_seconds"],
+            max_retries=sc_cfg["max_retries"],
+        )
+        for _ in range(n_workers)
+    ]
+
+    def _scrape_one(code: str) -> tuple[str, bool]:
+        """Scrape single stock, return (code, success)."""
+        worker_idx = hash(code) % n_workers
+        scraper = scrapers[worker_idx]
+        snap = scraper.scrape_stock(code, query_date)
+        if snap:
+            save_snapshot(snap)
+            return (code, True)
+        return (code, False)
+
+    with ThreadPoolExecutor(max_workers=n_workers) as pool:
+        fut_map = {pool.submit(_scrape_one, code): code for code in stocks}
+
+        for fut in as_completed(fut_map):
+            code = fut_map[fut]
+            attempted += 1
+            try:
+                _, ok = fut.result()
+                if ok:
+                    succeeded += 1
+                else:
+                    with lock:
+                        failed_stocks.append(code)
+            except Exception as e:
+                logger.warning("Parallel scrape %s failed: %s", code, e)
+                with lock:
+                    failed_stocks.append(code)
+
+            # Progress logging (thread-safe)
+            with progress_lock:
+                done_count += 1
+                if done_count % 100 == 0 or done_count == total:
+                    pct = 100.0 * done_count / total
+                    logger.info("Progress: %d/%d (%.1f%%)", done_count, total, pct)
+
+    logger.info(
+        "Parallel scrape done: %d/%d succeeded, %d failed",
+        succeeded, attempted, len(failed_stocks),
+    )
+    return (attempted, succeeded, failed_stocks)
 
 
 def run_daily(
@@ -110,28 +180,34 @@ def run_daily(
         # 3. Scrape
         if not skip_scrape:
             sc_cfg = config["scraping"]
-            scraper = CCASSScraper(
-                user_agent=sc_cfg["user_agent"],
-                delay_min=sc_cfg["delay_min_seconds"],
-                delay_max=sc_cfg["delay_max_seconds"],
-                timeout=sc_cfg["timeout_seconds"],
-                max_retries=sc_cfg["max_retries"],
-            )
+            n_workers = sc_cfg.get("parallel_workers", 1)
 
-            for i, code in enumerate(stocks, 1):
-                attempted += 1
-                if i % 50 == 0:
-                    logger.info("Progress: %d/%d (%.1f%%)", i, len(stocks), 100 * i / len(stocks))
-                try:
-                    snap = scraper.scrape_stock(code, query_date)
-                    if snap:
-                        save_snapshot(snap)
-                        succeeded += 1
-                    else:
+            if n_workers > 1 and len(stocks) > 100:
+                attempted, succeeded, failed_stocks = _scrape_parallel(
+                    stocks, query_date, sc_cfg, n_workers,
+                )
+            else:
+                scraper = CCASSScraper(
+                    user_agent=sc_cfg["user_agent"],
+                    delay_min=sc_cfg["delay_min_seconds"],
+                    delay_max=sc_cfg["delay_max_seconds"],
+                    timeout=sc_cfg["timeout_seconds"],
+                    max_retries=sc_cfg["max_retries"],
+                )
+                for i, code in enumerate(stocks, 1):
+                    attempted += 1
+                    if i % 50 == 0:
+                        logger.info("Progress: %d/%d (%.1f%%)", i, len(stocks), 100 * i / len(stocks))
+                    try:
+                        snap = scraper.scrape_stock(code, query_date)
+                        if snap:
+                            save_snapshot(snap)
+                            succeeded += 1
+                        else:
+                            failed_stocks.append(code)
+                    except Exception as e:
+                        logger.exception("Unexpected error on %s", code)
                         failed_stocks.append(code)
-                except Exception as e:
-                    logger.exception("Unexpected error on %s", code)
-                    failed_stocks.append(code)
 
         # 4. Trends
         try:
