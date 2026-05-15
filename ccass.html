@@ -43,6 +43,14 @@ tbody tr{cursor:pointer}
 .num{font:600 12.5px "JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
 .delta-up{color:var(--up)}.delta-dn{color:var(--down)}.delta-null{color:var(--mute-2)}
 .streak{font-size:10px;margin-left:3px;white-space:nowrap}
+/* Signal pills */
+.cpill{display:inline-flex;align-items:center;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:999px;line-height:1.5;border:1px solid transparent;margin:1px 2px 1px 0}
+.cpill em{font-style:normal;font-weight:600;margin-left:3px;opacity:.85}
+.cpill-placement{background:var(--down-soft);color:var(--down);border-color:var(--down-border)}
+.cpill-rights{background:var(--violet-soft);color:var(--violet);border-color:var(--violet-border)}
+.cpill-increase{background:var(--up-soft);color:var(--up);border-color:var(--up-border)}
+.cpill-block{background:var(--amber-soft);color:var(--amber);border-color:var(--amber-border)}
+.cpill-other{background:var(--surface-soft);color:var(--mute);border-color:var(--line)}
 .foot{margin-top:24px;padding-top:14px;border-top:1px solid var(--line);text-align:center;color:var(--mute-2);font-size:11px}
 /* Detail drawer */
 .drawer-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.3);z-index:99;display:none}
@@ -73,6 +81,7 @@ tbody tr{cursor:pointer}
 /* Responsive */
 @media(max-width:820px){.hide-t5,.th-t5{display:none}}
 @media(max-width:720px){.hide-np,.th-np{display:none}}
+@media(max-width:820px){.hide-sig,.th-sig{display:none}}
 @media(max-width:640px){.brand>a{font-size:11px!important;padding:2px 6px!important;margin-left:3px!important}.input.search-in{min-width:140px}}
 @media(max-width:520px){.hide-d20,.th-d20{display:none}.topbar-inner{padding:6px 10px;gap:8px}.brand{gap:6px;flex-shrink:0}.brand>a{font-size:10px!important;padding:1px 5px!important;margin-left:2px!important}.logo{display:none}.brand-title{font-size:12px;white-space:nowrap}.brand-sub{display:none}.topright{gap:3px;font-size:10px}.refresh-tag{display:none}}@media(max-width:400px){.topbar-inner{padding:4px 6px;gap:4px}.brand-title{font-size:11px}.brand>a{font-size:9px!important;padding:1px 4px!important}.topright span:last-child{font-size:8px}}
 @media(prefers-color-scheme:dark){:root{--bg:#0f172a;--surface:#1e293b;--surface-soft:#162032;--text:#f1f5f9;--text-soft:#cbd5e1;--mute:#64748b;--mute-2:#475569;--line:#334155;--line-soft:#1e293b;--primary:#38bdf8;--primary-soft:#0c2d44;--primary-border:#0369a1;--up:#4ade80;--up-soft:#052e16;--up-border:#166534;--down:#f87171;--down-soft:#2d0a0a;--down-border:#991b1b;--violet:#a78bfa;--violet-soft:#1e1040;--violet-border:#5b21b6;--amber:#fbbf24;--amber-soft:#1c0f00;--amber-border:#92400e}.topbar{background:rgba(15,23,42,.92)}}
@@ -118,6 +127,8 @@ tbody tr{cursor:pointer}
         <button class="btn-ghost" id="filterUp">↑ 增持</button>
         <button class="btn-ghost" id="filterDn">↓ 減持</button>
         <button class="btn-ghost" id="filterConcentrated">高集中度</button>
+        <button class="btn-ghost" id="filterPlacement">配股</button>
+        <button class="btn-ghost" id="filterRights">供股</button>
       </div>
     </div>
     <div style="overflow-x:auto">
@@ -125,6 +136,7 @@ tbody tr{cursor:pointer}
         <thead><tr>
           <th class="sortable sort-active sort-desc" data-sort="code"><span>代碼</span><span class="sort-icon">▼</span></th>
           <th class="sortable" data-sort="n"><span>名稱</span><span class="sort-icon"></span></th>
+          <th class="sortable th-sig" data-sort="sig"><span>信號</span><span class="sort-icon"></span></th>
           <th class="sortable" data-sort="tp"><span>CCASS%</span><span class="sort-icon"></span></th>
           <th class="sortable th-t5" data-sort="t5"><span>Top5%</span><span class="sort-icon"></span></th>
           <th class="sortable th-t5" data-sort="t10"><span>Top10%</span><span class="sort-icon"></span></th>
@@ -173,17 +185,21 @@ let searchVal='';
 let filterMode='all'; // all, up, dn, concentrated
 let page=0;
 const PAGE_SIZE=200;
+const GAS_URL='https://script.google.com/macros/s/AKfycbxov_zEI5TvIp0Xg4ie937Rci_PEfFrUEyk7YH8RKVPz07i0RNS0fqkythLn-iErjVqZA/exec';
+let signalMap=new Map();
 
 function renderSummaryBar(data){
   const bar=document.getElementById('summaryBar');
   const up=data.top_increase?.length||0;
   const dn=data.top_decrease?.length||0;
+  let pCnt=0, rCnt=0;
+  allStocks.forEach(s=>{const m=signalMap.get(s.c);if(m&&m.pl)pCnt++;if(m&&m.ri)rCnt++;});
   bar.innerHTML='<span class="scnt">📅 <b>'+esc(data.updated)+'</b></span>'
     +'<span class="scnt">📦 <b>'+data.total_stocks+'</b> 隻股票</span>'
     +'<span class="scnt">🏦 <b>'+data.total_participants?.toLocaleString()+'</b> 參與者次</span>'
     +'<span class="scnt" style="border-color:var(--up-border);background:var(--up-soft);color:var(--up)">▲ <b>'+up+'</b> 增持</span>'
     +'<span class="scnt" style="border-color:var(--down-border);background:var(--down-soft);color:var(--down)">▼ <b>'+dn+'</b> 減持</span>'
-    +'<span class="scnt">📊 <b>'+data.first_date+'</b> 至 <b>'+esc(data.updated)+'</b></span>';
+    +'<span class="scnt">📊 <b>'+data.first_date+'</b> 至 <b>'+esc(data.updated)+'</b></span>'+(pCnt?'<span class="scnt" style="border-color:var(--down-border);background:var(--down-soft);color:var(--down)">配股 <b>'+pCnt+'</b></span>':'')+(rCnt?'<span class="scnt" style="border-color:var(--violet-border);background:var(--violet-soft);color:var(--violet)">供股 <b>'+rCnt+'</b></span>':'');
 }
 
 function renderTable(){
@@ -197,10 +213,19 @@ function renderTable(){
     const streak=fmtStreak(s.su, s.sd);
     const d5=s.d5!==null?`<span class="num ${deltaClass(s.d5)}">${fmtPct(s.d5)}</span>`:'<span class="num delta-null">—</span>';
     const d20=s.d20!==null?`<span class="num ${deltaClass(s.d20)}">${fmtPct(s.d20)}</span>`:'<span class="num delta-null">—</span>';
+    const sig=signalMap.get(s.c);
+    let sigHtml='';
+    if(sig){
+      if(sig.pl) sigHtml+='<span class="cpill cpill-placement">配股</span>';
+      if(sig.ri) sigHtml+='<span class="cpill cpill-rights">供股</span>';
+      if(sig.inc) sigHtml+='<span class="cpill cpill-increase">增持</span>';
+      if(sig.bl) sigHtml+='<span class="cpill cpill-block">轉倉</span>';
+    }
     const tpCls=s.tp>50?'':'';
     return '<tr onclick="showDetail(\''+s.c+'\')">'
       +'<td><span class="code">'+esc(s.c)+'</span></td>'
       +'<td><span class="name" title="'+esc(s.n)+'">'+esc(s.n)+'</span></td>'
+      +'<td class="hide-sig">'+sigHtml+'</td>'
       +'<td><span class="num">'+s.tp.toFixed(2)+'%</span></td>'
       +'<td class="hide-t5"><span class="num">'+s.t5.toFixed(2)+'%</span></td>'
       +'<td class="hide-t5"><span class="num">'+s.t10.toFixed(2)+'%</span></td>'
@@ -235,6 +260,9 @@ function applyFilters(){
     if(filterMode==='up' && (s.d5===null || s.d5<=0)) return false;
     if(filterMode==='dn' && (s.d5===null || s.d5>=0)) return false;
     if(filterMode==='concentrated' && s.t5<50) return false;
+    const sm=signalMap.get(s.c);
+    if(filterMode==='placement'){if(!sm||!sm.pl)return false;}
+    if(filterMode==='rights'){if(!sm||!sm.ri)return false;}
     return true;
   });
   // Sort
@@ -344,12 +372,16 @@ function setFilter(mode){
   else if(mode==='up') document.getElementById('filterUp').classList.add('active');
   else if(mode==='dn') document.getElementById('filterDn').classList.add('active');
   else if(mode==='concentrated') document.getElementById('filterConcentrated').classList.add('active');
+  else if(mode==='placement') document.getElementById('filterPlacement').classList.add('active');
+  else if(mode==='rights') document.getElementById('filterRights').classList.add('active');
   applyFilters();
 }
 document.getElementById('filterAll').addEventListener('click',()=>setFilter('all'));
 document.getElementById('filterUp').addEventListener('click',()=>setFilter('up'));
 document.getElementById('filterDn').addEventListener('click',()=>setFilter('dn'));
 document.getElementById('filterConcentrated').addEventListener('click',()=>setFilter('concentrated'));
+document.getElementById('filterPlacement').addEventListener('click',()=>setFilter('placement'));
+document.getElementById('filterRights').addEventListener('click',()=>setFilter('rights'));
 document.getElementById('filterAll').classList.add('active');
 
 // --- main load ---
@@ -365,6 +397,21 @@ async function loadData(){
     allStocks=data.stocks||[];
     renderSummaryBar(data);
     applyFilters();
+    fetch(GAS_URL+'?format=json')
+      .then(r=>r.ok?r.json():null)
+      .then(d=>{
+        if(d&&d.groups){
+          d.groups.forEach(g=>{
+            const ct=g.corpTypes||{};
+            const code=String(g.code||"").padStart(5,"0");
+            signalMap.set(code,
+              {pl:ct.placement?.count>0, ri:ct.rights?.count>0,
+               inc:ct.increase?.count>0, bl:ct.block?.count>0});
+          });
+        }
+        renderSummaryBar(data);
+        applyFilters();
+      }).catch(()=>{});
     dot.className='dot';
     upd.textContent='更新於 '+data.updated;
   }catch(err){
