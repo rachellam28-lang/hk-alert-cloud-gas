@@ -55,6 +55,10 @@ th.sort-active{color:var(--primary)}.sort-icon{margin-left:4px;font-size:9px}
 .cell-price{width:90px;white-space:nowrap}.pv{font:600 13px "JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
 .cell-pills{min-width:200px}
 .spill{display:inline-flex;align-items:center;gap:4px;background:var(--primary-soft);color:#075985;border:1px solid var(--primary-border);font-size:11px;font-weight:600;padding:2px 9px;border-radius:999px;margin:1px 3px 1px 0;line-height:1.5;white-space:nowrap}
+.spill-poc{background:var(--violet-soft);color:var(--violet);border-color:var(--violet-border)}
+.spill-fvg{background:var(--up-soft);color:var(--up);border-color:var(--up-border)}
+.spill-yearopen{background:var(--amber-soft);color:var(--amber);border-color:var(--amber-border)}
+.spill-ipo{background:linear-gradient(135deg,var(--amber-soft),#fff7ed);color:#b45309;border-color:#fcd34d}
 .spill-date{font-size:10px;font-weight:500;opacity:.7;font-variant-numeric:tabular-nums}
 .splink{text-decoration:none}
 .cpillrow{margin-top:4px;display:flex;flex-wrap:wrap;gap:3px}
@@ -218,9 +222,15 @@ function renderRow(g, wl){
     chartHtml = `<a class="chartimg-link" href="${esc(g.chartImageUrl)}" target="_blank" rel="noopener"><img class="chartimg" src="${esc(g.chartImageUrl)}" alt="${cap}" loading="lazy" width="140" height="60" referrerpolicy="no-referrer" onerror="this.onerror=null;this.parentNode.outerHTML='<span class=\\'nochart\\'>—</span>'"></a>`;
   }
 
+  function sigType(lbl){
+    if(lbl.indexOf('POC')>=0)return'poc';if(lbl.indexOf('FVG')>=0)return'fvg';
+    if(lbl.indexOf('年開')>=0)return'yearopen';if(lbl.indexOf('IPO')>=0)return'ipo';
+    return'';
+  }
   const sigPills = (g.signals||[]).slice(0,4).map(s=>{
     const dateStr = s.date ? '<span class="spill-date">'+fmtDate(s.date).slice(5)+'</span>' : '';
-    const body=`<span class="spill">${esc(s.label)}${dateStr}</span>`;
+    const t=sigType(s.label),cls='spill'+(t?' spill-'+t:'');
+    const body=`<span class="${cls}">${esc(s.label)}${dateStr}</span>`;
     return s.link?`<a class="splink" href="${esc(s.link)}" target="_blank" rel="noopener">${body}</a>`:body;
   }).join(' ');
 
