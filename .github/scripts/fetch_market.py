@@ -265,7 +265,8 @@ def fetch_breadth(tickers, label):
 
 # ── Main ──────────────────────────────────────────────────────────────────
 hsi   = yf_quote("^HSI", 0)
-spx   = yf_quote("^GSPC", 2)
+dow   = yf_quote("^DJI", 2)
+spx   = yf_quote("^GSPC", 2)   # kept for SPX/M2 ratio
 dxy   = yf_quote("DX-Y.NYB", 2)
 vix_d = yf_quote("^VIX", 2)
 vix_d["eval"] = vix_eval(vix_d["value"])
@@ -293,6 +294,7 @@ breadth_us = fetch_breadth(_US_TICKERS, "US")
 
 out = {
     "hsi":    hsi,
+    "dow":    dow,
     "spx":    spx,
     "dxy":    dxy,
     "vix":    vix_d,

@@ -491,10 +491,10 @@ function renderMarket(snap){
     const sub=(evBadge(ev)||avgHtml(avg5y))?`<span class="mchip-sub">${evBadge(ev)}${avgHtml(avg5y)}</span>`:'';
     return `<div class="mchip"><span class="mchip-label">${label}</span><span class="mchip-val${stale?' stale':''}">${valStr} ${chgHtml(chgPct)}</span>${sub}</div>`;
   }
-  const h=snap.hsi||{},s=snap.spx||{},d=snap.dxy||{},v=snap.vix||{},hp=snap.hsi_pe||{},sp=snap.spx_pe||{},sm=snap.spx_m2||{},fg=snap.fear_greed||{};
+  const h=snap.hsi||{},dow=snap.dow||{},d=snap.dxy||{},v=snap.vix||{},hp=snap.hsi_pe||{},sp=snap.spx_pe||{},sm=snap.spx_m2||{},fg=snap.fear_greed||{};
   bar.innerHTML=[
     chip('恒指', h.value, h.changePct, h.stale, 0),
-    chip('SPX', s.value, s.changePct, s.stale, 0),
+    chip('道指', d.value, d.changePct, d.stale, 0),
     chip('DXY', d.value, d.changePct, d.stale, 2),
     chip('VIX', v.value, v.changePct, v.stale, 2, v.eval),
     chip('港股P/E', hp.value, null, hp.stale, 2, hp.eval, hp.avg5y_mid),
