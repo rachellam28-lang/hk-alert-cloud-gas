@@ -747,7 +747,9 @@ document.addEventListener('keydown', e=>{if(e.key==='Escape')closeDrawer();});
 
 // --- sorting ---
 function sortBy(col){
-  if(sortCol===col)sortDir*=-1;else{sortCol=col;sortDir=col==='code'||col==='n'?1:-1;}
+  if(sortCol===col)sortDir*=-1;else{sortCol=col;sortDir=col==='code'||col==='n'?1:col==='sig'?1:-1;}
+  var db=document.getElementById('dirBtn');
+  if(db)db.textContent=sortDir===1?'↑':'↓';
   document.querySelectorAll('th.sortable').forEach(x=>{
     x.classList.remove('sort-active','sort-desc','sort-asc');
     x.querySelector('.sort-icon').textContent='';
