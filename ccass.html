@@ -237,8 +237,8 @@ tbody tr.ipo-highlight{background:linear-gradient(90deg,var(--amber-soft),transp
     <div class="summary-bar" id="summaryBar"></div>
     <div class="toolbar">
       <div class="toolbar-sect">
-        <input class="input search-in" id="searchInput" placeholder="搜尋代碼/名稱…" autocomplete="off">
-        <select class="input" id="sortSelect" style="font-size:12px">
+        <input class="input search-in" id="searchInput" placeholder="搜尋代碼/名稱…" autocomplete="off" oninput="searchVal=this.value;applyFilters();">
+        <select class="input" id="sortSelect" style="font-size:12px" onchange="sortCol=this.value;applyFilters();">
           <option value="d5">5日Δ</option>
           <option value="tp">CCASS%</option>
           <option value="t5">Top5%</option>
@@ -254,8 +254,8 @@ tbody tr.ipo-highlight{background:linear-gradient(90deg,var(--amber-soft),transp
           <option value="n">名稱</option>
           <option value="mc">市值</option>
         </select>
-        <button class="btn-ghost active" id="dirBtn" title="切換排序方向">↓</button>
-        <select class="input" id="sigFilter" style="font-size:12px">
+        <button class="btn-ghost active" id="dirBtn" title="切換排序方向" onclick="sortDir*=-1;this.textContent=sortDir===1?'↑':'↓';applyFilters();">↓</button>
+        <select class="input" id="sigFilter" style="font-size:12px" onchange="applyFilters();">
           <option value="all">所有信號</option>
           <option value="poc">POC</option>
           <option value="poc_half">半年POC</option>
@@ -274,15 +274,15 @@ tbody tr.ipo-highlight{background:linear-gradient(90deg,var(--amber-soft),transp
         <button class="btn-csv" onclick="ecsv()" title="匯出 CSV">📥 CSV</button>
       </div>
       <div class="toolbar-sect">
-        <button class="btn-ghost" id="filterAll">全部</button>
-        <button class="btn-ghost" id="filterUp">↑ 增持</button>
-        <button class="btn-ghost" id="filterDn">↓ 減持</button>
-        <button class="btn-ghost" id="filterConcentrated">高集中度</button>
-        <button class="btn-ghost" id="filterPlacement">配股</button>
-        <button class="btn-ghost" id="filterRights">供股</button>
-        <button class="btn-ghost" id="filterSmallMC">小市值</button>
-        <button class="btn-ghost" id="filterMidMC">中市值</button>
-        <button class="btn-ghost" id="filterLargeMC">大市值</button>
+        <button class="btn-ghost" id="filterAll" onclick="toggleFilter("all")">全部</button>
+        <button class="btn-ghost" id="filterUp" onclick="toggleFilter("up")">↑ 增持</button>
+        <button class="btn-ghost" id="filterDn" onclick="toggleFilter("dn")">↓ 減持</button>
+        <button class="btn-ghost" id="filterConcentrated" onclick="toggleFilter("concentrated")">高集中度</button>
+        <button class="btn-ghost" id="filterPlacement" onclick="toggleFilter("placement")">配股</button>
+        <button class="btn-ghost" id="filterRights" onclick="toggleFilter("rights")">供股</button>
+        <button class="btn-ghost" id="filterSmallMC" onclick="toggleFilter("small_mc")">小市值</button>
+        <button class="btn-ghost" id="filterMidMC" onclick="toggleFilter("mid_mc")">中市值</button>
+        <button class="btn-ghost" id="filterLargeMC" onclick="toggleFilter("large_mc")">大市值</button>
       </div>
     </div>
     <div style="overflow-x:auto">
@@ -750,20 +750,16 @@ function sortBy(col){
 }
 
 // --- toolbar ---
-document.getElementById('searchInput').addEventListener('input',()=>{
   searchVal=document.getElementById('searchInput').value;
   applyFilters();
 });
-document.getElementById('sortSelect').addEventListener('change',()=>{
   sortCol=document.getElementById('sortSelect').value;
   applyFilters();
 });
-document.getElementById('dirBtn').addEventListener('click',()=>{
   sortDir*=-1;
   document.getElementById('dirBtn').textContent=sortDir===1?'↑':'↓';
   applyFilters();
 });
-document.getElementById('sigFilter').addEventListener('change',()=>{applyFilters();});
 
 // --- filter buttons (multi-select) ---
 const FILTER_IDS={filterAll:'all',filterUp:'up',filterDn:'dn',filterConcentrated:'concentrated',filterPlacement:'placement',filterRights:'rights',filterSmallMC:'small_mc',filterMidMC:'mid_mc',filterLargeMC:'large_mc'};
@@ -786,9 +782,6 @@ function updateFilterUI(){
   });
 }
 
-Object.entries(FILTER_IDS).forEach(([id,m])=>{
-  document.getElementById(id).addEventListener('click',()=>toggleFilter(m));
-});
 
 // --- watchlist ---
 function loadWatchlist(){
