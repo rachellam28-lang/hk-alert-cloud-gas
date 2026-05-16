@@ -203,6 +203,40 @@ tbody tr.ipo-highlight{background:linear-gradient(90deg,var(--amber-soft),transp
 .spark-dot.dn{background:var(--down)}
 .btn-csv{appearance:none;background:var(--surface);border:1px solid var(--line);color:var(--text-soft);padding:5px 10px;border-radius:8px;font:500 12px inherit;cursor:pointer;white-space:nowrap}
 .btn-csv:hover{background:var(--up-soft);color:var(--up);border-color:var(--up-border)}
+/* Range filter inputs */
+.rf-group{display:flex;align-items:center;gap:4px}.rf-in{width:60px;padding:3px 5px;border:1px solid var(--line);border-radius:5px;background:var(--surface);color:var(--text);font:11px monospace;text-align:center;outline:none}.rf-in:focus{border-color:var(--primary)}.rf-lbl{font-size:10px;color:var(--mute);font-weight:600}.rf-sep{font-size:10px;color:var(--mute-2)}
+/* Column toggle panel */
+.col-toggle{position:relative;display:inline-block}
+.col-toggle-btn{appearance:none;background:var(--surface);border:1px solid var(--line);color:var(--text-soft);padding:3px 8px;border-radius:6px;font:500 11px inherit;cursor:pointer}
+.col-toggle-btn:hover{border-color:var(--primary)}
+.col-toggle-panel{display:none;position:absolute;top:100%;right:0;z-index:20;background:var(--surface);border:1px solid var(--line);border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.1);padding:8px;min-width:140px;margin-top:4px}
+.col-toggle-panel.open{display:block}
+.col-toggle-panel label{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-soft);padding:3px 4px;cursor:pointer;border-radius:4px}
+.col-toggle-panel label:hover{background:var(--surface-soft)}
+.col-toggle-panel input[type=checkbox]{accent-color:var(--primary)}
+/* Filter presets */
+.preset-group{display:flex;gap:4px;flex-wrap:wrap}
+.preset-btn{appearance:none;background:var(--surface-soft);border:1px solid var(--line);color:var(--text-soft);padding:2px 8px;border-radius:5px;font:500 10px inherit;cursor:pointer;white-space:nowrap}
+.preset-btn:hover{background:var(--primary-soft);color:var(--primary);border-color:var(--primary-border)}
+.preset-btn.active{background:var(--primary-soft);color:var(--primary);border-color:var(--primary)}
+.preset-save{appearance:none;background:none;border:none;color:var(--primary);cursor:pointer;font:600 11px inherit;padding:2px 4px}
+/* Sort indicator for secondary sort */
+.sort-info{font-size:10px;color:var(--mute);display:inline-flex;align-items:center;gap:3px;margin-left:6px}
+.sort-info b{color:var(--text-soft);font-weight:600}
+.sort-info .si-sep{color:var(--mute-2);margin:0 2px}
+/* Row highlighting */
+tr.hl-signal{background:linear-gradient(90deg,rgba(168,85,247,.06),transparent)!important}
+tr.hl-up{background:linear-gradient(90deg,rgba(34,197,94,.06),transparent)!important}
+tr.hl-dn{background:linear-gradient(90deg,rgba(239,68,68,.06),transparent)!important}
+tr.hl-conc{outline:2px solid rgba(124,58,237,.3);outline-offset:-2px}
+tr.hl-ipo{background:linear-gradient(90deg,rgba(251,191,36,.08),transparent)!important}
+.hl-dot{margin-left:4px;font-size:9px}
+/* Second sort indicator on header */
+th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
+/* Advanced filters bar */
+.adv-filter-bar{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:6px 14px;border-bottom:1px solid var(--line-soft);background:var(--surface-soft)}
+.adv-filter-bar .rf-group+.rf-group{margin-left:4px;padding-left:6px;border-left:1px solid var(--line)}
+.adv-filter-bar .preset-group{margin-left:auto}
 
 </style>
 </head><body>
@@ -255,6 +289,7 @@ tbody tr.ipo-highlight{background:linear-gradient(90deg,var(--amber-soft),transp
           <option value="mc">市值</option>
         </select>
         <button class="btn-ghost active" id="dirBtn" title="切換排序方向" onclick="sortDir*=-1;this.textContent=sortDir===1?'↑':'↓';applyFilters();">↓</button>
+        <span id="sortInfo" class="sort-info"></span>
         <select class="input" id="sigFilter" style="font-size:12px" onchange="applyFilters();">
           <option value="all">所有信號</option>
           <option value="poc">POC</option>
@@ -271,6 +306,21 @@ tbody tr.ipo-highlight{background:linear-gradient(90deg,var(--amber-soft),transp
       </div>
       <div class="spacer"></div>
       <div class="toolbar-sect">
+        <div class="col-toggle">
+          <button class="col-toggle-btn" onclick="toggleColPanel()">📌 欄位</button>
+          <div class="col-toggle-panel" id="colPanel">
+            <label><input type="checkbox" data-col="price" checked onchange="toggleCol(this)"> 價格</label>
+            <label><input type="checkbox" data-col="sig" checked onchange="toggleCol(this)"> 信號</label>
+            <label><input type="checkbox" data-col="t5" checked onchange="toggleCol(this)"> Top5%</label>
+            <label><input type="checkbox" data-col="t10" checked onchange="toggleCol(this)"> Top10%</label>
+            <label><input type="checkbox" data-col="d20" checked onchange="toggleCol(this)"> 20日Δ</label>
+            <label><input type="checkbox" data-col="d60" checked onchange="toggleCol(this)"> 60日Δ</label>
+            <label><input type="checkbox" data-col="d120" checked onchange="toggleCol(this)"> 120日Δ</label>
+            <label><input type="checkbox" data-col="np" checked onchange="toggleCol(this)"> 參與者</label>
+            <label><input type="checkbox" data-col="mc" checked onchange="toggleCol(this)"> 市值</label>
+            <label><input type="checkbox" data-col="link" checked onchange="toggleCol(this)"> 連結</label>
+          </div>
+        </div>
         <button class="btn-csv" onclick="ecsv()" title="匯出 CSV">📥 CSV</button>
       </div>
       <div class="toolbar-sect">
@@ -285,22 +335,35 @@ tbody tr.ipo-highlight{background:linear-gradient(90deg,var(--amber-soft),transp
         <button class="btn-ghost" id="filterLargeMC" onclick="toggleFilter('large_mc')">大市值</button>
       </div>
     </div>
+    <div class="adv-filter-bar" id="advFilterBar">
+      <span class="rf-lbl">🔍 進階篩選</span>
+      <div class="rf-group"><span class="rf-lbl">CCASS%</span><input class="rf-in" id="rfTpMin" placeholder="30" oninput="applyFilters()"><span class="rf-sep">~</span><input class="rf-in" id="rfTpMax" placeholder="80" oninput="applyFilters()"></div>
+      <div class="rf-group"><span class="rf-lbl">5日Δ</span><input class="rf-in" id="rfD5Min" placeholder="-10" oninput="applyFilters()"><span class="rf-sep">~</span><input class="rf-in" id="rfD5Max" placeholder="10" oninput="applyFilters()"></div>
+      <div class="rf-group"><span class="rf-lbl">市值(億)</span><input class="rf-in" id="rfMcMin" oninput="applyFilters()"><span class="rf-sep">~</span><input class="rf-in" id="rfMcMax" oninput="applyFilters()"></div>
+      <div class="preset-group">
+        <span class="rf-lbl" style="margin-right:2px">📋</span>
+        <button class="preset-btn" onclick="loadPreset('signal')">信號突破</button>
+        <button class="preset-btn" onclick="loadPreset('placement')">配股預警</button>
+        <button class="preset-btn" onclick="loadPreset('mom')">高動能</button>
+        <button class="preset-save" onclick="savePreset()" title="儲存當前篩選為預設">+</button>
+      </div>
+    </div>
     <div style="overflow-x:auto">
       <table>
         <thead><tr>
-          <th class="sortable sort-active sort-desc" data-sort="code" onclick="sortBy('code')"><span>代碼</span><span class="sort-icon">▼</span></th>
-          <th class="sortable" data-sort="n" onclick="sortBy('n')"><span>名稱</span><span class="sort-icon"></span></th>
-          <th class="sortable th-price" data-sort="price" onclick="sortBy('price')"><span>價格</span><span class="sort-icon"></span></th>
-          <th class="sortable th-sig" data-sort="sig" onclick="sortBy('sig')"><span>信號</span><span class="sort-icon"></span></th>
-          <th class="sortable" data-sort="tp" onclick="sortBy('tp')"><span>CCASS%</span><span class="sort-icon"></span></th>
-          <th class="sortable th-t5" data-sort="t5" onclick="sortBy('t5')"><span>Top5%</span><span class="sort-icon"></span></th>
-          <th class="sortable th-t5" data-sort="t10" onclick="sortBy('t10')"><span>Top10%</span><span class="sort-icon"></span></th>
-          <th class="sortable" data-sort="d5" onclick="sortBy('d5')"><span>5日Δ</span><span class="sort-icon"></span></th>
-          <th class="sortable th-d20" data-sort="d20" onclick="sortBy('d20')"><span>20日Δ</span><span class="sort-icon"></span></th>
-          <th class="sortable th-d60" data-sort="d60" onclick="sortBy('d60')"><span>60日Δ</span><span class="sort-icon"></span></th>
-          <th class="sortable th-d120" data-sort="d120" onclick="sortBy('d120')"><span>120日Δ</span><span class="sort-icon"></span></th>
-          <th class="sortable th-np" data-sort="np" onclick="sortBy('np')"><span>參與者</span><span class="sort-icon"></span></th>
-          <th class="sortable th-mc" data-sort="mc" onclick="sortBy('mc')"><span>市值</span><span class="sort-icon"></span></th>
+          <th class="sortable sort-active sort-desc" data-sort="code" onclick="sortBy('code',event)"><span>代碼</span><span class="sort-icon">▼</span><span class="sort2-icon"></span></th>
+          <th class="sortable" data-sort="n" onclick="sortBy('n',event)"><span>名稱</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
+          <th class="sortable th-price" data-sort="price" onclick="sortBy('price',event)"><span>價格</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
+          <th class="sortable th-sig" data-sort="sig" onclick="sortBy('sig',event)"><span>信號</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
+          <th class="sortable" data-sort="tp" onclick="sortBy('tp',event)"><span>CCASS%</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
+          <th class="sortable th-t5" data-sort="t5" onclick="sortBy('t5',event)"><span>Top5%</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
+          <th class="sortable th-t5" data-sort="t10" onclick="sortBy('t10',event)"><span>Top10%</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
+          <th class="sortable" data-sort="d5" onclick="sortBy('d5',event)"><span>5日Δ</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
+          <th class="sortable th-d20" data-sort="d20" onclick="sortBy('d20',event)"><span>20日Δ</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
+          <th class="sortable th-d60" data-sort="d60" onclick="sortBy('d60',event)"><span>60日Δ</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
+          <th class="sortable th-d120" data-sort="d120" onclick="sortBy('d120',event)"><span>120日Δ</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
+          <th class="sortable th-np" data-sort="np" onclick="sortBy('np',event)"><span>參與者</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
+          <th class="sortable th-mc" data-sort="mc" onclick="sortBy('mc',event)"><span>市值</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="th-link"><span>連結</span></th>
         </tr></thead>
         <tbody id="tbody"></tbody>
@@ -393,6 +456,188 @@ let priceMap=new Map();
 let hkexLinkMap=new Map();
 let techSignalMap=new Map();
 const CORP_CACHE_KEY='hk_corp_signal_cache_v2';
+// --- new feature state ---
+let sortCol2='',sortDir2=1;
+let hiddenCols=new Set();
+let userPresets=JSON.parse(localStorage.getItem('ccass_presets')||'[]');
+const COL_NAMES={sig:'信號',t5:'Top5%',t10:'Top10%',d20:'20日Δ',d60:'60日Δ',d120:'120日Δ',np:'參與者',mc:'市值',link:'連結',price:'價格'};
+// --- multi-column sort helper ---
+function getSortVal(s,col){
+  if(col==='price')return priceMap.get(s.c)||0;
+  if(col==='sig'){
+    const sg=signalMap.get(s.c),ta=techSignalMap.get(s.c)||[];
+    const ca=sg?[sg.pl,sg.ri,sg.inc].filter(Boolean).length:0;
+    return ta.length+ca;
+  }
+  let v=s[col];
+  if(typeof v==='string')v=v.toLowerCase();
+  if(v==null)return sortDir===-1?-Infinity:Infinity;
+  return v;
+}
+function updateSortInfo(){
+  var el=document.getElementById('sortInfo');
+  if(!el)return;
+  var names={code:'代碼',n:'名稱',price:'價格',tp:'CCASS%',t5:'Top5%',t10:'Top10%',d5:'5日Δ',d20:'20日Δ',d60:'60日Δ',d120:'120日Δ',np:'參與者',mc:'市值',sig:'信號',su:'連續增持',sd:'連續減持'};
+  var p=names[sortCol]||sortCol,pa=sortDir===1?'▲':'▼';
+  if(sortCol2){var sn=names[sortCol2]||sortCol2,sa=sortDir2===1?'▲':'▼';el.innerHTML='<b>'+p+' '+pa+'</b><span class=\"si-sep\">|</span><span style=\"opacity:.7\">'+sn+' '+sa+'</span>';}
+  else el.innerHTML='<b>'+p+' '+pa+'</b>';
+}
+function getRF(id){var v=document.getElementById(id)?.value;return v===''||v==null?null:parseFloat(v);}
+// --- column visibility ---
+function toggleColPanel(){document.getElementById('colPanel').classList.toggle('open');}
+function toggleCol(cb){
+  var col=cb.dataset.col;
+  if(cb.checked){hiddenCols.delete(col);document.querySelectorAll('.hide-'+col).forEach(function(e){e.style.display='';});document.querySelectorAll('.th-'+col).forEach(function(e){e.style.display='';});}
+  else{hiddenCols.add(col);document.querySelectorAll('.hide-'+col).forEach(function(e){e.style.display='none';});document.querySelectorAll('.th-'+col).forEach(function(e){e.style.display='none';});}
+  try{localStorage.setItem('ccass_hidden',JSON.stringify(Array.from(hiddenCols)));}catch(e){}
+}
+function restoreColVisibility(){
+  try{
+    var saved=JSON.parse(localStorage.getItem('ccass_hidden')||'[]');
+    saved.forEach(function(col){
+      hiddenCols.add(col);
+      var cb=document.querySelector('#colPanel input[data-col=\"'+col+'\"]');
+      if(cb)cb.checked=false;
+      document.querySelectorAll('.hide-'+col).forEach(function(e){e.style.display='none';});
+      document.querySelectorAll('.th-'+col).forEach(function(e){e.style.display='none';});
+    });
+  }catch(e){}
+}
+// --- filter presets ---
+function savePreset(){
+  var name=prompt('為呢個篩選組合命名：');
+  if(!name)return;
+  var state={sortCol,sortDir,sortCol2,sortDir2,searchVal,activeFilters:Array.from(activeFilters),sigFilter:document.getElementById('sigFilter')?.value||'all',tpMin:getRF('rfTpMin'),tpMax:getRF('rfTpMax'),d5Min:getRF('rfD5Min'),d5Max:getRF('rfD5Max'),mcMin:getRF('rfMcMin'),mcMax:getRF('rfMcMax'),hidden:Array.from(hiddenCols)};
+  userPresets=userPresets.filter(function(p){return p.name!==name;});
+  userPresets.push({name,state});
+  if(userPresets.length>20)userPresets=userPresets.slice(-20);
+  try{localStorage.setItem('ccass_presets',JSON.stringify(userPresets));}catch(e){}
+  renderPresets();
+}
+function loadPreset(key){
+  var preset=presetData[key];if(!preset)return;
+  var s=preset.state;
+  if(s.sortCol){sortCol=s.sortCol;sortDir=s.sortDir;sortCol2=s.sortCol2||'';sortDir2=s.sortDir2||1;}
+  if(s.searchVal!==undefined){searchVal=s.searchVal;document.getElementById('searchInput').value=s.searchVal;}
+  if(s.activeFilters){activeFilters=new Set(s.activeFilters);updateFilterUI();}
+  if(s.sigFilter){var sf=document.getElementById('sigFilter');if(sf)sf.value=s.sigFilter;}
+  if(s.tpMin!==undefined){var e1=document.getElementById('rfTpMin');if(e1)e1.value=s.tpMin||'';}
+  if(s.tpMax!==undefined){var e2=document.getElementById('rfTpMax');if(e2)e2.value=s.tpMax||'';}
+  if(s.d5Min!==undefined){var e3=document.getElementById('rfD5Min');if(e3)e3.value=s.d5Min||'';}
+  if(s.d5Max!==undefined){var e4=document.getElementById('rfD5Max');if(e4)e4.value=s.d5Max||'';}
+  if(s.mcMin!==undefined){var e5=document.getElementById('rfMcMin');if(e5)e5.value=s.mcMin||'';}
+  if(s.mcMax!==undefined){var e6=document.getElementById('rfMcMax');if(e6)e6.value=s.mcMax||'';}
+  if(s.hidden){
+    hiddenCols=new Set(s.hidden);
+    document.querySelectorAll('#colPanel input[type=checkbox]').forEach(function(cb){
+      var col=cb.dataset.col;
+      if(s.hidden.indexOf(col)>=0){cb.checked=false;document.querySelectorAll('.hide-'+col+',.th-'+col).forEach(function(e){e.style.display='none';});}
+      else{cb.checked=true;document.querySelectorAll('.hide-'+col+',.th-'+col).forEach(function(e){e.style.display='';});}
+    });
+  }
+  // Sync sort dropdown & direction
+  var ss=document.getElementById('sortSelect');
+  if(ss){var matched=false;for(var i=0;i<ss.options.length;i++){if(ss.options[i].value===sortCol){ss.value=sortCol;matched=true;break;}}if(!matched)ss.value='';}
+  var db=document.getElementById('dirBtn');
+  if(db)db.textContent=sortDir===1?'↑':'↓';
+  applyFilters();
+}
+var presetData={signal:{name:'信號突破',state:{sortCol:'sig',sortDir:1,sortCol2:'d5',sortDir2:-1,searchVal:'',activeFilters:[],sigFilter:'all',tpMin:null,tpMax:null,d5Min:null,d5Max:null,mcMin:null,mcMax:null,hidden:[]}},placement:{name:'配股預警',state:{sortCol:'tp',sortDir:-1,sortCol2:'d5',sortDir2:-1,searchVal:'',activeFilters:['placement'],sigFilter:'all',tpMin:30,tpMax:null,d5Min:null,d5Max:null,mcMin:null,mcMax:null,hidden:[]}},mom:{name:'高動能',state:{sortCol:'d5',sortDir:-1,sortCol2:'mc',sortDir2:-1,searchVal:'',activeFilters:[],sigFilter:'all',tpMin:null,tpMax:null,d5Min:-20,d5Max:-5,mcMin:null,mcMax:null,hidden:[]}}};
+function renderPresets(){
+  var container=document.querySelector('.preset-group');
+  if(!container||!userPresets.length)return;
+  // Custom presets go after the default buttons
+  userPresets.forEach(function(p,i){
+    var existing=container.querySelector('.preset-custom-'+i);
+    if(!existing){
+      var btn=document.createElement('button');
+      btn.className='preset-btn preset-custom-'+i;
+      btn.textContent=p.name;
+      btn.onclick=function(){loadPresetCustom(i);};
+      container.insertBefore(btn,container.querySelector('.preset-save'));
+    }
+  });
+}
+function loadPresetCustom(i){
+  var p=userPresets[i];if(!p)return;
+  var s=p.state;
+  if(s.sortCol){sortCol=s.sortCol;sortDir=s.sortDir;sortCol2=s.sortCol2||'';sortDir2=s.sortDir2||1;}
+  if(s.searchVal!==undefined){searchVal=s.searchVal;document.getElementById('searchInput').value=s.searchVal;}
+  if(s.activeFilters){activeFilters=new Set(s.activeFilters);updateFilterUI();}
+  if(s.sigFilter){var sf=document.getElementById('sigFilter');if(sf)sf.value=s.sigFilter;}
+  if(s.tpMin!==undefined){var e1=document.getElementById('rfTpMin');if(e1)e1.value=s.tpMin||'';}
+  if(s.tpMax!==undefined){var e2=document.getElementById('rfTpMax');if(e2)e2.value=s.tpMax||'';}
+  if(s.d5Min!==undefined){var e3=document.getElementById('rfD5Min');if(e3)e3.value=s.d5Min||'';}
+  if(s.d5Max!==undefined){var e4=document.getElementById('rfD5Max');if(e4)e4.value=s.d5Max||'';}
+  if(s.mcMin!==undefined){var e5=document.getElementById('rfMcMin');if(e5)e5.value=s.mcMin||'';}
+  if(s.mcMax!==undefined){var e6=document.getElementById('rfMcMax');if(e6)e6.value=s.mcMax||'';}
+  if(s.hidden){
+    hiddenCols=new Set(s.hidden);
+    document.querySelectorAll('#colPanel input[type=checkbox]').forEach(function(cb){
+      var col=cb.dataset.col;
+      if(s.hidden.indexOf(col)>=0){cb.checked=false;document.querySelectorAll('.hide-'+col+',.th-'+col).forEach(function(e){e.style.display='none';});}
+      else{cb.checked=true;document.querySelectorAll('.hide-'+col+',.th-'+col).forEach(function(e){e.style.display='';});}
+    });
+  }
+  var ss=document.getElementById('sortSelect');
+  if(ss){var matched=false;for(var i2=0;i2<ss.options.length;i2++){if(ss.options[i2].value===sortCol){ss.value=sortCol;matched=true;break;}}if(!matched)ss.value='';}
+  var db=document.getElementById('dirBtn');
+  if(db)db.textContent=sortDir===1?'↑':'↓';
+  applyFilters();
+}
+// --- keyboard shortcuts ---
+document.addEventListener('keydown',function(e){
+  // Don't trigger when typing in inputs
+  if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT'||e.target.tagName==='TEXTAREA')return;
+  if(e.key==='r'||e.key==='R'){window.location.reload();return;}
+  if(e.key==='f'||e.key==='F'){e.preventDefault();document.getElementById('searchInput')?.focus();document.getElementById('searchInput')?.select();return;}
+  if(e.key==='ArrowLeft'){var pp=document.querySelector('#pagination button:first-child');if(pp&&!pp.disabled)pp.click();return;}
+  if(e.key==='ArrowRight'){var pn=document.querySelector('#pagination button:last-child');if(pn&&!pn.disabled)pn.click();return;}
+  if(e.key==='1'){toggleFilter('all');return;}
+  if(e.key==='2'){toggleFilter('up');return;}
+  if(e.key==='3'){toggleFilter('dn');return;}
+  if(e.key==='4'){toggleFilter('concentrated');return;}
+  if(e.key==='5'){toggleFilter('placement');return;}
+  if(e.key==='6'){toggleFilter('small_mc');return;}
+});
+// --- URL state persistence ---
+function encodeState(){
+  var p=new URLSearchParams();
+  if(sortCol!=='code')p.set('sort',sortCol);
+  if(sortDir!==-1)p.set('dir',sortDir);
+  if(sortCol2)p.set('s2',sortCol2);
+  if(searchVal)p.set('q',searchVal);
+  if(activeFilters.size){p.set('f',Array.from(activeFilters).join(','));}
+  var sf=document.getElementById('sigFilter')?.value;
+  if(sf&&sf!=='all')p.set('sig',sf);
+  var tpM=getRF('rfTpMin');if(tpM!=null)p.set('tpMin',tpM);
+  var tpX=getRF('rfTpMax');if(tpX!=null)p.set('tpMax',tpX);
+  var d5M=getRF('rfD5Min');if(d5M!=null)p.set('d5Min',d5M);
+  var d5X=getRF('rfD5Max');if(d5X!=null)p.set('d5Max',d5X);
+  var mM=getRF('rfMcMin');if(mM!=null)p.set('mcMin',mM);
+  var mX=getRF('rfMcMax');if(mX!=null)p.set('mcMax',mX);
+  var qs=p.toString();
+  if(qs){try{history.replaceState(null,'','?'+qs);}catch(e){}}
+}
+function decodeState(){
+  try{
+    var p=new URLSearchParams(window.location.search);
+    if(p.has('sort')){sortCol=p.get('sort');var ss=document.getElementById('sortSelect');if(ss){var matched=false;for(var i=0;i<ss.options.length;i++){if(ss.options[i].value===sortCol){ss.value=sortCol;matched=true;break;}}}}
+    if(p.has('dir'))sortDir=parseInt(p.get('dir'))||-1;
+    if(p.has('s2'))sortCol2=p.get('s2');
+    if(p.has('q')){searchVal=p.get('q');document.getElementById('searchInput').value=searchVal;}
+    if(p.has('f')){activeFilters=new Set(p.get('f').split(','));updateFilterUI();}
+    if(p.has('sig')){var sfe=document.getElementById('sigFilter');if(sfe)sfe.value=p.get('sig');}
+    if(p.has('tpMin')){var e=document.getElementById('rfTpMin');if(e)e.value=p.get('tpMin');}
+    if(p.has('tpMax')){var e=document.getElementById('rfTpMax');if(e)e.value=p.get('tpMax');}
+    if(p.has('d5Min')){var e=document.getElementById('rfD5Min');if(e)e.value=p.get('d5Min');}
+    if(p.has('d5Max')){var e=document.getElementById('rfD5Max');if(e)e.value=p.get('d5Max');}
+    if(p.has('mcMin')){var e=document.getElementById('rfMcMin');if(e)e.value=p.get('mcMin');}
+    if(p.has('mcMax')){var e=document.getElementById('rfMcMax');if(e)e.value=p.get('mcMax');}
+    var db=document.getElementById('dirBtn');
+    if(db)db.textContent=sortDir===1?'↑':'↓';
+  }catch(e){}
+}
 
 function extractDateFromLink(link){
   if(!link) return null;
@@ -507,7 +752,14 @@ function renderTable(){
     const linkHtml='<button class="btn-save'+(savedWl?' saved':'')+'" data-code="'+esc(s.c)+'" data-name="'+esc(s.n)+'" data-signal="" data-date="" title="加入自選">'+(savedWl?'★':'☆')+'</button>'+(hkexLnk?' <a class="lnk" href="'+esc(hkexLnk)+'" target="_blank" rel="noopener" title="HKEX 披露易">HKEX</a>':'');
 
     const ipoClass=hasIPO?' ipo-highlight':'';
-    return '<tr class="'+ipoClass+'" onclick="showDetail(\''+s.c+'\')">'
+    // Row highlighting
+    var hlClass='';
+    if(totalSigCount>0)hlClass+=' hl-signal';
+    if(s.d5!==null&&s.d5>2)hlClass+=' hl-up';
+    if(s.d5!==null&&s.d5<-2)hlClass+=' hl-dn';
+    if(s.tp>=80)hlClass+=' hl-conc';
+    if(hasIPO)hlClass+=' hl-ipo';
+    return '<tr class="'+ipoClass+hlClass+'" onclick="showDetail(\''+s.c+'\')">'
       +'<td><span class="code">'+esc(s.c)+'</span></td>'
       +'<td><span class="name" title="'+esc(s.n)+'">'+esc(s.n)+'</span></td>'
       +'<td class="hide-price">'+priceHtml+'</td>'
@@ -594,6 +846,10 @@ function gotoPage(p){
 function applyFilters(){
   const q=searchVal.toLowerCase().trim();
   const sigFilterVal=document.getElementById('sigFilter')?.value||'all';
+  // Read range filter values
+  var tpMin=getRF('rfTpMin'),tpMax=getRF('rfTpMax');
+  var d5Min=getRF('rfD5Min'),d5Max=getRF('rfD5Max');
+  var mcMin=getRF('rfMcMin'),mcMax=getRF('rfMcMax');
   filtered=allStocks.filter(s=>{
     if(q && !s.c.includes(q) && !s.n.toLowerCase().includes(q)) return false;
 
@@ -610,6 +866,14 @@ function applyFilters(){
         if(mode==='large_mc' && (s.mc===null || s.mc<100)) return false;
       }
     }
+
+    // Range filters
+    if(tpMin!=null && s.tp<tpMin) return false;
+    if(tpMax!=null && s.tp>tpMax) return false;
+    if(d5Min!=null && (s.d5==null||s.d5<d5Min)) return false;
+    if(d5Max!=null && (s.d5==null||s.d5>d5Max)) return false;
+    if(mcMin!=null && (s.mc==null||s.mc<mcMin)) return false;
+    if(mcMax!=null && (s.mc==null||s.mc>mcMax)) return false;
 
     // Signal type dropdown filter (AND with multi-select)
     if(sigFilterVal!=='all'){
@@ -631,33 +895,22 @@ function applyFilters(){
     }
     return true;
   });
-  // Sort
+  // Multi-column sort
   filtered.sort((a,b)=>{
-    let av=a[sortCol], bv=b[sortCol];
-    // Handle price sort from priceMap
-    if(sortCol==='price'){
-      av=priceMap.get(a.c)||0;
-      bv=priceMap.get(b.c)||0;
-    } else if(sortCol==='sig'){
-      // Sort by signal count (tech + corp signals)
-      const sigA=signalMap.get(a.c), sigB=signalMap.get(b.c);
-      const techA=techSignalMap.get(a.c)||[], techB=techSignalMap.get(b.c)||[];
-      const corpA=sigA?[sigA.pl,sigA.ri,sigA.inc].filter(Boolean).length:0;
-      const corpB=sigB?[sigB.pl,sigB.ri,sigB.inc].filter(Boolean).length:0;
-      av=techA.length+corpA;
-      bv=techB.length+corpB;
-      // If signal data not loaded yet (all zeros), keep original order by code desc
-      if(av===0 && bv===0 && techSignalMap.size===0){
-        av=a.code; bv=b.code; // fallback to code sort
-      }
-    } else {
-      if(typeof av==='string'){av=av.toLowerCase();bv=(bv||'').toLowerCase();}
-      if(av==null)av=sortDir===-1?-Infinity:Infinity;
-      if(bv==null)bv=sortDir===-1?-Infinity:Infinity;
+    // Primary sort
+    var va=getSortVal(a,sortCol),vb=getSortVal(b,sortCol);
+    var cmp=va<vb?sortDir:va>vb?-sortDir:0;
+    if(cmp!==0)return cmp;
+    // Secondary sort
+    if(sortCol2){
+      va=getSortVal(a,sortCol2);vb=getSortVal(b,sortCol2);
+      cmp=va<vb?sortDir2:va>vb?-sortDir2:0;
+      if(cmp!==0)return cmp;
     }
-    return av<bv?sortDir:av>bv?-sortDir:0;
+    return 0;
   });
   page=0;
+  encodeState();
   renderTable();
 }
 
@@ -750,8 +1003,21 @@ document.getElementById('drawerOverlay').addEventListener('click', closeDrawer);
 document.addEventListener('keydown', e=>{if(e.key==='Escape')closeDrawer();});
 
 // --- sorting ---
-function sortBy(col){
-  if(sortCol===col)sortDir*=-1;else{sortCol=col;sortDir=col==='code'||col==='n'?1:col==='sig'?1:-1;}
+function sortBy(col,ev){
+  var shift=ev&&ev.shiftKey;
+  if(shift&&col!==sortCol){
+    // Set secondary sort
+    if(sortCol2===col){sortDir2*=-1;sortCol2=col;}
+    else if(col===sortCol2){sortCol2='';}
+    else{sortCol2=col;sortDir2=col==='code'||col==='n'?1:-1;}
+    // Show secondary indicator on header
+    document.querySelectorAll('th.sortable .sort2-icon').forEach(function(e){e.textContent='';});
+    if(sortCol2){var th2=document.querySelector('th[data-sort="'+sortCol2+'"] .sort2-icon');if(th2)th2.textContent=sortDir2===1?'▲':'▼';}
+    updateSortInfo();
+    applyFilters();
+    return;
+  }
+  if(sortCol===col)sortDir*=-1;else{sortCol=col;sortDir=col==='code'||col==='n'?1:col==='sig'?1:-1;if(col!==sortCol2)sortCol2='';}
   var db=document.getElementById('dirBtn');
   if(db)db.textContent=sortDir===1?'↑':'↓';
   // Sync sortSelect dropdown
@@ -760,11 +1026,15 @@ function sortBy(col){
   document.querySelectorAll('th.sortable').forEach(function(x){
     x.classList.remove('sort-active','sort-desc','sort-asc');
     x.querySelector('.sort-icon').textContent='';
+    x.querySelector('.sort2-icon').textContent='';
   });
   var th=document.querySelector('th[data-sort="'+col+'"]');
   if(th){th.classList.add('sort-active',sortDir===1?'sort-asc':'sort-desc');th.querySelector('.sort-icon').textContent=sortDir===1?'▲':'▼';}
+  // Re-show secondary indicator
+  if(sortCol2){var th2=document.querySelector('th[data-sort="'+sortCol2+'"] .sort2-icon');if(th2)th2.textContent=sortDir2===1?'▲':'▼';}
   // If sorting by signal but GAS data not loaded yet, defer sort to GAS callback
   if(col==='sig'&&techSignalMap.size===0)return;
+  updateSortInfo();
   applyFilters();
 }
 
@@ -936,6 +1206,7 @@ async function loadData(){
     allStocks=data.stocks||[];
     renderSummaryBar(data);
     applyFilters();
+    updateSortInfo();
 
     // Fetch market.json
     fetch('./market.json?_='+Date.now())
@@ -1004,6 +1275,7 @@ async function loadData(){
         renderIPO();
         renderRecent(d?.recentCorps||[]);
         applyFilters();
+        updateSortInfo();
       }).catch(()=>{});
     dot.className='dot';
     upd.textContent='更新於 '+data.updated;
@@ -1014,6 +1286,13 @@ async function loadData(){
   }
 }
 loadData();
+// Init new features
+decodeState();
+restoreColVisibility();
+renderPresets();
+updateSortInfo();
+// Click outside column panel to close
+document.addEventListener('click',function(e){var p=document.getElementById('colPanel');if(p&&!e.target.closest('.col-toggle'))p.classList.remove('open');});
 
 // Auto-refresh every 10 minutes
 setTimeout(()=>{sessionStorage.setItem('ccassScroll',String(window.scrollY));location.reload();},600000);
