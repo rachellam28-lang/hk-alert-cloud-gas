@@ -646,6 +646,10 @@ function applyFilters(){
       const corpB=sigB?[sigB.pl,sigB.ri,sigB.inc].filter(Boolean).length:0;
       av=techA.length+corpA;
       bv=techB.length+corpB;
+      // If signal data not loaded yet (all zeros), keep original order by code desc
+      if(av===0 && bv===0 && techSignalMap.size===0){
+        av=a.code; bv=b.code; // fallback to code sort
+      }
     } else {
       if(typeof av==='string'){av=av.toLowerCase();bv=(bv||'').toLowerCase();}
       if(av==null)av=sortDir===-1?-Infinity:Infinity;
@@ -750,7 +754,10 @@ function sortBy(col){
   if(sortCol===col)sortDir*=-1;else{sortCol=col;sortDir=col==='code'||col==='n'?1:col==='sig'?1:-1;}
   var db=document.getElementById('dirBtn');
   if(db)db.textContent=sortDir===1?'↑':'↓';
-  document.querySelectorAll('th.sortable').forEach(x=>{
+  // Sync sortSelect dropdown (if column exists in dropdown options)
+  var ss=document.getElementById('sortSelect');
+  if(ss){var sv=false;for(var si=0;si<ss.options.length;si++){if(ss.options[si].value===col){ss.value=col;sv=true;break;}}if(!sv)ss.value='';}
+  document.querySelectorAll('th.sortable').forEach(function(x){
     x.classList.remove('sort-active','sort-desc','sort-asc');
     x.querySelector('.sort-icon').textContent='';
   });
