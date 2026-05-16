@@ -288,19 +288,19 @@ tbody tr.ipo-highlight{background:linear-gradient(90deg,var(--amber-soft),transp
     <div style="overflow-x:auto">
       <table>
         <thead><tr>
-          <th class="sortable sort-active sort-desc" data-sort="code"><span>代碼</span><span class="sort-icon">▼</span></th>
-          <th class="sortable" data-sort="n"><span>名稱</span><span class="sort-icon"></span></th>
-          <th class="sortable th-price" data-sort="price"><span>價格</span><span class="sort-icon"></span></th>
-          <th class="sortable th-sig" data-sort="sig"><span>信號</span><span class="sort-icon"></span></th>
-          <th class="sortable" data-sort="tp"><span>CCASS%</span><span class="sort-icon"></span></th>
-          <th class="sortable th-t5" data-sort="t5"><span>Top5%</span><span class="sort-icon"></span></th>
-          <th class="sortable th-t5" data-sort="t10"><span>Top10%</span><span class="sort-icon"></span></th>
-          <th class="sortable" data-sort="d5"><span>5日Δ</span><span class="sort-icon"></span></th>
-          <th class="sortable th-d20" data-sort="d20"><span>20日Δ</span><span class="sort-icon"></span></th>
-          <th class="sortable th-d60" data-sort="d60"><span>60日Δ</span><span class="sort-icon"></span></th>
-          <th class="sortable th-d120" data-sort="d120"><span>120日Δ</span><span class="sort-icon"></span></th>
-          <th class="sortable th-np" data-sort="np"><span>參與者</span><span class="sort-icon"></span></th>
-          <th class="sortable th-mc" data-sort="mc"><span>市值</span><span class="sort-icon"></span></th>
+          <th class="sortable sort-active sort-desc" data-sort="code" onclick="sortBy('code')"><span>代碼</span><span class="sort-icon">▼</span></th>
+          <th class="sortable" data-sort="n" onclick="sortBy('n')"><span>名稱</span><span class="sort-icon"></span></th>
+          <th class="sortable th-price" data-sort="price" onclick="sortBy('price')"><span>價格</span><span class="sort-icon"></span></th>
+          <th class="sortable th-sig" data-sort="sig" onclick="sortBy('sig')"><span>信號</span><span class="sort-icon"></span></th>
+          <th class="sortable" data-sort="tp" onclick="sortBy('tp')"><span>CCASS%</span><span class="sort-icon"></span></th>
+          <th class="sortable th-t5" data-sort="t5" onclick="sortBy('t5')"><span>Top5%</span><span class="sort-icon"></span></th>
+          <th class="sortable th-t5" data-sort="t10" onclick="sortBy('t10')"><span>Top10%</span><span class="sort-icon"></span></th>
+          <th class="sortable" data-sort="d5" onclick="sortBy('d5')"><span>5日Δ</span><span class="sort-icon"></span></th>
+          <th class="sortable th-d20" data-sort="d20" onclick="sortBy('d20')"><span>20日Δ</span><span class="sort-icon"></span></th>
+          <th class="sortable th-d60" data-sort="d60" onclick="sortBy('d60')"><span>60日Δ</span><span class="sort-icon"></span></th>
+          <th class="sortable th-d120" data-sort="d120" onclick="sortBy('d120')"><span>120日Δ</span><span class="sort-icon"></span></th>
+          <th class="sortable th-np" data-sort="np" onclick="sortBy('np')"><span>參與者</span><span class="sort-icon"></span></th>
+          <th class="sortable th-mc" data-sort="mc" onclick="sortBy('mc')"><span>市值</span><span class="sort-icon"></span></th>
           <th class="th-link"><span>連結</span></th>
         </tr></thead>
         <tbody id="tbody"></tbody>
@@ -738,19 +738,16 @@ document.getElementById('drawerOverlay').addEventListener('click', closeDrawer);
 document.addEventListener('keydown', e=>{if(e.key==='Escape')closeDrawer();});
 
 // --- sorting ---
-document.querySelectorAll('th.sortable').forEach(th=>{
-  th.addEventListener('click',()=>{
-    const col=th.dataset.sort;
-    if(sortCol===col)sortDir*=-1;else{sortCol=col;sortDir=col==='code'||col==='n'?1:-1;}
-    document.querySelectorAll('th.sortable').forEach(x=>{
-      x.classList.remove('sort-active','sort-desc','sort-asc');
-      x.querySelector('.sort-icon').textContent='';
-    });
-    th.classList.add('sort-active',sortDir===1?'sort-asc':'sort-desc');
-    th.querySelector('.sort-icon').textContent=sortDir===1?'▲':'▼';
-    applyFilters();
+function sortBy(col){
+  if(sortCol===col)sortDir*=-1;else{sortCol=col;sortDir=col==='code'||col==='n'?1:-1;}
+  document.querySelectorAll('th.sortable').forEach(x=>{
+    x.classList.remove('sort-active','sort-desc','sort-asc');
+    x.querySelector('.sort-icon').textContent='';
   });
-});
+  var th=document.querySelector('th[data-sort="'+col+'"]');
+  if(th){th.classList.add('sort-active',sortDir===1?'sort-asc':'sort-desc');th.querySelector('.sort-icon').textContent=sortDir===1?'▲':'▼';}
+  applyFilters();
+}
 
 // --- toolbar ---
 document.getElementById('searchInput').addEventListener('input',()=>{
