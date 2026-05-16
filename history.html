@@ -51,7 +51,6 @@ tbody tr:hover{background:var(--surface-soft)}
 .cpill-placement{background:var(--down-soft);color:var(--down);border-color:var(--down-border)}
 .cpill-increase{background:var(--up-soft);color:var(--up);border-color:var(--up-border)}
 .cpill-rights{background:var(--violet-soft);color:var(--violet);border-color:var(--violet-border)}
-.cpill-block{background:var(--amber-soft);color:var(--amber);border-color:var(--amber-border)}
 .cpill-other{background:var(--surface-soft);color:var(--mute);border-color:var(--line)}
 .time-cell{font:500 11px "JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;color:var(--mute);white-space:nowrap}
 .msg-cell{font-size:11px;color:var(--text-soft);max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -169,8 +168,7 @@ function pillHtml(a) {
     if (/配股|配售|認購/.test(blob))          cls = 'cpill cpill-placement';
     else if (/增持/.test(blob))               cls = 'cpill cpill-increase';
     else if (/供股|公開發售/.test(blob))       cls = 'cpill cpill-rights';
-    else if (/大手轉倉|大宗/.test(blob))       cls = 'cpill cpill-block';
-    else                                      cls = 'cpill cpill-other';
+        else                                      cls = 'cpill cpill-other';
   }
   const label = sig || cat || '訊號';
   return '<span class="' + cls + '">' + esc(label) + '</span>';

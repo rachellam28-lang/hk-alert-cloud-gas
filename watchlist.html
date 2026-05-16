@@ -156,7 +156,7 @@ function render(){
       +'<td><span class="spill">'+esc(item.signal||'訊號')+'</span></td>'
       +'<td class="date-col">'+esc(item.date||'—')+'</td>'
       +'<td><input class="note-in" value="'+esc(item.note||'')+'" placeholder="備注…" onchange="saveNote(\''+item.id+'\',this.value)" onblur="saveNote(\''+item.id+'\',this.value)"></td>'
-      +'<td><a class="lnk" href="'+tvUrl+'" target="_blank" rel="noopener">走勢圖</a></td>'
+      +'<td><a class="lnk" href="'+tvUrl+'" target="_blank" rel="noopener">📈 TV</a></td>'
       +'<td><button class="btn-del" onclick="del(\''+item.id+'\')">刪除</button></td>'
       +'</tr>';
   }).join('');

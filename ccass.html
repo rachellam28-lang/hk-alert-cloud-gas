@@ -49,7 +49,6 @@ tbody tr{cursor:pointer}
 .cpill-placement{background:var(--down-soft);color:var(--down);border-color:var(--down-border)}
 .cpill-rights{background:var(--violet-soft);color:var(--violet);border-color:var(--violet-border)}
 .cpill-increase{background:var(--up-soft);color:var(--up);border-color:var(--up-border)}
-.cpill-block{background:var(--amber-soft);color:var(--amber);border-color:var(--amber-border)}
 .cpill-other{background:var(--surface-soft);color:var(--mute);border-color:var(--line)}
 .foot{margin-top:24px;padding-top:14px;border-top:1px solid var(--line);text-align:center;color:var(--mute-2);font-size:11px}
 .mc-null{color:var(--mute-2);font-size:11px}
@@ -81,10 +80,6 @@ tbody tr{cursor:pointer}
 .loading-msg{text-align:center;padding:60px 20px;color:var(--mute);font-size:14px}
 /* Price column */
 .cell-price{width:90px;white-space:nowrap}.pv{font:600 13px "JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
-/* Chart column */
-.cell-chart{width:150px}.chartimg{display:block;width:140px;height:60px;object-fit:cover;border-radius:6px;border:1px solid var(--line-soft);background:#0b1220}
-.chartimg-link{display:block;line-height:0}.chartimg-link:hover .chartimg{border-color:var(--primary-border)}
-.nochart{font-size:10px;color:var(--mute-2)}
 /* Tech signal pills */
 .spill{display:inline-flex;align-items:center;gap:4px;background:var(--primary-soft);color:#075985;border:1px solid var(--primary-border);font-size:11px;font-weight:600;padding:2px 9px;border-radius:999px;margin:1px 3px 1px 0;line-height:1.5;white-space:nowrap}
 .spill-poc{background:var(--violet-soft);color:var(--violet);border-color:var(--violet-border)}
@@ -144,7 +139,6 @@ tbody tr{cursor:pointer}
 .section-toggle.collapsed .toggle-arrow{transform:rotate(-90deg)}
 .section-body{overflow:hidden;transition:height .2s ease}
 /* Responsive */
-@media(max-width:900px){.hide-chart,.th-chart{display:none}}
 @media(max-width:820px){.hide-t5,.th-t5{display:none}}
 @media(max-width:820px){.hide-sig,.th-sig{display:none}}
 @media(max-width:720px){.hide-np,.th-np{display:none}}
@@ -156,6 +150,32 @@ tbody tr{cursor:pointer}
 @media(max-width:560px){.hide-d120,.th-d120{display:none}}
 @media(max-width:480px){.hide-d60,.th-d60{display:none}}
 @media(max-width:360px){.hide-d20,.th-d20{display:none}.topbar-inner{padding:4px 6px;gap:4px}.brand-title{font-size:11px}.brand>a{font-size:9px!important;padding:1px 4px!important}.topright span:last-child{font-size:8px}}
+/* Streak badge in card header */
+.sc-streak{display:inline-flex;align-items:center;font-size:9px;font-weight:700;padding:1px 5px;border-radius:4px;margin-right:2px;line-height:1.3;flex-shrink:0}
+.sc-streak.up{background:var(--up-soft);color:var(--up);border:1px solid var(--up-border)}
+.sc-streak.dn{background:var(--down-soft);color:var(--down);border:1px solid var(--down-border)}
+/* Mobile card layout */
+.stock-cards{display:none;flex-direction:column;gap:6px;padding:0}
+.stock-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;cursor:pointer}
+.stock-card:hover{border-color:var(--primary-border);background:var(--surface-soft)}
+.stock-card.ipo-highlight{border-left:3px solid var(--amber);background:linear-gradient(90deg,var(--amber-soft),transparent 50%)}
+.sc-header{display:flex;align-items:center;justify-content:space-between;padding:6px 10px 3px;border-bottom:1px solid var(--line-soft);gap:5px}
+.sc-header .code{font-size:12px}.sc-header .name{font-size:11px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-soft)}
+.sc-header .btn-save{font-size:14px;padding:0 2px;flex-shrink:0}
+.sc-badge{display:inline-flex;align-items:center;padding:1px 6px;border-radius:999px;background:var(--primary-soft);color:var(--primary);border:1px solid var(--primary-border);font:600 10px inherit;line-height:1.4;flex-shrink:0}
+.sc-metrics{display:flex;gap:2px;padding:3px 8px;background:var(--surface)}
+.sc-metric{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:0;padding:2px 2px}
+.sc-metric-label{font-size:8px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.06em;line-height:1.3}
+.sc-metric-val{font:600 13px "JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;line-height:1.5}
+.sc-metric-val.up{color:var(--up)}.sc-metric-val.dn{color:var(--down)}.sc-metric-val.muted{color:var(--mute-2)}
+.sc-pills{padding:3px 8px 5px;display:flex;flex-wrap:wrap;gap:2px;border-top:1px solid var(--line-soft);background:var(--surface)}
+.sc-pills .cpill{font-size:9.5px;padding:1px 6px}
+.sc-pills .spill{font-size:10px;padding:1px 7px}
+@media(max-width:720px){table{display:none}.stock-cards{display:flex}}
+@media(max-width:375px){.stock-card{border-radius:8px}.sc-header{padding:4px 8px 2px}.sc-header .code{font-size:11px}.sc-header .name{font-size:10px}.sc-metrics{padding:2px 6px}.sc-metric-val{font-size:11px}.sc-metric-label{font-size:7px}.sc-pills{padding:2px 6px 4px}}
+/* IPO highlight for table rows */
+tbody tr.ipo-highlight{background:linear-gradient(90deg,var(--amber-soft),transparent 50%)!important;border-left:3px solid var(--amber)}
+
 @media(prefers-color-scheme:dark){:root{--bg:#0f172a;--surface:#1e293b;--surface-soft:#162032;--text:#f1f5f9;--text-soft:#cbd5e1;--mute:#64748b;--mute-2:#475569;--line:#334155;--line-soft:#1e293b;--primary:#38bdf8;--primary-soft:#0c2d44;--primary-border:#0369a1;--up:#4ade80;--up-soft:#052e16;--up-border:#166534;--down:#f87171;--down-soft:#2d0a0a;--down-border:#991b1b;--violet:#a78bfa;--violet-soft:#1e1040;--violet-border:#5b21b6;--amber:#fbbf24;--amber-soft:#1c0f00;--amber-border:#92400e}.topbar{background:rgba(15,23,42,.92)}}
 </style>
 </head><body>
@@ -211,9 +231,13 @@ tbody tr{cursor:pointer}
         <select class="input" id="sigFilter" style="font-size:12px">
           <option value="all">所有信號</option>
           <option value="poc">POC</option>
+          <option value="poc_half">半年POC</option>
+          <option value="poc3">半年+12月+3年POC</option>
           <option value="fvg">FVG</option>
           <option value="yearopen">年開突破</option>
           <option value="ipo">IPO首日</option>
+          <option value="ipo_high">IPO首日高突破</option>
+          <option value="ipo_open">IPO首日開突破</option>
           <option value="ccass_up">CCASS增持</option>
           <option value="ccass_dn">CCASS減持</option>
         </select>
@@ -237,7 +261,6 @@ tbody tr{cursor:pointer}
           <th class="sortable sort-active sort-desc" data-sort="code"><span>代碼</span><span class="sort-icon">▼</span></th>
           <th class="sortable" data-sort="n"><span>名稱</span><span class="sort-icon"></span></th>
           <th class="sortable th-price" data-sort="price"><span>價格</span><span class="sort-icon"></span></th>
-          <th class="th-chart"><span>走勢圖</span></th>
           <th class="sortable th-sig" data-sort="sig"><span>信號</span><span class="sort-icon"></span></th>
           <th class="sortable" data-sort="tp"><span>CCASS%</span><span class="sort-icon"></span></th>
           <th class="sortable th-t5" data-sort="t5"><span>Top5%</span><span class="sort-icon"></span></th>
@@ -254,6 +277,7 @@ tbody tr{cursor:pointer}
       </table>
     </div>
   </div>
+  <div class="stock-cards" id="stockCards"></div>
   <div id="pagination" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px"></div>
 
   <!-- Signal section -->
@@ -328,7 +352,6 @@ const PAGE_SIZE=200;
 const GAS_URL='https://script.google.com/macros/s/AKfycbxov_zEI5TvIp0Xg4ie937Rci_PEfFrUEyk7YH8RKVPz07i0RNS0fqkythLn-iErjVqZA/exec';
 let signalMap=new Map();
 let priceMap=new Map();
-let chartMap=new Map();
 let hkexLinkMap=new Map();
 let techSignalMap=new Map();
 const CORP_CACHE_KEY='hk_corp_signal_cache_v2';
@@ -415,8 +438,7 @@ function renderTable(){
       if(sig.pl) corpHtml+='<span class="cpill cpill-placement">配股'+(sig.plDate?' <em>'+sig.plDate.slice(5)+'</em>':'')+'</span>';
       if(sig.ri) corpHtml+='<span class="cpill cpill-rights">供股'+(sig.riDate?' <em>'+sig.riDate.slice(5)+'</em>':'')+'</span>';
       if(sig.inc) corpHtml+='<span class="cpill cpill-increase">增持</span>';
-      if(sig.bl) corpHtml+='<span class="cpill cpill-block">轉倉</span>';
-    }
+          }
 
     // Tech signal pills from GAS
     const techSig=techSignalMap.get(s.c)||[];
@@ -427,9 +449,14 @@ function renderTable(){
       return sig.link?'<a class="splink" href="'+esc(sig.link)+'" target="_blank" rel="noopener">'+body+'</a>':body;
     }).join(' ');
 
-    // Merged signal cell
+    // Signal count + IPO detection
+    const techCount=techSig.length;
+    const corpCount=sig?[sig.pl,sig.ri,sig.inc].filter(Boolean).length:0;
+    const totalSigCount=techCount+corpCount;
+    const hasIPO=techSig.some(x=>x.label&&x.label.indexOf('IPO首日')>=0);
+    const sigBadge=totalSigCount>0?'<span class="scnt" style="border-color:var(--primary-border);background:var(--primary-soft);color:var(--primary);margin-right:4px;font-size:10px">信號×'+totalSigCount+'</span> ':'';
     const mergedSig=(techHtml||'')+(corpHtml?'<div class="cpillrow">'+corpHtml+'</div>':'');
-    const sigDisplay=mergedSig||'<span class="mc-null">—</span>';
+    const sigDisplay=sigBadge+(mergedSig||'<span class="mc-null">—</span>');
 
     // Price
     const priceVal=priceMap.get(s.c);
@@ -437,23 +464,16 @@ function renderTable(){
       ? '<span class="pv">'+esc(priceVal<1?priceVal.toFixed(3):priceVal.toFixed(2))+'</span>'
       : '<span class="mc-null">—</span>';
 
-    // Chart
-    const chartUrl=chartMap.get(s.c);
-    let chartHtml='<span class="nochart">—</span>';
-    if(chartUrl){
-      chartHtml='<a class="chartimg-link" href="'+esc(chartUrl)+'" target="_blank" rel="noopener"><img class="chartimg" src="'+esc(chartUrl)+'" alt="'+esc(s.c)+'" loading="lazy" width="140" height="60" referrerpolicy="no-referrer" onerror="this.onerror=null;this.parentNode.outerHTML=\'<span class=&quot;nochart&quot;>—</span>\'"></a>';
-    }
-
-    // Watchlist + HKEX link
+// Watchlist + HKEX link
     const savedWl=wl.has(s.c);
     const hkexLnk=hkexLinkMap.get(s.c);
     const linkHtml='<button class="btn-save'+(savedWl?' saved':'')+'" data-code="'+esc(s.c)+'" data-name="'+esc(s.n)+'" data-signal="" data-date="" title="加入自選">'+(savedWl?'★':'☆')+'</button>'+(hkexLnk?' <a class="lnk" href="'+esc(hkexLnk)+'" target="_blank" rel="noopener" title="HKEX 披露易">HKEX</a>':'');
 
-    return '<tr onclick="showDetail(\''+s.c+'\')">'
+    const ipoClass=hasIPO?' ipo-highlight':'';
+    return '<tr class="'+ipoClass+'" onclick="showDetail(\''+s.c+'\')">'
       +'<td><span class="code">'+esc(s.c)+'</span></td>'
       +'<td><span class="name" title="'+esc(s.n)+'">'+esc(s.n)+'</span></td>'
       +'<td class="hide-price">'+priceHtml+'</td>'
-      +'<td class="hide-chart">'+chartHtml+'</td>'
       +'<td class="hide-sig cell-pills">'+sigDisplay+'</td>'
       +'<td><span class="num">'+s.tp.toFixed(2)+'%</span></td>'
       +'<td class="hide-t5"><span class="num">'+s.t5.toFixed(2)+'%</span></td>'
@@ -466,6 +486,53 @@ function renderTable(){
       +'<td class="hide-mc"><span class="num">'+fmtMC(s.mc)+'</span></td>'
       +'<td class="hide-link" onclick="event.stopPropagation()">'+linkHtml+'</td>'
       +'</tr>';
+  }).join('');
+
+  // Mobile cards (signal-focused compact layout)
+  const cardsContainer=document.getElementById('stockCards');
+  cardsContainer.innerHTML=slice.map(s=>{
+    const sig=signalMap.get(s.c);
+    let corpHtml='';
+    if(sig){
+      if(sig.pl) corpHtml+='<span class="cpill cpill-placement">配股'+(sig.plDate?' <em>'+sig.plDate.slice(5)+'</em>':'')+'</span>';
+      if(sig.ri) corpHtml+='<span class="cpill cpill-rights">供股'+(sig.riDate?' <em>'+sig.riDate.slice(5)+'</em>':'')+'</span>';
+      if(sig.inc) corpHtml+='<span class="cpill cpill-increase">增持</span>';
+          }
+    const techSig=techSignalMap.get(s.c)||[];
+    const techHtml=techSig.slice(0,4).map(ss=>{
+      const dateStr=ss.date?'<span class="spill-date">'+fmtDate(ss.date).slice(5)+'</span>':'';
+      const t=sigType(ss.label),cls='spill'+(t?' spill-'+t:'');
+      const body='<span class="'+cls+'">'+esc(ss.label)+dateStr+'</span>';
+      return ss.link?'<a class="splink" href="'+esc(ss.link)+'" target="_blank" rel="noopener">'+body+'</a>':body;
+    }).join(' ');
+    const sigPills=(techHtml||'')+(corpHtml?' '+corpHtml:'');
+    const techCount=techSig.length;
+    const corpCount=sig?[sig.pl,sig.ri,sig.inc].filter(Boolean).length:0;
+    const totalSigCount=techCount+corpCount;
+    const hasIPO=techSig.some(x=>x.label&&x.label.indexOf('IPO首日')>=0);
+    const priceVal=priceMap.get(s.c);
+    const priceStr=priceVal!=null?(priceVal<1?priceVal.toFixed(3):priceVal.toFixed(2)):null;
+    const saved=wl.has(s.c);
+    const d5class=s.d5!==null?(s.d5>0?'up':(s.d5<0?'dn':'muted')):'muted';
+    const d20class=s.d20!==null?(s.d20>0?'up':(s.d20<0?'dn':'muted')):'muted';
+    const ipoClass=hasIPO?' ipo-highlight':'';
+    return '<div class="stock-card'+ipoClass+'" onclick="showDetail(\''+s.c+'\')">'
+      +'<div class="sc-header">'
+        +'<span class="code">'+esc(s.c)+'</span>'
+        +(s.su>1?'<span class="sc-streak up">🔥'+s.su+'</span>':'')
+        +(s.sd>1?'<span class="sc-streak dn">❄️'+s.sd+'</span>':'')
+        +'<span class="name" title="'+esc(s.n)+'">'+esc(s.n)+'</span>'
+        +(totalSigCount>0?'<span class="sc-badge">'+totalSigCount+'</span>':'')
+        +'<button class="btn-save'+(saved?' saved':'')+'" data-code="'+esc(s.c)+'" data-name="'+esc(s.n)+'" data-signal="" data-date="" title="加入自選" onclick="event.stopPropagation()">'+(saved?'★':'☆')+'</button>'
+      +'</div>'
+      +'<div class="sc-metrics">'
+        +'<div class="sc-metric"><span class="sc-metric-label">價格</span><span class="sc-metric-val'+(priceStr?'':' muted')+'">'+(priceStr?esc(priceStr):'—')+'</span></div>'
+        +'<div class="sc-metric"><span class="sc-metric-label">CCASS</span><span class="sc-metric-val">'+s.tp.toFixed(1)+'%</span></div>'
+        +'<div class="sc-metric"><span class="sc-metric-label">5日Δ</span><span class="sc-metric-val '+d5class+'">'+(s.d5!=null?fmtPct(s.d5):'—')+'</span></div>'
+        +'<div class="sc-metric"><span class="sc-metric-label">20日Δ</span><span class="sc-metric-val '+d20class+'">'+(s.d20!=null?fmtPct(s.d20):'—')+'</span></div>'
+      +'</div>'
+      +(sigPills?'<div class="sc-pills">'+sigPills+'</div>':'')
+    +'</div>';
   }).join('');
 
   // Pagination
@@ -483,7 +550,8 @@ function gotoPage(p){
   const totalPages=Math.ceil(filtered.length/PAGE_SIZE);
   page=Math.max(0, Math.min(p, totalPages-1));
   renderTable();
-  document.getElementById('tbody').parentElement.scrollIntoView({behavior:'smooth',block:'start'});
+  const el=window.innerWidth<=720?document.getElementById('stockCards'):document.getElementById('tbody').parentElement;
+  if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 function applyFilters(){
@@ -513,9 +581,13 @@ function applyFilters(){
       const sm=signalMap.get(s.c);
       let sigOK=true;
       if(sigFilterVal==='poc') sigOK=sigText.indexOf('POC')>=0;
+      else if(sigFilterVal==='poc_half') sigOK=sigText.indexOf('半年POC')>=0;
+      else if(sigFilterVal==='poc3') sigOK=sigText.indexOf('3年POC')>=0;
       else if(sigFilterVal==='fvg') sigOK=sigText.indexOf('FVG')>=0;
       else if(sigFilterVal==='yearopen') sigOK=sigText.indexOf('年開突破')>=0;
       else if(sigFilterVal==='ipo') sigOK=sigText.indexOf('IPO首日')>=0;
+      else if(sigFilterVal==='ipo_high') sigOK=sigText.indexOf('IPO首日高突破')>=0;
+      else if(sigFilterVal==='ipo_open') sigOK=sigText.indexOf('IPO首日開突破')>=0;
       else if(sigFilterVal==='ccass_up') sigOK=sm&&s.d5!==null&&s.d5>0;
       else if(sigFilterVal==='ccass_dn') sigOK=sm&&s.d5!==null&&s.d5<0;
       if(!sigOK) return false;
@@ -580,8 +652,7 @@ async function showDetail(code){
     if(sig.pl) dsigHtml+='<span class="cpill cpill-placement">配股'+(sig.plDate?' <em>'+sig.plDate.slice(5)+'</em>':'')+'</span>';
     if(sig.ri) dsigHtml+='<span class="cpill cpill-rights">供股'+(sig.riDate?' <em>'+sig.riDate.slice(5)+'</em>':'')+'</span>';
     if(sig.inc) dsigHtml+='<span class="cpill cpill-increase">增持</span>';
-    if(sig.bl) dsigHtml+='<span class="cpill cpill-block">轉倉</span>';
-  }
+      }
 
   // Tech signal pills
   const techSig=techSignalMap.get(s.c)||[];
@@ -704,6 +775,13 @@ function saveToWatch(btn){
 }
 // Use capture phase so this fires before td onclick stopPropagation
 document.getElementById('tbody').addEventListener('click',e=>{
+  const btn=e.target.closest('.btn-save');if(!btn)return;
+  e.stopPropagation();
+  e.preventDefault();
+  saveToWatch(btn);
+}, true);
+// Card watchlist handler
+document.getElementById('stockCards').addEventListener('click',e=>{
   const btn=e.target.closest('.btn-save');if(!btn)return;
   e.stopPropagation();
   e.preventDefault();
@@ -840,7 +918,7 @@ async function loadData(){
           d.groups.forEach(g=>{
             const ct=g.corpTypes||{};
             const code=String(g.code||"").padStart(5,"0");
-            ['placement','rights','increase','block'].forEach(t=>{
+            ['placement','rights','increase'].forEach(t=>{
               if(ct[t]&&ct[t].link){
                 const date=extractDateFromLink(ct[t].link);
                 if(date){
@@ -857,7 +935,6 @@ async function loadData(){
           // Build signalMap from cache (fresh + historical within 9mo)
           signalMap.clear();
           priceMap.clear();
-          chartMap.clear();
           hkexLinkMap.clear();
           techSignalMap.clear();
           d.groups.forEach(g=>{
@@ -865,14 +942,11 @@ async function loadData(){
             const code=String(g.code||"").padStart(5,"0");
             const e=cache[code]||{};
             signalMap.set(code,{
-              pl:!!ct.placement,ri:!!ct.rights,inc:!!ct.increase,bl:!!ct.block,
-              plDate:e.placement?.date||null,riDate:e.rights?.date||null,
+              pl:!!ct.placement,ri:!!ct.rights,inc:!!ct.increase,              plDate:e.placement?.date||null,riDate:e.rights?.date||null,
               plCount:e.placement?.count||0,riCount:e.rights?.count||0,
-              incCount:e.increase?.count||0,blCount:e.block?.count||0,
-            });
+              incCount:e.increase?.count||0,            });
             // New Maps
             priceMap.set(code, g.latestPrice);
-            chartMap.set(code, g.chartImageUrl||'');
             hkexLinkMap.set(code, g.hkexLink||'');
             techSignalMap.set(code, g.signals||[]);
           });
@@ -881,11 +955,9 @@ async function loadData(){
             if(!signalMap.has(code)){
               const e=cache[code];
               signalMap.set(code,{
-                pl:!!e.placement,ri:!!e.rights,inc:!!e.increase,bl:!!e.block,
-                plDate:e.placement?.date||null,riDate:e.rights?.date||null,
+                pl:!!e.placement,ri:!!e.rights,inc:!!e.increase,                plDate:e.placement?.date||null,riDate:e.rights?.date||null,
                 plCount:e.placement?.count||0,riCount:e.rights?.count||0,
-                incCount:e.increase?.count||0,blCount:e.block?.count||0,
-              });
+                incCount:e.increase?.count||0,              });
             }
           });
           // Signal summary count

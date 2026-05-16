@@ -2,8 +2,9 @@ name: US Stock Scan
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "37 21 * * 1-5"   # 05:37 HKT next day (after US market close 4pm ET)
+  # schedule disabled per user request — manual trigger only
+  # schedule:
+  #   - cron: "37 21 * * 1-5"   # 05:37 HKT next day (after US market close 4pm ET)
 
 jobs:
   scan:
