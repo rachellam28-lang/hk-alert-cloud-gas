@@ -79,12 +79,82 @@ tbody tr{cursor:pointer}
 .hold-name{color:var(--text-soft);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
 .hold-shares{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:11px}
 .loading-msg{text-align:center;padding:60px 20px;color:var(--mute);font-size:14px}
+/* Price column */
+.cell-price{width:90px;white-space:nowrap}.pv{font:600 13px "JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+/* Chart column */
+.cell-chart{width:150px}.chartimg{display:block;width:140px;height:60px;object-fit:cover;border-radius:6px;border:1px solid var(--line-soft);background:#0b1220}
+.chartimg-link{display:block;line-height:0}.chartimg-link:hover .chartimg{border-color:var(--primary-border)}
+.nochart{font-size:10px;color:var(--mute-2)}
+/* Tech signal pills */
+.spill{display:inline-flex;align-items:center;gap:4px;background:var(--primary-soft);color:#075985;border:1px solid var(--primary-border);font-size:11px;font-weight:600;padding:2px 9px;border-radius:999px;margin:1px 3px 1px 0;line-height:1.5;white-space:nowrap}
+.spill-poc{background:var(--violet-soft);color:var(--violet);border-color:var(--violet-border)}
+.spill-fvg{background:var(--up-soft);color:var(--up);border-color:var(--up-border)}
+.spill-yearopen{background:var(--amber-soft);color:var(--amber);border-color:var(--amber-border)}
+.spill-ipo{background:linear-gradient(135deg,var(--amber-soft),#fff7ed);color:#b45309;border-color:#fcd34d}
+.spill-date{font-size:10px;font-weight:500;opacity:.7;font-variant-numeric:tabular-nums}
+.splink{text-decoration:none}
+.cpillrow{margin-top:4px;display:flex;flex-wrap:wrap;gap:3px}
+/* Watchlist star */
+.btn-save{appearance:none;background:transparent;border:none;cursor:pointer;font-size:14px;line-height:1;padding:2px 4px;color:var(--mute-2);transition:color .15s}
+.btn-save:hover{color:#f59e0b}.btn-save.saved{color:#f59e0b}
+/* Link column */
+.cell-link{font-size:12px;white-space:nowrap}
+.lnk{display:inline-flex;padding:3px 8px;border-radius:6px;border:1px solid var(--line);background:var(--surface);font:600 10px inherit;color:var(--text-soft);text-decoration:none}
+.lnk:hover{border-color:var(--violet-border);background:var(--violet-soft);color:var(--violet);text-decoration:none}
+/* Market indicator bar */
+.mbar{display:flex;gap:12px;flex-wrap:wrap;padding:8px 0 12px;margin-bottom:4px}
+.mchip{display:flex;flex-direction:column;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 16px;min-width:110px;flex:1;gap:3px}
+.mchip-label{font-size:10px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.12em}
+.mchip-val{font-size:17px;font-weight:700;color:var(--text);text-align:center}
+.mchip-val.stale{color:var(--mute)}
+.mchip-sub{font-size:9px;margin-top:1px;display:flex;align-items:center;gap:4px}
+.mchip-avg{color:var(--mute)}
+.ev-green{background:var(--up-soft);color:var(--up);border:1px solid var(--up-border);border-radius:4px;padding:1px 5px;font-weight:600}
+.ev-neutral{background:var(--surface-soft);color:var(--mute);border:1px solid var(--line);border-radius:4px;padding:1px 5px;font-weight:600}
+.ev-orange{background:var(--amber-soft);color:var(--amber);border:1px solid var(--amber-border);border-radius:4px;padding:1px 5px;font-weight:600}
+.ev-red{background:var(--down-soft);color:var(--down);border:1px solid var(--down-border);border-radius:4px;padding:1px 5px;font-weight:600}
+@media(max-width:520px){.mbar{display:flex;flex-wrap:nowrap;gap:4px}.mchip{padding:4px 3px;min-width:0;flex:1;gap:1px}.mchip-val{font-size:11px}.mchip-label{font-size:8px;letter-spacing:.06em}.mchip-sub{font-size:7px;gap:2px}}@media(max-width:400px){.mbar{gap:2px}.mchip{padding:2px 1px}.mchip-val{font-size:9px}.mchip-label{font-size:7px}.mchip-sub{font-size:6px}}
+/* Breadth card */
+.breadth-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:10px 14px;margin-bottom:12px}
+.breadth-head{font-size:10px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.14em;margin-bottom:8px}
+.breadth-row{display:flex;align-items:center;gap:10px;margin-bottom:6px}.breadth-row:last-child{margin-bottom:0}
+.breadth-lbl{font-size:11px;font-weight:600;color:var(--text-soft);width:28px;flex-shrink:0}
+.breadth-bar{flex:1;height:12px;border-radius:6px;overflow:hidden;display:flex;background:var(--surface-soft)}
+.bs-h{background:#16a34a}.bs-m{background:#94a3b8}.bs-l{background:#dc2626}
+.breadth-stats{font-size:10px;white-space:nowrap;display:flex;gap:5px}
+.bs-hi{color:#16a34a;font-weight:600}.bs-lo{color:#dc2626;font-weight:600}.bs-n{color:var(--mute-2)}
+/* IPO card */
+.ipo-card{margin-bottom:10px;background:var(--surface);border:1px solid var(--amber-border);border-radius:var(--radius);overflow:hidden}.ipo-head{display:flex;align-items:center;justify-content:space-between;padding:5px 14px 3px;font-size:11px;font-weight:700;color:var(--amber)}.ipo-count{font-size:10px;font-weight:600;color:var(--mute);background:var(--amber-soft);padding:1px 8px;border-radius:10px;border:1px solid var(--amber-border)}.ipo-tbl{width:100%;border-collapse:collapse;font-size:12px}.ipo-tbl th{text-align:left;padding:2px 10px;font-size:10px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.1em;border-top:1px solid var(--amber-border);background:rgba(251,191,36,.04)}.ipo-tbl td{padding:2px 10px;border-bottom:1px solid var(--line-soft)}.ipo-tbl tr:last-child td{border-bottom:none}.ipo-tbl a{color:var(--text);text-decoration:none;font-weight:600}.ipo-tbl a:hover{color:var(--amber)}.ipo-tbl .name{color:var(--text-soft);font-size:11px}.badge{display:inline-block;font-size:10px;font-weight:600;padding:1px 8px;border-radius:4px;line-height:1.5}.badge-high{background:var(--amber-soft);color:var(--amber);border:1px solid var(--amber-border)}.badge-open{background:var(--primary-soft);color:var(--primary);border:1px solid var(--primary-border)}
+/* Recent announcements */
+.recent-card{padding:2px 0}
+.ra-list{list-style:none;margin:0;padding:4px 10px;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:0}
+.ra-item{display:flex;align-items:center;gap:7px;padding:4px 4px;font-size:11.5px;border-bottom:1px solid var(--line-soft);min-width:0}
+.ra-item:last-child{border-bottom:none}.ra-label{flex:0 0 auto}
+.ra-date{flex:0 0 auto;font:600 11px "JetBrains Mono",ui-monospace,monospace;color:var(--text-soft);min-width:44px}
+.ra-stk{flex:1 1 auto;display:flex;align-items:baseline;gap:5px;min-width:0;overflow:hidden}
+.ra-code{font:600 11.5px "JetBrains Mono",ui-monospace,monospace}.ra-name{color:var(--mute);font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ra-link{flex:0 0 auto;display:inline-flex;padding:2px 6px;border-radius:5px;border:1px solid var(--violet-border);background:var(--violet-soft);color:var(--violet);font:600 9px inherit;text-decoration:none}
+/* Section toggle */
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:20px 0 10px}
+.section-head h2{margin:0;display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.16em}
+.ico{display:inline-flex;width:18px;height:18px;border-radius:6px;background:var(--primary-soft);color:var(--primary);align-items:center;justify-content:center}
+.section-toggle{appearance:none;background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:8px;padding:0;width:100%;text-align:left}
+.section-toggle h2{margin:0;display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.16em}
+.toggle-arrow{font-size:10px;color:var(--mute-2);transition:transform .2s;margin-left:4px}
+.section-toggle.collapsed .toggle-arrow{transform:rotate(-90deg)}
+.section-body{overflow:hidden;transition:height .2s ease}
 /* Responsive */
+@media(max-width:900px){.hide-chart,.th-chart{display:none}}
 @media(max-width:820px){.hide-t5,.th-t5{display:none}}
-@media(max-width:720px){.hide-np,.th-np{display:none}}
 @media(max-width:820px){.hide-sig,.th-sig{display:none}}
+@media(max-width:720px){.hide-np,.th-np{display:none}}
+@media(max-width:720px){.hide-price,.th-price{display:none}}
+@media(max-width:640px){.hide-mc,.th-mc{display:none}}
+@media(max-width:640px){.hide-link,.th-link{display:none}}
 @media(max-width:640px){.brand>a{font-size:11px!important;padding:2px 6px!important;margin-left:3px!important}.input.search-in{min-width:140px}}
-@media(max-width:520px){.hide-d20,.th-d20{display:none}.topbar-inner{padding:6px 10px;gap:8px}.brand{gap:6px;flex-shrink:0}.brand>a{font-size:10px!important;padding:1px 5px!important;margin-left:2px!important}.logo{display:none}.brand-title{font-size:12px;white-space:nowrap}.brand-sub{display:none}.topright{gap:3px;font-size:10px}.refresh-tag{display:none}}@media(max-width:400px){.topbar-inner{padding:4px 6px;gap:4px}.brand-title{font-size:11px}.brand>a{font-size:9px!important;padding:1px 4px!important}.topright span:last-child{font-size:8px}}@media(max-width:640px){.hide-mc,.th-mc{display:none}}
+@media(max-width:520px){.hide-d20,.th-d20{display:none}.topbar-inner{padding:6px 10px;gap:8px}.brand{gap:6px;flex-shrink:0}.brand>a{font-size:10px!important;padding:1px 5px!important;margin-left:2px!important}.logo{display:none}.brand-title{font-size:12px;white-space:nowrap}.brand-sub{display:none}.topright{gap:3px;font-size:10px}.refresh-tag{display:none}}
+@media(max-width:580px){.hide-d120,.th-d120{display:none}}
+@media(max-width:400px){.hide-d60,.th-d60{display:none}}@media(max-width:400px){.topbar-inner{padding:4px 6px;gap:4px}.brand-title{font-size:11px}.brand>a{font-size:9px!important;padding:1px 4px!important}.topright span:last-child{font-size:8px}}
 @media(prefers-color-scheme:dark){:root{--bg:#0f172a;--surface:#1e293b;--surface-soft:#162032;--text:#f1f5f9;--text-soft:#cbd5e1;--mute:#64748b;--mute-2:#475569;--line:#334155;--line-soft:#1e293b;--primary:#38bdf8;--primary-soft:#0c2d44;--primary-border:#0369a1;--up:#4ade80;--up-soft:#052e16;--up-border:#166534;--down:#f87171;--down-soft:#2d0a0a;--down-border:#991b1b;--violet:#a78bfa;--violet-soft:#1e1040;--violet-border:#5b21b6;--amber:#fbbf24;--amber-soft:#1c0f00;--amber-border:#92400e}.topbar{background:rgba(15,23,42,.92)}}
 </style>
 </head><body>
@@ -99,11 +169,22 @@ tbody tr{cursor:pointer}
   <div class="topright">
     <span class="dot loading" id="statusDot"></span>
     <span id="updatedAt">載入中…</span>
-    <span class="refresh-tag">📦 CCASS 數據</span>
+    <span class="refresh-tag">📦 CCASS 自動更新</span>
   </div>
 </div></header>
 
 <main class="wrap">
+  <div class="mbar" id="mbar"></div>
+  <div class="breadth-card" id="breadthCard" style="display:none"><div class="breadth-head">市場寬度 · 52周高低位分布</div><div id="breadthRows"></div></div>
+
+  <div id="ipoCard" class="ipo-card" style="display:none">
+    <div class="ipo-head"><span>🚀 IPO 首日突破</span><span class="ipo-count" id="ipoCount"></span></div>
+    <table class="ipo-tbl">
+      <thead><tr><th>代碼</th><th>類型</th></tr></thead>
+      <tbody id="ipoBody"></tbody>
+    </table>
+  </div>
+
   <div class="card">
     <div class="summary-bar" id="summaryBar"></div>
     <div class="toolbar">
@@ -117,11 +198,24 @@ tbody tr{cursor:pointer}
           <option value="np">參與者數</option>
           <option value="su">連續增持</option>
           <option value="sd">連續減持</option>
+          <option value="d20">20日Δ</option>
+          <option value="d60">60日Δ</option>
+          <option value="d120">120日Δ</option>
+          <option value="price">價格</option>
           <option value="code">代碼</option>
           <option value="n">名稱</option>
           <option value="mc">市值</option>
         </select>
         <button class="btn-ghost active" id="dirBtn" title="切換排序方向">↓</button>
+        <select class="input" id="sigFilter" style="font-size:12px">
+          <option value="all">所有信號</option>
+          <option value="poc">POC</option>
+          <option value="fvg">FVG</option>
+          <option value="yearopen">年開突破</option>
+          <option value="ipo">IPO首日</option>
+          <option value="ccass_up">CCASS增持</option>
+          <option value="ccass_dn">CCASS減持</option>
+        </select>
       </div>
       <div class="spacer"></div>
       <div class="toolbar-sect">
@@ -141,20 +235,49 @@ tbody tr{cursor:pointer}
         <thead><tr>
           <th class="sortable sort-active sort-desc" data-sort="code"><span>代碼</span><span class="sort-icon">▼</span></th>
           <th class="sortable" data-sort="n"><span>名稱</span><span class="sort-icon"></span></th>
+          <th class="sortable th-price" data-sort="price"><span>價格</span><span class="sort-icon"></span></th>
+          <th class="th-chart"><span>走勢圖</span></th>
           <th class="sortable th-sig" data-sort="sig"><span>信號</span><span class="sort-icon"></span></th>
           <th class="sortable" data-sort="tp"><span>CCASS%</span><span class="sort-icon"></span></th>
           <th class="sortable th-t5" data-sort="t5"><span>Top5%</span><span class="sort-icon"></span></th>
           <th class="sortable th-t5" data-sort="t10"><span>Top10%</span><span class="sort-icon"></span></th>
           <th class="sortable" data-sort="d5"><span>5日Δ</span><span class="sort-icon"></span></th>
           <th class="sortable th-d20" data-sort="d20"><span>20日Δ</span><span class="sort-icon"></span></th>
+          <th class="sortable th-d60" data-sort="d60"><span>60日Δ</span><span class="sort-icon"></span></th>
+          <th class="sortable th-d120" data-sort="d120"><span>120日Δ</span><span class="sort-icon"></span></th>
           <th class="sortable th-np" data-sort="np"><span>參與者</span><span class="sort-icon"></span></th>
           <th class="sortable th-mc" data-sort="mc"><span>市值</span><span class="sort-icon"></span></th>
+          <th class="th-link"><span>連結</span></th>
         </tr></thead>
         <tbody id="tbody"></tbody>
       </table>
     </div>
   </div>
   <div id="pagination" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px"></div>
+
+  <!-- Signal section -->
+  <div class="section-head">
+    <button class="section-toggle" onclick="toggleSection('signals',this)" id="toggle-signals">
+      <h2><span class="ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>訊號彙總</h2>
+      <span class="toggle-arrow">▼</span>
+    </button>
+  </div>
+  <div class="section-body" id="body-signals">
+    <div class="card" id="signalSummaryCard" style="padding:14px;font-size:12px;color:var(--mute);text-align:center">載入中…</div>
+  </div>
+
+  <!-- Recent announcements -->
+  <div class="section-head">
+    <button class="section-toggle" onclick="toggleSection('corps',this)" id="toggle-corps">
+      <h2><span class="ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-8-8 18-2-8-8-2z"/></svg></span>最近公告</h2>
+      <span class="toggle-arrow">▼</span>
+    </button>
+  </div>
+  <div class="section-body" id="body-corps">
+    <section class="card recent-card" id="recentWrap"><div class="loading-msg">載入中…</div></section>
+  </div>
+
+  <div class="foot">數據來源：HKEX CCASS · 自動更新 10分鐘 · 僅供參考</div>
 </main>
 
 <!-- Detail drawer -->
@@ -168,8 +291,6 @@ tbody tr{cursor:pointer}
     <div class="loading-msg">載入中…</div>
   </div>
 </div>
-
-<div class="foot">數據來源：HKEX CCASS · 僅供參考</div>
 
 <script>
 // --- helpers ---
@@ -186,6 +307,13 @@ function fmtMC(mc){
   if(mc>=100)return mc.toFixed(0)+'億';
   return mc.toFixed(1)+'億';
 }
+function sigType(lbl){
+  if(lbl.indexOf('POC')>=0)return'poc';if(lbl.indexOf('FVG')>=0)return'fvg';
+  if(lbl.indexOf('年開')>=0)return'yearopen';if(lbl.indexOf('IPO')>=0)return'ipo';
+  return '';
+}
+function fmtTime(s){if(!s)return'—';try{const d=new Date(s);if(isNaN(d))return String(s);const p=n=>n<10?'0'+n:''+n;return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes());}catch(e){return String(s);}}
+function fmtDate(s){if(!s)return'—';try{const d=new Date(s);if(isNaN(d))return String(s);const p=n=>n<10?'0'+n:''+n;return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate());}catch(e){return String(s);}}
 
 // --- state ---
 let allStocks=[];
@@ -198,6 +326,10 @@ let page=0;
 const PAGE_SIZE=200;
 const GAS_URL='https://script.google.com/macros/s/AKfycbxov_zEI5TvIp0Xg4ie937Rci_PEfFrUEyk7YH8RKVPz07i0RNS0fqkythLn-iErjVqZA/exec';
 let signalMap=new Map();
+let priceMap=new Map();
+let chartMap=new Map();
+let hkexLinkMap=new Map();
+let techSignalMap=new Map();
 const CORP_CACHE_KEY='hk_corp_signal_cache_v2';
 
 function extractDateFromLink(link){
@@ -223,6 +355,28 @@ function pruneCorpCache(){
   return cache;
 }
 
+// --- section toggle ---
+function toggleSection(id, btn) {
+  const body = document.getElementById('body-' + id);
+  const key = 'sec_collapsed_' + id;
+  const collapsed = body.style.display === 'none';
+  body.style.display = collapsed ? '' : 'none';
+  btn.classList.toggle('collapsed', !collapsed);
+  try { localStorage.setItem(key, collapsed ? '0' : '1'); } catch(e) {}
+}
+(function initSections() {
+  ['signals','corps'].forEach(function(id) {
+    try {
+      if (localStorage.getItem('sec_collapsed_' + id) === '1') {
+        const body = document.getElementById('body-' + id);
+        const btn = document.getElementById('toggle-' + id);
+        if (body) body.style.display = 'none';
+        if (btn) btn.classList.add('collapsed');
+      }
+    } catch(e) {}
+  });
+})();
+
 function renderSummaryBar(data){
   const bar=document.getElementById('summaryBar');
   const up=data.top_increase?.length||0;
@@ -244,32 +398,72 @@ function renderTable(){
   const start=page*PAGE_SIZE;
   const end=Math.min(start+PAGE_SIZE, filtered.length);
   const slice=filtered.slice(start, end);
+  const wl=loadWatchlist();
 
   tbody.innerHTML=slice.map(s=>{
-    const nameCls=s.n===s.c?'muted':''; // fallback if name equals code
     const streak=fmtStreak(s.su, s.sd);
     const d5=s.d5!==null?`<span class="num ${deltaClass(s.d5)}">${fmtPct(s.d5)}</span>`:'<span class="num delta-null">—</span>';
     const d20=s.d20!==null?`<span class="num ${deltaClass(s.d20)}">${fmtPct(s.d20)}</span>`:'<span class="num delta-null">—</span>';
+    const d60=s.d60!==null?`<span class="num ${deltaClass(s.d60)}">${fmtPct(s.d60)}</span>`:'<span class="num delta-null">—</span>';
+    const d120=s.d120!==null?`<span class="num ${deltaClass(s.d120)}">${fmtPct(s.d120)}</span>`:'<span class="num delta-null">—</span>';
+
+    // Corp signal pills
     const sig=signalMap.get(s.c);
-    let sigHtml='';
+    let corpHtml='';
     if(sig){
-      if(sig.pl) sigHtml+='<span class="cpill cpill-placement">配股'+(sig.plDate?' <em>'+sig.plDate.slice(5)+'</em>':'')+'</span>';
-      if(sig.ri) sigHtml+='<span class="cpill cpill-rights">供股'+(sig.riDate?' <em>'+sig.riDate.slice(5)+'</em>':'')+'</span>';
-      if(sig.inc) sigHtml+='<span class="cpill cpill-increase">增持</span>';
-      if(sig.bl) sigHtml+='<span class="cpill cpill-block">轉倉</span>';
+      if(sig.pl) corpHtml+='<span class="cpill cpill-placement">配股'+(sig.plDate?' <em>'+sig.plDate.slice(5)+'</em>':'')+'</span>';
+      if(sig.ri) corpHtml+='<span class="cpill cpill-rights">供股'+(sig.riDate?' <em>'+sig.riDate.slice(5)+'</em>':'')+'</span>';
+      if(sig.inc) corpHtml+='<span class="cpill cpill-increase">增持</span>';
+      if(sig.bl) corpHtml+='<span class="cpill cpill-block">轉倉</span>';
     }
-    const tpCls=s.tp>50?'':'';
+
+    // Tech signal pills from GAS
+    const techSig=techSignalMap.get(s.c)||[];
+    const techHtml=techSig.slice(0,4).map(sig=>{
+      const dateStr=sig.date?'<span class="spill-date">'+fmtDate(sig.date).slice(5)+'</span>':'';
+      const t=sigType(sig.label),cls='spill'+(t?' spill-'+t:'');
+      const body='<span class="'+cls+'">'+esc(sig.label)+dateStr+'</span>';
+      return sig.link?'<a class="splink" href="'+esc(sig.link)+'" target="_blank" rel="noopener">'+body+'</a>':body;
+    }).join(' ');
+
+    // Merged signal cell
+    const mergedSig=(techHtml||'')+(corpHtml?'<div class="cpillrow">'+corpHtml+'</div>':'');
+    const sigDisplay=mergedSig||'<span class="mc-null">—</span>';
+
+    // Price
+    const priceVal=priceMap.get(s.c);
+    const priceHtml=priceVal!=null
+      ? '<span class="pv">'+esc(priceVal<1?priceVal.toFixed(3):priceVal.toFixed(2))+'</span>'
+      : '<span class="mc-null">—</span>';
+
+    // Chart
+    const chartUrl=chartMap.get(s.c);
+    let chartHtml='<span class="nochart">—</span>';
+    if(chartUrl){
+      chartHtml='<a class="chartimg-link" href="'+esc(chartUrl)+'" target="_blank" rel="noopener"><img class="chartimg" src="'+esc(chartUrl)+'" alt="'+esc(s.c)+'" loading="lazy" width="140" height="60" referrerpolicy="no-referrer" onerror="this.onerror=null;this.parentNode.outerHTML=\'<span class=&quot;nochart&quot;>—</span>\'"></a>';
+    }
+
+    // Watchlist + HKEX link
+    const savedWl=wl.has(s.c);
+    const hkexLnk=hkexLinkMap.get(s.c);
+    const linkHtml='<button class="btn-save'+(savedWl?' saved':'')+'" data-code="'+esc(s.c)+'" data-name="'+esc(s.n)+'" data-signal="" data-date="" title="加入自選">'+(savedWl?'★':'☆')+'</button>'+(hkexLnk?' <a class="lnk" href="'+esc(hkexLnk)+'" target="_blank" rel="noopener" title="HKEX 披露易">HKEX</a>':'');
+
     return '<tr onclick="showDetail(\''+s.c+'\')">'
       +'<td><span class="code">'+esc(s.c)+'</span></td>'
       +'<td><span class="name" title="'+esc(s.n)+'">'+esc(s.n)+'</span></td>'
-      +'<td class="hide-sig">'+sigHtml+'</td>'
+      +'<td class="hide-price">'+priceHtml+'</td>'
+      +'<td class="hide-chart">'+chartHtml+'</td>'
+      +'<td class="hide-sig cell-pills">'+sigDisplay+'</td>'
       +'<td><span class="num">'+s.tp.toFixed(2)+'%</span></td>'
       +'<td class="hide-t5"><span class="num">'+s.t5.toFixed(2)+'%</span></td>'
       +'<td class="hide-t5"><span class="num">'+s.t10.toFixed(2)+'%</span></td>'
       +'<td>'+d5+streak+'</td>'
       +'<td class="hide-d20">'+d20+'</td>'
+      +'<td class="hide-d60">'+d60+'</td>'
+      +'<td class="hide-d120">'+d120+'</td>'
       +'<td class="hide-np"><span class="num">'+s.np+'</span></td>'
       +'<td class="hide-mc"><span class="num">'+fmtMC(s.mc)+'</span></td>'
+      +'<td class="hide-link" onclick="event.stopPropagation()">'+linkHtml+'</td>'
       +'</tr>';
   }).join('');
 
@@ -293,27 +487,52 @@ function gotoPage(p){
 
 function applyFilters(){
   const q=searchVal.toLowerCase().trim();
+  const sigFilterVal=document.getElementById('sigFilter')?.value||'all';
   filtered=allStocks.filter(s=>{
     if(q && !s.c.includes(q) && !s.n.toLowerCase().includes(q)) return false;
-    if(activeFilters.size===0) return true;
-    for(const mode of activeFilters){
-      if(mode==='up' && (s.d5===null || s.d5<=0)) return false;
-      if(mode==='dn' && (s.d5===null || s.d5>=0)) return false;
-      if(mode==='concentrated' && s.t5<50) return false;
-      if(mode==='placement'){const sm=signalMap.get(s.c);if(!sm||!sm.pl)return false;}
-      if(mode==='rights'){const sm=signalMap.get(s.c);if(!sm||!sm.ri)return false;}
-      if(mode==='small_mc' && (s.mc===null || s.mc>=20)) return false;
-      if(mode==='mid_mc' && (s.mc===null || s.mc<20 || s.mc>=100)) return false;
-      if(mode==='large_mc' && (s.mc===null || s.mc<100)) return false;
+
+    // Multi-select AND-logic filters
+    if(activeFilters.size>0){
+      for(const mode of activeFilters){
+        if(mode==='up' && (s.d5===null || s.d5<=0)) return false;
+        if(mode==='dn' && (s.d5===null || s.d5>=0)) return false;
+        if(mode==='concentrated' && s.t5<50) return false;
+        if(mode==='placement'){const sm=signalMap.get(s.c);if(!sm||!sm.pl)return false;}
+        if(mode==='rights'){const sm=signalMap.get(s.c);if(!sm||!sm.ri)return false;}
+        if(mode==='small_mc' && (s.mc===null || s.mc>=20)) return false;
+        if(mode==='mid_mc' && (s.mc===null || s.mc<20 || s.mc>=100)) return false;
+        if(mode==='large_mc' && (s.mc===null || s.mc<100)) return false;
+      }
+    }
+
+    // Signal type dropdown filter (AND with multi-select)
+    if(sigFilterVal!=='all'){
+      const ts=techSignalMap.get(s.c)||[];
+      const sigText=ts.map(x=>x.label).join(' ');
+      const sm=signalMap.get(s.c);
+      let sigOK=true;
+      if(sigFilterVal==='poc') sigOK=sigText.indexOf('POC')>=0;
+      else if(sigFilterVal==='fvg') sigOK=sigText.indexOf('FVG')>=0;
+      else if(sigFilterVal==='yearopen') sigOK=sigText.indexOf('年開突破')>=0;
+      else if(sigFilterVal==='ipo') sigOK=sigText.indexOf('IPO首日')>=0;
+      else if(sigFilterVal==='ccass_up') sigOK=sm&&s.d5!==null&&s.d5>0;
+      else if(sigFilterVal==='ccass_dn') sigOK=sm&&s.d5!==null&&s.d5<0;
+      if(!sigOK) return false;
     }
     return true;
   });
   // Sort
   filtered.sort((a,b)=>{
     let av=a[sortCol], bv=b[sortCol];
-    if(typeof av==='string'){av=av.toLowerCase();bv=(bv||'').toLowerCase();}
-    if(av==null)av=sortDir===-1?-Infinity:Infinity;
-    if(bv==null)bv=sortDir===-1?-Infinity:Infinity;
+    // Handle price sort from priceMap
+    if(sortCol==='price'){
+      av=priceMap.get(a.c)||0;
+      bv=priceMap.get(b.c)||0;
+    } else {
+      if(typeof av==='string'){av=av.toLowerCase();bv=(bv||'').toLowerCase();}
+      if(av==null)av=sortDir===-1?-Infinity:Infinity;
+      if(bv==null)bv=sortDir===-1?-Infinity:Infinity;
+    }
     return av<bv?sortDir:av>bv?-sortDir:0;
   });
   page=0;
@@ -329,7 +548,6 @@ async function showDetail(code){
   document.getElementById('drawerTitle').textContent=code;
   document.getElementById('drawerBody').innerHTML='<div class="loading-msg">載入中…</div>';
 
-  // Find stock in our data
   const s=allStocks.find(x=>x.c===code);
   if(!s){
     document.getElementById('drawerBody').innerHTML='<div class="empty">找不到該股票資料</div>';
@@ -341,8 +559,20 @@ async function showDetail(code){
   // Meta cards
   const d5html=s.d5!==null?`<span class="dmeta-val ${s.d5>0?'up':'dn'}">${fmtPct(s.d5)}</span><span class="dmeta-sub">5日變化</span>`:'<span class="dmeta-val delta-null">—</span><span class="dmeta-sub">5日變化</span>';
   const d20html=s.d20!==null?`<span class="dmeta-val ${s.d20>0?'up':'dn'}">${fmtPct(s.d20)}</span><span class="dmeta-sub">20日變化</span>`:'<span class="dmeta-val delta-null">—</span><span class="dmeta-sub">20日變化</span>';
+	const d60html=s.d60!==null?`<span class="dmeta-val ${s.d60>0?'up':'dn'}">${fmtPct(s.d60)}</span><span class="dmeta-sub">60日變化</span>`:'<span class="dmeta-val delta-null">—</span><span class="dmeta-sub">60日變化</span>';
+	const d120html=s.d120!==null?`<span class="dmeta-val ${s.d120>0?'up':'dn'}">${fmtPct(s.d120)}</span><span class="dmeta-sub">120日變化</span>`:'<span class="dmeta-val delta-null">—</span><span class="dmeta-sub">120日變化</span>';
 
-  // Build signal HTML for drawer
+  // Price
+  const priceVal=priceMap.get(s.c);
+  const priceHtml=priceVal!=null
+    ? '<span style="font-size:18px;font-weight:700">$'+esc(priceVal<1?priceVal.toFixed(3):priceVal.toFixed(2))+'</span>'
+    : '<span style="color:var(--mute-2)">—</span>';
+
+  // HKEX link
+  const hkexLink=hkexLinkMap.get(s.c);
+  const hkexHtml=hkexLink?'<a class="lnk" href="'+esc(hkexLink)+'" target="_blank" rel="noopener">HKEX 披露易</a>':'';
+
+  // Corp signal pills
   const sig=signalMap.get(s.c);
   let dsigHtml='';
   if(sig){
@@ -352,10 +582,20 @@ async function showDetail(code){
     if(sig.bl) dsigHtml+='<span class="cpill cpill-block">轉倉</span>';
   }
 
+  // Tech signal pills
+  const techSig=techSignalMap.get(s.c)||[];
+  const techHtml=techSig.slice(0,4).map(sig=>{
+    const dateStr=sig.date?'<span class="spill-date">'+fmtDate(sig.date).slice(5)+'</span>':'';
+    const t=sigType(sig.label),cls='spill'+(t?' spill-'+t:'');
+    const body='<span class="'+cls+'">'+esc(sig.label)+dateStr+'</span>';
+    return sig.link?'<a class="splink" href="'+esc(sig.link)+'" target="_blank" rel="noopener">'+body+'</a>':body;
+  }).join(' ');
+
   document.getElementById('drawerBody').innerHTML=
     '<div class="drawer-meta">'
     +'<div class="dmeta"><span class="dmeta-label">CCASS%</span><span class="dmeta-val">'+s.tp.toFixed(2)+'%</span></div>'
     +'<div class="dmeta"><span class="dmeta-label">市值</span><span class="dmeta-val">'+fmtMC(s.mc)+'</span></div>'
+    +'<div class="dmeta"><span class="dmeta-label">價格</span><span class="dmeta-val" style="font-size:16px">'+priceHtml+'</span></div>'
     +'<div class="dmeta"><span class="dmeta-label">Top5%</span><span class="dmeta-val">'+s.t5.toFixed(2)+'%</span></div>'
     +'<div class="dmeta"><span class="dmeta-label">Top10%</span><span class="dmeta-val">'+s.t10.toFixed(2)+'%</span></div>'
     +'<div class="dmeta"><span class="dmeta-label">參與者</span><span class="dmeta-val">'+s.np+'</span></div>'
@@ -363,17 +603,16 @@ async function showDetail(code){
     +'<div class="drawer-meta">'
     +'<div class="dmeta">'+d5html+'</div>'
     +'<div class="dmeta">'+d20html+'</div>'
+	+'<div class="dmeta">'+d60html+'</div>'
+	+'<div class="dmeta">'+d120html+'</div>'
     +'<div class="dmeta">'+(s.su>1?'<span class="dmeta-val up">🔥 '+s.su+'日</span><span class="dmeta-sub">連續增持</span>':'<span class="dmeta-val" style="color:var(--mute-2)">—</span><span class="dmeta-sub">連續增持</span>')+'</div>'
     +'<div class="dmeta">'+(s.sd>1?'<span class="dmeta-val dn">❄️ '+s.sd+'日</span><span class="dmeta-sub">連續減持</span>':'<span class="dmeta-val" style="color:var(--mute-2)">—</span><span class="dmeta-sub">連續減持</span>')+'</div>'
     +'</div>'
-    +(dsigHtml?'<div class="drawer-meta"><div class="dmeta" style="flex-direction:row;gap:6px;flex-wrap:wrap;padding:8px 14px;min-width:100%"><span class="dmeta-label" style="width:100%">訊號</span>'+dsigHtml+'</div></div>':'')
+    +((dsigHtml||techHtml)?'<div class="drawer-meta"><div class="dmeta" style="flex-direction:row;gap:6px;flex-wrap:wrap;padding:8px 14px;min-width:100%"><span class="dmeta-label" style="width:100%">訊號</span>'+(techHtml||'')+dsigHtml+'</div></div>':'')
+    +(hkexHtml?'<div class="drawer-meta"><div class="dmeta" style="flex-direction:row;gap:6px;padding:8px 14px;min-width:100%">'+hkexHtml+'</div></div>':'')
     +'<div class="dsection"><div class="dsection-title">持倉分布</div>'
     +'<div id="holdingsTable"><div class="loading-msg" style="padding:20px">載入股東明細…</div></div></div>';
 
-  // Fetch holdings detail from DB via a small inline script? Can't from static.
-  // We'll embed participant summary from the JSON if available, or show a note.
-  // For now show top participants from the JSON data we have (none directly in ccass.json)
-  // Use a placeholder explanation
   document.getElementById('holdingsTable').innerHTML=
     '<div style="padding:12px 0;color:var(--mute);font-size:12px;text-align:center">'
     +'參與者明細數據只存於後端數據庫。每日 GitHub Actions 更新後可下載完整數據集。'
@@ -418,15 +657,14 @@ document.getElementById('dirBtn').addEventListener('click',()=>{
   document.getElementById('dirBtn').textContent=sortDir===1?'↑':'↓';
   applyFilters();
 });
+document.getElementById('sigFilter').addEventListener('change',()=>{applyFilters();});
 
 // --- filter buttons (multi-select) ---
 const FILTER_IDS={filterAll:'all',filterUp:'up',filterDn:'dn',filterConcentrated:'concentrated',filterPlacement:'placement',filterRights:'rights',filterSmallMC:'small_mc',filterMidMC:'mid_mc',filterLargeMC:'large_mc'};
 
 function toggleFilter(mode){
   if(mode==='all'){activeFilters.clear();updateFilterUI();applyFilters();return;}
-  // Toggle off if already active (return early so exclusivity cleanup doesn't interfere)
   if(activeFilters.has(mode)){activeFilters.delete(mode);updateFilterUI();applyFilters();return;}
-  // Mutual exclusivity groups — remove other modes in the same group
   if(mode==='up'||mode==='dn'){activeFilters.delete('up');activeFilters.delete('dn');}
   else if(mode==='small_mc'||mode==='mid_mc'||mode==='large_mc'){
     activeFilters.delete('small_mc');activeFilters.delete('mid_mc');activeFilters.delete('large_mc');}
@@ -446,6 +684,131 @@ Object.entries(FILTER_IDS).forEach(([id,m])=>{
   document.getElementById(id).addEventListener('click',()=>toggleFilter(m));
 });
 
+// --- watchlist ---
+function loadWatchlist(){
+  try{return new Set((JSON.parse(localStorage.getItem('hk_watchlist_v1')||'[]').map(x=>x.code)));}catch{return new Set();}
+}
+function saveToWatch(btn){
+  try{
+    const {code,name,signal,date}=btn.dataset;
+    const key='hk_watchlist_v1';
+    const items=JSON.parse(localStorage.getItem(key)||'[]');
+    const idx=items.findIndex(x=>x.code===code);
+    const entry={id:idx>=0?items[idx].id:Date.now(),code,name,signal,date,note:idx>=0?items[idx].note:''};
+    if(idx>=0)items[idx]=entry;else items.unshift(entry);
+    localStorage.setItem(key,JSON.stringify(items));
+    btn.textContent='★';btn.classList.add('saved');
+    setTimeout(()=>{if(btn.textContent==='★'){btn.textContent='☆';btn.classList.remove('saved');}},2000);
+  }catch(e){}
+}
+// Use capture phase so this fires before td onclick stopPropagation
+document.getElementById('tbody').addEventListener('click',e=>{
+  const btn=e.target.closest('.btn-save');if(!btn)return;
+  e.stopPropagation();
+  e.preventDefault();
+  saveToWatch(btn);
+}, true);
+
+// --- Market indicators ---
+function renderMarket(snap){
+  if(!snap) return;
+  const bar=document.getElementById('mbar');
+  if(!bar) return;
+  function fmtNum(v,d){return v==null?'—':Number(v).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});}
+  function chgHtml(pct){if(pct==null)return '';const s=pct>=0?'+':'';return '<span style="font-size:10px;color:'+(pct>=0?'var(--up)':'var(--down)')+'">'+s+pct.toFixed(2)+'%</span>';}
+  function evBadge(ev){if(!ev)return '';return '<span class="ev-'+ev.color+'">'+ev.label+'</span>';}
+  function avgHtml(avg){if(avg==null)return '';return '<span class="mchip-avg">均'+fmtNum(avg,2)+'</span>';}
+  function chip(label,val,chgPct,stale,dp,ev,avg5y){
+    const valStr=fmtNum(val,dp??2);
+    const sub=(evBadge(ev)||avgHtml(avg5y))?'<span class="mchip-sub">'+evBadge(ev)+avgHtml(avg5y)+'</span>':'';
+    return '<div class="mchip"><span class="mchip-label">'+label+'</span><span class="mchip-val'+(stale?' stale':'')+'">'+valStr+' '+chgHtml(chgPct)+'</span>'+sub+'</div>';
+  }
+  const h=snap.hsi||{},dow=snap.dow||{},d=snap.dxy||{},v=snap.vix||{},hp=snap.hsi_pe||{},sp=snap.spx_pe||{},sm=snap.spx_m2||{},fg=snap.fear_greed||{};
+  bar.innerHTML=[
+    chip('恒指', h.value, h.changePct, h.stale, 0),
+    chip('道指', dow.value, dow.changePct, dow.stale, 0),
+    chip('DXY', d.value, d.changePct, d.stale, 2),
+    chip('VIX', v.value, v.changePct, v.stale, 2, v.eval),
+    chip('港股P/E', hp.value, null, hp.stale, 2, hp.eval, hp.avg5y_mid),
+    chip('美股P/E', sp.value, null, sp.stale, 2, sp.eval, sp.avg5y_mid),
+    chip('SPX/M2', sm.value, null, sm.stale, 0, sm.eval),
+    chip('恐懼貪婪', fg.value, fg.changePct, fg.stale, 0, fg.eval),
+  ].join('');
+}
+function renderBreadth(snap){
+  const card=document.getElementById('breadthCard');
+  if(!card)return;
+  if(!snap||!snap.breadth){card.style.display='none';return;}
+  function row(lbl,b){
+    if(!b||!b.count)return '';
+    return '<div class="breadth-row">'
+      +'<span class="breadth-lbl">'+lbl+'</span>'
+      +'<span class="bs-hi" style="flex-shrink:0;font-size:10px">高'+b.high+'%</span>'
+      +'<div class="breadth-bar">'
+        +'<div class="bs-h" style="width:'+b.high+'%"></div>'
+        +'<div class="bs-m" style="width:'+b.mid+'%"></div>'
+        +'<div class="bs-l" style="width:'+b.low+'%"></div>'
+      +'</div>'
+      +'<span class="bs-lo" style="flex-shrink:0;font-size:10px">低'+b.low+'%</span>'
+      +'<span class="bs-n" style="font-size:10px">(n='+b.count+')</span>'
+    +'</div>';
+  }
+  const rows=row('港股',snap.breadth.hk)+row('美股',snap.breadth.us);
+  if(!rows){card.style.display='none';return;}
+  document.getElementById('breadthRows').innerHTML=rows;
+  card.style.display='';
+}
+
+// --- IPO section ---
+function renderIPO(){
+  const card=document.getElementById('ipoCard');
+  const body=document.getElementById('ipoBody');
+  const count=document.getElementById('ipoCount');
+  if(!card||!body)return;
+  const stocks={};
+  techSignalMap.forEach((signals,code)=>{
+    signals.forEach(function(s){
+      if(!s.label)return;
+      if(s.label.indexOf('IPO首日高突破')>=0){
+        if(!stocks[code]) stocks[code]={code,stock:allStocks.find(x=>x.c===code),badges:[]};
+        stocks[code].badges.push('high');
+      }else if(s.label.indexOf('IPO首日開突破')>=0){
+        if(!stocks[code]) stocks[code]={code,stock:allStocks.find(x=>x.c===code),badges:[]};
+        stocks[code].badges.push('open');
+      }
+    });
+  });
+  const codes=Object.keys(stocks);
+  if(!codes.length){card.style.display='none';return;}
+  body.innerHTML=codes.map(function(c){
+    const s=stocks[c];
+    const name=s.stock?esc(s.stock.n):'';
+    const badges=s.badges.map(function(t){
+      const cls=t==='high'?'badge badge-high':'badge badge-open';
+      return '<span class="'+cls+'">🚀'+(t==='high'?'高突破':'開突破')+'</span>';
+    }).join(' ');
+    return '<tr><td><span class="code">'+esc(c)+'</span>'+(name?'<div class="name">'+name+'</div>':'')+'</td>'
+      +'<td>'+badges+'</td></tr>';
+  }).join('');
+  count.textContent=codes.length+'股';
+  card.style.display='';
+}
+
+// --- Recent announcements ---
+function renderRecent(recentCorps){
+  if(!recentCorps||!recentCorps.length){
+    document.getElementById('recentWrap').innerHTML='<div style="padding:12px;color:var(--mute);text-align:center;font-size:12px">暫無公告</div>';
+    return;
+  }
+  const items = recentCorps.map(r=>{
+    const shortDate = r.date ? r.date.slice(5) : '—';
+    const codeBlock = r.code?'<span class="ra-code">'+esc(r.code)+'</span>'+(r.name?'<span class="ra-name">'+esc(r.name)+'</span>':''):'<span class="muted">—</span>';
+    const linkHtml = r.url?'<a class="ra-link" href="'+esc(r.url)+'" target="_blank" rel="noopener">HKEX</a>':'';
+    return '<li class="ra-item"><span class="ra-label"><span class="cpill cpill-'+r.type+'">'+esc(r.typeLabel||'公告')+'</span></span><span class="ra-date" title="'+esc(r.date||'')+'">'+esc(shortDate)+'</span><span class="ra-stk">'+codeBlock+'</span>'+linkHtml+'</li>';
+  }).join('');
+  document.getElementById('recentWrap').innerHTML = '<ul class="ra-list">'+items+'</ul>';
+}
+
 // --- main load ---
 async function loadData(){
   const dot=document.getElementById('statusDot');
@@ -459,6 +822,14 @@ async function loadData(){
     allStocks=data.stocks||[];
     renderSummaryBar(data);
     applyFilters();
+
+    // Fetch market.json
+    fetch('./market.json?_='+Date.now())
+      .then(r=>r.ok?r.json():null)
+      .then(m=>{renderMarket(m);renderBreadth(m);})
+      .catch(()=>{});
+
+    // Fetch GAS
     fetch(GAS_URL+'?format=json')
       .then(r=>r.ok?r.json():null)
       .then(d=>{
@@ -484,6 +855,10 @@ async function loadData(){
 
           // Build signalMap from cache (fresh + historical within 9mo)
           signalMap.clear();
+          priceMap.clear();
+          chartMap.clear();
+          hkexLinkMap.clear();
+          techSignalMap.clear();
           d.groups.forEach(g=>{
             const ct=g.corpTypes||{};
             const code=String(g.code||"").padStart(5,"0");
@@ -494,6 +869,11 @@ async function loadData(){
               plCount:e.placement?.count||0,riCount:e.rights?.count||0,
               incCount:e.increase?.count||0,blCount:e.block?.count||0,
             });
+            // New Maps
+            priceMap.set(code, g.latestPrice);
+            chartMap.set(code, g.chartImageUrl||'');
+            hkexLinkMap.set(code, g.hkexLink||'');
+            techSignalMap.set(code, g.signals||[]);
           });
           // Also add cache-only codes not in fresh GAS response
           Object.keys(cache).forEach(code=>{
@@ -507,8 +887,14 @@ async function loadData(){
               });
             }
           });
+          // Signal summary count
+          const techCodes=new Set(d.groups.filter(g=>(g.signals||[]).length>0).map(g=>String(g.code||"").padStart(5,"0")));
+          const card=document.getElementById('signalSummaryCard');
+          if(card) card.innerHTML='<span style="color:var(--text-soft)">技術信號: <b>'+techCodes.size+'</b> 隻股票</span>';
         }
         renderSummaryBar(data);
+        renderIPO();
+        renderRecent(d?.recentCorps||[]);
         applyFilters();
       }).catch(()=>{});
     dot.className='dot';
@@ -520,5 +906,12 @@ async function loadData(){
   }
 }
 loadData();
+
+// Auto-refresh every 10 minutes
+setTimeout(()=>{sessionStorage.setItem('ccassScroll',String(window.scrollY));location.reload();},600000);
+
+// Restore scroll position
+const saved=sessionStorage.getItem('ccassScroll');
+if(saved)window.scrollTo(0,parseInt(saved,10));
 </script>
 </body></html>

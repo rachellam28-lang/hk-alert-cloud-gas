@@ -281,3 +281,91 @@ def send_admin_alert(message: str) -> None:
     """系統錯誤通知 admin。"""
     admin = os.getenv("TELEGRAM_ADMIN_CHAT_ID") or os.getenv("TELEGRAM_CHAT_ID")
     send_telegram(f"🚨 <b>CCASS Tracker</b>\n{message}", chat_id=admin)
+
+
+# ── CCASS Events (Deposit / Transfer) ────────────────────────────────────────
+
+def format_event_alert(event: dict, stock_name: str = "") -> str:
+    """Format a deposit/transfer event for Telegram."""
+    code = event.get("stock_code", "?????")
+    name = stock_name or code
+    pct = event.get("pct", 0)
+    shares = event.get("shares", 0)
+
+    if event["event_type"] == "deposit":
+        return (
+            f"📦 <b>CCASS 存倉 (Deposit)</b>\n"
+            f"<b>{code}</b> {name}\n"
+            f"新增持倉: {pct:+.2f}%  ({shares:,} 股)"
+        )
+    elif event["event_type"] == "transfer":
+        broker_from = event.get("broker_from", "?")
+        broker_to = event.get("broker_to", "?")
+        return (
+            f"🔄 <b>CCASS 轉倉 (Transfer)</b>\n"
+            f"<b>{code}</b> {name}\n"
+            f"{broker_from} → {broker_to}\n"
+            f"轉倉: {pct:+.2f}%  ({shares:,} 股)"
+        )
+    return ""
+
+
+def send_event_alerts(
+    events: list[dict],
+    target_date: date,
+    throttle_seconds: float = 3.0,
+    max_per_batch: int = 20,
+) -> int:
+    """Send deposit/transfer event alerts and mark them as alerted.
+
+    Events should be dicts with keys:
+      stock_code, trade_date, event_type, pct, shares,
+      broker_from (transfer only), broker_to (transfer only)
+
+    Returns: number of alerts sent.
+    """
+    if not events:
+        return 0
+
+    sent_count = 0
+    to_send = events[:max_per_batch]
+    overflow = events[max_per_batch:]
+
+    for ev in to_send:
+        stock_name = ""
+        with get_conn() as conn:
+            row = conn.execute(
+                "SELECT stock_name FROM stock_universe WHERE stock_code = ?",
+                (ev["stock_code"],),
+            ).fetchone()
+            if row:
+                stock_name = row["stock_name"] or ""
+
+        text = format_event_alert(ev, stock_name)
+        if not text:
+            continue
+        if send_telegram(text):
+            _mark_event_alerted(ev)
+            sent_count += 1
+        time.sleep(throttle_seconds)
+
+    if overflow:
+        overflow_text = (
+            f"⚠️ 另外 {len(overflow)} 條 CCASS Event 未 send（batch cap）：\n"
+            + "\n".join(
+                f"• {e['stock_code']} {e['event_type']} {e['pct']:+.2f}%"
+                for e in overflow[:20]
+            )
+        )
+        send_telegram(overflow_text)
+
+    return sent_count
+
+
+def _mark_event_alerted(event: dict) -> None:
+    """Mark a ccass_events row as alerted=1."""
+    with get_conn() as conn:
+        conn.execute(
+            "UPDATE ccass_events SET alerted = 1 WHERE id = ?",
+            (event["id"],),
+        )

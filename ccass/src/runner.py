@@ -6,7 +6,8 @@ Workflow:
 3. Scrape 全部股票
 4. Compute trends
 5. Detect alerts → Telegram
-6. Log run metadata
+6. Detect CCASS events (deposit/transfer) → Telegram
+7. Log run metadata
 """
 from __future__ import annotations
 
@@ -27,7 +28,14 @@ from src.trading_calendar import today_hk, is_trading_day, previous_trading_day
 from src.universe import refresh_universe, get_active_stocks
 from src.scraper import CCASSScraper, save_snapshot
 from src.trend import compute_trends_for_date
-from src.alerts import detect_alerts, send_alerts, send_admin_alert
+from src.alerts import detect_alerts, send_alerts, send_admin_alert, send_event_alerts
+
+# scanner/events_detector.py lives at project root (not inside ccass/),
+# so add project root to path for the import
+_PROJECT_ROOT = Path(__file__).parent.parent.parent
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))
+from scanner.events_detector import detect_events  # type: ignore[import-unused]
 
 logger = setup_logger("runner")
 CONFIG_PATH = Path(__file__).parent.parent / "config.yaml"
@@ -234,6 +242,21 @@ def run_daily(
             )
             logger.info("Sent %d alert(s)", sent)
 
+        # 5.5. CCASS Events (Deposit / Transfer)
+        try:
+            yesterday_date = previous_trading_day(query_date)
+            events_logged = _detect_and_log_events(query_date, yesterday_date)
+            if events_logged:
+                logger.info("Logged %d CCASS events (deposit/transfer)", len(events_logged))
+                if not skip_alerts:
+                    ev_sent = send_event_alerts(events_logged, query_date)
+                    logger.info("Sent %d event alert(s)", ev_sent)
+            else:
+                logger.info("No CCASS events detected")
+        except Exception as e:
+            logger.exception("Event detection failed")
+            send_admin_alert(f"Event detection 失敗: {e}")
+
         # 6. Run summary
         fail_rate = len(failed_stocks) / max(attempted, 1)
         if fail_rate > 0.05:
@@ -347,6 +370,7 @@ def _export_json(query_date: date, alerts_today: int) -> None:
         with get_conn() as conn:
             rows = conn.execute(
                 """SELECT t.stock_code, u.stock_name, t.delta_5d_pct, t.delta_20d_pct,
+                          t.delta_60d_pct, t.delta_120d_pct,
                           d.total_pct, d.top5_pct, d.top10_pct, d.num_participants,
                           t.consecutive_increase_days, t.consecutive_decrease_days
                    FROM ccass_trends t
@@ -368,6 +392,8 @@ def _export_json(query_date: date, alerts_today: int) -> None:
                 "t10": round(r["top10_pct"] or 0, 2),
                 "d5": round(r["delta_5d_pct"], 2) if r["delta_5d_pct"] is not None else None,
                 "d20": round(r["delta_20d_pct"] or 0, 2) if r["delta_20d_pct"] is not None else None,
+                "d60": round(r["delta_60d_pct"], 2) if r["delta_60d_pct"] is not None else None,
+                "d120": round(r["delta_120d_pct"], 2) if r["delta_120d_pct"] is not None else None,
                 "su": r["consecutive_increase_days"] or 0,
                 "sd": r["consecutive_decrease_days"] or 0,
                 "np": r["num_participants"] or 0,
@@ -378,6 +404,8 @@ def _export_json(query_date: date, alerts_today: int) -> None:
                 "name": r["stock_name"] or r["stock_code"],
                 "delta_5d": round(r["delta_5d_pct"], 2) if r["delta_5d_pct"] is not None else 0,
                 "delta_20d": round(r["delta_20d_pct"] or 0, 2) if r["delta_20d_pct"] is not None else 0,
+                "delta_60d": round(r["delta_60d_pct"], 2) if r["delta_60d_pct"] is not None else 0,
+                "delta_120d": round(r["delta_120d_pct"], 2) if r["delta_120d_pct"] is not None else 0,
                 "total_pct": round(r["total_pct"] or 0, 2),
                 "top5_pct": round(r["top5_pct"] or 0, 2),
                 "top10_pct": round(r["top10_pct"] or 0, 2),
@@ -471,6 +499,93 @@ def _post_movers_to_gas(
     for e in top_decrease:
         _post(e, "CCASS減持")
     logger.info("Posted %d CCASS signals to GAS", len(top_increase) + len(top_decrease))
+
+
+def _detect_and_log_events(t_date: date, y_date: date) -> list[dict]:
+    """Compare per-broker CCASS holdings between T and T-1 for all stocks.
+
+    Queries ccass_holdings in bulk, groups by stock in Python, runs
+    detect_events(), logs new events to ccass_events, and returns
+    the list of newly logged events (with DB ids) for alert dispatch.
+    """
+    t_str = t_date.strftime("%Y-%m-%d")
+    y_str = y_date.strftime("%Y-%m-%d")
+
+    # 1. Get total_shares for all stocks on T (for % calculation)
+    with get_conn() as conn:
+        shares_rows = conn.execute(
+            "SELECT stock_code, total_shares FROM ccass_daily WHERE trade_date = ?",
+            (t_str,),
+        ).fetchall()
+    shares_map = {r["stock_code"]: r["total_shares"] for r in shares_rows if r["total_shares"]}
+
+    # 2. Get ALL holdings for T and T-1 (bulk fetch)
+    with get_conn() as conn:
+        t_rows = conn.execute(
+            "SELECT stock_code, participant_id, shares FROM ccass_holdings WHERE trade_date = ?",
+            (t_str,),
+        ).fetchall()
+        y_rows = conn.execute(
+            "SELECT stock_code, participant_id, shares FROM ccass_holdings WHERE trade_date = ?",
+            (y_str,),
+        ).fetchall()
+
+    # 3. Group by stock_code
+    t_map: dict[str, dict[str, int]] = {}
+    for r in t_rows:
+        t_map.setdefault(r["stock_code"], {})[r["participant_id"]] = r["shares"]
+
+    y_map: dict[str, dict[str, int]] = {}
+    for r in y_rows:
+        y_map.setdefault(r["stock_code"], {})[r["participant_id"]] = r["shares"]
+
+    # Only process stocks that have data on BOTH days
+    common_codes = set(t_map.keys()) & set(y_map.keys())
+
+    new_events: list[dict] = []
+    now_iso = datetime.utcnow().isoformat()
+
+    for code in common_codes:
+        issued = shares_map.get(code)
+        if not issued or issued <= 0:
+            continue
+
+        events = detect_events(t_map[code], y_map[code], issued)
+        if not events:
+            continue
+
+        for ev in events:
+            broker_from = ev.get("from") if ev["type"] == "transfer" else None
+            broker_to = ev.get("to") if ev["type"] == "transfer" else None
+
+            with get_conn() as conn:
+                cur = conn.execute(
+                    """INSERT INTO ccass_events
+                         (stock_code, trade_date, event_type, broker_from, broker_to,
+                          pct, shares, detected_at, alerted)
+                       VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0)""",
+                    (code, t_str, ev["type"], broker_from, broker_to,
+                     ev["pct"], ev["shares"], now_iso),
+                )
+                ev_id = cur.lastrowid
+
+            new_events.append({
+                "id": ev_id,
+                "stock_code": code,
+                "trade_date": t_str,
+                "event_type": ev["type"],
+                "pct": ev["pct"],
+                "shares": ev["shares"],
+                "broker_from": broker_from,
+                "broker_to": broker_to,
+            })
+
+    if new_events:
+        logger.info(
+            "Detected %d CCASS events (deposit/transfer) across %d stocks",
+            len(new_events), len(common_codes),
+        )
+    return new_events
 
 
 def main():

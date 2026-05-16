@@ -32,14 +32,18 @@ CREATE INDEX IF NOT EXISTS idx_holdings_date ON ccass_holdings(trade_date);
 CREATE INDEX IF NOT EXISTS idx_holdings_participant ON ccass_holdings(participant_id);
 CREATE INDEX IF NOT EXISTS idx_holdings_stock_date ON ccass_holdings(stock_code, trade_date);
 
--- Trend cache：5日/20日 持倉變化
+-- Trend cache：5日/20日/60日/120日 持倉變化
 CREATE TABLE IF NOT EXISTS ccass_trends (
     stock_code TEXT NOT NULL,
     trade_date TEXT NOT NULL,
     delta_5d_pct REAL,
     delta_20d_pct REAL,
+    delta_60d_pct REAL,
+    delta_120d_pct REAL,
     delta_5d_shares INTEGER,
     delta_20d_shares INTEGER,
+    delta_60d_shares INTEGER,
+    delta_120d_shares INTEGER,
     consecutive_increase_days INTEGER,
     consecutive_decrease_days INTEGER,
     computed_at TEXT NOT NULL,
@@ -77,6 +81,23 @@ CREATE TABLE IF NOT EXISTS trading_calendar (
     is_trading_day INTEGER NOT NULL,
     description TEXT
 );
+
+-- CCASS Events (Deposit / Transfer) — dedup via PK + alerted flag
+CREATE TABLE IF NOT EXISTS ccass_events (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    stock_code TEXT NOT NULL,
+    trade_date TEXT NOT NULL,
+    event_type TEXT NOT NULL,           -- 'deposit' | 'transfer'
+    broker_from TEXT,                    -- for transfer: losing broker
+    broker_to TEXT,                      -- for transfer: gaining broker
+    pct REAL NOT NULL,                   -- % of issued shares
+    shares INTEGER NOT NULL,
+    detected_at TEXT NOT NULL,
+    alerted INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE INDEX IF NOT EXISTS idx_events_stock_trade ON ccass_events(stock_code, trade_date);
+CREATE INDEX IF NOT EXISTS idx_events_alerted ON ccass_events(alerted);
 
 -- Scrape run metadata
 CREATE TABLE IF NOT EXISTS scrape_runs (

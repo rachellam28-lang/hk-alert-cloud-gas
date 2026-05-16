@@ -20,17 +20,22 @@ HKEX_STOCK_LIST_URL = (
     "https://www.hkex.com.hk/eng/services/trading/securities/securitieslists/"
     "ListOfSecurities.xlsx"
 )
+HKEX_STOCK_LIST_CN_URL = (
+    "https://www.hkex.com.hk/chi/services/trading/securities/securitieslists/"
+    "ListOfSecurities_c.xlsx"
+)
 
 
 def fetch_all_hk_stocks_from_ccass() -> list[tuple[str, str]]:
     """
     Fallback: 從 CCASS query page 攞 dropdown stock list。
     回傳 [(stock_code_5digit, name), ...]
-    
+
     我哋實際上唔需要逐隻 hardcode。每日 scrape 時，
     HKEX CCASS 系統會接受任何 5 位 stock code，invalid 嘅返回空。
-    
+
     呢個 function 用 HKEX 嘅 stock list xlsx 作為 source of truth。
+    會攞埋中文版 xlsx 嚟顯示中文公司名。
     """
     logger.info("Fetching HKEX stock list from %s", HKEX_STOCK_LIST_URL)
     try:
@@ -43,7 +48,7 @@ def fetch_all_hk_stocks_from_ccass() -> list[tuple[str, str]]:
     # Parse xlsx — scan all sheets, pick the one with most stock codes
     import io
     from openpyxl import load_workbook
-    wb = load_workbook(io.BytesIO(resp.content), data_only=True)  # read_only skips rows past dimension tag
+    wb = load_workbook(io.BytesIO(resp.content), data_only=True)
     logger.info("Sheets in xlsx: %s", wb.sheetnames)
 
     best_stocks: list[tuple[str, str]] = []
@@ -53,13 +58,11 @@ def fetch_all_hk_stocks_from_ccass() -> list[tuple[str, str]]:
         row_count = 0
         for row in ws.iter_rows(values_only=True):
             row_count += 1
-            # Log first 5 rows so we can see actual xlsx structure
             if row_count <= 5:
                 logger.info("xlsx row %d: %s", row_count, [repr(c) for c in (row[:5] if row else [])])
             if not row or row[0] is None:
                 continue
             raw = row[0]
-            # Handle float (e.g. 1.0), int (1), or string ('00001')
             if isinstance(raw, float):
                 if raw != int(raw):
                     continue
@@ -67,27 +70,63 @@ def fetch_all_hk_stocks_from_ccass() -> list[tuple[str, str]]:
             if isinstance(raw, int):
                 if raw <= 0 or raw > 99999:
                     continue
-                first = str(raw)
+                code_str = str(raw)
             else:
-                first = str(raw).strip().lstrip("'")  # xlsx stores as "'00001'" with apostrophe
-                if first.endswith('.0'):
-                    first = first[:-2]
-            # Skip header rows (e.g. "Stock Code", "List of Securities")
-            if not first or not first[0].isdigit():
+                code_str = str(raw).strip().lstrip("'")
+                if code_str.endswith('.0'):
+                    code_str = code_str[:-2]
+            if not code_str or not code_str[0].isdigit():
                 continue
-            # Stock code: pure digits, length 1-5
-            if not (first.isdigit() and 1 <= len(first) <= 5):
+            if not (code_str.isdigit() and 1 <= len(code_str) <= 5):
                 continue
-            # Filter: Equity + REITs only (skip warrants DW CBBCs debt)
             category = str(row[2]).strip() if len(row) > 2 and row[2] else ""
             if category not in ("Equity", "Real Estate Investment Trusts", ""):
                 continue
-            code = first.zfill(5)
+            code = code_str.zfill(5)
             name = str(row[1]).strip() if len(row) > 1 and row[1] else ""
             stocks.append((code, name))
         logger.info("Sheet '%s': %d rows total, %d stocks found", sheet_name, row_count, len(stocks))
         if len(stocks) > len(best_stocks):
             best_stocks = stocks
+
+    # Fetch Chinese names from the Chinese xlsx
+    try:
+        cn_resp = requests.get(HKEX_STOCK_LIST_CN_URL, timeout=60)
+        cn_resp.raise_for_status()
+        cn_wb = load_workbook(io.BytesIO(cn_resp.content), data_only=True)
+        cn_sheet = cn_wb.active
+        cn_map: dict[str, str] = {}
+        for row in cn_sheet.iter_rows(values_only=True):
+            if not row or row[0] is None:
+                continue
+            raw = row[0]
+            if isinstance(raw, float):
+                if raw != int(raw):
+                    continue
+                raw = int(raw)
+            if isinstance(raw, int):
+                if raw <= 0 or raw > 99999:
+                    continue
+                c_code = str(raw).zfill(5)
+            else:
+                c_code = str(raw).strip().lstrip("'")
+                if c_code.endswith('.0'):
+                    c_code = c_code[:-2]
+                c_code = c_code.zfill(5)
+            if not c_code.isdigit() or len(c_code) != 5:
+                continue
+            cn_name = str(row[1]).strip() if len(row) > 1 and row[1] else ""
+            if cn_name and cn_name != "nan":
+                cn_map[c_code] = cn_name
+        # Overwrite English names with Chinese
+        merged = 0
+        for i, (code, en_name) in enumerate(best_stocks):
+            if code in cn_map:
+                best_stocks[i] = (code, cn_map[code])
+                merged += 1
+        logger.info("Merged %d/%d Chinese stock names", merged, len(best_stocks))
+    except Exception as e:
+        logger.warning("Chinese stock list fetch failed (English names kept): %s", e)
 
     logger.info("Found %d stocks total (best sheet)", len(best_stocks))
     return best_stocks
