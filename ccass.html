@@ -638,6 +638,14 @@ function applyFilters(){
     if(sortCol==='price'){
       av=priceMap.get(a.c)||0;
       bv=priceMap.get(b.c)||0;
+    } else if(sortCol==='sig'){
+      // Sort by signal count (tech + corp signals)
+      const sigA=signalMap.get(a.c), sigB=signalMap.get(b.c);
+      const techA=techSignalMap.get(a.c)||[], techB=techSignalMap.get(b.c)||[];
+      const corpA=sigA?[sigA.pl,sigA.ri,sigA.inc].filter(Boolean).length:0;
+      const corpB=sigB?[sigB.pl,sigB.ri,sigB.inc].filter(Boolean).length:0;
+      av=techA.length+corpA;
+      bv=techB.length+corpB;
     } else {
       if(typeof av==='string'){av=av.toLowerCase();bv=(bv||'').toLowerCase();}
       if(av==null)av=sortDir===-1?-Infinity:Infinity;
