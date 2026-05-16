@@ -750,17 +750,6 @@ function sortBy(col){
 }
 
 // --- toolbar ---
-  searchVal=document.getElementById('searchInput').value;
-  applyFilters();
-});
-  sortCol=document.getElementById('sortSelect').value;
-  applyFilters();
-});
-  sortDir*=-1;
-  document.getElementById('dirBtn').textContent=sortDir===1?'↑':'↓';
-  applyFilters();
-});
-
 // --- filter buttons (multi-select) ---
 const FILTER_IDS={filterAll:'all',filterUp:'up',filterDn:'dn',filterConcentrated:'concentrated',filterPlacement:'placement',filterRights:'rights',filterSmallMC:'small_mc',filterMidMC:'mid_mc',filterLargeMC:'large_mc'};
 
