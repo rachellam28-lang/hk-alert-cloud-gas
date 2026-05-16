@@ -754,7 +754,7 @@ function sortBy(col){
   if(sortCol===col)sortDir*=-1;else{sortCol=col;sortDir=col==='code'||col==='n'?1:col==='sig'?1:-1;}
   var db=document.getElementById('dirBtn');
   if(db)db.textContent=sortDir===1?'↑':'↓';
-  // Sync sortSelect dropdown (if column exists in dropdown options)
+  // Sync sortSelect dropdown
   var ss=document.getElementById('sortSelect');
   if(ss){var sv=false;for(var si=0;si<ss.options.length;si++){if(ss.options[si].value===col){ss.value=col;sv=true;break;}}if(!sv)ss.value='';}
   document.querySelectorAll('th.sortable').forEach(function(x){
@@ -763,6 +763,8 @@ function sortBy(col){
   });
   var th=document.querySelector('th[data-sort="'+col+'"]');
   if(th){th.classList.add('sort-active',sortDir===1?'sort-asc':'sort-desc');th.querySelector('.sort-icon').textContent=sortDir===1?'▲':'▼';}
+  // If sorting by signal but GAS data not loaded yet, defer sort to GAS callback
+  if(col==='sig'&&techSignalMap.size===0)return;
   applyFilters();
 }
 
