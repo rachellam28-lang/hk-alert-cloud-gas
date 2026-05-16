@@ -454,9 +454,8 @@ function renderTable(){
     const corpCount=sig?[sig.pl,sig.ri,sig.inc].filter(Boolean).length:0;
     const totalSigCount=techCount+corpCount;
     const hasIPO=techSig.some(x=>x.label&&x.label.indexOf('IPO首日')>=0);
-    const sigBadge=totalSigCount>0?'<span class="scnt" style="border-color:var(--primary-border);background:var(--primary-soft);color:var(--primary);margin-right:4px;font-size:10px">信號×'+totalSigCount+'</span> ':'';
     const mergedSig=(techHtml||'')+(corpHtml?'<div class="cpillrow">'+corpHtml+'</div>':'');
-    const sigDisplay=sigBadge+(mergedSig||'<span class="mc-null">—</span>');
+    const sigDisplay=mergedSig||'<span class="mc-null">—</span>';
 
     // Price
     const priceVal=priceMap.get(s.c);

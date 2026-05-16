@@ -66,8 +66,6 @@ th.sort-active{color:var(--primary)}.sort-icon{margin-left:4px;font-size:9px}
 .cpill-other{background:var(--surface-soft);color:var(--mute);border-color:var(--line)}
 .urow.ipo-highlight{background:linear-gradient(90deg,var(--amber-soft),transparent 50%)!important;border-left:3px solid var(--amber)}
 .cplink{text-decoration:none}
-.cell-num{font:600 13px "JetBrains Mono",ui-monospace,monospace;text-align:center}
-.cnum{display:inline-flex;align-items:center;justify-content:center;min-width:24px;padding:2px 8px;border-radius:999px;background:var(--surface-soft);border:1px solid var(--line);font-size:11px}
 .cell-time{color:var(--mute);font:500 12px "JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
 .cell-link{font-size:12px;white-space:nowrap}
 .lnk{display:inline-flex;padding:3px 8px;border-radius:6px;border:1px solid var(--line);background:var(--surface);font:600 10px inherit;color:var(--text-soft);text-decoration:none}
@@ -93,8 +91,7 @@ th.sort-active{color:var(--primary)}.sort-icon{margin-left:4px;font-size:9px}
 .section-toggle.collapsed .toggle-arrow{transform:rotate(-90deg)}
 .section-body{overflow:hidden;transition:height .2s ease}
 .loading-msg{text-align:center;padding:60px 20px;color:var(--mute);font-size:14px}
-@media(max-width:820px){.cell-num,thead th:nth-child(4){display:none}}
-@media(max-width:720px){.cell-price,thead th:nth-child(2){display:none}.cell-time,thead th:nth-child(5){display:none}.tabs{overflow-x:auto}.input.search-in{min-width:130px}}
+@media(max-width:720px){.cell-price,thead th:nth-child(2){display:none}.cell-time,thead th:nth-child(4){display:none}.tabs{overflow-x:auto}.input.search-in{min-width:130px}}
 @media(max-width:640px){.brand>a{font-size:11px!important;padding:2px 6px!important;margin-left:3px!important}}@media(max-width:520px){.ra-list{grid-template-columns:1fr}.topbar-inner{padding:6px 10px;gap:8px}.brand{gap:6px;flex-shrink:0}.brand>a{font-size:10px!important;padding:1px 5px!important;margin-left:2px!important}.logo{display:none}.brand-title{font-size:12px;white-space:nowrap}.brand-sub{display:none}.topright{gap:3px;font-size:10px}.refresh-tag{display:none}.topright span:last-child{font-size:9px;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}@media(max-width:400px){.topbar-inner{padding:4px 6px;gap:4px}.brand-title{font-size:11px}.brand>a{font-size:9px!important;padding:1px 4px!important}.topright span:last-child{font-size:8px;max-width:70px}}
 @media(prefers-color-scheme:dark){:root{--bg:#0f172a;--surface:#1e293b;--surface-soft:#162032;--text:#f1f5f9;--text-soft:#cbd5e1;--mute:#64748b;--mute-2:#475569;--line:#334155;--line-soft:#1e293b;--primary:#38bdf8;--primary-soft:#0c2d44;--primary-border:#0369a1;--up:#4ade80;--up-soft:#052e16;--up-border:#166534;--down:#f87171;--down-soft:#2d0a0a;--down-border:#991b1b;--violet:#a78bfa;--violet-soft:#1e1040;--violet-border:#5b21b6;--amber:#fbbf24;--amber-soft:#1c0f00;--amber-border:#92400e}.topbar{background:rgba(15,23,42,.92)}.tabs{background:#1e293b}.tab.active{background:#0f172a}}
 .ipo-card{margin-bottom:10px;background:var(--surface);border:1px solid var(--amber-border);border-radius:var(--radius);overflow:hidden}.ipo-head{display:flex;align-items:center;justify-content:space-between;padding:5px 14px 3px;font-size:11px;font-weight:700;color:var(--amber)}.ipo-count{font-size:10px;font-weight:600;color:var(--mute);background:var(--amber-soft);padding:1px 8px;border-radius:10px;border:1px solid var(--amber-border)}.ipo-tbl{width:100%;border-collapse:collapse;font-size:12px}.ipo-tbl th{text-align:left;padding:2px 10px;font-size:10px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.1em;border-top:1px solid var(--amber-border);background:rgba(251,191,36,.04)}.ipo-tbl td{padding:2px 10px;border-bottom:1px solid var(--line-soft)}.ipo-tbl tr:last-child td{border-bottom:none}.ipo-tbl a{color:var(--text);text-decoration:none;font-weight:600}.ipo-tbl a:hover{color:var(--amber)}.ipo-tbl .name{color:var(--text-soft);font-size:11px}.badge{display:inline-block;font-size:10px;font-weight:600;padding:1px 8px;border-radius:4px;line-height:1.5}.badge-high{background:var(--amber-soft);color:var(--amber);border:1px solid var(--amber-border)}.badge-open{background:var(--primary-soft);color:var(--primary);border:1px solid var(--primary-border)}
@@ -278,11 +275,10 @@ function renderRow(g, wl){
   const saveBtn = `<button class="btn-save${saved?' saved':''}" data-code="${esc(codeStr)}" data-name="${esc(g.name||'')}" data-signal="${esc(firstSig)}" data-date="${esc(lastDate)}" title="加入自選">${saved?'★':'☆'}</button>`;
 
   const ipoBreak = (g.signals||[]).some(s=>s.label&&s.label.indexOf('IPO首日')>=0);
-  return `<tr class="urow${ipoBreak?' ipo-highlight':''}" data-code="${esc(codeStr)}" data-name="${esc(g.name||'')}" data-date="${esc(lastDate)}" data-corp="${hasCorp}" data-tech="${hasTech}" data-price="${price||0}" data-count="${rowCount}" data-signal="${esc(firstSig)}">
+  return `<tr class="urow${ipoBreak?' ipo-highlight':''}" data-code="${esc(codeStr)}" data-name="${esc(g.name||'')}" data-date="${esc(lastDate)}" data-corp="${hasCorp}" data-tech="${hasTech}" data-price="${price||0}" data-signal="${esc(firstSig)}">
 <td class="cell-code"><div class="code">${esc(codeStr)}</div>${g.name?`<div class="name">${esc(g.name)}</div>`:''}</td>
 <td class="cell-price">${priceHtml}</td>
 <td class="cell-pills">${sigPills||'<span class="muted">—</span>'}${corpPills?`<div class="cpillrow">${corpPills}</div>`:''}</td>
-<td class="cell-num"><span class="cnum">${rowCount}</span></td>
 <td class="cell-time">${esc(lastTime)}</td>
 <td class="cell-link">${saveBtn}${hkexLnk}</td>
 </tr>`;
@@ -292,13 +288,12 @@ function renderTable(groups){
   const _wl=new Set((()=>{try{return JSON.parse(localStorage.getItem('hk_watchlist_v1')||'[]').map(x=>x.code);}catch{return [];}})());
   const html = groups.length
     ? groups.map(g=>renderRow(g,_wl)).join('')
-    : '<tr><td colspan="6" class="empty">暫無代號數據</td></tr>';
+    : '<tr><td colspan="5" class="empty">暫無代號數據</td></tr>';
   document.getElementById('tableWrap').innerHTML =
     `<div style="overflow-x:auto;-webkit-overflow-scrolling:touch"><table><thead><tr>
 <th class="sortable" data-sort="code">代號 / 名稱<span class="sort-icon"></span></th>
 <th class="sortable" data-sort="price">價格<span class="sort-icon"></span></th>
 <th class="sortable" data-sort="signal">信號 / 公告<select id="sigFilter" class="th-filter" onclick="event.stopPropagation()" onchange="ftype=this.value;applyFilter()"><option value="all">全部</option><option value="ipo_high">🚀 IPO首日高突破</option><option value="ipo_open">🚀 IPO首日開突破</option><option value="poc3">半年+12月+3年POC</option><option value="poc_half">半年POC</option><option value="yearopen">年開突破</option><option value="fvg">FVG</option><option value="ccass_up">CCASS增持</option><option value="ccass_dn">CCASS減持</option><option value="placement">配股</option><option value="increase">增持</option><option value="rights">供股</option></select><span class="sort-icon"></span></th>
-<th class="sortable" data-sort="count">次數<span class="sort-icon"></span></th>
 <th class="sortable sort-active sort-desc" data-sort="date">最後出現<span class="sort-icon">▼</span></th>
 <th>連結</th>
 </tr></thead><tbody id="urows">${html}</tbody></table></div>`;
