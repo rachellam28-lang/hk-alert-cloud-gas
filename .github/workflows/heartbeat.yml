@@ -24,7 +24,14 @@ jobs:
           fi
           ts=$(TZ=Asia/Hong_Kong date '+%Y-%m-%d %H:%M HKT')
           msg="❤️ scheduler heartbeat · ${ts}"
-          curl -fsS -X POST "https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage" \
+          resp=$(curl -sS -w "\n%{http_code}" -X POST "https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage" \
             -d "chat_id=${TELEGRAM_CHAT_ID}" \
-            -d "text=${msg}" >/dev/null
+            -d "text=${msg}")
+          http_code=$(echo "$resp" | tail -1)
+          body=$(echo "$resp" | head -n -1)
+          echo "HTTP $http_code: $body"
+          if [ "$http_code" != "200" ]; then
+            echo "::error::Telegram API returned $http_code — token or chat_id may be invalid"
+            exit 1
+          fi
           echo "Heartbeat sent: $msg"
