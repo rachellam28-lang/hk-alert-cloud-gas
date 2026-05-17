@@ -5,8 +5,9 @@ name: HK Alert Scheduler Heartbeat
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "17 */6 * * *"   # every 6 hours, off the :00 mark
+  # schedule disabled — email notifications are sufficient
+  # schedule:
+  #   - cron: "17 */6 * * *"   # every 6 hours, off the :00 mark
 
 jobs:
   ping:
