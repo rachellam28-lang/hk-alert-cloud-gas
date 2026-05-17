@@ -26,8 +26,8 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ccass/ccass.db
-          key: ccass-db-${{ github.run_id }}
-          restore-keys: ccass-db-
+          key: ccass-db-v1-${{ hashFiles('ccass/requirements.txt') }}
+          restore-keys: ccass-db-v1-
 
       - uses: actions/setup-python@v5
         with:
@@ -63,8 +63,7 @@ jobs:
           git diff --cached --quiet && { echo "ccass.json unchanged, skipping commit"; exit 0; }
           git commit -m "chore: update ccass.json after backfill [skip ci]"
           for i in 1 2 3; do
-            git fetch origin main
-            git rebase origin/main && git push origin HEAD:main && break || {
+            git pull --rebase origin main && git push origin HEAD:main && break || {
               echo "attempt $i failed, retrying in 5s..."
               git rebase --abort 2>/dev/null || true
               sleep 5
