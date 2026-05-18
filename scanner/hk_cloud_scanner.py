@@ -1,4 +1,4 @@
-﻿"""
+"""
 HK Alert Cloud Scanner
 
 Cloud version for GitHub Actions:
@@ -279,19 +279,50 @@ def encode_chart_for_gas(chart_path: str | None) -> tuple[str | None, str | None
         return None, None
 
 
-def emit_alert(payload: dict[str, Any], caption_html: str, chart_path: str | None, reply_markup: dict | None = None) -> None:
+def _cleanup_chart(chart_path: str | None) -> None:
+    if chart_path:
+        try:
+            os.remove(chart_path)
+        except OSError:
+            pass
+
+
+def _is_above_year_open(df: pd.DataFrame) -> bool | None:
+    """Check if latest close > current year's first trading day open.
+    Returns None if can't determine (insufficient data / no current-year rows)."""
+    if df is None or df.empty or len(df) < 2:
+        return None
+    current_year = datetime.now(HKT_TZ).year
+    year_mask = df["date"].dt.year == current_year
+    year_data = df[year_mask]
+    if year_data.empty:
+        return None
+    year_open = float(year_data.iloc[0]["open"])
+    if year_open <= 0:
+        return None
+    today_close = float(df.iloc[-1]["close"])
+    return today_close > year_open
+
+
+def emit_alert(payload: dict[str, Any], caption_html: str, chart_path: str | None, reply_markup: dict | None = None, df: pd.DataFrame | None = None) -> None:
     payload.setdefault("created_at", datetime.now().isoformat(timespec="seconds"))
     chart_b64, chart_name = encode_chart_for_gas(chart_path)
     if chart_b64:
         payload["chart_image_b64"] = chart_b64
         payload["chart_image_name"] = chart_name
     post_gas_alert(payload)
+
+    # -- year-open filter: skip Telegram for stocks below current-year first-day open --
+    if df is not None:
+        above = _is_above_year_open(df)
+        if above is False:
+            code = payload.get("code", "?")
+            print(f"[filter] {code} below year-open, skip Telegram")
+            _cleanup_chart(chart_path)
+            return
+
     send_telegram_alert(caption_html, chart_path, reply_markup=reply_markup)
-    if chart_path:
-        try:
-            os.remove(chart_path)
-        except OSError:
-            pass
+    _cleanup_chart(chart_path)
 
 
 def compute_volume_ratio(df: pd.DataFrame) -> float | None:
@@ -1424,7 +1455,7 @@ def _emit_ipo_high_hit(result: dict[str, Any], df: pd.DataFrame, wl_entry: dict 
         levels=ipo_high_levels,
         lookback_days=min(len(df), max(60, result["Listed Days"] + 5)),
     )
-    emit_alert(payload, caption, chart_path, reply_markup=build_inline_keyboard_([("📊 走勢圖", tv_url)]))
+    emit_alert(payload, caption, chart_path, reply_markup=build_inline_keyboard_([("📊 走勢圖", tv_url)]), df=df)
 
 
 def _emit_ipo_open_hit(result: dict[str, Any], df: pd.DataFrame, wl_entry: dict | None) -> None:
@@ -1481,7 +1512,7 @@ def _emit_ipo_open_hit(result: dict[str, Any], df: pd.DataFrame, wl_entry: dict 
         levels=ipo_open_levels,
         lookback_days=min(len(df), max(60, result["Listed Days"] + 5)),
     )
-    emit_alert(payload, caption, chart_path, reply_markup=build_inline_keyboard_([("📊 走勢圖", tv_url)]))
+    emit_alert(payload, caption, chart_path, reply_markup=build_inline_keyboard_([("📊 走勢圖", tv_url)]), df=df)
 
 
 def run_ipo() -> None:
@@ -1654,7 +1685,7 @@ def _emit_poc_hit(
         lookback_days=CHART_LOOKBACK_DAYS,
     )
     poc_kb = build_inline_keyboard_([("📊 走勢圖", tv_url)])
-    emit_alert(payload, caption, chart_path, reply_markup=poc_kb)
+    emit_alert(payload, caption, chart_path, reply_markup=poc_kb, df=df)
 
 
 def run_poc() -> None:
