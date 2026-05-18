@@ -1,12 +1,25 @@
-.gas_secret.local
-__pycache__/
-*.pyc
-.DS_Store
-.env
-
-# CCASS
+# CCASS - don't commit data or secrets
 ccass/ccass.db
 ccass/backups/
 ccass/logs/
 ccass/debug/
-ccass/cache/
+ccass/codes.json
+ccass.json
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
+
+# Secrets
+.env
+*.env
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

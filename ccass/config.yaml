@@ -3,13 +3,13 @@
 universe: all_hk    # 全港股 ~2700 隻
 
 scraping:
-  delay_min_seconds: 0.15
-  delay_max_seconds: 0.4   # 3 workers × 0.27s avg = ~1700 req/min → ~2700 stocks in ~4min delay
-  timeout_seconds: 15      # fail fast — slow responses eat the budget
-  max_retries: 2           # 3 total attempts (1 initial + 2 retry)
+  delay_min_seconds: 1.0
+  delay_max_seconds: 3.0
+  timeout_seconds: 30
+  max_retries: 3
   retry_backoff_base: 2
   user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-  parallel_workers: 2
+  parallel_workers: 1   # conservative — avoid Akamai rate-limit
 
 trend_windows: [5, 20]
 
@@ -17,9 +17,9 @@ alerts:
   spike_threshold_pct: 5.0       # 5日 total_pct 變化 ≥ 呢個 trigger
   consecutive_days: 3            # 連續 N 日同方向
   consecutive_min_daily_pct: 1.0 # 每日 ≥ 呢個 % 先計
-  max_alerts_per_batch: 20       # FATAL-001
+  max_alerts_per_batch: 20
   telegram_throttle_seconds: 3
-  summary_only_threshold: 50     # 超過呢個數淨係 send summary
+  summary_only_threshold: 50
 
 logging:
   level: INFO
