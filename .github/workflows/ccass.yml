@@ -1,4 +1,4 @@
-name: CCASS Daily Scrape
+name: CCASS Daily Scrape (6-Shard)
 
 on:
   workflow_dispatch:
@@ -9,9 +9,14 @@ permissions:
   contents: write
 
 jobs:
-  scrape:
+  # ── Phase 1: 6 parallel shards, each scrapes ~463 stocks ──────────────
+  scrape-shard:
     runs-on: ubuntu-latest
-    timeout-minutes: 600
+    timeout-minutes: 150    # ~463 stocks × 11.5s ≈ 88 min, 150 is safe
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5]
 
     steps:
       - uses: actions/checkout@v4
@@ -27,8 +32,8 @@ jobs:
 
       - run: pip install -r ccass/requirements.txt
 
-      - name: Run CCASS daily
-        timeout-minutes: 600
+      - name: Run CCASS shard ${{ matrix.shard }}/5
+        timeout-minutes: 140
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
@@ -36,16 +41,54 @@ jobs:
           GAS_SECRET: ${{ secrets.GAS_SECRET }}
         run: |
           cd ccass
-          python -m src.runner --refresh-universe
+          python -m src.runner --shard ${{ matrix.shard }} --shard-total 6 --refresh-universe
 
-      - name: Upload debug HTML artifacts
+      - name: Upload shard ${{ matrix.shard }} artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: ccass-debug-html
-          path: ccass/debug/
-          if-no-files-found: ignore
-          retention-days: 3
+          name: ccass-shard-${{ matrix.shard }}
+          path: ccass-shard-${{ matrix.shard }}.json
+          if-no-files-found: error
+          retention-days: 1
+
+  # ── Phase 2: Merge all shards → trends → alerts → events → export ─────
+  merge:
+    needs: scrape-shard
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+          cache-dependency-path: ccass/requirements.txt
+
+      - run: pip install -r ccass/requirements.txt
+
+      - name: Download all shard artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: ccass-shard-*
+          merge-multiple: true
+          path: .
+
+      - name: Merge & run full pipeline
+        timeout-minutes: 20
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GAS_WEBHOOK_URL: ${{ secrets.GAS_WEBHOOK_URL }}
+          GAS_SECRET: ${{ secrets.GAS_SECRET }}
+        run: |
+          cd ccass
+          python -m src.runner --merge
 
       - name: Commit ccass.json + ccass.db.gz
         run: |
