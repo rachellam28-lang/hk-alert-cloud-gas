@@ -36,7 +36,7 @@ jobs:
           GAS_SECRET: ${{ secrets.GAS_SECRET }}
         run: |
           cd ccass
-          python -m src.runner
+          python -m src.runner --refresh-universe
 
       - name: Upload debug HTML artifacts
         if: always()
