@@ -525,44 +525,61 @@ def _post_movers_to_gas(
 
 
 def _git_commit_outputs(json_path):
-    """Commit ccass.json + ccass.db.gz WITHOUT [skip ci] so Pages auto-deploys.
-    
-    ccass.db persistence: compressed with gzip to keep repo size manageable
-    (~68MB → ~17MB). Restored at start of next run via _restore_db().
-    """
-    import subprocess, gzip, shutil
+    """Commit ccass.json + ccass.db.gz — robust retry with conflict recovery."""
+    import subprocess, gzip, shutil, random as _random
     repo_root = json_path.parent
     db_path = json_path.parent / "ccass" / "ccass.db"
     db_gz_path = json_path.parent / "ccass" / "ccass.db.gz"
     try:
-        # Compress ccass.db before committing
+        # Compress ccass.db
         if db_path.exists():
             with open(db_path, 'rb') as f_in:
                 with gzip.open(db_gz_path, 'wb') as f_out:
                     shutil.copyfileobj(f_in, f_out)
-            logger.info("Compressed ccass.db: %d → %d bytes", 
+            logger.info("Compressed ccass.db: %d → %d bytes",
                         db_path.stat().st_size, db_gz_path.stat().st_size)
+
+        # Small random delay to avoid race with workflow step
+        time.sleep(_random.uniform(1, 5))
 
         subprocess.run(["git","config","user.name","github-actions[bot]"], cwd=repo_root, capture_output=True)
         subprocess.run(["git","config","user.email","github-actions[bot]@users.noreply.github.com"], cwd=repo_root, capture_output=True)
+
+        # Stash any uncommitted changes from workflow step, then pull latest
+        subprocess.run(["git","stash"], cwd=repo_root, capture_output=True)
+        subprocess.run(["git","pull","--rebase","origin","main"], cwd=repo_root, capture_output=True)
+        subprocess.run(["git","stash","pop"], cwd=repo_root, capture_output=True)
+
         subprocess.run(["git","add","ccass.json"], cwd=repo_root, capture_output=True)
         if db_gz_path.exists():
             subprocess.run(["git","add","ccass/ccass.db.gz"], cwd=repo_root, capture_output=True)
+
         diff = subprocess.run(["git","diff","--cached","--quiet"], cwd=repo_root)
         if diff.returncode == 0:
             logger.info("ccass.json + ccass.db.gz unchanged, skipping commit")
             return
+
         subprocess.run(["git","commit","-m","chore: update ccass.json + ccass.db.gz"], cwd=repo_root, capture_output=True)
-        for attempt in range(1, 4):
-            subprocess.run(["git","pull","--rebase","origin","main"], cwd=repo_root, capture_output=True)
-            push = subprocess.run(["git","push","origin","HEAD:main"], cwd=repo_root, capture_output=True, text=True)
+
+        for attempt in range(1, 6):
+            # Pull + rebase before each push attempt
+            pull = subprocess.run(["git","pull","--rebase","origin","main"],
+                                  cwd=repo_root, capture_output=True, text=True)
+            if pull.returncode != 0:
+                logger.warning("git pull attempt %d failed: %s", attempt, pull.stderr[:200])
+                subprocess.run(["git","rebase","--abort"], cwd=repo_root, capture_output=True)
+                time.sleep(3)
+                continue
+
+            push = subprocess.run(["git","push","origin","HEAD:main"],
+                                  cwd=repo_root, capture_output=True, text=True)
             if push.returncode == 0:
-                logger.info("Committed & pushed ccass.json + ccass.db.gz")
+                logger.info("✓ Committed & pushed ccass.json + ccass.db.gz (attempt %d)", attempt)
                 return
-            logger.warning("git push attempt %d failed, retrying", attempt)
-            subprocess.run(["git","rebase","--abort"], cwd=repo_root, capture_output=True)
-            time.sleep(5)
-        logger.error("Failed to push after 3 attempts")
+            logger.warning("git push attempt %d: %s", attempt, push.stderr[:200])
+            time.sleep(3 * attempt)  # Increasing backoff
+
+        logger.error("Failed to push after 5 attempts — ccass.db.gz NOT persisted!")
     except Exception as e:
         logger.warning("git commit failed: %s", e)
 
