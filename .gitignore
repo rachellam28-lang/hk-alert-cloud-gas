@@ -1,5 +1,4 @@
 # CCASS - don't commit data or secrets
-ccass/ccass.db
 ccass/backups/
 ccass/logs/
 ccass/debug/

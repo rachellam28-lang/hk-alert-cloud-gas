@@ -128,6 +128,21 @@ def _scrape_parallel(
     return (attempted, succeeded, failed_stocks)
 
 
+def _restore_db():
+    """Restore ccass.db from ccass.db.gz if DB missing or empty (first run / fresh checkout)."""
+    import gzip, shutil
+    db_path = Path(__file__).parent.parent / "ccass.db"
+    db_gz_path = Path(__file__).parent.parent / "ccass.db.gz"
+    if db_path.exists() and db_path.stat().st_size > 0:
+        return  # Already have a valid DB
+    if db_gz_path.exists():
+        logger.info("Restoring ccass.db from ccass.db.gz (%d bytes)", db_gz_path.stat().st_size)
+        with gzip.open(db_gz_path, 'rb') as f_in:
+            with open(db_path, 'wb') as f_out:
+                shutil.copyfileobj(f_in, f_out)
+        logger.info("Restored ccass.db: %d bytes", db_path.stat().st_size)
+
+
 def run_daily(
     target_date: date | None = None,
     skip_scrape: bool = False,
@@ -139,6 +154,7 @@ def run_daily(
     Returns: 0 = success, 1 = partial, 2 = failed
     """
     init_db()
+    _restore_db()  # Decompress ccass.db.gz if DB is empty (fresh checkout)
     config = load_config()
     target_date = target_date or today_hk()
 
@@ -460,7 +476,7 @@ def _export_json(query_date: date, alerts_today: int) -> None:
             len(stocks), len(top_increase), len(top_decrease),
         )
         _post_movers_to_gas(top_increase, top_decrease, date_str)
-        _git_commit_ccass_json(out_path)
+        _git_commit_outputs(out_path)
     except Exception as e:
         logger.warning("ccass.json export failed: %s", e)
 
@@ -508,31 +524,47 @@ def _post_movers_to_gas(
     logger.info("Posted %d CCASS signals to GAS", len(top_increase) + len(top_decrease))
 
 
-def _git_commit_ccass_json(json_path):
-    """Commit ccass.json WITHOUT [skip ci] so Pages auto-deploys."""
-    import subprocess
+def _git_commit_outputs(json_path):
+    """Commit ccass.json + ccass.db.gz WITHOUT [skip ci] so Pages auto-deploys.
+    
+    ccass.db persistence: compressed with gzip to keep repo size manageable
+    (~68MB → ~17MB). Restored at start of next run via _restore_db().
+    """
+    import subprocess, gzip, shutil
     repo_root = json_path.parent
+    db_path = json_path.parent / "ccass" / "ccass.db"
+    db_gz_path = json_path.parent / "ccass" / "ccass.db.gz"
     try:
+        # Compress ccass.db before committing
+        if db_path.exists():
+            with open(db_path, 'rb') as f_in:
+                with gzip.open(db_gz_path, 'wb') as f_out:
+                    shutil.copyfileobj(f_in, f_out)
+            logger.info("Compressed ccass.db: %d → %d bytes", 
+                        db_path.stat().st_size, db_gz_path.stat().st_size)
+
         subprocess.run(["git","config","user.name","github-actions[bot]"], cwd=repo_root, capture_output=True)
         subprocess.run(["git","config","user.email","github-actions[bot]@users.noreply.github.com"], cwd=repo_root, capture_output=True)
         subprocess.run(["git","add","ccass.json"], cwd=repo_root, capture_output=True)
+        if db_gz_path.exists():
+            subprocess.run(["git","add","ccass/ccass.db.gz"], cwd=repo_root, capture_output=True)
         diff = subprocess.run(["git","diff","--cached","--quiet"], cwd=repo_root)
         if diff.returncode == 0:
-            logger.info("ccass.json unchanged, skipping commit")
+            logger.info("ccass.json + ccass.db.gz unchanged, skipping commit")
             return
-        subprocess.run(["git","commit","-m","chore: update ccass.json"], cwd=repo_root, capture_output=True)
+        subprocess.run(["git","commit","-m","chore: update ccass.json + ccass.db.gz"], cwd=repo_root, capture_output=True)
         for attempt in range(1, 4):
             subprocess.run(["git","pull","--rebase","origin","main"], cwd=repo_root, capture_output=True)
             push = subprocess.run(["git","push","origin","HEAD:main"], cwd=repo_root, capture_output=True, text=True)
             if push.returncode == 0:
-                logger.info("Committed & pushed ccass.json")
+                logger.info("Committed & pushed ccass.json + ccass.db.gz")
                 return
             logger.warning("git push attempt %d failed, retrying", attempt)
             subprocess.run(["git","rebase","--abort"], cwd=repo_root, capture_output=True)
             time.sleep(5)
-        logger.error("Failed to push ccass.json after 3 attempts")
+        logger.error("Failed to push after 3 attempts")
     except Exception as e:
-        logger.warning("git commit ccass.json failed: %s", e)
+        logger.warning("git commit failed: %s", e)
 
 
 def _detect_and_log_events(t_date: date, y_date: date) -> list[dict]:
