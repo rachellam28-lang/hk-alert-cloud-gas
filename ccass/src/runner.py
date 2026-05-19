@@ -454,6 +454,7 @@ def _export_json(query_date: date, alerts_today: int) -> None:
             len(stocks), len(top_increase), len(top_decrease),
         )
         _post_movers_to_gas(top_increase, top_decrease, date_str)
+        _git_commit_ccass_json(out_path)
     except Exception as e:
         logger.warning("ccass.json export failed: %s", e)
 
@@ -499,6 +500,33 @@ def _post_movers_to_gas(
     for e in top_decrease:
         _post(e, "CCASS減持")
     logger.info("Posted %d CCASS signals to GAS", len(top_increase) + len(top_decrease))
+
+
+def _git_commit_ccass_json(json_path):
+    """Commit ccass.json WITHOUT [skip ci] so Pages auto-deploys."""
+    import subprocess
+    repo_root = json_path.parent
+    try:
+        subprocess.run(["git","config","user.name","github-actions[bot]"], cwd=repo_root, capture_output=True)
+        subprocess.run(["git","config","user.email","github-actions[bot]@users.noreply.github.com"], cwd=repo_root, capture_output=True)
+        subprocess.run(["git","add","ccass.json"], cwd=repo_root, capture_output=True)
+        diff = subprocess.run(["git","diff","--cached","--quiet"], cwd=repo_root)
+        if diff.returncode == 0:
+            logger.info("ccass.json unchanged, skipping commit")
+            return
+        subprocess.run(["git","commit","-m","chore: update ccass.json"], cwd=repo_root, capture_output=True)
+        for attempt in range(1, 4):
+            subprocess.run(["git","pull","--rebase","origin","main"], cwd=repo_root, capture_output=True)
+            push = subprocess.run(["git","push","origin","HEAD:main"], cwd=repo_root, capture_output=True, text=True)
+            if push.returncode == 0:
+                logger.info("Committed & pushed ccass.json")
+                return
+            logger.warning("git push attempt %d failed, retrying", attempt)
+            subprocess.run(["git","rebase","--abort"], cwd=repo_root, capture_output=True)
+            time.sleep(5)
+        logger.error("Failed to push ccass.json after 3 attempts")
+    except Exception as e:
+        logger.warning("git commit ccass.json failed: %s", e)
 
 
 def _detect_and_log_events(t_date: date, y_date: date) -> list[dict]:
