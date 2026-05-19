@@ -59,7 +59,12 @@ class CCASSScraper:
         self.delay_max = delay_max
         self.timeout = timeout
         self.max_retries = max_retries
-        self._consecutive_503 = 0
+        # Sliding window of recent request outcomes (True = 503/blocked).
+        # We abort only if the window is full AND mostly failures, so a
+        # single stray 200 in the middle can no longer reset us to zero.
+        from collections import deque
+        self._outcome_window: deque[bool] = deque(maxlen=8)
+        self._abort_threshold = 6   # >=6 bad out of last 8 -> HKEX down / blocked
         self.session = cloudscraper.create_scraper()
         self.session.headers.update({"User-Agent": user_agent})
         self._form_tokens: dict[str, str] = {}
@@ -95,6 +100,51 @@ class CCASSScraper:
     def _polite_sleep(self) -> None:
         time.sleep(random.uniform(self.delay_min, self.delay_max))
 
+    def _record_outcome(self, bad: bool, stock_code: str) -> None:
+        """Record one request outcome; raise RuntimeError if HKEX looks down.
+
+        bad is True for a 503 OR an Akamai access-denied page. We abort
+        when the recent window is saturated with failures, instead of
+        requiring a strictly-consecutive streak (which a stray 200 reset).
+        """
+        self._outcome_window.append(bad)
+        bad_count = sum(self._outcome_window)
+        if bad:
+            logger.warning(
+                "Bad response on %s (window %d/%d bad)",
+                stock_code, bad_count, len(self._outcome_window),
+            )
+        if (len(self._outcome_window) == self._outcome_window.maxlen
+                and bad_count >= self._abort_threshold):
+            raise RuntimeError(
+                f"HKEX CCASS appears DOWN or BLOCKING — "
+                f"{bad_count}/{len(self._outcome_window)} recent requests failed. "
+                f"Aborting scrape."
+            )
+
+    @staticmethod
+    def _looks_like_block(html: str) -> bool:
+        """Detect an Akamai / WAF block page that still returns HTTP 200.
+
+        Akamai frequently answers bots with a 200-status 'Access Denied'
+        or reference-error page. Treating that as success is what let the
+        old consecutive-503 counter reset and never fire.
+        """
+        if not html:
+            return True
+        head = html[:3000].lower()
+        markers = (
+            "access denied",
+            "reference&#32;",
+            "reference #",
+            "akamai",
+            "errors.edgesuite.net",
+            "you don't have permission to access",
+            "/sdw/search/" not in html and "viewstate" not in head,
+        )
+        # The last tuple entry is already a bool; the rest are substring tests.
+        return any(m if isinstance(m, bool) else (m in head) for m in markers)
+
     def scrape_stock(self, stock_code: str, query_date: date) -> Optional[CCASSSnapshot]:
         """
         Scrape 一隻股票一個日期。
@@ -119,26 +169,31 @@ class CCASSScraper:
                 }
                 resp = self.session.post(SDW_URL, data=payload, timeout=self.timeout)
 
-                # HKEX outage detection — 503 on multiple stocks = server down
+                # HKEX outage / rate-limit handling
                 if resp.status_code == 503:
-                    self._consecutive_503 += 1
-                    logger.warning(
-                        "HKEX 503 on %s (consecutive=%d/5), sleeping 15s",
-                        stock_code, self._consecutive_503,
-                    )
-                    if self._consecutive_503 >= 5:
-                        raise RuntimeError(
-                            "HKEX CCASS appears DOWN — 5 consecutive 503s. Aborting scrape."
-                        )
+                    self._record_outcome(True, stock_code)   # may raise -> abort
                     time.sleep(15)
                     continue
-                # Generic rate limit (429)
                 if resp.status_code == 429:
+                    self._record_outcome(True, stock_code)   # may raise -> abort
                     logger.warning("Rate limited (429) on %s, sleeping 30s", stock_code)
                     time.sleep(30)
                     continue
-                # Successful response — reset outage counter
-                self._consecutive_503 = 0
+
+                # HTTP 200 is NOT automatically a success — Akamai serves
+                # block pages with status 200. Check the body first.
+                if self._looks_like_block(resp.text):
+                    self._record_outcome(True, stock_code)   # may raise -> abort
+                    logger.warning(
+                        "HTTP 200 but looks like an Akamai block page for %s; "
+                        "treating as failure", stock_code,
+                    )
+                    self._save_debug_html(stock_code, query_date, resp.text)
+                    time.sleep(15)
+                    continue
+
+                # Genuine success
+                self._record_outcome(False, stock_code)
                 resp.raise_for_status()
 
                 snapshot = self._parse(stock_code, query_date, resp.text)

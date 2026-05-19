@@ -3,14 +3,21 @@
 universe: all_hk    # 全港股 ~2700 隻
 
 scraping:
-  delay_min_seconds: 1.0
-  delay_max_seconds: 3.0
+  # --- delay between stock requests -----------------------------------------
+  # Raised slightly from 1-3s. You are firing GET+POST per stock, hundreds of
+  # times from one IP. A wider, longer gap makes the request pattern look less
+  # mechanical to Akamai. Cost: ~500 stocks * avg 4s = ~33 min, still fine
+  # inside the 6h job cap. If 503s persist, raise these further before
+  # reaching for a proxy / browser.
+  delay_min_seconds: 2.0
+  delay_max_seconds: 6.0
+
   timeout_seconds: 30
   max_retries: 3
   retry_backoff_base: 2
-  user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-  max_stocks: 500         # Only scrape top N stocks (by stock code) for speed
-  parallel_workers: 1   # conservative — avoid Akamai rate-limit
+  user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+  parallel_workers: 1   # keep at 1 — parallel POSTs from one IP trips Akamai
+  max_stocks: 500        # TESTING: cap to 500. Remove this line for full ~2,775 universe
 
 trend_windows: [5, 20]
 
