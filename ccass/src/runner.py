@@ -476,7 +476,7 @@ def _export_json(query_date: date, alerts_today: int) -> None:
             len(stocks), len(top_increase), len(top_decrease),
         )
         _post_movers_to_gas(top_increase, top_decrease, date_str)
-        _git_commit_outputs(out_path)
+        _stage_outputs(out_path)
     except Exception as e:
         logger.warning("ccass.json export failed: %s", e)
 
@@ -524,9 +524,16 @@ def _post_movers_to_gas(
     logger.info("Posted %d CCASS signals to GAS", len(top_increase) + len(top_decrease))
 
 
-def _git_commit_outputs(json_path):
-    """Commit ccass.json + ccass.db.gz — robust retry with conflict recovery."""
-    import subprocess, gzip, shutil, random as _random
+def _stage_outputs(json_path):
+    """Compress ccass.db → ccass.db.gz + stage both files for git commit.
+
+    IMPORTANT: This function does NOT commit or push. It only stages files.
+    The workflow YAML's "Commit ccass.json" step handles the actual
+    git commit + push. Having TWO places do git push causes a race
+    condition where the Python push loses to the workflow step push,
+    and ccass.db.gz gets dropped. One pusher = no race.
+    """
+    import subprocess, gzip, shutil
     repo_root = json_path.parent
     db_path = json_path.parent / "ccass" / "ccass.db"
     db_gz_path = json_path.parent / "ccass" / "ccass.db.gz"
@@ -539,49 +546,14 @@ def _git_commit_outputs(json_path):
             logger.info("Compressed ccass.db: %d → %d bytes",
                         db_path.stat().st_size, db_gz_path.stat().st_size)
 
-        # Small random delay to avoid race with workflow step
-        time.sleep(_random.uniform(1, 5))
-
-        subprocess.run(["git","config","user.name","github-actions[bot]"], cwd=repo_root, capture_output=True)
-        subprocess.run(["git","config","user.email","github-actions[bot]@users.noreply.github.com"], cwd=repo_root, capture_output=True)
-
-        # Stash any uncommitted changes from workflow step, then pull latest
-        subprocess.run(["git","stash"], cwd=repo_root, capture_output=True)
-        subprocess.run(["git","pull","--rebase","origin","main"], cwd=repo_root, capture_output=True)
-        subprocess.run(["git","stash","pop"], cwd=repo_root, capture_output=True)
-
+        # Stage BOTH files. The workflow YAML step runs 'git add ccass.json'
+        # and then commits everything staged — so ccass.db.gz goes along.
         subprocess.run(["git","add","ccass.json"], cwd=repo_root, capture_output=True)
         if db_gz_path.exists():
             subprocess.run(["git","add","ccass/ccass.db.gz"], cwd=repo_root, capture_output=True)
-
-        diff = subprocess.run(["git","diff","--cached","--quiet"], cwd=repo_root)
-        if diff.returncode == 0:
-            logger.info("ccass.json + ccass.db.gz unchanged, skipping commit")
-            return
-
-        subprocess.run(["git","commit","-m","chore: update ccass.json + ccass.db.gz"], cwd=repo_root, capture_output=True)
-
-        for attempt in range(1, 6):
-            # Pull + rebase before each push attempt
-            pull = subprocess.run(["git","pull","--rebase","origin","main"],
-                                  cwd=repo_root, capture_output=True, text=True)
-            if pull.returncode != 0:
-                logger.warning("git pull attempt %d failed: %s", attempt, pull.stderr[:200])
-                subprocess.run(["git","rebase","--abort"], cwd=repo_root, capture_output=True)
-                time.sleep(3)
-                continue
-
-            push = subprocess.run(["git","push","origin","HEAD:main"],
-                                  cwd=repo_root, capture_output=True, text=True)
-            if push.returncode == 0:
-                logger.info("✓ Committed & pushed ccass.json + ccass.db.gz (attempt %d)", attempt)
-                return
-            logger.warning("git push attempt %d: %s", attempt, push.stderr[:200])
-            time.sleep(3 * attempt)  # Increasing backoff
-
-        logger.error("Failed to push after 5 attempts — ccass.db.gz NOT persisted!")
+        logger.info("Staged ccass.json + ccass.db.gz for workflow commit")
     except Exception as e:
-        logger.warning("git commit failed: %s", e)
+        logger.warning("Stage outputs failed: %s", e)
 
 
 def _detect_and_log_events(t_date: date, y_date: date) -> list[dict]:
