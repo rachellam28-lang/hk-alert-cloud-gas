@@ -4,7 +4,6 @@ ccass/backups/
 ccass/logs/
 ccass/debug/
 ccass/codes.json
-ccass.json
 
 # Python
 __pycache__/
