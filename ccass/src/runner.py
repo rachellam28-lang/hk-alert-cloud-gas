@@ -182,6 +182,12 @@ def run_daily(
         stocks = get_active_stocks()
         logger.info("Universe: %d active stocks", len(stocks))
 
+        # Optional: limit to top-N stocks for speed (config max_stocks)
+        max_stocks = config["scraping"].get("max_stocks")
+        if max_stocks and len(stocks) > max_stocks:
+            logger.info("Limiting scrape to top %d stocks (config max_stocks)", max_stocks)
+            stocks = stocks[:max_stocks]
+
         if not stocks:
             raise RuntimeError("Empty universe — cannot proceed")
 
