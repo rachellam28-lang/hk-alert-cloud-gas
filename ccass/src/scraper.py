@@ -59,6 +59,7 @@ class CCASSScraper:
         self.delay_max = delay_max
         self.timeout = timeout
         self.max_retries = max_retries
+        self._consecutive_503 = 0
         self.session = cloudscraper.create_scraper()
         self.session.headers.update({"User-Agent": user_agent})
         self._form_tokens: dict[str, str] = {}
@@ -118,13 +119,26 @@ class CCASSScraper:
                 }
                 resp = self.session.post(SDW_URL, data=payload, timeout=self.timeout)
 
-                # Rate limit response
-                if resp.status_code in (429, 503):
+                # HKEX outage detection — 503 on multiple stocks = server down
+                if resp.status_code == 503:
+                    self._consecutive_503 += 1
                     logger.warning(
-                        "Rate limited (%d) on %s, sleeping 30s", resp.status_code, stock_code
+                        "HKEX 503 on %s (consecutive=%d/5), sleeping 15s",
+                        stock_code, self._consecutive_503,
                     )
+                    if self._consecutive_503 >= 5:
+                        raise RuntimeError(
+                            "HKEX CCASS appears DOWN — 5 consecutive 503s. Aborting scrape."
+                        )
+                    time.sleep(15)
+                    continue
+                # Generic rate limit (429)
+                if resp.status_code == 429:
+                    logger.warning("Rate limited (429) on %s, sleeping 30s", stock_code)
                     time.sleep(30)
                     continue
+                # Successful response — reset outage counter
+                self._consecutive_503 = 0
                 resp.raise_for_status()
 
                 snapshot = self._parse(stock_code, query_date, resp.text)
