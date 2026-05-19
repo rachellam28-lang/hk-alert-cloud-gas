@@ -19,12 +19,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           ref: main
 
-      - name: Restore CCASS DB cache
-        uses: actions/cache@v4
-        with:
-          path: ccass/ccass.db
-          key: ccass-db-v1-${{ hashFiles('ccass/requirements.txt') }}
-          restore-keys: ccass-db-v1-
+    
 
       - uses: actions/setup-python@v5
         with:
