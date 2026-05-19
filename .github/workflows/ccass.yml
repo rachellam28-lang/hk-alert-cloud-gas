@@ -3,7 +3,7 @@ name: CCASS Daily Scrape
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 13 * * 1-5"   # 9pm HKT Mon-Fri (after CCASS data published ~5:30pm)
+    - cron: "0 13 * * 1-5"   # 9pm HKT Mon-Fri
 
 permissions:
   contents: write
@@ -18,8 +18,6 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           ref: main
-
-    
 
       - uses: actions/setup-python@v5
         with:
