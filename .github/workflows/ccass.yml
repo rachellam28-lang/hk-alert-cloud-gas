@@ -49,13 +49,14 @@ jobs:
           if-no-files-found: ignore
           retention-days: 3
 
-      - name: Commit ccass.json
+      - name: Commit ccass.json + ccass.db.gz
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add ccass.json
-          git diff --cached --quiet && { echo "ccass.json unchanged, skipping commit"; exit 0; }
-          git commit -m "chore: update ccass.json [skip ci]"
+          git add ccass/ccass.db.gz 2>/dev/null || true
+          git diff --cached --quiet && { echo "unchanged, skipping commit"; exit 0; }
+          git commit -m "chore: update ccass data"
           for i in 1 2 3; do
             git pull --rebase origin main && git push origin HEAD:main && break || {
               echo "attempt $i failed, retrying in 5s..."
