@@ -540,7 +540,7 @@ def _us_emit_poc(result: dict, df: pd.DataFrame) -> None:
         "priority": 2,
         "raw": json.dumps(result, ensure_ascii=False, default=str),
     }
-    emit_alert(payload, caption, chart, reply_markup=build_inline_keyboard_([("📊 走勢圖", tv_url)]))
+    emit_alert(payload, caption, chart, reply_markup=build_inline_keyboard_([("📊 走勢圖", tv_url)]), df=df)
 
 def _us_emit_year_open(result: dict, df: pd.DataFrame) -> None:
     sys.path.insert(0, os.path.dirname(__file__))
@@ -570,7 +570,7 @@ def _us_emit_year_open(result: dict, df: pd.DataFrame) -> None:
         "priority": 2,
         "raw": json.dumps(result, ensure_ascii=False, default=str),
     }
-    emit_alert(payload, caption, chart, reply_markup=build_inline_keyboard_([("📊 走勢圖", tv_url)]))
+    emit_alert(payload, caption, chart, reply_markup=build_inline_keyboard_([("📊 走勢圖", tv_url)]), df=df)
 
 def run_us_breakout() -> None:
     """Scan US stocks for POC breakout + year-open breakout."""
