@@ -61,8 +61,8 @@ def _commit_ccass_json(trade_date: str, day_idx: int, total: int) -> None:
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--days", type=int, default=5,
-                        help="過去幾多個交易日 (default: 5)")
+    parser.add_argument("--days", type=int, default=120,
+                        help="過去幾多個交易日 (default: 120)")
     parser.add_argument("--force", action="store_true",
                         help="強制重新 scrape 已有數據")
     args = parser.parse_args()

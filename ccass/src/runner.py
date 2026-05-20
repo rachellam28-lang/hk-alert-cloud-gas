@@ -181,8 +181,8 @@ def _write_shard_json(shard_idx, shard_total, query_date, target_date,
 
 def run_merge() -> int:
     """Collect all ccass-shard-*.json, replay into DB, then full pipeline."""
-    init_db()
     _restore_db()
+    init_db()
     config = load_config()
     target_date = today_hk()
 
@@ -314,14 +314,29 @@ def _scrape_parallel(stocks, query_date, sc_cfg, n_workers):
                 succeeded, attempted, len(failed_stocks))
     return (attempted, succeeded, failed_stocks)
 
-
 def _restore_db():
+    """Restore ccass.db from ccass.db.gz if DB missing, empty, or corrupt."""
     import gzip, shutil
     db_path = Path(__file__).parent.parent / "ccass.db"
     db_gz_path = Path(__file__).parent.parent / "ccass.db.gz"
-    if db_path.exists() and db_path.stat().st_size > 0:
-        return
-    if db_gz_path.exists():
+    if not db_gz_path.exists():
+        return  # Nothing to restore from
+    # Force restore if DB missing, empty, or only contains partial data
+    should_restore = False
+    if not db_path.exists() or db_path.stat().st_size == 0:
+        should_restore = True
+    else:
+        # Heuristic: if DB has fewer than 100 ccass_daily rows, treat as partial
+        try:
+            import sqlite3
+            tmp_conn = sqlite3.connect(str(db_path))
+            row = tmp_conn.execute("SELECT COUNT(*) FROM ccass_daily").fetchone()
+            tmp_conn.close()
+            if row and row[0] < 100:
+                should_restore = True
+        except Exception:
+            should_restore = True  # corrupt DB
+    if should_restore:
         logger.info("Restoring ccass.db from ccass.db.gz (%d bytes)", db_gz_path.stat().st_size)
         with gzip.open(db_gz_path, 'rb') as f_in:
             with open(db_path, 'wb') as f_out:
@@ -335,8 +350,8 @@ def run_daily(
     skip_alerts: bool = False,
     force_universe_refresh: bool = False,
 ) -> int:
-    init_db()
     _restore_db()
+    init_db()
     config = load_config()
     target_date = target_date or today_hk()
 
