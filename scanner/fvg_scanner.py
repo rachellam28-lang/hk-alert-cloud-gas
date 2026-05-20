@@ -1,12 +1,15 @@
 """
 Bullish Fair Value Gap (FVG) Scanner
-Detects fresh bullish FVGs on daily / weekly / monthly timeframes for HK + US stocks.
+Detects fresh bullish FVGs on daily / weekly / monthly timeframes for HK stocks.
 
 Bullish FVG definition:
   Three consecutive candles where candle[i-2].High < candle[i].Low.
   The gap zone = (candle[i-2].High, candle[i].Low).
   A FVG is "fresh" if no subsequent candle's Low has traded below the gap's midpoint.
   A FVG is "retesting" if current price is inside or just above (≤ NEAR_PCT) the zone.
+
+Weekly FVG: uses emit_alert() with chart + year-open filter (same as POC alerts).
+Daily / Monthly FVG: text-only Telegram alerts.
 """
 from __future__ import annotations
 
@@ -25,7 +28,7 @@ NEAR_PCT     = float(os.getenv("FVG_NEAR_PCT", "0.01"))   # 1% above FVG top = "
 RATE_SLEEP   = float(os.getenv("FVG_SLEEP", "0.15"))
 MAX_TG_ALERTS = int(os.getenv("FVG_MAX_TG", "10"))         # max Telegram alerts per run (rest → JSON only)
 
-# ── Ticker universes (same as fetch_market.py) ────────────────────────────────
+# ── Ticker universes ──────────────────────────────────────────────────────────
 HK_TICKERS = [
     "0005.HK","0011.HK","0017.HK","0027.HK","0066.HK","0083.HK","0101.HK","0175.HK",
     "0241.HK","0267.HK","0288.HK","0291.HK","0316.HK","0322.HK","0388.HK","0669.HK",
@@ -36,18 +39,6 @@ HK_TICKERS = [
     "2020.HK","2269.HK","2313.HK","2318.HK","2319.HK","2331.HK","2382.HK","2388.HK",
     "2628.HK","2688.HK","2899.HK","3328.HK","3690.HK","3988.HK","6098.HK","6862.HK",
     "6969.HK","9618.HK","9633.HK","9698.HK","9888.HK","9961.HK","9988.HK","9999.HK",
-]
-
-US_TICKERS = [
-    "AAPL","MSFT","NVDA","AMZN","META","GOOGL","BRK-B","LLY","AVGO","TSLA",
-    "JPM","WMT","V","XOM","UNH","MA","ORCL","COST","HD","PG","JNJ","BAC","ABBV",
-    "KO","CVX","NFLX","MRK","CRM","AMD","PEP","TMO","ACN","LIN","MCD","ADBE",
-    "DHR","TXN","PM","GE","CAT","AMAT","ISRG","QCOM","IBM","GS","NOW","NEE",
-    "RTX","INTU","VZ","MS","AXP","SPGI","AMGN","BLK","UNP","HON","LOW","ELV",
-    "BKNG","SYK","C","BA","PLD","MMC","T","DE","MDT","ABT","SCHW","BMY","REGN",
-    "ZTS","ETN","CB","SO","MDLZ","DUK","COP","USB","BDX","ADP","MO","F","GM",
-    "DIS","TGT","UBER","SBUX","INTC","WFC","PFE","GILD","CI","CVS","EOG","SLB",
-    "EMR","ITW","AON","MCO","LRCX","PCAR","KMB","GD","PYPL","NXPI","MCHP","ADI",
 ]
 
 _TF_PARAMS = {
@@ -165,22 +156,20 @@ def _build_name_map(tickers: list[str]) -> dict[str, str]:
 
 def _tv_url(alert: dict) -> str:
     sym = alert["ticker"].replace(".HK", "")
-    if alert["market"] == "HK":
-        return f"https://www.tradingview.com/chart/?symbol=HKEX%3A{sym}"
-    return f"https://www.tradingview.com/chart/?symbol={sym}"
+    return f"https://www.tradingview.com/chart/?symbol=HKEX%3A{sym}"
 
 
 def _emit_telegram(alert: dict) -> None:
+    """Simple text-only Telegram alert (日線/月線 FVG)."""
     sys.path.insert(0, os.path.dirname(__file__))
     from hk_cloud_scanner import send_telegram_alert, build_inline_keyboard_
 
-    flag        = "🇭🇰" if alert["market"] == "HK" else "🇺🇸"
     status_icon = "🎯 FVG內" if alert["status"] == "in" else "⬇️接近FVG"
     pct_from_top = round((alert["current"] - alert["gap_high"]) / alert["gap_high"] * 100, 2)
     dist_str = (f"{pct_from_top:.2f}%上方" if alert["status"] == "near" else "在FVG內")
 
     caption = (
-        f"📐 {flag} <b>{alert['ticker']}</b> {alert['timeframe']} {status_icon}\n"
+        f"📐 🇭🇰 <b>{alert['ticker']}</b> {alert['timeframe']} {status_icon}\n"
         f"FVG {alert['gap_low']} – {alert['gap_high']}  現價 {alert['current']} ({dist_str})"
     )
 
@@ -191,14 +180,89 @@ def _emit_telegram(alert: dict) -> None:
     time.sleep(0.5)
 
 
+def _emit_weekly_fvg(alert: dict) -> None:
+    """Weekly FVG alert with chart + year-open filter (same as POC alerts).
+
+    Downloads daily OHLCV data, renders a chart with the FVG zone highlighted,
+    and uses emit_alert() which automatically applies the year-open filter — if
+    the stock is below its current-year first-day open, the Telegram alert is
+    suppressed (but still posted to GAS).
+    """
+    sys.path.insert(0, os.path.dirname(__file__))
+    from hk_cloud_scanner import (
+        render_chart, build_inline_keyboard_, emit_alert,
+        get_daily_history, normalize_yfinance_df,
+    )
+
+    ticker = alert["ticker"]   # e.g. "0700.HK"
+    code = ticker.replace(".HK", "").zfill(5)
+    name = alert.get("name") or code
+
+    # ── Download daily price history for chart + year-open check ──
+    df = get_daily_history(code, "1y")
+    if df.empty:
+        # Fallback: try yfinance directly
+        try:
+            raw = yf.download(ticker, period="1y", interval="1d",
+                              progress=False, auto_adjust=False, threads=False)
+            df = normalize_yfinance_df(raw)
+        except Exception:
+            print(f"[FVG weekly] no daily data for {ticker}, fallback to text-only")
+            _emit_telegram(alert)
+            return
+
+    if df.empty:
+        _emit_telegram(alert)
+        return
+
+    # ── Build caption ──
+    status_icon = "🎯 周線FVG內" if alert["status"] == "in" else "⬇️接近周線FVG"
+    pct_from_top = round((alert["current"] - alert["gap_high"]) / alert["gap_high"] * 100, 2)
+    dist_str = (f"{pct_from_top:.2f}%上方" if alert["status"] == "near" else "在FVG內")
+
+    caption = (
+        f"📐 🇭🇰 <b>{code} {name}</b> 周線 {status_icon}\n"
+        f"FVG {alert['gap_low']:.3f} – {alert['gap_high']:.3f}  現價 {alert['current']:.3f} ({dist_str})"
+    )
+
+    # ── Render chart with FVG zone ──
+    tv_url = _tv_url(alert)
+    levels = [
+        ("FVG頂", alert["gap_high"], "#22c55e"),
+        ("FVG底", alert["gap_low"], "#ef4444"),
+    ]
+    chart_path = render_chart(df, code, name,
+                               f"周線FVG · {alert['fvg_date']}",
+                               levels=levels,
+                               lookback_days=180)
+
+    # ── Build payload + emit (year-open filter applied automatically) ──
+    payload: dict[str, Any] = {
+        "source": "fvg_scanner",
+        "category": "tech",
+        "code": code,
+        "name": name,
+        "signal": f"周線Bullish FVG ({alert['status']})",
+        "timeframe": "周線",
+        "price": alert["current"],
+        "market": "HK",
+        "chart_url": tv_url,
+        "message": f"周線FVG {alert['gap_low']:.3f}–{alert['gap_high']:.3f} 現價{alert['current']:.3f} ({dist_str})",
+        "tags": "FVG,周線",
+        "priority": 2,
+        "raw": json.dumps(alert, ensure_ascii=False, default=str),
+    }
+
+    kb = build_inline_keyboard_([("📊 走勢圖", tv_url)])
+    emit_alert(payload, caption, chart_path, reply_markup=kb, df=df)
+    time.sleep(0.5)
+
+
 def _post_to_gas(alert: dict) -> None:
     sys.path.insert(0, os.path.dirname(__file__))
     from hk_cloud_scanner import post_gas_alert
 
-    if alert["market"] == "HK":
-        code = alert["ticker"].replace(".HK", "").zfill(5)
-    else:
-        code = alert["ticker"]
+    code = alert["ticker"].replace(".HK", "").zfill(5)
 
     dist_str = (
         f"{(alert['current'] - alert['gap_high']) / alert['gap_high'] * 100:.2f}%上方"
@@ -216,7 +280,7 @@ def _post_to_gas(alert: dict) -> None:
         "market":    alert["market"],
         "chart_url": _tv_url(alert),
         "message":   f"FVG {alert['gap_low']}–{alert['gap_high']} 現價{alert['current']} ({dist_str})",
-        "tags":      "FVG" if alert["market"] == "HK" else "FVG,美股",
+        "tags":      "FVG",
     })
 
 
@@ -236,15 +300,15 @@ def _export_json(alerts: list[dict]) -> None:
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 
-def run_fvg_scan(market: str = "both") -> None:
-    """market: 'hk' | 'us' | 'both'"""
+def run_fvg_scan(market: str = "hk") -> None:
+    """market: 'hk' | 'us' | 'both' (default: 'hk' for cron)"""
     print(f"[FVG] scan market={market}  near_pct={NEAR_PCT:.0%}")
 
     tasks: list[tuple[str, str, str]] = []  # (ticker, name, market)
     if market in ("hk", "both"):
         tasks += [(t, "", "HK") for t in HK_TICKERS]
     if market in ("us", "both"):
-        tasks += [(t, "", "US") for t in US_TICKERS]
+        tasks += [(t, "", "US") for t in []]  # US FVG disabled — use POC breakout instead
 
     all_alerts: list[dict] = []
     tg_sent = 0
@@ -255,18 +319,27 @@ def run_fvg_scan(market: str = "both") -> None:
         for a in alerts:
             print(f"[FVG] ALERT {a['ticker']} {a['timeframe']} {a['status']}  "
                   f"FVG={a['gap_low']:.2f}–{a['gap_high']:.2f}  now={a['current']:.2f}")
+
+            # Always post to GAS
             try:
                 _post_to_gas(a)
             except Exception as e:
                 print(f"[FVG] GAS error {ticker}: {e}")
-            # Telegram: only send daily "near" + any "in"; skip weekly/monthly "near" (too noisy)
-            send_tg = (
-                a["status"] == "in"
-                or (a["status"] == "near" and a["timeframe"] == "日線")
-            )
+
+            # ── Telegram: rules differ by timeframe ──
+            is_weekly = a["timeframe"] == "周線" and a["market"] == "HK"
+            is_daily_in = a["status"] == "in"
+            is_daily_near = a["status"] == "near" and a["timeframe"] == "日線"
+            is_monthly_in = a["status"] == "in" and a["timeframe"] == "月線"
+
+            send_tg = is_weekly or is_daily_in or is_daily_near or is_monthly_in
+
             if send_tg and tg_sent < MAX_TG_ALERTS:
                 try:
-                    _emit_telegram(a)
+                    if is_weekly:
+                        _emit_weekly_fvg(a)   # chart + year-open filter
+                    else:
+                        _emit_telegram(a)      # text-only
                     tg_sent += 1
                 except Exception as e:
                     print(f"[FVG] telegram error {ticker}: {e}")
@@ -277,5 +350,5 @@ def run_fvg_scan(market: str = "both") -> None:
 
 
 if __name__ == "__main__":
-    market = sys.argv[1] if len(sys.argv) > 1 else "both"
+    market = sys.argv[1] if len(sys.argv) > 1 else "hk"
     run_fvg_scan(market)

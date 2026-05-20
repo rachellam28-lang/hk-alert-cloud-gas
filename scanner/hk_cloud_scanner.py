@@ -480,6 +480,7 @@ def render_chart(
             spine.set_color("#1f2937")
         ax.grid(True, color="#1f2937", linewidth=0.5, alpha=0.6)
         ax.set_xlim(-1, n)
+        ax.invert_yaxis()   # 反轉 Y 軸刻度（高位在上、低位在下，傳統金融圖表方向）
 
         title = f"{code} {name} · {title_suffix}"
         ax.set_title(title, color="#e5e7eb", fontsize=11, loc="left", pad=10)
@@ -977,6 +978,67 @@ def run_corp_actions() -> None:
     send_telegram_message(
         f"披露易掃描完成：即時提醒 {alerted} 則，加入觀察 {watchlisted} 則。"
     )
+
+    # ── Save placing/rights history (配股/供股記錄，保留一年) ──────────────
+    _save_placing_history(anns)
+
+
+def _save_placing_history(anns: list[dict[str, Any]]) -> None:
+    """Append 配股/供股 announcements to placing_history.json, keep 365 days."""
+    placing_types = {"配股", "供股"}
+    new_entries: list[dict] = []
+    for ann in anns:
+        types = set(ann.get("types", []))
+        if not (types & placing_types):
+            continue
+        new_entries.append({
+            "date": ann.get("release_date", ""),
+            "code": ann["code"],
+            "name": ann.get("name", ""),
+            "type": " / ".join(sorted(types & placing_types)),
+            "title": ann.get("title", ""),
+            "title_en": ann.get("title_en", ""),
+            "url": ann.get("url", ""),
+        })
+
+    if not new_entries:
+        return
+
+    out_path = os.path.join(os.path.dirname(__file__), "..", "placing_history.json")
+    existing: dict = {}
+    if os.path.exists(out_path):
+        try:
+            with open(out_path, "r", encoding="utf-8") as f:
+                existing = json.load(f)
+        except Exception:
+            existing = {}
+
+    # Merge: deduplicate by (code, date, type)
+    all_entries: list[dict] = existing.get("entries", [])
+    seen = {(e["code"], e["date"], e.get("type", "")) for e in all_entries}
+    added = 0
+    for e in new_entries:
+        key = (e["code"], e["date"], e["type"])
+        if key not in seen:
+            all_entries.append(e)
+            seen.add(key)
+            added += 1
+
+    # Keep only entries within 365 days
+    cutoff = (datetime.now(HKT_TZ) - timedelta(days=365)).strftime("%Y-%m-%d")
+    all_entries = [e for e in all_entries if e.get("date", "") >= cutoff]
+
+    # Sort newest first
+    all_entries.sort(key=lambda e: e.get("date", ""), reverse=True)
+
+    snapshot = {
+        "updated": datetime.now(HKT_TZ).strftime("%Y-%m-%d %H:%M HKT"),
+        "count": len(all_entries),
+        "entries": all_entries,
+    }
+    with open(out_path, "w", encoding="utf-8") as f:
+        json.dump(snapshot, f, ensure_ascii=False, indent=2)
+    print(f"[placing] saved {len(all_entries)} entries ({added} new) → placing_history.json")
 
 
 def clean_stock_list(df: pd.DataFrame) -> pd.DataFrame:
