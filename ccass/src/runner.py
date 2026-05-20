@@ -130,7 +130,7 @@ def run_shard(shard_idx: int, shard_total: int, force_universe_refresh: bool = F
     _write_shard_json(shard_idx, shard_total, query_date, target_date,
                       len(stocks), len(my_stocks), succeeded, failed_stocks, snapshots)
 
-    return 1 if failed_stocks else 0
+    return 0  # partial failures are normal; merge job will still run
 
 
 def _snapshot_to_dict(snap: CCASSSnapshot) -> dict:

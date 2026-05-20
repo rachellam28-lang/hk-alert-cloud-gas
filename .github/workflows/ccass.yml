@@ -13,6 +13,7 @@ jobs:
   scrape-shard:
     runs-on: ubuntu-latest
     timeout-minutes: 150    # ~463 stocks × 11.5s ≈ 88 min, 150 is safe
+    continue-on-error: true # partial stock failures are normal; merge must run anyway
     strategy:
       fail-fast: false
       matrix:
