@@ -1,7 +1,31 @@
 {
-  "updated": "2026-05-19 23:05 UTC",
-  "count": 15,
+  "updated": "2026-05-20 11:57 UTC",
+  "count": 17,
   "alerts": [
+    {
+      "ticker": "0939.HK",
+      "name": "0939.HK",
+      "market": "HK",
+      "timeframe": "月線",
+      "tf_short": "M",
+      "gap_low": 8.39,
+      "gap_high": 8.7,
+      "current": 8.73,
+      "fvg_date": "2026-05-01",
+      "status": "near"
+    },
+    {
+      "ticker": "0941.HK",
+      "name": "0941.HK",
+      "market": "HK",
+      "timeframe": "周線",
+      "tf_short": "W",
+      "gap_low": 85.699997,
+      "gap_high": 85.849998,
+      "current": 86.550003,
+      "fvg_date": "2026-05-18",
+      "status": "near"
+    },
     {
       "ticker": "BRK-B",
       "name": "BRK-B",
@@ -9,7 +33,7 @@
       "timeframe": "周線",
       "tf_short": "W",
       "gap_low": 479.869995,
-      "gap_high": 480.130005,
+      "gap_high": 480.109985,
       "current": 480.459991,
       "fvg_date": "2026-05-18",
       "status": "near"
@@ -21,7 +45,7 @@
       "timeframe": "日線",
       "tf_short": "D",
       "gap_low": 329.01001,
-      "gap_high": 329.5,
+      "gap_high": 329.48999,
       "current": 329.910004,
       "fvg_date": "2026-05-19",
       "status": "near"
@@ -33,7 +57,7 @@
       "timeframe": "日線",
       "tf_short": "D",
       "gap_low": 49.990002,
-      "gap_high": 50.375,
+      "gap_high": 50.380001,
       "current": 50.700001,
       "fvg_date": "2026-05-19",
       "status": "near"
@@ -141,7 +165,7 @@
       "timeframe": "日線",
       "tf_short": "D",
       "gap_low": 214.919998,
-      "gap_high": 220.324997,
+      "gap_high": 220.330002,
       "current": 220.440002,
       "fvg_date": "2026-05-19",
       "status": "near"
@@ -153,7 +177,7 @@
       "timeframe": "周線",
       "tf_short": "W",
       "gap_low": 90.889999,
-      "gap_high": 93.920097,
+      "gap_high": 93.919998,
       "current": 94.18,
       "fvg_date": "2026-05-18",
       "status": "near"
