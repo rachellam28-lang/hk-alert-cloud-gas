@@ -43,7 +43,7 @@ SOURCES = {
         "url_tpl": "/pnotes_daily.asp?sort=chgdn&d={date}&s=",
         "table_class": "numtable",
         "columns": [
-            "stock_code", "stock_name", "stock_type",
+            "stock_code", "stock_name", "ext_link",
             "note_date", "finished_date",
             "unit_price", "ratio", "qty",
             "last_price", "last_ratio", "vendor",
@@ -86,11 +86,13 @@ SOURCES = {
 
 
 def fetch_page(source_key: str, query_date: str) -> str:
-    """Fetch a Webb-site page, return HTML text."""
+    """Fetch a Webb-site page, return HTML text with correct encoding."""
     cfg = SOURCES[source_key]
     url = BASE_URL + cfg["url_tpl"].format(date=query_date)
     resp = requests.get(url, timeout=30)
     resp.raise_for_status()
+    # Detect encoding: try UTF-8 first, fallback to apparent_encoding
+    resp.encoding = resp.apparent_encoding or "utf-8"
     return resp.text
 
 
@@ -162,7 +164,7 @@ def scrape_source(source_key: str, query_date: str) -> list[dict]:
         for key in ["change_pct", "ratio", "last_ratio", "unit_price",
                      "last_price", "top5_pct", "top10_pct", "top10_ncip_pct",
                      "ccass_stake_pct", "ncip_stake_pct", "cip_stake_pct",
-                     "ip_stake_pct", "value_m"]:
+                     "ip_stake_pct", "value_m", "qty"]:
             if key in entry:
                 entry[f"{key}_num"] = parse_number(entry[key])
         results.append(entry)
