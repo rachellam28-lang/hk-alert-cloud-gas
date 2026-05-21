@@ -18,20 +18,19 @@ def init_db(db_path: Path = DB_PATH) -> None:
     schema = SCHEMA_PATH.read_text(encoding="utf-8")
     with sqlite3.connect(db_path) as conn:
         conn.executescript(schema)
-    # Migration: add top5_pct/top10_pct for existing DBs
-    for col in ("top5_pct", "top10_pct"):
-        try:
-            conn.execute(f"ALTER TABLE ccass_daily ADD COLUMN {col} REAL")
-        except sqlite3.OperationalError:
-            pass
-        conn.commit()
-    # Migration: ccass_events table (added via schema.sql CREATE IF NOT EXISTS)
-    # Migration: add delta_60d_pct/delta_120d_pct for existing DBs
-    for col in ("delta_60d_pct", "delta_120d_pct", "delta_60d_shares", "delta_120d_shares"):
-        try:
-            conn.execute(f"ALTER TABLE ccass_trends ADD COLUMN {col} REAL")
-        except sqlite3.OperationalError:
-            pass
+        # Migration: add top5_pct/top10_pct for existing DBs
+        for col in ("top5_pct", "top10_pct"):
+            try:
+                conn.execute(f"ALTER TABLE ccass_daily ADD COLUMN {col} REAL")
+            except sqlite3.OperationalError:
+                pass
+        # Migration: ccass_events table (added via schema.sql CREATE IF NOT EXISTS)
+        # Migration: add delta_60d_pct/delta_120d_pct for existing DBs
+        for col in ("delta_60d_pct", "delta_120d_pct", "delta_60d_shares", "delta_120d_shares"):
+            try:
+                conn.execute(f"ALTER TABLE ccass_trends ADD COLUMN {col} REAL")
+            except sqlite3.OperationalError:
+                pass
         conn.commit()
 
 

@@ -63,8 +63,8 @@ class CCASSScraper:
         # We abort only if the window is full AND mostly failures, so a
         # single stray 200 in the middle can no longer reset us to zero.
         from collections import deque
-        self._outcome_window: deque[bool] = deque(maxlen=8)
-        self._abort_threshold = 6   # >=6 bad out of last 8 -> HKEX down / blocked
+        self._outcome_window: deque[bool] = deque(maxlen=12)
+        self._abort_threshold = 7   # >=7 bad out of last 12 -> HKEX down / blocked
         self.session = cloudscraper.create_scraper()
         self.session.headers.update({"User-Agent": user_agent})
         self._form_tokens: dict[str, str] = {}

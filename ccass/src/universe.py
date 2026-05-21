@@ -4,6 +4,7 @@ CCASS 公開 stock list 喺 HKEX 網站。我哋每星期 refresh 一次。
 """
 from __future__ import annotations
 
+import time
 from datetime import datetime
 from typing import Iterable
 
@@ -38,12 +39,20 @@ def fetch_all_hk_stocks_from_ccass() -> list[tuple[str, str]]:
     會攞埋中文版 xlsx 嚟顯示中文公司名。
     """
     logger.info("Fetching HKEX stock list from %s", HKEX_STOCK_LIST_URL)
-    try:
-        resp = requests.get(HKEX_STOCK_LIST_URL, timeout=60)
-        resp.raise_for_status()
-    except requests.RequestException as e:
-        logger.error("Failed to fetch HKEX stock list: %s", e)
-        raise
+    last_err = None
+    for attempt, backoff in enumerate((2, 4, 8), start=1):
+        try:
+            resp = requests.get(HKEX_STOCK_LIST_URL, timeout=60)
+            resp.raise_for_status()
+            break
+        except requests.RequestException as e:
+            last_err = e
+            logger.warning("HKEX stock list attempt %d/3 failed: %s", attempt, e)
+            if attempt < 3:
+                time.sleep(backoff)
+    else:
+        logger.error("HKEX stock list failed after 3 attempts: %s", last_err)
+        raise last_err
 
     # Parse xlsx — scan all sheets, pick the one with most stock codes
     import io

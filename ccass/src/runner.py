@@ -84,6 +84,7 @@ def run_shard(shard_idx: int, shard_total: int, force_universe_refresh: bool = F
             refresh_universe()
         except Exception as e:
             logger.error("Universe refresh failed: %s", e)
+            send_admin_alert(f"Universe refresh failed in shard {shard_idx}: {e}")
 
     stocks = get_active_stocks()
     logger.info("Universe: %d active stocks", len(stocks))
