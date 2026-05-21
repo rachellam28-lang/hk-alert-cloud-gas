@@ -241,6 +241,87 @@ def format_alerts(alerts: list[str], query_date: str) -> str:
     return "\n".join(lines)
 
 
+# ── Frontend summary ────────────────────────────────────────────────────────
+def build_summary(all_data: dict, query_date: str) -> dict:
+    """Build compact CCASS-compatible summary for frontend."""
+    summary = {
+        "updated": query_date,
+        "sources": {},
+    }
+
+    # pnotes: new share subscriptions
+    pnotes = all_data.get("pnotes", [])
+    if pnotes:
+        top_pnotes = sorted(
+            pnotes, key=lambda x: x.get("ratio_num") or 0, reverse=True
+        )[:10]
+        summary["sources"]["pnotes"] = {
+            "label": "新股配售",
+            "count": len(pnotes),
+            "top": [
+                {
+                    "code": p["stock_code"],
+                    "name": p["stock_name"],
+                    "ratio": p["ratio"],
+                    "price": p["unit_price"],
+                    "qty": p.get("qty", ""),
+                    "vendor": p.get("vendor", ""),
+                }
+                for p in top_pnotes
+            ],
+        }
+
+    # bigchanges: big CCASS holding changes
+    big = all_data.get("bigchanges", [])
+    if big:
+        top_big = sorted(
+            big, key=lambda x: abs(x.get("change_pct_num") or 0), reverse=True
+        )[:10]
+        summary["sources"]["bigchanges"] = {
+            "label": "倉位異動",
+            "count": len(big),
+            "top": [
+                {
+                    "code": b["stock_code"],
+                    "name": b.get("issue_name", ""),
+                    "change": b["change_pct"],
+                    "participant": b.get("participant", ""),
+                }
+                for b in top_big
+            ],
+        }
+
+    # cconc: concentration
+    cconc = all_data.get("cconc", [])
+    if cconc:
+        top5_vals = [c.get("top5_pct_num") for c in cconc if c.get("top5_pct_num")]
+        summary["sources"]["cconc"] = {
+            "label": "集中度",
+            "count": len(cconc),
+            "top5_avg": round(sum(top5_vals) / len(top5_vals), 1) if top5_vals else 0,
+            "top10_avg": 0,
+        }
+
+    # ipstakes: investor stakes
+    ip = all_data.get("ipstakes", [])
+    if ip:
+        summary["sources"]["ipstakes"] = {
+            "label": "投資者持倉",
+            "count": len(ip),
+        }
+
+    return summary
+
+
+def save_summary(data: dict, query_date: str) -> Path:
+    """Save frontend summary to JSON."""
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    path = Path(__file__).parent.parent / "data" / "webb_site" / "summary.json"
+    path.write_text(json.dumps(data, ensure_ascii=False, indent=2),
+                    encoding="utf-8")
+    return path
+
+
 # ── CLI ─────────────────────────────────────────────────────────────────────
 def main():
     parser = argparse.ArgumentParser(description="Webb-site CCASS Scraper")
@@ -252,6 +333,8 @@ def main():
                         help="Compare with previous run and report new entries")
     parser.add_argument("--telegram", action="store_true",
                         help="Send alerts to Telegram")
+    parser.add_argument("--summary", action="store_true",
+                        help="Generate frontend summary JSON")
     args = parser.parse_args()
 
     # Determine dates
@@ -297,6 +380,12 @@ def main():
             json.dumps(all_data, ensure_ascii=False, indent=2),
             encoding="utf-8",
         )
+
+    # Frontend summary
+    if args.summary:
+        summary = build_summary(all_data, target_date)
+        sp = save_summary(summary, target_date)
+        print(f"Summary → {sp}")
 
     # Summary
     total = sum(len(v) for v in all_data.values())
