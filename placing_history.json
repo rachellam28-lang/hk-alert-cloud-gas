@@ -1,6 +1,6 @@
 {
-  "updated": "2026-05-21 19:51 HKT",
-  "count": 12,
+  "updated": "2026-05-21 23:38 HKT",
+  "count": 18,
   "entries": [
     {
       "date": "2026-05-21",
@@ -64,6 +64,60 @@
       "title": "配股完成 OF NEW SHARES（一般授權）",
       "title_en": "COMPLETION OF PLACING OF NEW SHARES\nUNDER GENERAL MANDATE",
       "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0521/2026052100657.pdf"
+    },
+    {
+      "date": "2026-05-21",
+      "code": "02515",
+      "name": "TJCD",
+      "type": "配股",
+      "title": "公司公告：SUBSCRIPTION FOR NEW SHARES UNDER GENERAL MANDATE",
+      "title_en": "SUBSCRIPTION FOR NEW SHARES UNDER GENERAL MANDATE",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0521/2026052101980.pdf"
+    },
+    {
+      "date": "2026-05-21",
+      "code": "02570",
+      "name": "REFIRE",
+      "type": "配股",
+      "title": "公司公告：PROPOSED ISSUE OF UNLISTED WARRANTS UNDER SPECIFIC MANDATE",
+      "title_en": "PROPOSED ISSUE OF UNLISTED WARRANTS\nUNDER SPECIFIC MANDATE",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0521/2026052101866.pdf"
+    },
+    {
+      "date": "2026-05-21",
+      "code": "01942",
+      "name": "MOG DIGITECH",
+      "type": "供股 / 配股",
+      "title": "公司公告：I. PROPOSED INCREASE IN AUTHORISED SHARE CAPITAL; AND II. PROPOSED RIGHTS …",
+      "title_en": "I. PROPOSED INCREASE IN AUTHORISED SHARE CAPITAL; AND II. PROPOSED RIGHTS ISSUE ON THE BASIS OF ONE (1) RIGHTS SHARE FOR EVERY TWO (2) SHARES HELD ON THE RECORD DATE ON A NON-UNDERWRITTEN BASIS",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0521/2026052101596.pdf"
+    },
+    {
+      "date": "2026-05-21",
+      "code": "01380",
+      "name": "CHI KINGSTONE",
+      "type": "配股",
+      "title": "補充公告 認購新股（一般授權）",
+      "title_en": "SUPPLEMENTAL ANNOUNCEMENT\nSUBSCRIPTION OF NEW SHARES UNDER GENERAL MANDATE",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0521/2026052101488.pdf"
+    },
+    {
+      "date": "2026-05-21",
+      "code": "06939",
+      "name": "MEGAIN",
+      "type": "配股",
+      "title": "公司公告：JOINT ANNONCEMENT: CONNECTED TRANSACTION IN RELATION TO THE SUBSCRIBTION O…",
+      "title_en": "JOINT ANNONCEMENT: CONNECTED TRANSACTION IN RELATION TO THE SUBSCRIBTION OF NEW SHARES AND UPDATE ON THE POSSIBLE UNCONDITIONAL MANDATORY CASH OFFER BY ICBC INTERNATIONAL CAPITAL LIMITED FOR AND ON BEHALF OF THE OFFEROR",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0521/2026052101406.pdf"
+    },
+    {
+      "date": "2026-05-21",
+      "code": "02563",
+      "name": "BIOSTAR PHARM-B",
+      "type": "配股",
+      "title": "補充公告：THE 認購新股（一般授權）",
+      "title_en": "SUPPLEMENTAL ANNOUNCEMENT IN RELATION TO THE SUBSCRIPTION OF NEW SHARES UNDER GENERAL MANDATE",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0521/2026052101400.pdf"
     },
     {
       "date": "2026-05-20",
