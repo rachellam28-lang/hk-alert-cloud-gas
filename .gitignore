@@ -3,6 +3,10 @@ ccass/backups/
 ccass/logs/
 ccass/debug/
 ccass/codes.json
+ccass.db
+
+# Webb-site daily dumps
+data/webb_site/webb_*.json
 
 # Python
 __pycache__/
