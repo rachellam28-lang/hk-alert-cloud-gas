@@ -31,6 +31,9 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .btn-ghost{appearance:none;background:transparent;border:1px solid var(--line);color:var(--text-soft);padding:5px 10px;border-radius:8px;font:500 12px inherit;cursor:pointer;white-space:nowrap}
 .btn-ghost:hover{background:var(--surface-soft)}
 .btn-ghost.active{border-color:var(--primary);background:var(--primary-soft);color:var(--primary)}
+.webb-block{background:var(--surface-soft);border:1px solid var(--line);border-radius:8px;padding:8px 10px;margin:4px 0;font-size:12px}
+.webb-block b{color:var(--text)}
+.webb-row{font-size:11px;color:var(--text-soft)}
 th.sortable{cursor:pointer;user-select:none}th.sortable:hover{color:var(--text);background:var(--primary-soft)}
 th.sort-active{color:var(--primary)}.sort-icon{margin-left:4px;font-size:9px}
 table{width:100%;border-collapse:collapse;table-layout:auto}
@@ -394,6 +397,14 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
   <div class="section-body" id="body-corps">
     <section class="card recent-card" id="recentWrap"><div class="loading-msg">載入中…</div></section>
   </div>
+
+  <div class="section-head">
+    <h2><span class="ico">🌐</span> Webb-site CCASS 數據</h2>
+  </div>
+  <section class="card" id="webbCard" style="display:none">
+    <div class="toolbar"><span class="tlabel">Webb-site 每日監察</span></div>
+    <div style="padding:10px 14px;font-size:12px;line-height:1.6" id="webbBody"></div>
+  </section>
 
   <div class="foot">數據來源：HKEX CCASS · 自動更新 10分鐘 · 僅供參考</div>
 </main>
@@ -1196,6 +1207,50 @@ function renderRecent(recentCorps){
   document.getElementById('recentWrap').innerHTML = '<ul class="ra-list">'+items+'</ul>';
 }
 
+// --- Webb-site CCASS data ---
+function renderWebb(data){
+  var card = document.getElementById('webbCard');
+  if(!card) return;
+  var body = document.getElementById('webbBody');
+  if(!body) return;
+  var srcs = data.sources||{};
+  var html = '';
+
+  // pnotes
+  if(srcs.pnotes){
+    var p = srcs.pnotes;
+    html += '<div class="webb-block"><b>📦 新股配售</b> ('+p.count+'條)<br>';
+    (p.top||[]).forEach(s=>{
+      html += '<span class="webb-row">'+esc(s.code)+' <b>'+esc(s.name)+'</b> '+esc(s.ratio)+' @'+esc(s.price)+'</span><br>';
+    });
+    html += '</div>';
+  }
+  // bigchanges
+  if(srcs.bigchanges){
+    var b = srcs.bigchanges;
+    html += '<div class="webb-block"><b>🏦 倉位異動</b> ('+b.count+'條)<br>';
+    (b.top||[]).slice(0,5).forEach(s=>{
+      var up = s.change.indexOf('-')!==0 && s.change!=='0';
+      html += '<span class="webb-row">'+esc(s.code)+' <b>'+esc(s.name).slice(0,16)+'</b> ';
+      html += '<span style="color:'+(up?'var(--up)':'var(--down)')+'">'+esc(s.change)+'%</span>';
+      html += ' '+esc(s.participant||'').slice(0,12)+'</span><br>';
+    });
+    html += '</div>';
+  }
+  // cconc
+  if(srcs.cconc){
+    var c = srcs.cconc;
+    html += '<div class="webb-block"><b>📊 集中度</b> ('+c.count+'隻) Top5均 '+c.top5_avg+'%</div>';
+  }
+
+  if(html){
+    card.style.display='';
+    body.innerHTML = html;
+  } else {
+    card.style.display='none';
+  }
+}
+
 // --- main load ---
 async function loadData(){
   const dot=document.getElementById('statusDot');
@@ -1215,6 +1270,12 @@ async function loadData(){
     fetch('./market.json?_='+Date.now())
       .then(r=>r.ok?r.json():null)
       .then(m=>{renderMarket(m);renderBreadth(m);})
+      .catch(()=>{});
+
+    // Fetch Webb-site summary
+    fetch('./data/webb_site/summary.json?_='+Date.now())
+      .then(r=>r.ok?r.json():null)
+      .then(w=>{if(w&&w.sources)renderWebb(w);})
       .catch(()=>{});
 
     // Fetch GAS
