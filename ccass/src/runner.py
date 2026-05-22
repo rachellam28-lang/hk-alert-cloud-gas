@@ -554,10 +554,10 @@ def _export_json(query_date, alerts_today):
                           t.delta_60d_pct, t.delta_120d_pct,
                           d.total_pct, d.top5_pct, d.top10_pct, d.num_participants,
                           t.consecutive_increase_days, t.consecutive_decrease_days
-                   FROM ccass_trends t
-                   LEFT JOIN stock_universe u ON u.stock_code = t.stock_code
-                   LEFT JOIN ccass_daily d ON d.stock_code = t.stock_code AND d.trade_date = t.trade_date
-                   WHERE t.trade_date = ?
+                   FROM ccass_daily d
+                   LEFT JOIN stock_universe u ON u.stock_code = d.stock_code
+                   LEFT JOIN ccass_trends t ON t.stock_code = d.stock_code AND t.trade_date = d.trade_date
+                   WHERE d.trade_date = ? AND d.validation_failed = 0
                    ORDER BY t.delta_5d_pct DESC""",
                 (date_str,),
             ).fetchall()
@@ -621,7 +621,8 @@ def _export_json(query_date, alerts_today):
         _post_movers_to_gas(top_increase, top_decrease, date_str)
         _stage_outputs(out_path)
     except Exception as e:
-        logger.warning("ccass.json export failed: %s", e)
+        logger.exception("ccass.json export failed")
+        raise
 
 
 def _post_movers_to_gas(top_increase, top_decrease, date_str):

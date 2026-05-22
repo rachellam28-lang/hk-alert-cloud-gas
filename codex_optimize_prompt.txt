@@ -1,0 +1,65 @@
+你係 CCASS 港股持倉分析系統嘅 principal engineer。請全面 review + optimize 呢個 repo。
+
+## Repo 結構
+```
+ccass/src/  — Python backend: runner.py, scraper.py, db.py, universe.py, alerts.py, trend.py, logger.py, backfill.py
+ccass/      — config.yaml, requirements.txt, ccass.db.gz (baseline DB), ccass.db (runtime)
+scanner/    — webb_site_scraper.py, fvg_scanner.py, hk_cloud_scanner.py, us_scanner.py, events_detector.py
+.github/    — workflows: ccass.yml, webb_site.yml, corp.yml, fvg.yml, ipo.yml, heartbeat.yml, etc.
+*.html      — Frontend: ccass.html (CCASS dashboard), index.html (港股版), history.html, watchlist.html, us.html
+*.json      — Data: ccass.json (export), market.json, fvg.json, placing_history.json
+```
+
+## 環境
+- GitHub Actions (ubuntu-latest) 每日 Mon-Fri 9pm HKT scrape
+- 6-shard parallel → merge → trends → alerts → export
+- Universe: 2,777 隻港股 active
+- Frontend 係 static HTML + vanilla JS，GitHub Pages hosting
+- Telegram Bot 發送 alerts
+
+## 重點優化方向
+
+### 1. Performance — 2,777 stocks scraping 太慢
+- 目前每個 shard serial scrape ~463 stocks × ~11s = ~85 min per shard
+- `scraper.py` 入面 scrape_stock 係 single-threaded
+- 建議：每個 shard 內部用 ThreadPoolExecutor（參考 runner.py L264 _scrape_parallel）
+- 小心 rate limiting — HKEX 會 block concurrent requests
+
+### 2. Robustness — failed stocks retry
+- 目前 failed_stocks 只記錄唔 retry
+- `scraper.py` abort threshold 7/12（12 個 request 入面 >=7 fail 就 abort）
+- 成個 shard abort 會 skip 好多 stock
+- 建議：failed stocks 喺 shard 最後 retry 一次，或者 merge 階段補 scrap
+
+### 3. Data Completeness
+- ccass.json 應該有晒 2,777 隻正股，唔係 500
+- verify `_export_json` 冇隱藏 LIMIT
+- verify `get_active_stocks()` return 2,777（而家係 ✓）
+
+### 4. Frontend Optimization
+- ccass.html ~1,300 lines, 88KB — 可唔可以 split JS/CSS？
+- 2,777 stocks 嘅 DOM rendering performance
+- 搜尋 + filter + sort 速度
+- Mobile responsive check
+
+### 5. DB Maintenance
+- ccass.db.gz 而家 67KB, 隨住每日 run 會增大
+- 有冇需要 periodic vacuum / cleanup old data？
+- `_restore_db()` heuristic (<100 daily rows = partial) 會唔會有 edge case？
+
+### 6. Code Quality
+- `runner.py` L69-134 (shard mode) 同 L264-490 (single mode) 有 duplicate logic
+- `_export_json()` 好長 (~100 lines) — extract sub-functions？
+- error handling consistency
+
+### 7. Monitoring
+- Admin alerts coverage — 係咪所有 critical failure path 都有 alert？
+- Workflow failure 會唔會 silent fail？
+
+## Output 要求
+1. **Ranked finding list** — #1 最 urgent, 每個有 severity (🔴 Critical / 🟡 Medium / 🟢 Low)
+2. **每個 finding 有 concrete diff/patch** — show exact code changes
+3. **Performance benchmark estimate** — 優化前 vs 優化後 estimated scrape time
+4. **Risk assessment** — 每個 change 有冇 break existing functionality 嘅風險
+
+請先讀晒所有相關 files，然後出 analysis。Focus on correctness + performance，唔好做 cosmetic changes。

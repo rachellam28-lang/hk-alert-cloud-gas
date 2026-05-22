@@ -99,11 +99,17 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          # Force-add even if unchanged; check file existence as signal
           if [ -f ccass.json ]; then
+            # Verify stock count before committing
+            STOCK_COUNT=$(python -c "import json; d=json.load(open('ccass.json','r',encoding='utf-8')); print(len(d.get('stocks',[])))")
+            echo "ccass.json has ${STOCK_COUNT} stocks"
+            if [ "$STOCK_COUNT" -lt 2500 ]; then
+              echo "ERROR: ccass.json only has ${STOCK_COUNT} stocks (expected 2500+). Aborting commit."
+              exit 1
+            fi
             git add ccass.json ccass/ccass.db.gz 2>/dev/null || true
             git diff --cached --quiet && { echo "unchanged, skipping commit"; exit 0; }
-            git commit -m "chore: update ccass data"
+            git commit -m "chore: update ccass data (${STOCK_COUNT} stocks)"
           else
             echo "WARNING: ccass.json not found after merge!"
             exit 1
