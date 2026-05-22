@@ -200,7 +200,7 @@ class CCASSScraper:
                 self._polite_sleep()
                 return snapshot
 
-            except (RequestException, RuntimeError) as e:
+            except RequestException as e:
                 last_err = e
                 backoff = 2 ** attempt
                 logger.warning(

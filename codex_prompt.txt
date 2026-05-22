@@ -1,0 +1,20 @@
+DIAGNOSE CCASS SCRAPER STUCK — Run #32
+
+GitHub Actions workflow "CCASS Daily Scrape (6-Shard)" Run #32 has been running for 1.5 hours with ALL 6 shard jobs still "in_progress" and 0 completed. This is abnormal.
+
+Repo: rachellam28-lang/hk-alert-cloud-gas
+Run: https://github.com/rachellam28-lang/hk-alert-cloud-gas/actions/runs/26276190482
+
+What to investigate:
+1. Read the full .github/workflows/ccass.yml — check for stagger delays, timeout config, any blocking steps
+2. Read ccass/src/runner.py — is there any step that could hang? Retry loops? Infinite waits?
+3. Read ccass/src/ (all scraper files) — look for anything that could cause silent hangs
+4. Check if the stagger delay (shard * 60s) could cause all shards to block each other
+5. Look for any network timeout/hang patterns (e.g., requests.get without timeout)
+6. Is there a merge step that waits for all shards? Could it be the bottleneck?
+
+Output format:
+- TOP 3 most likely causes, ranked
+- For each: the exact file, line numbers, and the bug
+- Concrete fix (the exact code change needed)
+- DON'T apply any fixes, just report findings

@@ -110,7 +110,17 @@ def run_shard(shard_idx: int, shard_total: int, force_universe_refresh: bool = F
     succeeded = 0
     failed_stocks: list[str] = []
 
+    # Internal deadline: abort if shard takes too long (HKEX block detection)
+    deadline = time.monotonic() + 6600  # 110 minutes
+    deadline_exceeded = False
+
     for i, code in enumerate(my_stocks, 1):
+        if time.monotonic() > deadline:
+            logger.error("Shard %d internal deadline exceeded at %d/%d",
+                         shard_idx, i - 1, len(my_stocks))
+            failed_stocks.extend(my_stocks[i - 1:])
+            deadline_exceeded = True
+            break
         if i % 50 == 0:
             logger.info("Shard %d progress: %d/%d (%.1f%%)",
                         shard_idx, i, len(my_stocks), 100 * i / len(my_stocks))
@@ -121,6 +131,13 @@ def run_shard(shard_idx: int, shard_total: int, force_universe_refresh: bool = F
                 succeeded += 1
             else:
                 failed_stocks.append(code)
+        except RuntimeError as e:
+            logger.error("Shard %d aborting on runtime error from %s: %s",
+                         shard_idx, code, e)
+            failed_stocks.append(code)
+            _write_shard_json(shard_idx, shard_total, query_date, target_date,
+                              len(stocks), len(my_stocks), succeeded, failed_stocks, snapshots)
+            return 2
         except Exception:
             logger.exception("Unexpected error on %s", code)
             failed_stocks.append(code)

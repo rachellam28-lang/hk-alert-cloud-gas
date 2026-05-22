@@ -16,6 +16,7 @@ jobs:
     continue-on-error: true # partial stock failures are normal; merge must run anyway
     strategy:
       fail-fast: false
+      max-parallel: 2
       matrix:
         shard: [0, 1, 2, 3, 4, 5]
 
@@ -45,7 +46,7 @@ jobs:
           echo "⏳ Shard ${{ matrix.shard }} — waiting ${delay}s stagger..."
           sleep "$delay"
           cd ccass
-          python -m src.runner --shard ${{ matrix.shard }} --shard-total 6 --refresh-universe
+          python -m src.runner --shard ${{ matrix.shard }} --shard-total 6
 
       - name: Upload shard ${{ matrix.shard }} artifact
         if: always()
