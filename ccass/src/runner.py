@@ -148,6 +148,9 @@ def run_shard(shard_idx: int, shard_total: int, force_universe_refresh: bool = F
     _write_shard_json(shard_idx, shard_total, query_date, target_date,
                       len(stocks), len(my_stocks), succeeded, failed_stocks, snapshots)
 
+    if deadline_exceeded:
+        return 2
+
     return 0  # partial failures are normal; merge job will still run
 
 
