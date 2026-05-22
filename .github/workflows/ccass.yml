@@ -95,13 +95,19 @@ jobs:
           python -m src.runner --merge
 
       - name: Commit ccass.json + ccass.db.gz
+        if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add ccass.json
-          git add ccass/ccass.db.gz 2>/dev/null || true
-          git diff --cached --quiet && { echo "unchanged, skipping commit"; exit 0; }
-          git commit -m "chore: update ccass data"
+          # Force-add even if unchanged; check file existence as signal
+          if [ -f ccass.json ]; then
+            git add ccass.json ccass/ccass.db.gz 2>/dev/null || true
+            git diff --cached --quiet && { echo "unchanged, skipping commit"; exit 0; }
+            git commit -m "chore: update ccass data"
+          else
+            echo "WARNING: ccass.json not found after merge!"
+            exit 1
+          fi
           for i in 1 2 3; do
             git pull --rebase origin main && git push origin HEAD:main && break || {
               echo "attempt $i failed, retrying in 5s..."
