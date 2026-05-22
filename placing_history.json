@@ -1,6 +1,6 @@
 {
-  "updated": "2026-05-22 19:26 HKT",
-  "count": 21,
+  "updated": "2026-05-22 22:47 HKT",
+  "count": 26,
   "entries": [
     {
       "date": "2026-05-22",
@@ -28,6 +28,51 @@
       "title": "公司公告：EXTENSION OF LONG STOP DATE IN RELATION TO SUBSCRIPTIONS OF NEW SHARES UND…",
       "title_en": "EXTENSION OF LONG STOP DATE\nIN RELATION TO SUBSCRIPTIONS OF NEW SHARES\nUNDER THE GENERAL MANDATE",
       "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0522/2026052200394.pdf"
+    },
+    {
+      "date": "2026-05-22",
+      "code": "02171",
+      "name": "CARSGEN-B",
+      "type": "配股",
+      "title": "澄清公告",
+      "title_en": "CLARIFICATION ANNOUNCEMENT",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0522/2026052201710.pdf"
+    },
+    {
+      "date": "2026-05-22",
+      "code": "00343",
+      "name": "CULTURECOM HOLD",
+      "type": "配股",
+      "title": "認購完成 OF NEW SHARES（一般授權）",
+      "title_en": "COMPLETION OF SUBSCRIPTION OF NEW SHARES\nUNDER GENERAL MANDATE",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0522/2026052201662.pdf"
+    },
+    {
+      "date": "2026-05-22",
+      "code": "00356",
+      "name": "DT CAPITAL",
+      "type": "配股",
+      "title": "認購新股（一般授權）",
+      "title_en": "SUBSCRIPTION OF NEW SHARES UNDER GENERAL MANDATE",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0522/2026052201654.pdf"
+    },
+    {
+      "date": "2026-05-22",
+      "code": "01751",
+      "name": "AI ENERGY ENG",
+      "type": "供股",
+      "title": "公司公告：RESULTS OF THE RIGHTS ISSUE",
+      "title_en": "RESULTS OF THE RIGHTS ISSUE",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0522/2026052201552.pdf"
+    },
+    {
+      "date": "2026-05-22",
+      "code": "00456",
+      "name": "NEW CITY DEV",
+      "type": "配股",
+      "title": "認購完成 OF NEW SHARES（一般授權）",
+      "title_en": "COMPLETION OF SUBSCRIPTION OF NEW SHARES UNDER GENERAL MANDATE",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0522/2026052201512.pdf"
     },
     {
       "date": "2026-05-21",
