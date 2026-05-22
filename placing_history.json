@@ -1,6 +1,6 @@
 {
-  "updated": "2026-05-22 15:59 HKT",
-  "count": 19,
+  "updated": "2026-05-22 19:26 HKT",
+  "count": 21,
   "entries": [
     {
       "date": "2026-05-22",
@@ -10,6 +10,24 @@
       "title": "配售新股（一般授權）",
       "title_en": "PLACING OF NEW SHARES UNDER GENERAL MANDATE",
       "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0522/2026052200003.pdf"
+    },
+    {
+      "date": "2026-05-22",
+      "code": "00862",
+      "name": "VISION VALUES",
+      "type": "配股",
+      "title": "公司公告：(1) POLL RESULTS OF THE EXTRAORDINARY GENERAL MEETING HELD ON 22 MAY 2026;…",
+      "title_en": "(1) POLL RESULTS OF THE EXTRAORDINARY GENERAL\nMEETING HELD ON 22 MAY 2026;\n(2) THE SHARE CONSOLIDATION AND\nCHANGE IN BOARD LOT SIZE; AND\n(3) ADJUSTMENT IN RELATION TO THE SHARE OPTIONS",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0522/2026052201232.pdf"
+    },
+    {
+      "date": "2026-05-22",
+      "code": "00472",
+      "name": "NEW SILKROAD",
+      "type": "配股",
+      "title": "公司公告：EXTENSION OF LONG STOP DATE IN RELATION TO SUBSCRIPTIONS OF NEW SHARES UND…",
+      "title_en": "EXTENSION OF LONG STOP DATE\nIN RELATION TO SUBSCRIPTIONS OF NEW SHARES\nUNDER THE GENERAL MANDATE",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0522/2026052200394.pdf"
     },
     {
       "date": "2026-05-21",
