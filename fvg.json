@@ -1,6 +1,6 @@
 {
-  "updated": "2026-05-21 23:03 UTC",
-  "count": 6,
+  "updated": "2026-05-22 11:49 UTC",
+  "count": 4,
   "alerts": [
     {
       "ticker": "0005.HK",
@@ -8,58 +8,22 @@
       "market": "HK",
       "timeframe": "日線",
       "tf_short": "D",
-      "gap_low": 140.300003,
-      "gap_high": 141.0,
-      "current": 141.699997,
-      "fvg_date": "2026-05-21",
+      "gap_low": 139.199997,
+      "gap_high": 142.600006,
+      "current": 143.899994,
+      "fvg_date": "2026-05-22",
       "status": "near"
     },
     {
-      "ticker": "0939.HK",
-      "name": "0939.HK",
-      "market": "HK",
-      "timeframe": "月線",
-      "tf_short": "M",
-      "gap_low": 8.39,
-      "gap_high": 8.69,
-      "current": 8.69,
-      "fvg_date": "2026-05-01",
-      "status": "in"
-    },
-    {
-      "ticker": "0941.HK",
-      "name": "0941.HK",
-      "market": "HK",
-      "timeframe": "周線",
-      "tf_short": "W",
-      "gap_low": 85.699997,
-      "gap_high": 85.849998,
-      "current": 86.050003,
-      "fvg_date": "2026-05-18",
-      "status": "near"
-    },
-    {
-      "ticker": "0992.HK",
-      "name": "0992.HK",
+      "ticker": "2313.HK",
+      "name": "2313.HK",
       "market": "HK",
       "timeframe": "日線",
       "tf_short": "D",
-      "gap_low": 13.05,
-      "gap_high": 13.09,
-      "current": 13.15,
-      "fvg_date": "2026-05-21",
-      "status": "near"
-    },
-    {
-      "ticker": "1398.HK",
-      "name": "1398.HK",
-      "market": "HK",
-      "timeframe": "月線",
-      "tf_short": "M",
-      "gap_low": 6.670291,
-      "gap_high": 6.78,
-      "current": 6.8,
-      "fvg_date": "2026-05-01",
+      "gap_low": 45.459999,
+      "gap_high": 46.0,
+      "current": 46.279999,
+      "fvg_date": "2026-05-22",
       "status": "near"
     },
     {
@@ -69,9 +33,21 @@
       "timeframe": "周線",
       "tf_short": "W",
       "gap_low": 120.5,
-      "gap_high": 122.599998,
-      "current": 123.5,
+      "gap_high": 121.099998,
+      "current": 121.699997,
       "fvg_date": "2026-05-18",
+      "status": "near"
+    },
+    {
+      "ticker": "9633.HK",
+      "name": "9633.HK",
+      "market": "HK",
+      "timeframe": "日線",
+      "tf_short": "D",
+      "gap_low": 42.248435,
+      "gap_high": 42.380001,
+      "current": 42.599998,
+      "fvg_date": "2026-05-22",
       "status": "near"
     }
   ]
