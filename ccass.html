@@ -300,11 +300,9 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
           <option value="poc">POC</option>
           <option value="poc_half">半年POC</option>
           <option value="poc3">半年+12月+3年POC</option>
-          <option value="fvg">FVG</option>
+          <option value="fvg">Bullish FVG</option>
           <option value="yearopen">年開突破</option>
-          <option value="ipo">IPO首日</option>
-          <option value="ipo_high">IPO首日高突破</option>
-          <option value="ipo_open">IPO首日開突破</option>
+          <option value="ipo">IPO首日突破</option>
           <option value="ccass_up">CCASS增持</option>
           <option value="ccass_dn">CCASS減持</option>
         </select>
@@ -904,8 +902,6 @@ function applyFilters(){
       else if(sigFilterVal==='fvg') sigOK=sigText.indexOf('FVG')>=0;
       else if(sigFilterVal==='yearopen') sigOK=sigText.indexOf('年開突破')>=0;
       else if(sigFilterVal==='ipo') sigOK=sigText.indexOf('IPO首日')>=0;
-      else if(sigFilterVal==='ipo_high') sigOK=sigText.indexOf('IPO首日高突破')>=0;
-      else if(sigFilterVal==='ipo_open') sigOK=sigText.indexOf('IPO首日開突破')>=0;
       else if(sigFilterVal==='ccass_up') sigOK=sm&&s.d5!==null&&s.d5>0;
       else if(sigFilterVal==='ccass_dn') sigOK=sm&&s.d5!==null&&s.d5<0;
       if(!sigOK) return false;

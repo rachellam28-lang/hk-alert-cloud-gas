@@ -160,7 +160,7 @@ def _tv_url(alert: dict) -> str:
 
 
 def _emit_telegram(alert: dict) -> None:
-    """Simple text-only Telegram alert (日線/月線 FVG)."""
+    """Simple text-only Telegram alert (日線 Bullish FVG)."""
     sys.path.insert(0, os.path.dirname(__file__))
     from hk_cloud_scanner import send_telegram_alert, build_inline_keyboard_
 
@@ -216,12 +216,12 @@ def _emit_weekly_fvg(alert: dict) -> None:
         return
 
     # ── Build caption ──
-    status_icon = "🎯 周線FVG內" if alert["status"] == "in" else "⬇️接近周線FVG"
+    status_icon = "🎯 周線+月線FVG內" if alert["status"] == "in" else "⬇️接近周線+月線FVG"
     pct_from_top = round((alert["current"] - alert["gap_high"]) / alert["gap_high"] * 100, 2)
     dist_str = (f"{pct_from_top:.2f}%上方" if alert["status"] == "near" else "在FVG內")
 
     caption = (
-        f"📐 🇭🇰 <b>{code} {name}</b> 周線 {status_icon}\n"
+        f"📐 🇭🇰 <b>{code} {name}</b> 周線+月線 {status_icon}\n"
         f"FVG {alert['gap_low']:.3f} – {alert['gap_high']:.3f}  現價 {alert['current']:.3f} ({dist_str})"
     )
 
@@ -232,7 +232,7 @@ def _emit_weekly_fvg(alert: dict) -> None:
         ("FVG底", alert["gap_low"], "#ef4444"),
     ]
     chart_path = render_chart(df, code, name,
-                               f"周線FVG · {alert['fvg_date']}",
+                               f"周線+月線FVG · {alert['fvg_date']}",
                                levels=levels,
                                lookback_days=180)
 
@@ -242,13 +242,13 @@ def _emit_weekly_fvg(alert: dict) -> None:
         "category": "tech",
         "code": code,
         "name": name,
-        "signal": f"周線Bullish FVG ({alert['status']})",
-        "timeframe": "周線",
+        "signal": f"周線+月線Bullish FVG ({alert['status']})",
+        "timeframe": "周線+月線",
         "price": alert["current"],
         "market": "HK",
         "chart_url": tv_url,
-        "message": f"周線FVG {alert['gap_low']:.3f}–{alert['gap_high']:.3f} 現價{alert['current']:.3f} ({dist_str})",
-        "tags": "FVG,周線",
+        "message": f"周線+月線FVG {alert['gap_low']:.3f}–{alert['gap_high']:.3f} 現價{alert['current']:.3f} ({dist_str})",
+        "tags": "FVG,周線+月線",
         "priority": 2,
         "raw": json.dumps(alert, ensure_ascii=False, default=str),
     }
@@ -274,7 +274,7 @@ def _post_to_gas(alert: dict) -> None:
         "category":  "tech",
         "code":      code,
         "name":      alert.get("name") or code,
-        "signal":    f"Bullish FVG {alert['timeframe']}",
+        "signal":    f"日線Bullish FVG {alert['timeframe']}",
         "timeframe": alert["timeframe"],
         "price":     alert["current"],
         "market":    alert["market"],
