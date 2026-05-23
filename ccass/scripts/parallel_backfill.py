@@ -175,43 +175,27 @@ def _merge_date(all_payloads: list[dict]) -> int:
     """Merge validated shard payloads into SQLite. Returns count of snapshots written."""
     import sqlite3
     from src.db import DB_PATH, init_db
+    from src.scraper import save_snapshot, CCASSSnapshot
 
     init_db()
-    conn = sqlite3.connect(str(DB_PATH), timeout=30.0)
-    conn.execute("PRAGMA journal_mode = WAL")
 
     written = 0
     for p in all_payloads:
         for snap_dict in p["snapshots"]:
-            # Upsert ccass_daily
-            conn.execute(
-                """INSERT INTO ccass_daily (stock_code, trade_date, total_shares, total_pct, num_participants)
-                   VALUES (?, ?, ?, ?, ?)
-                   ON CONFLICT(stock_code, trade_date) DO UPDATE SET
-                     total_shares = excluded.total_shares,
-                     total_pct = excluded.total_pct,
-                     num_participants = excluded.num_participants""",
-                (snap_dict["stock_code"], snap_dict["trade_date"],
-                 snap_dict["total_shares"], snap_dict["total_pct"],
-                 snap_dict.get("num_participants", 0))
+            snap = CCASSSnapshot(
+                stock_code=snap_dict["stock_code"],
+                trade_date=snap_dict["trade_date"],
+                total_shares=snap_dict["total_shares"],
+                total_pct=snap_dict["total_pct"],
+                num_participants=snap_dict.get("num_participants", 0),
+                holdings=snap_dict.get("holdings", []),
             )
-            # Replace holdings
-            conn.execute(
-                "DELETE FROM ccass_holdings WHERE stock_code = ? AND trade_date = ?",
-                (snap_dict["stock_code"], snap_dict["trade_date"])
-            )
-            for h in snap_dict.get("holdings", []):
-                conn.execute(
-                    """INSERT INTO ccass_holdings (stock_code, trade_date, participant_id, name, shares, pct)
-                       VALUES (?, ?, ?, ?, ?, ?)""",
-                    (snap_dict["stock_code"], snap_dict["trade_date"],
-                     h.get("participant_id", ""), h.get("name", ""),
-                     h.get("shares", 0), h.get("pct", 0.0))
-                )
-            written += 1
+            try:
+                save_snapshot(snap)
+                written += 1
+            except Exception as e:
+                print(f"  ⚠️  save_snapshot failed for {snap_dict.get('stock_code', '??')}: {e}")
 
-    conn.commit()
-    conn.close()
     return written
 
 
@@ -330,6 +314,7 @@ def main():
         # Wait for all to finish (max 3h per day)
         deadline = time.monotonic() + 10800  # 3 hours
         aborted = False
+        hkex_block_detected = False
         for si, p, out_path, log_path in procs:
             remaining = max(0, deadline - time.monotonic())
             try:
@@ -341,7 +326,9 @@ def main():
                 continue
 
             if rc == 2:
+                # HKEX rate-limit / blocking — abort all
                 print(f"  ❌ Shard {si} exit 2 (HKEX block detected)")
+                hkex_block_detected = True
                 aborted = True
                 # Kill all remaining siblings
                 for sj, pj, _, _ in procs:
@@ -350,10 +337,20 @@ def main():
                         print(f"     💀 Killed shard {sj}")
                 break
 
+            if rc != 0:
+                # Non-zero but NOT HKEX block (e.g. internal deadline rc=3,
+                # unhandled exception rc=1, etc.)
+                print(f"  ⚠️  Shard {si} exit {rc} (non-HKEX error)")
+                # Check if JSON was written despite the crash
+                if out_path.exists():
+                    print(f"     📄 JSON exists ({out_path.stat().st_size / 1024:.1f} KB) — will attempt recovery")
+                # Do NOT kill siblings — let other shards finish
+                continue
+
             print(f"  ✅ Shard {si} done (rc={rc}) → {out_path.name}")
 
-        if aborted:
-            print(f"  🛑 {date_str} aborted due to shard failure")
+        if hkex_block_detected:
+            print(f"  🛑 {date_str} aborted: HKEX block detected")
             fail_days += 1
             continue
 

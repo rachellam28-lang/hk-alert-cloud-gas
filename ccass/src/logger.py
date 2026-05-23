@@ -31,6 +31,7 @@ def setup_logger(name: str = "ccass", level: str = "INFO") -> logging.Logger:
         logfile, when="midnight", backupCount=30, encoding="utf-8"
     )
     fh.setFormatter(fmt)
+    fh._shared_logger = True  # tag so disable_file_handler can find it
     logger.addHandler(fh)
 
     # Console
@@ -39,3 +40,16 @@ def setup_logger(name: str = "ccass", level: str = "INFO") -> logging.Logger:
     logger.addHandler(ch)
 
     return logger
+
+
+def disable_file_handler(name: str = "ccass") -> None:
+    """Remove the shared TimedRotatingFileHandler from a logger.
+
+    Call this in shard subprocesses to prevent midnight-rotation
+    race conditions on Windows (where os.rename fails if another
+    process has the file open).
+    """
+    logger = logging.getLogger(name)
+    for h in list(logger.handlers):
+        if isinstance(h, logging.handlers.TimedRotatingFileHandler):
+            logger.removeHandler(h)

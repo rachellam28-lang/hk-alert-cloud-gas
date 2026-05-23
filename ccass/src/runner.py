@@ -28,7 +28,7 @@ from pathlib import Path
 import yaml
 
 from src.db import init_db, get_conn
-from src.logger import setup_logger
+from src.logger import setup_logger, disable_file_handler
 from src.trading_calendar import today_hk, is_trading_day, previous_trading_day
 from src.universe import refresh_universe, get_active_stocks
 from src.scraper import CCASSScraper, save_snapshot, CCASSSnapshot
@@ -167,7 +167,7 @@ def run_shard(shard_idx: int, shard_total: int, force_universe_refresh: bool = F
                           out_path=out_path)
 
         if deadline_exceeded:
-            return 2
+            return 3  # internal shard timeout (NOT HKEX block!)
 
         return 0  # partial failures are normal; merge job will still run
     finally:
@@ -788,6 +788,11 @@ def main():
 
     # ── Shard mode ──
     if args.shard is not None:
+        # Disable shared file logging to avoid midnight-rotation
+        # race conditions on Windows (PermissionError on os.rename)
+        disable_file_handler("runner")
+        disable_file_handler("scraper")
+        disable_file_handler("universe")
         qdate = None
         out = None
         if args.query_date:
