@@ -121,54 +121,57 @@ def run_shard(shard_idx: int, shard_total: int, force_universe_refresh: bool = F
         max_retries=sc_cfg["max_retries"],
     )
 
-    snapshots: list[dict] = []
-    succeeded = 0
-    failed_stocks: list[str] = []
+    try:
+        snapshots: list[dict] = []
+        succeeded = 0
+        failed_stocks: list[str] = []
 
-    # Internal deadline: abort if shard takes too long (HKEX block detection)
-    deadline = time.monotonic() + 6600  # 110 minutes
-    deadline_exceeded = False
+        # Internal deadline: abort if shard takes too long (HKEX block detection)
+        deadline = time.monotonic() + 6600  # 110 minutes
+        deadline_exceeded = False
 
-    for i, code in enumerate(my_stocks, 1):
-        if time.monotonic() > deadline:
-            logger.error("Shard %d internal deadline exceeded at %d/%d",
-                         shard_idx, i - 1, len(my_stocks))
-            failed_stocks.extend(my_stocks[i - 1:])
-            deadline_exceeded = True
-            break
-        if i % 50 == 0:
-            logger.info("Shard %d progress: %d/%d (%.1f%%)",
-                        shard_idx, i, len(my_stocks), 100 * i / len(my_stocks))
-        try:
-            snap = scraper.scrape_stock(code, query_date)
-            if snap:
-                snapshots.append(_snapshot_to_dict(snap))
-                succeeded += 1
-            else:
+        for i, code in enumerate(my_stocks, 1):
+            if time.monotonic() > deadline:
+                logger.error("Shard %d internal deadline exceeded at %d/%d",
+                             shard_idx, i - 1, len(my_stocks))
+                failed_stocks.extend(my_stocks[i - 1:])
+                deadline_exceeded = True
+                break
+            if i % 50 == 0:
+                logger.info("Shard %d progress: %d/%d (%.1f%%)",
+                            shard_idx, i, len(my_stocks), 100 * i / len(my_stocks))
+            try:
+                snap = scraper.scrape_stock(code, query_date)
+                if snap:
+                    snapshots.append(_snapshot_to_dict(snap))
+                    succeeded += 1
+                else:
+                    failed_stocks.append(code)
+            except RuntimeError as e:
+                logger.error("Shard %d aborting on runtime error from %s: %s",
+                             shard_idx, code, e)
                 failed_stocks.append(code)
-        except RuntimeError as e:
-            logger.error("Shard %d aborting on runtime error from %s: %s",
-                         shard_idx, code, e)
-            failed_stocks.append(code)
-            _write_shard_json(shard_idx, shard_total, query_date, target_date,
-                              len(stocks), len(my_stocks), succeeded, failed_stocks, snapshots,
-                              out_path=out_path)
+                _write_shard_json(shard_idx, shard_total, query_date, target_date,
+                                  len(stocks), len(my_stocks), succeeded, failed_stocks, snapshots,
+                                  out_path=out_path)
+                return 2
+            except Exception:
+                logger.exception("Unexpected error on %s", code)
+                failed_stocks.append(code)
+
+        logger.info("Shard %d done: %d/%d succeeded, %d failed",
+                    shard_idx, succeeded, len(my_stocks), len(failed_stocks))
+
+        _write_shard_json(shard_idx, shard_total, query_date, target_date,
+                          len(stocks), len(my_stocks), succeeded, failed_stocks, snapshots,
+                          out_path=out_path)
+
+        if deadline_exceeded:
             return 2
-        except Exception:
-            logger.exception("Unexpected error on %s", code)
-            failed_stocks.append(code)
 
-    logger.info("Shard %d done: %d/%d succeeded, %d failed",
-                shard_idx, succeeded, len(my_stocks), len(failed_stocks))
-
-    _write_shard_json(shard_idx, shard_total, query_date, target_date,
-                      len(stocks), len(my_stocks), succeeded, failed_stocks, snapshots,
-                      out_path=out_path)
-
-    if deadline_exceeded:
-        return 2
-
-    return 0  # partial failures are normal; merge job will still run
+        return 0  # partial failures are normal; merge job will still run
+    finally:
+        scraper.close()
 
 
 def _snapshot_to_dict(snap: CCASSSnapshot) -> dict:

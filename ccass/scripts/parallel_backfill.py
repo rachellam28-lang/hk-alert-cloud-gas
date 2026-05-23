@@ -103,6 +103,33 @@ def _validate_shard_output(fpath: Path, expected_date: str, expected_shard: int,
     return payload
 
 
+# ── Cleanup helpers ──────────────────────────────────────────────────────
+def _cleanup_chromium_orphans() -> None:
+    """Kill orphaned Chromium processes left by killed Playwright subprocesses.
+    On Windows, subprocess.kill() kills the Python process but Playwright's
+    __del__ may not fire, leaving Chromium child processes behind."""
+    import platform
+    if platform.system() != "Windows":
+        return
+    try:
+        subprocess.run(
+            ["taskkill", "/F", "/IM", "chrome.exe", "/FI", "PID ne 0"],
+            capture_output=True, timeout=10,
+        )
+    except Exception:
+        pass
+
+
+def _kill_subprocess(p: subprocess.Popen) -> None:
+    """Kill a subprocess and clean up its Chromium orphans."""
+    try:
+        p.kill()
+        p.wait(timeout=10)
+    except Exception:
+        pass
+    _cleanup_chromium_orphans()
+
+
 def _validate_all_shards(date_str: str, universe_size: int) -> tuple[list[dict], int, bool]:
     """Validate all 6 shards for a date. Returns (all_payloads, total_failed, ok)."""
     all_payloads = []
@@ -308,8 +335,7 @@ def main():
             try:
                 rc = p.wait(timeout=remaining)
             except subprocess.TimeoutExpired:
-                p.kill()
-                p.wait()
+                _kill_subprocess(p)
                 print(f"  ❌ Shard {si} timed out (3h), killed")
                 aborted = True
                 continue
@@ -320,8 +346,7 @@ def main():
                 # Kill all remaining siblings
                 for sj, pj, _, _ in procs:
                     if sj != si and pj.poll() is None:
-                        pj.kill()
-                        pj.wait()
+                        _kill_subprocess(pj)
                         print(f"     💀 Killed shard {sj}")
                 break
 

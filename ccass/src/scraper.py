@@ -135,6 +135,12 @@ class CCASSScraper:
 
     def _ensure_page(self) -> Page:
         """Return a ready page, creating context + page + navigating if needed."""
+        # Recover from browser crash (e.g., OOM, GPU crash)
+        if self._browser is not None and not self._browser.is_connected():
+            logger.warning("Browser disconnected — re-launching")
+            self.close()
+            self._launch_browser()
+
         if self._context is None:
             self._context = self._browser.new_context(
                 user_agent=self._user_agent,
@@ -172,7 +178,7 @@ class CCASSScraper:
             )
             # Wait for the stock-code input to appear (confirms form loaded)
             self._page.wait_for_selector(
-                "#txtStockCode", state="visible", timeout=FORM_FILL_TIMEOUT,
+                "#txtStockCode", state="visible", timeout=NAVIGATION_TIMEOUT,
             )
             logger.debug("CCASS search page loaded")
         except (PlaywrightTimeout, PlaywrightError) as e:
@@ -623,13 +629,15 @@ def _safe_fill(page: Page, selector: str, value: str) -> None:
     is_readonly = loc.evaluate("el => el.readOnly || el.getAttribute('readonly') !== null")
 
     if is_readonly:
-        # Remove readonly, set value via JS, restore readonly
+        # Remove readonly (both attribute and DOM property), set value via JS
         loc.evaluate(
             """(el, val) => {
+                el.readOnly = false;
                 el.removeAttribute('readonly');
                 el.value = val;
                 el.dispatchEvent(new Event('input', {bubbles: true}));
                 el.dispatchEvent(new Event('change', {bubbles: true}));
+                el.readOnly = true;
                 el.setAttribute('readonly', 'readonly');
             }""",
             value,
