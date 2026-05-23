@@ -8,6 +8,12 @@ ccass.db
 # Webb-site daily dumps
 data/webb_site/webb_*.json
 
+# Backfill temp files
+backfill-shard-*.json
+backfill-shard-*.json.tmp
+ccass-shard-*.json
+ccass-shard-*.json.tmp
+
 # Python
 __pycache__/
 *.pyc

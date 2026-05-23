@@ -66,20 +66,34 @@ def should_refresh_universe(force: bool = False) -> bool:
 #  SHARD MODE
 # ═══════════════════════════════════════════════════════════════════════════
 
-def run_shard(shard_idx: int, shard_total: int, force_universe_refresh: bool = False) -> int:
-    """Scrape one shard, write ccass-shard-N.json. No trends/alerts/events/export."""
+def run_shard(shard_idx: int, shard_total: int, force_universe_refresh: bool = False,
+              query_date: date | None = None, out_path: Path | None = None) -> int:
+    """Scrape one shard, write JSON. No trends/alerts/events/export.
+
+    If query_date is provided, scrape that exact date (backfill mode).
+    Otherwise scrape previous_trading_day of today (normal shard mode).
+
+    If out_path is provided, write JSON there. Otherwise write to
+    ccass-shard-N.json at project root.
+    """
     init_db()
     config = load_config()
-    target_date = today_hk()
 
-    if not is_trading_day(target_date):
-        logger.info("%s is not a trading day, skip shard %d", target_date, shard_idx)
-        return 0
+    if query_date is not None:
+        # Backfill mode: scrape the exact requested date
+        target_date = query_date
+        # Don't check is_trading_day — caller validated the date
+        # Don't refresh universe — caller manages that
+    else:
+        target_date = today_hk()
+        if not is_trading_day(target_date):
+            logger.info("%s is not a trading day, skip shard %d", target_date, shard_idx)
+            return 0
+        query_date = previous_trading_day(target_date)
 
-    query_date = previous_trading_day(target_date)
     logger.info("SHARD %d/%d — query_date=%s", shard_idx + 1, shard_total, query_date)
 
-    if should_refresh_universe(force_universe_refresh):
+    if not query_date and should_refresh_universe(force_universe_refresh):
         try:
             refresh_universe()
         except Exception as e:
@@ -94,7 +108,8 @@ def run_shard(shard_idx: int, shard_total: int, force_universe_refresh: bool = F
 
     if not my_stocks:
         logger.warning("Shard %d: zero stocks — writing empty JSON and exiting", shard_idx)
-        _write_shard_json(shard_idx, shard_total, query_date, target_date, len(stocks), 0, 0, [], [])
+        _write_shard_json(shard_idx, shard_total, query_date, target_date,
+                          len(stocks), 0, 0, [], [], out_path=out_path)
         return 0
 
     sc_cfg = config["scraping"]
@@ -136,7 +151,8 @@ def run_shard(shard_idx: int, shard_total: int, force_universe_refresh: bool = F
                          shard_idx, code, e)
             failed_stocks.append(code)
             _write_shard_json(shard_idx, shard_total, query_date, target_date,
-                              len(stocks), len(my_stocks), succeeded, failed_stocks, snapshots)
+                              len(stocks), len(my_stocks), succeeded, failed_stocks, snapshots,
+                              out_path=out_path)
             return 2
         except Exception:
             logger.exception("Unexpected error on %s", code)
@@ -146,7 +162,8 @@ def run_shard(shard_idx: int, shard_total: int, force_universe_refresh: bool = F
                 shard_idx, succeeded, len(my_stocks), len(failed_stocks))
 
     _write_shard_json(shard_idx, shard_total, query_date, target_date,
-                      len(stocks), len(my_stocks), succeeded, failed_stocks, snapshots)
+                      len(stocks), len(my_stocks), succeeded, failed_stocks, snapshots,
+                      out_path=out_path)
 
     if deadline_exceeded:
         return 2
@@ -177,7 +194,8 @@ def _dict_to_snapshot(d: dict) -> CCASSSnapshot:
 
 
 def _write_shard_json(shard_idx, shard_total, query_date, target_date,
-                      total_stocks, shard_stocks, succeeded, failed_stocks, snapshots):
+                      total_stocks, shard_stocks, succeeded, failed_stocks, snapshots,
+                      out_path: Path | None = None):
     payload = {
         "shard": shard_idx,
         "shard_total": shard_total,
@@ -190,8 +208,12 @@ def _write_shard_json(shard_idx, shard_total, query_date, target_date,
         "failed_stocks": failed_stocks,
         "snapshots": snapshots,
     }
-    out_path = _PROJECT_ROOT / f"ccass-shard-{shard_idx}.json"
-    out_path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+    if out_path is None:
+        out_path = _PROJECT_ROOT / f"ccass-shard-{shard_idx}.json"
+    # Atomic write: tmp → rename
+    tmp_path = Path(str(out_path) + ".tmp")
+    tmp_path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+    tmp_path.rename(out_path)
     logger.info("Wrote %d snapshots → %s (%.1f KB)",
                 len(snapshots), out_path.name, out_path.stat().st_size / 1024)
 
@@ -756,12 +778,21 @@ def main():
     parser.add_argument("--refresh-universe", action="store_true")
     parser.add_argument("--shard", type=int, help="Shard index (0-based)")
     parser.add_argument("--shard-total", type=int, default=6)
+    parser.add_argument("--query-date", help="Specific date YYYY-MM-DD (backfill mode)")
+    parser.add_argument("--out", help="Output JSON path (backfill mode)")
     parser.add_argument("--merge", action="store_true")
     args = parser.parse_args()
 
     # ── Shard mode ──
     if args.shard is not None:
-        rc = run_shard(args.shard, args.shard_total, args.refresh_universe)
+        qdate = None
+        out = None
+        if args.query_date:
+            qdate = datetime.strptime(args.query_date, "%Y-%m-%d").date()
+        if args.out:
+            out = Path(args.out)
+        rc = run_shard(args.shard, args.shard_total, args.refresh_universe,
+                       query_date=qdate, out_path=out)
         sys.exit(rc)
 
     # ── Merge mode ──
