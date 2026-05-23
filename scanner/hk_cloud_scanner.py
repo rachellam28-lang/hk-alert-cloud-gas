@@ -449,10 +449,14 @@ def render_chart(
             )
 
         # Horizontal reference lines (POC / IPO high / etc.).
-        for label, price, color in levels or []:
+        for entry in levels or []:
+            label, price = entry[0], entry[1]
+            color = entry[2] if len(entry) > 2 else "#f59e0b"
+            lw = entry[3] if len(entry) > 3 else 1.2
+            ls = entry[4] if len(entry) > 4 else "--"
             if price is None or pd.isna(price):
                 continue
-            ax.axhline(price, color=color, linewidth=1.2, linestyle="--", alpha=0.9)
+            ax.axhline(price, color=color, linewidth=lw, linestyle=ls, alpha=0.9)
             ax.text(
                 len(plot_df) - 1,
                 price,
@@ -1991,7 +1995,7 @@ def run_year_open_breakout() -> None:
                 + (f"{wl_line.strip()}\n" if wl_line else "")
                 + f"突破：{result['Break Value']}　<b>{break_sign}{result['Break %']}%</b>{sl_line}"
             )
-            yr_levels = [(f"{current_year}年首日開", result["Year Open"], "#f59e0b")]
+            yr_levels = [(f"{current_year}年首日開", result["Year Open"], "#ffffff", 2.2, "--")]
             if pw_low is not None:
                 yr_levels.append(("前周低", pw_low, "#ef4444"))
             chart_path = render_chart(
