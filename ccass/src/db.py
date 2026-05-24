@@ -31,6 +31,11 @@ def init_db(db_path: Path = DB_PATH) -> None:
                 conn.execute(f"ALTER TABLE ccass_trends ADD COLUMN {col} REAL")
             except sqlite3.OperationalError:
                 pass
+        # Migration: add first_seen_date for date-aware universe filtering
+        try:
+            conn.execute("ALTER TABLE stock_universe ADD COLUMN first_seen_date TEXT")
+        except sqlite3.OperationalError:
+            pass
         conn.commit()
 
 

@@ -252,7 +252,7 @@ def main():
 
     # Refresh universe once (parent process)
     from src.db import init_db
-    from src.universe import refresh_universe, get_active_stocks
+    from src.universe import refresh_universe, get_active_stocks, get_active_stocks_for_date
     init_db()
     try:
         refresh_universe()

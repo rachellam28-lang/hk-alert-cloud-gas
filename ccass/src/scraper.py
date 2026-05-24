@@ -388,6 +388,21 @@ class CCASSScraper:
                 )
                 return None
 
+        # Detect "not available / does not exist" via hidden #alertMsg input
+        # (HKEX puts this in a hidden field — not in .ccass-search-msg div)
+        alert_input = soup.find("input", id="alertMsg")
+        if alert_input:
+            msg_text = (alert_input.get("value") or "").strip().lower()
+            if any(k in msg_text for k in (
+                "does not exist", "not available for enquiry",
+                "no record", "no data", "not found",
+            )):
+                logger.info(
+                    "No CCASS data for %s on %s: %s",
+                    stock_code, query_date, msg_text[:160],
+                )
+                return None
+
         # 2. Extract total shareholding
         total_shares = self._extract_total_shares(soup)
         total_pct = self._extract_total_pct(soup)
@@ -710,4 +725,13 @@ def save_snapshot(snap: CCASSSnapshot) -> None:
                 )
                 for h in snap.holdings
             ],
+        )
+        # Track first date this stock had CCASS data (for date-aware universe)
+        conn.execute(
+            """UPDATE stock_universe
+               SET first_seen_date = MIN(
+                   COALESCE(first_seen_date, ?), ?
+               )
+               WHERE stock_code = ?""",
+            (snap.trade_date, snap.trade_date, snap.stock_code),
         )

@@ -30,7 +30,7 @@ import yaml
 from src.db import init_db, get_conn
 from src.logger import setup_logger, disable_file_handler
 from src.trading_calendar import today_hk, is_trading_day, previous_trading_day
-from src.universe import refresh_universe, get_active_stocks
+from src.universe import refresh_universe, get_active_stocks, get_active_stocks_for_date
 from src.scraper import CCASSScraper, save_snapshot, CCASSSnapshot
 from src.trend import compute_trends_for_date
 from src.alerts import detect_alerts, send_alerts, send_admin_alert, send_event_alerts
@@ -100,8 +100,8 @@ def run_shard(shard_idx: int, shard_total: int, force_universe_refresh: bool = F
             logger.error("Universe refresh failed: %s", e)
             send_admin_alert(f"Universe refresh failed in shard {shard_idx}: {e}")
 
-    stocks = get_active_stocks()
-    logger.info("Universe: %d active stocks", len(stocks))
+    stocks = get_active_stocks_for_date(query_date)
+    logger.info("Universe: %d active stocks for %s", len(stocks), query_date)
 
     my_stocks = stocks[shard_idx::shard_total]
     logger.info("Shard %d: %d stocks assigned", shard_idx, len(my_stocks))
