@@ -91,19 +91,72 @@ def _find_fresh_bullish_fvgs(df: pd.DataFrame) -> list[dict]:
 
 def _proximity(fvg: dict) -> str | None:
     """
-    Returns 'in' if price is inside FVG, 'near' if within NEAR_PCT above FVG,
-    None otherwise.
+    Returns 'in' if price is inside FVG, None otherwise.
+    (near FVG removed per user request — only in-FVG alerts)
     """
     p = fvg["current"]
     lo, hi = fvg["gap_low"], fvg["gap_high"]
     if lo <= p <= hi:
         return "in"
-    if hi < p <= hi * (1 + NEAR_PCT):
-        return "near"
     return None
 
 
-def scan_ticker(ticker: str, name: str = "", market: str = "HK") -> list[dict]:
+# ── Gap Up Detection ─────────────────────────────────────────────────────────
+
+def _detect_gap_ups(df: pd.DataFrame) -> list[dict]:
+    """Detect gap ups on the latest candle.
+
+    Type A: Today Open > Yesterday Close (simple gap up)
+    Type B: Today Low > Yesterday High (full gap up)
+    """
+    if len(df) < 2:
+        return []
+
+    if isinstance(df.columns, pd.MultiIndex):
+        df.columns = df.columns.get_level_values(0)
+
+    prev = df.iloc[-2]
+    curr = df.iloc[-1]
+    last_date = str(df.index[-1].date())
+
+    curr_open = float(curr["Open"])
+    curr_low = float(curr["Low"])
+    curr_close = float(curr["Close"])
+    prev_close = float(prev["Close"])
+    prev_high = float(prev["High"])
+
+    gaps = []
+
+    # Type A: simple gap up (Open > Prev Close)
+    if curr_open > prev_close:
+        gap_pct = round((curr_open - prev_close) / prev_close * 100, 2)
+        gaps.append({
+            "type": "A",
+            "gap_type": "simple",
+            "prev_close": round(prev_close, 6),
+            "gap_to": round(curr_open, 6),
+            "gap_pct": gap_pct,
+        })
+
+    # Type B: full gap up (Low > Prev High)
+    if curr_low > prev_high:
+        gap_pct = round((curr_low - prev_high) / prev_high * 100, 2)
+        gaps.append({
+            "type": "B",
+            "gap_type": "full",
+            "prev_high": round(prev_high, 6),
+            "gap_to": round(curr_low, 6),
+            "gap_pct": gap_pct,
+        })
+
+    return [{
+        "date": last_date,
+        "gaps": gaps,
+        "current": round(curr_close, 6),
+    }] if gaps else []
+
+
+def scan_ticker(ticker: str, name: str = "", market: str = "HK") -> tuple[list[dict], list[dict]]:
     alerts = []
     for tf, (period, interval) in _TF_PARAMS.items():
         try:
@@ -134,7 +187,37 @@ def scan_ticker(ticker: str, name: str = "", market: str = "HK") -> list[dict]:
                     })
         except Exception as e:
             print(f"[FVG] {ticker} {tf}: {e}")
-    return alerts
+
+    # ── Gap Up detection (日線 only) ──
+    gap_up_alerts = []
+    try:
+        time.sleep(RATE_SLEEP)
+        df_daily = yf.download(ticker, period="5d", interval="1d",
+                               progress=False, auto_adjust=True, multi_level_index=False)
+        if df_daily is not None and not df_daily.empty and len(df_daily) >= 2:
+            last_date = str(df_daily.index[-1].date())
+            for gu in _detect_gap_ups(df_daily):
+                if gu["date"] == last_date:
+                    for g in gu["gaps"]:
+                        gap_up_alerts.append({
+                            "type":       "gap_up",
+                            "gap_kind":   g["gap_type"],
+                            "gap_type":   g["type"],
+                            "ticker":     ticker,
+                            "name":       name or ticker,
+                            "market":     market,
+                            "timeframe":  "日線",
+                            "current":    gu["current"],
+                            "gap_pct":    g["gap_pct"],
+                            "prev_close": g.get("prev_close"),
+                            "prev_high":  g.get("prev_high"),
+                            "gap_to":     g["gap_to"],
+                            "date":       gu["date"],
+                        })
+    except Exception as e:
+        print(f"[GAP] {ticker}: {e}")
+
+    return alerts, gap_up_alerts
 
 
 # ── Name lookup ───────────────────────────────────────────────────────────────
@@ -284,18 +367,73 @@ def _post_to_gas(alert: dict) -> None:
     })
 
 
+# ── Gap Up Telegram + GAS ─────────────────────────────────────────────────────
+
+def _emit_gap_up_tg(alert: dict) -> None:
+    """Text-only Telegram alert for gap up."""
+    sys.path.insert(0, os.path.dirname(__file__))
+    from hk_cloud_scanner import send_telegram_alert, build_inline_keyboard_
+
+    kind_label = "簡單跳空" if alert["gap_kind"] == "simple" else "完全跳空"
+    type_label = f"(Type {alert['gap_type']})"
+    pct = alert["gap_pct"]
+
+    if alert["gap_kind"] == "simple":
+        detail = f"Open {alert['gap_to']} > Prev Close {alert['prev_close']}"
+    else:
+        detail = f"Low {alert['gap_to']} > Prev High {alert['prev_high']}"
+
+    caption = (
+        f"📈 🇭🇰 <b>{alert['ticker']}</b> {alert['timeframe']} Gap Up {type_label}\n"
+        f"⬆️ {kind_label} +{pct}%  現價 {alert['current']}\n"
+        f"{detail}"
+    )
+
+    tv_url = _tv_url(alert)
+    send_telegram_alert(caption, None, reply_markup=build_inline_keyboard_([
+        ("📊 走勢圖", tv_url),
+    ]))
+    time.sleep(0.5)
+
+
+def _post_gap_up_to_gas(alert: dict) -> None:
+    sys.path.insert(0, os.path.dirname(__file__))
+    from hk_cloud_scanner import post_gas_alert
+
+    code = alert["ticker"].replace(".HK", "").zfill(5)
+    kind_label = "簡單跳空" if alert["gap_kind"] == "simple" else "完全跳空"
+
+    post_gas_alert({
+        "source":    "fvg_scanner",
+        "category":  "tech",
+        "code":      code,
+        "name":      alert.get("name") or code,
+        "signal":    f"日線Gap Up Type {alert['gap_type']}",
+        "timeframe": alert["timeframe"],
+        "price":     alert["current"],
+        "market":    alert["market"],
+        "chart_url": _tv_url(alert),
+        "message":   f"{kind_label} +{alert['gap_pct']}% Open {alert['gap_to']} 現價{alert['current']}",
+        "tags":      "GapUp",
+    })
+
+
 # ── JSON export ───────────────────────────────────────────────────────────────
 
-def _export_json(alerts: list[dict]) -> None:
-    out = {
+def _export_json(alerts: list[dict], gap_ups: list[dict] | None = None) -> None:
+    out: dict[str, Any] = {
         "updated": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
         "count":   len(alerts),
         "alerts":  alerts,
     }
+    if gap_ups:
+        out["gap_ups"] = gap_ups
+        out["gap_up_count"] = len(gap_ups)
     path = os.path.join(os.path.dirname(__file__), "..", "fvg.json")
     with open(path, "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, indent=2)
-    print(f"[FVG] exported fvg.json  ({len(alerts)} alerts)")
+    gap_msg = f" + {len(gap_ups)} gap_ups" if gap_ups else ""
+    print(f"[FVG] exported fvg.json  ({len(alerts)} alerts{gap_msg})")
 
 
 # ── Main ──────────────────────────────────────────────────────────────────────
@@ -311,11 +449,32 @@ def run_fvg_scan(market: str = "hk") -> None:
         tasks += [(t, "", "US") for t in []]  # US FVG disabled — use POC breakout instead
 
     all_alerts: list[dict] = []
+    all_gap_ups: list[dict] = []
     tg_sent = 0
     for i, (ticker, name, mkt) in enumerate(tasks, 1):
         if i % 20 == 0:
             print(f"[FVG] progress {i}/{len(tasks)}")
-        alerts = scan_ticker(ticker, name, mkt)
+        alerts, gap_ups = scan_ticker(ticker, name, mkt)
+
+        # ── Process Gap Up alerts ──
+        for g in gap_ups:
+            print(f"[GAP] {g['ticker']} Type {g['gap_type']} ({g['gap_kind']}) +{g['gap_pct']}%  now={g['current']:.2f}")
+
+            # Post to GAS
+            try:
+                _post_gap_up_to_gas(g)
+            except Exception as e:
+                print(f"[GAP] GAS error {ticker}: {e}")
+
+            # Telegram
+            if tg_sent < MAX_TG_ALERTS:
+                try:
+                    _emit_gap_up_tg(g)
+                    tg_sent += 1
+                except Exception as e:
+                    print(f"[GAP] telegram error {ticker}: {e}")
+
+        # ── Process FVG alerts ──
         for a in alerts:
             print(f"[FVG] ALERT {a['ticker']} {a['timeframe']} {a['status']}  "
                   f"FVG={a['gap_low']:.2f}–{a['gap_high']:.2f}  now={a['current']:.2f}")
@@ -329,10 +488,9 @@ def run_fvg_scan(market: str = "hk") -> None:
             # ── Telegram: rules differ by timeframe ──
             is_weekly = a["timeframe"] == "周線" and a["market"] == "HK"
             is_daily_in = a["status"] == "in"
-            is_daily_near = a["status"] == "near" and a["timeframe"] == "日線"
             is_monthly_in = a["status"] == "in" and a["timeframe"] == "月線"
 
-            send_tg = is_weekly or is_daily_in or is_daily_near or is_monthly_in
+            send_tg = is_weekly or is_daily_in or is_monthly_in
 
             if send_tg and tg_sent < MAX_TG_ALERTS:
                 try:
@@ -344,9 +502,10 @@ def run_fvg_scan(market: str = "hk") -> None:
                 except Exception as e:
                     print(f"[FVG] telegram error {ticker}: {e}")
         all_alerts.extend(alerts)
+        all_gap_ups.extend(gap_ups)
 
-    _export_json(all_alerts)
-    print(f"[FVG] done  total_alerts={len(all_alerts)}  tg_sent={tg_sent}")
+    _export_json(all_alerts, all_gap_ups)
+    print(f"[FVG] done  total_alerts={len(all_alerts)}  gap_ups={len(all_gap_ups)}  tg_sent={tg_sent}")
 
 
 if __name__ == "__main__":

@@ -4,11 +4,11 @@ Parallel CCASS Backfill — 6-shard subprocess orchestrator.
 用法:
     cd ccass
     python -m scripts.parallel_backfill --start 2026-05-15 --end 2026-05-21
-    python -m scripts.parallel_backfill --days 5  --stagger 30
+    python -m scripts.parallel_backfill --days 5  --stagger 60
 
 架構:
     1. 每個交易日 launch 6 個 subprocess shard（stock-shard JSON only）
-    2. Shard 之間 stagger 30s 起步
+    2. Shard 之間 stagger 60s 起步
     3. 全部完成後 validate + merge JSON → SQLite（single process）
     4. 每個日期 merge 後即時計 trends（oldest first）
     5. 支援 resume：skip 已經喺 DB 嘅日期（除非 --force）
@@ -26,7 +26,7 @@ import json
 import subprocess
 import sys
 import time
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from pathlib import Path
 
 _PROJECT_ROOT = Path(__file__).parent.parent
@@ -104,10 +104,9 @@ def _validate_shard_output(fpath: Path, expected_date: str, expected_shard: int,
 
 
 # ── Cleanup helpers ──────────────────────────────────────────────────────
+
 def _cleanup_chromium_orphans() -> None:
-    """Kill orphaned Chromium processes left by killed Playwright subprocesses.
-    On Windows, subprocess.kill() kills the Python process but Playwright's
-    __del__ may not fire, leaving Chromium child processes behind."""
+    """Kill orphaned Chromium processes left by killed Playwright subprocesses."""
     import platform
     if platform.system() != "Windows":
         return
@@ -173,7 +172,6 @@ def _validate_all_shards(date_str: str, universe_size: int) -> tuple[list[dict],
 
 def _merge_date(all_payloads: list[dict]) -> int:
     """Merge validated shard payloads into SQLite. Returns count of snapshots written."""
-    import sqlite3
     from src.db import DB_PATH, init_db
     from src.scraper import save_snapshot, CCASSSnapshot
 
@@ -206,32 +204,18 @@ def main():
     parser.add_argument("--start", help="Start date YYYY-MM-DD")
     parser.add_argument("--end", help="End date YYYY-MM-DD (inclusive, default: today)")
     parser.add_argument("--days", type=int, help="Last N trading days")
-    parser.add_argument("--stagger", type=int, default=30, help="Seconds between shard starts (default: 30)")
+    parser.add_argument("--stagger", type=int, default=60, help="Seconds between shard starts (default: 60)")
     parser.add_argument("--force", action="store_true", help="Re-scrape dates already in DB")
     parser.add_argument("--dry-run", action="store_true", help="Show plan without executing")
     args = parser.parse_args()
 
     # Compute trading days
-    from src.trading_calendar import today_hk, is_trading_day, last_n_trading_days
+    from src.trading_calendar import today_hk, is_trading_day
 
     if args.days:
+        from src.trading_calendar import last_n_trading_days
         days = last_n_trading_days(today_hk(), args.days)
     elif args.start:
-        start = datetime.strptime(args.start, "%Y-%m-%d").date()
-        end = datetime.strptime(args.end, "%Y-%m-%d").date() if args.end else today_hk()
-        # Collect all trading days in range
-        cur = start
-        days = []
-        while cur <= end:
-            if is_trading_day(cur):
-                days.append(cur)
-            cur = cur.replace(day=cur.day + 1) if cur.day < 28 else cur  # simplified — use timedelta
-    else:
-        parser.error("Need --start/--end or --days")
-
-    # Recompute days properly
-    if not args.days and args.start:
-        from datetime import timedelta
         start = datetime.strptime(args.start, "%Y-%m-%d").date()
         end = datetime.strptime(args.end, "%Y-%m-%d").date() if args.end else today_hk()
         cur = start
@@ -240,6 +224,8 @@ def main():
             if is_trading_day(cur):
                 days.append(cur)
             cur += timedelta(days=1)
+    else:
+        parser.error("Need --start/--end or --days")
 
     if not days:
         print("No trading days in range.")
@@ -252,12 +238,20 @@ def main():
 
     # Refresh universe once (parent process)
     from src.db import init_db
-    from src.universe import refresh_universe, get_active_stocks, get_active_stocks_for_date
+    from src.universe import refresh_universe, get_active_stocks
     init_db()
-    try:
-        refresh_universe()
-    except Exception as e:
-        print(f"⚠️  Universe refresh failed: {e}")
+    # Skip universe refresh if DB already has stock data (avoids HKEX requests.get() hang)
+    import sqlite3
+    existing = sqlite3.connect(str(DB_PATH)).execute(
+        "SELECT COUNT(*) FROM stock_universe"
+    ).fetchone()[0]
+    if existing < 500:
+        try:
+            refresh_universe()
+        except Exception as e:
+            print(f"⚠️  Universe refresh failed: {e}")
+    else:
+        print(f"⏭️  Skip universe refresh: {existing} stocks already in DB")
     stocks = get_active_stocks()
     print(f"📊 Universe: {len(stocks)} active stocks")
 
@@ -313,7 +307,6 @@ def main():
 
         # Wait for all to finish (max 3h per day)
         deadline = time.monotonic() + 10800  # 3 hours
-        aborted = False
         hkex_block_detected = False
         for si, p, out_path, log_path in procs:
             remaining = max(0, deadline - time.monotonic())
@@ -322,14 +315,12 @@ def main():
             except subprocess.TimeoutExpired:
                 _kill_subprocess(p)
                 print(f"  ❌ Shard {si} timed out (3h), killed")
-                aborted = True
                 continue
 
             if rc == 2:
                 # HKEX rate-limit / blocking — abort all
                 print(f"  ❌ Shard {si} exit 2 (HKEX block detected)")
                 hkex_block_detected = True
-                aborted = True
                 # Kill all remaining siblings
                 for sj, pj, _, _ in procs:
                     if sj != si and pj.poll() is None:
@@ -344,7 +335,6 @@ def main():
                 # Check if JSON was written despite the crash
                 if out_path.exists():
                     print(f"     📄 JSON exists ({out_path.stat().st_size / 1024:.1f} KB) — will attempt recovery")
-                # Do NOT kill siblings — let other shards finish
                 continue
 
             print(f"  ✅ Shard {si} done (rc={rc}) → {out_path.name}")

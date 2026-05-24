@@ -1,28 +1,30 @@
-"""CCASS Scraper — Playwright edition.
+"""CCASS Scraper — Playwright edition with sustainable anti-blocking.
 
 HKEX CCASS Shareholding Search:
   https://www3.hkexnews.hk/sdw/search/searchsdw.aspx
 
-Replaced cloudscraper with Playwright browser automation because cloudscraper
-hangs indefinitely on Akamai WAF POST requests. Playwright runs a real
-headless Chromium browser, which navigates the ASP.NET WebForms page
-naturally — filling form fields and clicking the search button triggers
-__doPostBack via the browser's JS engine, so Akamai sees genuine user
-behaviour.
+Anti-blocking strategy (v2 — May 2026):
+1. Tiered cooldown: When Akamai blocks, enter escalating cooldown periods
+   (5→10→20 min) with full browser session rotation. No more RuntimeError
+   that wastes hours on already-blocked sessions.
+2. Batch breaks: After every ~50-80 successful stocks, take a human-like
+   coffee break (30-120s) to avoid detection.
+3. Enhanced stealth: rotating UA pool, randomised viewport, comprehensive
+   JS property masking.
+4. Smart retry: Individual request failures get exponential backoff, but
+   the overall window state resets after successful cooldown recovery.
 
-Responsibilities:
-1. Scrape one stock for one date
-2. Parse total holdings + participant breakdown
-3. Schema validation (FATAL-003)
-4. JSON serialisation (DB write is caller's job in shard mode)
+FATAL-003 remains: delays must stay within human range (3-8s between
+stocks). We trade speed for reliability.
 """
 from __future__ import annotations
 
 import random
 import re
 import time
+from collections import deque
 from dataclasses import dataclass
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import Optional
 
@@ -48,8 +50,33 @@ DEBUG_DIR = Path(__file__).parent.parent / "debug"
 NAVIGATION_TIMEOUT = 60_000       # page.goto / initial load
 FORM_FILL_TIMEOUT = 15_000        # typing into form fields
 CLICK_TIMEOUT = 15_000            # clicking the search button
-RESULT_TIMEOUT = 30_000           # waiting for results table / message
+RESULT_TIMEOUT = 15_000           # waiting for results table / message
 BROWSER_LAUNCH_TIMEOUT = 30_000   # browser process startup
+
+# ── Anti-blocking constants ─────────────────────────────────────────────────
+# Outcome window: track last 12 request outcomes
+OUTCOME_WINDOW_SIZE = 12
+ABORT_THRESHOLD = 7               # >=7 bad out of last 12 → enter cooldown
+WARNING_THRESHOLD = 5              # >=5 bad → slow down preemptively
+
+# Cooldown tiers (seconds) — escalates on repeated blocks
+COOLDOWN_TIER_1 = (300, 600)      # 5-10 min (first block)
+COOLDOWN_TIER_2 = (600, 1200)     # 10-20 min (second block)
+COOLDOWN_TIER_3 = (1200, 1800)    # 20-30 min (third+ block)
+
+# Batch breaks — mimic human coffee breaks
+BATCH_SIZE = 60                   # take a break after this many successes
+BATCH_BREAK = (30, 90)            # pause 30-90 seconds
+
+# Rotating user-agent pool (recent Chrome versions on Win/Mac)
+_USER_AGENT_POOL = [
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36 Edg/124.0.0.0",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
+]
 
 
 @dataclass
@@ -60,6 +87,70 @@ class CCASSSnapshot:
     total_pct: Optional[float]
     num_participants: int
     holdings: list[dict]     # [{participant_id, participant_name, shares, pct_of_issued}, ...]
+
+
+# ── Enhanced stealth init script ────────────────────────────────────────────
+# More comprehensive than the old version — masks additional fingerprint
+# vectors that Akamai/Bot Manager checks.
+_STEALTH_INIT_SCRIPT = """
+// 1. Hide webdriver flag (multiple variants)
+Object.defineProperty(navigator, 'webdriver', {get: () => undefined});
+Object.defineProperty(navigator, '__webdriver_evaluate', {get: () => undefined});
+Object.defineProperty(navigator, '__driver_evaluate', {get: () => undefined});
+Object.defineProperty(navigator, '__webdriver_script_function', {get: () => undefined});
+Object.defineProperty(navigator, '__webdriver_script_func', {get: () => undefined});
+Object.defineProperty(navigator, '__webdriver_script_fn', {get: () => undefined});
+Object.defineProperty(navigator, '__fxdriver_evaluate', {get: () => undefined});
+Object.defineProperty(navigator, '__driver_unwrapped', {get: () => undefined});
+Object.defineProperty(navigator, '__webdriver_unwrapped', {get: () => undefined});
+
+// 2. Mask Chrome automation flags
+Object.defineProperty(document, 'hidden', {get: () => false});
+Object.defineProperty(document, 'visibilityState', {get: () => 'visible'});
+
+// 3. Fake plugins (real browsers have plugins)
+Object.defineProperty(navigator, 'plugins', {
+    get: () => {
+        const plugins = [1, 2, 3, 4, 5];
+        plugins.item = (i) => plugins[i];
+        plugins.namedItem = (name) => null;
+        plugins.refresh = () => {};
+        return plugins;
+    }
+});
+
+// 4. Fake languages
+Object.defineProperty(navigator, 'languages', {
+    get: () => ['en-HK', 'zh-HK', 'en-US', 'en', 'zh']
+});
+
+// 5. Fake permissions API (headless chrome has quirks)
+const originalQuery = window.navigator.permissions?.query;
+if (originalQuery) {
+    window.navigator.permissions.query = (parameters) => (
+        parameters.name === 'notifications' ?
+            Promise.resolve({state: Notification.permission}) :
+            originalQuery(parameters)
+    );
+}
+
+// 6. Mask chrome runtime (headless detection)
+window.chrome = {
+    runtime: {},
+    loadTimes: () => {},
+    csi: () => {},
+    app: {}
+};
+
+// 7. Override toString for masked functions
+const originalToString = Function.prototype.toString;
+Function.prototype.toString = function() {
+    if (this === window.chrome.runtime || this === window.chrome.loadTimes) {
+        return 'function () { [native code] }';
+    }
+    return originalToString.call(this);
+};
+"""
 
 
 class CCASSScraper:
@@ -77,10 +168,22 @@ class CCASSScraper:
         self.timeout = timeout
         self.max_retries = max_retries
 
-        # Sliding window of recent request outcomes (True = blocked/failed).
-        from collections import deque
-        self._outcome_window: deque[bool] = deque(maxlen=12)
-        self._abort_threshold = 7   # >=7 bad out of last 12 → HKEX down / blocked
+        # ── Anti-blocking state ──
+        # Sliding window: track recent request outcomes (True = bad/failed)
+        self._outcome_window: deque[bool] = deque(maxlen=OUTCOME_WINDOW_SIZE)
+
+        # Cooldown state machine
+        self._blocked_until: Optional[datetime] = None  # UTC timestamp
+        self._cooldown_tier: int = 0                     # 0=normal, 1,2,3+
+        self._consecutive_bad: int = 0                    # count of consecutive bad
+        self._consecutive_good: int = 0                   # count of consecutive good
+
+        # Batch break tracking
+        self._batch_counter: int = 0                       # successes since last break
+
+        # User agent rotation
+        self._user_agent_pool: list[str] = list(_USER_AGENT_POOL)
+        self._current_ua_index: int = 0
 
         # Playwright state
         self._playwright = None
@@ -89,7 +192,7 @@ class CCASSScraper:
         self._page: Page | None = None
         self._user_agent = user_agent
         self._headless = headless
-        self._page_ready = False     # True once we've navigated to SDW_URL at least once
+        self._page_ready = False
 
         self._launch_browser()
 
@@ -98,11 +201,11 @@ class CCASSScraper:
     # ═══════════════════════════════════════════════════════════════════════
 
     def _launch_browser(self) -> None:
-        """Launch headless Chromium. Each subprocess gets its own browser."""
+        """Launch headless Chromium with anti-detection flags."""
         logger.info("Launching Playwright Chromium (headless=%s)...", self._headless)
         try:
             self._playwright = sync_playwright().start()
-            # Try existing chromium installs first (avoid re-downloading)
+            # Try existing chromium installs first
             import os as _os
             _chromium_base = _os.path.expandvars(
                 r"%LOCALAPPDATA%\ms-playwright"
@@ -112,9 +215,10 @@ class CCASSScraper:
                 _chrome = _os.path.join(_chromium_base, _entry, "chrome-win64", "chrome.exe")
                 if _os.path.isfile(_chrome):
                     _candidates.append(_chrome)
-            _exe_path = _candidates[0] if _candidates else None
+            _exe_path = _candidates[-1] if _candidates else None  # newest
             if _exe_path:
                 logger.info("Using existing Chromium: %s", _exe_path)
+
             self._browser = self._playwright.chromium.launch(
                 headless=self._headless,
                 executable_path=_exe_path,
@@ -122,8 +226,20 @@ class CCASSScraper:
                     "--disable-dev-shm-usage",
                     "--no-sandbox",
                     "--disable-gpu",
+                    # Anti-detection flags
                     "--disable-blink-features=AutomationControlled",
                     "--disable-features=IsolateOrigins,site-per-process",
+                    "--disable-features=WebRtcHideLocalIpsWithMdns",
+                    "--disable-features=OptimizationHints,TranslateUI",
+                    "--disable-component-extensions-with-background-pages",
+                    "--disable-default-apps",
+                    "--disable-extensions",
+                    "--disable-sync",
+                    "--metrics-recording-only",
+                    "--mute-audio",
+                    "--no-default-browser-check",
+                    "--no-first-run",
+                    "--no-pings",
                 ],
                 timeout=BROWSER_LAUNCH_TIMEOUT,
             )
@@ -133,29 +249,82 @@ class CCASSScraper:
             self.close()
             raise
 
+    def _rotate_user_agent(self) -> str:
+        """Return next user agent from the rotation pool."""
+        ua = self._user_agent_pool[self._current_ua_index]
+        self._current_ua_index = (self._current_ua_index + 1) % len(self._user_agent_pool)
+        return ua
+
+    def _random_viewport(self) -> dict:
+        """Randomised viewport size to avoid fingerprinting."""
+        return {
+            "width": random.randint(1500, 1920),
+            "height": random.randint(800, 1080),
+        }
+
+    def _ensure_context(self) -> BrowserContext:
+        """Create or return browser context with fresh stealth profile."""
+        if self._context is None:
+            ua = self._rotate_user_agent()
+            vp = self._random_viewport()
+            logger.debug("New context: UA=%s..., viewport=%s", ua[:50], vp)
+            self._context = self._browser.new_context(
+                user_agent=ua,
+                viewport=vp,
+                locale="en-HK",
+                timezone_id="Asia/Hong_Kong",
+                bypass_csp=True,
+                # No extra permissions
+                permissions=[],
+            )
+            # Block heavy assets to save bandwidth/RAM
+            self._context.route(
+                "**/*",
+                lambda route: route.abort()
+                if route.request.resource_type in ("image", "font", "media", "stylesheet")
+                else route.continue_(),
+            )
+            # Inject enhanced stealth script
+            self._context.add_init_script(_STEALTH_INIT_SCRIPT)
+        return self._context
+
+    def _rotate_browser_session(self) -> None:
+        """Destroy current context and create a fresh one.
+        
+        This is the key recovery mechanism: when Akamai blocks us,
+        we get a completely fresh session (new cookies, new fingerprint,
+        new user agent, new viewport). This usually clears the block.
+        """
+        logger.info("Rotating browser session (cooldown tier %d)...", self._cooldown_tier)
+        # Close old context and page
+        for obj in [self._page, self._context]:
+            if obj is not None:
+                try:
+                    obj.close()
+                except Exception:
+                    pass
+        self._page = None
+        self._context = None
+        self._page_ready = False
+
+        # If browser is still healthy, just recreate context
+        if self._browser and self._browser.is_connected():
+            self._ensure_context()
+        else:
+            # Browser died — relaunch
+            logger.warning("Browser disconnected, re-launching...")
+            self._browser = None
+            self._launch_browser()
+
     def _ensure_page(self) -> Page:
-        """Return a ready page, creating context + page + navigating if needed."""
-        # Recover from browser crash (e.g., OOM, GPU crash)
+        """Return a ready page, handling browser crashes and cooldown states."""
+        # Check if browser is still connected
         if self._browser is not None and not self._browser.is_connected():
             logger.warning("Browser disconnected — re-launching")
             self.close()
             self._launch_browser()
 
-        if self._context is None:
-            self._context = self._browser.new_context(
-                user_agent=self._user_agent,
-                viewport={"width": 1920, "height": 1080},
-                locale="en-HK",
-                timezone_id="Asia/Hong_Kong",
-                # Additional stealth: hide webdriver flag
-                bypass_csp=True,
-            )
-            # Inject stealth script to mask automation
-            self._context.add_init_script("""
-                Object.defineProperty(navigator, 'webdriver', {get: () => undefined});
-                Object.defineProperty(navigator, 'plugins', {get: () => [1,2,3,4,5]});
-                Object.defineProperty(navigator, 'languages', {get: () => ['en-HK','en-US','en']});
-            """)
+        self._ensure_context()
 
         if self._page is None or self._page.is_closed():
             self._page = self._context.new_page()
@@ -176,7 +345,7 @@ class CCASSScraper:
             self._page.goto(
                 SDW_URL, wait_until="domcontentloaded", timeout=NAVIGATION_TIMEOUT,
             )
-            # Wait for the stock-code input to appear (confirms form loaded)
+            # Wait for the stock-code input to appear
             self._page.wait_for_selector(
                 "#txtStockCode", state="visible", timeout=NAVIGATION_TIMEOUT,
             )
@@ -198,22 +367,166 @@ class CCASSScraper:
                     obj.close()
             except Exception:
                 pass
+        self._page = None
+        self._context = None
+        self._browser = None
+        self._playwright = None
         logger.debug("Playwright resources released")
 
     def __del__(self) -> None:
         self.close()
 
     # ═══════════════════════════════════════════════════════════════════════
-    #  Public API (same interface as cloudscraper version)
+    #  Anti-blocking: cooldown state machine
+    # ═══════════════════════════════════════════════════════════════════════
+
+    def _is_in_cooldown(self) -> bool:
+        """Check if we're currently in a cooldown period."""
+        if self._blocked_until is None:
+            return False
+        if datetime.utcnow() >= self._blocked_until:
+            # Cooldown expired
+            self._blocked_until = None
+            return False
+        return True
+
+    def _enter_cooldown(self, reason: str = "blocked") -> None:
+        """Enter escalating cooldown mode after being blocked.
+        
+        Each cooldown rotates the browser session for a fresh identity.
+        Cooldown duration increases with each repeated block.
+        """
+        if self._is_in_cooldown():
+            logger.debug("Already in cooldown until %s", self._blocked_until)
+            return
+
+        self._cooldown_tier = min(self._cooldown_tier + 1, 3)
+
+        if self._cooldown_tier == 1:
+            tier_range = COOLDOWN_TIER_1
+        elif self._cooldown_tier == 2:
+            tier_range = COOLDOWN_TIER_2
+        else:
+            tier_range = COOLDOWN_TIER_3
+
+        cooldown_seconds = random.uniform(*tier_range)
+        cooldown_minutes = cooldown_seconds / 60
+        self._blocked_until = datetime.utcnow() + timedelta(seconds=cooldown_seconds)
+
+        logger.warning(
+            "⏸️ ENTERING COOLDOWN (tier %d): %.1f min — %s. "
+            "Rotating browser session...",
+            self._cooldown_tier, cooldown_minutes, reason,
+        )
+
+        # Rotate browser session for fresh identity
+        self._rotate_browser_session()
+
+        # Reset outcome tracking — fresh start after cooldown
+        self._outcome_window.clear()
+        self._consecutive_bad = 0
+
+        logger.info(
+            "Cooldown active until %s UTC. "
+            "Outcome window reset. %d blocks this session.",
+            self._blocked_until.strftime("%H:%M:%S"),
+            self._cooldown_tier,
+        )
+
+    def _check_batch_break(self) -> None:
+        """Take a coffee break after a batch of successful requests.
+        
+        Mimics human behaviour: after ~50-80 stocks, pause for 30-90 seconds.
+        This prevents Akamai from detecting a sustained high-rate pattern.
+        """
+        self._batch_counter += 1
+        if self._batch_counter >= BATCH_SIZE:
+            break_seconds = random.uniform(*BATCH_BREAK)
+            logger.info(
+                "☕ Batch break: %d stocks done, pausing %.0fs...",
+                self._batch_counter, break_seconds,
+            )
+            time.sleep(break_seconds)
+            self._batch_counter = 0
+
+    def _record_outcome(self, bad: bool, stock_code: str) -> None:
+        """Record request outcome and manage anti-blocking state machine.
+        
+        NO LONGER raises RuntimeError! Instead:
+        - Tracks sliding window of outcomes
+        - Enters escalating cooldown when threshold hit
+        - Recovers gracefully after cooldown expires
+        - Tracks warning threshold for preemptive slowdown
+        """
+        self._outcome_window.append(bad)
+
+        if bad:
+            self._consecutive_bad += 1
+            self._consecutive_good = 0
+        else:
+            self._consecutive_good += 1
+            self._consecutive_bad = 0
+
+        bad_count = sum(self._outcome_window)
+        window_len = len(self._outcome_window)
+
+        if bad:
+            logger.warning(
+                "Bad response on %s (window %d/%d bad, consecutive=%d)",
+                stock_code, bad_count, window_len, self._consecutive_bad,
+            )
+
+        # ── Warning threshold: slow down preemptively ──
+        if (
+            window_len >= OUTCOME_WINDOW_SIZE
+            and bad_count >= WARNING_THRESHOLD
+            and bad_count < ABORT_THRESHOLD
+            and not self._is_in_cooldown()
+        ):
+            extra_pause = random.uniform(5, 10)
+            logger.warning(
+                "⚠️  Warning threshold hit (%d/%d bad) — extra pause %.1fs",
+                bad_count, window_len, extra_pause,
+            )
+            time.sleep(extra_pause)
+
+        # ── Abort threshold: enter cooldown (DON'T raise RuntimeError!) ──
+        if (
+            window_len >= OUTCOME_WINDOW_SIZE
+            and bad_count >= ABORT_THRESHOLD
+            and not self._is_in_cooldown()
+        ):
+            self._enter_cooldown(
+                reason=f"{bad_count}/{window_len} recent requests failed"
+            )
+
+    # ═══════════════════════════════════════════════════════════════════════
+    #  Public API
     # ═══════════════════════════════════════════════════════════════════════
 
     def _refresh_form_tokens(self) -> None:
         """No-op: Playwright manages ASP.NET tokens through the browser.
-        Kept for interface compatibility with callers that invoke this."""
+        Kept for interface compatibility."""
         pass
 
     def scrape_stock(self, stock_code: str, query_date: date) -> Optional[CCASSSnapshot]:
-        """Scrape one stock for one date. Returns None if no data or parse failure."""
+        """Scrape one stock for one date. Returns None if no data, blocked, or failure.
+
+        Anti-blocking flow:
+        1. Check if we're in cooldown → return None immediately (don't waste time)
+        2. Try scraping with retries
+        3. On failure: record outcome → may trigger cooldown
+        4. On success: record outcome + check batch break
+        """
+        # ── Cooldown check: don't even try if we're blocked ──
+        if self._is_in_cooldown():
+            remaining = (self._blocked_until - datetime.utcnow()).total_seconds()
+            logger.debug(
+                "In cooldown (%.0fs remaining), skipping %s",
+                remaining, stock_code,
+            )
+            return None
+
         stock_code = stock_code.zfill(5)
         date_str = query_date.strftime("%Y/%m/%d")
 
@@ -222,12 +535,28 @@ class CCASSScraper:
             try:
                 page = self._ensure_page()
 
+                # ── Quick pre-check: is the page responsive? ──
+                # After cooldown, first navigation test
+                try:
+                    page.wait_for_selector(
+                        "#txtStockCode", state="visible", timeout=5000,
+                    )
+                except PlaywrightTimeout:
+                    logger.warning(
+                        "Page unresponsive after cooldown for %s (attempt %d) — "
+                        "may still be blocked",
+                        stock_code, attempt,
+                    )
+                    self._record_outcome(True, stock_code)
+                    self._reset_page_state()
+                    time.sleep(min(10, 2 ** attempt))
+                    continue
+
                 # ── Fill the search form ──
                 _safe_fill(page, "#txtStockCode", stock_code)
                 _safe_fill(page, "#txtShareholdingDate", date_str)
 
                 # ── Click Search ──
-                # ASP.NET WebForms: <a id="btnSearch"> calls __doPostBack on click.
                 search_btn = page.locator("#btnSearch")
                 search_btn.click(timeout=CLICK_TIMEOUT)
 
@@ -246,10 +575,11 @@ class CCASSScraper:
                     )
                     self._record_outcome(True, stock_code)
                     self._reset_page_state()
-                    time.sleep(min(15, 2 ** attempt))
+                    # Shorter backoff since we already track with cooldown system
+                    time.sleep(min(8, 2 ** attempt))
                     continue
 
-                # Small grace period for any async rendering
+                # Small grace period for async rendering
                 page.wait_for_timeout(800)
 
                 html = page.content()
@@ -263,12 +593,17 @@ class CCASSScraper:
                     )
                     self._save_debug_html(stock_code, query_date, html)
                     self._reset_page_state()
-                    time.sleep(min(15, 2 ** attempt))
+                    time.sleep(min(10, 2 ** attempt))
                     continue
 
                 # ── Genuine success ──
                 self._record_outcome(False, stock_code)
                 snapshot = self._parse(stock_code, query_date, html)
+
+                # After success, check batch break
+                self._check_batch_break()
+
+                # Polite delay between successful requests
                 self._polite_sleep()
                 return snapshot
 
@@ -279,12 +614,9 @@ class CCASSScraper:
                     "Scrape %s attempt %d Playwright error: %s. Sleeping %ds",
                     stock_code, attempt, e, backoff,
                 )
+                self._record_outcome(True, stock_code)
                 self._reset_page_state()
-                time.sleep(backoff)
-
-            except RuntimeError:
-                # Re-raise abort signals so the caller (shard runner) can exit
-                raise
+                time.sleep(min(backoff, 15))
 
             except Exception as e:
                 last_err = e
@@ -293,8 +625,9 @@ class CCASSScraper:
                     "Scrape %s attempt %d failed: %s. Sleeping %ds",
                     stock_code, attempt, e, backoff,
                 )
+                self._record_outcome(True, stock_code)
                 self._reset_page_state()
-                time.sleep(backoff)
+                time.sleep(min(backoff, 15))
 
         logger.error("Scrape %s exhausted retries (%s)", stock_code, last_err)
         return None
@@ -315,29 +648,16 @@ class CCASSScraper:
                 self._page = None
 
     # ═══════════════════════════════════════════════════════════════════════
-    #  Outcome tracking (same logic as cloudscraper version)
+    #  Delay helpers
     # ═══════════════════════════════════════════════════════════════════════
 
     def _polite_sleep(self) -> None:
+        """Random delay between successful requests (human-like)."""
         time.sleep(random.uniform(self.delay_min, self.delay_max))
 
-    def _record_outcome(self, bad: bool, stock_code: str) -> None:
-        self._outcome_window.append(bad)
-        bad_count = sum(self._outcome_window)
-        if bad:
-            logger.warning(
-                "Bad response on %s (window %d/%d bad)",
-                stock_code, bad_count, len(self._outcome_window),
-            )
-        if (
-            len(self._outcome_window) == self._outcome_window.maxlen
-            and bad_count >= self._abort_threshold
-        ):
-            raise RuntimeError(
-                f"HKEX CCASS appears DOWN or BLOCKING — "
-                f"{bad_count}/{len(self._outcome_window)} recent requests failed. "
-                f"Aborting scrape."
-            )
+    # ═══════════════════════════════════════════════════════════════════════
+    #  Block detection (unchanged)
+    # ═══════════════════════════════════════════════════════════════════════
 
     @staticmethod
     def _looks_like_block(html: str) -> bool:
@@ -357,7 +677,7 @@ class CCASSScraper:
         return any(m if isinstance(m, bool) else (m in head) for m in markers)
 
     # ═══════════════════════════════════════════════════════════════════════
-    #  HTML parsing (unchanged from cloudscraper version)
+    #  HTML parsing (unchanged from original)
     # ═══════════════════════════════════════════════════════════════════════
 
     def _parse(
@@ -389,7 +709,6 @@ class CCASSScraper:
                 return None
 
         # Detect "not available / does not exist" via hidden #alertMsg input
-        # (HKEX puts this in a hidden field — not in .ccass-search-msg div)
         alert_input = soup.find("input", id="alertMsg")
         if alert_input:
             msg_text = (alert_input.get("value") or "").strip().lower()
@@ -494,7 +813,7 @@ class CCASSScraper:
 
     @staticmethod
     def _extract_total_from_text(html: str) -> Optional[int]:
-        """Last-resort: find most-frequent large number (≥10M) in raw HTML."""
+        """Last-resort: find most-frequent large number (>=10M) in raw HTML."""
         from collections import Counter
 
         candidates = re.findall(r"(?<![0-9])([0-9]{1,3}(?:,[0-9]{3}){2,})", html)
@@ -609,7 +928,7 @@ class CCASSScraper:
 
     @staticmethod
     def _parse_number(text: str) -> Optional[int]:
-        """Parse '1,234,567' → 1234567."""
+        """Parse '1,234,567' -> 1234567."""
         if not text:
             return None
         cleaned = re.sub(r"[,\s]", "", text)
@@ -630,21 +949,18 @@ class CCASSScraper:
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-#  Helpers
+#  Form helpers
 # ═══════════════════════════════════════════════════════════════════════════
 
 def _safe_fill(page: Page, selector: str, value: str) -> None:
     """Fill a form field robustly. Handles ASP.NET read-only inputs by
-    using JavaScript to set the value directly, then dispatching events
-    so __doPostBack / ViewState picks it up."""
+    using JavaScript to set the value directly."""
     loc = page.locator(selector)
     loc.wait_for(state="visible", timeout=FORM_FILL_TIMEOUT)
 
-    # Check if the input is read-only; if so, use JS to force-set the value
     is_readonly = loc.evaluate("el => el.readOnly || el.getAttribute('readonly') !== null")
 
     if is_readonly:
-        # Remove readonly (both attribute and DOM property), set value via JS
         loc.evaluate(
             """(el, val) => {
                 el.readOnly = false;
@@ -658,19 +974,42 @@ def _safe_fill(page: Page, selector: str, value: str) -> None:
             value,
         )
     else:
-        # Normal fill: triple-click to select all, then type
         loc.click(click_count=3, timeout=FORM_FILL_TIMEOUT)
         loc.fill(value, timeout=FORM_FILL_TIMEOUT)
 
 
+def _fill_search_form(page: Page, stock_code: str, date_str: str) -> None:
+    """Fill both stock code and date fields in one JS call — ~2s faster per stock."""
+    page.wait_for_selector("#txtStockCode", state="visible", timeout=FORM_FILL_TIMEOUT)
+    page.evaluate(
+        """([code, dt]) => {
+            const stock = document.querySelector('#txtStockCode');
+            const date = document.querySelector('#txtShareholdingDate');
+            for (const [el, val] of [[stock, code], [date, dt]]) {
+                if (!el) throw new Error('missing form input');
+                const wasReadOnly = el.readOnly || el.hasAttribute('readonly');
+                el.readOnly = false;
+                el.removeAttribute('readonly');
+                el.value = val;
+                el.dispatchEvent(new Event('input', {bubbles: true}));
+                el.dispatchEvent(new Event('change', {bubbles: true}));
+                if (wasReadOnly) {
+                    el.readOnly = true;
+                    el.setAttribute('readonly', 'readonly');
+                }
+            }
+        }""",
+        [stock_code, date_str],
+    )
+
+
 # ═══════════════════════════════════════════════════════════════════════════
-#  DB persistence (unchanged from cloudscraper version)
+#  DB persistence (unchanged)
 # ═══════════════════════════════════════════════════════════════════════════
 
 def save_snapshot(snap: CCASSSnapshot) -> None:
     """Write snapshot to DB. Idempotent (UPSERT)."""
     now_iso = datetime.utcnow().isoformat()
-    # Compute top5/top10 concentration
     sorted_shares = sorted(
         [h["shares"] for h in snap.holdings if h.get("shares")], reverse=True
     )
@@ -704,7 +1043,6 @@ def save_snapshot(snap: CCASSSnapshot) -> None:
                 now_iso,
             ),
         )
-        # Replace holdings for this (stock, date)
         conn.execute(
             "DELETE FROM ccass_holdings WHERE stock_code = ? AND trade_date = ?",
             (snap.stock_code, snap.trade_date),
@@ -726,7 +1064,6 @@ def save_snapshot(snap: CCASSSnapshot) -> None:
                 for h in snap.holdings
             ],
         )
-        # Track first date this stock had CCASS data (for date-aware universe)
         conn.execute(
             """UPDATE stock_universe
                SET first_seen_date = MIN(

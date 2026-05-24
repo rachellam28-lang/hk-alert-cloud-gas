@@ -1,49 +1,34 @@
-"""Backfill 歷史 CCASS 數據。
+"""Backfill 歷史 CCASS 數據 — simplified sequential version.
 
 用法:
     python -m scripts.backfill --start 2024-01-01 --end 2024-12-31
     python -m scripts.backfill --days 90    # 過去 90 個交易日
 
 注意:
-- 全港股 × 1 日 ≈ 1-2 鐘頭
-- Backfill 90 日 ≈ 4-7 日 24/7 跑
+- 每一日 call src.runner.run_daily()（skip_alerts=True）
 - FATAL-003: 唔可以加快 delay
 """
 from __future__ import annotations
 
 import argparse
 import sys
-from datetime import datetime, date, timedelta
-
-import yaml
+from datetime import datetime, date
 
 from src.db import init_db
 from src.logger import setup_logger
-from src.trading_calendar import is_trading_day, last_n_trading_days, today_hk
-from src.universe import get_active_stocks, refresh_universe
-from src.scraper import CCASSScraper, save_snapshot
-from src.runner import load_config
+from src.trading_calendar import is_trading_day, today_hk
+from src.universe import refresh_universe, get_active_stocks
+from src.runner import run_daily
 
 logger = setup_logger("backfill")
 
 
 def backfill_range(start: date, end: date) -> None:
     init_db()
-    config = load_config()
 
     if not get_active_stocks():
         logger.info("Universe empty, refreshing...")
         refresh_universe()
-
-    stocks = get_active_stocks()
-    sc_cfg = config["scraping"]
-    scraper = CCASSScraper(
-        user_agent=sc_cfg["user_agent"],
-        delay_min=sc_cfg["delay_min_seconds"],
-        delay_max=sc_cfg["delay_max_seconds"],
-        timeout=sc_cfg["timeout_seconds"],
-        max_retries=sc_cfg["max_retries"],
-    )
 
     # 攞每日 trading days
     cur = start
@@ -51,31 +36,25 @@ def backfill_range(start: date, end: date) -> None:
     while cur <= end:
         if is_trading_day(cur):
             trading_days.append(cur)
+        from datetime import timedelta
         cur += timedelta(days=1)
 
-    total = len(trading_days) * len(stocks)
+    total = len(trading_days)
     logger.info(
-        "Backfill plan: %d trading days × %d stocks = %d requests "
-        "(估計 ~%.1f 小時)",
-        len(trading_days),
-        len(stocks),
+        "Backfill plan: %d trading days",
         total,
-        total * 2 / 3600,
     )
 
-    done = 0
-    for d in trading_days:
-        logger.info("Backfilling %s...", d)
-        for code in stocks:
-            try:
-                snap = scraper.scrape_stock(code, d)
-                if snap:
-                    save_snapshot(snap)
-            except Exception:
-                logger.exception("Backfill error on %s/%s", code, d)
-            done += 1
-            if done % 100 == 0:
-                logger.info("Progress: %d/%d (%.1f%%)", done, total, 100 * done / total)
+    success = 0
+    for i, d in enumerate(trading_days, 1):
+        logger.info("Backfilling %s (%d/%d)...", d, i, total)
+        rc = run_daily(target_date=d, skip_alerts=True)
+        if rc == 0:
+            success += 1
+        else:
+            logger.error("Backfill failed for %s (rc=%d)", d, rc)
+
+    logger.info("Backfill complete: %d/%d days succeeded", success, total)
 
 
 def main():
@@ -86,6 +65,7 @@ def main():
     args = parser.parse_args()
 
     if args.days:
+        from src.trading_calendar import last_n_trading_days
         days = last_n_trading_days(today_hk(), args.days)
         start, end = days[0], days[-1]
     elif args.start:

@@ -4,21 +4,40 @@ universe: all_hk    # 全港股 ~2700 隻
 
 scraping:
   # --- delay between stock requests -----------------------------------------
-  # Raised slightly from 1-3s. You are firing GET+POST per stock, hundreds of
-  # times from one IP. A wider, longer gap makes the request pattern look less
-  # mechanical to Akamai. Cost: ~500 stocks * avg 4s = ~33 min, still fine
-  # inside the 6h job cap. If 503s persist, raise these further before
-  # reaching for a proxy / browser.
-  delay_min_seconds: 2.0
-  delay_max_seconds: 6.0
+  # 3-8s between successful requests. Anti-blocking cooldown system handles
+  # the rest — escalating pauses (5→10→20 min) when Akamai blocks, plus
+  # batch breaks every ~60 stocks (30-90s coffee break).
+  # Override via env: CCASS_DELAY_MIN / CCASS_DELAY_MAX
+  delay_min_seconds: 3.0
+  delay_max_seconds: 8.0
 
   timeout_seconds: 30
-  max_retries: 3
+  max_retries: 2
   retry_backoff_base: 2
   user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
-  parallel_workers: 1   # keep at 1 — parallel POSTs from one IP trips Akamai
+  # parallel_workers is managed by parallel_backfill.py, not used by sequential runner
+  parallel_workers: 1
 
-trend_windows: [5, 20, 60, 120]
+  # --- Anti-blocking (v2 — May 2026) ----------------------------------------
+  # These are hardcoded constants in scraper.py. Listed here for visibility.
+  #
+  # Cooldown tiers when Akamai blocks:
+  #   Tier 1: 5-10 min  (first block)
+  #   Tier 2: 10-20 min (second block)
+  #   Tier 3: 20-30 min (third+ block)
+  #
+  # Batch breaks: after every ~60 successful stocks, pause 30-90s
+  # Warning threshold: 5/12 bad → extra 5-10s pause preemptively
+  # Abort threshold:  7/12 bad → enter cooldown (NOT RuntimeError anymore!)
+  #
+  # Key change from v1: Once blocked, scraper enters cooldown + rotates
+  # browser session (new cookies, new fingerprint, new UA). After cooldown,
+  # outcome window resets — no more wasting hours on already-blocked sessions.
+
+  # --- User agent rotation pool (hardcoded in scraper.py) -------------------
+  # 6 rotating Chrome UAs (Win/Mac, Chrome 123-125 + Edge)
+
+trend_windows: [5, 20]
 
 alerts:
   spike_threshold_pct: 5.0       # 5日 total_pct 變化 ≥ 呢個 trigger

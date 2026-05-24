@@ -33,12 +33,8 @@ def compute_trends_for_date(target_date: date, windows: list[int] | None = None)
             total_shares,
             LAG(total_pct, 5) OVER (PARTITION BY stock_code ORDER BY trade_date) AS pct_5d_ago,
             LAG(total_pct, 20) OVER (PARTITION BY stock_code ORDER BY trade_date) AS pct_20d_ago,
-            LAG(total_pct, 60) OVER (PARTITION BY stock_code ORDER BY trade_date) AS pct_60d_ago,
-            LAG(total_pct, 120) OVER (PARTITION BY stock_code ORDER BY trade_date) AS pct_120d_ago,
             LAG(total_shares, 5) OVER (PARTITION BY stock_code ORDER BY trade_date) AS sh_5d_ago,
-            LAG(total_shares, 20) OVER (PARTITION BY stock_code ORDER BY trade_date) AS sh_20d_ago,
-            LAG(total_shares, 60) OVER (PARTITION BY stock_code ORDER BY trade_date) AS sh_60d_ago,
-            LAG(total_shares, 120) OVER (PARTITION BY stock_code ORDER BY trade_date) AS sh_120d_ago
+            LAG(total_shares, 20) OVER (PARTITION BY stock_code ORDER BY trade_date) AS sh_20d_ago
         FROM ccass_daily
         WHERE validation_failed = 0
     )
@@ -47,12 +43,8 @@ def compute_trends_for_date(target_date: date, windows: list[int] | None = None)
         trade_date,
         total_pct - COALESCE(pct_5d_ago, total_pct) AS delta_5d_pct,
         total_pct - COALESCE(pct_20d_ago, total_pct) AS delta_20d_pct,
-        total_pct - COALESCE(pct_60d_ago, total_pct) AS delta_60d_pct,
-        total_pct - COALESCE(pct_120d_ago, total_pct) AS delta_120d_pct,
         total_shares - COALESCE(sh_5d_ago, total_shares) AS delta_5d_shares,
-        total_shares - COALESCE(sh_20d_ago, total_shares) AS delta_20d_shares,
-        total_shares - COALESCE(sh_60d_ago, total_shares) AS delta_60d_shares,
-        total_shares - COALESCE(sh_120d_ago, total_shares) AS delta_120d_shares
+        total_shares - COALESCE(sh_20d_ago, total_shares) AS delta_20d_shares
     FROM ranked
     WHERE trade_date = ?
     """
@@ -106,16 +98,12 @@ def compute_trends_for_date(target_date: date, windows: list[int] | None = None)
                       delta_60d_shares, delta_120d_shares,
                       consecutive_increase_days, consecutive_decrease_days,
                       computed_at)
-                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                   VALUES (?, ?, ?, ?, NULL, NULL, ?, ?, NULL, NULL, ?, ?, ?)
                    ON CONFLICT(stock_code, trade_date) DO UPDATE SET
                      delta_5d_pct = excluded.delta_5d_pct,
                      delta_20d_pct = excluded.delta_20d_pct,
-                     delta_60d_pct = excluded.delta_60d_pct,
-                     delta_120d_pct = excluded.delta_120d_pct,
                      delta_5d_shares = excluded.delta_5d_shares,
                      delta_20d_shares = excluded.delta_20d_shares,
-                     delta_60d_shares = excluded.delta_60d_shares,
-                     delta_120d_shares = excluded.delta_120d_shares,
                      consecutive_increase_days = excluded.consecutive_increase_days,
                      consecutive_decrease_days = excluded.consecutive_decrease_days,
                      computed_at = excluded.computed_at""",
@@ -124,12 +112,8 @@ def compute_trends_for_date(target_date: date, windows: list[int] | None = None)
                     r["trade_date"],
                     r["delta_5d_pct"],
                     r["delta_20d_pct"],
-                    r["delta_60d_pct"],
-                    r["delta_120d_pct"],
                     r["delta_5d_shares"],
                     r["delta_20d_shares"],
-                    r["delta_60d_shares"],
-                    r["delta_120d_shares"],
                     up,
                     down,
                     now_iso,

@@ -16,10 +16,6 @@ import sys
 from pathlib import Path
 
 _PROJECT_ROOT = Path(__file__).parent.parent
-# Project root is ccass/, the backfill files are one level up
-# (parallel_backfill writes them to _PROJECT_ROOT which = ccass/)
-# But the shard subprocess writes via --out with the parent giving
-# the path: ccass/backfill-shard-YYYY-MM-DD-N.json
 
 
 def main():
@@ -55,7 +51,7 @@ def main():
             print(f"  ❌ {jf.name}: JSON parse error: {e}")
             continue
 
-        code = payload.get("query_date", "??")
+        qdate = payload.get("query_date", "??")
         shard = payload.get("shard", "?")
         snapshots = payload.get("snapshots", [])
 
@@ -66,7 +62,6 @@ def main():
         written = 0
         skipped = 0
         for snap_dict in snapshots:
-            # Convert dict → CCASSSnapshot so we can use save_snapshot
             snap = CCASSSnapshot(
                 stock_code=snap_dict["stock_code"],
                 trade_date=snap_dict["trade_date"],
@@ -83,7 +78,7 @@ def main():
 
         total_new += written
         total_skipped += skipped
-        print(f"  ✅ {jf.name}: shard={shard} date={code} → {written} written, {skipped} skipped")
+        print(f"  ✅ {jf.name}: shard={shard} date={qdate} → {written} written, {skipped} skipped")
 
     # Verify
     import sqlite3
