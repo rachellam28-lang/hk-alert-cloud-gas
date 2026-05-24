@@ -21,7 +21,7 @@
 > - Starts are **staggered by ≥30 seconds** between shards
 > - HKEX block detection (`RuntimeError` on 7+/12 bad) **aborts the entire run**
 > - SQLite writes happen in a **single merge process** after all shards complete
-> - Aggregate failure rate > 5% → abort that date
+> - Aggregate failure rate > 10% → abort that date
 > 
 > This provides ~6× speedup for backfill without increasing WAF risk beyond
 > what the existing daily 6-shard GitHub Actions workflow already does.

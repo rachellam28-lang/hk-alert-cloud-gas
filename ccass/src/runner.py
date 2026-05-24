@@ -127,7 +127,7 @@ def run_shard(shard_idx: int, shard_total: int, force_universe_refresh: bool = F
         failed_stocks: list[str] = []
 
         # Internal deadline: abort if shard takes too long (HKEX block detection)
-        deadline = time.monotonic() + 6600  # 110 minutes
+        deadline = time.monotonic() + 9000  # 150 minutes
         deadline_exceeded = False
 
         for i, code in enumerate(my_stocks, 1):

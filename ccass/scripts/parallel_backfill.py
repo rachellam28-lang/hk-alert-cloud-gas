@@ -164,8 +164,8 @@ def _validate_all_shards(date_str: str, universe_size: int) -> tuple[list[dict],
     total_attempted = sum(p["stocks_in_shard"] for p in all_payloads)
     if total_attempted > 0:
         fail_rate = total_failed / total_attempted
-        if fail_rate > 0.05:
-            print(f"  ❌ Aggregate failure rate {fail_rate:.1%} > 5%, aborting")
+        if fail_rate > 0.10:
+            print(f"  ❌ Aggregate failure rate {fail_rate:.1%} > 10%, aborting")
             all_ok = False
 
     return all_payloads, total_failed, all_ok
