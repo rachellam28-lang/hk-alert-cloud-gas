@@ -460,6 +460,8 @@ function fmtDate(s){if(!s)return'—';try{const d=new Date(s);if(isNaN(d))return
 
 // --- state ---
 let allStocks=[];
+let baseStocks=[];
+let stockByCode=new Map();
 let filtered=[];
 let sortCol='code';
 let sortDir=-1; // -1 = desc
@@ -473,6 +475,19 @@ let priceMap=new Map();
 let hkexLinkMap=new Map();
 let techSignalMap=new Map();
 const CORP_CACHE_KEY='hk_corp_signal_cache_v2';
+// --- canonical stock list helpers ---
+function getStockCode(s){
+  return String(s?.c??s?.code??'').padStart(5,'0');
+}
+function isDisplayStock(s){
+  const c=getStockCode(s);
+  return /^\d{5}$/.test(c)&&Number(c)<80000;
+}
+function setBaseStocks(stocks){
+  baseStocks=(stocks||[]).filter(isDisplayStock).map(normalizeStockMC);
+  stockByCode=new Map(baseStocks.map(s=>[s.c,s]));
+  allStocks=baseStocks.slice();
+}
 // --- new feature state ---
 let sortCol2='',sortDir2=1;
 let hiddenCols=new Set();
@@ -719,7 +734,7 @@ function renderSummaryBar(data){
   let totalMc=0, mcCnt=0;
   allStocks.forEach(s=>{if(hasMC(s)){totalMc+=s.mc; mcCnt++;}});
   bar.innerHTML='<span class="scnt">📅 <b>'+esc(data.updated)+'</b></span>'
-    +'<span class="scnt">📦 <b>'+data.total_stocks+'</b> 隻股票</span>'
+    +'<span class="scnt">📦 <b>'+allStocks.length+'</b> 隻股票</span>'
     +'<span class="scnt">🏦 <b>'+data.total_participants?.toLocaleString()+'</b> 參與者次</span>'
     +'<span class="scnt" style="border-color:var(--up-border);background:var(--up-soft);color:var(--up)">▲ <b>'+up+'</b> 增持</span>'
     +'<span class="scnt" style="border-color:var(--down-border);background:var(--down-soft);color:var(--down)">▼ <b>'+dn+'</b> 減持</span>'
@@ -949,7 +964,7 @@ async function showDetail(code){
   document.getElementById('drawerTitle').textContent=code;
   document.getElementById('drawerBody').innerHTML='<div class="loading-msg">載入中…</div>';
 
-  const s=allStocks.find(x=>x.c===code);
+  const s=stockByCode.get(code);
   if(!s){
     document.getElementById('drawerBody').innerHTML='<div class="empty">找不到該股票資料</div>';
     return;
@@ -1204,10 +1219,10 @@ function renderIPO(){
     signals.forEach(function(s){
       if(!s.label)return;
       if(s.label.indexOf('IPO首日高突破')>=0){
-        if(!stocks[code]) stocks[code]={code,stock:allStocks.find(x=>x.c===code),badges:[]};
+        if(!stocks[code]) stocks[code]={code,stock:stockByCode.get(code),badges:[]};
         stocks[code].badges.push('high');
       }else if(s.label.indexOf('IPO首日開突破')>=0){
-        if(!stocks[code]) stocks[code]={code,stock:allStocks.find(x=>x.c===code),badges:[]};
+        if(!stocks[code]) stocks[code]={code,stock:stockByCode.get(code),badges:[]};
         stocks[code].badges.push('open');
       }
     });
@@ -1297,7 +1312,8 @@ async function loadData(){
     const res=await fetch('./ccass.json?_='+Date.now());
     if(!res.ok) throw new Error('HTTP '+res.status);
     const data=await res.json();
-    allStocks=(data.stocks||[]).map(normalizeStockMC);
+    allStocks=baseStocks.slice();
+    setBaseStocks(data.stocks);
     renderSummaryBar(data);
     applyFilters();
     updateSortInfo();
@@ -1346,6 +1362,7 @@ async function loadData(){
           d.groups.forEach(g=>{
             const ct=g.corpTypes||{};
             const code=String(g.code||"").padStart(5,"0");
+            if(!stockByCode.has(code)) return;
             const e=cache[code]||{};
             signalMap.set(code,{
               pl:!!ct.placement,ri:!!ct.rights,inc:!!ct.increase,              plDate:e.placement?.date||null,riDate:e.rights?.date||null,
@@ -1358,7 +1375,7 @@ async function loadData(){
           });
           // Also add cache-only codes not in fresh GAS response
           Object.keys(cache).forEach(code=>{
-            if(!signalMap.has(code)){
+            if(stockByCode.has(code)&&!signalMap.has(code)){
               const e=cache[code];
               signalMap.set(code,{
                 pl:!!e.placement,ri:!!e.rights,inc:!!e.increase,                plDate:e.placement?.date||null,riDate:e.rights?.date||null,
@@ -1371,6 +1388,8 @@ async function loadData(){
           const card=document.getElementById('signalSummaryCard');
           if(card) card.innerHTML='<span style="color:var(--text-soft)">技術信號: <b>'+techCodes.size+'</b> 隻股票</span>';
         }
+        // GAS is a sparse signal feed. Keep ccass.json as the canonical stock list.
+        allStocks=baseStocks.slice();
         renderSummaryBar(data);
         renderIPO();
         renderRecent(d?.recentCorps||[]);
