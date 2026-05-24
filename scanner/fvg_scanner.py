@@ -158,6 +158,7 @@ def _detect_gap_ups(df: pd.DataFrame) -> list[dict]:
 
 def scan_ticker(ticker: str, name: str = "", market: str = "HK") -> tuple[list[dict], list[dict]]:
     alerts = []
+    gap_up_alerts = []
     for tf, (period, interval) in _TF_PARAMS.items():
         try:
             time.sleep(RATE_SLEEP)
@@ -188,34 +189,30 @@ def scan_ticker(ticker: str, name: str = "", market: str = "HK") -> tuple[list[d
         except Exception as e:
             print(f"[FVG] {ticker} {tf}: {e}")
 
-    # ── Gap Up detection (日線 only) ──
-    gap_up_alerts = []
-    try:
-        time.sleep(RATE_SLEEP)
-        df_daily = yf.download(ticker, period="5d", interval="1d",
-                               progress=False, auto_adjust=True, multi_level_index=False)
-        if df_daily is not None and not df_daily.empty and len(df_daily) >= 2:
-            last_date = str(df_daily.index[-1].date())
-            for gu in _detect_gap_ups(df_daily):
-                if gu["date"] == last_date:
-                    for g in gu["gaps"]:
-                        gap_up_alerts.append({
-                            "type":       "gap_up",
-                            "gap_kind":   g["gap_type"],
-                            "gap_type":   g["type"],
-                            "ticker":     ticker,
-                            "name":       name or ticker,
-                            "market":     market,
-                            "timeframe":  "日線",
-                            "current":    gu["current"],
-                            "gap_pct":    g["gap_pct"],
-                            "prev_close": g.get("prev_close"),
-                            "prev_high":  g.get("prev_high"),
-                            "gap_to":     g["gap_to"],
-                            "date":       gu["date"],
-                        })
-    except Exception as e:
-        print(f"[GAP] {ticker}: {e}")
+        # ── Gap Up detection on same df (reuse download, no extra API call) ──
+        if df is not None and not df.empty and len(df) >= 2:
+            try:
+                for gu in _detect_gap_ups(df):
+                    if gu["date"] == last_date:
+                        for g in gu["gaps"]:
+                            gap_up_alerts.append({
+                                "type":       "gap_up",
+                                "gap_kind":   g["gap_type"],
+                                "gap_type":   g["type"],
+                                "ticker":     ticker,
+                                "name":       name or ticker,
+                                "market":     market,
+                                "timeframe":  tf,
+                                "tf_short":   _TF_LABEL[tf],
+                                "current":    gu["current"],
+                                "gap_pct":    g["gap_pct"],
+                                "prev_close": g.get("prev_close"),
+                                "prev_high":  g.get("prev_high"),
+                                "gap_to":     g["gap_to"],
+                                "date":       gu["date"],
+                            })
+            except Exception as e:
+                print(f"[GAP] {ticker} {tf}: {e}")
 
     return alerts, gap_up_alerts
 
