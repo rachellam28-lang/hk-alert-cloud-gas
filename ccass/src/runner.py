@@ -552,40 +552,154 @@ def run_daily(
 #  SHARED HELPERS
 # ═══════════════════════════════════════════════════════════════════════════
 
-def _fetch_market_caps(codes):
+def _fetch_market_caps(codes, refresh_policy: str = "daily"):
+    """Fetch HK market caps from yfinance and cache them as HKD 億.
+
+    Universe codes are 5-digit HKEX codes, e.g. 00700.
+    Yahoo Finance expects 4-digit HK tickers, e.g. 0700.HK.
+    """
+    import logging as _logging
+    import os
+
     cache_dir = Path(__file__).parent.parent / "cache"
     cache_path = cache_dir / "market_caps.json"
-    cache = {}
-    if cache_path.exists():
+
+    policy = os.getenv("CCASS_MC_REFRESH_POLICY", refresh_policy).lower()
+    batch_size = int(os.getenv("CCASS_MC_BATCH_SIZE", "40"))
+    max_workers = int(os.getenv("CCASS_MC_WORKERS", "3"))
+
+    now = datetime.utcnow()
+    today = now.strftime("%Y-%m-%d")
+
+    def _yf_symbol(code: str) -> str:
+        digits = "".join(ch for ch in str(code) if ch.isdigit())
+        if not digits:
+            raise ValueError(f"invalid HK stock code: {code!r}")
+        n = int(digits)
+        hk_code = str(n).zfill(4) if n < 10000 else str(n).zfill(5)
+        return f"{hk_code}.HK"
+
+    def _stale(entry: dict) -> bool:
+        if policy in ("never", "cache"):
+            return False
+        if policy in ("always", "force"):
+            return True
+        fetched_at = entry.get("fetched_at")
+        if not fetched_at:
+            return True
         try:
-            cache = json.loads(cache_path.read_text())
+            fetched = datetime.fromisoformat(fetched_at.replace("Z", "+00:00")).replace(tzinfo=None)
         except Exception:
-            cache = {}
-    uncached = [c for c in codes if c not in cache]
-    if uncached:
-        import logging as _logging
-        _logging.getLogger("yfinance").setLevel(_logging.CRITICAL)
-        import yfinance as yf
-        def _sym(c):
-            return f"{c.lstrip('0').zfill(4)}.HK"
-        def _one(c):
+            return True
+        if policy == "weekly":
+            return (now - fetched) >= timedelta(days=7)
+        return fetched.strftime("%Y-%m-%d") != today
+
+    def _read_cache() -> dict:
+        if not cache_path.exists():
+            return {}
+        try:
+            raw = json.loads(cache_path.read_text(encoding="utf-8"))
+        except Exception as exc:
+            logger.warning("market cap cache unreadable: %s", exc)
+            return {}
+        out = {}
+        for code, value in raw.items():
+            code = str(code).zfill(5)
+            if isinstance(value, dict):
+                out[code] = value
+            elif value not in (None, 0, "0"):
+                out[code] = {
+                    "mc": value,
+                    "symbol": None,
+                    "fetched_at": "1970-01-01T00:00:00Z",
+                    "source": "legacy",
+                }
+        return out
+
+    def _market_cap_from_fast_info(ticker):
+        try:
+            fast = ticker.fast_info
+            if isinstance(fast, dict):
+                return fast.get("market_cap") or fast.get("marketCap")
+            return getattr(fast, "market_cap", None)
+        except Exception:
+            return None
+
+    def _market_cap_from_info(ticker):
+        try:
+            info = ticker.get_info()
+        except Exception:
             try:
-                t = yf.Ticker(_sym(c))
-                info = t.info if hasattr(t, 'info') else {}
-                mc = info.get("marketCap") if isinstance(info, dict) else None
-                if mc is not None:
-                    return c, round(float(mc)/1e8, 2)
+                info = ticker.info
             except Exception:
-                pass
-            return c, None
-        with ThreadPoolExecutor(max_workers=4) as pool:
-            futures = {pool.submit(_one, c): c for c in uncached}
+                return None
+        return info.get("marketCap") if isinstance(info, dict) else None
+
+    def _fetch_batch(batch_codes):
+        import yfinance as yf
+        symbols = {}
+        for code in batch_codes:
+            try:
+                symbols[code] = _yf_symbol(code)
+            except Exception as exc:
+                logger.warning("market cap: bad stock code %s: %s", code, exc)
+        if not symbols:
+            return {}
+        result = {}
+        tickers = yf.Tickers(" ".join(symbols.values()))
+        for code, symbol in symbols.items():
+            try:
+                ticker = tickers.tickers.get(symbol) or yf.Ticker(symbol)
+                mc = _market_cap_from_fast_info(ticker)
+                if mc is None:
+                    mc = _market_cap_from_info(ticker)
+                if mc is None or float(mc) <= 0:
+                    raise ValueError("missing marketCap")
+                result[code] = {
+                    "mc": round(float(mc) / 1e8, 2),
+                    "symbol": symbol,
+                    "fetched_at": now.isoformat(timespec="seconds") + "Z",
+                    "source": "yfinance",
+                }
+            except Exception as exc:
+                logger.warning("market cap fetch failed for %s (%s): %s", code, symbol, exc)
+        return result
+
+    codes = [str(c).zfill(5) for c in dict.fromkeys(codes or [])]
+    cache = _read_cache()
+
+    to_fetch = []
+    for code in codes:
+        entry = cache.get(code)
+        if not entry or entry.get("mc") in (None, 0, "0") or _stale(entry):
+            to_fetch.append(code)
+
+    if to_fetch:
+        _logging.getLogger("yfinance").setLevel(_logging.CRITICAL)
+        batches = [to_fetch[i:i + batch_size] for i in range(0, len(to_fetch), batch_size)]
+        with ThreadPoolExecutor(max_workers=max_workers) as pool:
+            futures = [pool.submit(_fetch_batch, batch) for batch in batches]
             for fut in as_completed(futures):
-                c, mc = fut.result()
-                cache[c] = mc
+                try:
+                    cache.update(fut.result())
+                except Exception as exc:
+                    logger.warning("market cap batch failed: %s", exc)
         cache_dir.mkdir(parents=True, exist_ok=True)
-        cache_path.write_text(json.dumps(cache, ensure_ascii=False))
-    return cache
+        cache_path.write_text(
+            json.dumps(cache, ensure_ascii=False, indent=2, sort_keys=True),
+            encoding="utf-8",
+        )
+
+    missing = [c for c in codes if not cache.get(c, {}).get("mc")]
+    if missing:
+        logger.warning("market caps missing for %d/%d stocks; sample=%s", len(missing), len(codes), missing[:10])
+
+    return {
+        code: cache.get(code, {}).get("mc")
+        for code in codes
+        if cache.get(code, {}).get("mc") not in (None, 0, "0")
+    }
 
 
 def _export_json(query_date, alerts_today):
@@ -641,11 +755,13 @@ def _export_json(query_date, alerts_today):
                 top_decrease.append(entry)
 
         try:
-            mc_map = _fetch_market_caps([s["c"] for s in stocks])
+            mc_map = _fetch_market_caps([s["c"] for s in stocks], refresh_policy="daily")
             for s in stocks:
-                s["mc"] = mc_map.get(s["c"])
-        except Exception:
-            pass
+                s["mc"] = mc_map.get(str(s["c"]).zfill(5))
+        except Exception as exc:
+            logger.exception("market cap export enrichment failed: %s", exc)
+            for s in stocks:
+                s["mc"] = None
 
         top_increase = top_increase[:10]
         top_decrease = sorted(top_decrease, key=lambda x: x["delta_5d"])[:10]
