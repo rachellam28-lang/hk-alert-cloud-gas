@@ -50,6 +50,17 @@ function doGet(e) {
   if (params.format === 'history') {
     return handleHistoryApi_();
   }
+  // Cleanup near-FVG rows (secured with GAS_SECRET).
+  if (params.mode === 'cleanup-near-fvg') {
+    const expected = getGasSecret_();
+    if (expected && params.secret !== expected) {
+      return ContentService.createTextOutput(JSON.stringify({ error: 'unauthorized' }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    const dryRun = params.dry_run === '1' || params.dry_run === 'true';
+    return ContentService.createTextOutput(JSON.stringify(cleanupNearFvg_(dryRun)))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
   return ContentService.createTextOutput(JSON.stringify({ ok: true, hint: 'add ?format=json for dashboard data' }))
     .setMimeType(ContentService.MimeType.JSON);
 }
@@ -1237,6 +1248,77 @@ function render_(alerts, snap) {
     + '})();\n'
     + '</script>\n'
     + '</body></html>';
+}
+
+// ── Cleanup: remove near-FVG rows from the Alerts sheet ─────────────────────
+// Near-FVG rows are identified by: source="fvg_scanner" AND message contains "%上方"
+// (in-zone FVG rows have "在FVG內" instead of a percentage above the gap).
+// dryRun=true returns a preview count without deleting; dryRun=false deletes.
+function cleanupNearFvg_(dryRun) {
+  try {
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const sh = ensureSheet_(ss);
+    const lastRow = sh.getLastRow();
+    const lastCol = sh.getLastColumn();
+    if (lastRow <= 1 || lastCol <= 0) {
+      return { ok: true, dry_run: dryRun, deleted: 0, summary: 'Sheet is empty (no data rows).' };
+    }
+
+    const headers = sh.getRange(1, 1, 1, lastCol).getValues()[0].map(String);
+    const sourceIdx = headers.indexOf('source');
+    const messageIdx = headers.indexOf('message');
+    const signalIdx = headers.indexOf('signal');
+
+    // Read all data rows (row 2 through lastRow).
+    const numRows = lastRow - 1;
+    const values = sh.getRange(2, 1, numRows, lastCol).getValues();
+
+    // Collect row indices (1-based, sheet row numbers) to delete.
+    const rowsToDelete = [];
+    for (let i = 0; i < values.length; i++) {
+      const row = values[i];
+      const source = sourceIdx >= 0 ? String(row[sourceIdx] || '') : '';
+      const message = messageIdx >= 0 ? String(row[messageIdx] || '') : '';
+      const signal = signalIdx >= 0 ? String(row[signalIdx] || '') : '';
+
+      // Match: fvg_scanner source, and message contains "%上方" (near/above gap).
+      const isNearFvg =
+        source === 'fvg_scanner' &&
+        (message.indexOf('%上方') >= 0 || signal.toLowerCase().indexOf('near') >= 0);
+
+      if (isNearFvg) {
+        rowsToDelete.push(i + 2); // +2 because sheet rows are 1-indexed, data starts at row 2
+      }
+    }
+
+    const summary = {
+      ok: true,
+      dry_run: dryRun,
+      total_rows: numRows,
+      matched: rowsToDelete.length,
+      matched_rows: dryRun ? rowsToDelete.slice(0, 50) : undefined, // preview first 50
+    };
+
+    if (rowsToDelete.length === 0) {
+      summary.summary = 'No near-FVG rows found.';
+      return summary;
+    }
+
+    if (dryRun) {
+      summary.summary = 'Dry run — no rows deleted. Pass dry_run=false to delete.';
+      return summary;
+    }
+
+    // Delete rows in reverse order so row indices stay valid.
+    for (let d = rowsToDelete.length - 1; d >= 0; d--) {
+      sh.deleteRow(rowsToDelete[d]);
+    }
+
+    summary.summary = 'Deleted ' + rowsToDelete.length + ' near-FVG rows.';
+    return summary;
+  } catch (err) {
+    return { ok: false, error: String(err) };
+  }
 }
 
 function json_(obj) {
