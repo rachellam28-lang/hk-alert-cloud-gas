@@ -4,7 +4,6 @@ CCASS 公開 stock list 喺 HKEX 網站。我哋每星期 refresh 一次。
 """
 from __future__ import annotations
 
-import time
 from datetime import datetime
 from typing import Iterable
 
@@ -39,20 +38,12 @@ def fetch_all_hk_stocks_from_ccass() -> list[tuple[str, str]]:
     會攞埋中文版 xlsx 嚟顯示中文公司名。
     """
     logger.info("Fetching HKEX stock list from %s", HKEX_STOCK_LIST_URL)
-    last_err = None
-    for attempt, backoff in enumerate((2, 4, 8), start=1):
-        try:
-            resp = requests.get(HKEX_STOCK_LIST_URL, timeout=60)
-            resp.raise_for_status()
-            break
-        except requests.RequestException as e:
-            last_err = e
-            logger.warning("HKEX stock list attempt %d/3 failed: %s", attempt, e)
-            if attempt < 3:
-                time.sleep(backoff)
-    else:
-        logger.error("HKEX stock list failed after 3 attempts: %s", last_err)
-        raise last_err
+    try:
+        resp = requests.get(HKEX_STOCK_LIST_URL, timeout=60)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        logger.error("Failed to fetch HKEX stock list: %s", e)
+        raise
 
     # Parse xlsx — scan all sheets, pick the one with most stock codes
     import io
@@ -179,53 +170,6 @@ def get_active_stocks() -> list[str]:
             "SELECT stock_code FROM stock_universe WHERE is_active = 1 ORDER BY stock_code"
         ).fetchall()
     return [r["stock_code"] for r in rows]
-
-
-# Instrument name patterns that CCASS does not track
-_SKIP_NAME_PATTERNS = [
-    "股權", "RTS",         # nil-paid rights / warrants
-    "PREF", "USDPREF",     # preference shares
-    "（二千", "（五百",     # temporary parallel-trading board-lot counters (e.g. 02955 for 00290)
-    "並行買賣",             # parallel trading counters
-]
-
-
-def get_active_stocks_for_date(query_date) -> list[str]:
-    """Get active stocks eligible for scraping on a given date.
-
-    Filters out:
-    - Stocks whose first_seen_date is after query_date (not yet listed / no CCASS data)
-    - Rights/warrants (股權, RTS) — CCASS doesn't track these
-    - Preference shares (PREF, USDPREF) — CCASS doesn't track these
-    """
-    from datetime import date as dt_date
-    query_str = query_date.strftime("%Y-%m-%d") if isinstance(query_date, dt_date) else str(query_date)
-
-    with get_conn() as conn:
-        rows = conn.execute(
-            """SELECT stock_code, stock_name, first_seen_date
-               FROM stock_universe
-               WHERE is_active = 1
-               ORDER BY stock_code"""
-        ).fetchall()
-
-    stocks = []
-    for r in rows:
-        code = r["stock_code"]
-        name = r["stock_name"] or ""
-        fsd = r["first_seen_date"]
-
-        # Skip if first_seen_date is known and after query_date
-        if fsd and fsd > query_str:
-            continue
-
-        # Skip unsupported instrument types by name
-        if any(p in name for p in _SKIP_NAME_PATTERNS):
-            continue
-
-        stocks.append(code)
-
-    return stocks
 
 
 if __name__ == "__main__":

@@ -3,5 +3,4 @@ requests
 openpyxl
 yfinance>=0.2.40
 beautifulsoup4
-lxml
 matplotlib

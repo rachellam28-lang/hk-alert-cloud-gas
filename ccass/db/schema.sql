@@ -72,8 +72,7 @@ CREATE TABLE IF NOT EXISTS stock_universe (
     stock_name TEXT,
     is_active INTEGER NOT NULL DEFAULT 1,
     added_at TEXT NOT NULL,
-    last_seen_at TEXT,
-    first_seen_date TEXT               -- first date CCASS data was available (used for date-aware filtering)
+    last_seen_at TEXT
 );
 
 -- Trading calendar
