@@ -12,13 +12,16 @@ jobs:
   # ── Phase 1: 6 parallel shards, each scrapes ~463 stocks ──────────────
   scrape-shard:
     runs-on: ubuntu-latest
-    timeout-minutes: 150    # ~463 stocks × 11.5s ≈ 88 min, 150 is safe
-    continue-on-error: true # partial stock failures are normal; merge must run anyway
+    timeout-minutes: 150
+    continue-on-error: true
     strategy:
       fail-fast: false
       max-parallel: 2
       matrix:
         shard: [0, 1, 2, 3, 4, 5]
+
+    outputs:
+      query_date: ${{ steps.date.outputs.query_date }}
 
     steps:
       - uses: actions/checkout@v4
@@ -34,6 +37,21 @@ jobs:
 
       - run: pip install -r ccass/requirements.txt
 
+      - name: Compute query date (previous HK trading day)
+        id: date
+        run: |
+          QUERY_DATE=$(python -c "
+          from datetime import date, timedelta
+          import holidays
+          hk = holidays.HongKong()
+          d = date.today() - timedelta(days=1)
+          while d.weekday() >= 5 or d in hk:
+              d -= timedelta(days=1)
+          print(d.strftime('%Y-%m-%d'))
+          ")
+          echo "query_date=$QUERY_DATE" >> $GITHUB_OUTPUT
+          echo "Query date: $QUERY_DATE"
+
       - name: Run CCASS shard ${{ matrix.shard }}/5
         timeout-minutes: 140
         env:
@@ -43,10 +61,14 @@ jobs:
           GAS_SECRET: ${{ secrets.GAS_SECRET }}
         run: |
           delay=$(( ${{ matrix.shard }} * 60 ))
-          echo "⏳ Shard ${{ matrix.shard }} — waiting ${delay}s stagger..."
+          echo "Shard ${{ matrix.shard }} — waiting ${delay}s stagger..."
           sleep "$delay"
           cd ccass
-          python -m src.runner --shard ${{ matrix.shard }} --shard-total 6
+          python -m src.runner \
+            --shard ${{ matrix.shard }} \
+            --shard-total 6 \
+            --query-date ${{ steps.date.outputs.query_date }} \
+            --out ../ccass-shard-${{ matrix.shard }}.json
 
       - name: Upload shard ${{ matrix.shard }} artifact
         if: always()
@@ -57,7 +79,7 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
-  # ── Phase 2: Merge all shards → trends → alerts → events → export ─────
+  # ── Phase 2: Merge all shards → DB → trends → alerts → ccass.json ────
   merge:
     needs: scrape-shard
     runs-on: ubuntu-latest
@@ -77,6 +99,20 @@ jobs:
 
       - run: pip install -r ccass/requirements.txt
 
+      - name: Compute query date
+        id: date
+        run: |
+          QUERY_DATE=$(python -c "
+          from datetime import date, timedelta
+          import holidays
+          hk = holidays.HongKong()
+          d = date.today() - timedelta(days=1)
+          while d.weekday() >= 5 or d in hk:
+              d -= timedelta(days=1)
+          print(d.strftime('%Y-%m-%d'))
+          ")
+          echo "query_date=$QUERY_DATE" >> $GITHUB_OUTPUT
+
       - name: Download all shard artifacts
         uses: actions/download-artifact@v4
         with:
@@ -84,7 +120,7 @@ jobs:
           merge-multiple: true
           path: .
 
-      - name: Merge & run full pipeline
+      - name: Merge shards & run full pipeline
         timeout-minutes: 20
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
@@ -93,22 +129,21 @@ jobs:
           GAS_SECRET: ${{ secrets.GAS_SECRET }}
         run: |
           cd ccass
-          python -m src.runner --merge
+          python -m scripts.merge_shards --date ${{ steps.date.outputs.query_date }}
 
-      - name: Commit ccass.json + ccass.db.gz
+      - name: Commit ccass.json
         if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           if [ -f ccass.json ]; then
-            # Verify stock count before committing
             STOCK_COUNT=$(python -c "import json; d=json.load(open('ccass.json','r',encoding='utf-8')); print(len(d.get('stocks',[])))")
             echo "ccass.json has ${STOCK_COUNT} stocks"
             if [ "$STOCK_COUNT" -lt 2500 ]; then
               echo "ERROR: ccass.json only has ${STOCK_COUNT} stocks (expected 2500+). Aborting commit."
               exit 1
             fi
-            git add ccass.json ccass/ccass.db.gz 2>/dev/null || true
+            git add ccass.json 2>/dev/null || true
             git diff --cached --quiet && { echo "unchanged, skipping commit"; exit 0; }
             git commit -m "chore: update ccass data (${STOCK_COUNT} stocks)"
           else

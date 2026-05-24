@@ -26,9 +26,18 @@ logger = setup_logger("backfill")
 def backfill_range(start: date, end: date) -> None:
     init_db()
 
-    if not get_active_stocks():
-        logger.info("Universe empty, refreshing...")
-        refresh_universe()
+    # Skip universe refresh if DB already has stocks (avoids HKEX requests.get() hang)
+    import sqlite3
+    from src.db import DB_PATH
+    existing = sqlite3.connect(str(DB_PATH)).execute(
+        "SELECT COUNT(*) FROM stock_universe"
+    ).fetchone()[0]
+    if existing < 500:
+        if not get_active_stocks():
+            logger.info("Universe empty, refreshing...")
+            refresh_universe()
+    else:
+        logger.info("Skip universe refresh: %d stocks already in DB", existing)
 
     # 攞每日 trading days
     cur = start

@@ -24,9 +24,9 @@ import pandas as pd
 import yfinance as yf
 
 # ── Config ────────────────────────────────────────────────────────────────────
-NEAR_PCT     = float(os.getenv("FVG_NEAR_PCT", "0.01"))   # 1% above FVG top = "near" (was 3%, too noisy)
 RATE_SLEEP   = float(os.getenv("FVG_SLEEP", "0.15"))
 MAX_TG_ALERTS = int(os.getenv("FVG_MAX_TG", "10"))         # max Telegram alerts per run (rest → JSON only)
+MAX_GAP_TG    = int(os.getenv("GAP_MAX_TG", "5"))           # separate limit for gap up alerts
 
 # ── Ticker universes ──────────────────────────────────────────────────────────
 HK_TICKERS = [
@@ -240,17 +240,13 @@ def _tv_url(alert: dict) -> str:
 
 
 def _emit_telegram(alert: dict) -> None:
-    """Simple text-only Telegram alert (日線 Bullish FVG)."""
+    """Simple text-only Telegram alert (Bullish FVG)."""
     sys.path.insert(0, os.path.dirname(__file__))
     from hk_cloud_scanner import send_telegram_alert, build_inline_keyboard_
 
-    status_icon = "🎯 FVG內" if alert["status"] == "in" else "⬇️接近FVG"
-    pct_from_top = round((alert["current"] - alert["gap_high"]) / alert["gap_high"] * 100, 2)
-    dist_str = (f"{pct_from_top:.2f}%上方" if alert["status"] == "near" else "在FVG內")
-
     caption = (
-        f"📐 🇭🇰 <b>{alert['ticker']}</b> {alert['timeframe']} {status_icon}\n"
-        f"FVG {alert['gap_low']} – {alert['gap_high']}  現價 {alert['current']} ({dist_str})"
+        f"📐 🇭🇰 <b>{alert['ticker']}</b> {alert['timeframe']} 🎯 FVG內\n"
+        f"FVG {alert['gap_low']} – {alert['gap_high']}  現價 {alert['current']} (在FVG內)"
     )
 
     tv_url = _tv_url(alert)
@@ -296,13 +292,9 @@ def _emit_weekly_fvg(alert: dict) -> None:
         return
 
     # ── Build caption ──
-    status_icon = "🎯 周線+月線FVG內" if alert["status"] == "in" else "⬇️接近周線+月線FVG"
-    pct_from_top = round((alert["current"] - alert["gap_high"]) / alert["gap_high"] * 100, 2)
-    dist_str = (f"{pct_from_top:.2f}%上方" if alert["status"] == "near" else "在FVG內")
-
     caption = (
-        f"📐 🇭🇰 <b>{code} {name}</b> 周線+月線 {status_icon}\n"
-        f"FVG {alert['gap_low']:.3f} – {alert['gap_high']:.3f}  現價 {alert['current']:.3f} ({dist_str})"
+        f"📐 🇭🇰 <b>{code} {name}</b> 周線+月線 🎯 FVG內\n"
+        f"FVG {alert['gap_low']:.3f} – {alert['gap_high']:.3f}  現價 {alert['current']:.3f} (在FVG內)"
     )
 
     # ── Render chart with FVG zone ──
@@ -327,7 +319,7 @@ def _emit_weekly_fvg(alert: dict) -> None:
         "price": alert["current"],
         "market": "HK",
         "chart_url": tv_url,
-        "message": f"周線+月線FVG {alert['gap_low']:.3f}–{alert['gap_high']:.3f} 現價{alert['current']:.3f} ({dist_str})",
+        "message": f"周線+月線FVG {alert['gap_low']:.3f}–{alert['gap_high']:.3f} 現價{alert['current']:.3f} (在FVG內)",
         "tags": "FVG,周線+月線",
         "priority": 2,
         "raw": json.dumps(alert, ensure_ascii=False, default=str),
@@ -344,11 +336,6 @@ def _post_to_gas(alert: dict) -> None:
 
     code = alert["ticker"].replace(".HK", "").zfill(5)
 
-    dist_str = (
-        f"{(alert['current'] - alert['gap_high']) / alert['gap_high'] * 100:.2f}%上方"
-        if alert["status"] == "near" else "在FVG內"
-    )
-
     post_gas_alert({
         "source":    "fvg_scanner",
         "category":  "tech",
@@ -359,7 +346,7 @@ def _post_to_gas(alert: dict) -> None:
         "price":     alert["current"],
         "market":    alert["market"],
         "chart_url": _tv_url(alert),
-        "message":   f"FVG {alert['gap_low']}–{alert['gap_high']} 現價{alert['current']} ({dist_str})",
+        "message":   f"FVG {alert['gap_low']}–{alert['gap_high']} 現價{alert['current']} (在FVG內)",
         "tags":      "FVG",
     })
 
@@ -390,7 +377,7 @@ def _emit_gap_up_tg(alert: dict) -> None:
     send_telegram_alert(caption, None, reply_markup=build_inline_keyboard_([
         ("📊 走勢圖", tv_url),
     ]))
-    time.sleep(0.5)
+    time.sleep(3.0)  # FATAL-001: ≥3s between Telegram alerts
 
 
 def _post_gap_up_to_gas(alert: dict) -> None:
@@ -437,7 +424,7 @@ def _export_json(alerts: list[dict], gap_ups: list[dict] | None = None) -> None:
 
 def run_fvg_scan(market: str = "hk") -> None:
     """market: 'hk' | 'us' | 'both' (default: 'hk' for cron)"""
-    print(f"[FVG] scan market={market}  near_pct={NEAR_PCT:.0%}")
+    print(f"[FVG] scan market={market}")
 
     tasks: list[tuple[str, str, str]] = []  # (ticker, name, market)
     if market in ("hk", "both"):
@@ -448,6 +435,7 @@ def run_fvg_scan(market: str = "hk") -> None:
     all_alerts: list[dict] = []
     all_gap_ups: list[dict] = []
     tg_sent = 0
+    gap_tg_sent = 0
     for i, (ticker, name, mkt) in enumerate(tasks, 1):
         if i % 20 == 0:
             print(f"[FVG] progress {i}/{len(tasks)}")
@@ -463,11 +451,11 @@ def run_fvg_scan(market: str = "hk") -> None:
             except Exception as e:
                 print(f"[GAP] GAS error {ticker}: {e}")
 
-            # Telegram
-            if tg_sent < MAX_TG_ALERTS:
+            # Telegram (separate quota from FVG)
+            if gap_tg_sent < MAX_GAP_TG:
                 try:
                     _emit_gap_up_tg(g)
-                    tg_sent += 1
+                    gap_tg_sent += 1
                 except Exception as e:
                     print(f"[GAP] telegram error {ticker}: {e}")
 
@@ -502,7 +490,7 @@ def run_fvg_scan(market: str = "hk") -> None:
         all_gap_ups.extend(gap_ups)
 
     _export_json(all_alerts, all_gap_ups)
-    print(f"[FVG] done  total_alerts={len(all_alerts)}  gap_ups={len(all_gap_ups)}  tg_sent={tg_sent}")
+    print(f"[FVG] done  total_alerts={len(all_alerts)}  gap_ups={len(all_gap_ups)}  tg_sent={tg_sent}  gap_tg_sent={gap_tg_sent}")
 
 
 if __name__ == "__main__":
