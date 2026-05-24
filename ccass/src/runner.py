@@ -664,6 +664,14 @@ def _fetch_market_caps(codes, refresh_policy: str = "daily"):
                 }
             except Exception as exc:
                 logger.warning("market cap fetch failed for %s (%s): %s", code, symbol, exc)
+                # Cache the failure so we don't retry forever
+                result[code] = {
+                    "mc": None,
+                    "symbol": symbol,
+                    "fetched_at": now.isoformat(timespec="seconds") + "Z",
+                    "source": "yfinance",
+                    "error": str(exc)[:200],
+                }
         return result
 
     codes = [str(c).zfill(5) for c in dict.fromkeys(codes or [])]
