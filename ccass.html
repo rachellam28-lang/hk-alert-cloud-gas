@@ -483,6 +483,7 @@ let priceMap=new Map();
 let hkexLinkMap=new Map();
 let techSignalMap=new Map();
 let breakthroughMap={};
+let activePrices={};
 const CORP_CACHE_KEY='hk_corp_signal_cache_v2';
 // --- canonical stock list helpers ---
 function getStockCode(s){
@@ -1256,23 +1257,45 @@ function renderBT(){
   });
   fillCard('btIpo','btIpoBody','btIpoCount',ipos);
 
-  // 2. 🚀上破配股價 — from breakthroughMap
+  // 2. 🚀上破配股價 — from breakthroughMap + activePrices
   const placements=[];
+  const seenPlace={};
   Object.keys(breakthroughMap).forEach(code=>{
     const bt=breakthroughMap[code];
     if(!bt||bt.type!=='placement')return;
     const n=stockByCode.get(code)?.n||'';
     placements.push({c:code,n:n,p:bt.offer_price||''});
+    seenPlace[code]=1;
+  });
+  // add from activePrices (not already in breakthroughs)
+  Object.keys(activePrices).forEach(code=>{
+    if(seenPlace[code])return;
+    (activePrices[code]||[]).forEach(e=>{
+      if(e.type!=='placement')return;
+      const n=stockByCode.get(code)?.n||'';
+      placements.push({c:code,n:n,p:e.price||''});
+    });
   });
   fillCard('btPlacement','btPlacementBody','btPlacementCount',placements);
 
-  // 3. 🚀上破供股價 — from breakthroughMap
+  // 3. 🚀上破供股價 — from breakthroughMap + activePrices
   const rights=[];
+  const seenRights={};
   Object.keys(breakthroughMap).forEach(code=>{
     const bt=breakthroughMap[code];
     if(!bt||bt.type!=='rights')return;
     const n=stockByCode.get(code)?.n||'';
     rights.push({c:code,n:n,p:bt.offer_price||''});
+    seenRights[code]=1;
+  });
+  // add from activePrices (not already in breakthroughs)
+  Object.keys(activePrices).forEach(code=>{
+    if(seenRights[code])return;
+    (activePrices[code]||[]).forEach(e=>{
+      if(e.type!=='rights')return;
+      const n=stockByCode.get(code)?.n||'';
+      rights.push({c:code,n:n,p:e.price||''});
+    });
   });
   fillCard('btRights','btRightsBody','btRightsCount',rights);
 
@@ -1444,7 +1467,13 @@ async function loadData(){
         // Load breakthrough data
         fetch('./data/breakthroughs.json?_='+Date.now())
           .then(r=>r.ok?r.json():null)
-          .then(bt=>{if(bt&&bt.breakthroughs){bt.breakthroughs.forEach(b=>{breakthroughMap[b.stock_code||b.code]=b;});applyFilters();renderBT();}})
+          .then(bt=>{if(bt){
+            // breakthroughs (real-time crossings) — higher priority
+            if(bt.breakthroughs){bt.breakthroughs.forEach(b=>{breakthroughMap[b.stock_code||b.code]=b;});}
+            // active_prices (all cached prices) — stored separately
+            activePrices=bt.active_prices||{};
+            applyFilters();renderBT();
+          }})
         applyFilters();
         updateSortInfo();
       }).catch(()=>{});
