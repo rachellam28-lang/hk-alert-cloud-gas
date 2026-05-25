@@ -268,9 +268,9 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
   <div class="breadth-card" id="breadthCard" style="display:none"><div class="breadth-head">市場寬度 · 52周高低位分布</div><div id="breadthRows"></div></div>
 
   <div id="ipoCard" class="ipo-card" style="display:none">
-    <div class="ipo-head"><span>🚀 IPO 首日突破</span><span class="ipo-count" id="ipoCount"></span></div>
+    <div class="ipo-head"><span>⚠️突破⚠️</span><span class="ipo-count" id="ipoCount"></span></div>
     <table class="ipo-tbl">
-      <thead><tr><th>代碼</th><th>類型</th></tr></thead>
+      <thead><tr><th>代碼</th><th>名稱</th><th>類型</th></tr></thead>
       <tbody id="ipoBody"></tbody>
     </table>
   </div>
@@ -1224,30 +1224,59 @@ function renderIPO(){
   const body=document.getElementById('ipoBody');
   const count=document.getElementById('ipoCount');
   if(!card||!body)return;
+
+  // Collect all breakthroughs: {code: {name, badges: [{type, text, price}]}}
   const stocks={};
+
+  // 1. IPO breakthroughs from techSignalMap
   techSignalMap.forEach((signals,code)=>{
     signals.forEach(function(s){
       if(!s.label)return;
-      const t=sigType(s.label);
-      if(t!=='ipo')return;
+      if(sigType(s.label)!=='ipo')return;
       const isHigh=s.label.indexOf('高突破')>=0;
-      if(!stocks[code]) stocks[code]={code,stock:stockByCode.get(code),badges:[]};
-      stocks[code].badges.push(isHigh?'high':'open');
+      if(!stocks[code]) stocks[code]={code,name:stockByCode.get(code)?.n||'',badges:[]};
+      stocks[code].badges.push({type:'ipo',text:isHigh?'🚀高突破':'🚀開突破',price:''});
     });
   });
+
+  // 2. Placement breakthroughs from breakthroughMap
+  Object.keys(breakthroughMap).forEach(code=>{
+    const bt=breakthroughMap[code];
+    if(!bt||bt.type!=='placement')return;
+    if(!stocks[code]) stocks[code]={code,name:stockByCode.get(code)?.n||'',badges:[]};
+    stocks[code].badges.push({type:'placement',text:'🚀上破配股價',price:bt.offer_price||''});
+  });
+
+  // 3. Rights breakthroughs from breakthroughMap
+  Object.keys(breakthroughMap).forEach(code=>{
+    const bt=breakthroughMap[code];
+    if(!bt||bt.type!=='rights')return;
+    if(!stocks[code]) stocks[code]={code,name:stockByCode.get(code)?.n||'',badges:[]};
+    stocks[code].badges.push({type:'rights',text:'🚀上破供股價',price:bt.offer_price||''});
+  });
+
   const codes=Object.keys(stocks);
   if(!codes.length){card.style.display='none';return;}
+
+  // Sort: IPO first, then placement, then rights
+  codes.sort((a,b)=>{
+    const ta=stocks[a].badges[0]?.type||'',tb=stocks[b].badges[0]?.type||'';
+    const order={ipo:0,placement:1,rights:2};
+    return (order[ta]||9)-(order[tb]||9);
+  });
+
   body.innerHTML=codes.map(function(c){
     const s=stocks[c];
-    const name=s.stock?esc(s.stock.n):'';
-    const badges=s.badges.map(function(t){
-      const cls=t==='high'?'badge badge-high':'badge badge-open';
-      return '<span class="'+cls+'">🚀'+(t==='high'?'高突破':'開突破')+'</span>';
+    const badges=s.badges.map(function(b){
+      const cls=b.type==='ipo'?'badge badge-open':b.type==='placement'?'badge badge-high':'badge badge-high';
+      const price=b.price?' $'+b.price:'';
+      return '<span class="'+cls+'">'+b.text+price+'</span>';
     }).join(' ');
-    return '<tr><td><span class="code">'+esc(c)+'</span>'+(name?'<div class="name">'+name+'</div>':'')+'</td>'
+    return '<tr><td><span class="code">'+esc(c)+'</span></td>'
+      +'<td><span class="name">'+esc(s.name)+'</span></td>'
       +'<td>'+badges+'</td></tr>';
   }).join('');
-  count.textContent=codes.length+'股';
+  count.textContent=codes.length+'項';
   card.style.display='';
 }
 
@@ -1412,7 +1441,7 @@ async function loadData(){
         // Load breakthrough data
         fetch('./data/breakthroughs.json?_='+Date.now())
           .then(r=>r.ok?r.json():null)
-          .then(bt=>{if(bt&&bt.breakthroughs){bt.breakthroughs.forEach(b=>{breakthroughMap[b.stock_code||b.code]=b;});applyFilters();}})
+          .then(bt=>{if(bt&&bt.breakthroughs){bt.breakthroughs.forEach(b=>{breakthroughMap[b.stock_code||b.code]=b;});applyFilters();renderIPO();}})
         applyFilters();
         updateSortInfo();
       }).catch(()=>{});
