@@ -139,13 +139,13 @@ def update_ccass_json(target_date: date) -> None:
     
     # Get stock names
     names = {}
-    for row in db.execute("SELECT stock_code, name_zh FROM stock_universe"):
+    for row in db.execute("SELECT stock_code, stock_name FROM stock_universe"):
         names[row[0]] = row[1] or row[0]
     
     # Get latest data for target_date
     rows = db.execute("""
         SELECT cd.stock_code, cd.total_pct, cd.num_participants,
-               cd.total_shares
+               cd.top5_pct, cd.top10_pct
         FROM ccass_daily cd
         WHERE cd.trade_date = ?
     """, (target_date.strftime("%Y-%m-%d"),)).fetchall()
@@ -153,28 +153,13 @@ def update_ccass_json(target_date: date) -> None:
     # Get trends for this date
     trends = {}
     for row in db.execute("""
-        SELECT stock_code, delta_5d, delta_20d, delta_60d, delta_120d
+        SELECT stock_code, delta_5d_pct, delta_20d_pct, delta_60d_pct, delta_120d_pct
         FROM ccass_trends
         WHERE trade_date = ?
     """, (target_date.strftime("%Y-%m-%d"),)).fetchall():
         trends[row[0]] = {
             'd5': row[1], 'd20': row[2], 'd60': row[3], 'd120': row[4]
         }
-    
-    # Get holdings for top5/top10
-    holdings_map = {}
-    for row in db.execute("""
-        SELECT stock_code, participant_id, participant_name, pct
-        FROM ccass_holdings
-        WHERE trade_date = ?
-        ORDER BY stock_code, pct DESC
-    """, (target_date.strftime("%Y-%m-%d"),)).fetchall():
-        sc = row[0]
-        if sc not in holdings_map:
-            holdings_map[sc] = []
-        holdings_map[sc].append({
-            'pid': row[1], 'name': row[2], 'pct': row[3]
-        })
     
     # Market cap
     mc_map = {}
@@ -193,11 +178,8 @@ def update_ccass_json(target_date: date) -> None:
         sc = row[0]
         tp = row[1] or 0
         np_val = row[2] or 0
-        hlist = holdings_map.get(sc, [])
-        
-        # Compute t5, t10 from holdings
-        t5 = sum(h['pct'] for h in hlist[:5]) if hlist else 0
-        t10 = sum(h['pct'] for h in hlist[:10]) if hlist else 0
+        t5 = row[3] or 0
+        t10 = row[4] or 0
         
         tr = trends.get(sc, {})
         mc = mc_map.get(sc)
