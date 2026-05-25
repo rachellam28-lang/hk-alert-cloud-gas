@@ -384,7 +384,7 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
     </button>
   </div>
   <div class="section-body" id="body-signals">
-    <div class="card" id="signalSummaryCard" style="padding:14px;font-size:12px;color:var(--mute);text-align:center">載入中…</div>
+    
   </div>
 
   <!-- Recent announcements -->
@@ -1385,9 +1385,6 @@ async function loadData(){
           });
           // Signal summary count
           const techCodes=new Set(d.groups.filter(g=>(g.signals||[]).length>0).map(g=>String(g.code||"").padStart(5,"0")));
-          const card=document.getElementById('signalSummaryCard');
-          if(card) card.innerHTML='<span style="color:var(--text-soft)">技術信號: <b>'+techCodes.size+'</b> 隻股票</span>';
-        }
         // GAS is a sparse signal feed. Keep ccass.json as the canonical stock list.
         allStocks=baseStocks.slice();
         renderSummaryBar(data);
