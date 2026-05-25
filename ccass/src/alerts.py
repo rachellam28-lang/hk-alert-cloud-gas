@@ -277,6 +277,19 @@ def _log_summary_sent(alerts: list[dict], target_date: date) -> None:
             )
 
 
+def send_event_alerts(events: list[dict], trade_date: date) -> int:
+    """Send CCASS event alerts (deposit/transfer) via Telegram.
+    Returns number of alerts sent. Stub — implement if Telegram push is needed.
+    """
+    return 0
+
+
+def scan_alerts_for_date(target_date: date) -> int:
+    """Detect + send alerts for a given date. Returns count sent."""
+    alerts = detect_alerts(target_date)
+    return send_alerts(alerts, target_date)
+
+
 def send_admin_alert(message: str) -> None:
     """系統錯誤通知 admin。"""
     admin = os.getenv("TELEGRAM_ADMIN_CHAT_ID") or os.getenv("TELEGRAM_CHAT_ID")

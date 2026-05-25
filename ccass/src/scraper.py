@@ -46,6 +46,11 @@ class CCASSSnapshot:
     holdings: list[dict]     # [{participant_id, name, shares, pct}, ...]
 
 
+class HKEXBlockedError(RuntimeError):
+    """HKEX CCASS is blocking/rate-limiting this IP. Propagate to exit 2."""
+    pass
+
+
 class CCASSScraper:
     def __init__(
         self,
@@ -101,7 +106,7 @@ class CCASSScraper:
         time.sleep(random.uniform(self.delay_min, self.delay_max))
 
     def _record_outcome(self, bad: bool, stock_code: str) -> None:
-        """Record one request outcome; raise RuntimeError if HKEX looks down.
+        """Record one request outcome; raise HKEXBlockedError if HKEX looks down.
 
         bad is True for a 503 OR an Akamai access-denied page. We abort
         when the recent window is saturated with failures, instead of
@@ -116,7 +121,7 @@ class CCASSScraper:
             )
         if (len(self._outcome_window) == self._outcome_window.maxlen
                 and bad_count >= self._abort_threshold):
-            raise RuntimeError(
+            raise HKEXBlockedError(
                 f"HKEX CCASS appears DOWN or BLOCKING — "
                 f"{bad_count}/{len(self._outcome_window)} recent requests failed. "
                 f"Aborting scrape."
@@ -200,6 +205,9 @@ class CCASSScraper:
                 self._polite_sleep()
                 return snapshot
 
+            except HKEXBlockedError:
+                # Don't catch — propagate to runner for exit(2)
+                raise
             except (RequestException, RuntimeError) as e:
                 last_err = e
                 backoff = 2 ** attempt

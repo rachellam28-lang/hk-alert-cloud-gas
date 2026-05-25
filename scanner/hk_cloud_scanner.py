@@ -978,6 +978,17 @@ def run_corp_actions() -> None:
         f"披露易掃描完成：即時提醒 {alerted} 則，加入觀察 {watchlisted} 則。"
     )
 
+    # Extract placement/rights prices from announcements for breakthrough tracking
+    try:
+        from scanner.breakthrough_detector import add_prices_from_announcements, export_breakthroughs_json
+        n_prices = add_prices_from_announcements(anns)
+        if n_prices:
+            print(f"[breakthrough] extracted {n_prices} offer prices")
+        # Export breakthroughs.json for dashboard (always, even if 0 new prices)
+        export_breakthroughs_json()
+    except Exception as exc:
+        print(f"[breakthrough] pipeline failed: {exc}")
+
 
 def clean_stock_list(df: pd.DataFrame) -> pd.DataFrame:
     df = df[["code", "name"]].copy()

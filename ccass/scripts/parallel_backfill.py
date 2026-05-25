@@ -33,7 +33,7 @@ _PROJECT_ROOT = Path(__file__).parent.parent
 DATA_DIR = _PROJECT_ROOT / "data"
 LOGS_DIR = _PROJECT_ROOT / "logs"
 
-SHARD_TOTAL = 6
+SHARD_TOTAL = 1   # Sequential single-process — 6 parallel from same IP trips Akamai
 BACKFILL_SHARD_PREFIX = "backfill-shard"
 
 # ─── helpers ────────────────────────────────────────────────────────────────

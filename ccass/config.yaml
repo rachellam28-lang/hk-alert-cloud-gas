@@ -9,8 +9,8 @@ scraping:
   # mechanical to Akamai. Cost: ~500 stocks * avg 4s = ~33 min, still fine
   # inside the 6h job cap. If 503s persist, raise these further before
   # reaching for a proxy / browser.
-  delay_min_seconds: 2.0
-  delay_max_seconds: 6.0
+  delay_min_seconds: 4.0
+  delay_max_seconds: 10.0
 
   timeout_seconds: 30
   max_retries: 3

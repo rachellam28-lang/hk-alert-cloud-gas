@@ -26,7 +26,7 @@ from src.db import init_db, get_conn
 from src.logger import setup_logger
 from src.trading_calendar import today_hk, is_trading_day, previous_trading_day
 from src.universe import refresh_universe, get_active_stocks
-from src.scraper import CCASSScraper, save_snapshot
+from src.scraper import CCASSScraper, save_snapshot, HKEXBlockedError
 from src.trend import compute_trends_for_date
 from src.alerts import detect_alerts, send_alerts, send_admin_alert, send_event_alerts
 
@@ -148,6 +148,10 @@ def run_daily(
     skip_scrape: bool = False,
     skip_alerts: bool = False,
     force_universe_refresh: bool = False,
+    shard: int | None = None,
+    shard_total: int | None = None,
+    query_date_override: date | None = None,
+    out_path: str | None = None,
 ) -> int:
     """
     Run 一個 cycle。
@@ -163,12 +167,17 @@ def run_daily(
     logger.info("=" * 60)
 
     if not is_trading_day(target_date):
-        logger.info("%s is not a trading day, skip", target_date)
-        return 0
+        # In shard mode, we're scraping a specific historical date — don't skip
+        if not query_date_override:
+            logger.info("%s is not a trading day, skip", target_date)
+            return 0
 
     # CCASS 通常公布前一個 trading day 嘅 data
     # 所以 query_date = 對上一次 trading day
-    query_date = previous_trading_day(target_date)
+    if query_date_override:
+        query_date = query_date_override
+    else:
+        query_date = previous_trading_day(target_date)
     logger.info("Querying CCASS data for %s", query_date)
 
     # 1. Start run log
@@ -198,6 +207,11 @@ def run_daily(
         stocks = get_active_stocks()
         logger.info("Universe: %d active stocks", len(stocks))
 
+        # Shard support: slice stocks list for parallel shard scraping
+        if shard is not None and shard_total is not None and shard_total > 1:
+            stocks = stocks[shard::shard_total]
+            logger.info("Shard %d/%d: %d stocks", shard + 1, shard_total, len(stocks))
+
         # Optional: limit to top-N stocks for speed (config max_stocks)
         max_stocks = config["scraping"].get("max_stocks")
         if max_stocks and len(stocks) > max_stocks:
@@ -224,6 +238,7 @@ def run_daily(
                     timeout=sc_cfg["timeout_seconds"],
                     max_retries=sc_cfg["max_retries"],
                 )
+                snapshots = []
                 for i, code in enumerate(stocks, 1):
                     attempted += 1
                     if i % 50 == 0:
@@ -231,13 +246,23 @@ def run_daily(
                     try:
                         snap = scraper.scrape_stock(code, query_date)
                         if snap:
-                            save_snapshot(snap)
+                            if out_path:
+                                snapshots.append(snap)
+                            else:
+                                save_snapshot(snap)
                             succeeded += 1
                         else:
                             failed_stocks.append(code)
                     except Exception as e:
                         logger.exception("Unexpected error on %s", code)
                         failed_stocks.append(code)
+
+                # If outputting to file (shard mode), write JSON
+                if out_path and snapshots:
+                    _write_shard_json(out_path, query_date, shard, shard_total,
+                                     len(stocks), succeeded, failed_stocks, snapshots)
+                    logger.info("Shard saved to %s: %d snapshots", out_path, len(snapshots))
+                    return 0  # shard mode: skip trends/alerts/events
 
         # 4. Trends
         try:
@@ -312,6 +337,18 @@ def run_daily(
         logger.info("Done: %d/%d succeeded, %d failed", succeeded, attempted, len(failed_stocks))
         _export_json(query_date, len(alerts_found))
         return 0  # partial failures are normal; only fatal exceptions return non-zero
+
+    except HKEXBlockedError as e:
+        logger.error("HKEX block detected: %s", e)
+        finished_iso = datetime.utcnow().isoformat()
+        with get_conn() as conn:
+            conn.execute(
+                """UPDATE scrape_runs SET
+                     finished_at = ?, status = 'blocked', error_summary = ?
+                   WHERE id = ?""",
+                (finished_iso, str(e)[:500], run_id),
+            )
+        return 2
 
     except Exception as e:
         logger.exception("Fatal error in run_daily")
@@ -643,23 +680,73 @@ def _detect_and_log_events(t_date: date, y_date: date) -> list[dict]:
     return new_events
 
 
+def _write_shard_json(
+    out_path: str,
+    query_date: date,
+    shard: int | None,
+    shard_total: int | None,
+    stocks_total: int,
+    succeeded: int,
+    failed_stocks: list[str],
+    snapshots: list,
+) -> None:
+    """Write shard output JSON matching the format expected by backfill/merge."""
+    import json as _json
+    payload = {
+        "shard": shard if shard is not None else 0,
+        "shard_total": shard_total or 1,
+        "query_date": query_date.strftime("%Y-%m-%d"),
+        "target_date": query_date.strftime("%Y-%m-%d"),
+        "stocks_total": stocks_total,
+        "stocks_in_shard": stocks_total,
+        "succeeded": succeeded,
+        "failed": len(failed_stocks),
+        "failed_stocks": failed_stocks,
+        "snapshots": [
+            {
+                "stock_code": s.stock_code,
+                "trade_date": s.trade_date,
+                "total_shares": s.total_shares,
+                "total_pct": s.total_pct,
+                "num_participants": s.num_participants,
+                "holdings": s.holdings if hasattr(s, 'holdings') else [],
+            }
+            for s in snapshots
+        ],
+    }
+    Path(out_path).parent.mkdir(parents=True, exist_ok=True)
+    Path(out_path).write_text(_json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--date", help="Target date YYYY-MM-DD (default: today HK)")
     parser.add_argument("--skip-scrape", action="store_true")
     parser.add_argument("--skip-alerts", action="store_true")
     parser.add_argument("--refresh-universe", action="store_true")
+    parser.add_argument("--shard", type=int, help="Shard index (0-based)")
+    parser.add_argument("--shard-total", type=int, help="Total number of shards")
+    parser.add_argument("--query-date", help="CCASS query date YYYY-MM-DD (overrides auto)")
+    parser.add_argument("--out", help="Output JSON path for shard results")
     args = parser.parse_args()
 
     target = None
     if args.date:
         target = datetime.strptime(args.date, "%Y-%m-%d").date()
 
+    query_date_override = None
+    if hasattr(args, 'query_date') and args.query_date:
+        query_date_override = datetime.strptime(args.query_date, "%Y-%m-%d").date()
+
     rc = run_daily(
         target_date=target,
         skip_scrape=args.skip_scrape,
         skip_alerts=args.skip_alerts,
         force_universe_refresh=args.refresh_universe,
+        shard=getattr(args, 'shard', None),
+        shard_total=getattr(args, 'shard_total', None),
+        query_date_override=query_date_override,
+        out_path=getattr(args, 'out', None),
     )
     sys.exit(rc)
 
