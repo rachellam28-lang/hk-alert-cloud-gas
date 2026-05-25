@@ -1245,13 +1245,30 @@ function renderBT(){
     card.style.display='';
   }
 
-  // 1. 🚀上破IPO開 — from techSignalMap
+  // 1. 🚀上破IPO開 — from techSignalMap (higher priority) + activePrices (type=ipo)
   const ipos=[];
+  const seenIpo={};
+  // First: techSignalMap entries (labels with breakthrough signals)
   techSignalMap.forEach((signals,code)=>{
     signals.forEach(function(s){
       if(!s.label||sigType(s.label)!=='ipo')return;
       const n=stockByCode.get(code)?.n||'';
-      if(!ipos.find(x=>x.c===code)) ipos.push({c:code,n:n});
+      if(!seenIpo[code]){
+        seenIpo[code]=1;
+        // Check activePrices for ipo price
+        const ap=(activePrices[code]||[]).find(e=>e.type==='ipo');
+        ipos.push({c:code,n:n,p:ap?ap.price:null});
+      }
+    });
+  });
+  // Second: activePrices type=ipo entries not already in techSignalMap
+  Object.keys(activePrices).forEach(code=>{
+    if(seenIpo[code])return;
+    (activePrices[code]||[]).forEach(e=>{
+      if(e.type!=='ipo')return;
+      const n=stockByCode.get(code)?.n||'';
+      ipos.push({c:code,n:n,p:e.price||''});
+      seenIpo[code]=1;
     });
   });
   fillCard('btIpo','btIpoBody','btIpoCount',ipos);
