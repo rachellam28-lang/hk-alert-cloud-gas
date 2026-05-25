@@ -302,7 +302,7 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
           <option value="poc3">半年+12月+3年POC</option>
           <option value="fvg">Bullish FVG</option>
           <option value="yearopen">年開突破</option>
-          <option value="ipo">IPO首日突破</option>
+          <option value="ipo">🚀突破</option>
           <option value="ccass_up">CCASS增持</option>
           <option value="ccass_dn">CCASS減持</option>
         </select>
@@ -377,15 +377,8 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
   <div id="pagination" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px"></div>
 
   <!-- Signal section -->
-  <div class="section-head">
-    <button class="section-toggle" onclick="toggleSection('signals',this)" id="toggle-signals">
-      <h2><span class="ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>訊號彙總</h2>
-      <span class="toggle-arrow">▼</span>
-    </button>
-  </div>
-  <div class="section-body" id="body-signals">
-    
-  </div>
+  
+
 
   <!-- Recent announcements -->
   <div class="section-head">
@@ -769,7 +762,7 @@ function renderTable(){
     const techHtml=techSig.slice(0,4).map(sig=>{
       const dateStr=sig.date?'<span class="spill-date">'+fmtDate(sig.date).slice(5)+'</span>':'';
       const t=sigType(sig.label),cls='spill'+(t?' spill-'+t:'');
-      const body='<span class="'+cls+'">'+esc(sig.label)+dateStr+'</span>';
+      const body='<span class="'+cls+'">'+esc(shortLabel(sig.label))+dateStr+'</span>';
       return sig.link?'<a class="splink" href="'+esc(sig.link)+'" target="_blank" rel="noopener">'+body+'</a>':body;
     }).join(' ');
 
@@ -779,7 +772,7 @@ function renderTable(){
     const totalSigCount=techCount+corpCount;
     const hasIPO=techSig.some(x=>x.label&&x.label.indexOf('IPO首日')>=0);
     const mergedSig=(techHtml||'')+(corpHtml?'<div class="cpillrow">'+corpHtml+'</div>':'');
-    const sigDisplay=mergedSig||'<span class="mc-null">—</span>';
+    const sigDisplay=(btHtml||'')+mergedSig||'<span class="mc-null">—</span>';
 
     // Price
     const priceVal=priceMap.get(s.c);
@@ -829,6 +822,10 @@ function renderTable(){
       if(sig.inc) corpHtml+='<span class="cpill cpill-increase"><span>📈</span>增持</span>';
           }
     const techSig=techSignalMap.get(s.c)||[];
+    // Breakthrough pill
+    let btHtml='';
+    const bt=breakthroughMap[s.c];
+    if(bt){btHtml='<span class="cpill cpill-breakthrough">🚀上破'+(bt.type==='placement'?'配股':'供股')+'價 $'+bt.offer_price+'</span>';}
     const techHtml=techSig.slice(0,4).map(ss=>{
       const dateStr=ss.date?'<span class="spill-date">'+fmtDate(ss.date).slice(5)+'</span>':'';
       const t=sigType(ss.label),cls='spill'+(t?' spill-'+t:'');
@@ -1002,7 +999,7 @@ async function showDetail(code){
   const techHtml=techSig.slice(0,4).map(sig=>{
     const dateStr=sig.date?'<span class="spill-date">'+fmtDate(sig.date).slice(5)+'</span>':'';
     const t=sigType(sig.label),cls='spill'+(t?' spill-'+t:'');
-    const body='<span class="'+cls+'">'+esc(sig.label)+dateStr+'</span>';
+    const body='<span class="'+cls+'">'+esc(shortLabel(sig.label))+dateStr+'</span>';
     return sig.link?'<a class="splink" href="'+esc(sig.link)+'" target="_blank" rel="noopener">'+body+'</a>':body;
   }).join(' ');
 
@@ -1391,6 +1388,15 @@ async function loadData(){
         renderSummaryBar(data);
         renderIPO();
         renderRecent(d?.recentCorps||[]);
+        // Also load local announcements archive
+        fetch('./data/announcements.json?_='+Date.now())
+          .then(r=>r.ok?r.json():null)
+          .then(a=>{if(a&&a.length)renderRecent(a);})
+          .catch(()=>{});
+        // Load breakthrough data
+        fetch('./data/breakthroughs.json?_='+Date.now())
+          .then(r=>r.ok?r.json():null)
+          .then(bt=>{if(bt&&bt.breakthroughs){bt.breakthroughs.forEach(b=>{breakthroughMap[b.stock_code||b.code]=b;});}})
         // Also load local announcements archive
         fetch('./data/announcements.json?_='+Date.now())
           .then(r=>r.ok?r.json():null)
