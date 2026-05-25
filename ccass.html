@@ -270,7 +270,7 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
   <div id="ipoCard" class="ipo-card" style="display:none">
     <div class="ipo-head"><span>⚠️突破⚠️</span><span class="ipo-count" id="ipoCount"></span></div>
     <table class="ipo-tbl">
-      <thead><tr><th>代碼</th><th>名稱</th><th>類型</th></tr></thead>
+      <thead><tr><th>代碼(名稱)</th><th>類型</th></tr></thead>
       <tbody id="ipoBody"></tbody>
     </table>
   </div>
@@ -1272,8 +1272,7 @@ function renderIPO(){
       const price=b.price?' $'+b.price:'';
       return '<span class="'+cls+'">'+b.text+price+'</span>';
     }).join(' ');
-    return '<tr><td><span class="code">'+esc(c)+'</span></td>'
-      +'<td><span class="name">'+esc(s.name)+'</span></td>'
+    return '<tr><td><span class="code">'+esc(c)+'</span> '+esc(s.name)+'</td>'
       +'<td>'+badges+'</td></tr>';
   }).join('');
   count.textContent=codes.length+'項';
