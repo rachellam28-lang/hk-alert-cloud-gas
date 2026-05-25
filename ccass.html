@@ -842,7 +842,7 @@ function renderTable(){
     const techHtml=techSig.slice(0,4).map(ss=>{
       const dateStr=ss.date?'<span class="spill-date">'+fmtDate(ss.date).slice(5)+'</span>':'';
       const t=sigType(ss.label),cls='spill'+(t?' spill-'+t:'');
-      const body='<span class="'+cls+'">'+esc(ss.label)+dateStr+'</span>';
+      const body='<span class="'+cls+'">'+esc(shortLabel(ss.label))+dateStr+'</span>';
       return ss.link?'<a class="splink" href="'+esc(ss.link)+'" target="_blank" rel="noopener">'+body+'</a>':body;
     }).join(' ');
     const sigPills=(btHtml||'')+(techHtml||'')+(corpHtml?' '+corpHtml:'');
