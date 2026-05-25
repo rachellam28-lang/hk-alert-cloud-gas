@@ -1391,6 +1391,11 @@ async function loadData(){
         renderSummaryBar(data);
         renderIPO();
         renderRecent(d?.recentCorps||[]);
+        // Also load local announcements archive
+        fetch('./data/announcements.json?_='+Date.now())
+          .then(r=>r.ok?r.json():null)
+          .then(a=>{if(a&&a.length)renderRecent(a);})
+          .catch(()=>{});
         applyFilters();
         updateSortInfo();
       }).catch(()=>{});
