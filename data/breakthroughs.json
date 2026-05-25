@@ -1,5 +1,55 @@
 {
-  "updated": "2026-05-25T13:31:12.008708+08:00",
+  "updated": "2026-05-26T00:38:31.411010+08:00",
   "breakthroughs": [],
-  "active_prices": {}
+  "active_prices": {
+    "02540": [
+      {
+        "type": "placement",
+        "price": 0.7,
+        "date": "2026-05-22"
+      }
+    ],
+    "01751": [
+      {
+        "type": "rights",
+        "price": 1.0,
+        "date": "2026-05-22"
+      }
+    ],
+    "01808": [
+      {
+        "type": "placement",
+        "price": 1.08,
+        "date": "2026-05-25"
+      }
+    ],
+    "08120": [
+      {
+        "type": "placement",
+        "price": 0.6,
+        "date": "2026-05-25"
+      }
+    ],
+    "02556": [
+      {
+        "type": "placement",
+        "price": 40.54,
+        "date": "2026-05-25"
+      }
+    ],
+    "02171": [
+      {
+        "type": "placement",
+        "price": 19.84,
+        "date": "2026-05-25"
+      }
+    ],
+    "00813": [
+      {
+        "type": "placement",
+        "price": 6.0,
+        "date": "2026-05-25"
+      }
+    ]
+  }
 }
