@@ -1385,6 +1385,7 @@ async function loadData(){
           });
           // Signal summary count
           const techCodes=new Set(d.groups.filter(g=>(g.signals||[]).length>0).map(g=>String(g.code||"").padStart(5,"0")));
+        }
         // GAS is a sparse signal feed. Keep ccass.json as the canonical stock list.
         allStocks=baseStocks.slice();
         renderSummaryBar(data);
