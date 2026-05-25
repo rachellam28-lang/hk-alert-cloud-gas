@@ -129,29 +129,104 @@ def merge_into_db(all_payloads: list[dict]) -> int:
     return written
 
 
-def update_ccass_json(all_payloads: list[dict]) -> None:
-    """Update ccass.json for the dashboard."""
+def update_ccass_json(target_date: date) -> None:
+    """Update ccass.json with frontend-compatible fields from DB."""
+    import sqlite3
+    from src.db import DB_PATH
+    
+    db = sqlite3.connect(str(DB_PATH))
+    db.row_factory = sqlite3.Row
+    
+    # Get stock names
+    names = {}
+    for row in db.execute("SELECT stock_code, name_zh FROM stock_universe"):
+        names[row[0]] = row[1] or row[0]
+    
+    # Get latest data for target_date
+    rows = db.execute("""
+        SELECT cd.stock_code, cd.total_pct, cd.num_participants,
+               cd.total_shares
+        FROM ccass_daily cd
+        WHERE cd.trade_date = ?
+    """, (target_date.strftime("%Y-%m-%d"),)).fetchall()
+    
+    # Get trends for this date
+    trends = {}
+    for row in db.execute("""
+        SELECT stock_code, delta_5d, delta_20d, delta_60d, delta_120d
+        FROM ccass_trends
+        WHERE trade_date = ?
+    """, (target_date.strftime("%Y-%m-%d"),)).fetchall():
+        trends[row[0]] = {
+            'd5': row[1], 'd20': row[2], 'd60': row[3], 'd120': row[4]
+        }
+    
+    # Get holdings for top5/top10
+    holdings_map = {}
+    for row in db.execute("""
+        SELECT stock_code, participant_id, participant_name, pct
+        FROM ccass_holdings
+        WHERE trade_date = ?
+        ORDER BY stock_code, pct DESC
+    """, (target_date.strftime("%Y-%m-%d"),)).fetchall():
+        sc = row[0]
+        if sc not in holdings_map:
+            holdings_map[sc] = []
+        holdings_map[sc].append({
+            'pid': row[1], 'name': row[2], 'pct': row[3]
+        })
+    
+    # Market cap
+    mc_map = {}
+    try:
+        import json as _json
+        mc_path = PROJECT_ROOT / "cache" / "market_caps.json"
+        if mc_path.exists():
+            mc_data = _json.loads(mc_path.read_text(encoding='utf-8'))
+            for item in mc_data:
+                mc_map[item.get('stock_code', '')] = item.get('market_cap')
+    except Exception:
+        pass
+    
     stocks = []
-    for p in all_payloads:
-        for snap in p["snapshots"]:
-            stocks.append({
-                "stock_code": snap["stock_code"],
-                "trade_date": snap["trade_date"],
-                "total_shares": snap["total_shares"],
-                "total_pct": snap["total_pct"],
-                "num_participants": snap.get("num_participants", 0),
-                "holdings": snap.get("holdings", []),
-            })
-
+    for row in rows:
+        sc = row[0]
+        tp = row[1] or 0
+        np_val = row[2] or 0
+        hlist = holdings_map.get(sc, [])
+        
+        # Compute t5, t10 from holdings
+        t5 = sum(h['pct'] for h in hlist[:5]) if hlist else 0
+        t10 = sum(h['pct'] for h in hlist[:10]) if hlist else 0
+        
+        tr = trends.get(sc, {})
+        mc = mc_map.get(sc)
+        
+        stocks.append({
+            'c': sc,
+            'n': names.get(sc, sc),
+            'tp': tp,
+            't5': t5,
+            't10': t10,
+            'd5': tr.get('d5'),
+            'd20': tr.get('d20'),
+            'd60': tr.get('d60'),
+            'd120': tr.get('d120'),
+            'su': 0,
+            'sd': 0,
+            'np': np_val,
+            'mc': mc,
+        })
+    
     out = {
         "updated": datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC"),
         "stock_count": len(stocks),
         "stocks": stocks,
     }
-    # Write to repo root so CI commit step finds it (CI runs from ccass/)
     path = PROJECT_ROOT.parent / "ccass.json"
     path.write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"  ccass.json updated: {len(stocks)} stocks")
+    db.close()
 
 
 def main():
@@ -175,10 +250,6 @@ def main():
     written = merge_into_db(all_payloads)
     print(f"Merged: {written} snapshots ({total_failed} failures)")
 
-    # Update ccass.json
-    print("Updating ccass.json...")
-    update_ccass_json(all_payloads)
-
     # Compute trends
     print("Computing trends...")
     try:
@@ -189,6 +260,10 @@ def main():
         print(f"Trends computed: {n_trends} stocks")
     except Exception as e:
         print(f"WARN Trends failed: {e}")
+
+    # Update ccass.json (after trends so deltas are included)
+    print("Updating ccass.json...")
+    update_ccass_json(target_date)
 
     # Run alerts
     print("Running alerts...")
