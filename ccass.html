@@ -269,7 +269,7 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
 
   <div class="bt-cards" id="btCards" style="display:none;gap:10px;flex-wrap:wrap;margin-bottom:10px">
     <div id="btIpo" class="ipo-card" style="display:none;flex:1;min-width:260px">
-      <div class="ipo-head"><span>🚀開突破</span><span class="ipo-count" id="btIpoCount"></span></div>
+      <div class="ipo-head"><span>🚀上破IPO開</span><span class="ipo-count" id="btIpoCount"></span></div>
       <table class="ipo-tbl"><thead><tr><th>代碼(名稱)</th></tr></thead><tbody id="btIpoBody"></tbody></table>
     </div>
     <div id="btPlacement" class="ipo-card" style="display:none;flex:1;min-width:260px">
@@ -313,7 +313,7 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
           <option value="poc3">半年+12月+3年POC</option>
           <option value="fvg">Bullish FVG</option>
           <option value="yearopen">年開突破</option>
-          <option value="ipo">🚀突破</option>
+          <option value="ipo">🚀上破IPO</option>
           <option value="ccass_up">CCASS增持</option>
           <option value="ccass_dn">CCASS減持</option>
         </select>
@@ -1246,7 +1246,7 @@ function renderBT(){
     card.style.display='';
   }
 
-  // 1. 🚀開突破 — from techSignalMap
+  // 1. 🚀上破IPO開 — from techSignalMap
   const ipos=[];
   techSignalMap.forEach((signals,code)=>{
     signals.forEach(function(s){
