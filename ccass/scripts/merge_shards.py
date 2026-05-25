@@ -21,7 +21,15 @@ PROJECT_ROOT = Path(__file__).parent.parent
 
 
 def _shard_path(idx: int) -> Path:
-    return Path(f"{SHARD_PREFIX}-{idx}.json")
+    """Resolve shard file path. Checks repo root first (CI pattern: files moved
+    to repo root by flatten step, merge runs from ccass/), falls back to cwd."""
+    fname = f"{SHARD_PREFIX}-{idx}.json"
+    # CI: shard files at repo root, merge runs from ccass/
+    parent_path = Path.cwd().parent / fname
+    if parent_path.exists():
+        return parent_path
+    # cwd fallback
+    return Path(fname)
 
 
 def _validate_shard(fpath: Path, expected_date: str, expected_shard: int) -> dict | None:
@@ -146,7 +154,8 @@ def update_ccass_json(all_payloads: list[dict]) -> None:
         "stock_count": len(stocks),
         "stocks": stocks,
     }
-    path = PROJECT_ROOT / "ccass.json"
+    # Write to repo root so CI commit step finds it (CI runs from ccass/)
+    path = PROJECT_ROOT.parent / "ccass.json"
     path.write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"  ccass.json updated: {len(stocks)} stocks")
 
