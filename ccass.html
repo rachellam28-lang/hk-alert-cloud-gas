@@ -127,7 +127,7 @@ tbody tr{cursor:pointer}
 .breadth-stats{font-size:10px;white-space:nowrap;display:flex;gap:5px}
 .bs-hi{color:#16a34a;font-weight:600}.bs-lo{color:#dc2626;font-weight:600}.bs-n{color:var(--mute-2)}
 /* IPO card */
-.ipo-card{margin-bottom:10px;background:var(--surface);border:1px solid var(--amber-border);border-radius:var(--radius);overflow:hidden;max-width:520px}.ipo-head{display:flex;align-items:center;justify-content:space-between;padding:5px 14px 3px;font-size:11px;font-weight:700;color:var(--amber)}.ipo-count{font-size:10px;font-weight:600;color:var(--mute);background:var(--amber-soft);padding:1px 8px;border-radius:10px;border:1px solid var(--amber-border)}.ipo-tbl{width:100%;border-collapse:collapse;font-size:12px}.ipo-tbl th{text-align:left;padding:2px 10px;font-size:10px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.1em;border-top:1px solid var(--amber-border);background:rgba(251,191,36,.04)}.ipo-tbl td{padding:2px 10px;border-bottom:1px solid var(--line-soft)}.ipo-tbl tr:last-child td{border-bottom:none}.ipo-tbl a{color:var(--text);text-decoration:none;font-weight:600}.ipo-tbl a:hover{color:var(--amber)}.ipo-tbl .name{color:var(--text-soft);font-size:11px;display:inline;max-width:none}.badge{display:inline-block;font-size:10px;font-weight:600;padding:1px 8px;border-radius:4px;line-height:1.5}.badge-high{background:var(--amber-soft);color:var(--amber);border:1px solid var(--amber-border)}.badge-open{background:var(--primary-soft);color:var(--primary);border:1px solid var(--primary-border)}
+.ipo-card{margin-bottom:10px;background:var(--surface);border:1px solid var(--amber-border);border-radius:var(--radius);overflow:hidden}.ipo-head{display:flex;align-items:center;justify-content:space-between;padding:5px 14px 3px;font-size:11px;font-weight:700;color:var(--amber)}.ipo-count{font-size:10px;font-weight:600;color:var(--mute);background:var(--amber-soft);padding:1px 8px;border-radius:10px;border:1px solid var(--amber-border)}.ipo-tbl{width:100%;border-collapse:collapse;font-size:12px}.ipo-tbl th{text-align:left;padding:2px 10px;font-size:10px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.1em;border-top:1px solid var(--amber-border);background:rgba(251,191,36,.04)}.ipo-tbl td{padding:2px 10px;border-bottom:1px solid var(--line-soft)}.ipo-tbl tr:last-child td{border-bottom:none}.ipo-tbl a{color:var(--text);text-decoration:none;font-weight:600}.ipo-tbl a:hover{color:var(--amber)}.ipo-tbl .name{color:var(--text-soft);font-size:11px;display:inline;max-width:none}.badge{display:inline-block;font-size:10px;font-weight:600;padding:1px 8px;border-radius:4px;line-height:1.5}.badge-high{background:var(--amber-soft);color:var(--amber);border:1px solid var(--amber-border)}.badge-open{background:var(--primary-soft);color:var(--primary);border:1px solid var(--primary-border)}
 /* Recent announcements */
 .recent-card{padding:2px 0}
 .ra-list{list-style:none;margin:0;padding:4px 10px;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:0}
@@ -267,12 +267,19 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
   <div class="mbar" id="mbar"></div>
   <div class="breadth-card" id="breadthCard" style="display:none"><div class="breadth-head">市場寬度 · 52周高低位分布</div><div id="breadthRows"></div></div>
 
-  <div id="ipoCard" class="ipo-card" style="display:none">
-    <div class="ipo-head"><span>⚠️ 突破</span><span class="ipo-count" id="ipoCount"></span></div>
-    <table class="ipo-tbl">
-      <thead><tr><th>代碼(名稱)</th><th>類型</th></tr></thead>
-      <tbody id="ipoBody"></tbody>
-    </table>
+  <div class="bt-cards" id="btCards" style="display:none;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+    <div id="btIpo" class="ipo-card" style="display:none;flex:1;min-width:260px">
+      <div class="ipo-head"><span>🚀開突破</span><span class="ipo-count" id="btIpoCount"></span></div>
+      <table class="ipo-tbl"><thead><tr><th>代碼(名稱)</th></tr></thead><tbody id="btIpoBody"></tbody></table>
+    </div>
+    <div id="btPlacement" class="ipo-card" style="display:none;flex:1;min-width:260px">
+      <div class="ipo-head"><span>🚀上破配股價</span><span class="ipo-count" id="btPlacementCount"></span></div>
+      <table class="ipo-tbl"><thead><tr><th>代碼(名稱)</th><th>價格</th></tr></thead><tbody id="btPlacementBody"></tbody></table>
+    </div>
+    <div id="btRights" class="ipo-card" style="display:none;flex:1;min-width:260px">
+      <div class="ipo-head"><span>🚀上破供股價</span><span class="ipo-count" id="btRightsCount"></span></div>
+      <table class="ipo-tbl"><thead><tr><th>代碼(名稱)</th><th>價格</th></tr></thead><tbody id="btRightsBody"></tbody></table>
+    </div>
   </div>
 
   <div class="card">
@@ -1218,65 +1225,62 @@ function renderBreadth(snap){
   card.style.display='';
 }
 
-// --- IPO section ---
-function renderIPO(){
-  const card=document.getElementById('ipoCard');
-  const body=document.getElementById('ipoBody');
-  const count=document.getElementById('ipoCount');
-  if(!card||!body)return;
+// --- Breakthrough cards (3 separate) ---
+function renderBT(){
+  const wrap=document.getElementById('btCards');
+  if(!wrap)return;
 
-  // Collect all breakthroughs: {code: {name, badges: [{type, text, price}]}}
-  const stocks={};
+  // Helper: render a single card
+  function fillCard(cardId, bodyId, countId, items){
+    const card=document.getElementById(cardId);
+    const body=document.getElementById(bodyId);
+    const count=document.getElementById(countId);
+    if(!card||!body)return;
+    if(!items.length){card.style.display='none';return;}
+    body.innerHTML=items.map(function(s){
+      return '<tr><td><span class="code">'+esc(s.c)+'</span> <span class="name">'+esc(s.n)+'</span></td>'
+        +(s.p!=null?'<td>$'+esc(s.p)+'</td>':'')+'</tr>';
+    }).join('');
+    count.textContent=items.length+'項';
+    card.style.display='';
+  }
 
-  // 1. IPO breakthroughs from techSignalMap
+  // 1. 🚀開突破 — from techSignalMap
+  const ipos=[];
   techSignalMap.forEach((signals,code)=>{
     signals.forEach(function(s){
-      if(!s.label)return;
-      if(sigType(s.label)!=='ipo')return;
-      const isHigh=s.label.indexOf('高突破')>=0;
-      if(!stocks[code]) stocks[code]={code,name:stockByCode.get(code)?.n||'',badges:[]};
-      stocks[code].badges.push({type:'ipo',text:isHigh?'🚀高突破':'🚀開突破',price:''});
+      if(!s.label||sigType(s.label)!=='ipo')return;
+      const n=stockByCode.get(code)?.n||'';
+      if(!ipos.find(x=>x.c===code)) ipos.push({c:code,n:n});
     });
   });
+  fillCard('btIpo','btIpoBody','btIpoCount',ipos);
 
-  // 2. Placement breakthroughs from breakthroughMap
+  // 2. 🚀上破配股價 — from breakthroughMap
+  const placements=[];
   Object.keys(breakthroughMap).forEach(code=>{
     const bt=breakthroughMap[code];
     if(!bt||bt.type!=='placement')return;
-    if(!stocks[code]) stocks[code]={code,name:stockByCode.get(code)?.n||'',badges:[]};
-    stocks[code].badges.push({type:'placement',text:'🚀上破配股價',price:bt.offer_price||''});
+    const n=stockByCode.get(code)?.n||'';
+    placements.push({c:code,n:n,p:bt.offer_price||''});
   });
+  fillCard('btPlacement','btPlacementBody','btPlacementCount',placements);
 
-  // 3. Rights breakthroughs from breakthroughMap
+  // 3. 🚀上破供股價 — from breakthroughMap
+  const rights=[];
   Object.keys(breakthroughMap).forEach(code=>{
     const bt=breakthroughMap[code];
     if(!bt||bt.type!=='rights')return;
-    if(!stocks[code]) stocks[code]={code,name:stockByCode.get(code)?.n||'',badges:[]};
-    stocks[code].badges.push({type:'rights',text:'🚀上破供股價',price:bt.offer_price||''});
+    const n=stockByCode.get(code)?.n||'';
+    rights.push({c:code,n:n,p:bt.offer_price||''});
   });
+  fillCard('btRights','btRightsBody','btRightsCount',rights);
 
-  const codes=Object.keys(stocks);
-  if(!codes.length){card.style.display='none';return;}
-
-  // Sort: IPO first, then placement, then rights
-  codes.sort((a,b)=>{
-    const ta=stocks[a].badges[0]?.type||'',tb=stocks[b].badges[0]?.type||'';
-    const order={ipo:0,placement:1,rights:2};
-    return (order[ta]||9)-(order[tb]||9);
-  });
-
-  body.innerHTML=codes.map(function(c){
-    const s=stocks[c];
-    const badges=s.badges.map(function(b){
-      const cls=b.type==='ipo'?'badge badge-open':b.type==='placement'?'badge badge-high':'badge badge-high';
-      const price=b.price?' $'+b.price:'';
-      return '<span class="'+cls+'">'+b.text+price+'</span>';
-    }).join(' ');
-    return '<tr><td><span class="code">'+esc(c)+'</span> <span class="name">'+esc(s.name)+'</span></td>'
-      +'<td>'+badges+'</td></tr>';
-  }).join('');
-  count.textContent=codes.length+'項';
-  card.style.display='';
+  // Show/hide wrapper
+  const anyVisible=document.getElementById('btIpo').style.display!=='none'
+    ||document.getElementById('btPlacement').style.display!=='none'
+    ||document.getElementById('btRights').style.display!=='none';
+  wrap.style.display=anyVisible?'flex':'none';
 }
 
 // --- Recent announcements ---
@@ -1430,7 +1434,7 @@ async function loadData(){
         // GAS is a sparse signal feed. Keep ccass.json as the canonical stock list.
         allStocks=baseStocks.slice();
         renderSummaryBar(data);
-        renderIPO();
+        renderBT();
         renderRecent(d?.recentCorps||[]);
         // Also load local announcements archive
         fetch('./data/announcements.json?_='+Date.now())
@@ -1440,7 +1444,7 @@ async function loadData(){
         // Load breakthrough data
         fetch('./data/breakthroughs.json?_='+Date.now())
           .then(r=>r.ok?r.json():null)
-          .then(bt=>{if(bt&&bt.breakthroughs){bt.breakthroughs.forEach(b=>{breakthroughMap[b.stock_code||b.code]=b;});applyFilters();renderIPO();}})
+          .then(bt=>{if(bt&&bt.breakthroughs){bt.breakthroughs.forEach(b=>{breakthroughMap[b.stock_code||b.code]=b;});applyFilters();renderBT();}})
         applyFilters();
         updateSortInfo();
       }).catch(()=>{});
