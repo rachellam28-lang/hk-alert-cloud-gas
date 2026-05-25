@@ -131,7 +131,12 @@ jobs:
         with:
           pattern: ccass-shard-*
           merge-multiple: true
-          path: .
+          path: artifacts
+
+      - name: Flatten shard files to root
+        run: |
+          find artifacts -name "ccass-shard-*.json" -exec mv {} . \;
+          rm -rf artifacts/
 
       - name: Merge shards & run full pipeline
         timeout-minutes: 20
