@@ -21,15 +21,9 @@ PROJECT_ROOT = Path(__file__).parent.parent
 
 
 def _shard_path(idx: int) -> Path:
-    """Resolve shard file path. Checks repo root first (CI pattern: files moved
-    to repo root by flatten step, merge runs from ccass/), falls back to cwd."""
-    fname = f"{SHARD_PREFIX}-{idx}.json"
-    # CI: shard files at repo root, merge runs from ccass/
-    parent_path = Path.cwd().parent / fname
-    if parent_path.exists():
-        return parent_path
-    # cwd fallback
-    return Path(fname)
+    """Shard files always at repo root (PROJECT_ROOT.parent).
+    Deterministic — no CWD dependency."""
+    return PROJECT_ROOT.parent / f"{SHARD_PREFIX}-{idx}.json"
 
 
 def _validate_shard(fpath: Path, expected_date: str, expected_shard: int) -> dict | None:
