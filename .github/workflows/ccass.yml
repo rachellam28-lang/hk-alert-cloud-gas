@@ -2,6 +2,11 @@ name: CCASS Daily Scrape (6-Shard)
 
 on:
   workflow_dispatch:
+    inputs:
+      query_date:
+        description: "Override query date (YYYY-MM-DD). Leave empty for auto."
+        required: false
+        default: ""
   schedule:
     - cron: "0 13 * * 1-5"   # 9pm HKT Mon-Fri
 
@@ -40,15 +45,19 @@ jobs:
       - name: Compute query date (previous HK trading day)
         id: date
         run: |
-          QUERY_DATE=$(python -c "
-          from datetime import date, timedelta
-          import holidays
-          hk = holidays.HongKong()
-          d = date.today() - timedelta(days=1)
-          while d.weekday() >= 5 or d in hk:
-              d -= timedelta(days=1)
-          print(d.strftime('%Y-%m-%d'))
-          ")
+          if [ -n "${{ github.event.inputs.query_date }}" ]; then
+            QUERY_DATE="${{ github.event.inputs.query_date }}"
+          else
+            QUERY_DATE=$(python -c "
+            from datetime import date, timedelta
+            import holidays
+            hk = holidays.HongKong()
+            d = date.today() - timedelta(days=1)
+            while d.weekday() >= 5 or d in hk:
+                d -= timedelta(days=1)
+            print(d.strftime('%Y-%m-%d'))
+            ")
+          fi
           echo "query_date=$QUERY_DATE" >> $GITHUB_OUTPUT
           echo "Query date: $QUERY_DATE"
 
@@ -102,15 +111,19 @@ jobs:
       - name: Compute query date
         id: date
         run: |
-          QUERY_DATE=$(python -c "
-          from datetime import date, timedelta
-          import holidays
-          hk = holidays.HongKong()
-          d = date.today() - timedelta(days=1)
-          while d.weekday() >= 5 or d in hk:
-              d -= timedelta(days=1)
-          print(d.strftime('%Y-%m-%d'))
-          ")
+          if [ -n "${{ github.event.inputs.query_date }}" ]; then
+            QUERY_DATE="${{ github.event.inputs.query_date }}"
+          else
+            QUERY_DATE=$(python -c "
+            from datetime import date, timedelta
+            import holidays
+            hk = holidays.HongKong()
+            d = date.today() - timedelta(days=1)
+            while d.weekday() >= 5 or d in hk:
+                d -= timedelta(days=1)
+            print(d.strftime('%Y-%m-%d'))
+            ")
+          fi
           echo "query_date=$QUERY_DATE" >> $GITHUB_OUTPUT
 
       - name: Download all shard artifacts
