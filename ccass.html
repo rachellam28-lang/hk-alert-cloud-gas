@@ -1,6 +1,9 @@
 <!doctype html>
 <html lang="zh-HK"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>CCASS 持倉分析</title>
 <style>
 :root{--bg:#f5f7fa;--surface:#fff;--surface-soft:#f8fafc;--text:#0f172a;--text-soft:#334155;--mute:#64748b;--mute-2:#94a3b8;--line:#e2e8f0;--line-soft:#eef1f6;--primary:#0284c7;--primary-soft:#e0f2fe;--primary-border:#bae6fd;--up:#15803d;--up-soft:#dcfce7;--up-border:#86efac;--down:#b91c1c;--down-soft:#fee2e2;--down-border:#fca5a5;--violet:#6d28d9;--violet-soft:#ede9fe;--violet-border:#c4b5fd;--amber:#b45309;--amber-soft:#fef3c7;--amber-border:#fcd34d;--radius:10px;--shadow:0 1px 2px rgba(15,23,42,.04)}
@@ -53,6 +56,7 @@ tbody tr{cursor:pointer}
 .cpill-placement{background:var(--down-soft);color:var(--down);border-color:var(--down-border)}
 .cpill-rights{background:var(--violet-soft);color:var(--violet);border-color:var(--violet-border)}
 .cpill-increase{background:var(--up-soft);color:var(--up);border-color:var(--up-border)}
+.cpill-breakthrough{background:var(--amber-soft);color:var(--amber);border-color:var(--amber-border)}
 .cpill-other{background:var(--surface-soft);color:var(--mute);border-color:var(--line)}
 .foot{margin-top:24px;padding-top:14px;border-top:1px solid var(--line);text-align:center;color:var(--mute-2);font-size:11px}
 .mc-null{color:var(--mute-2);font-size:11px}
@@ -450,6 +454,10 @@ function sigType(lbl){
 }
 function fmtTime(s){if(!s)return'—';try{const d=new Date(s);if(isNaN(d))return String(s);const p=n=>n<10?'0'+n:''+n;return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes());}catch(e){return String(s);}}
 function fmtDate(s){if(!s)return'—';try{const d=new Date(s);if(isNaN(d))return String(s);const p=n=>n<10?'0'+n:''+n;return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate());}catch(e){return String(s);}}
+function shortLabel(lbl){
+  if(!lbl)return'';
+  return lbl.replace('IPO首日高突破','🚀高破').replace('IPO首日開突破','🚀開破').replace('半年POC','半POC').replace('3年POC','3yPOC').replace('12月POC','12mPOC');
+}
 
 // --- state ---
 let allStocks=[];
@@ -467,6 +475,7 @@ let signalMap=new Map();
 let priceMap=new Map();
 let hkexLinkMap=new Map();
 let techSignalMap=new Map();
+let breakthroughMap={};
 const CORP_CACHE_KEY='hk_corp_signal_cache_v2';
 // --- canonical stock list helpers ---
 function getStockCode(s){
@@ -771,6 +780,10 @@ function renderTable(){
     const corpCount=sig?[sig.pl,sig.ri,sig.inc].filter(Boolean).length:0;
     const totalSigCount=techCount+corpCount;
     const hasIPO=techSig.some(x=>x.label&&x.label.indexOf('IPO首日')>=0);
+    // Breakthrough pill
+    let btHtml='';
+    const bt=breakthroughMap[s.c];
+    if(bt){btHtml='<span class="cpill cpill-breakthrough">🚀上破'+(bt.type==='placement'?'配股':'供股')+'價 $'+bt.offer_price+'</span>';}
     const mergedSig=(techHtml||'')+(corpHtml?'<div class="cpillrow">'+corpHtml+'</div>':'');
     const sigDisplay=(btHtml||'')+mergedSig||'<span class="mc-null">—</span>';
 
@@ -832,7 +845,7 @@ function renderTable(){
       const body='<span class="'+cls+'">'+esc(ss.label)+dateStr+'</span>';
       return ss.link?'<a class="splink" href="'+esc(ss.link)+'" target="_blank" rel="noopener">'+body+'</a>':body;
     }).join(' ');
-    const sigPills=(techHtml||'')+(corpHtml?' '+corpHtml:'');
+    const sigPills=(btHtml||'')+(techHtml||'')+(corpHtml?' '+corpHtml:'');
     const techCount=techSig.length;
     const corpCount=sig?[sig.pl,sig.ri,sig.inc].filter(Boolean).length:0;
     const totalSigCount=techCount+corpCount;
@@ -1215,13 +1228,11 @@ function renderIPO(){
   techSignalMap.forEach((signals,code)=>{
     signals.forEach(function(s){
       if(!s.label)return;
-      if(s.label.indexOf('IPO首日高突破')>=0){
-        if(!stocks[code]) stocks[code]={code,stock:stockByCode.get(code),badges:[]};
-        stocks[code].badges.push('high');
-      }else if(s.label.indexOf('IPO首日開突破')>=0){
-        if(!stocks[code]) stocks[code]={code,stock:stockByCode.get(code),badges:[]};
-        stocks[code].badges.push('open');
-      }
+      const t=sigType(s.label);
+      if(t!=='ipo')return;
+      const isHigh=s.label.indexOf('高突破')>=0;
+      if(!stocks[code]) stocks[code]={code,stock:stockByCode.get(code),badges:[]};
+      stocks[code].badges.push(isHigh?'high':'open');
     });
   });
   const codes=Object.keys(stocks);
@@ -1352,34 +1363,39 @@ async function loadData(){
           saveCorpCache(cache);
 
           // Build signalMap from cache (fresh + historical within 9mo)
-          signalMap.clear();
-          priceMap.clear();
-          hkexLinkMap.clear();
-          techSignalMap.clear();
+          const newSignalMap = new Map();
+          const newPriceMap = new Map();
+          const newHkexLinkMap = new Map();
+          const newTechSignalMap = new Map();
           d.groups.forEach(g=>{
             const ct=g.corpTypes||{};
             const code=String(g.code||"").padStart(5,"0");
             if(!stockByCode.has(code)) return;
             const e=cache[code]||{};
-            signalMap.set(code,{
+            newSignalMap.set(code,{
               pl:!!ct.placement,ri:!!ct.rights,inc:!!ct.increase,              plDate:e.placement?.date||null,riDate:e.rights?.date||null,
               plCount:e.placement?.count||0,riCount:e.rights?.count||0,
               incCount:e.increase?.count||0,            });
             // New Maps
-            priceMap.set(code, g.latestPrice);
-            hkexLinkMap.set(code, g.hkexLink||'');
-            techSignalMap.set(code, g.signals||[]);
+            newPriceMap.set(code, g.latestPrice);
+            newHkexLinkMap.set(code, g.hkexLink||'');
+            newTechSignalMap.set(code, g.signals||[]);
           });
           // Also add cache-only codes not in fresh GAS response
           Object.keys(cache).forEach(code=>{
-            if(stockByCode.has(code)&&!signalMap.has(code)){
+            if(stockByCode.has(code)&&!newSignalMap.has(code)){
               const e=cache[code];
-              signalMap.set(code,{
+              newSignalMap.set(code,{
                 pl:!!e.placement,ri:!!e.rights,inc:!!e.increase,                plDate:e.placement?.date||null,riDate:e.rights?.date||null,
                 plCount:e.placement?.count||0,riCount:e.rights?.count||0,
                 incCount:e.increase?.count||0,              });
             }
           });
+          // Atomic swap
+          signalMap = newSignalMap;
+          priceMap = newPriceMap;
+          hkexLinkMap = newHkexLinkMap;
+          techSignalMap = newTechSignalMap;
           // Signal summary count
           const techCodes=new Set(d.groups.filter(g=>(g.signals||[]).length>0).map(g=>String(g.code||"").padStart(5,"0")));
         }
@@ -1396,12 +1412,7 @@ async function loadData(){
         // Load breakthrough data
         fetch('./data/breakthroughs.json?_='+Date.now())
           .then(r=>r.ok?r.json():null)
-          .then(bt=>{if(bt&&bt.breakthroughs){bt.breakthroughs.forEach(b=>{breakthroughMap[b.stock_code||b.code]=b;});}})
-        // Also load local announcements archive
-        fetch('./data/announcements.json?_='+Date.now())
-          .then(r=>r.ok?r.json():null)
-          .then(a=>{if(a&&a.length)renderRecent(a);})
-          .catch(()=>{});
+          .then(bt=>{if(bt&&bt.breakthroughs){bt.breakthroughs.forEach(b=>{breakthroughMap[b.stock_code||b.code]=b;});applyFilters();}})
         applyFilters();
         updateSortInfo();
       }).catch(()=>{});

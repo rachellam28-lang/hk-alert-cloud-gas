@@ -28,8 +28,9 @@ def send_telegram(
     text: str,
     chat_id: Optional[str] = None,
     parse_mode: str = "HTML",
+    max_retries: int = 3,
 ) -> bool:
-    """Send 一條 message。回傳 True 如果成功。"""
+    """Send 一條 message with retry on 429. 回傳 True 如果成功。"""
     token = os.getenv("TELEGRAM_TOKEN")
     if not token:
         logger.error("TELEGRAM_TOKEN missing — cannot send")
@@ -40,29 +41,32 @@ def send_telegram(
         logger.error("TELEGRAM_CHAT_ID missing")
         return False
 
-    try:
-        resp = requests.post(
-            TELEGRAM_API.format(token=token),
-            json={
-                "chat_id": chat_id,
-                "text": text,
-                "parse_mode": parse_mode,
-                "disable_web_page_preview": True,
-            },
-            timeout=15,
-        )
-        if resp.status_code == 200:
-            return True
-        if resp.status_code == 429:
-            retry_after = resp.json().get("parameters", {}).get("retry_after", 30)
-            logger.warning("Telegram 429, sleeping %ds", retry_after)
-            time.sleep(retry_after + 1)
+    for attempt in range(max_retries):
+        try:
+            resp = requests.post(
+                TELEGRAM_API.format(token=token),
+                json={
+                    "chat_id": chat_id,
+                    "text": text,
+                    "parse_mode": parse_mode,
+                    "disable_web_page_preview": True,
+                },
+                timeout=15,
+            )
+            if resp.status_code == 200:
+                return True
+            if resp.status_code == 429:
+                retry_after = resp.json().get("parameters", {}).get("retry_after", 30)
+                logger.warning("Telegram 429, sleeping %ds (attempt %d/%d)", retry_after, attempt + 1, max_retries)
+                time.sleep(retry_after + 1)
+                continue
+            logger.error("Telegram %d: %s", resp.status_code, resp.text[:200])
             return False
-        logger.error("Telegram %d: %s", resp.status_code, resp.text[:200])
-        return False
-    except requests.RequestException as e:
-        logger.error("Telegram send failed: %s", e)
-        return False
+        except requests.RequestException as e:
+            logger.error("Telegram send failed (attempt %d/%d): %s", attempt + 1, max_retries, e)
+            if attempt < max_retries - 1:
+                time.sleep(2 * (attempt + 1))  # exponential backoff
+    return False
 
 
 def detect_alerts(

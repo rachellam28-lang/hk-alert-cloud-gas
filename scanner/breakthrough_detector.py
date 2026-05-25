@@ -130,9 +130,14 @@ def check_breakthrough(stock_code: str) -> dict[str, Any] | None:
     entries = cache[stock_code]
     today = today_hkt()
 
+    # Skip weekends/holidays — no real-time price to check
+    if today.weekday() >= 5:
+        return None
+
     # Get current price from Yahoo Finance
     try:
-        symbol = f"{stock_code[-4:]}.HK"
+        n = int(stock_code)
+        symbol = f"{n:04d}.HK" if n < 10000 else f"{stock_code}.HK"
         ticker = yf.Ticker(symbol)
         hist = ticker.history(period="5d")
         if hist.empty:

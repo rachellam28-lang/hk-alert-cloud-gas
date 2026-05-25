@@ -150,23 +150,29 @@ def update_ccass_json(target_date: date) -> None:
         WHERE cd.trade_date = ?
     """, (target_date.strftime("%Y-%m-%d"),)).fetchall()
     
-    # Get trends for this date
+    # Get trends for this date (with streak)
     trends = {}
     for row in db.execute("""
-        SELECT stock_code, delta_5d_pct, delta_20d_pct, delta_60d_pct, delta_120d_pct
+        SELECT stock_code, delta_5d_pct, delta_20d_pct, delta_60d_pct, delta_120d_pct,
+               consecutive_increase_days, consecutive_decrease_days
         FROM ccass_trends
         WHERE trade_date = ?
     """, (target_date.strftime("%Y-%m-%d"),)).fetchall():
         trends[row[0]] = {
-            'd5': row[1], 'd20': row[2], 'd60': row[3], 'd120': row[4]
+            'd5': row[1], 'd20': row[2], 'd60': row[3], 'd120': row[4],
+            'su': row[5] or 0, 'sd': row[6] or 0
         }
     
-    # Market cap
+    # Market cap — try dated first, fallback to legacy
     mc_map = {}
     try:
         import json as _json
-        mc_path = PROJECT_ROOT / "cache" / "market_caps.json"
-        if mc_path.exists():
+        # Try dated cache: market_caps_YYYY-MM-DD.json
+        dated_path = PROJECT_ROOT / "cache" / f"market_caps_{target_date.strftime('%Y-%m-%d')}.json"
+        legacy_path = PROJECT_ROOT / "cache" / "market_caps.json"
+        
+        mc_path = dated_path if dated_path.exists() else (legacy_path if legacy_path.exists() else None)
+        if mc_path and mc_path.exists():
             mc_data = _json.loads(mc_path.read_text(encoding='utf-8'))
             for item in mc_data:
                 mc_map[item.get('stock_code', '')] = item.get('market_cap')
@@ -176,34 +182,52 @@ def update_ccass_json(target_date: date) -> None:
     stocks = []
     for row in rows:
         sc = row[0]
-        tp = row[1] or 0
+        tp = round(row[1] or 0, 2)
         np_val = row[2] or 0
-        t5 = row[3] or 0
-        t10 = row[4] or 0
-        
+        t5 = round(row[3] or 0, 2)
+        t10 = round(row[4] or 0, 2)
+
         tr = trends.get(sc, {})
         mc = mc_map.get(sc)
-        
+
         stocks.append({
             'c': sc,
             'n': names.get(sc, sc),
             'tp': tp,
             't5': t5,
             't10': t10,
-            'd5': tr.get('d5'),
-            'd20': tr.get('d20'),
-            'd60': tr.get('d60'),
-            'd120': tr.get('d120'),
-            'su': 0,
-            'sd': 0,
+            'd5': round(tr.get('d5'), 2) if tr.get('d5') is not None else None,
+            'd20': round(tr.get('d20'), 2) if tr.get('d20') is not None else None,
+            'd60': round(tr.get('d60'), 2) if tr.get('d60') is not None else None,
+            'd120': round(tr.get('d120'), 2) if tr.get('d120') is not None else None,
+            'su': tr.get('su', 0),
+            'sd': tr.get('sd', 0),
             'np': np_val,
             'mc': mc,
         })
-    
+
+    total_participants = sum(s['np'] for s in stocks)
+
+    # Top increase / decrease (by 5-day delta)
+    sorted_up = sorted([s for s in stocks if s['d5'] is not None and s['d5'] > 0],
+                       key=lambda s: -s['d5'])[:5]
+    sorted_dn = sorted([s for s in stocks if s['d5'] is not None and s['d5'] < 0],
+                       key=lambda s: s['d5'])[:5]
+    top_increase = [{'c': s['c'], 'n': s['n'], 'd5': s['d5']} for s in sorted_up]
+    top_decrease = [{'c': s['c'], 'n': s['n'], 'd5': s['d5']} for s in sorted_dn]
+
+    # First date in DB
+    first_row = db.execute("SELECT MIN(trade_date) FROM ccass_daily").fetchone()
+    first_date = first_row[0] if first_row and first_row[0] else target_date.strftime("%Y-%m-%d")
+
     out = {
         "updated": datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC"),
         "stock_count": len(stocks),
         "stocks": stocks,
+        "top_increase": top_increase,
+        "top_decrease": top_decrease,
+        "first_date": first_date,
+        "total_participants": total_participants,
     }
     path = PROJECT_ROOT.parent / "ccass.json"
     path.write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
