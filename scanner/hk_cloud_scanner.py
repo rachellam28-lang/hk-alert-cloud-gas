@@ -861,6 +861,18 @@ def run_corp_actions() -> None:
         f"corp filter: kept={len(anns)} skipped_old={skipped_old} "
         f"skipped_unknown_date={skipped_unknown} today_hkt={today_hkt}"
     )
+
+    # Always export breakthroughs.json for dashboard (even if no new announcements)
+    try:
+        import sys, os
+        _proj = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        if _proj not in sys.path:
+            sys.path.insert(0, _proj)
+        from scanner.breakthrough_detector import export_breakthroughs_json
+        export_breakthroughs_json()
+    except Exception as exc:
+        print(f"[breakthrough] export failed: {exc}")
+
     if not anns:
         send_telegram_message(f"披露易掃描完成，無 {today_hkt} 當日相關公告。")
         return

@@ -36,11 +36,11 @@ jobs:
           GAS_WEBHOOK_URL: ${{ secrets.GAS_WEBHOOK_URL }}
           GAS_SECRET: ${{ secrets.GAS_SECRET }}
         run: python -u scanner/hk_cloud_scanner.py corp
-      - name: Commit placing_history.json
+      - name: Commit placing_history.json + breakthroughs
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add placing_history.json
-          git diff --cached --quiet && { echo "placing_history.json unchanged"; exit 0; }
+          git add placing_history.json data/breakthroughs.json
+          git diff --cached --quiet && { echo "no changes"; exit 0; }
           git commit -m "chore: update placing history [skip ci]"
           git pull --rebase origin main && git push origin HEAD:main || echo "push failed, will retry next run"
