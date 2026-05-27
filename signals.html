@@ -1,0 +1,501 @@
+     1|<!doctype html>
+     2|<html lang="zh-HK"><head>
+     3|<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+     4|<title>港股訊號儀表板</title>
+     5|<style>
+     6|:root{--bg:#f5f7fa;--surface:#fff;--surface-soft:#f8fafc;--text:#0f172a;--text-soft:#334155;--mute:#64748b;--mute-2:#94a3b8;--line:#e2e8f0;--line-soft:#eef1f6;--primary:#0284c7;--primary-soft:#e0f2fe;--primary-border:#bae6fd;--up:#15803d;--up-soft:#dcfce7;--up-border:#86efac;--down:#b91c1c;--down-soft:#fee2e2;--down-border:#fca5a5;--violet:#6d28d9;--violet-soft:#ede9fe;--violet-border:#c4b5fd;--amber:#b45309;--amber-soft:#fef3c7;--amber-border:#fcd34d;--radius:10px;--shadow:0 1px 2px rgba(15,23,42,.04)}
+     7|*{box-sizing:border-box}html,body{margin:0;padding:0}
+     8|body{background:var(--bg);color:var(--text);font:14px/1.55 Inter,system-ui,"PingFang TC","Noto Sans TC",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+     9|a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
+    10|.topbar{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.88);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+    11|.topbar-inner{max-width:1440px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+    12|.brand{display:flex;align-items:center;gap:10px}
+    13|.logo{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#0284c7,#0ea5e9);display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+    14|.brand-title{font-size:14px;font-weight:600}.brand-sub{font-size:10px;color:var(--mute);text-transform:uppercase;letter-spacing:.16em}
+    15|.topright{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--mute)}
+    16|.dot{width:7px;height:7px;border-radius:999px;background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.18)}
+    17|.dot.loading{background:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.18)}
+    18|.dot.error{background:#ef4444;box-shadow:0 0 0 3px rgba(239,68,68,.18)}
+    19|.refresh-tag{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:11px;color:var(--text-soft)}
+    20|.wrap{max-width:1440px;margin:0 auto;padding:18px 20px 36px}
+    21|.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:20px 0 10px}
+    22|.section-head h2{margin:0;display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.16em}
+    23|.ico{display:inline-flex;width:18px;height:18px;border-radius:6px;background:var(--primary-soft);color:var(--primary);align-items:center;justify-content:center}
+    24|.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+    25|.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line)}
+    26|.tlabel{font-size:13px;font-weight:600}
+    27|.summary{display:flex;flex-wrap:wrap;gap:6px}
+    28|.cnt{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--mute);padding:3px 8px;border-radius:999px;border:1px solid var(--line);background:var(--surface-soft)}
+    29|.cnt b{font-weight:600;font-variant-numeric:tabular-nums}
+    30|.cnt.placement{border-color:var(--down-border);background:var(--down-soft);color:var(--down)}.cnt.placement b{color:var(--down)}
+    31|.cnt.increase{border-color:var(--up-border);background:var(--up-soft);color:var(--up)}.cnt.increase b{color:var(--up)}
+    32|.cnt.rights{border-color:var(--violet-border);background:var(--violet-soft);color:var(--violet)}.cnt.rights b{color:var(--violet)}
+    33|.spacer{flex:1}
+    34|.tabs{display:inline-flex;gap:2px;padding:3px;background:#eef2f7;border-radius:8px}
+    35|.tab{appearance:none;background:transparent;border:0;color:var(--text-soft);padding:5px 12px;border-radius:6px;font:500 12px inherit;cursor:pointer;transition:background .15s}
+    36|.tab:hover{color:var(--text)}.tab.active{background:var(--surface);color:var(--text);box-shadow:0 1px 2px rgba(15,23,42,.06);font-weight:600}
+    37|.search{display:inline-flex;gap:8px;align-items:center;flex-wrap:wrap}
+    38|.input{background:var(--surface);border:1px solid var(--line);color:var(--text);padding:6px 10px;border-radius:8px;font:400 12.5px inherit;outline:none}
+    39|.input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(2,132,199,.15)}
+    40|.input.search-in{min-width:200px}
+    41|.btn-ghost{appearance:none;background:transparent;border:1px solid var(--line);color:var(--text-soft);padding:5px 10px;border-radius:8px;font:500 12px inherit;cursor:pointer}
+    42|.btn-ghost:hover{background:var(--surface-soft)}
+    43|table{width:100%;border-collapse:collapse;table-layout:auto}
+    44|thead th{background:var(--surface-soft);color:var(--mute);font-size:10px;text-align:left;padding:9px 14px;text-transform:uppercase;letter-spacing:.14em;font-weight:600;border-bottom:1px solid var(--line);white-space:nowrap}
+    45|tbody td{padding:10px 14px;border-bottom:1px solid var(--line-soft);vertical-align:middle}
+    46|tbody tr:last-child td{border-bottom:none}tbody tr:hover{background:var(--surface-soft)}
+    47|th.sortable{cursor:pointer;user-select:none}th.sortable:hover{color:var(--text);background:var(--primary-soft)}
+    48|th.sort-active{color:var(--primary)}.sort-icon{margin-left:4px;font-size:9px}
+    49|.cell-code{min-width:110px}.code{font:600 13px "JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+    50|.name{font-size:12px;color:var(--mute);margin-top:2px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    51|.cell-price{width:90px;white-space:nowrap}.pv{font:600 13px "JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+    52|.cell-pills{min-width:200px}
+    53|.spill{display:inline-flex;align-items:center;gap:4px;background:var(--primary-soft);color:#075985;border:1px solid var(--primary-border);font-size:11px;font-weight:600;padding:2px 9px;border-radius:999px;margin:1px 3px 1px 0;line-height:1.5;white-space:nowrap}
+    54|.spill-poc{background:var(--violet-soft);color:var(--violet);border-color:var(--violet-border)}
+    55|.spill-fvg{background:var(--up-soft);color:var(--up);border-color:var(--up-border)}
+    56|.spill-yearopen{background:var(--amber-soft);color:var(--amber);border-color:var(--amber-border)}
+    57|.spill-ipo{background:linear-gradient(135deg,var(--amber-soft),#fff7ed);color:#b45309;border-color:#fcd34d}
+    58|.spill-date{font-size:10px;font-weight:500;opacity:.7;font-variant-numeric:tabular-nums}
+    59|.splink{text-decoration:none}
+    60|.cpillrow{margin-top:4px;display:flex;flex-wrap:wrap;gap:3px}
+    61|.cpill{display:inline-flex;align-items:center;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:999px;line-height:1.5;border:1px solid transparent}
+    62|.cpill em{font-style:normal;font-weight:600;margin-left:3px;opacity:.85}
+    63|.cpill-placement{background:var(--down-soft);color:var(--down);border-color:var(--down-border)}
+    64|.cpill-increase{background:var(--up-soft);color:var(--up);border-color:var(--up-border)}
+    65|.cpill-rights{background:var(--violet-soft);color:var(--violet);border-color:var(--violet-border)}
+    66|.cpill-other{background:var(--surface-soft);color:var(--mute);border-color:var(--line)}
+    67|.urow.ipo-highlight{background:linear-gradient(90deg,var(--amber-soft),transparent 50%)!important;border-left:3px solid var(--amber)}
+    68|.cplink{text-decoration:none}
+    69|.cell-time{color:var(--mute);font:500 12px "JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
+    70|.cell-link{font-size:12px;white-space:nowrap}
+    71|.lnk{display:inline-flex;padding:3px 8px;border-radius:6px;border:1px solid var(--line);background:var(--surface);font:600 10px inherit;color:var(--text-soft);text-decoration:none}
+    72|.lnk:hover{border-color:var(--violet-border);background:var(--violet-soft);color:var(--violet);text-decoration:none}
+    73|.muted{color:var(--mute-2)}
+    74|.empty{text-align:center;color:var(--mute);padding:40px 16px;font-size:13px}
+    75|.recent-card{padding:2px 0}
+    76|.ra-list{list-style:none;margin:0;padding:4px 10px;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:0}
+    77|.ra-item{display:flex;align-items:center;gap:7px;padding:4px 4px;font-size:11.5px;border-bottom:1px solid var(--line-soft);min-width:0}
+    78|.ra-item:last-child{border-bottom:none}.ra-label{flex:0 0 auto}
+    79|.ra-date{flex:0 0 auto;font:600 11px "JetBrains Mono",ui-monospace,monospace;color:var(--text-soft);min-width:44px}
+    80|.ra-stk{flex:1 1 auto;display:flex;align-items:baseline;gap:5px;min-width:0;overflow:hidden}
+    81|.ra-code{font:600 11.5px "JetBrains Mono",ui-monospace,monospace}.ra-name{color:var(--mute);font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    82|.ra-link{flex:0 0 auto;display:inline-flex;padding:2px 6px;border-radius:5px;border:1px solid var(--violet-border);background:var(--violet-soft);color:var(--violet);font:600 9px inherit;text-decoration:none}
+    83|.foot{margin-top:24px;padding-top:14px;border-top:1px solid var(--line);text-align:center;color:var(--mute-2);font-size:11px}
+    84|.btn-save{appearance:none;background:transparent;border:none;cursor:pointer;font-size:14px;line-height:1;padding:2px 4px;color:var(--mute-2);transition:color .15s}
+    85|.btn-save:hover{color:#f59e0b}.btn-save.saved{color:#f59e0b}
+    86|.th-filter{appearance:none;-webkit-appearance:none;background:var(--surface-soft);border:1px solid var(--line);color:var(--text-soft);font:500 10px/1.4 inherit;padding:2px 18px 2px 6px;border-radius:4px;cursor:pointer;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='5'><path d='M0 0L8 0L4 5Z' fill='%2364748b'/></svg>");background-repeat:no-repeat;background-position:right 4px center;margin-left:4px;vertical-align:middle}
+    87|.th-filter:focus{outline:none;border-color:var(--primary)}
+    88|.section-toggle{appearance:none;background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:8px;padding:0;width:100%;text-align:left}
+    89|.section-toggle h2{margin:0;display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.16em}
+    90|.toggle-arrow{font-size:10px;color:var(--mute-2);transition:transform .2s;margin-left:4px}
+    91|.section-toggle.collapsed .toggle-arrow{transform:rotate(-90deg)}
+    92|.section-body{overflow:hidden;transition:height .2s ease}
+    93|.loading-msg{text-align:center;padding:60px 20px;color:var(--mute);font-size:14px}
+    94|@media(max-width:720px){.cell-price,thead th:nth-child(2){display:none}.cell-time,thead th:nth-child(4){display:none}.tabs{overflow-x:auto}.input.search-in{min-width:130px}}
+    95|@media(max-width:640px){.brand>a{font-size:11px!important;padding:2px 6px!important;margin-left:3px!important}}@media(max-width:520px){.ra-list{grid-template-columns:1fr}.topbar-inner{padding:6px 10px;gap:8px}.brand{gap:6px;flex-shrink:0}.brand>a{font-size:10px!important;padding:1px 5px!important;margin-left:2px!important}.logo{display:none}.brand-title{font-size:12px;white-space:nowrap}.brand-sub{display:none}.topright{gap:3px;font-size:10px}.refresh-tag{display:none}.topright span:last-child{font-size:9px;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}@media(max-width:400px){.topbar-inner{padding:4px 6px;gap:4px}.brand-title{font-size:11px}.brand>a{font-size:9px!important;padding:1px 4px!important}.topright span:last-child{font-size:8px;max-width:70px}}
+    96|@media(prefers-color-scheme:dark){:root{--bg:#0f172a;--surface:#1e293b;--surface-soft:#162032;--text:#f1f5f9;--text-soft:#cbd5e1;--mute:#64748b;--mute-2:#475569;--line:#334155;--line-soft:#1e293b;--primary:#38bdf8;--primary-soft:#0c2d44;--primary-border:#0369a1;--up:#4ade80;--up-soft:#052e16;--up-border:#166534;--down:#f87171;--down-soft:#2d0a0a;--down-border:#991b1b;--violet:#a78bfa;--violet-soft:#1e1040;--violet-border:#5b21b6;--amber:#fbbf24;--amber-soft:#1c0f00;--amber-border:#92400e}.topbar{background:rgba(15,23,42,.92)}.tabs{background:#1e293b}.tab.active{background:#0f172a}}
+    97|.ipo-card{margin-bottom:10px;background:var(--surface);border:1px solid var(--amber-border);border-radius:var(--radius);overflow:hidden}.ipo-head{display:flex;align-items:center;justify-content:space-between;padding:5px 14px 3px;font-size:11px;font-weight:700;color:var(--amber)}.ipo-count{font-size:10px;font-weight:600;color:var(--mute);background:var(--amber-soft);padding:1px 8px;border-radius:10px;border:1px solid var(--amber-border)}.ipo-tbl{width:100%;border-collapse:collapse;font-size:12px}.ipo-tbl th{text-align:left;padding:2px 10px;font-size:10px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.1em;border-top:1px solid var(--amber-border);background:rgba(251,191,36,.04)}.ipo-tbl td{padding:2px 10px;border-bottom:1px solid var(--line-soft)}.ipo-tbl tr:last-child td{border-bottom:none}.ipo-tbl a{color:var(--text);text-decoration:none;font-weight:600}.ipo-tbl a:hover{color:var(--amber)}.ipo-tbl .name{color:var(--text-soft);font-size:11px}.badge{display:inline-block;font-size:10px;font-weight:600;padding:1px 8px;border-radius:4px;line-height:1.5}.badge-high{background:var(--amber-soft);color:var(--amber);border:1px solid var(--amber-border)}.badge-open{background:var(--primary-soft);color:var(--primary);border:1px solid var(--primary-border)}
+    98|.mbar{display:flex;gap:12px;flex-wrap:wrap;padding:8px 0 12px;margin-bottom:4px}
+    99|.mchip{display:flex;flex-direction:column;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 16px;min-width:110px;flex:1;gap:3px}
+   100|.mchip-label{font-size:10px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.12em}
+   101|.mchip-val{font-size:17px;font-weight:700;color:var(--text);text-align:center}
+   102|.mchip-val.stale{color:var(--mute)}
+   103|.mchip-sub{font-size:9px;margin-top:1px;display:flex;align-items:center;gap:4px}
+   104|.mchip-avg{color:var(--mute)}
+   105|.ev-green{background:var(--up-soft);color:var(--up);border:1px solid var(--up-border);border-radius:4px;padding:1px 5px;font-weight:600}
+   106|.ev-neutral{background:var(--surface-soft);color:var(--mute);border:1px solid var(--line);border-radius:4px;padding:1px 5px;font-weight:600}
+   107|.ev-orange{background:var(--amber-soft);color:var(--amber);border:1px solid var(--amber-border);border-radius:4px;padding:1px 5px;font-weight:600}
+   108|.ev-red{background:var(--down-soft);color:var(--down);border:1px solid var(--down-border);border-radius:4px;padding:1px 5px;font-weight:600}
+   109|@media(max-width:520px){.mbar{display:flex;flex-wrap:nowrap;gap:4px}.mchip{padding:4px 3px;min-width:0;flex:1;gap:1px}.mchip-val{font-size:11px}.mchip-label{font-size:8px;letter-spacing:.06em}.mchip-sub{font-size:7px;gap:2px}}@media(max-width:400px){.mbar{gap:2px}.mchip{padding:2px 1px}.mchip-val{font-size:9px}.mchip-label{font-size:7px}.mchip-sub{font-size:6px}}
+   110|.breadth-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:10px 14px;margin-bottom:12px}
+   111|.breadth-head{font-size:10px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.14em;margin-bottom:8px}
+   112|.breadth-row{display:flex;align-items:center;gap:10px;margin-bottom:6px}.breadth-row:last-child{margin-bottom:0}
+   113|.breadth-lbl{font-size:11px;font-weight:600;color:var(--text-soft);width:28px;flex-shrink:0}
+   114|.breadth-bar{flex:1;height:12px;border-radius:6px;overflow:hidden;display:flex;background:var(--surface-soft)}
+   115|.bs-h{background:#16a34a}.bs-m{background:#94a3b8}.bs-l{background:#dc2626}
+   116|.breadth-stats{font-size:10px;white-space:nowrap;display:flex;gap:5px}
+   117|.bs-hi{color:#16a34a;font-weight:600}.bs-lo{color:#dc2626;font-weight:600}.bs-n{color:var(--mute-2)}
+   118|</style>
+   119|</head><body>
+   120|<header class="topbar"><div class="topbar-inner">
+   121|  <div class="brand">
+   122|    <div class="logo"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg></div>
+   123|    <div><div class="brand-title">港股訊號儀表板</div><div class="brand-sub">港股訊號 · HKEX</div></div>
+   124|    <a style="font-size:12px;color:#dc2626;margin-left:6px;padding:3px 9px;border:1px solid #dc2626;border-radius:6px;white-space:nowrap;font-weight:600" href="./us.html">🇺🇸 美股版 →</a>
+   125|    <a style="font-size:12px;color:#b45309;margin-left:4px;padding:3px 9px;border:1px solid #fcd34d;border-radius:6px;white-space:nowrap;font-weight:600" href="./watchlist.html">⭐ 自選 →</a>
+   126|    <a style="font-size:12px;color:#6d28d9;margin-left:4px;padding:3px 9px;border:1px solid #c4b5fd;border-radius:6px;white-space:nowrap;font-weight:600" href="./history.html">🕐 歷史 →</a>
+   127|    <a style="font-size:12px;color:#0284c7;margin-left:4px;padding:3px 9px;border:1px solid #86efac;border-radius:6px;white-space:nowrap;font-weight:600" href="./index.html">📦 CCASS →</a>
+   128|  </div>
+   129|  <div class="topright">
+   130|    <span class="dot loading" id="statusDot"></span>
+   131|    <span id="updatedAt">載入中…</span>
+   132|    <span class="refresh-tag">自動更新 10分鐘</span>
+   133|  </div>
+   134|</div></header>
+   135|
+   136|<main class="wrap">
+   137|  <div class="mbar" id="mbar"></div>
+   138|  <div class="breadth-card" id="breadthCard" style="display:none"><div class="breadth-head">市場寬度 · 52周高低位分布</div><div id="breadthRows"></div></div>
+   139|
+   140|  <div id="ipoCard" class="ipo-card" style="display:none">
+   141|    <div class="ipo-head"><span>🚀 IPO 首日突破</span><span class="ipo-count" id="ipoCount"></span></div>
+   142|    <table class="ipo-tbl">
+   143|      <thead><tr><th>代碼</th><th>類型</th></tr></thead>
+   144|      <tbody id="ipoBody"></tbody>
+   145|    </table>
+   146|  </div>
+   147|
+   148|  <div class="section-head">
+   149|    <button class="section-toggle" onclick="toggleSection('signals',this)" id="toggle-signals">
+   150|      <h2><span class="ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>訊號彙總</h2>
+   151|      <span class="toggle-arrow">▼</span>
+   152|    </button>
+   153|  </div>
+   154|  <div class="section-body" id="body-signals">
+   155|  <section class="card">
+   156|    <div class="toolbar">
+   157|      <div class="tlabel">代號彙總</div>
+   158|      <div class="summary" id="summary"></div>
+   159|      <div class="spacer"></div>
+   160|      <div class="search">
+   161|        <input id="tq" class="input search-in" type="search" placeholder="搜尋代號 / 名稱…" autocomplete="off">
+   162|        <button class="btn-ghost" id="tclear">清除</button>
+   163|      </div>
+   164|    </div>
+   165|    <div id="tableWrap">
+   166|      <div class="loading-msg">載入數據中…</div>
+   167|    </div>
+   168|  </section>
+   169|  </div>
+   170|
+   171| 
+   172|
+   173|  <div class="section-head">
+   174|    <button class="section-toggle" onclick="toggleSection('corps',this)" id="toggle-corps">
+   175|      <h2><span class="ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-8-8 18-2-8-8-2z"/></svg></span>最近公告</h2>
+   176|      <span class="toggle-arrow">▼</span>
+   177|    </button>
+   178|  </div>
+   179|  <div class="section-body" id="body-corps">
+   180|  <section class="card recent-card" id="recentWrap"><div class="loading-msg">載入中…</div></section>
+   181|  </div>
+   182|
+   183|  <div class="foot">港股訊號雲 · GitHub Pages · 真實數據</div>
+   184|</main>
+   185|
+   186|<script>
+   187|const GAS_URL = 'https://script.google.com/macros/s/AKfycbxov_zEI5TvIp0Xg4ie937Rci_PEfFrUEyk7YH8RKVPz07i0RNS0fqkythLn-iErjVqZA/exec';
+   188|const REFRESH_MS = 600000;
+   189|const CORP_CACHE_KEY='hk_corp_signal_cache_v2';
+   190|
+   191|function extractDateFromLink(link){
+   192|  if(!link) return null;
+   193|  const m=link.match(/\/(\d{4})\/(\d{2})(\d{2})\//);
+   194|  return m ? m[1]+'-'+m[2]+'-'+m[3] : null;
+   195|}
+   196|function loadCorpCache(){
+   197|  try{return JSON.parse(localStorage.getItem(CORP_CACHE_KEY)||'{}');}catch{return {};}
+   198|}
+   199|function saveCorpCache(c){localStorage.setItem(CORP_CACHE_KEY,JSON.stringify(c));}
+   200|function pruneCorpCache(){
+   201|  const cache=loadCorpCache();
+   202|  const cut=new Date(); cut.setMonth(cut.getMonth()-9);
+   203|  let ch=false;
+   204|  Object.keys(cache).forEach(code=>{
+   205|    Object.keys(cache[code]).forEach(t=>{
+   206|      if(cache[code][t].date && new Date(cache[code][t].date)<cut){delete cache[code][t];ch=true;}
+   207|    });
+   208|    if(Object.keys(cache[code]).length===0){delete cache[code];ch=true;}
+   209|  });
+   210|  if(ch) saveCorpCache(cache);
+   211|  return cache;
+   212|}
+   213|
+   214|function toggleSection(id, btn) {
+   215|  const body = document.getElementById('body-' + id);
+   216|  const key = 'sec_collapsed_' + id;
+   217|  const collapsed = body.style.display === 'none';
+   218|  body.style.display = collapsed ? '' : 'none';
+   219|  btn.classList.toggle('collapsed', !collapsed);
+   220|  try { localStorage.setItem(key, collapsed ? '0' : '1'); } catch(e) {}
+   221|}
+   222|(function initSections() {
+   223|  ['signals','corps'].forEach(function(id) {
+   224|    try {
+   225|      if (localStorage.getItem('sec_collapsed_' + id) === '1') {
+   226|        const body = document.getElementById('body-' + id);
+   227|        const btn = document.getElementById('toggle-' + id);
+   228|        if (body) body.style.display = 'none';
+   229|        if (btn) btn.classList.add('collapsed');
+   230|      }
+   231|    } catch(e) {}
+   232|  });
+   233|})();
+   234|
+   235|function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]); }
+   236|function fmtTime(s){ if(!s)return'—'; try{ const d=new Date(s);if(isNaN(d))return String(s);const p=n=>n<10?'0'+n:''+n;return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes()); }catch(e){return String(s);} }
+   237|function fmtDate(s){ if(!s)return'—'; try{ const d=new Date(s);if(isNaN(d))return String(s);const p=n=>n<10?'0'+n:''+n;return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate()); }catch(e){return String(s);} }
+   238|
+   239|const CORP_LABELS = {placement:'配股',increase:'增持',rights:'供股',other:'公告'};
+   240|function corpLabel(t){ return CORP_LABELS[t]||'公告'; }
+   241|
+   242|function renderRow(g, wl){
+   243|  const codeStr = g.code||'';
+   244|  const lastTime = fmtTime(g.latestRaw);
+   245|  const lastDate = fmtDate(g.latestRaw);
+   246|  const price = g.latestPrice;
+   247|  const priceHtml = price ? `<span class="pv">${esc((price<1?price.toFixed(3):price.toFixed(2)))}</span>` : '<span class="muted">—</span>';
+   248|
+   249|  function sigType(lbl){
+   250|    if(lbl.indexOf('POC')>=0)return'poc';if(lbl.indexOf('FVG')>=0)return'fvg';
+   251|    if(lbl.indexOf('年開')>=0)return'yearopen';if(lbl.indexOf('IPO')>=0)return'ipo';
+   252|    return'';
+   253|  }
+   254|  const sigPills = (g.signals||[]).slice(0,4).map(s=>{
+   255|    const dateStr = s.date ? '<span class="spill-date">'+fmtDate(s.date).slice(5)+'</span>' : '';
+   256|    const t=sigType(s.label),cls='spill'+(t?' spill-'+t:'');
+   257|    const body=`<span class="${cls}">${esc(s.label)}${dateStr}</span>`;
+   258|    return s.link?`<a class="splink" href="${esc(s.link)}" target="_blank" rel="noopener">${body}</a>`:body;
+   259|  }).join(' ');
+   260|
+   261|  const corpOrder=['placement','increase','rights','other'];
+   262|  const corpPills = corpOrder.filter(t=>g.corpTypes&&g.corpTypes[t]).map(t=>{
+   263|    const c=g.corpTypes[t];
+   264|    const date=extractDateFromLink(c.link);
+   265|    const body=`<span class="cpill cpill-${t}">${corpLabel(t)}${c.count>1?` <em>×${c.count}</em>`:''}${date?` <em>${date.slice(5)}</em>`:''}</span>`;
+   266|    return c.link?`<a class="cplink" href="${esc(c.link)}" target="_blank" rel="noopener">${body}</a>`:body;
+   267|  }).join(' ');
+   268|
+   269|  const firstSig = (g.signals&&g.signals[0])?g.signals[0].label:(corpOrder.find(t=>g.corpTypes&&g.corpTypes[t])?corpLabel(corpOrder.find(t=>g.corpTypes&&g.corpTypes[t])):'');
+   270|  const hasCorp = g.corpCount>0?'1':'0';
+   271|  const hasTech = g.techCount>0?'1':'0';
+   272|  const rowCount = (g.techCount||0)+(g.corpCount||0);
+   273|  const hkexLnk = g.hkexLink?`<a class="lnk" href="${esc(g.hkexLink)}" target="_blank" rel="noopener" title="HKEX 披露易">HKEX</a>`:'';
+   274|  const saved = wl&&wl.has(codeStr);
+   275|  const saveBtn = `<button class="btn-save${saved?' saved':''}" data-code="${esc(codeStr)}" data-name="${esc(g.name||'')}" data-signal="${esc(firstSig)}" data-date="${esc(lastDate)}" title="加入自選">${saved?'★':'☆'}</button>`;
+   276|
+   277|  const ipoBreak = (g.signals||[]).some(s=>s.label&&s.label.indexOf('IPO首日')>=0);
+   278|  return `<tr class="urow${ipoBreak?' ipo-highlight':''}" data-code="${esc(codeStr)}" data-name="${esc(g.name||'')}" data-date="${esc(lastDate)}" data-corp="${hasCorp}" data-tech="${hasTech}" data-price="${price||0}" data-signal="${esc(firstSig)}">
+   279|<td class="cell-code"><div class="code">${esc(codeStr)}</div>${g.name?`<div class="name">${esc(g.name)}</div>`:''}</td>
+   280|<td class="cell-price">${priceHtml}</td>
+   281|<td class="cell-pills">${sigPills||'<span class="muted">—</span>'}${corpPills?`<div class="cpillrow">${corpPills}</div>`:''}</td>
+   282|<td class="cell-time">${esc(lastTime)}</td>
+   283|<td class="cell-link">${saveBtn}${hkexLnk}</td>
+   284|</tr>`;
+   285|}
+   286|
+   287|function renderTable(groups){
+   288|  const _wl=new Set((()=>{try{return JSON.parse(localStorage.getItem('hk_watchlist_v1')||'[]').map(x=>x.code);}catch{return [];}})());
+   289|  const html = groups.length
+   290|    ? groups.map(g=>renderRow(g,_wl)).join('')
+   291|    : '<tr><td colspan="5" class="empty">暫無代號數據</td></tr>';
+   292|  document.getElementById('tableWrap').innerHTML =
+   293|    `<div style="overflow-x:auto;-webkit-overflow-scrolling:touch"><table><thead><tr>
+   294|<th class="sortable" data-sort="code">代號 / 名稱<span class="sort-icon"></span></th>
+   295|<th class="sortable" data-sort="price">價格<span class="sort-icon"></span></th>
+   296|<th class="sortable" data-sort="signal">信號 / 公告<select id="sigFilter" class="th-filter" onclick="event.stopPropagation()" onchange="ftype=this.value;applyFilter()"><option value="all">全部</option><option value="ipo_high">🚀 IPO首日高突破</option><option value="ipo_open">🚀 IPO首日開突破</option><option value="poc3">半年+12月+3年POC</option><option value="poc_half">半年POC</option><option value="yearopen">年開突破</option><option value="fvg">FVG</option><option value="ccass_up">CCASS增持</option><option value="ccass_dn">CCASS減持</option><option value="placement">配股</option><option value="increase">增持</option><option value="rights">供股</option></select><span class="sort-icon"></span></th>
+   297|<th class="sortable sort-active sort-desc" data-sort="date">最後出現<span class="sort-icon">▼</span></th>
+   298|<th>連結</th>
+   299|</tr></thead><tbody id="urows">${html}</tbody></table></div>`;
+   300|  attachSort();
+   301|  const sf=document.getElementById('sigFilter');if(sf)sf.value=ftype;
+   302|}
+   303|
+   304|function renderRecent(recentCorps){
+   305|  if(!recentCorps||!recentCorps.length){
+   306|    document.getElementById('recentWrap').innerHTML='<div style="padding:12px;color:var(--mute);text-align:center;font-size:12px">暫無公告</div>';
+   307|    return;
+   308|  }
+   309|  const items = recentCorps.map(r=>{
+   310|    const shortDate = r.date ? r.date.slice(5) : '—';
+   311|    const codeBlock = r.code?`<span class="ra-code">${esc(r.code)}</span>${r.name?`<span class="ra-name">${esc(r.name)}</span>`:''}` : '<span class="muted">—</span>';
+   312|    const linkHtml = r.url?`<a class="ra-link" href="${esc(r.url)}" target="_blank" rel="noopener">HKEX</a>`:'';
+   313|    return `<li class="ra-item"><span class="ra-label"><span class="cpill cpill-${r.type}">${corpLabel(r.type)}</span></span><span class="ra-date" title="${esc(r.date||'')}">${esc(shortDate)}</span><span class="ra-stk">${codeBlock}</span>${linkHtml}</li>`;
+   314|  }).join('');
+   315|  document.getElementById('recentWrap').innerHTML = `<ul class="ra-list">${items}</ul>`;
+   316|}
+   317|
+   318|function renderIPO(groups){
+   319|  var card=document.getElementById('ipoCard');
+   320|  var body=document.getElementById('ipoBody');
+   321|  var count=document.getElementById('ipoCount');
+   322|  if(!card||!body)return;
+   323|  // Group badges by stock code
+   324|  var stocks={};
+   325|  groups.forEach(function(g){
+   326|    (g.signals||[]).forEach(function(s){
+   327|      if(!s.label)return;
+   328|      if(s.label.indexOf('IPO首日高突破')>=0){
+   329|        if(!stocks[g.code]) stocks[g.code]={code:g.code,badges:[]};
+   330|        stocks[g.code].badges.push('high');
+   331|      }else if(s.label.indexOf('IPO首日開突破')>=0){
+   332|        if(!stocks[g.code]) stocks[g.code]={code:g.code,badges:[]};
+   333|        stocks[g.code].badges.push('open');
+   334|      }
+   335|    });
+   336|  });
+   337|  var codes=Object.keys(stocks);
+   338|  if(!codes.length){card.style.display='none';return;}
+   339|  body.innerHTML=codes.map(function(c){
+   340|    var s=stocks[c];
+   341|    var badges=s.badges.map(function(t){
+   342|      var cls=t==='high'?'badge badge-high':'badge badge-open';
+   343|      return '<span class="'+cls+'">🚀'+(t==='high'?'高突破':'開突破')+'</span>';
+   344|    }).join(' ');
+   345|    return '<tr><td><a href="#'+esc(c)+'">'+esc(c)+'</a></td>'
+   346|      +'<td>'+badges+'</td></tr>';
+   347|  }).join('');
+   348|  count.textContent=codes.length+'股';
+   349|  card.style.display='';
+   350|}
+   351|function renderSummary(groups){
+   352|  let p=0,inc=0,r=0;
+   353|  groups.forEach(g=>{
+   354|    if(g.corpTypes){
+   355|      if(g.corpTypes.placement) p+=g.corpTypes.placement.count;
+   356|      if(g.corpTypes.increase) inc+=g.corpTypes.increase.count;
+   357|      if(g.corpTypes.rights) r+=g.corpTypes.rights.count;
+   358|    }
+   359|  });
+   360|  document.getElementById('summary').innerHTML =
+   361|    `<span class="cnt placement">配股 <b>${p}</b></span><span class="cnt increase">增持 <b>${inc}</b></span><span class="cnt rights">供股 <b>${r}</b></span>`;
+   362|}
+   363|
+   364|// --- Filtering ---
+   365|let ftype='all';
+   366|function applyFilter(){
+   367|  const tbody=document.getElementById('urows');
+   368|  if(!tbody)return;
+   369|  const q=(document.getElementById('tq')?.value||'').trim().toLowerCase();
+   370|  tbody.querySelectorAll('.urow').forEach(r=>{
+   371|    const name=(r.dataset.name||'').toLowerCase();
+   372|    const code=(r.dataset.code||'').toLowerCase();
+   373|    const date=(r.dataset.date||'');
+   374|    const hasCorp=r.dataset.corp==='1';
+   375|    const hasTech=r.dataset.tech==='1';
+   376|    const hasP=!!r.querySelector('.cpill-placement');
+   377|    const hasI=!!r.querySelector('.cpill-increase');
+   378|    const hasR=!!r.querySelector('.cpill-rights');
+   379|    const sigText=Array.from(r.querySelectorAll('.spill')).map(s=>s.textContent).join(' ');
+   380|    const hasSig=kw=>sigText.indexOf(kw)>=0;
+   381|    let ftOK=true;
+   382|    if(ftype==='poc3')ftOK=hasSig('3年');
+   383|    else if(ftype==='poc_half')ftOK=hasSig('半年POC');
+   384|    else if(ftype==='yearopen')ftOK=hasSig('年開突破');
+   385|    else if(ftype==='fvg')ftOK=hasSig('FVG');
+   386|    else if(ftype==='ccass_up')ftOK=hasSig('CCASS增持');
+   387|    else if(ftype==='ccass_dn')ftOK=hasSig('CCASS減持');
+   388|    else if(ftype==='ipo_high')ftOK=hasSig('IPO首日高突破');
+   389|    else if(ftype==='ipo_open')ftOK=hasSig('IPO首日開突破');
+   390|    else if(ftype==='placement')ftOK=hasP;
+   391|    else if(ftype==='increase')ftOK=hasI;
+   392|    else if(ftype==='rights')ftOK=hasR;
+   393|    const mq=!q||name.includes(q)||code.includes(q);
+   394|    r.style.display=(ftOK&&mq)?'':'none';
+   395|  });
+   396|}
+   397|document.getElementById('tq').addEventListener('input',applyFilter);
+   398|document.getElementById('tclear').addEventListener('click',()=>{
+   399|  document.getElementById('tq').value='';
+   400|  const sf=document.getElementById('sigFilter');if(sf)sf.value='all';
+   401|  ftype='all';applyFilter();
+   402|});
+   403|
+   404|// --- Sorting ---
+   405|let sortCol='date',sortDir=-1;
+   406|function getVal(r,col){
+   407|  if(col==='code')return r.dataset.code||'';
+   408|  if(col==='date')return r.dataset.date||'';
+   409|  if(col==='price')return parseFloat(r.dataset.price||'0');
+   410|  if(col==='count')return parseInt(r.dataset.count||'0',10);
+   411|  if(col==='signal')return r.dataset.signal||'';
+   412|  return '';
+   413|}
+   414|function attachSort(){
+   415|  document.querySelectorAll('th.sortable').forEach(th=>{
+   416|    th.addEventListener('click',()=>{
+   417|      const col=th.dataset.sort;
+   418|      if(sortCol===col)sortDir*=-1;else{sortCol=col;sortDir=(col==='date'||col==='count'||col==='price')?-1:1;}
+   419|      document.querySelectorAll('th.sortable').forEach(x=>{x.classList.remove('sort-active','sort-desc','sort-asc');x.querySelector('.sort-icon').textContent='';});
+   420|      th.classList.add('sort-active',sortDir===1?'sort-asc':'sort-desc');
+   421|      th.querySelector('.sort-icon').textContent=sortDir===1?'▲':'▼';
+   422|      const tbody=document.getElementById('urows');if(!tbody)return;
+   423|      const rows=Array.from(tbody.querySelectorAll('.urow'));
+   424|      rows.sort((a,b)=>{const av=getVal(a,col),bv=getVal(b,col);return av<bv?sortDir:av>bv?-sortDir:0;});
+   425|      rows.forEach(r=>tbody.appendChild(r));
+   426|      applyFilter();
+   427|    });
+   428|  });
+   429|}
+   430|
+   431|function renderBreadth(snap){
+   432|  const card=document.getElementById('breadthCard');
+   433|  if(!card)return;
+   434|  if(!snap||!snap.breadth){card.style.display='none';return;}
+   435|  function row(lbl,b){
+   436|    if(!b||!b.count)return '';
+   437|    return '<div class="breadth-row">'
+   438|      +'<span class="breadth-lbl">'+lbl+'</span>'
+   439|      +'<span class="bs-hi" style="flex-shrink:0;font-size:10px">高'+b.high+'%</span>'
+   440|      +'<div class="breadth-bar">'
+   441|        +'<div class="bs-h" style="width:'+b.high+'%"></div>'
+   442|        +'<div class="bs-m" style="width:'+b.mid+'%"></div>'
+   443|        +'<div class="bs-l" style="width:'+b.low+'%"></div>'
+   444|      +'</div>'
+   445|      +'<span class="bs-lo" style="flex-shrink:0;font-size:10px">低'+b.low+'%</span>'
+   446|      +'<span class="bs-n" style="font-size:10px">(n='+b.count+')</span>'
+   447|    +'</div>';
+   448|  }
+   449|  const rows=row('港股',snap.breadth.hk)+row('美股',snap.breadth.us);
+   450|  if(!rows){card.style.display='none';return;}
+   451|  document.getElementById('breadthRows').innerHTML=rows;
+   452|  card.style.display='';
+   453|}
+   454|function renderMarket(snap){
+   455|  if(!snap) return;
+   456|  const bar=document.getElementById('mbar');
+   457|  if(!bar) return;
+   458|  function fmtNum(v,d){return v==null?'—':Number(v).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});}
+   459|  function chgHtml(pct){if(pct==null)return '';const s=pct>=0?'+':'';return `<span style="font-size:10px;color:${pct>=0?'var(--up)':'var(--down)'}">${s}${pct.toFixed(2)}%</span>`;}
+   460|  function evBadge(ev){if(!ev)return '';return `<span class="ev-${ev.color}">${ev.label}</span>`;}
+   461|  function avgHtml(avg){if(avg==null)return '';return `<span class="mchip-avg">均${fmtNum(avg,2)}</span>`;}
+   462|  function chip(label,val,chgPct,stale,dp,ev,avg5y){
+   463|    const valStr=fmtNum(val,dp??2);
+   464|    const sub=(evBadge(ev)||avgHtml(avg5y))?`<span class="mchip-sub">${evBadge(ev)}${avgHtml(avg5y)}</span>`:'';
+   465|    return `<div class="mchip"><span class="mchip-label">${label}</span><span class="mchip-val${stale?' stale':''}">${valStr} ${chgHtml(chgPct)}</span>${sub}</div>`;
+   466|  }
+   467|  const h=snap.hsi||{},dow=snap.dow||{},d=snap.dxy||{},v=snap.vix||{},hp=snap.hsi_pe||{},sp=snap.spx_pe||{},sm=snap.spx_m2||{},fg=snap.fear_greed||{};
+   468|  bar.innerHTML=[
+   469|    chip('恒指', h.value, h.changePct, h.stale, 0),
+   470|    chip('道指', dow.value, dow.changePct, dow.stale, 0),
+   471|    chip('DXY', d.value, d.changePct, d.stale, 2),
+   472|    chip('VIX', v.value, v.changePct, v.stale, 2, v.eval),
+   473|    chip('港股P/E', hp.value, null, hp.stale, 2, hp.eval, hp.avg5y_mid),
+   474|    chip('美股P/E', sp.value, null, sp.stale, 2, sp.eval, sp.avg5y_mid),
+   475|    chip('SPX/M2', sm.value, null, sm.stale, 0, sm.eval),
+   476|    chip('恐懼貪婪', fg.value, fg.changePct, fg.stale, 0, fg.eval),
+   477|  ].join('');
+   478|}
+   479|
+   480|// --- Data fetch ---
+   481|async function loadData(){
+   482|  const dot=document.getElementById('statusDot');
+   483|  const upd=document.getElementById('updatedAt');
+   484|  dot.className='dot loading';
+   485|  upd.textContent='載入中…';
+   486|  try{
+   487|    const res = await fetch(GAS_URL+'?format=json');
+   488|    const data = await res.json();
+   489|    if(!data.ok) throw new Error(data.error||'API error');
+   490|    let hkGroups=(data.groups||[]).filter(g=>{
+   491|      if(g.market==='US'||g.category==='us_corp') return false;
+   492|      const tags=typeof g.tags==='string'?g.tags:(g.tags||[]).join(',');
+   493|      if(tags.includes('美股')) return false;
+   494|      const c=(g.code||g.symbol||'');
+   495|      if(/^[A-Z]{1,6}(-[A-Z])?$/.test(c)) return false;
+   496|      return true;
+   497|    });
+   498|
+   499|    // Merge corp cache for 9-month retention
+   500|    const cache=pruneCorpCache();
+   501|

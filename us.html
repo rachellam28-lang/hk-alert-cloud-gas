@@ -1,480 +1,481 @@
-<!doctype html>
-<html lang="zh-HK"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>美股訊號儀表板</title>
-<style>
-:root{--bg:#f5f7fa;--surface:#fff;--surface-soft:#f8fafc;--text:#0f172a;--text-soft:#334155;--mute:#64748b;--mute-2:#94a3b8;--line:#e2e8f0;--line-soft:#eef1f6;--primary:#0284c7;--primary-soft:#e0f2fe;--primary-border:#bae6fd;--up:#15803d;--up-soft:#dcfce7;--up-border:#86efac;--down:#b91c1c;--down-soft:#fee2e2;--down-border:#fca5a5;--violet:#6d28d9;--violet-soft:#ede9fe;--violet-border:#c4b5fd;--amber:#b45309;--amber-soft:#fef3c7;--amber-border:#fcd34d;--radius:10px;--shadow:0 1px 2px rgba(15,23,42,.04)}
-*{box-sizing:border-box}html,body{margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font:14px/1.55 Inter,system-ui,"PingFang TC","Noto Sans TC",Arial,sans-serif;-webkit-font-smoothing:antialiased}
-a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
-.topbar{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.88);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
-.topbar-inner{max-width:1440px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px}
-.brand{display:flex;align-items:center;gap:10px}
-.logo{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#3b82f6,#6366f1);display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
-.brand-title{font-size:14px;font-weight:600}.brand-sub{font-size:10px;color:var(--mute);text-transform:uppercase;letter-spacing:.16em}
-.topright{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--mute)}
-.dot{width:7px;height:7px;border-radius:999px;background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.18)}
-.dot.loading{background:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.18)}
-.dot.error{background:#ef4444;box-shadow:0 0 0 3px rgba(239,68,68,.18)}
-.refresh-tag{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:11px;color:var(--text-soft)}
-.wrap{max-width:1440px;margin:0 auto;padding:18px 20px 36px}
-.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:20px 0 10px}
-.section-head h2{margin:0;display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.16em}
-.ico{display:inline-flex;width:18px;height:18px;border-radius:6px;background:var(--primary-soft);color:var(--primary);align-items:center;justify-content:center}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
-.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line)}
-.tlabel{font-size:13px;font-weight:600}
-.summary{display:flex;flex-wrap:wrap;gap:6px}
-.cnt{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--mute);padding:3px 8px;border-radius:999px;border:1px solid var(--line);background:var(--surface-soft)}
-.cnt b{font-weight:600;font-variant-numeric:tabular-nums}
-.cnt.placement{border-color:var(--down-border);background:var(--down-soft);color:var(--down)}.cnt.placement b{color:var(--down)}
-.cnt.increase{border-color:var(--up-border);background:var(--up-soft);color:var(--up)}.cnt.increase b{color:var(--up)}
-.cnt.rights{border-color:var(--violet-border);background:var(--violet-soft);color:var(--violet)}.cnt.rights b{color:var(--violet)}
-.spacer{flex:1}
-.tabs{display:inline-flex;gap:2px;padding:3px;background:#eef2f7;border-radius:8px}
-.tab{appearance:none;background:transparent;border:0;color:var(--text-soft);padding:5px 12px;border-radius:6px;font:500 12px inherit;cursor:pointer;transition:background .15s}
-.tab:hover{color:var(--text)}.tab.active{background:var(--surface);color:var(--text);box-shadow:0 1px 2px rgba(15,23,42,.06);font-weight:600}
-.search{display:inline-flex;gap:8px;align-items:center;flex-wrap:wrap}
-.input{background:var(--surface);border:1px solid var(--line);color:var(--text);padding:6px 10px;border-radius:8px;font:400 12.5px inherit;outline:none}
-.input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(2,132,199,.15)}
-.input.search-in{min-width:200px}
-.btn-ghost{appearance:none;background:transparent;border:1px solid var(--line);color:var(--text-soft);padding:5px 10px;border-radius:8px;font:500 12px inherit;cursor:pointer}
-.btn-ghost:hover{background:var(--surface-soft)}
-table{width:100%;border-collapse:collapse;table-layout:auto}
-thead th{background:var(--surface-soft);color:var(--mute);font-size:10px;text-align:left;padding:9px 14px;text-transform:uppercase;letter-spacing:.14em;font-weight:600;border-bottom:1px solid var(--line);white-space:nowrap}
-tbody td{padding:10px 14px;border-bottom:1px solid var(--line-soft);vertical-align:middle}
-tbody tr:last-child td{border-bottom:none}tbody tr:hover{background:var(--surface-soft)}
-th.sortable{cursor:pointer;user-select:none}th.sortable:hover{color:var(--text);background:var(--primary-soft)}
-th.sort-active{color:var(--primary)}.sort-icon{margin-left:4px;font-size:9px}
-.cell-code{min-width:110px}.code{font:600 13px "JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
-.name{font-size:12px;color:var(--mute);margin-top:2px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.cell-price{width:90px;white-space:nowrap}.pv{font:600 13px "JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
-.cell-pills{min-width:200px}
-.spill{display:inline-flex;align-items:center;gap:4px;background:var(--primary-soft);color:#075985;border:1px solid var(--primary-border);font-size:11px;font-weight:600;padding:2px 9px;border-radius:999px;margin:1px 3px 1px 0;line-height:1.5;white-space:nowrap}
-.spill-poc{background:var(--violet-soft);color:var(--violet);border-color:var(--violet-border)}
-.spill-fvg{background:var(--up-soft);color:var(--up);border-color:var(--up-border)}
-.spill-yearopen{background:var(--amber-soft);color:var(--amber);border-color:var(--amber-border)}
-.spill-ipo{background:linear-gradient(135deg,var(--amber-soft),#fff7ed);color:#b45309;border-color:#fcd34d}
-.spill-date{font-size:10px;font-weight:500;opacity:.7;font-variant-numeric:tabular-nums}
-.splink{text-decoration:none}
-.cpillrow{margin-top:4px;display:flex;flex-wrap:wrap;gap:3px}
-.cpill{display:inline-flex;align-items:center;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:999px;line-height:1.5;border:1px solid transparent}
-.cpill em{font-style:normal;font-weight:600;margin-left:3px;opacity:.85}
-.cpill-placement{background:var(--down-soft);color:var(--down);border-color:var(--down-border)}
-.cpill-increase{background:var(--up-soft);color:var(--up);border-color:var(--up-border)}
-.cpill-rights{background:var(--violet-soft);color:var(--violet);border-color:var(--violet-border)}
-.cpill-other{background:var(--surface-soft);color:var(--mute);border-color:var(--line)}
-.cell-time{color:var(--mute);font:500 12px "JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
-.cell-link{font-size:12px;white-space:nowrap}
-.lnk{display:inline-flex;padding:3px 8px;border-radius:6px;border:1px solid var(--line);background:var(--surface);font:600 10px inherit;color:var(--text-soft);text-decoration:none}
-.lnk:hover{border-color:var(--violet-border);background:var(--violet-soft);color:var(--violet);text-decoration:none}
-.muted{color:var(--mute-2)}
-.empty{text-align:center;color:var(--mute);padding:40px 16px;font-size:13px}
-.foot{margin-top:24px;padding-top:14px;border-top:1px solid var(--line);text-align:center;color:var(--mute-2);font-size:11px}
-.loading-msg{text-align:center;padding:60px 20px;color:var(--mute);font-size:14px}
-.section-toggle{appearance:none;background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:8px;padding:0;width:100%;text-align:left}
-.section-toggle h2{margin:0;display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.16em}
-.toggle-arrow{font-size:10px;color:var(--mute-2);transition:transform .2s;margin-left:4px}
-.section-toggle.collapsed .toggle-arrow{transform:rotate(-90deg)}
-.section-body{overflow:hidden;transition:height .2s ease}
-
-/* Holdings card (US version of CCASS) */
-.hold-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:10px 14px;margin-bottom:12px}
-.hold-head{font-size:10px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.14em;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
-.hold-cols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-@media(max-width:600px){.hold-cols{grid-template-columns:1fr}}
-.hold-col-head{font-size:10px;font-weight:600;margin-bottom:4px}
-.hold-col-head.up{color:#16a34a}.hold-col-head.dn{color:#dc2626}
-.hold-row{display:flex;align-items:center;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--line-soft);font-size:12px}
-.hold-row:last-child{border-bottom:none}
-.hold-name{color:var(--text-soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px}
-.hold-conc{font-size:10px;color:var(--mute-2);white-space:nowrap;margin:0 6px;flex-shrink:0}
-.hold-delta{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
-.hold-delta.up{color:#16a34a}.hold-delta.dn{color:#dc2626}
-.hold-sub{font-size:9px;color:var(--mute-2);margin-left:4px}
-
-/* Market chips */
-.mbar{display:flex;gap:12px;flex-wrap:wrap;padding:8px 0 12px;margin-bottom:4px}
-.mchip{display:flex;flex-direction:column;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 16px;min-width:110px;flex:1;gap:3px}
-.mchip-label{font-size:10px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.12em}
-.mchip-val{font-size:17px;font-weight:700;color:var(--text);text-align:center}
-.mchip-val.stale{color:var(--mute)}
-.mchip-sub{font-size:9px;margin-top:1px;display:flex;align-items:center;gap:4px}
-.mchip-avg{color:var(--mute)}
-.ev-green{background:var(--up-soft);color:var(--up);border:1px solid var(--up-border);border-radius:4px;padding:1px 5px;font-weight:600}
-.ev-neutral{background:var(--surface-soft);color:var(--mute);border:1px solid var(--line);border-radius:4px;padding:1px 5px;font-weight:600}
-.ev-orange{background:var(--amber-soft);color:var(--amber);border:1px solid var(--amber-border);border-radius:4px;padding:1px 5px;font-weight:600}
-.ev-red{background:var(--down-soft);color:var(--down);border:1px solid var(--down-border);border-radius:4px;padding:1px 5px;font-weight:600}
-@media(max-width:520px){.mbar{display:flex;flex-wrap:nowrap;gap:4px}.mchip{padding:4px 3px;min-width:0;flex:1;gap:1px}.mchip-val{font-size:11px}.mchip-label{font-size:8px;letter-spacing:.06em}.mchip-sub{font-size:7px;gap:2px}}@media(max-width:400px){.mbar{gap:2px}.mchip{padding:2px 1px}.mchip-val{font-size:9px}.mchip-label{font-size:7px}.mchip-sub{font-size:6px}}
-.breadth-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:10px 14px;margin-bottom:12px}
-.breadth-head{font-size:10px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.14em;margin-bottom:8px}
-.breadth-row{display:flex;align-items:center;gap:10px;margin-bottom:6px}.breadth-row:last-child{margin-bottom:0}
-.breadth-lbl{font-size:11px;font-weight:600;color:var(--text-soft);width:28px;flex-shrink:0}
-.breadth-bar{flex:1;height:12px;border-radius:6px;overflow:hidden;display:flex;background:var(--surface-soft)}
-.bs-h{background:#16a34a}.bs-m{background:#94a3b8}.bs-l{background:#dc2626}
-.breadth-stats{font-size:10px;white-space:nowrap;display:flex;gap:5px}
-.bs-hi{color:#16a34a;font-weight:600}.bs-lo{color:#dc2626;font-weight:600}.bs-n{color:var(--mute-2)}
-
-@media(max-width:720px){.cell-price,thead th:nth-child(2){display:none}.cell-time,thead th:nth-child(4){display:none}.tabs{overflow-x:auto}.input.search-in{min-width:130px}}
-@media(max-width:640px){.brand>a{font-size:11px!important;padding:2px 6px!important;margin-left:3px!important}}@media(max-width:520px){.topbar-inner{padding:6px 10px;gap:8px}.brand{gap:6px;flex-shrink:0}.brand>a{font-size:10px!important;padding:1px 5px!important;margin-left:2px!important}.logo{display:none}.brand-title{font-size:12px;white-space:nowrap}.brand-sub{display:none}.topright{gap:3px;font-size:10px}.refresh-tag{display:none}.topright span:last-child{font-size:9px;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}@media(max-width:400px){.topbar-inner{padding:4px 6px;gap:4px}.brand-title{font-size:11px}.brand>a{font-size:9px!important;padding:1px 4px!important}.topright span:last-child{font-size:8px;max-width:70px}}
-@media(prefers-color-scheme:dark){:root{--bg:#0f172a;--surface:#1e293b;--surface-soft:#162032;--text:#f1f5f9;--text-soft:#cbd5e1;--mute:#64748b;--mute-2:#475569;--line:#334155;--line-soft:#1e293b;--primary:#38bdf8;--primary-soft:#0c2d44;--primary-border:#0369a1;--up:#4ade80;--up-soft:#052e16;--up-border:#166534;--down:#f87171;--down-soft:#2d0a0a;--down-border:#991b1b;--violet:#a78bfa;--violet-soft:#1e1040;--violet-border:#5b21b6;--amber:#fbbf24;--amber-soft:#1c0f00;--amber-border:#92400e}.topbar{background:rgba(15,23,42,.92)}.tabs{background:#1e293b}.tab.active{background:#0f172a}}
-</style>
-</head><body>
-<header class="topbar"><div class="topbar-inner">
-  <div class="brand">
-    <div class="logo"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg></div>
-    <div><div class="brand-title">美股訊號儀表板</div><div class="brand-sub">美股訊號 · SEC</div></div>
-    <a style="font-size:12px;color:var(--primary);margin-left:6px;padding:3px 9px;border:1px solid var(--line);border-radius:6px;white-space:nowrap;font-weight:600" href="./index.html">🇭🇰 港股版 ←</a>
-    <a style="font-size:12px;color:#b45309;margin-left:4px;padding:3px 9px;border:1px solid #fcd34d;border-radius:6px;white-space:nowrap;font-weight:600" href="./watchlist.html">⭐ 自選 →</a>
-    <a style="font-size:12px;color:#6d28d9;margin-left:4px;padding:3px 9px;border:1px solid #c4b5fd;border-radius:6px;white-space:nowrap;font-weight:600" href="./history.html">🕐 歷史 →</a>
-    <a style="font-size:12px;color:#0284c7;margin-left:4px;padding:3px 9px;border:1px solid #86efac;border-radius:6px;white-space:nowrap;font-weight:600" href="./ccass.html">📦 CCASS →</a>
-  </div>
-  <div class="topright">
-    <span class="dot loading" id="statusDot"></span>
-    <span id="updatedAt">載入中…</span>
-    <span class="refresh-tag">自動更新 10分鐘</span>
-  </div>
-</div></header>
-
-<main class="wrap">
-  <div class="mbar" id="mbar"></div>
-  <div class="breadth-card" id="breadthCard" style="display:none"><div class="breadth-head">市場寬度 · 52周高低位分布</div><div id="breadthRows"></div></div>
-  <div class="hold-card" id="holdCard" style="display:none">
-    <div class="hold-head"><span>📊 機構持倉分析</span><span id="holdDate" style="font-weight:400;color:var(--mute-2)"></span></div>
-    <div class="hold-cols">
-      <div><div class="hold-col-head up">▲ 機構增加</div><div id="holdUp"></div></div>
-      <div><div class="hold-col-head dn">▼ 機構減少</div><div id="holdDn"></div></div>
-    </div>
-  </div>
-
-  <div class="section-head">
-    <button class="section-toggle" onclick="toggleSection('signals',this)" id="toggle-signals">
-      <h2><span class="ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>訊號彙總</h2>
-      <span class="toggle-arrow">▼</span>
-    </button>
-  </div>
-  <div class="section-body" id="body-signals">
-  <section class="card">
-    <div class="toolbar">
-      <div class="tlabel">代號彙總</div>
-      <div class="summary" id="summary"></div>
-      <div class="spacer"></div>
-      <div class="search">
-        <input id="tq" class="input search-in" type="search" placeholder="搜尋 Ticker / 名稱…" autocomplete="off">
-        <button class="btn-ghost" id="tclear">清除</button>
-      </div>
-    </div>
-    <div id="tableWrap">
-      <div class="loading-msg">載入數據中…</div>
-    </div>
-  </section>
-  </div>
-
-  <div class="foot">美股訊號雲 · GitHub Pages · 真實數據</div>
-</main>
-
-<script>
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbxov_zEI5TvIp0Xg4ie937Rci_PEfFrUEyk7YH8RKVPz07i0RNS0fqkythLn-iErjVqZA/exec';
-const REFRESH_MS = 600000;
-
-function toggleSection(id, btn) {
-  const body = document.getElementById('body-' + id);
-  const key = 'us_sec_collapsed_' + id;
-  const collapsed = body.style.display === 'none';
-  body.style.display = collapsed ? '' : 'none';
-  btn.classList.toggle('collapsed', !collapsed);
-  try { localStorage.setItem(key, collapsed ? '0' : '1'); } catch(e) {}
-}
-(function initSections() {
-  ['signals'].forEach(function(id) {
-    try {
-      if (localStorage.getItem('us_sec_collapsed_' + id) === '1') {
-        const body = document.getElementById('body-' + id);
-        const btn = document.getElementById('toggle-' + id);
-        if (body) body.style.display = 'none';
-        if (btn) btn.classList.add('collapsed');
-      }
-    } catch(e) {}
-  });
-})();
-
-function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]); }
-function fmtTime(s){ if(!s)return'—'; try{ const d=new Date(s);if(isNaN(d))return String(s);const p=n=>n<10?'0'+n:''+n;return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes()); }catch(e){return String(s);} }
-function fmtDate(s){ if(!s)return'—'; try{ const d=new Date(s);if(isNaN(d))return String(s);const p=n=>n<10?'0'+n:''+n;return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate()); }catch(e){return String(s);} }
-
-function renderRow(g, wl){
-  const codeStr = g.code||g.symbol||'';
-  const lastTime = fmtTime(g.latestRaw);
-  const lastDate = fmtDate(g.latestRaw);
-  const price = g.latestPrice;
-  const priceHtml = price ? `<span class="pv">${esc((price<1?price.toFixed(3):price.toFixed(2)))}</span>` : '<span class="muted">—</span>';
-
-  function sigType(lbl){
-    if(lbl.indexOf('POC')>=0)return'poc';if(lbl.indexOf('FVG')>=0)return'fvg';
-    if(lbl.indexOf('年開')>=0)return'yearopen';if(lbl.indexOf('IPO')>=0)return'ipo';
-    return'';
-  }
-  const sigPills = (g.signals||[]).slice(0,4).map(s=>{
-    const dateStr = s.date ? '<span class="spill-date">'+fmtDate(s.date).slice(5)+'</span>' : '';
-    const t=sigType(s.label),cls='spill'+(t?' spill-'+t:'');
-    const body=`<span class="${cls}">${esc(s.label)}${dateStr}</span>`;
-    return s.link?`<a class="splink" href="${esc(s.link)}" target="_blank" rel="noopener">${body}</a>`:body;
-  }).join(' ');
-
-  const corpOrder=['placement','increase','rights','other'];
-  const corpPills = corpOrder.filter(t=>g.corpTypes&&g.corpTypes[t]).map(t=>{
-    const c=g.corpTypes[t];
-    const body=`<span class="cpill cpill-${t}">${corpLabel(t)}${c.count>1?` <em>×${c.count}</em>`:''}</span>`;
-    return c.link?`<a class="cplink" href="${esc(c.link)}" target="_blank" rel="noopener">${body}</a>`:body;
-  }).join(' ');
-
-  const firstSig = (g.signals&&g.signals[0])?g.signals[0].label:(corpOrder.find(t=>g.corpTypes&&g.corpTypes[t])?corpLabel(corpOrder.find(t=>g.corpTypes&&g.corpTypes[t])):'');
-  const hasCorp = g.corpCount>0?'1':'0';
-  const rowCount = (g.techCount||0)+(g.corpCount||0);
-  const secLnk = g.hkexLink||g.sourceUrl?`<a class="lnk" href="${esc(g.hkexLink||g.sourceUrl)}" target="_blank" rel="noopener" title="SEC EDGAR">SEC</a>`:'';
-  const tvLnk = `<a class="lnk" href="https://www.tradingview.com/chart/?symbol=${esc(codeStr)}" target="_blank" rel="noopener" title="TradingView">TV</a>`;
-  const saved = wl&&wl.has(codeStr);
-  const saveBtn = `<button class="btn-save${saved?' saved':''}" data-code="${esc(codeStr)}" data-name="${esc(g.name||'')}" data-signal="${esc(firstSig)}" data-date="${esc(lastDate)}" title="加入自選">${saved?'★':'☆'}</button>`;
-
-  return `<tr class="urow" data-code="${esc(codeStr)}" data-name="${esc(g.name||'')}" data-date="${esc(lastDate)}" data-corp="${hasCorp}" data-price="${price||0}" data-signal="${esc(firstSig)}">
-<td class="cell-code"><div class="code">${esc(codeStr)}</div>${g.name?`<div class="name">${esc(g.name)}</div>`:''}</td>
-<td class="cell-price">${priceHtml}</td>
-<td class="cell-pills">${sigPills||'<span class="muted">—</span>'}${corpPills?`<div class="cpillrow">${corpPills}</div>`:''}</td>
-<td class="cell-time">${esc(lastTime)}</td>
-<td class="cell-link">${saveBtn}${tvLnk}${secLnk}</td>
-</tr>`;
-}
-
-const CORP_LABELS = {placement:'配股',increase:'增持',rights:'供股',other:'公告'};
-function corpLabel(t){ return CORP_LABELS[t]||'公告'; }
-
-function renderTable(groups){
-  const _wl=new Set((()=>{try{return JSON.parse(localStorage.getItem('us_watchlist_v1')||'[]').map(x=>x.code);}catch{return [];}})());
-  // Filter for US stocks only
-  const usGroups = (groups||[]).filter(g=>{
-    if(g.market==='US') return true;
-    const tags=typeof g.tags==='string'?g.tags:(g.tags||[]).join(',');
-    if(tags.includes('美股')) return true;
-    const c=(g.code||g.symbol||'');
-    if(/^[A-Z]{1,6}(-[A-Z])?$/.test(c)) return true;
-    return false;
-  });
-  const html = usGroups.length
-    ? usGroups.map(g=>renderRow(g,_wl)).join('')
-    : '<tr><td colspan="5" class="empty">暫無美股數據</td></tr>';
-  document.getElementById('tableWrap').innerHTML =
-    `<div style="overflow-x:auto;-webkit-overflow-scrolling:touch"><table><thead><tr>
-<th class="sortable" data-sort="code">Ticker / 名稱<span class="sort-icon"></span></th>
-<th class="sortable" data-sort="price">價格<span class="sort-icon"></span></th>
-<th class="sortable" data-sort="signal">信號 / 公告<select id="sigFilter" class="th-filter" onclick="event.stopPropagation()" onchange="ftype=this.value;applyFilter()"><option value="all">全部</option><option value="poc">POC突破</option><option value="yearopen">年開突破</option><option value="fvg">FVG</option><option value="placement">配股</option><option value="increase">增持</option><option value="rights">供股</option></select><span class="sort-icon"></span></th>
-<th class="sortable sort-active sort-desc" data-sort="date">最後出現<span class="sort-icon">▼</span></th>
-<th>連結</th>
-</tr></thead><tbody id="urows">${html}</tbody></table></div>`;
-  attachSort();
-  const sf=document.getElementById('sigFilter');if(sf)sf.value=ftype;
-  renderSummary(usGroups);
-}
-
-function renderSummary(groups){
-  let p=0,inc=0,r=0;
-  groups.forEach(g=>{
-    if(g.corpTypes){
-      if(g.corpTypes.placement) p+=g.corpTypes.placement.count;
-      if(g.corpTypes.increase) inc+=g.corpTypes.increase.count;
-      if(g.corpTypes.rights) r+=g.corpTypes.rights.count;
-    }
-  });
-  document.getElementById('summary').innerHTML =
-    `<span class="cnt placement">配股 <b>${p}</b></span><span class="cnt increase">增持 <b>${inc}</b></span><span class="cnt rights">供股 <b>${r}</b></span>`;
-}
-
-// --- Filtering ---
-let ftype='all';
-function applyFilter(){
-  const tbody=document.getElementById('urows');
-  if(!tbody)return;
-  const q=(document.getElementById('tq')?.value||'').trim().toLowerCase();
-  tbody.querySelectorAll('.urow').forEach(r=>{
-    const name=(r.dataset.name||'').toLowerCase();
-    const code=(r.dataset.code||'').toLowerCase();
-    const date=(r.dataset.date||'');
-    const sigText=Array.from(r.querySelectorAll('.spill')).map(s=>s.textContent).join(' ');
-    const hasSig=kw=>sigText.indexOf(kw)>=0;
-    let ftOK=true;
-    if(ftype==='poc')ftOK=hasSig('POC');
-    else if(ftype==='yearopen')ftOK=hasSig('年開');
-    else if(ftype==='fvg')ftOK=hasSig('FVG');
-    else if(ftype==='placement')ftOK=!!r.querySelector('.cpill-placement');
-    else if(ftype==='increase')ftOK=!!r.querySelector('.cpill-increase');
-    else if(ftype==='rights')ftOK=!!r.querySelector('.cpill-rights');
-    const mq=!q||name.includes(q)||code.includes(q);
-    r.style.display=(ftOK&&mq)?'':'none';
-  });
-}
-document.getElementById('tq').addEventListener('input',applyFilter);
-document.getElementById('tclear').addEventListener('click',()=>{
-  document.getElementById('tq').value='';
-  const sf=document.getElementById('sigFilter');if(sf)sf.value='all';
-  ftype='all';applyFilter();
-});
-
-// --- Sorting ---
-let sortCol='date',sortDir=-1;
-function getVal(r,col){
-  if(col==='code')return r.dataset.code||'';
-  if(col==='date')return r.dataset.date||'';
-  if(col==='price')return parseFloat(r.dataset.price||'0');
-  if(col==='count')return parseInt(r.dataset.count||'0',10);
-  if(col==='signal')return r.dataset.signal||'';
-  return '';
-}
-function attachSort(){
-  document.querySelectorAll('th.sortable').forEach(th=>{
-    th.addEventListener('click',()=>{
-      const col=th.dataset.sort;
-      if(sortCol===col)sortDir*=-1;else{sortCol=col;sortDir=(col==='date'||col==='count'||col==='price')?-1:1;}
-      document.querySelectorAll('th.sortable').forEach(x=>{x.classList.remove('sort-active','sort-desc','sort-asc');x.querySelector('.sort-icon').textContent='';});
-      th.classList.add('sort-active',sortDir===1?'sort-asc':'sort-desc');
-      th.querySelector('.sort-icon').textContent=sortDir===1?'▲':'▼';
-      const tbody=document.getElementById('urows');if(!tbody)return;
-      const rows=Array.from(tbody.querySelectorAll('.urow'));
-      rows.sort((a,b)=>{const av=getVal(a,col),bv=getVal(b,col);return av<bv?sortDir:av>bv?-sortDir:0;});
-      rows.forEach(r=>tbody.appendChild(r));
-      applyFilter();
-    });
-  });
-}
-
-// --- Holdings card (like CCASS for HK) ---
-function renderHoldings(h){
-  const card=document.getElementById('holdCard');
-  if(!h||!h.stocks){card.style.display='none';return;}
-  const stocks=Object.values(h.stocks);
-  if(!stocks.length){card.style.display='none';return;}
-  card.style.display='';
-  document.getElementById('holdDate').textContent=h.updated||'';
-  // Compute top by inst_count (most institutions)
-  const byCount = [...stocks].filter(s=>s.inst_count).sort((a,b)=>b.inst_count-a.inst_count).slice(0,5);
-  // Compute top by inst_pct (highest institutional ownership)
-  const byPct = [...stocks].filter(s=>s.inst_pct).sort((a,b)=>b.inst_pct-a.inst_pct).slice(0,5);
-
-  function rows(arr, label){
-    if(!arr||!arr.length)return '<div style="color:var(--mute-2);font-size:11px;padding:6px 0">暫無數據</div>';
-    return arr.map(r=>{
-      const conc = r.top5_pct?`<span class="hold-conc">T5:${r.top5_pct}%</span>`:'';
-      return '<div class="hold-row">'
-        +'<span class="code" style="font-size:11px;min-width:46px">'+r.ticker+'</span>'
-        +'<span class="hold-name" title="'+r.ticker+'">'+(label==='count'?(r.inst_count||'')+'家':(r.inst_pct||'')+'%')+'</span>'
-        +conc
-        +'<span class="hold-delta '+(r.inst_pct>50?'up':'dn')+'">'+(r.inst_pct||0)+'%</span>'
-        +'</div>';
-    }).join('');
-  }
-  document.getElementById('holdUp').innerHTML=rows(byCount,'count');
-  document.getElementById('holdDn').innerHTML=rows(byPct,'pct');
-}
-
-// --- Market ---
-function renderMarket(snap){
-  if(!snap) return;
-  const bar=document.getElementById('mbar');
-  if(!bar) return;
-  function fmtNum(v,d){return v==null?'—':Number(v).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});}
-  function chgHtml(pct){if(pct==null)return '';const s=pct>=0?'+':'';return `<span style="font-size:10px;color:${pct>=0?'var(--up)':'var(--down)'}">${s}${pct.toFixed(2)}%</span>`;}
-  function evBadge(ev){if(!ev)return '';return `<span class="ev-${ev.color}">${ev.label}</span>`;}
-  function avgHtml(avg){if(avg==null)return '';return `<span class="mchip-avg">均${fmtNum(avg,2)}</span>`;}
-  function chip(label,val,chgPct,stale,dp,ev,avg5y){
-    const valStr=fmtNum(val,dp??2);
-    const sub=(evBadge(ev)||avgHtml(avg5y))?`<span class="mchip-sub">${evBadge(ev)}${avgHtml(avg5y)}</span>`:'';
-    return `<div class="mchip"><span class="mchip-label">${label}</span><span class="mchip-val${stale?' stale':''}">${valStr} ${chgHtml(chgPct)}</span>${sub}</div>`;
-  }
-  const dw=snap.dow||{},d=snap.dxy||{},v=snap.vix||{},sp_pe=snap.spx_pe||{},sm=snap.spx_m2||{},fg=snap.fear_greed||{};
-  bar.innerHTML=[
-    chip('道指', dw.value, dw.changePct, dw.stale, 0),
-    chip('DXY', d.value, d.changePct, d.stale, 2),
-    chip('VIX', v.value, v.changePct, v.stale, 2, v.eval),
-    chip('美股P/E', sp_pe.value, null, sp_pe.stale, 2, sp_pe.eval, sp_pe.avg5y_mid),
-    chip('SPX/M2', sm.value, null, sm.stale, 0, sm.eval),
-    chip('恐懼貪婪', fg.value, fg.changePct, fg.stale, 0, fg.eval),
-  ].join('');
-}
-function renderBreadth(snap){
-  const card=document.getElementById('breadthCard');
-  if(!card)return;
-  if(!snap||!snap.breadth){card.style.display='none';return;}
-  function row(lbl,b){
-    if(!b||!b.count)return '';
-    return '<div class="breadth-row">'
-      +'<span class="breadth-lbl">'+lbl+'</span>'
-      +'<span class="bs-hi" style="flex-shrink:0;font-size:10px">高'+b.high+'%</span>'
-      +'<div class="breadth-bar">'
-        +'<div class="bs-h" style="width:'+b.high+'%"></div>'
-        +'<div class="bs-m" style="width:'+b.mid+'%"></div>'
-        +'<div class="bs-l" style="width:'+b.low+'%"></div>'
-      +'</div>'
-      +'<span class="bs-lo" style="flex-shrink:0;font-size:10px">低'+b.low+'%</span>'
-      +'<span class="bs-n" style="font-size:10px">(n='+b.count+')</span>'
-    +'</div>';
-  }
-  const rows=row('港股',snap.breadth.hk)+row('美股',snap.breadth.us);
-  if(!rows){card.style.display='none';return;}
-  document.getElementById('breadthRows').innerHTML=rows;
-  card.style.display='';
-}
-
-// Watchlist save
-function saveToWatch(btn){
-  try{
-    const {code,name,signal,date}=btn.dataset;
-    const key='us_watchlist_v1';
-    const items=JSON.parse(localStorage.getItem(key)||'[]');
-    const idx=items.findIndex(x=>x.code===code);
-    const entry={id:idx>=0?items[idx].id:Date.now(),code,name,signal,date,note:idx>=0?items[idx].note:''};
-    if(idx>=0)items[idx]=entry;else items.unshift(entry);
-    localStorage.setItem(key,JSON.stringify(items));
-    btn.textContent='★';btn.classList.add('saved');
-    setTimeout(()=>{if(btn.textContent==='★'){btn.textContent='☆';btn.classList.remove('saved');}},2000);
-  }catch(e){}
-}
-document.getElementById('tableWrap').addEventListener('click',e=>{
-  const btn=e.target.closest('.btn-save');if(!btn)return;saveToWatch(btn);
-});
-
-// --- Data fetch ---
-async function loadData(){
-  const dot=document.getElementById('statusDot');
-  const upd=document.getElementById('updatedAt');
-  dot.className='dot loading';
-  upd.textContent='載入中…';
-  try{
-    const res = await fetch(GAS_URL+'?format=json');
-    const data = await res.json();
-    if(!data.ok) throw new Error(data.error||'API error');
-    renderTable(data.groups||[]);
-    fetch('./market.json?_='+Date.now())
-      .then(r=>r.ok?r.json():null)
-      .then(m=>{renderMarket(m);renderBreadth(m);})
-      .catch(()=>{});
-    fetch('./us_holdings.json?_='+Date.now())
-      .then(r=>r.ok?r.json():null)
-      .then(h=>renderHoldings(h))
-      .catch(()=>{});
-    const t=new Date(data.updatedAt);
-    const p=n=>n<10?'0'+n:''+n;
-    upd.textContent='更新於 '+t.getFullYear()+'-'+p(t.getMonth()+1)+'-'+p(t.getDate())+' '+p(t.getHours())+':'+p(t.getMinutes());
-    dot.className='dot';
-    applyFilter();
-  }catch(err){
-    dot.className='dot error';
-    upd.textContent='載入失敗：'+err.message;
-    document.getElementById('tableWrap').innerHTML=`<div class="loading-msg" style="color:#ef4444">載入失敗：${esc(err.message)}<br><small>請稍後重試</small></div>`;
-  }
-}
-
-const saved=sessionStorage.getItem('usDashScroll');
-if(saved)window.scrollTo(0,parseInt(saved,10));
-
-loadData();
-setTimeout(()=>{sessionStorage.setItem('usDashScroll',String(window.scrollY));location.reload();},REFRESH_MS);
-</script>
-</body></html>
+     1|<!doctype html>
+     2|<html lang="zh-HK"><head>
+     3|<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+     4|<title>美股訊號儀表板</title>
+     5|<style>
+     6|:root{--bg:#f5f7fa;--surface:#fff;--surface-soft:#f8fafc;--text:#0f172a;--text-soft:#334155;--mute:#64748b;--mute-2:#94a3b8;--line:#e2e8f0;--line-soft:#eef1f6;--primary:#0284c7;--primary-soft:#e0f2fe;--primary-border:#bae6fd;--up:#15803d;--up-soft:#dcfce7;--up-border:#86efac;--down:#b91c1c;--down-soft:#fee2e2;--down-border:#fca5a5;--violet:#6d28d9;--violet-soft:#ede9fe;--violet-border:#c4b5fd;--amber:#b45309;--amber-soft:#fef3c7;--amber-border:#fcd34d;--radius:10px;--shadow:0 1px 2px rgba(15,23,42,.04)}
+     7|*{box-sizing:border-box}html,body{margin:0;padding:0}
+     8|body{background:var(--bg);color:var(--text);font:14px/1.55 Inter,system-ui,"PingFang TC","Noto Sans TC",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+     9|a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
+    10|.topbar{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.88);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+    11|.topbar-inner{max-width:1440px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+    12|.brand{display:flex;align-items:center;gap:10px}
+    13|.logo{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#3b82f6,#6366f1);display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+    14|.brand-title{font-size:14px;font-weight:600}.brand-sub{font-size:10px;color:var(--mute);text-transform:uppercase;letter-spacing:.16em}
+    15|.topright{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--mute)}
+    16|.dot{width:7px;height:7px;border-radius:999px;background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.18)}
+    17|.dot.loading{background:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.18)}
+    18|.dot.error{background:#ef4444;box-shadow:0 0 0 3px rgba(239,68,68,.18)}
+    19|.refresh-tag{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:11px;color:var(--text-soft)}
+    20|.wrap{max-width:1440px;margin:0 auto;padding:18px 20px 36px}
+    21|.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:20px 0 10px}
+    22|.section-head h2{margin:0;display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.16em}
+    23|.ico{display:inline-flex;width:18px;height:18px;border-radius:6px;background:var(--primary-soft);color:var(--primary);align-items:center;justify-content:center}
+    24|.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+    25|.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line)}
+    26|.tlabel{font-size:13px;font-weight:600}
+    27|.summary{display:flex;flex-wrap:wrap;gap:6px}
+    28|.cnt{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--mute);padding:3px 8px;border-radius:999px;border:1px solid var(--line);background:var(--surface-soft)}
+    29|.cnt b{font-weight:600;font-variant-numeric:tabular-nums}
+    30|.cnt.placement{border-color:var(--down-border);background:var(--down-soft);color:var(--down)}.cnt.placement b{color:var(--down)}
+    31|.cnt.increase{border-color:var(--up-border);background:var(--up-soft);color:var(--up)}.cnt.increase b{color:var(--up)}
+    32|.cnt.rights{border-color:var(--violet-border);background:var(--violet-soft);color:var(--violet)}.cnt.rights b{color:var(--violet)}
+    33|.spacer{flex:1}
+    34|.tabs{display:inline-flex;gap:2px;padding:3px;background:#eef2f7;border-radius:8px}
+    35|.tab{appearance:none;background:transparent;border:0;color:var(--text-soft);padding:5px 12px;border-radius:6px;font:500 12px inherit;cursor:pointer;transition:background .15s}
+    36|.tab:hover{color:var(--text)}.tab.active{background:var(--surface);color:var(--text);box-shadow:0 1px 2px rgba(15,23,42,.06);font-weight:600}
+    37|.search{display:inline-flex;gap:8px;align-items:center;flex-wrap:wrap}
+    38|.input{background:var(--surface);border:1px solid var(--line);color:var(--text);padding:6px 10px;border-radius:8px;font:400 12.5px inherit;outline:none}
+    39|.input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(2,132,199,.15)}
+    40|.input.search-in{min-width:200px}
+    41|.btn-ghost{appearance:none;background:transparent;border:1px solid var(--line);color:var(--text-soft);padding:5px 10px;border-radius:8px;font:500 12px inherit;cursor:pointer}
+    42|.btn-ghost:hover{background:var(--surface-soft)}
+    43|table{width:100%;border-collapse:collapse;table-layout:auto}
+    44|thead th{background:var(--surface-soft);color:var(--mute);font-size:10px;text-align:left;padding:9px 14px;text-transform:uppercase;letter-spacing:.14em;font-weight:600;border-bottom:1px solid var(--line);white-space:nowrap}
+    45|tbody td{padding:10px 14px;border-bottom:1px solid var(--line-soft);vertical-align:middle}
+    46|tbody tr:last-child td{border-bottom:none}tbody tr:hover{background:var(--surface-soft)}
+    47|th.sortable{cursor:pointer;user-select:none}th.sortable:hover{color:var(--text);background:var(--primary-soft)}
+    48|th.sort-active{color:var(--primary)}.sort-icon{margin-left:4px;font-size:9px}
+    49|.cell-code{min-width:110px}.code{font:600 13px "JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+    50|.name{font-size:12px;color:var(--mute);margin-top:2px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    51|.cell-price{width:90px;white-space:nowrap}.pv{font:600 13px "JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+    52|.cell-pills{min-width:200px}
+    53|.spill{display:inline-flex;align-items:center;gap:4px;background:var(--primary-soft);color:#075985;border:1px solid var(--primary-border);font-size:11px;font-weight:600;padding:2px 9px;border-radius:999px;margin:1px 3px 1px 0;line-height:1.5;white-space:nowrap}
+    54|.spill-poc{background:var(--violet-soft);color:var(--violet);border-color:var(--violet-border)}
+    55|.spill-fvg{background:var(--up-soft);color:var(--up);border-color:var(--up-border)}
+    56|.spill-yearopen{background:var(--amber-soft);color:var(--amber);border-color:var(--amber-border)}
+    57|.spill-ipo{background:linear-gradient(135deg,var(--amber-soft),#fff7ed);color:#b45309;border-color:#fcd34d}
+    58|.spill-date{font-size:10px;font-weight:500;opacity:.7;font-variant-numeric:tabular-nums}
+    59|.splink{text-decoration:none}
+    60|.cpillrow{margin-top:4px;display:flex;flex-wrap:wrap;gap:3px}
+    61|.cpill{display:inline-flex;align-items:center;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:999px;line-height:1.5;border:1px solid transparent}
+    62|.cpill em{font-style:normal;font-weight:600;margin-left:3px;opacity:.85}
+    63|.cpill-placement{background:var(--down-soft);color:var(--down);border-color:var(--down-border)}
+    64|.cpill-increase{background:var(--up-soft);color:var(--up);border-color:var(--up-border)}
+    65|.cpill-rights{background:var(--violet-soft);color:var(--violet);border-color:var(--violet-border)}
+    66|.cpill-other{background:var(--surface-soft);color:var(--mute);border-color:var(--line)}
+    67|.cell-time{color:var(--mute);font:500 12px "JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
+    68|.cell-link{font-size:12px;white-space:nowrap}
+    69|.lnk{display:inline-flex;padding:3px 8px;border-radius:6px;border:1px solid var(--line);background:var(--surface);font:600 10px inherit;color:var(--text-soft);text-decoration:none}
+    70|.lnk:hover{border-color:var(--violet-border);background:var(--violet-soft);color:var(--violet);text-decoration:none}
+    71|.muted{color:var(--mute-2)}
+    72|.empty{text-align:center;color:var(--mute);padding:40px 16px;font-size:13px}
+    73|.foot{margin-top:24px;padding-top:14px;border-top:1px solid var(--line);text-align:center;color:var(--mute-2);font-size:11px}
+    74|.loading-msg{text-align:center;padding:60px 20px;color:var(--mute);font-size:14px}
+    75|.section-toggle{appearance:none;background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:8px;padding:0;width:100%;text-align:left}
+    76|.section-toggle h2{margin:0;display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.16em}
+    77|.toggle-arrow{font-size:10px;color:var(--mute-2);transition:transform .2s;margin-left:4px}
+    78|.section-toggle.collapsed .toggle-arrow{transform:rotate(-90deg)}
+    79|.section-body{overflow:hidden;transition:height .2s ease}
+    80|
+    81|/* Holdings card (US version of CCASS) */
+    82|.hold-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:10px 14px;margin-bottom:12px}
+    83|.hold-head{font-size:10px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.14em;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+    84|.hold-cols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    85|@media(max-width:600px){.hold-cols{grid-template-columns:1fr}}
+    86|.hold-col-head{font-size:10px;font-weight:600;margin-bottom:4px}
+    87|.hold-col-head.up{color:#16a34a}.hold-col-head.dn{color:#dc2626}
+    88|.hold-row{display:flex;align-items:center;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--line-soft);font-size:12px}
+    89|.hold-row:last-child{border-bottom:none}
+    90|.hold-name{color:var(--text-soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px}
+    91|.hold-conc{font-size:10px;color:var(--mute-2);white-space:nowrap;margin:0 6px;flex-shrink:0}
+    92|.hold-delta{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+    93|.hold-delta.up{color:#16a34a}.hold-delta.dn{color:#dc2626}
+    94|.hold-sub{font-size:9px;color:var(--mute-2);margin-left:4px}
+    95|
+    96|/* Market chips */
+    97|.mbar{display:flex;gap:12px;flex-wrap:wrap;padding:8px 0 12px;margin-bottom:4px}
+    98|.mchip{display:flex;flex-direction:column;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 16px;min-width:110px;flex:1;gap:3px}
+    99|.mchip-label{font-size:10px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.12em}
+   100|.mchip-val{font-size:17px;font-weight:700;color:var(--text);text-align:center}
+   101|.mchip-val.stale{color:var(--mute)}
+   102|.mchip-sub{font-size:9px;margin-top:1px;display:flex;align-items:center;gap:4px}
+   103|.mchip-avg{color:var(--mute)}
+   104|.ev-green{background:var(--up-soft);color:var(--up);border:1px solid var(--up-border);border-radius:4px;padding:1px 5px;font-weight:600}
+   105|.ev-neutral{background:var(--surface-soft);color:var(--mute);border:1px solid var(--line);border-radius:4px;padding:1px 5px;font-weight:600}
+   106|.ev-orange{background:var(--amber-soft);color:var(--amber);border:1px solid var(--amber-border);border-radius:4px;padding:1px 5px;font-weight:600}
+   107|.ev-red{background:var(--down-soft);color:var(--down);border:1px solid var(--down-border);border-radius:4px;padding:1px 5px;font-weight:600}
+   108|@media(max-width:520px){.mbar{display:flex;flex-wrap:nowrap;gap:4px}.mchip{padding:4px 3px;min-width:0;flex:1;gap:1px}.mchip-val{font-size:11px}.mchip-label{font-size:8px;letter-spacing:.06em}.mchip-sub{font-size:7px;gap:2px}}@media(max-width:400px){.mbar{gap:2px}.mchip{padding:2px 1px}.mchip-val{font-size:9px}.mchip-label{font-size:7px}.mchip-sub{font-size:6px}}
+   109|.breadth-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:10px 14px;margin-bottom:12px}
+   110|.breadth-head{font-size:10px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.14em;margin-bottom:8px}
+   111|.breadth-row{display:flex;align-items:center;gap:10px;margin-bottom:6px}.breadth-row:last-child{margin-bottom:0}
+   112|.breadth-lbl{font-size:11px;font-weight:600;color:var(--text-soft);width:28px;flex-shrink:0}
+   113|.breadth-bar{flex:1;height:12px;border-radius:6px;overflow:hidden;display:flex;background:var(--surface-soft)}
+   114|.bs-h{background:#16a34a}.bs-m{background:#94a3b8}.bs-l{background:#dc2626}
+   115|.breadth-stats{font-size:10px;white-space:nowrap;display:flex;gap:5px}
+   116|.bs-hi{color:#16a34a;font-weight:600}.bs-lo{color:#dc2626;font-weight:600}.bs-n{color:var(--mute-2)}
+   117|
+   118|@media(max-width:720px){.cell-price,thead th:nth-child(2){display:none}.cell-time,thead th:nth-child(4){display:none}.tabs{overflow-x:auto}.input.search-in{min-width:130px}}
+   119|@media(max-width:640px){.brand>a{font-size:11px!important;padding:2px 6px!important;margin-left:3px!important}}@media(max-width:520px){.topbar-inner{padding:6px 10px;gap:8px}.brand{gap:6px;flex-shrink:0}.brand>a{font-size:10px!important;padding:1px 5px!important;margin-left:2px!important}.logo{display:none}.brand-title{font-size:12px;white-space:nowrap}.brand-sub{display:none}.topright{gap:3px;font-size:10px}.refresh-tag{display:none}.topright span:last-child{font-size:9px;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}@media(max-width:400px){.topbar-inner{padding:4px 6px;gap:4px}.brand-title{font-size:11px}.brand>a{font-size:9px!important;padding:1px 4px!important}.topright span:last-child{font-size:8px;max-width:70px}}
+   120|@media(prefers-color-scheme:dark){:root{--bg:#0f172a;--surface:#1e293b;--surface-soft:#162032;--text:#f1f5f9;--text-soft:#cbd5e1;--mute:#64748b;--mute-2:#475569;--line:#334155;--line-soft:#1e293b;--primary:#38bdf8;--primary-soft:#0c2d44;--primary-border:#0369a1;--up:#4ade80;--up-soft:#052e16;--up-border:#166534;--down:#f87171;--down-soft:#2d0a0a;--down-border:#991b1b;--violet:#a78bfa;--violet-soft:#1e1040;--violet-border:#5b21b6;--amber:#fbbf24;--amber-soft:#1c0f00;--amber-border:#92400e}.topbar{background:rgba(15,23,42,.92)}.tabs{background:#1e293b}.tab.active{background:#0f172a}}
+   121|</style>
+   122|</head><body>
+   123|<header class="topbar"><div class="topbar-inner">
+   124|  <div class="brand">
+   125|    <div class="logo"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg></div>
+   126|    <div><div class="brand-title">美股訊號儀表板</div><div class="brand-sub">美股訊號 · SEC</div></div>
+   127|    <a style="font-size:12px;color:var(--primary);margin-left:6px;padding:3px 9px;border:1px solid var(--line);border-radius:6px;white-space:nowrap;font-weight:600" href="./index.html">🇭🇰 港股版 ←</a>
+   128|    <a style="font-size:12px;color:#b45309;margin-left:4px;padding:3px 9px;border:1px solid #fcd34d;border-radius:6px;white-space:nowrap;font-weight:600" href="./watchlist.html">⭐ 自選 →</a>
+   129|    <a style="font-size:12px;color:#6d28d9;margin-left:4px;padding:3px 9px;border:1px solid #c4b5fd;border-radius:6px;white-space:nowrap;font-weight:600" href="./history.html">🕐 歷史 →</a>
+   130|    <a style="font-size:12px;color:#0284c7;margin-left:4px;padding:3px 9px;border:1px solid #86efac;border-radius:6px;white-space:nowrap;font-weight:600" href="./index.html">📦 CCASS →</a>
+   131|  </div>
+   132|  <div class="topright">
+   133|    <span class="dot loading" id="statusDot"></span>
+   134|    <span id="updatedAt">載入中…</span>
+   135|    <span class="refresh-tag">自動更新 10分鐘</span>
+   136|  </div>
+   137|</div></header>
+   138|
+   139|<main class="wrap">
+   140|  <div class="mbar" id="mbar"></div>
+   141|  <div class="breadth-card" id="breadthCard" style="display:none"><div class="breadth-head">市場寬度 · 52周高低位分布</div><div id="breadthRows"></div></div>
+   142|  <div class="hold-card" id="holdCard" style="display:none">
+   143|    <div class="hold-head"><span>📊 機構持倉分析</span><span id="holdDate" style="font-weight:400;color:var(--mute-2)"></span></div>
+   144|    <div class="hold-cols">
+   145|      <div><div class="hold-col-head up">▲ 機構增加</div><div id="holdUp"></div></div>
+   146|      <div><div class="hold-col-head dn">▼ 機構減少</div><div id="holdDn"></div></div>
+   147|    </div>
+   148|  </div>
+   149|
+   150|  <div class="section-head">
+   151|    <button class="section-toggle" onclick="toggleSection('signals',this)" id="toggle-signals">
+   152|      <h2><span class="ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>訊號彙總</h2>
+   153|      <span class="toggle-arrow">▼</span>
+   154|    </button>
+   155|  </div>
+   156|  <div class="section-body" id="body-signals">
+   157|  <section class="card">
+   158|    <div class="toolbar">
+   159|      <div class="tlabel">代號彙總</div>
+   160|      <div class="summary" id="summary"></div>
+   161|      <div class="spacer"></div>
+   162|      <div class="search">
+   163|        <input id="tq" class="input search-in" type="search" placeholder="搜尋 Ticker / 名稱…" autocomplete="off">
+   164|        <button class="btn-ghost" id="tclear">清除</button>
+   165|      </div>
+   166|    </div>
+   167|    <div id="tableWrap">
+   168|      <div class="loading-msg">載入數據中…</div>
+   169|    </div>
+   170|  </section>
+   171|  </div>
+   172|
+   173|  <div class="foot">美股訊號雲 · GitHub Pages · 真實數據</div>
+   174|</main>
+   175|
+   176|<script>
+   177|const GAS_URL = 'https://script.google.com/macros/s/AKfycbxov_zEI5TvIp0Xg4ie937Rci_PEfFrUEyk7YH8RKVPz07i0RNS0fqkythLn-iErjVqZA/exec';
+   178|const REFRESH_MS = 600000;
+   179|
+   180|function toggleSection(id, btn) {
+   181|  const body = document.getElementById('body-' + id);
+   182|  const key = 'us_sec_collapsed_' + id;
+   183|  const collapsed = body.style.display === 'none';
+   184|  body.style.display = collapsed ? '' : 'none';
+   185|  btn.classList.toggle('collapsed', !collapsed);
+   186|  try { localStorage.setItem(key, collapsed ? '0' : '1'); } catch(e) {}
+   187|}
+   188|(function initSections() {
+   189|  ['signals'].forEach(function(id) {
+   190|    try {
+   191|      if (localStorage.getItem('us_sec_collapsed_' + id) === '1') {
+   192|        const body = document.getElementById('body-' + id);
+   193|        const btn = document.getElementById('toggle-' + id);
+   194|        if (body) body.style.display = 'none';
+   195|        if (btn) btn.classList.add('collapsed');
+   196|      }
+   197|    } catch(e) {}
+   198|  });
+   199|})();
+   200|
+   201|function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]); }
+   202|function fmtTime(s){ if(!s)return'—'; try{ const d=new Date(s);if(isNaN(d))return String(s);const p=n=>n<10?'0'+n:''+n;return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes()); }catch(e){return String(s);} }
+   203|function fmtDate(s){ if(!s)return'—'; try{ const d=new Date(s);if(isNaN(d))return String(s);const p=n=>n<10?'0'+n:''+n;return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate()); }catch(e){return String(s);} }
+   204|
+   205|function renderRow(g, wl){
+   206|  const codeStr = g.code||g.symbol||'';
+   207|  const lastTime = fmtTime(g.latestRaw);
+   208|  const lastDate = fmtDate(g.latestRaw);
+   209|  const price = g.latestPrice;
+   210|  const priceHtml = price ? `<span class="pv">${esc((price<1?price.toFixed(3):price.toFixed(2)))}</span>` : '<span class="muted">—</span>';
+   211|
+   212|  function sigType(lbl){
+   213|    if(lbl.indexOf('POC')>=0)return'poc';if(lbl.indexOf('FVG')>=0)return'fvg';
+   214|    if(lbl.indexOf('年開')>=0)return'yearopen';if(lbl.indexOf('IPO')>=0)return'ipo';
+   215|    return'';
+   216|  }
+   217|  const sigPills = (g.signals||[]).slice(0,4).map(s=>{
+   218|    const dateStr = s.date ? '<span class="spill-date">'+fmtDate(s.date).slice(5)+'</span>' : '';
+   219|    const t=sigType(s.label),cls='spill'+(t?' spill-'+t:'');
+   220|    const body=`<span class="${cls}">${esc(s.label)}${dateStr}</span>`;
+   221|    return s.link?`<a class="splink" href="${esc(s.link)}" target="_blank" rel="noopener">${body}</a>`:body;
+   222|  }).join(' ');
+   223|
+   224|  const corpOrder=['placement','increase','rights','other'];
+   225|  const corpPills = corpOrder.filter(t=>g.corpTypes&&g.corpTypes[t]).map(t=>{
+   226|    const c=g.corpTypes[t];
+   227|    const body=`<span class="cpill cpill-${t}">${corpLabel(t)}${c.count>1?` <em>×${c.count}</em>`:''}</span>`;
+   228|    return c.link?`<a class="cplink" href="${esc(c.link)}" target="_blank" rel="noopener">${body}</a>`:body;
+   229|  }).join(' ');
+   230|
+   231|  const firstSig = (g.signals&&g.signals[0])?g.signals[0].label:(corpOrder.find(t=>g.corpTypes&&g.corpTypes[t])?corpLabel(corpOrder.find(t=>g.corpTypes&&g.corpTypes[t])):'');
+   232|  const hasCorp = g.corpCount>0?'1':'0';
+   233|  const rowCount = (g.techCount||0)+(g.corpCount||0);
+   234|  const secLnk = g.hkexLink||g.sourceUrl?`<a class="lnk" href="${esc(g.hkexLink||g.sourceUrl)}" target="_blank" rel="noopener" title="SEC EDGAR">SEC</a>`:'';
+   235|  const tvLnk = `<a class="lnk" href="https://www.tradingview.com/chart/?symbol=${esc(codeStr)}" target="_blank" rel="noopener" title="TradingView">TV</a>`;
+   236|  const saved = wl&&wl.has(codeStr);
+   237|  const saveBtn = `<button class="btn-save${saved?' saved':''}" data-code="${esc(codeStr)}" data-name="${esc(g.name||'')}" data-signal="${esc(firstSig)}" data-date="${esc(lastDate)}" title="加入自選">${saved?'★':'☆'}</button>`;
+   238|
+   239|  return `<tr class="urow" data-code="${esc(codeStr)}" data-name="${esc(g.name||'')}" data-date="${esc(lastDate)}" data-corp="${hasCorp}" data-price="${price||0}" data-signal="${esc(firstSig)}">
+   240|<td class="cell-code"><div class="code">${esc(codeStr)}</div>${g.name?`<div class="name">${esc(g.name)}</div>`:''}</td>
+   241|<td class="cell-price">${priceHtml}</td>
+   242|<td class="cell-pills">${sigPills||'<span class="muted">—</span>'}${corpPills?`<div class="cpillrow">${corpPills}</div>`:''}</td>
+   243|<td class="cell-time">${esc(lastTime)}</td>
+   244|<td class="cell-link">${saveBtn}${tvLnk}${secLnk}</td>
+   245|</tr>`;
+   246|}
+   247|
+   248|const CORP_LABELS = {placement:'配股',increase:'增持',rights:'供股',other:'公告'};
+   249|function corpLabel(t){ return CORP_LABELS[t]||'公告'; }
+   250|
+   251|function renderTable(groups){
+   252|  const _wl=new Set((()=>{try{return JSON.parse(localStorage.getItem('us_watchlist_v1')||'[]').map(x=>x.code);}catch{return [];}})());
+   253|  // Filter for US stocks only
+   254|  const usGroups = (groups||[]).filter(g=>{
+   255|    if(g.market==='US') return true;
+   256|    const tags=typeof g.tags==='string'?g.tags:(g.tags||[]).join(',');
+   257|    if(tags.includes('美股')) return true;
+   258|    const c=(g.code||g.symbol||'');
+   259|    if(/^[A-Z]{1,6}(-[A-Z])?$/.test(c)) return true;
+   260|    return false;
+   261|  });
+   262|  const html = usGroups.length
+   263|    ? usGroups.map(g=>renderRow(g,_wl)).join('')
+   264|    : '<tr><td colspan="5" class="empty">暫無美股數據</td></tr>';
+   265|  document.getElementById('tableWrap').innerHTML =
+   266|    `<div style="overflow-x:auto;-webkit-overflow-scrolling:touch"><table><thead><tr>
+   267|<th class="sortable" data-sort="code">Ticker / 名稱<span class="sort-icon"></span></th>
+   268|<th class="sortable" data-sort="price">價格<span class="sort-icon"></span></th>
+   269|<th class="sortable" data-sort="signal">信號 / 公告<select id="sigFilter" class="th-filter" onclick="event.stopPropagation()" onchange="ftype=this.value;applyFilter()"><option value="all">全部</option><option value="poc">POC突破</option><option value="yearopen">年開突破</option><option value="fvg">FVG</option><option value="placement">配股</option><option value="increase">增持</option><option value="rights">供股</option></select><span class="sort-icon"></span></th>
+   270|<th class="sortable sort-active sort-desc" data-sort="date">最後出現<span class="sort-icon">▼</span></th>
+   271|<th>連結</th>
+   272|</tr></thead><tbody id="urows">${html}</tbody></table></div>`;
+   273|  attachSort();
+   274|  const sf=document.getElementById('sigFilter');if(sf)sf.value=ftype;
+   275|  renderSummary(usGroups);
+   276|}
+   277|
+   278|function renderSummary(groups){
+   279|  let p=0,inc=0,r=0;
+   280|  groups.forEach(g=>{
+   281|    if(g.corpTypes){
+   282|      if(g.corpTypes.placement) p+=g.corpTypes.placement.count;
+   283|      if(g.corpTypes.increase) inc+=g.corpTypes.increase.count;
+   284|      if(g.corpTypes.rights) r+=g.corpTypes.rights.count;
+   285|    }
+   286|  });
+   287|  document.getElementById('summary').innerHTML =
+   288|    `<span class="cnt placement">配股 <b>${p}</b></span><span class="cnt increase">增持 <b>${inc}</b></span><span class="cnt rights">供股 <b>${r}</b></span>`;
+   289|}
+   290|
+   291|// --- Filtering ---
+   292|let ftype='all';
+   293|function applyFilter(){
+   294|  const tbody=document.getElementById('urows');
+   295|  if(!tbody)return;
+   296|  const q=(document.getElementById('tq')?.value||'').trim().toLowerCase();
+   297|  tbody.querySelectorAll('.urow').forEach(r=>{
+   298|    const name=(r.dataset.name||'').toLowerCase();
+   299|    const code=(r.dataset.code||'').toLowerCase();
+   300|    const date=(r.dataset.date||'');
+   301|    const sigText=Array.from(r.querySelectorAll('.spill')).map(s=>s.textContent).join(' ');
+   302|    const hasSig=kw=>sigText.indexOf(kw)>=0;
+   303|    let ftOK=true;
+   304|    if(ftype==='poc')ftOK=hasSig('POC');
+   305|    else if(ftype==='yearopen')ftOK=hasSig('年開');
+   306|    else if(ftype==='fvg')ftOK=hasSig('FVG');
+   307|    else if(ftype==='placement')ftOK=!!r.querySelector('.cpill-placement');
+   308|    else if(ftype==='increase')ftOK=!!r.querySelector('.cpill-increase');
+   309|    else if(ftype==='rights')ftOK=!!r.querySelector('.cpill-rights');
+   310|    const mq=!q||name.includes(q)||code.includes(q);
+   311|    r.style.display=(ftOK&&mq)?'':'none';
+   312|  });
+   313|}
+   314|document.getElementById('tq').addEventListener('input',applyFilter);
+   315|document.getElementById('tclear').addEventListener('click',()=>{
+   316|  document.getElementById('tq').value='';
+   317|  const sf=document.getElementById('sigFilter');if(sf)sf.value='all';
+   318|  ftype='all';applyFilter();
+   319|});
+   320|
+   321|// --- Sorting ---
+   322|let sortCol='date',sortDir=-1;
+   323|function getVal(r,col){
+   324|  if(col==='code')return r.dataset.code||'';
+   325|  if(col==='date')return r.dataset.date||'';
+   326|  if(col==='price')return parseFloat(r.dataset.price||'0');
+   327|  if(col==='count')return parseInt(r.dataset.count||'0',10);
+   328|  if(col==='signal')return r.dataset.signal||'';
+   329|  return '';
+   330|}
+   331|function attachSort(){
+   332|  document.querySelectorAll('th.sortable').forEach(th=>{
+   333|    th.addEventListener('click',()=>{
+   334|      const col=th.dataset.sort;
+   335|      if(sortCol===col)sortDir*=-1;else{sortCol=col;sortDir=(col==='date'||col==='count'||col==='price')?-1:1;}
+   336|      document.querySelectorAll('th.sortable').forEach(x=>{x.classList.remove('sort-active','sort-desc','sort-asc');x.querySelector('.sort-icon').textContent='';});
+   337|      th.classList.add('sort-active',sortDir===1?'sort-asc':'sort-desc');
+   338|      th.querySelector('.sort-icon').textContent=sortDir===1?'▲':'▼';
+   339|      const tbody=document.getElementById('urows');if(!tbody)return;
+   340|      const rows=Array.from(tbody.querySelectorAll('.urow'));
+   341|      rows.sort((a,b)=>{const av=getVal(a,col),bv=getVal(b,col);return av<bv?sortDir:av>bv?-sortDir:0;});
+   342|      rows.forEach(r=>tbody.appendChild(r));
+   343|      applyFilter();
+   344|    });
+   345|  });
+   346|}
+   347|
+   348|// --- Holdings card (like CCASS for HK) ---
+   349|function renderHoldings(h){
+   350|  const card=document.getElementById('holdCard');
+   351|  if(!h||!h.stocks){card.style.display='none';return;}
+   352|  const stocks=Object.values(h.stocks);
+   353|  if(!stocks.length){card.style.display='none';return;}
+   354|  card.style.display='';
+   355|  document.getElementById('holdDate').textContent=h.updated||'';
+   356|  // Compute top by inst_count (most institutions)
+   357|  const byCount = [...stocks].filter(s=>s.inst_count).sort((a,b)=>b.inst_count-a.inst_count).slice(0,5);
+   358|  // Compute top by inst_pct (highest institutional ownership)
+   359|  const byPct = [...stocks].filter(s=>s.inst_pct).sort((a,b)=>b.inst_pct-a.inst_pct).slice(0,5);
+   360|
+   361|  function rows(arr, label){
+   362|    if(!arr||!arr.length)return '<div style="color:var(--mute-2);font-size:11px;padding:6px 0">暫無數據</div>';
+   363|    return arr.map(r=>{
+   364|      const conc = r.top5_pct?`<span class="hold-conc">T5:${r.top5_pct}%</span>`:'';
+   365|      return '<div class="hold-row">'
+   366|        +'<span class="code" style="font-size:11px;min-width:46px">'+r.ticker+'</span>'
+   367|        +'<span class="hold-name" title="'+r.ticker+'">'+(label==='count'?(r.inst_count||'')+'家':(r.inst_pct||'')+'%')+'</span>'
+   368|        +conc
+   369|        +'<span class="hold-delta '+(r.inst_pct>50?'up':'dn')+'">'+(r.inst_pct||0)+'%</span>'
+   370|        +'</div>';
+   371|    }).join('');
+   372|  }
+   373|  document.getElementById('holdUp').innerHTML=rows(byCount,'count');
+   374|  document.getElementById('holdDn').innerHTML=rows(byPct,'pct');
+   375|}
+   376|
+   377|// --- Market ---
+   378|function renderMarket(snap){
+   379|  if(!snap) return;
+   380|  const bar=document.getElementById('mbar');
+   381|  if(!bar) return;
+   382|  function fmtNum(v,d){return v==null?'—':Number(v).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});}
+   383|  function chgHtml(pct){if(pct==null)return '';const s=pct>=0?'+':'';return `<span style="font-size:10px;color:${pct>=0?'var(--up)':'var(--down)'}">${s}${pct.toFixed(2)}%</span>`;}
+   384|  function evBadge(ev){if(!ev)return '';return `<span class="ev-${ev.color}">${ev.label}</span>`;}
+   385|  function avgHtml(avg){if(avg==null)return '';return `<span class="mchip-avg">均${fmtNum(avg,2)}</span>`;}
+   386|  function chip(label,val,chgPct,stale,dp,ev,avg5y){
+   387|    const valStr=fmtNum(val,dp??2);
+   388|    const sub=(evBadge(ev)||avgHtml(avg5y))?`<span class="mchip-sub">${evBadge(ev)}${avgHtml(avg5y)}</span>`:'';
+   389|    return `<div class="mchip"><span class="mchip-label">${label}</span><span class="mchip-val${stale?' stale':''}">${valStr} ${chgHtml(chgPct)}</span>${sub}</div>`;
+   390|  }
+   391|  const dw=snap.dow||{},d=snap.dxy||{},v=snap.vix||{},sp_pe=snap.spx_pe||{},sm=snap.spx_m2||{},fg=snap.fear_greed||{};
+   392|  bar.innerHTML=[
+   393|    chip('道指', dw.value, dw.changePct, dw.stale, 0),
+   394|    chip('DXY', d.value, d.changePct, d.stale, 2),
+   395|    chip('VIX', v.value, v.changePct, v.stale, 2, v.eval),
+   396|    chip('美股P/E', sp_pe.value, null, sp_pe.stale, 2, sp_pe.eval, sp_pe.avg5y_mid),
+   397|    chip('SPX/M2', sm.value, null, sm.stale, 0, sm.eval),
+   398|    chip('恐懼貪婪', fg.value, fg.changePct, fg.stale, 0, fg.eval),
+   399|  ].join('');
+   400|}
+   401|function renderBreadth(snap){
+   402|  const card=document.getElementById('breadthCard');
+   403|  if(!card)return;
+   404|  if(!snap||!snap.breadth){card.style.display='none';return;}
+   405|  function row(lbl,b){
+   406|    if(!b||!b.count)return '';
+   407|    return '<div class="breadth-row">'
+   408|      +'<span class="breadth-lbl">'+lbl+'</span>'
+   409|      +'<span class="bs-hi" style="flex-shrink:0;font-size:10px">高'+b.high+'%</span>'
+   410|      +'<div class="breadth-bar">'
+   411|        +'<div class="bs-h" style="width:'+b.high+'%"></div>'
+   412|        +'<div class="bs-m" style="width:'+b.mid+'%"></div>'
+   413|        +'<div class="bs-l" style="width:'+b.low+'%"></div>'
+   414|      +'</div>'
+   415|      +'<span class="bs-lo" style="flex-shrink:0;font-size:10px">低'+b.low+'%</span>'
+   416|      +'<span class="bs-n" style="font-size:10px">(n='+b.count+')</span>'
+   417|    +'</div>';
+   418|  }
+   419|  const rows=row('港股',snap.breadth.hk)+row('美股',snap.breadth.us);
+   420|  if(!rows){card.style.display='none';return;}
+   421|  document.getElementById('breadthRows').innerHTML=rows;
+   422|  card.style.display='';
+   423|}
+   424|
+   425|// Watchlist save
+   426|function saveToWatch(btn){
+   427|  try{
+   428|    const {code,name,signal,date}=btn.dataset;
+   429|    const key='us_watchlist_v1';
+   430|    const items=JSON.parse(localStorage.getItem(key)||'[]');
+   431|    const idx=items.findIndex(x=>x.code===code);
+   432|    const entry={id:idx>=0?items[idx].id:Date.now(),code,name,signal,date,note:idx>=0?items[idx].note:''};
+   433|    if(idx>=0)items[idx]=entry;else items.unshift(entry);
+   434|    localStorage.setItem(key,JSON.stringify(items));
+   435|    btn.textContent='★';btn.classList.add('saved');
+   436|    setTimeout(()=>{if(btn.textContent==='★'){btn.textContent='☆';btn.classList.remove('saved');}},2000);
+   437|  }catch(e){}
+   438|}
+   439|document.getElementById('tableWrap').addEventListener('click',e=>{
+   440|  const btn=e.target.closest('.btn-save');if(!btn)return;saveToWatch(btn);
+   441|});
+   442|
+   443|// --- Data fetch ---
+   444|async function loadData(){
+   445|  const dot=document.getElementById('statusDot');
+   446|  const upd=document.getElementById('updatedAt');
+   447|  dot.className='dot loading';
+   448|  upd.textContent='載入中…';
+   449|  try{
+   450|    const res = await fetch(GAS_URL+'?format=json');
+   451|    const data = await res.json();
+   452|    if(!data.ok) throw new Error(data.error||'API error');
+   453|    renderTable(data.groups||[]);
+   454|    fetch('./market.json?_='+Date.now())
+   455|      .then(r=>r.ok?r.json():null)
+   456|      .then(m=>{renderMarket(m);renderBreadth(m);})
+   457|      .catch(()=>{});
+   458|    fetch('./us_holdings.json?_='+Date.now())
+   459|      .then(r=>r.ok?r.json():null)
+   460|      .then(h=>renderHoldings(h))
+   461|      .catch(()=>{});
+   462|    const t=new Date(data.updatedAt);
+   463|    const p=n=>n<10?'0'+n:''+n;
+   464|    upd.textContent='更新於 '+t.getFullYear()+'-'+p(t.getMonth()+1)+'-'+p(t.getDate())+' '+p(t.getHours())+':'+p(t.getMinutes());
+   465|    dot.className='dot';
+   466|    applyFilter();
+   467|  }catch(err){
+   468|    dot.className='dot error';
+   469|    upd.textContent='載入失敗：'+err.message;
+   470|    document.getElementById('tableWrap').innerHTML=`<div class="loading-msg" style="color:#ef4444">載入失敗：${esc(err.message)}<br><small>請稍後重試</small></div>`;
+   471|  }
+   472|}
+   473|
+   474|const saved=sessionStorage.getItem('usDashScroll');
+   475|if(saved)window.scrollTo(0,parseInt(saved,10));
+   476|
+   477|loadData();
+   478|setTimeout(()=>{sessionStorage.setItem('usDashScroll',String(window.scrollY));location.reload();},REFRESH_MS);
+   479|</script>
+   480|</body></html>
+   481|
