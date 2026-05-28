@@ -328,6 +328,7 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
             <label><input type="checkbox" data-col="t5" checked onchange="toggleCol(this)"> Top5%</label>
             <label><input type="checkbox" data-col="t10" checked onchange="toggleCol(this)"> Top10%</label>
             <label><input type="checkbox" data-col="d20" checked onchange="toggleCol(this)"> 20日Δ</label>
+            <label><input type="checkbox" data-col="streak" checked onchange="toggleCol(this)"> 🔁連續</label>
             <label><input type="checkbox" data-col="d60" checked onchange="toggleCol(this)"> 60日Δ</label>
             <label><input type="checkbox" data-col="d120" checked onchange="toggleCol(this)"> 120日Δ</label>
             <label><input type="checkbox" data-col="np" checked onchange="toggleCol(this)"> 參與者</label>
@@ -373,6 +374,7 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
           <th class="sortable th-t5" data-sort="t5" onclick="sortBy('t5',event)"><span>Top5%</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable th-t5" data-sort="t10" onclick="sortBy('t10',event)"><span>Top10%</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable" data-sort="d5" onclick="sortBy('d5',event)"><span>5日Δ</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
+          <th class="sortable th-streak" data-sort="su" onclick="sortBy('su',event)"><span>🔁連續</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable th-d20" data-sort="d20" onclick="sortBy('d20',event)"><span>20日Δ</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable th-d60" data-sort="d60" onclick="sortBy('d60',event)"><span>60日Δ</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable th-d120" data-sort="d120" onclick="sortBy('d120',event)"><span>120日Δ</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
@@ -823,7 +825,8 @@ function renderTable(){
       +'<td><span class="num">'+s.tp.toFixed(2)+'%</span></td>'
       +'<td class="hide-t5"><span class="num">'+s.t5.toFixed(2)+'%</span></td>'
       +'<td class="hide-t5"><span class="num">'+s.t10.toFixed(2)+'%</span></td>'
-      +'<td>'+d5+streak+'</td>'
+      +'<td>'+d5+'</td>'
+      +'<td class="th-streak">'+streak+'</td>'
       +'<td class="hide-d20">'+d20+'</td>'
       +'<td class="hide-d60">'+d60+'</td>'
       +'<td class="hide-d120">'+d120+'</td>'
@@ -879,6 +882,8 @@ function renderTable(){
         +'<div class="sc-metric"><span class="sc-metric-label">CCASS</span><span class="sc-metric-val">'+s.tp.toFixed(1)+'%</span><div class="pbar" style="width:100%;max-width:none;margin-top:2px"><div class="pbar-fill pbar-'+cc(s.tp)+'" style="width:'+Math.min(s.tp,100)+'%"></div></div></div>'
         +'<div class="sc-metric"><span class="sc-metric-label">5日Δ</span><span class="sc-metric-val '+d5class+'">'+(s.d5!=null?fmtPct(s.d5):'—')+'</span></div>'
         +'<div class="sc-metric"><span class="sc-metric-label">20日Δ</span><span class="sc-metric-val '+d20class+'">'+(s.d20!=null?fmtPct(s.d20):'—')+'</span></div>'
+        +(s.su>1?'<div class="sc-metric"><span class="sc-metric-label">🔥增持</span><span class="sc-metric-val up">'+s.su+'日</span></div>':'')
+        +(s.sd>1?'<div class="sc-metric"><span class="sc-metric-label">❄️減持</span><span class="sc-metric-val dn">'+s.sd+'日</span></div>':'')
       +'</div>'
       +(sigPills?'<div class="sc-pills">'+sigPills+'</div>':'')
     +'</div>';
