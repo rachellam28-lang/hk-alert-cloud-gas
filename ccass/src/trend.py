@@ -48,8 +48,8 @@ def compute_trends_for_date(target_date: date, windows: list[int] | None = None)
                 "AND ref{w}.validation_failed = 0".format(w=w)
             )
             ref_selects.append(
-                "cur.total_pct - COALESCE(ref{w}.total_pct, cur.total_pct) AS delta_{w}d_pct, "
-                "cur.total_shares - COALESCE(ref{w}.total_shares, cur.total_shares) AS delta_{w}d_shares".format(w=w)
+                "cur.total_pct - ref{w}.total_pct AS delta_{w}d_pct, "
+                "cur.total_shares - ref{w}.total_shares AS delta_{w}d_shares".format(w=w)
             )
             ref_params.append(rd)
         else:
@@ -136,7 +136,7 @@ def _consecutive_streak(conn, stock_code: str, end_date: date) -> tuple[int, int
     """計到 end_date 為止嘅連續增持/減持日數。"""
     end_str = end_date.strftime("%Y-%m-%d")
     rows = conn.execute(
-        """SELECT trade_date, total_pct
+        """SELECT trade_date, total_pct, total_shares
            FROM ccass_daily
            WHERE stock_code = ? AND trade_date <= ? AND validation_failed = 0
            ORDER BY trade_date DESC
@@ -150,8 +150,9 @@ def _consecutive_streak(conn, stock_code: str, end_date: date) -> tuple[int, int
     up = down = 0
     streak_dir = 0
     for i in range(len(rows) - 1):
-        cur = rows[i]["total_pct"]
-        prev = rows[i + 1]["total_pct"]
+        # P1-1: use total_shares (absolute) not total_pct (affected by corp actions)
+        cur = rows[i]["total_shares"]
+        prev = rows[i + 1]["total_shares"]
         if cur is None or prev is None:
             break
         if cur > prev:
