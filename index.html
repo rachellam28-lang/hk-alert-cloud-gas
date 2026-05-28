@@ -917,7 +917,11 @@ function applyFilters(){
   var d5Min=getRF('rfD5Min'),d5Max=getRF('rfD5Max');
   var mcMin=getRF('rfMcMin'),mcMax=getRF('rfMcMax');
   filtered=allStocks.filter(s=>{
-    if(q && !s.c.includes(q) && !s.n.toLowerCase().includes(q)) return false;
+    if(q && !s.c.includes(q) && !s.n.toLowerCase().includes(q)){
+      // Also search by streak (su/sd)
+      const streakStr = (s.su>1?'🔥'+s.su+'日':'')+(s.sd>1?'❄️'+s.sd+'日':'');
+      if(!streakStr.includes(q)) return false;
+    }
 
     // Multi-select AND-logic filters
     if(activeFilters.size>0){
