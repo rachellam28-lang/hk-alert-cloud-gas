@@ -4,6 +4,7 @@ ccass/logs/
 ccass/debug/
 ccass/codes.json
 ccass.db
+ccass.db.gz
 
 # Webb-site daily dumps
 data/webb_site/webb_*.json

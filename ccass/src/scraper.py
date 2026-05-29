@@ -22,7 +22,7 @@ from datetime import date, datetime
 from pathlib import Path
 from typing import Optional
 
-import cloudscraper
+import requests
 from requests.exceptions import RequestException
 from bs4 import BeautifulSoup
 
@@ -70,8 +70,9 @@ class CCASSScraper:
         from collections import deque
         self._outcome_window: deque[bool] = deque(maxlen=8)
         self._abort_threshold = 6   # >=6 bad out of last 8 -> HKEX down / blocked
-        self.session = cloudscraper.create_scraper()
+        self.session = requests.Session()
         self.session.headers.update({"User-Agent": user_agent})
+        self.session.timeout = self.timeout
         self._form_tokens: dict[str, str] = {}
         self._last_token_refresh: float = 0
 
@@ -137,7 +138,7 @@ class CCASSScraper:
         """
         if not html:
             return True
-        head = html[:3000].lower()
+        head = html[:10000].lower()  # P2-2: increase from 3000 to catch viewstate in large pages
         markers = (
             "access denied",
             "reference&#32;",
@@ -318,10 +319,13 @@ class CCASSScraper:
                 if num and num > 0:
                     return num
         # Strategy 3: sum participants (old page layout fallback)
+        # P2-4: add more participant categories for complete coverage
         total = 0
         for label_text in ["Market Intermediaries",
                             "Consenting Investor Participants",
-                            "Non-consenting Investor Participants"]:
+                            "Non-consenting Investor Participants",
+                            "Settlement Agents",
+                            "Custodian Participants"]:
             el = soup.find(string=re.compile(
                 re.escape(label_text), re.I))
             if el:
@@ -458,27 +462,85 @@ class CCASSScraper:
         logger.info("Saved debug HTML to %s", path)
 
 
+def _compute_concentration_metrics(holdings: list[dict]) -> dict:
+    """Sentinel Option A: A00005-only strip, broker-top5, FUTU tracking.
+
+    A00005 = CSDC immobilized domestic shares. NOT tradable on HKEX.
+    A00003/A00004 = Stock Connect = REAL tradable liquidity → stays.
+    """
+    clean = [h for h in holdings if h.get("shares")]
+    total = sum(h["shares"] for h in clean)
+    if total <= 0:
+        return {}
+
+    a5_shares = sum(h["shares"] for h in clean if h.get("participant_id") == "A00005")
+    adjusted_float = total - a5_shares
+
+    # Everyone except A00005 (includes A00003/A00004 Stock Connect)
+    adjusted = sorted(
+        [h for h in clean if h.get("participant_id") != "A00005"],
+        key=lambda h: h["shares"], reverse=True,
+    )
+    brokers = [h for h in adjusted if str(h.get("participant_id", "")).startswith("B")]
+    top_broker = brokers[0] if brokers else None
+    futu_shares = sum(h["shares"] for h in adjusted if h.get("participant_id") == "B01955")
+
+    if adjusted_float > 0:
+        adj_hhi = sum((h["shares"] / adjusted_float * 100) ** 2 for h in adjusted)
+        btop5 = sum(h["shares"] for h in brokers[:5]) / adjusted_float * 100
+        tbp = top_broker["shares"] / adjusted_float * 100 if top_broker else 0.0
+        fp = futu_shares / adjusted_float * 100
+    else:
+        adj_hhi = btop5 = tbp = fp = 0.0
+
+    return {
+        "adj_hhi": round(adj_hhi, 1),
+        "broker_top5_pct": round(btop5, 2),
+        "top_broker_id": top_broker["participant_id"] if top_broker else "",
+        "top_broker_name": (top_broker.get("participant_name") or "")[:40] if top_broker else "",
+        "top_broker_pct": round(tbp, 2),
+        "futu_pct": round(fp, 2),
+        "a00005_pct": round(a5_shares / total * 100, 2),
+        "adjusted_float": adjusted_float,
+    }
+
+
 def save_snapshot(snap: CCASSSnapshot) -> None:
     """Write snapshot to DB. Idempotent (UPSERT)."""
     now_iso = datetime.utcnow().isoformat()
-    # Compute top5/top10 concentration
+    # Compute top5/top10 concentration (raw — all participants)
     sorted_shares = sorted([h["shares"] for h in snap.holdings if h.get("shares")], reverse=True)
     top5 = sum(sorted_shares[:5])
     top10 = sum(sorted_shares[:10])
     top5_pct = round(top5 / snap.total_shares * 100, 2) if snap.total_shares > 0 else None
     top10_pct = round(top10 / snap.total_shares * 100, 2) if snap.total_shares > 0 else None
+
+    # Sentinel Option A concentration metrics (ex-A00005)
+    cm = _compute_concentration_metrics(snap.holdings)
+
     with get_conn() as conn:
         conn.execute(
             """INSERT INTO ccass_daily
                  (stock_code, trade_date, total_shares, total_pct,
-                  num_participants, top5_pct, top10_pct, scraped_at, validation_failed)
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0)
+                  num_participants, top5_pct, top10_pct,
+                  adj_hhi, broker_top5_pct, top_broker_id, top_broker_name,
+                  top_broker_pct, futu_pct, a00005_pct, adjusted_float,
+                  scraped_at, validation_failed)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)
                ON CONFLICT(stock_code, trade_date) DO UPDATE SET
                  total_shares = excluded.total_shares,
                  total_pct = excluded.total_pct,
                  num_participants = excluded.num_participants,
                  top5_pct = excluded.top5_pct,
                  top10_pct = excluded.top10_pct,
+                 adj_hhi = excluded.adj_hhi,
+                 broker_top5_pct = excluded.broker_top5_pct,
+                 top_broker_id = excluded.top_broker_id,
+                 top_broker_name = excluded.top_broker_name,
+                 top_broker_pct = excluded.top_broker_pct,
+                 futu_pct = excluded.futu_pct,
+                 a00005_pct = excluded.a00005_pct,
+                 adjusted_float = excluded.adjusted_float,
                  scraped_at = excluded.scraped_at,
                  validation_failed = 0""",
             (
@@ -489,28 +551,42 @@ def save_snapshot(snap: CCASSSnapshot) -> None:
                 snap.num_participants,
                 top5_pct,
                 top10_pct,
+                cm.get("adj_hhi"),
+                cm.get("broker_top5_pct"),
+                cm.get("top_broker_id"),
+                cm.get("top_broker_name"),
+                cm.get("top_broker_pct"),
+                cm.get("futu_pct"),
+                cm.get("a00005_pct"),
+                cm.get("adjusted_float"),
                 now_iso,
             ),
         )
-        # Replace holdings for呢個 (stock, date)
-        conn.execute(
-            "DELETE FROM ccass_holdings WHERE stock_code = ? AND trade_date = ?",
-            (snap.stock_code, snap.trade_date),
-        )
-        conn.executemany(
-            """INSERT INTO ccass_holdings
-                 (stock_code, trade_date, participant_id, participant_name,
-                  shares, pct_of_issued)
-               VALUES (?, ?, ?, ?, ?, ?)""",
-            [
-                (
-                    snap.stock_code,
-                    snap.trade_date,
-                    h["participant_id"],
-                    h["participant_name"],
-                    h["shares"],
-                    h["pct_of_issued"],
-                )
-                for h in snap.holdings
-            ],
-        )
+        # Atomic replace: DELETE + INSERT in single transaction (P0-2 fix)
+        conn.execute("BEGIN IMMEDIATE")
+        try:
+            conn.execute(
+                "DELETE FROM ccass_holdings WHERE stock_code = ? AND trade_date = ?",
+                (snap.stock_code, snap.trade_date),
+            )
+            conn.executemany(
+                """INSERT INTO ccass_holdings
+                     (stock_code, trade_date, participant_id, participant_name,
+                      shares, pct_of_issued)
+                   VALUES (?, ?, ?, ?, ?, ?)""",
+                [
+                    (
+                        snap.stock_code,
+                        snap.trade_date,
+                        h["participant_id"],
+                        h["participant_name"],
+                        h["shares"],
+                        h["pct_of_issued"],
+                    )
+                    for h in snap.holdings
+                ],
+            )
+            conn.execute("COMMIT")
+        except Exception:
+            conn.execute("ROLLBACK")
+            raise

@@ -853,10 +853,10 @@ function renderTable(){
     if(s.tp>=80)hlClass+=' hl-conc';
     if(hasIPO)hlClass+=' hl-ipo';
     return '<tr class="'+ipoClass+hlClass+'" onclick="showDetail(\''+s.c+'\')">'
-      +'<td><span class="code">'+(s.py_warn?'⚠️ ':'')+esc(s.c)+'</span></td>'
+      +'<td><span class="code">'+esc(s.c)+'</span></td>'
             +'<td class="hide-yearyo">'+(s.lp&&s.yo&&s.lp>s.yo?'🔺':'')+'</td>'
             +'<td class="hide-prevyo">'+(s.lp&&s.py&&s.lp>s.py?'😻':'')+'</td>'
-            +'<td class="hide-pypct"><span class="num '+deltaClass(s.py_pct)+'">'+(s.py_pct!=null?fmtPct(s.py_pct):'—')+(s.py_warn?' <span title="可能合股/拆股 — yahoo無記錄" style="font-size:10px;cursor:help">⚠️</span>':'')+'</span></td>'
+            +'<td class="hide-pypct"><span class="num '+deltaClass(s.py_pct)+'">'+(s.py_pct!=null?fmtPct(s.py_pct):'—')+'</span></td>'
             +'<td><span class="name" title="'+esc(s.n)+'">'+esc(s.n)+'</span></td>'
       +'<td class="hide-price">'+priceHtml+'</td>'
       +'<td class="hide-sig cell-pills">'+sigDisplay+'</td>'
@@ -908,7 +908,7 @@ function renderTable(){
     const ipoClass=hasIPO?' ipo-highlight':'';
     return '<div class="stock-card'+ipoClass+'" onclick="showDetail(\''+s.c+'\')">'
       +'<div class="sc-header">'
-        +'<span class="code">'+(s.lp&&s.yo&&s.lp>s.yo?'🔺 ':'')+(s.lp&&s.py&&s.lp>s.py?'😻 ':'')+(s.py_warn?'⚠️ ':'')+esc(s.c)+'</span>'
+        +'<span class="code">'+(s.lp&&s.yo&&s.lp>s.yo?'🔺 ':'')+(s.lp&&s.py&&s.lp>s.py?'😻 ':'')+esc(s.c)+'</span>'
         +(s.su>1?'<span class="sc-streak up">🔥'+s.su+'</span>':'')
         +(s.sd>1?'<span class="sc-streak dn">❄️'+s.sd+'</span>':'')
         +'<span class="name" title="'+esc(s.n)+'">'+esc(s.n)+'</span>'
@@ -918,7 +918,7 @@ function renderTable(){
       +'<div class="sc-metrics">'
         +'<div class="sc-metric"><span class="sc-metric-label">價格</span><span class="sc-metric-val'+(priceStr?'':' muted')+'">'+(priceStr?esc(priceStr):'—')+'</span></div>'
         +'<div class="sc-metric"><span class="sc-metric-label">CCASS</span><span class="sc-metric-val">'+s.tp.toFixed(1)+'%</span><div class="pbar" style="width:100%;max-width:none;margin-top:2px"><div class="pbar-fill pbar-'+cc(s.tp)+'" style="width:'+Math.min(s.tp,100)+'%"></div></div></div>'
-        +(s.py_pct!=null?'<div class="sc-metric"><span class="sc-metric-label">前年Δ%'+(s.py_warn?' ⚠️':'')+'</span><span class="sc-metric-val '+(s.py_pct>=0?'up':'dn')+'">'+fmtPct(s.py_pct)+'</span></div>':'')
+        +(s.py_pct!=null?'<div class="sc-metric"><span class="sc-metric-label">前年Δ%</span><span class="sc-metric-val '+(s.py_pct>=0?'up':'dn')+'">'+fmtPct(s.py_pct)+'</span></div>':'')
         +'<div class="sc-metric"><span class="sc-metric-label">5日Δ</span><span class="sc-metric-val '+d5class+'">'+(s.d5!=null?fmtPct(s.d5):'—')+'</span></div>'
         +'<div class="sc-metric"><span class="sc-metric-label">20日Δ</span><span class="sc-metric-val '+d20class+'">'+(s.d20!=null?fmtPct(s.d20):'—')+'</span></div>'
         +(s.su>1?'<div class="sc-metric"><span class="sc-metric-label">🔥增持</span><span class="sc-metric-val up">'+s.su+'日</span></div>':'')

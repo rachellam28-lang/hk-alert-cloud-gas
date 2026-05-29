@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import logging
 import logging.handlers
+import os
 from datetime import datetime
 from pathlib import Path
 
@@ -30,6 +31,14 @@ def setup_logger(name: str = "ccass", level: str = "INFO") -> logging.Logger:
     fh = logging.handlers.TimedRotatingFileHandler(
         logfile, when="midnight", backupCount=30, encoding="utf-8"
     )
+    # P2-3: Windows — midnight rotate may fail if file locked (tail -f, etc.)
+    # Fall back silently instead of crashing the process
+    def _safe_rotator(source, dest):
+        try:
+            os.rename(source, dest)
+        except OSError:
+            pass  # file locked, just keep writing to current
+    fh.rotator = _safe_rotator
     fh.setFormatter(fmt)
     logger.addHandler(fh)
 

@@ -30,6 +30,14 @@ def init_db(db_path: Path = DB_PATH) -> None:
                 conn.execute(f"ALTER TABLE ccass_trends ADD COLUMN {col} REAL")
             except sqlite3.OperationalError:
                 pass
+        # Migration: Sentinel Option A concentration metric columns
+        for col in ("adj_hhi", "broker_top5_pct", "top_broker_id", "top_broker_name",
+                    "top_broker_pct", "futu_pct", "a00005_pct", "adjusted_float"):
+            col_type = "INTEGER" if col == "adjusted_float" else "TEXT" if col.endswith("_id") or col.endswith("_name") else "REAL"
+            try:
+                conn.execute(f"ALTER TABLE ccass_daily ADD COLUMN {col} {col_type}")
+            except sqlite3.OperationalError:
+                pass
 
 
 def backup_db(db_path: Path = DB_PATH) -> Path:

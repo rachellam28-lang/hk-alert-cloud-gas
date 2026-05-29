@@ -1,6 +1,12 @@
-"""Fetch year-open + latest price for all CCASS stocks via yfinance.
+"""Fetch year-open (2025+2026) + latest price for all CCASS stocks via yfinance.
 Stores in data/stock_prices.json for dashboard.
 HK stock code "00001" → yfinance symbol "0001.HK" (drop leading zero).
+
+Fields per stock:
+  yo: 2026 year-open price
+  py: 2025 year-open price (previous year)
+  lp: latest price
+  py_pct: (lp - py) / py * 100 — % change from 2025 open
 """
 import json, sqlite3, sys, time
 from pathlib import Path
@@ -8,10 +14,9 @@ from datetime import date
 
 PROJECT = Path(__file__).parent.parent
 DB = PROJECT / "ccass.db"
-OUT = PROJECT / "data" / "stock_prices.json"
+OUT = PROJECT.parent / "data" / "stock_prices.json"
 
 def fetch_all():
-    # Load stock codes from DB
     db = sqlite3.connect(str(DB))
     codes = sorted(r[0] for r in db.execute(
         "SELECT stock_code FROM stock_universe ORDER BY stock_code"
@@ -25,7 +30,6 @@ def fetch_all():
     if OUT.exists():
         cache = json.loads(OUT.read_text(encoding='utf-8'))
 
-    # yfinance symbol: strip leading zero → 4-digit
     def to_sym(code):
         return f"{int(code):04d}.HK"
 
@@ -37,10 +41,11 @@ def fetch_all():
 
     for i in range(0, len(codes), BATCH):
         batch = codes[i:i + BATCH]
-        # Filter already-cached (with both yo and lp)
+        # Filter already-cached (with yo, py, lp all present)
         todo = []
         for c in batch:
-            if c in cache and cache[c].get('yo') and cache[c].get('lp'):
+            entry = cache.get(c, {})
+            if entry.get('yo') and entry.get('py') and entry.get('lp'):
                 skip_count += 1
                 continue
             todo.append(c)
@@ -50,42 +55,69 @@ def fetch_all():
 
         syms = [to_sym(c) for c in todo]
 
-        # Fetch year-open (ytd first day)
+        # Fetch 2026 year-open (ytd first day)
+        yo_data = {}
         try:
             ytd = yf.download(syms, period='ytd', progress=False, auto_adjust=False)
+            for sym in syms:
+                try:
+                    if sym in ytd.columns.get_level_values(1):
+                        col_open = ytd.xs(sym, axis=1, level=1)['Open']
+                        if len(col_open) > 0:
+                            yo_data[sym] = round(float(col_open.iloc[0]), 3)
+                except Exception:
+                    pass
         except Exception as e:
-            print(f"  Batch ytd download failed: {e}")
-            fail_count += len(todo)
-            continue
+            print(f"  Batch ytd failed: {e}")
+
+        # Fetch 2025 year-open (first week of 2025)
+        py_data = {}
+        try:
+            py_hist = yf.download(syms, start='2025-01-01', end='2025-01-10', progress=False, auto_adjust=False)
+            for sym in syms:
+                try:
+                    if sym in py_hist.columns.get_level_values(1):
+                        col_open = py_hist.xs(sym, axis=1, level=1)['Open']
+                        if len(col_open) > 0:
+                            py_data[sym] = round(float(col_open.iloc[0]), 3)
+                except Exception:
+                    pass
+        except Exception as e:
+            print(f"  Batch 2025 failed: {e}")
 
         for c, sym in zip(todo, syms):
             try:
                 entry = cache.get(c, {})
-                # Year-open: first row of ytd
-                if sym in ytd.columns.get_level_values(1) if hasattr(ytd.columns, 'get_level_values') else False:
-                    col_open = ytd.xs(sym, axis=1, level=1)['Open']
-                    if len(col_open) > 0:
-                        entry['yo'] = round(float(col_open.iloc[0]), 3)
-                        entry['yo_date'] = str(col_open.index[0].date())
+
+                if sym in yo_data:
+                    entry['yo'] = yo_data[sym]
+                if sym in py_data:
+                    entry['py'] = py_data[sym]
 
                 # Latest price
-                t = yf.Ticker(sym)
-                info = t.fast_info
-                if info.last_price:
-                    entry['lp'] = round(float(info.last_price), 3)
-                    entry['lp_time'] = str(date.today())
+                try:
+                    t = yf.Ticker(sym)
+                    info = t.fast_info
+                    if info.last_price:
+                        entry['lp'] = round(float(info.last_price), 3)
+                        entry['lp_time'] = str(date.today())
+                except Exception:
+                    pass
+
+                # Compute py_pct (change from 2025 open)
+                if entry.get('lp') and entry.get('py') and entry['py'] > 0:
+                    entry['py_pct'] = round((entry['lp'] - entry['py']) / entry['py'] * 100, 2)
 
                 if entry.get('yo') and entry.get('lp'):
                     cache[c] = entry
                     new_count += 1
-            except Exception as e:
+            except Exception:
                 fail_count += 1
 
         if (i // BATCH) % 5 == 0:
             print(f"  {min(i + BATCH, len(codes))}/{len(codes)} — new={new_count}, skip={skip_count}, fail={fail_count}")
-        time.sleep(1)  # rate limit
+        time.sleep(1)
 
-    # Save
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(cache, ensure_ascii=False, indent=2), encoding='utf-8')
     print(f"\nDone: {new_count} updated, {skip_count} cached, {fail_count} failed → {OUT}")

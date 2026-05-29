@@ -13,10 +13,11 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 import time
 import traceback
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_completed, TimeoutError as FutureTimeoutError
 from datetime import datetime, date, timedelta
 from pathlib import Path
 
@@ -59,67 +60,79 @@ def should_refresh_universe(force: bool = False) -> bool:
     return today_hk().weekday() == 0  # Monday
 
 
+PER_STOCK_TIMEOUT = 180  # seconds — skip stock if scrape takes longer
+
+def _scrape_stock_worker(args: tuple) -> tuple[str, bool, str]:
+    """Module-level worker for ProcessPoolExecutor. Picklable args only.
+    Returns (stock_code, success, error_msg_or_empty).
+    """
+    stock_code, date_str, sc_cfg = args
+    from datetime import date as dt_date
+    from src.scraper import CCASSScraper
+
+    query_date = dt_date.fromisoformat(date_str)
+    scraper = CCASSScraper(
+        user_agent=sc_cfg["user_agent"],
+        delay_min=sc_cfg["delay_min_seconds"],
+        delay_max=sc_cfg["delay_max_seconds"],
+        timeout=sc_cfg["timeout_seconds"],
+        max_retries=sc_cfg["max_retries"],
+    )
+    try:
+        snap = scraper.scrape_stock(stock_code, query_date)
+        if snap:
+            from src.scraper import save_snapshot
+            save_snapshot(snap)
+            return (stock_code, True, "")
+        return (stock_code, False, "no data")
+    except Exception as e:
+        return (stock_code, False, str(e)[:200])
+
+
 def _scrape_parallel(
     stocks: list[str],
     query_date: date,
     sc_cfg: dict,
     n_workers: int,
 ) -> tuple[int, int, list[str]]:
-    """Scrape stocks with N parallel workers (each worker = own cloudscraper session)."""
+    """Scrape stocks with N ProcessPool workers — each worker is a subprocess
+    that can be truly killed on timeout (unlike threads where cloudscraper hangs).
+    """
     total = len(stocks)
     attempted = 0
     succeeded = 0
     failed_stocks: list[str] = []
-    lock = __import__("threading").Lock()
-    progress_lock = __import__("threading").Lock()
     done_count = 0
 
-    # Create one scraper per worker (each has its own cloudscraper session)
-    scrapers = [
-        CCASSScraper(
-            user_agent=sc_cfg["user_agent"],
-            delay_min=sc_cfg["delay_min_seconds"],
-            delay_max=sc_cfg["delay_max_seconds"],
-            timeout=sc_cfg["timeout_seconds"],
-            max_retries=sc_cfg["max_retries"],
-        )
-        for _ in range(n_workers)
-    ]
+    date_str = query_date.isoformat()
+    args_list = [(code, date_str, sc_cfg) for code in stocks]
 
-    def _scrape_one(code: str) -> tuple[str, bool]:
-        """Scrape single stock, return (code, success)."""
-        worker_idx = hash(code) % n_workers
-        scraper = scrapers[worker_idx]
-        snap = scraper.scrape_stock(code, query_date)
-        if snap:
-            save_snapshot(snap)
-            return (code, True)
-        return (code, False)
-
-    with ThreadPoolExecutor(max_workers=n_workers) as pool:
-        fut_map = {pool.submit(_scrape_one, code): code for code in stocks}
+    with ProcessPoolExecutor(max_workers=n_workers) as pool:
+        fut_map = {pool.submit(_scrape_stock_worker, args): args[0] for args in args_list}
 
         for fut in as_completed(fut_map):
             code = fut_map[fut]
             attempted += 1
             try:
-                _, ok = fut.result()
+                _, ok, err = fut.result(timeout=PER_STOCK_TIMEOUT)
                 if ok:
                     succeeded += 1
                 else:
-                    with lock:
-                        failed_stocks.append(code)
+                    failed_stocks.append(code)
+                    if err:
+                        logger.debug("Stock %s: %s", code, err)
+            except TimeoutError:
+                logger.warning("Stock %s timed out after %ds", code, PER_STOCK_TIMEOUT)
+                failed_stocks.append(code)
             except Exception as e:
                 logger.warning("Parallel scrape %s failed: %s", code, e)
-                with lock:
-                    failed_stocks.append(code)
+                failed_stocks.append(code)
 
-            # Progress logging (thread-safe)
-            with progress_lock:
-                done_count += 1
-                if done_count % 100 == 0 or done_count == total:
-                    pct = 100.0 * done_count / total
-                    logger.info("Progress: %d/%d (%.1f%%)", done_count, total, pct)
+            # Progress logging
+            done_count += 1
+            if done_count % 50 == 0 or done_count == total:
+                pct = 100.0 * done_count / total
+                logger.info("Progress: %d/%d (%.1f%%)", done_count, total, pct)
 
     logger.info(
         "Parallel scrape done: %d/%d succeeded, %d failed",
@@ -157,6 +170,16 @@ def run_daily(
     Run 一個 cycle。
     Returns: 0 = success, 1 = partial, 2 = failed
     """
+    # PID lock check — prevent cron + backfill from running simultaneously
+    # skip_alerts=True means called from backfill (lock already held by backfill_range)
+    if not skip_alerts:
+        import atexit
+        from scripts.backfill import _acquire_lock, _release_lock
+        if not _acquire_lock():
+            logger.error("FATAL-003: Backfill already running, skipping cron run")
+            return 2
+        atexit.register(_release_lock)  # auto-release on any exit
+
     init_db()
     _restore_db()  # Decompress ccass.db.gz if DB is empty (fresh checkout)
     config = load_config()
@@ -239,20 +262,77 @@ def run_daily(
                     max_retries=sc_cfg["max_retries"],
                 )
                 snapshots = []
+                # NOTE: ThreadPoolExecutor CANNOT kill hung C-level I/O in requests.
+                # Use subprocess per stock — kills reliably, ~2s overhead but never hangs.
+                import subprocess as _sp
+                import os as _os
+                HARD_TIMEOUT = 60
+                _scrape_one = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "scrape_one.py")
                 for i, code in enumerate(stocks, 1):
                     attempted += 1
                     if i % 50 == 0:
                         logger.info("Progress: %d/%d (%.1f%%)", i, len(stocks), 100 * i / len(stocks))
                     try:
-                        snap = scraper.scrape_stock(code, query_date)
-                        if snap:
-                            if out_path:
-                                snapshots.append(snap)
-                            else:
-                                save_snapshot(snap)
+                        result = _sp.run(
+                            [sys.executable, _scrape_one, code, query_date.strftime("%Y-%m-%d"),
+                             sc_cfg["user_agent"]],
+                            capture_output=True, text=True, timeout=HARD_TIMEOUT,
+                        )
+                        if result.returncode != 0:
+                            failed_stocks.append(code)
+                            continue
+                        data = json.loads(result.stdout)
+                        if data.get("ok"):
+                            # Save to DB in main process (avoids SQLite lock contention)
+                            try:
+                                with get_conn() as conn:
+                                    now_iso = __import__("datetime").datetime.utcnow().isoformat()
+                                    conn.execute("""
+                                        INSERT OR REPLACE INTO ccass_daily
+                                        (stock_code, trade_date, total_shares, total_pct,
+                                         num_participants, top5_pct, top10_pct,
+                                         adj_hhi, broker_top5_pct, top_broker_id,
+                                         top_broker_name, top_broker_pct,
+                                         futu_pct, a00005_pct, adjusted_float,
+                                         scraped_at, validation_failed)
+                                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)
+                                    """, (
+                                        data["stock_code"], data["trade_date"],
+                                        data.get("total_shares"), data.get("total_pct"),
+                                        data.get("num_participants"), data.get("top5_pct"),
+                                        data.get("top10_pct"), data.get("adj_hhi"),
+                                        data.get("broker_top5_pct"), data.get("top_broker_id"),
+                                        data.get("top_broker_name"), data.get("top_broker_pct"),
+                                        data.get("futu_pct"), data.get("a00005_pct"),
+                                        data.get("adjusted_float"),
+                                        now_iso,
+                                    ))
+                                    # P1-5: DELETE old holdings + INSERT new (atomic replace)
+                                    conn.execute(
+                                        "DELETE FROM ccass_holdings WHERE stock_code = ? AND trade_date = ?",
+                                        (data["stock_code"], data["trade_date"]),
+                                    )
+                                    for h in data.get("holdings", []):
+                                        conn.execute("""
+                                            INSERT OR REPLACE INTO ccass_holdings
+                                            (stock_code, trade_date, participant_id,
+                                             participant_name, shares, pct_of_issued)
+                                            VALUES (?, ?, ?, ?, ?, ?)
+                                        """, (
+                                            data["stock_code"], data["trade_date"],
+                                            h.get("participant_id"), h.get("participant_name"),
+                                            h.get("shares"), h.get("pct_of_issued"),
+                                        ))
+                            except Exception as e:
+                                logger.error("DB save failed for %s: %s", code, e)
+                                failed_stocks.append(code)
+                                continue
                             succeeded += 1
                         else:
                             failed_stocks.append(code)
+                    except _sp.TimeoutExpired:
+                        logger.warning("Stock %s timed out after %ds — skipping", code, HARD_TIMEOUT)
+                        failed_stocks.append(code)
                     except Exception as e:
                         logger.exception("Unexpected error on %s", code)
                         failed_stocks.append(code)
@@ -474,8 +554,9 @@ def _export_json(query_date: date, alerts_today: int) -> None:
             delta = r["delta_5d_pct"]
             if delta is not None and delta > 0:
                 top_increase.append(entry)
-            else:
+            elif delta is not None and delta < 0:
                 top_decrease.append(entry)
+            # P1-3 fix: skip NULL and zero delta — don't pollute top_decrease
 
         # Enrich stocks with market cap from Yahoo Finance
         try:

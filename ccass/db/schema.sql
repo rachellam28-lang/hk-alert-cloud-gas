@@ -10,6 +10,15 @@ CREATE TABLE IF NOT EXISTS ccass_daily (
     num_participants INTEGER,
     top5_pct REAL,
     top10_pct REAL,
+    -- Sentinel Option A concentration metrics (ex-A00005)
+    adj_hhi REAL,
+    broker_top5_pct REAL,
+    top_broker_id TEXT,
+    top_broker_name TEXT,
+    top_broker_pct REAL,
+    futu_pct REAL,
+    a00005_pct REAL,
+    adjusted_float INTEGER,
     scraped_at TEXT NOT NULL,
     validation_failed INTEGER DEFAULT 0,
     PRIMARY KEY (stock_code, trade_date)
