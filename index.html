@@ -384,6 +384,7 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
           <option value="p52">52週%</option>
           <option value="yo_pct">今年Δ%</option>
           <option value="pe">PE</option>
+          <option value="vr">量比</option>
         </select>
         <button class="btn-ghost active" id="dirBtn" title="切換排序方向" onclick="sortBy(sortCol)">↓</button>
         <span id="sortInfo" class="sort-info"></span>
@@ -419,6 +420,7 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
             <label><input type="checkbox" data-col="chg" checked onchange="toggleCol(this)"> 今日Δ%</label>
             <label><input type="checkbox" data-col="p52" checked onchange="toggleCol(this)"> 52週%</label>
             <label><input type="checkbox" data-col="pe" checked onchange="toggleCol(this)"> PE</label>
+            <label><input type="checkbox" data-col="vr" checked onchange="toggleCol(this)"> 量比</label>
             <label><input type="checkbox" data-col="yo_pct" checked onchange="toggleCol(this)"> 今年Δ%</label>
             <label><input type="checkbox" data-col="link" checked onchange="toggleCol(this)"> 連結</label>
           </div>
@@ -470,6 +472,7 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
           <th class="sortable th-chg" data-sort="chg" onclick="sortBy('chg',event)"><span>今日Δ%</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable th-p52" data-sort="p52" onclick="sortBy('p52',event)"><span>52週%</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable th-pe" data-sort="pe" onclick="sortBy('pe',event)"><span>PE</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
+          <th class="sortable th-vr" data-sort="vr" onclick="sortBy('vr',event)"><span>量比</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="th-link"><span>連結</span></th>
         </tr></thead>
         <tbody id="tbody"></tbody>
@@ -495,6 +498,17 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
   </div>
   <div class="section-body" id="body-transfers">
     <section class="card" id="transfersCard"><div class="loading-msg">載入中…</div></section>
+  </div>
+
+  <!-- 量比警報 -->
+  <div class="section-head">
+    <button class="section-toggle" onclick="toggleSection('volratio',this)" id="toggle-volratio">
+      <h2>📊 量比警報</h2>
+      <span class="toggle-arrow">▼</span>
+    </button>
+  </div>
+  <div class="section-body" id="body-volratio">
+    <section class="card" id="vrCard"><div class="loading-msg">載入中…</div></section>
   </div>
 
   <!-- Signal section -->
@@ -650,6 +664,9 @@ function getSortVal(s,col){
   if(col==='pe'){
     return s.pe != null ? s.pe : null;
   }
+  if(col==='vr'){
+    return s.vr != null ? s.vr : null;
+  }
   let v=s[col];
   if(typeof v==='string')v=v.toLowerCase();
   return v==null ? null : v;
@@ -664,7 +681,7 @@ function cmpSortVal(va,vb,dir){
 function updateSortInfo(){
   var el=document.getElementById('sortInfo');
   if(!el)return;
-  var names={code:'代碼',n:'名稱',price:'現價',yo_pct:'今年Δ%',tp:'CCASS%',t5:'Top5%',t10:'Top10%',d5:'5日Δ',d20:'20日Δ',d60:'60日Δ',d120:'120日Δ',np:'參與者',mc:'市值',chg:'今日Δ%',p52:'52週%',pe:'PE',sig:'信號',su:'連續增持',sd:'連續減持',yearyo:'🔺年開',prevyo:'😻前年',pypct:'前年Δ%'};
+  var names={code:'代碼',n:'名稱',price:'現價',yo_pct:'今年Δ%',tp:'CCASS%',t5:'Top5%',t10:'Top10%',d5:'5日Δ',d20:'20日Δ',d60:'60日Δ',d120:'120日Δ',np:'參與者',mc:'市值',chg:'今日Δ%',p52:'52週%',pe:'PE',vr:'量比',sig:'信號',su:'連續增持',sd:'連續減持',yearyo:'🔺年開',prevyo:'😻前年',pypct:'前年Δ%'};
   var p=names[sortCol]||sortCol,pa=sortDir===1?'▲':'▼';
   if(sortCol2){var sn=names[sortCol2]||sortCol2,sa=sortDir2===1?'▲':'▼';el.innerHTML='<b>'+p+' '+pa+'</b><span class=\"si-sep\">|</span><span style=\"opacity:.7\">'+sn+' '+sa+'</span>';}
   else el.innerHTML='<b>'+p+' '+pa+'</b>';
@@ -873,7 +890,7 @@ function toggleSection(id, btn) {
   try { localStorage.setItem(key, collapsed ? '0' : '1'); } catch(e) {}
 }
 (function initSections() {
-  ['signals','corps','guide','transfers'].forEach(function(id) {
+  ['signals','corps','guide','transfers','volratio'].forEach(function(id) {
     try {
       if (localStorage.getItem('sec_collapsed_' + id) === '1') {
         const body = document.getElementById('body-' + id);
@@ -987,6 +1004,7 @@ function renderTable(){
       +'<td class="hide-chg">'+(s.chg!=null?'<span class="num '+deltaClass(s.chg)+'">'+fmtPct(s.chg)+'</span>':'<span class="num delta-null">—</span>')+'</td>'
       +'<td class="hide-p52">'+(s.p52!=null?pbar(s.p52, s.p52>=70?'hi':s.p52>=30?'mid':'lo'):'<span class="mc-null">—</span>')+'</td>'
       +'<td class="hide-pe"><span class="num">'+(s.pe!=null?s.pe.toFixed(1):'—')+'</span></td>'
+      +'<td class="hide-vr"><span class="num'+(s.vr&&s.vr>=2?' up':'')+'">'+(s.vr!=null?s.vr.toFixed(1):'—')+'</span></td>'
       +'<td class="hide-link" onclick="event.stopPropagation()">'+linkHtml+'</td>'
       +'</tr>';
   }).join('');
@@ -1622,6 +1640,40 @@ function renderTransfers(data, priceMap){
     +'<div style="padding:4px 14px 10px;font-size:10px;color:var(--mute-2)">更新於 '+esc(data.updated)+' · '+data.count+'項</div>';
 }
 
+function renderVrAlert(){
+  var card = document.getElementById('vrCard');
+  if(!card||!allStocks||!allStocks.length){card.innerHTML='<div class="empty">暫無數據</div>';return;}
+  var ranked = allStocks.filter(function(s){return s.vr!=null&&s.vr>=2;}).sort(function(a,b){return b.vr-a.vr;}).slice(0,30);
+  if(!ranked.length){card.innerHTML='<div class="empty">暫無異常量比</div>';return;}
+  var items = ranked.map(function(s){
+    var priceVal = priceMap.get(s.c) ?? s.lp;
+    var priceStr = priceVal!=null?(priceVal<1?priceVal.toFixed(3):priceVal.toFixed(2)):'—';
+    return '<div class="transfer-card" onclick="showDetail(\''+esc(s.c)+'\')">'
+      +'<div class="tf-head">'
+        +'<div><span class="code">'+esc(s.c)+'</span> <span class="name">'+esc(s.n)+'</span></div>'
+        +'<span class="tf-total" style="color:'+(s.vr>=5?'var(--up)':'var(--amber)')+'">量比 '+s.vr.toFixed(1)+'x</span>'
+      +'</div>'
+      +'<div class="tf-flows">'
+        +'<div class="tf-side tf-in"><span class="tf-side-label">📊 成交</span>'
+          +'<div><span>現價 $'+esc(priceStr)+'</span></div>'
+        +'</div>'
+        +'<div class="tf-side tf-out"><span class="tf-side-label">📈 均量</span>'
+          +'<div><span class="tf-shares">'+(s.avg_vol!=null?fmtNum(s.avg_vol):'—')+'</span></div>'
+        +'</div>'
+      +'</div>'
+    +'</div>';
+  }).join('');
+  card.innerHTML = '<div class="transfer-grid">'+items+'</div>'
+    +'<div style="padding:4px 14px 10px;font-size:10px;color:var(--mute-2)">量比≥2 · '+ranked.length+'隻</div>';
+}
+
+function fmtNum(n){
+  if(n==null)return'—';
+  if(n>=1e8)return (n/1e8).toFixed(2)+'億';
+  if(n>=1e4)return (n/1e4).toFixed(1)+'萬';
+  return n.toLocaleString();
+}
+
 // --- main load ---
 async function loadData(){
   const dot=document.getElementById('statusDot');
@@ -1637,6 +1689,7 @@ async function loadData(){
     renderSummaryBar(data);
     applyFilters();
     updateSortInfo();
+    renderVrAlert();
 
     // Fetch market.json
     fetch('./market.json?_='+Date.now())
