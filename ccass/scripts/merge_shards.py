@@ -15,7 +15,7 @@ import sys
 from datetime import datetime, date
 from pathlib import Path
 
-SHARD_TOTAL = 6
+SHARD_TOTAL = 1  # P0-3: match parallel_backfill.py single-shard mode
 SHARD_PREFIX = "ccass-shard"
 PROJECT_ROOT = Path(__file__).parent.parent
 
@@ -137,17 +137,29 @@ def update_ccass_json(target_date: date) -> None:
     db = sqlite3.connect(str(DB_PATH))
     db.row_factory = sqlite3.Row
     
-    # Get stock names
+    # Get stock names (exclude non-equity: temp codes, prefs, warrants)
+    EXCLUDE_PATTERNS = [
+        "029%",        # temp consolidation/split codes
+        "04621",       # preference share
+    ]
+    EXCLUDE_NAME_KEYWORDS = ["PREF", "優先", "股權", "二千五", "二千", "一萬"]
+    
     names = {}
-    for row in db.execute("SELECT stock_code, stock_name FROM stock_universe"):
+    exclude_clauses = " OR ".join([f"stock_code LIKE '{p}'" for p in EXCLUDE_PATTERNS])
+    exclude_clauses += " OR " + " OR ".join([f"stock_name LIKE '%{k}%'" for k in EXCLUDE_NAME_KEYWORDS])
+    for row in db.execute(f"SELECT stock_code, stock_name FROM stock_universe WHERE NOT ({exclude_clauses})"):
         names[row[0]] = row[1] or row[0]
     
-    # Get latest data for target_date
-    rows = db.execute("""
+    # Get latest data for target_date (filter non-equity)
+    exclude_where = " AND ".join([f"cd.stock_code NOT LIKE '{p}'" for p in EXCLUDE_PATTERNS])
+    rows = db.execute(f"""
         SELECT cd.stock_code, cd.total_pct, cd.num_participants,
-               cd.top5_pct, cd.top10_pct
+               cd.top5_pct, cd.top10_pct,
+               cd.adj_hhi, cd.broker_top5_pct, cd.top_broker_id,
+               cd.top_broker_name, cd.top_broker_pct, cd.futu_pct,
+               cd.a00005_pct
         FROM ccass_daily cd
-        WHERE cd.trade_date = ?
+        WHERE cd.trade_date = ? AND {exclude_where}
     """, (target_date.strftime("%Y-%m-%d"),)).fetchall()
     
     # Get trends for this date (with streak)
@@ -186,6 +198,14 @@ def update_ccass_json(target_date: date) -> None:
         np_val = row[2] or 0
         t5 = round(row[3] or 0, 2)
         t10 = round(row[4] or 0, 2)
+        # Sentinel Option A fields (compact keys)
+        ah = round(row[5], 1) if row[5] is not None else None       # adj_hhi
+        bt5 = round(row[6], 2) if row[6] is not None else None      # broker_top5_pct
+        tb = row[7] or ""                                             # top_broker_id
+        tbn = row[8] or ""                                            # top_broker_name
+        tbp = round(row[9], 2) if row[9] is not None else None       # top_broker_pct
+        fp = round(row[10], 2) if row[10] is not None else None      # futu_pct
+        a5 = round(row[11], 2) if row[11] is not None else None      # a00005_pct
 
         tr = trends.get(sc, {})
         mc = mc_map.get(sc)
@@ -204,6 +224,14 @@ def update_ccass_json(target_date: date) -> None:
             'sd': tr.get('sd', 0),
             'np': np_val,
             'mc': mc,
+            # Sentinel Option A (compact keys)
+            'ah': ah,
+            'bt5': bt5,
+            'tb': tb,
+            'tbn': tbn,
+            'tbp': tbp,
+            'fp': fp,
+            'a5': a5,
         })
 
     total_participants = sum(s['np'] for s in stocks)
