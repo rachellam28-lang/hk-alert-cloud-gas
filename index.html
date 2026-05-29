@@ -1565,23 +1565,33 @@ function fmtShares(n){
   if(Math.abs(n)>=1e4) return (n/1e4).toFixed(1)+'萬';
   return n.toLocaleString();
 }
-function renderTransfers(data){
+function renderTransfers(data, priceMap){
   var card = document.getElementById('transfersCard');
   if(!card) return;
   if(!data||!data.transfers||!data.transfers.length){
     card.innerHTML='<div style="padding:12px;color:var(--mute);text-align:center;font-size:12px">暫無轉倉記錄</div>';
     return;
   }
+  var pm = priceMap || new Map();
   var items = data.transfers.map(function(t){
     var topIn = t.ins[0]||{};
     var topOut = t.outs[0]||{};
+    var price = pm.get(t.code);
+    var totalShares = t.total_in + t.total_out;
+    var valueStr = '';
+    if(price && totalShares){
+      var val = totalShares * price;
+      if(val>=1e8) valueStr = (val/1e8).toFixed(2)+'億';
+      else if(val>=1e4) valueStr = (val/1e4).toFixed(0)+'萬';
+      else valueStr = val.toLocaleString();
+    }
     return '<div class="transfer-card" onclick="showDetail(\''+esc(t.code)+'\')">'
       +'<div class="tf-head">'
         +'<div style="display:flex;align-items:center">'
           +'<span class="tf-code">'+esc(t.code)+'</span>'
           +'<span class="tf-name" title="'+esc(t.name)+'">'+esc(t.name)+'</span>'
         +'</div>'
-        +'<span class="tf-total">'+fmtShares(t.total_in+t.total_out)+'</span>'
+        +'<span class="tf-total">'+fmtShares(totalShares)+(valueStr?' · $'+valueStr:'')+'</span>'
       +'</div>'
       +'<div class="tf-flows">'
         +'<div class="tf-side tf-in">'
@@ -1632,7 +1642,7 @@ async function loadData(){
     // Fetch transfers
     fetch('./data/transfers.json?_='+Date.now())
       .then(r=>r.ok?r.json():null)
-      .then(t=>{if(t)renderTransfers(t);})
+      .then(t=>{if(t)renderTransfers(t, priceMap);})
       .catch(()=>{});
 
     // Fetch GAS
