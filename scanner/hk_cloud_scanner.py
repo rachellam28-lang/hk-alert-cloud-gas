@@ -753,35 +753,30 @@ def get_hkexnews_json_urls() -> list[str]:
 def fetch_cn_title_map() -> dict[str, str]:
     """Fetch the HKEXnews Chinese feed and return {webPath: chinese_title}.
 
-    HKEXnews publishes parallel Chinese-language JSON feeds at the same URL
-    with prefix 'c' instead of 'l'  (e.g. ccisehk1relsde_1.json).  We use
-    these to get the official Traditional-Chinese title for each announcement,
-    falling back to rule-based translate_title_cn() when unavailable.
+    Uses the new homecat*_c.json feeds (old ccisehk API removed by HKEX).
+    Falls back to rule-based translate_title_cn() when unavailable.
     """
-    range_flag = "7" if ANNOUNCEMENT_RANGE_DAYS >= 7 else "1"
-    first_url = f"{HKEXNEWS_BASE}/ncms/json/eds/ccisehk{range_flag}relsde_1.json"
-    try:
-        first = requests.get(first_url, timeout=20).json()
-        max_files = int(first.get("maxNumOfFile", 1))
-    except Exception as exc:
-        print(f"HKEXnews CN first page failed: {exc}")
-        return {}
     cn_map: dict[str, str] = {}
-    for page in range(1, max_files + 1):
-        url = f"{HKEXNEWS_BASE}/ncms/json/eds/ccisehk{range_flag}relsde_{page}.json"
+    # New CN feeds — each category shows latest 5 items
+    cn_urls = [f"{HKEXNEWS_BASE}/ncms/script/eds/homecat{i}_c.json" for i in range(8)]
+    for url in cn_urls:
         try:
-            rows = requests.get(url, timeout=20).json().get("newsInfoLst", [])
-        except Exception as exc:
-            print(f"HKEXnews CN page {page} failed: {exc}")
-            continue
-        for row in rows:
-            web_path = str(row.get("webPath", "")).strip()
-            if not web_path:
+            resp = requests.get(url, timeout=20)
+            if resp.status_code != 200:
                 continue
-            cn_title = html_to_text(row.get("title", "")) or html_to_text(row.get("lTxt", ""))
-            if cn_title:
-                cn_map[web_path] = cn_title
-    print(f"HKEXnews CN title map: {len(cn_map)} entries")
+            data = resp.json()
+            for row in data.get("newsInfo", []):
+                # Map by EN webPath → CN title
+                web_path_en = str(row.get("webPath", "")).replace("_c.htm", ".htm").strip()
+                if not web_path_en:
+                    continue
+                cn_title = html_to_text(row.get("title", "")) or html_to_text(row.get("sTxt", ""))
+                if cn_title and web_path_en not in cn_map:
+                    cn_map[web_path_en] = cn_title
+        except Exception:
+            continue
+    if cn_map:
+        print(f"HKEXnews CN title map: {len(cn_map)} entries (new API)")
     return cn_map
 
 
