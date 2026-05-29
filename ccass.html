@@ -94,7 +94,7 @@ tbody tr{cursor:pointer}
 .hold-shares{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:11px}
 .loading-msg{text-align:center;padding:60px 20px;color:var(--mute);font-size:14px}
 /* Price column */
-.cell-price{width:90px;white-space:nowrap}.pv{font:600 13px "JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.cell-price{width:100px;white-space:nowrap}.pv{font:600 13px "JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}.yo-ind{font-size:10px;margin-right:1px}.yo-price{display:block;font-size:9px;color:var(--mute);font-weight:400;font-family:"JetBrains Mono",ui-monospace,monospace}
 /* Tech signal pills */
 .spill{display:inline-flex;align-items:center;gap:4px;background:var(--primary-soft);color:#075985;border:1px solid var(--primary-border);font-size:11px;font-weight:600;padding:2px 9px;border-radius:999px;margin:1px 3px 1px 0;line-height:1.5;white-space:nowrap}
 .spill-poc{background:var(--violet-soft);color:var(--violet);border-color:var(--violet-border)}
@@ -310,7 +310,6 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
           <option value="price">價格</option>
           <option value="code">代碼</option>
           <option value="n">名稱</option>
-          <option value="yearyo">🔺年開</option>
           <option value="prevyo">😻前年</option>
           <option value="pypct">前年Δ%</option>
           <option value="mc">市值</option>
@@ -337,7 +336,6 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
         <div class="col-toggle">
           <button class="col-toggle-btn" onclick="toggleColPanel()">📌 欄位</button>
           <div class="col-toggle-panel" id="colPanel">
-            <label><input type="checkbox" data-col="yearyo" checked onchange="toggleCol(this)"> 🔺年開</label>
             <label><input type="checkbox" data-col="prevyo" checked onchange="toggleCol(this)"> 😻前年</label>
             <label><input type="checkbox" data-col="pypct" checked onchange="toggleCol(this)"> 前年Δ%</label>
             <label><input type="checkbox" data-col="price" checked onchange="toggleCol(this)"> 價格</label>
@@ -389,7 +387,6 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
       <table>
         <thead><tr>
           <th class="sortable sort-active sort-desc" data-sort="code" onclick="sortBy('code',event)"><span>代碼</span><span class="sort-icon">▼</span><span class="sort2-icon"></span></th>
-          <th class="sortable th-yearyo" data-sort="yearyo" onclick="sortBy('yearyo',event)"><span>🔺</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable th-prevyo" data-sort="prevyo" onclick="sortBy('prevyo',event)"><span>😻</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable th-pypct" data-sort="pypct" onclick="sortBy('pypct',event)"><span>前年Δ%</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable" data-sort="n" onclick="sortBy('n',event)"><span>名稱</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
@@ -852,10 +849,11 @@ function renderTable(){
     const mergedSig=(techHtml||'')+(corpHtml?'<div class="cpillrow">'+corpHtml+'</div>':'');
     const sigDisplay=(btHtml||'')+mergedSig||'<span class="mc-null">—</span>';
 
-    // Price
+    // Price with 🔺 year-open indicator
     const priceVal=priceMap.get(s.c) ?? s.lp;
+    const aboveYO = s.lp && s.yo && s.lp > s.yo;
     const priceHtml=priceVal!=null
-      ? '<span class="pv">'+esc(priceVal<1?priceVal.toFixed(3):priceVal.toFixed(2))+'</span>'
+      ? (aboveYO?'<span class="yo-ind">🔺</span>':'')+'<span class="pv">'+esc(priceVal<1?priceVal.toFixed(3):priceVal.toFixed(2))+'</span>'+(aboveYO?'<span class="yo-price">'+esc(s.yo<1?s.yo.toFixed(3):s.yo.toFixed(2))+'</span>':'')
       : '<span class="mc-null">—</span>';
 
 // Watchlist + HKEX link
@@ -873,7 +871,6 @@ function renderTable(){
     if(hasIPO)hlClass+=' hl-ipo';
     return '<tr class="'+ipoClass+hlClass+'" onclick="showDetail(\''+s.c+'\')">'
       +'<td><span class="code">'+esc(s.c)+'</span>'+(s.suspended?' <span class="suspended-badge">停牌</span>':'')+'</td>'
-            +'<td class="hide-yearyo">'+(s.lp&&s.yo&&s.lp>s.yo?'🔺':'')+'</td>'
             +'<td class="hide-prevyo">'+(s.lp&&s.py&&s.lp>s.py?'😻':'')+'</td>'
             +'<td class="hide-pypct"><span class="num '+deltaClass(s.py_pct)+'">'+(s.py_pct!=null?fmtPct(s.py_pct):'—')+'</span></td>'
             +'<td><span class="name" title="'+esc(s.n)+'">'+esc(s.n)+'</span></td>'
@@ -930,7 +927,7 @@ function renderTable(){
     const ipoClass=hasIPO?' ipo-highlight':'';
     return '<div class="stock-card'+ipoClass+'" onclick="showDetail(\''+s.c+'\')">'
       +'<div class="sc-header">'
-        +'<span class="code">'+(s.lp&&s.yo&&s.lp>s.yo?'🔺 ':'')+(s.lp&&s.py&&s.lp>s.py?'😻 ':'')+esc(s.c)+(s.suspended?' <span class="suspended-badge">停牌</span>':'')+'</span>'
+        +'<span class="code">'+(s.lp&&s.py&&s.lp>s.py?'😻 ':'')+esc(s.c)+(s.suspended?' <span class="suspended-badge">停牌</span>':'')+'</span>'
         +(s.su>1?'<span class="sc-streak up">🔥'+s.su+'</span>':'')
         +(s.sd>1?'<span class="sc-streak dn">❄️'+s.sd+'</span>':'')
         +'<span class="name" title="'+esc(s.n)+'">'+esc(s.n)+'</span>'
@@ -938,7 +935,7 @@ function renderTable(){
         +'<button class="btn-save'+(saved?' saved':'')+'" data-code="'+esc(s.c)+'" data-name="'+esc(s.n)+'" data-signal="" data-date="" title="加入自選" onclick="event.stopPropagation()">'+(saved?'★':'☆')+'</button>'
       +'</div>'
       +'<div class="sc-metrics">'
-        +'<div class="sc-metric"><span class="sc-metric-label">價格</span><span class="sc-metric-val'+(priceStr?'':' muted')+'">'+(priceStr?esc(priceStr):'—')+'</span></div>'
+        +'<div class="sc-metric"><span class="sc-metric-label">'+(s.lp&&s.yo&&s.lp>s.yo?'🔺':'')+'價格</span><span class="sc-metric-val'+(priceStr?'':' muted')+'">'+(priceStr?esc(priceStr):'—')+'</span>'+(s.lp&&s.yo&&s.lp>s.yo?'<span class="yo-price">'+esc(s.yo<1?s.yo.toFixed(3):s.yo.toFixed(2))+'</span>':'')+'</div>'
         +'<div class="sc-metric"><span class="sc-metric-label">CCASS</span><span class="sc-metric-val">'+s.tp.toFixed(1)+'%</span><div class="pbar" style="width:100%;max-width:none;margin-top:2px"><div class="pbar-fill pbar-'+cc(s.tp)+'" style="width:'+Math.min(s.tp,100)+'%"></div></div></div>'
         +(s.py_pct!=null?'<div class="sc-metric"><span class="sc-metric-label">前年Δ%</span><span class="sc-metric-val '+(s.py_pct>=0?'up':'dn')+'">'+fmtPct(s.py_pct)+'</span></div>':'')
         +'<div class="sc-metric"><span class="sc-metric-label">5日Δ</span><span class="sc-metric-val '+d5class+'">'+(s.d5!=null?fmtPct(s.d5):'—')+'</span></div>'
