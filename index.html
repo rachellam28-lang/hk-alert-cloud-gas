@@ -291,6 +291,54 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
     </div>
   </div>
 
+  <div class="section-head">
+    <button class="section-toggle" onclick="toggleSection('guide',this)" id="toggle-guide">
+      <h2><span class="ico">📖</span> CCASS 使用說明書</h2>
+      <span class="toggle-arrow">▼</span>
+    </button>
+  </div>
+  <div class="section-body" id="body-guide">
+    <section class="card" style="font-size:12px;line-height:1.8;padding:12px 16px;color:var(--text)">
+      <b>🔍 呢個 dashboard 係咩？</b><br>
+      追蹤港股 CCASS（中央結算系統）持倉數據 — 睇邊個大戶/券商正在收貨或散貨。<br><br>
+
+      <b>📊 數據來源</b><br>
+      • <b>CCASS 持倉</b>：HKEX 每日 CCASS 持股報告（持倉%、Top5/Top10 集中度、HHI）<br>
+      • <b>股價</b>：GAS 實時報價 + yfinance 歷史數據（今日Δ%、52週高低、PE、Beta）<br>
+      • <b>信號</b>：技術分析信號（POC、FVG、年開突破、IPO首日突破）<br>
+      • <b>配股/供股</b>：配股價、供股價突破監測<br><br>
+
+      <b>🎯 點樣用嚟炒？</b><br>
+      <b>1. CCASS% ↑ + 股價 ↑</b> → 大戶收貨中，跟勢追入<br>
+      <b>2. CCASS% ↑ + 股價 ↓</b> → 大戶壓價收貨，留意見底信號<br>
+      <b>3. CCASS% ↓ + 股價 ↑</b> → 大戶散貨中，高位減持<br>
+      <b>4. Top5% > 80%</b> → 高度集中，莊家股，大波動<br>
+      <b>5. 連續增持（🔥）</b> → 大戶持續買入，強勢信號<br>
+      <b>6. 連續減持（❄️）</b> → 大戶持續沽出，避開<br>
+      <b>7. 🔺 年開突破</b> → 現價高過今年開市價，多頭趨勢<br>
+      <b>8. 52週%近0%</b> → 股價近52週低位，可能見底<br>
+      <b>9. 52週%近100%</b> → 股價近52週高位，小心高追<br><br>
+
+      <b>📌 關鍵數字解讀</b><br>
+      • <b>持倉%（tp）</b>：CCASS 總持股佔發行量%，>60%即高集中<br>
+      • <b>5日Δ（d5）</b>：近5日CCASS%變化，+值=收貨，-值=散貨<br>
+      • <b>今日Δ%（chg）</b>：今日股價變幅（yfinance）<br>
+      • <b>PE</b>：市盈率，<10可能低估，>100可能高估<br>
+      • <b>Beta</b>：波動性，>1比大市波動大<br>
+      • <b>HHI</b>（drawer入面）：持倉集中度指數，>1500=高度集中<br><br>
+
+      <b>⚡ 快篩 Presets</b><br>
+      • <b>信號突破</b>：按技術信號數量排序<br>
+      • <b>配股預警</b>：CCASS%>30 + 有配股記錄<br>
+      • <b>高動能</b>：5日Δ跌5-20%（大戶低位掃貨）<br><br>
+
+      <b>🔄 更新頻率</b><br>
+      • CCASS 數據：每日 HKEX update 後（約7am HKT）<br>
+      • 股價 + 停牌：每日 9pm HKT yfinance refresh<br>
+      • 信號：GAS 自動推送<br>
+    </section>
+  </div>
+
   <div class="card">
     <div class="toolbar">
       <div class="toolbar-sect">
@@ -777,7 +825,7 @@ function toggleSection(id, btn) {
   try { localStorage.setItem(key, collapsed ? '0' : '1'); } catch(e) {}
 }
 (function initSections() {
-  ['signals','corps'].forEach(function(id) {
+  ['signals','corps','guide'].forEach(function(id) {
     try {
       if (localStorage.getItem('sec_collapsed_' + id) === '1') {
         const body = document.getElementById('body-' + id);
