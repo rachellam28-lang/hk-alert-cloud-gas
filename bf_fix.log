@@ -1,0 +1,15 @@
+2026-05-28 12:20:17 [INFO] backfill: Lock acquired (PID 695508)
+2026-05-28 12:20:17 [INFO] backfill: Skip universe refresh: 2778 stocks already in DB
+2026-05-28 12:20:17 [INFO] backfill: Backfill plan: 1 trading days
+2026-05-28 12:20:17 [INFO] backfill: Backfilling 2026-05-20 (1/1)...
+2026-05-28 12:20:17 [INFO] runner: ============================================================
+2026-05-28 12:20:17 [INFO] runner: CCASS daily run for 2026-05-20
+2026-05-28 12:20:17 [INFO] runner: ============================================================
+2026-05-28 12:20:17 [INFO] runner: Querying CCASS data for 2026-05-20
+2026-05-28 12:20:17 [INFO] runner: Universe: 2778 active stocks
+2026-05-28 12:35:56 [INFO] runner: Progress: 50/2778 (1.8%)
+2026-05-28 12:51:33 [INFO] runner: Progress: 100/2778 (3.6%)
+2026-05-28 13:07:23 [INFO] runner: Progress: 150/2778 (5.4%)
+2026-05-28 13:23:05 [INFO] runner: Progress: 200/2778 (7.2%)
+2026-05-28 13:39:07 [INFO] runner: Progress: 250/2778 (9.0%)
+2026-05-28 13:55:12 [INFO] runner: Progress: 300/2778 (10.8%)

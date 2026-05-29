@@ -1,0 +1,43 @@
+2026-05-28 04:00:25 [INFO] compute_metrics: ============================================================
+2026-05-28 04:00:25 [INFO] compute_metrics: CONCENTRATION METRICS COMPUTATION (from holdings)
+2026-05-28 04:00:25 [INFO] compute_metrics: ============================================================
+2026-05-28 04:00:25 [INFO] compute_metrics:   2026-04-30: 0/2760 (0%) — need ~2760
+2026-05-28 04:00:25 [INFO] compute_metrics:   2026-05-04: 0/2760 (0%) — need ~2760
+2026-05-28 04:00:25 [INFO] compute_metrics:   2026-05-05: 1186/2762 (43%) — need ~1576
+2026-05-28 04:00:25 [INFO] compute_metrics:   2026-05-14: 2739/2768 (99%) — need ~29
+2026-05-28 04:00:25 [INFO] compute_metrics:   2026-05-15: 1856/2768 (67%) — need ~912
+2026-05-28 04:00:25 [INFO] compute_metrics:   2026-05-18: 0/2770 (0%) — need ~2770
+2026-05-28 04:00:25 [INFO] compute_metrics:   2026-05-19: 2503/2771 (90%) — need ~268
+2026-05-28 04:00:25 [INFO] compute_metrics:   2026-05-21: 0/2773 (0%) — need ~2773
+2026-05-28 04:00:25 [INFO] compute_metrics:   2026-05-22: 635/2775 (23%) — need ~2140
+
+2026-05-28 04:00:25 [INFO] compute_metrics: Computing concentration for 2026-04-30...
+2026-05-28 04:00:26 [INFO] compute_metrics:   2026-04-30: updated 2730 stocks
+2026-05-28 04:00:26 [INFO] compute_metrics: Computing concentration for 2026-05-04...
+2026-05-28 04:00:27 [INFO] compute_metrics:   2026-05-04: updated 2731 stocks
+2026-05-28 04:00:27 [INFO] compute_metrics: Computing concentration for 2026-05-05...
+2026-05-28 04:00:28 [INFO] compute_metrics:   2026-05-05: updated 1546 stocks
+2026-05-28 04:00:28 [INFO] compute_metrics: Computing concentration for 2026-05-14...
+2026-05-28 04:00:28 [INFO] compute_metrics:   2026-05-14: updated 0 stocks
+2026-05-28 04:00:28 [INFO] compute_metrics: Computing concentration for 2026-05-15...
+2026-05-28 04:00:29 [INFO] compute_metrics:   2026-05-15: updated 882 stocks
+2026-05-28 04:00:29 [INFO] compute_metrics: Computing concentration for 2026-05-18...
+2026-05-28 04:00:30 [INFO] compute_metrics:   2026-05-18: updated 2740 stocks
+2026-05-28 04:00:30 [INFO] compute_metrics: Computing concentration for 2026-05-19...
+2026-05-28 04:00:31 [INFO] compute_metrics:   2026-05-19: updated 238 stocks
+2026-05-28 04:00:31 [INFO] compute_metrics: Computing concentration for 2026-05-21...
+2026-05-28 04:00:32 [INFO] compute_metrics:   2026-05-21: updated 2743 stocks
+2026-05-28 04:00:32 [INFO] compute_metrics: Computing concentration for 2026-05-22...
+2026-05-28 04:00:33 [INFO] compute_metrics:   2026-05-22: updated 2109 stocks
+2026-05-28 04:00:33 [INFO] compute_metrics: ============================================================
+2026-05-28 04:00:33 [INFO] compute_metrics: FINAL STATE:
+2026-05-28 04:00:33 [INFO] compute_metrics:   2026-05-26: 1078/1079 (100%) ✅
+2026-05-28 04:00:33 [INFO] compute_metrics:   2026-05-22: 2744/2775 (99%) ⚠️
+2026-05-28 04:00:33 [INFO] compute_metrics:   2026-05-21: 2743/2773 (99%) ⚠️
+2026-05-28 04:00:33 [INFO] compute_metrics:   2026-05-19: 2741/2771 (99%) ⚠️
+2026-05-28 04:00:33 [INFO] compute_metrics:   2026-05-18: 2740/2770 (99%) ⚠️
+2026-05-28 04:00:33 [INFO] compute_metrics:   2026-05-15: 2739/2768 (99%) ⚠️
+2026-05-28 04:00:33 [INFO] compute_metrics:   2026-05-14: 2739/2768 (99%) ⚠️
+2026-05-28 04:00:33 [INFO] compute_metrics:   2026-05-05: 2732/2762 (99%) ⚠️
+2026-05-28 04:00:33 [INFO] compute_metrics:   2026-05-04: 2731/2760 (99%) ⚠️
+2026-05-28 04:00:33 [INFO] compute_metrics:   2026-04-30: 2730/2760 (99%) ⚠️

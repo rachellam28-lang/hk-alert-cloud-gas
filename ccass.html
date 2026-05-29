@@ -788,8 +788,8 @@ function renderTable(){
     const mergedSig=(techHtml||'')+(corpHtml?'<div class="cpillrow">'+corpHtml+'</div>':'');
     const sigDisplay=mergedSig||'<span class="mc-null">—</span>';
 
-    // Price
-    const priceVal=priceMap.get(s.c);
+    // Price — fallback to s.lp from ccass.json if GAS price not available
+    const priceVal=priceMap.get(s.c) ?? s.lp;
     const priceHtml=priceVal!=null
       ? '<span class="pv">'+esc(priceVal<1?priceVal.toFixed(3):priceVal.toFixed(2))+'</span>'
       : '<span class="mc-null">—</span>';
@@ -849,7 +849,7 @@ function renderTable(){
     const corpCount=sig?[sig.pl,sig.ri,sig.inc].filter(Boolean).length:0;
     const totalSigCount=techCount+corpCount;
     const hasIPO=techSig.some(x=>x.label&&x.label.indexOf('IPO首日')>=0);
-    const priceVal=priceMap.get(s.c);
+    const priceVal=priceMap.get(s.c) ?? s.lp;
     const priceStr=priceVal!=null?(priceVal<1?priceVal.toFixed(3):priceVal.toFixed(2)):null;
     const saved=wl.has(s.c);
     const d5class=s.d5!==null?(s.d5>0?'up':(s.d5<0?'dn':'muted')):'muted';
@@ -989,8 +989,8 @@ async function showDetail(code){
 	const d60html=s.d60!==null?`<span class="dmeta-val ${s.d60>0?'up':'dn'}">${fmtPct(s.d60)}</span><span class="dmeta-sub">持倉60日Δ</span>`:'<span class="dmeta-val delta-null">—</span><span class="dmeta-sub">持倉60日Δ</span>';
 	const d120html=s.d120!==null?`<span class="dmeta-val ${s.d120>0?'up':'dn'}">${fmtPct(s.d120)}</span><span class="dmeta-sub">持倉120日Δ</span>`:'<span class="dmeta-val delta-null">—</span><span class="dmeta-sub">持倉120日Δ</span>';
 
-  // Price
-  const priceVal=priceMap.get(s.c);
+  // Price — fallback to s.lp from ccass.json if GAS price not available
+  const priceVal=priceMap.get(s.c) ?? s.lp;
   const priceHtml=priceVal!=null
     ? '<span style="font-size:18px;font-weight:700">$'+esc(priceVal<1?priceVal.toFixed(3):priceVal.toFixed(2))+'</span>'
     : '<span style="color:var(--mute-2)">—</span>';

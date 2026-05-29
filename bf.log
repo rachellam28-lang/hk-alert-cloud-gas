@@ -1,0 +1,83 @@
+2026-05-28 08:35:25 [INFO] backfill: Lock acquired (PID 229304)
+2026-05-28 08:35:25 [INFO] backfill: Skip universe refresh: 2778 stocks already in DB
+2026-05-28 08:35:25 [INFO] backfill: Backfill plan: 2 trading days
+2026-05-28 08:35:25 [INFO] backfill: Backfilling 2026-05-26 (1/2)...
+2026-05-28 08:35:25 [INFO] runner: ============================================================
+2026-05-28 08:35:25 [INFO] runner: CCASS daily run for 2026-05-26
+2026-05-28 08:35:25 [INFO] runner: ============================================================
+2026-05-28 08:35:25 [INFO] runner: Querying CCASS data for 2026-05-22
+2026-05-28 08:35:25 [INFO] runner: Universe: 2778 active stocks
+2026-05-28 08:35:32 [INFO] runner: Progress: 50/2778 (1.8%)
+2026-05-28 08:35:39 [INFO] runner: Progress: 100/2778 (3.6%)
+2026-05-28 08:35:47 [INFO] runner: Progress: 150/2778 (5.4%)
+2026-05-28 08:35:54 [INFO] runner: Progress: 200/2778 (7.2%)
+2026-05-28 08:36:01 [INFO] runner: Progress: 250/2778 (9.0%)
+2026-05-28 08:36:08 [INFO] runner: Progress: 300/2778 (10.8%)
+2026-05-28 08:36:14 [INFO] runner: Progress: 350/2778 (12.6%)
+2026-05-28 08:36:22 [INFO] runner: Progress: 400/2778 (14.4%)
+2026-05-28 08:36:29 [INFO] runner: Progress: 450/2778 (16.2%)
+2026-05-28 08:36:36 [INFO] runner: Progress: 500/2778 (18.0%)
+2026-05-28 08:36:43 [INFO] runner: Progress: 550/2778 (19.8%)
+2026-05-28 08:36:50 [INFO] runner: Progress: 600/2778 (21.6%)
+2026-05-28 08:36:57 [INFO] runner: Progress: 650/2778 (23.4%)
+2026-05-28 08:37:04 [INFO] runner: Progress: 700/2778 (25.2%)
+2026-05-28 08:37:11 [INFO] runner: Progress: 750/2778 (27.0%)
+2026-05-28 08:37:18 [INFO] runner: Progress: 800/2778 (28.8%)
+2026-05-28 08:37:25 [INFO] runner: Progress: 850/2778 (30.6%)
+2026-05-28 08:37:32 [INFO] runner: Progress: 900/2778 (32.4%)
+2026-05-28 08:37:38 [INFO] runner: Progress: 950/2778 (34.2%)
+2026-05-28 08:37:45 [INFO] runner: Progress: 1000/2778 (36.0%)
+2026-05-28 08:37:51 [INFO] runner: Progress: 1050/2778 (37.8%)
+2026-05-28 08:37:58 [INFO] runner: Progress: 1100/2778 (39.6%)
+2026-05-28 08:38:04 [INFO] runner: Progress: 1150/2778 (41.4%)
+2026-05-28 08:38:11 [INFO] runner: Progress: 1200/2778 (43.2%)
+2026-05-28 08:38:17 [INFO] runner: Progress: 1250/2778 (45.0%)
+2026-05-28 08:38:24 [INFO] runner: Progress: 1300/2778 (46.8%)
+2026-05-28 08:38:30 [INFO] runner: Progress: 1350/2778 (48.6%)
+2026-05-28 08:38:37 [INFO] runner: Progress: 1400/2778 (50.4%)
+2026-05-28 08:38:44 [INFO] runner: Progress: 1450/2778 (52.2%)
+2026-05-28 08:38:50 [INFO] runner: Progress: 1500/2778 (54.0%)
+2026-05-28 08:38:57 [INFO] runner: Progress: 1550/2778 (55.8%)
+2026-05-28 08:39:03 [INFO] runner: Progress: 1600/2778 (57.6%)
+2026-05-28 08:39:10 [INFO] runner: Progress: 1650/2778 (59.4%)
+2026-05-28 08:39:16 [INFO] runner: Progress: 1700/2778 (61.2%)
+2026-05-28 08:39:23 [INFO] runner: Progress: 1750/2778 (63.0%)
+2026-05-28 08:39:29 [INFO] runner: Progress: 1800/2778 (64.8%)
+2026-05-28 08:39:35 [INFO] runner: Progress: 1850/2778 (66.6%)
+2026-05-28 08:39:42 [INFO] runner: Progress: 1900/2778 (68.4%)
+2026-05-28 08:39:48 [INFO] runner: Progress: 1950/2778 (70.2%)
+2026-05-28 08:39:55 [INFO] runner: Progress: 2000/2778 (72.0%)
+2026-05-28 08:40:01 [INFO] runner: Progress: 2050/2778 (73.8%)
+2026-05-28 08:40:07 [INFO] runner: Progress: 2100/2778 (75.6%)
+2026-05-28 08:40:14 [INFO] runner: Progress: 2150/2778 (77.4%)
+2026-05-28 08:40:20 [INFO] runner: Progress: 2200/2778 (79.2%)
+2026-05-28 08:40:27 [INFO] runner: Progress: 2250/2778 (81.0%)
+2026-05-28 08:40:33 [INFO] runner: Progress: 2300/2778 (82.8%)
+2026-05-28 08:40:40 [INFO] runner: Progress: 2350/2778 (84.6%)
+2026-05-28 08:40:47 [INFO] runner: Progress: 2400/2778 (86.4%)
+2026-05-28 08:40:53 [INFO] runner: Progress: 2450/2778 (88.2%)
+2026-05-28 08:40:57 [ERROR] runner: Unexpected error on 08249
+Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\automatic\ccass-debug\ccass\src\runner.py", line 284, in run_daily
+    data = json.loads(result.stdout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\json\__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\json\decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\json\decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+2026-05-28 08:41:04 [INFO] runner: Progress: 2500/2778 (90.0%)
+2026-05-28 08:41:21 [INFO] runner: Progress: 2550/2778 (91.8%)
+2026-05-28 08:41:38 [INFO] runner: Progress: 2600/2778 (93.6%)
+2026-05-28 08:41:56 [INFO] runner: Progress: 2650/2778 (95.4%)
+2026-05-28 08:42:13 [INFO] runner: Progress: 2700/2778 (97.2%)
+2026-05-28 08:42:30 [INFO] runner: Progress: 2750/2778 (99.0%)
+2026-05-28 08:42:40 [INFO] trend: Computed trends for 2740 stocks on 2026-05-22 (refs: {5: '2026-05-15', 20: '2026-04-23'})
+2026-05-28 08:42:42 [INFO] runner: Detected 33 CCASS events (deposit/transfer) across 2743 stocks
+2026-05-28 08:42:42 [INFO] runner: Logged 33 CCASS events (deposit/transfer)
+2026-05-28 08:42:43 [ERROR] alerts: Telegram 401: {"ok":false,"error_code":401,"description":"Unauthorized"}
+2026-05-28 08:42:43 [INFO] runner: Done: 0/2778 succeeded, 2778 failed
