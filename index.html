@@ -177,7 +177,7 @@ tbody tr{cursor:pointer}
 .tf-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
 .tf-code{font:600 13px "JetBrains Mono",ui-monospace,monospace;color:var(--text)}
 .tf-name{font-size:12px;color:var(--text-soft);margin-left:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px}
-.tf-total{font:600 12px "JetBrains Mono",ui-monospace,monospace;color:var(--primary)}
+.tf-total{font:600 12px "JetBrains Mono",ui-monospace,monospace;color:var(--primary)}.tf-pct{font-size:9px;color:var(--mute);font-weight:600}
 .tf-flows{display:flex;gap:8px}
 .tf-side{flex:1;font-size:11px}
 .tf-side-label{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px}
@@ -1585,13 +1585,22 @@ function renderTransfers(data, priceMap){
       else if(val>=1e4) valueStr = (val/1e4).toFixed(0)+'萬';
       else valueStr = val.toLocaleString();
     }
+    var pctStr = '';
+    var transferVol = Math.max(t.total_in, t.total_out);
+    if(t.total_shares && transferVol){
+      var pct = transferVol / t.total_shares * 100;
+      pctStr = '<span class="tf-pct">佔CCASS '+pct.toFixed(2)+'%</span>';
+    }
     return '<div class="transfer-card" onclick="showDetail(\''+esc(t.code)+'\')">'
       +'<div class="tf-head">'
         +'<div style="display:flex;align-items:center">'
           +'<span class="tf-code">'+esc(t.code)+'</span>'
           +'<span class="tf-name" title="'+esc(t.name)+'">'+esc(t.name)+'</span>'
         +'</div>'
-        +'<span class="tf-total">'+fmtShares(totalShares)+(valueStr?' · $'+valueStr:'')+'</span>'
+        +'<div style="text-align:right">'
+          +'<span class="tf-total">'+fmtShares(totalShares)+(valueStr?' · $'+valueStr:'')+'</span>'
+          +(pctStr?'<div>'+pctStr+'</div>':'')
+        +'</div>'
       +'</div>'
       +'<div class="tf-flows">'
         +'<div class="tf-side tf-in">'

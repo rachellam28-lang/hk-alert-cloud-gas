@@ -58,11 +58,18 @@ for code, items in stock_changes.items():
     ins = [i for i in items if i['chg'] > 0]
     outs = [i for i in items if i['chg'] < 0]
     if ins and outs:
-        # Get stock name
+        # Get stock name and total CCASS shares
         name_row = db.execute(
             "SELECT stock_name FROM stock_universe WHERE stock_code=?", (code,)
         ).fetchone()
         name = name_row[0] if name_row else code
+        
+        # Get total CCASS shares on latest date
+        total_shares_row = db.execute(
+            "SELECT SUM(shares) FROM ccass_holdings WHERE stock_code=? AND trade_date=?",
+            (code, d1)
+        ).fetchone()
+        total_shares = total_shares_row[0] if total_shares_row[0] else 0
         
         total_in = sum(i['chg'] for i in ins)
         total_out = sum(abs(i['chg']) for i in outs)
@@ -72,6 +79,7 @@ for code, items in stock_changes.items():
             'name': name,
             'total_in': total_in,
             'total_out': total_out,
+            'total_shares': total_shares,
             'ins': sorted(ins, key=lambda x: -x['chg']),
             'outs': sorted(outs, key=lambda x: x['chg']),
         })
