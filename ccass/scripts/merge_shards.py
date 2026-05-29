@@ -190,7 +190,17 @@ def update_ccass_json(target_date: date) -> None:
                 mc_map[item.get('stock_code', '')] = item.get('market_cap')
     except Exception:
         pass
-    
+
+    # Stock prices (year-open + latest) from fetch_stock_prices.py
+    price_map = {}
+    try:
+        price_path = PROJECT_ROOT.parent / "data" / "stock_prices.json"
+        if price_path.exists():
+            price_data = _json.loads(price_path.read_text(encoding='utf-8'))
+            price_map = price_data
+    except Exception:
+        pass
+
     stocks = []
     for row in rows:
         sc = row[0]
@@ -209,6 +219,7 @@ def update_ccass_json(target_date: date) -> None:
 
         tr = trends.get(sc, {})
         mc = mc_map.get(sc)
+        pr = price_map.get(sc, {})
 
         stocks.append({
             'c': sc,
@@ -224,6 +235,9 @@ def update_ccass_json(target_date: date) -> None:
             'sd': tr.get('sd', 0),
             'np': np_val,
             'mc': mc,
+            # Year-open + latest price
+            'yo': pr.get('yo'),
+            'lp': pr.get('lp'),
             # Sentinel Option A (compact keys)
             'ah': ah,
             'bt5': bt5,

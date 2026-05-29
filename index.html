@@ -34,6 +34,7 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .btn-ghost{appearance:none;background:transparent;border:1px solid var(--line);color:var(--text-soft);padding:5px 10px;border-radius:8px;font:500 12px inherit;cursor:pointer;white-space:nowrap}
 .btn-ghost:hover{background:var(--surface-soft)}
 .btn-ghost.active{border-color:var(--primary);background:var(--primary-soft);color:var(--primary)}
+.group-sep{color:var(--line);margin:0 2px;user-select:none;font-weight:300}
 .webb-block{background:var(--surface-soft);border:1px solid var(--line);border-radius:8px;padding:8px 10px;margin:4px 0;font-size:12px}
 .webb-block b{color:var(--text)}
 .webb-row{font-size:11px;color:var(--text-soft)}
@@ -302,6 +303,7 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
           <option value="price">價格</option>
           <option value="code">代碼</option>
           <option value="n">名稱</option>
+          <option value="yearyo">🔺年開</option>
           <option value="mc">市值</option>
         </select>
         <button class="btn-ghost active" id="dirBtn" title="切換排序方向" onclick="sortDir*=-1;this.textContent=sortDir===1?'↑':'↓';applyFilters();">↓</button>
@@ -342,9 +344,11 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
         <button class="btn-ghost" id="filterAll" onclick="toggleFilter('all')">全部</button>
         <button class="btn-ghost" id="filterUp" onclick="toggleFilter('up')">↑ 增持</button>
         <button class="btn-ghost" id="filterDn" onclick="toggleFilter('dn')">↓ 減持</button>
+        <span class="group-sep">·</span>
         <button class="btn-ghost" id="filterConcentrated" onclick="toggleFilter('concentrated')">高集中度</button>
         <button class="btn-ghost" id="filterPlacement" onclick="toggleFilter('placement')">配股</button>
         <button class="btn-ghost" id="filterRights" onclick="toggleFilter('rights')">供股</button>
+        <span class="group-sep">·</span>
         <button class="btn-ghost" id="filterSmallMC" onclick="toggleFilter('small_mc')">小市值</button>
         <button class="btn-ghost" id="filterMidMC" onclick="toggleFilter('mid_mc')">中市值</button>
         <button class="btn-ghost" id="filterLargeMC" onclick="toggleFilter('large_mc')">大市值</button>
@@ -514,6 +518,9 @@ function getSortVal(s,col){
     const ca=sg?[sg.pl,sg.ri,sg.inc].filter(Boolean).length:0;
     return ta.length+ca;
   }
+  if(col==='yearyo'){
+    return (s.lp&&s.yo&&s.lp>s.yo) ? 1 : 0;
+  }
   let v=s[col];
   if(typeof v==='string')v=v.toLowerCase();
   return v==null ? null : v;
@@ -528,7 +535,7 @@ function cmpSortVal(va,vb,dir){
 function updateSortInfo(){
   var el=document.getElementById('sortInfo');
   if(!el)return;
-  var names={code:'代碼',n:'名稱',price:'價格',tp:'CCASS%',t5:'Top5%',t10:'Top10%',d5:'5日Δ',d20:'20日Δ',d60:'60日Δ',d120:'120日Δ',np:'參與者',mc:'市值',sig:'信號',su:'連續增持',sd:'連續減持'};
+  var names={code:'代碼',n:'名稱',price:'價格',tp:'CCASS%',t5:'Top5%',t10:'Top10%',d5:'5日Δ',d20:'20日Δ',d60:'60日Δ',d120:'120日Δ',np:'參與者',mc:'市值',sig:'信號',su:'連續增持',sd:'連續減持',yearyo:'🔺年開'};
   var p=names[sortCol]||sortCol,pa=sortDir===1?'▲':'▼';
   if(sortCol2){var sn=names[sortCol2]||sortCol2,sa=sortDir2===1?'▲':'▼';el.innerHTML='<b>'+p+' '+pa+'</b><span class=\"si-sep\">|</span><span style=\"opacity:.7\">'+sn+' '+sa+'</span>';}
   else el.innerHTML='<b>'+p+' '+pa+'</b>';
@@ -818,7 +825,7 @@ function renderTable(){
     if(s.tp>=80)hlClass+=' hl-conc';
     if(hasIPO)hlClass+=' hl-ipo';
     return '<tr class="'+ipoClass+hlClass+'" onclick="showDetail(\''+s.c+'\')">'
-      +'<td><span class="code">'+esc(s.c)+'</span></td>'
+      +'<td><span class="code">'+(s.lp&&s.yo&&s.lp>s.yo?'🔺':'')+esc(s.c)+'</span></td>'
       +'<td><span class="name" title="'+esc(s.n)+'">'+esc(s.n)+'</span></td>'
       +'<td class="hide-price">'+priceHtml+'</td>'
       +'<td class="hide-sig cell-pills">'+sigDisplay+'</td>'
@@ -870,7 +877,7 @@ function renderTable(){
     const ipoClass=hasIPO?' ipo-highlight':'';
     return '<div class="stock-card'+ipoClass+'" onclick="showDetail(\''+s.c+'\')">'
       +'<div class="sc-header">'
-        +'<span class="code">'+esc(s.c)+'</span>'
+        +'<span class="code">'+(s.lp&&s.yo&&s.lp>s.yo?'🔺':'')+esc(s.c)+'</span>'
         +(s.su>1?'<span class="sc-streak up">🔥'+s.su+'</span>':'')
         +(s.sd>1?'<span class="sc-streak dn">❄️'+s.sd+'</span>':'')
         +'<span class="name" title="'+esc(s.n)+'">'+esc(s.n)+'</span>'
