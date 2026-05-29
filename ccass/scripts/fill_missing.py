@@ -1,0 +1,111 @@
+"""Bulk fill missing CCASS stocks for specific dates."""
+import json, sqlite3, subprocess, sys, os, time
+from pathlib import Path
+
+PROJECT = Path(__file__).parent.parent
+DB = PROJECT / "ccass.db"
+SCRAPE_ONE = PROJECT / "src" / "scrape_one.py"
+
+# Config — same as config.yaml
+USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+HARD_TIMEOUT = 60
+BATCH_SLEEP = 0.1  # small delay between stocks
+
+def fill_missing(target_date: str, max_stocks: int = 3000):
+    db = sqlite3.connect(str(DB))
+
+    # Get full universe from 05-26 (exclude non-equity: temp codes, prefs, warrants)
+    EXCLUDE_PATTERNS = ["029%", "04621", "8%"]
+    exclude_where = " AND ".join([f"stock_code NOT LIKE '{p}'" for p in EXCLUDE_PATTERNS])
+    full = set(r[0] for r in db.execute(
+        f"SELECT DISTINCT stock_code FROM ccass_daily WHERE trade_date=? AND {exclude_where}",
+        ('2026-05-26',)
+    ))
+    have = set(r[0] for r in db.execute(
+        'SELECT DISTINCT stock_code FROM ccass_daily WHERE trade_date=?',
+        (target_date,)
+    ))
+    missing = sorted(full - have)[:max_stocks]
+    
+    print(f"Target: {target_date}, Missing: {len(missing)} stocks")
+    
+    succeeded = 0
+    failed = []
+    
+    for i, code in enumerate(missing, 1):
+        try:
+            result = subprocess.run(
+                [sys.executable, str(SCRAPE_ONE), code, target_date, USER_AGENT],
+                capture_output=True, text=True, timeout=HARD_TIMEOUT,
+            )
+            if result.returncode != 0:
+                failed.append(code)
+                continue
+            
+            # Extract JSON from output (skip log lines)
+            for line in result.stdout.strip().split('\n'):
+                if line.startswith('{"ok"'):
+                    data = json.loads(line)
+                    break
+            else:
+                failed.append(code)
+                continue
+            
+            if not data.get("ok"):
+                failed.append(code)
+                continue
+            
+            # Save to DB
+            now = __import__("datetime").datetime.utcnow().isoformat()
+            db.execute("""
+                INSERT OR REPLACE INTO ccass_daily
+                (stock_code, trade_date, total_shares, total_pct,
+                 num_participants, top5_pct, top10_pct,
+                 adj_hhi, broker_top5_pct, top_broker_id,
+                 top_broker_name, top_broker_pct,
+                 futu_pct, a00005_pct, adjusted_float,
+                 scraped_at, validation_failed)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)
+            """, (
+                data["stock_code"], data["trade_date"],
+                data.get("total_shares"), data.get("total_pct"),
+                data.get("num_participants"), data.get("top5_pct"),
+                data.get("top10_pct"), data.get("adj_hhi"),
+                data.get("broker_top5_pct"), data.get("top_broker_id"),
+                data.get("top_broker_name"), data.get("top_broker_pct"),
+                data.get("futu_pct"), data.get("a00005_pct"),
+                data.get("adjusted_float"), now,
+            ))
+            for h in data.get("holdings", []):
+                db.execute("""
+                    INSERT OR REPLACE INTO ccass_holdings
+                    (stock_code, trade_date, participant_id,
+                     participant_name, shares, pct_of_issued)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                """, (
+                    data["stock_code"], data["trade_date"],
+                    h.get("participant_id"), h.get("participant_name"),
+                    h.get("shares"), h.get("pct_of_issued"),
+                ))
+            db.commit()
+            succeeded += 1
+            
+        except subprocess.TimeoutExpired:
+            failed.append(code)
+        except Exception as e:
+            print(f"  {code}: {e}", file=sys.stderr)
+            failed.append(code)
+        
+        if i % 50 == 0:
+            print(f"  Progress: {i}/{len(missing)} ({100*i/len(missing):.1f}%), succeeded={succeeded}, failed={len(failed)}")
+        
+        time.sleep(BATCH_SLEEP)
+    
+    db.close()
+    print(f"\nDone: {succeeded} succeeded, {len(failed)} failed")
+    if failed:
+        print(f"Failed: {failed[:20]}...")
+
+if __name__ == "__main__":
+    date = sys.argv[1] if len(sys.argv) > 1 else "2026-05-20"
+    fill_missing(date)

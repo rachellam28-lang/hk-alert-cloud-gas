@@ -141,6 +141,7 @@ def update_ccass_json(target_date: date) -> None:
     EXCLUDE_PATTERNS = [
         "029%",        # temp consolidation/split codes
         "04621",       # preference share
+        "8%",          # RMB counters (人仔櫃台)
     ]
     EXCLUDE_NAME_KEYWORDS = ["PREF", "優先", "股權", "二千五", "二千", "一萬"]
     
