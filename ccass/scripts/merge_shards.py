@@ -239,7 +239,6 @@ def update_ccass_json(target_date: date) -> None:
             # Year-open + latest price
             'yo': pr.get('yo'),
             'lp': pr.get('lp'),
-            'lp_time': pr.get('lp_time'),
             'py': pr.get('apy', pr.get('py')),
             'py_pct': pr.get('apy_pct', pr.get('py_pct')),
             # Sentinel Option A (compact keys)
@@ -265,6 +264,19 @@ def update_ccass_json(target_date: date) -> None:
     # First date in DB
     first_row = db.execute("SELECT MIN(trade_date) FROM ccass_daily").fetchone()
     first_date = first_row[0] if first_row and first_row[0] else target_date.strftime("%Y-%m-%d")
+
+    # Load suspended stocks
+    suspended_map = {}
+    try:
+        suspended_path = PROJECT_ROOT / "data" / "suspended_stocks.json"
+        if suspended_path.exists():
+            suspended_map = json.loads(suspended_path.read_text(encoding='utf-8'))
+    except Exception:
+        pass
+
+    # Add suspended flag
+    for s in stocks:
+        s['suspended'] = s['c'] in suspended_map
 
     # Sanitize NaN → null (invalid JSON) before serializing
     import math as _math

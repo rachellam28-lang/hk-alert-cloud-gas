@@ -169,6 +169,7 @@ tbody tr{cursor:pointer}
 .sc-streak{display:inline-flex;align-items:center;font-size:9px;font-weight:700;padding:1px 5px;border-radius:4px;margin-right:2px;line-height:1.3;flex-shrink:0}
 .sc-streak.up{background:var(--up-soft);color:var(--up);border:1px solid var(--up-border)}
 .sc-streak.dn{background:var(--down-soft);color:var(--down);border:1px solid var(--down-border)}
+.suspended-badge{display:inline-flex;align-items:center;font-size:9px;font-weight:700;padding:1px 5px;border-radius:4px;margin-left:4px;line-height:1.3;flex-shrink:0;background:#fef3c7;color:#92400e;border:1px solid #f59e0b}
 /* Mobile card layout */
 .stock-cards{display:none;flex-direction:column;gap:6px;padding:0}
 .stock-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;cursor:pointer}
@@ -853,7 +854,7 @@ function renderTable(){
     if(s.tp>=80)hlClass+=' hl-conc';
     if(hasIPO)hlClass+=' hl-ipo';
     return '<tr class="'+ipoClass+hlClass+'" onclick="showDetail(\''+s.c+'\')">'
-      +'<td><span class="code">'+esc(s.c)+'</span></td>'
+      +'<td><span class="code">'+esc(s.c)+'</span>'+(s.suspended?' <span class="suspended-badge">停牌</span>':'')+'</td>'
             +'<td class="hide-yearyo">'+(s.lp&&s.yo&&s.lp>s.yo?'🔺':'')+'</td>'
             +'<td class="hide-prevyo">'+(s.lp&&s.py&&s.lp>s.py?'😻':'')+'</td>'
             +'<td class="hide-pypct"><span class="num '+deltaClass(s.py_pct)+'">'+(s.py_pct!=null?fmtPct(s.py_pct):'—')+'</span></td>'
@@ -908,7 +909,7 @@ function renderTable(){
     const ipoClass=hasIPO?' ipo-highlight':'';
     return '<div class="stock-card'+ipoClass+'" onclick="showDetail(\''+s.c+'\')">'
       +'<div class="sc-header">'
-        +'<span class="code">'+(s.lp&&s.yo&&s.lp>s.yo?'🔺 ':'')+(s.lp&&s.py&&s.lp>s.py?'😻 ':'')+esc(s.c)+'</span>'
+        +'<span class="code">'+(s.lp&&s.yo&&s.lp>s.yo?'🔺 ':'')+(s.lp&&s.py&&s.lp>s.py?'😻 ':'')+esc(s.c)+(s.suspended?' <span class="suspended-badge">停牌</span>':'')+'</span>'
         +(s.su>1?'<span class="sc-streak up">🔥'+s.su+'</span>':'')
         +(s.sd>1?'<span class="sc-streak dn">❄️'+s.sd+'</span>':'')
         +'<span class="name" title="'+esc(s.n)+'">'+esc(s.n)+'</span>'
