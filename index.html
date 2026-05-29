@@ -189,6 +189,28 @@ tbody tr{cursor:pointer}
 .tf-in .tf-shares{color:var(--up)}
 .tf-out .tf-shares{color:var(--down)}
 @media(max-width:520px){.transfer-grid{grid-template-columns:1fr}}
+/* Vr alert - compact */
+.vr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(65px,1fr));gap:2px;padding:3px 4px}
+.vr-card{background:var(--surface-soft);border:1px solid var(--line-soft);border-radius:3px;padding:2px 3px;cursor:pointer;transition:border-color .15s}
+.vr-card:hover{border-color:var(--primary-border)}
+.vr-card .tf-head{margin-bottom:1px}
+.vr-card .tf-head .code{font-size:7px}
+.vr-card .tf-head .name{font-size:6px;max-width:35px}
+.vr-card .tf-head .tf-total{font-size:6px}
+.vr-card .tf-flows{gap:2px}
+.vr-card .tf-side{font-size:6px}
+.vr-card .tf-side-label{font-size:5px;margin-bottom:0}
+.vr-card .tf-shares{font-size:6px}
+.vr-card .tf-head span{margin-left:1px}
+@media(max-width:720px){.vr-grid{grid-template-columns:repeat(auto-fill,minmax(55px,1fr));gap:1px;padding:2px 3px}
+.vr-card{padding:1px 2px;border-radius:2px}
+.vr-card .tf-head .code{font-size:5px}
+.vr-card .tf-head .name{font-size:5px;max-width:30px}
+.vr-card .tf-head .tf-total{font-size:5px}
+.vr-card .tf-flows{gap:1px}
+.vr-card .tf-side{font-size:5px}
+.vr-card .tf-side-label{font-size:4px}
+.vr-card .tf-shares{font-size:5px}}
 /* Mobile card layout */
 .stock-cards{display:none;flex-direction:column;gap:5px;padding:0}
 .stock-card{background:var(--surface);border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow);overflow:hidden;cursor:pointer}
@@ -207,7 +229,7 @@ tbody tr{cursor:pointer}
 .sc-pills .cpill{font-size:10px;padding:1px 6px}
 .sc-pills .spill{font-size:10px;padding:1px 6px}
 @media(max-width:720px){table{display:none}.stock-cards{display:flex;padding:0 8px}}
-@media(max-width:375px){.stock-card{border-radius:6px}.sc-header{padding:3px 6px 1px}.sc-header .code{font-size:10px}.sc-header .name{font-size:9px}.sc-metrics{padding:1px 4px}.sc-metric-val{font-size:10px}.sc-metric-label{font-size:6px}.sc-pills{padding:1px 4px 2px}}
+@media(max-width:520px){.stock-cards{gap:2px;padding:0 2px}.stock-card{border-radius:4px}.sc-header{padding:2px 4px 1px;gap:2px;flex-wrap:wrap}.sc-header .code{font-size:9px}.sc-header .name{font-size:7px;white-space:normal;overflow:visible;text-overflow:unset;line-height:1.2}.sc-metrics{padding:1px 2px;gap:0}.sc-metric{padding:0}.sc-metric-val{font-size:8px}.sc-metric-label{font-size:5px}.sc-pills{padding:1px 2px 2px;gap:1px}.sc-pills .cpill{font-size:7px;padding:0 3px}.sc-pills .spill{font-size:7px;padding:0 3px}.sc-badge{font-size:7px;padding:0 3px}}
 @media(max-width:520px){.bt-cards{flex-direction:column!important}.ipo-card{min-width:100%!important;flex:none!important}.ipo-tbl td{padding:3px 8px}.ipo-tbl .code{font-size:11px}.ipo-tbl .name{font-size:11px}}
 /* IPO highlight for table rows */
 tbody tr.ipo-highlight{background:linear-gradient(90deg,var(--amber-soft),transparent 50%)!important;border-left:3px solid var(--amber)}
@@ -467,6 +489,7 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
           <th class="sortable" data-sort="n" onclick="sortBy('n',event)"><span>名稱</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable th-prevyo" data-sort="prevyo" onclick="sortBy('prevyo',event)"><span>😻</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable th-pypct" data-sort="pypct" onclick="sortBy('pypct',event)"><span>前年Δ%</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
+          <th class="sortable th-vr" data-sort="vr" onclick="sortBy('vr',event)"><span>量比</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable th-price" data-sort="price" onclick="sortBy('price',event)"><span>現價</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable th-yo_pct hide-yo_pct" data-sort="yo_pct" onclick="sortBy('yo_pct',event)"><span>今年Δ%</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable th-sig" data-sort="sig" onclick="sortBy('sig',event)"><span>信號</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
@@ -483,7 +506,6 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
           <th class="sortable th-chg" data-sort="chg" onclick="sortBy('chg',event)"><span>今日Δ%</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable th-p52" data-sort="p52" onclick="sortBy('p52',event)"><span>52週%</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable th-pe" data-sort="pe" onclick="sortBy('pe',event)"><span>PE</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
-          <th class="sortable th-vr" data-sort="vr" onclick="sortBy('vr',event)"><span>量比</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="th-link"><span>連結</span></th>
         </tr></thead>
         <tbody id="tbody"></tbody>
@@ -988,6 +1010,7 @@ function renderTable(){
             +'<td><span class="name" title="'+esc(s.n)+'">'+esc(s.n)+'</span></td>'
             +'<td class="hide-prevyo">'+(s.lp&&s.py&&s.lp>s.py?'😻':'')+'</td>'
             +'<td class="hide-pypct"><span class="num '+deltaClass(s.py_pct)+'">'+(s.py_pct!=null?fmtPct(s.py_pct):'—')+'</span>'+(s.py!=null?'<span class="yo-price">'+esc(s.py<1?s.py.toFixed(3):s.py.toFixed(2))+'</span>':'')+'</td>'
+      +'<td class="hide-vr"><span class="num'+(s.vr&&s.vr>=2?' up':'')+'">'+(s.vr!=null?s.vr.toFixed(1):'—')+'</span></td>'
       +'<td class="hide-price">'+priceHtml+'</td>'
       +'<td class="hide-yo_pct"><span class="num '+deltaClass(yoPct)+'">'+(aboveYO?'🔺':'')+(yoPct!=null?fmtPct(yoPct):'—')+'</span></td>'
       +'<td class="hide-sig cell-pills">'+sigDisplay+'</td>'
@@ -1004,7 +1027,6 @@ function renderTable(){
       +'<td class="hide-chg">'+(s.chg!=null?'<span class="num '+deltaClass(s.chg)+'">'+fmtPct(s.chg)+'</span>':'<span class="num delta-null">—</span>')+'</td>'
       +'<td class="hide-p52">'+(s.p52!=null?pbar(s.p52, s.p52>=70?'hi':s.p52>=30?'mid':'lo'):'<span class="mc-null">—</span>')+'</td>'
       +'<td class="hide-pe"><span class="num">'+(s.pe!=null?s.pe.toFixed(1):'—')+'</span></td>'
-      +'<td class="hide-vr"><span class="num'+(s.vr&&s.vr>=2?' up':'')+'">'+(s.vr!=null?s.vr.toFixed(1):'—')+'</span></td>'
       +'<td class="hide-link" onclick="event.stopPropagation()">'+linkHtml+'</td>'
       +'</tr>';
   }).join('');
@@ -1648,7 +1670,7 @@ function renderVrAlert(){
   var items = ranked.map(function(s){
     var priceVal = priceMap.get(s.c) ?? s.lp;
     var priceStr = priceVal!=null?(priceVal<1?priceVal.toFixed(3):priceVal.toFixed(2)):'—';
-    return '<div class="transfer-card" onclick="showDetail(\''+esc(s.c)+'\')">'
+    return '<div class="vr-card" onclick="showDetail(\''+esc(s.c)+'\')">'
       +'<div class="tf-head">'
         +'<div><span class="code">'+esc(s.c)+'</span> <span class="name">'+esc(s.n)+'</span></div>'
         +'<span class="tf-total" style="color:'+(s.vr>=5?'var(--up)':'var(--amber)')+'">量比 '+s.vr.toFixed(1)+'x</span>'
@@ -1663,7 +1685,7 @@ function renderVrAlert(){
       +'</div>'
     +'</div>';
   }).join('');
-  card.innerHTML = '<div class="transfer-grid">'+items+'</div>'
+  card.innerHTML = '<div class="vr-grid">'+items+'</div>'
     +'<div style="padding:4px 14px 10px;font-size:10px;color:var(--mute-2)">量比≥2 · '+ranked.length+'隻</div>';
 }
 
