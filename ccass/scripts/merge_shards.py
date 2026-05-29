@@ -239,6 +239,7 @@ def update_ccass_json(target_date: date) -> None:
             # Year-open + latest price
             'yo': pr.get('yo'),
             'lp': pr.get('lp'),
+            'lp_time': pr.get('lp_time'),
             'py': pr.get('apy', pr.get('py')),
             'py_pct': pr.get('apy_pct', pr.get('py_pct')),
             # Sentinel Option A (compact keys)

@@ -42,6 +42,13 @@ thead th{background:var(--surface-soft);color:var(--mute);font-size:10px;text-al
 tbody td{padding:7px 10px;border-bottom:1px solid var(--line-soft);vertical-align:middle;font-size:12px}
 tbody tr:last-child td{border-bottom:none}tbody tr:hover{background:var(--surface-soft)}
 tbody tr{cursor:pointer}
+/* Suspended stock — grey entire row */
+tr.suspended td{color:var(--mute-2)!important;background:#f1f5f9!important}
+tr.suspended .code,tr.suspended .num,tr.suspended .pv{color:var(--mute-2)!important}
+tr.suspended:hover td{background:#e2e8f0!important}
+/* Mobile card suspended */
+.stock-card.suspended{background:#f1f5f9!important;border-color:#e2e8f0!important}
+.stock-card.suspended .code,.stock-card.suspended .sc-metric-val,.stock-card.suspended .name{color:var(--mute-2)!important}
 .code{font:600 13px "JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
 .name{color:var(--text-soft);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;max-width:170px}
 .num{font:600 12.5px "JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -462,6 +469,25 @@ function sigType(lbl){
 function fmtTime(s){if(!s)return'—';try{const d=new Date(s);if(isNaN(d))return String(s);const p=n=>n<10?'0'+n:''+n;return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes());}catch(e){return String(s);}}
 function fmtDate(s){if(!s)return'—';try{const d=new Date(s);if(isNaN(d))return String(s);const p=n=>n<10?'0'+n:''+n;return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate());}catch(e){return String(s);}}
 
+// --- suspended detection ---
+// Stock is suspended if lp_time is > 5 calendar days from data date
+let DD=null; // data date from ccass.json
+function isSuspended(s){
+  // No price at all → likely suspended or delisted
+  if(s.lp===null||s.lp===undefined){
+    if(!DD) return false;
+    return true; // no price + have holdings data = suspended
+  }
+  if(!s.lp_time) return false;
+  if(!DD) return false;
+  try{
+    const lpDate=new Date(s.lp_time), dd=new Date(DD);
+    if(isNaN(lpDate)||isNaN(dd)) return false;
+    const diffDays=(dd-lpDate)/(1000*60*60*24);
+    return diffDays > 5;
+  }catch(e){return false;}
+}
+
 // --- state ---
 let allStocks=[];
 let baseStocks=[];
@@ -807,6 +833,7 @@ function renderTable(){
     if(s.d5!==null&&s.d5<-2)hlClass+=' hl-dn';
     if(s.tp>=80)hlClass+=' hl-conc';
     if(hasIPO)hlClass+=' hl-ipo';
+    if(isSuspended(s))hlClass+=' suspended';
     return '<tr class="'+ipoClass+hlClass+'" onclick="showDetail(\''+s.c+'\')">'
       +'<td><span class="code">'+esc(s.c)+'</span></td>'
       +'<td><span class="name" title="'+esc(s.n)+'">'+esc(s.n)+'</span></td>'
@@ -855,7 +882,8 @@ function renderTable(){
     const d5class=s.d5!==null?(s.d5>0?'up':(s.d5<0?'dn':'muted')):'muted';
     const d20class=s.d20!==null?(s.d20>0?'up':(s.d20<0?'dn':'muted')):'muted';
     const ipoClass=hasIPO?' ipo-highlight':'';
-    return '<div class="stock-card'+ipoClass+'" onclick="showDetail(\''+s.c+'\')">'
+    const suspClass=isSuspended(s)?' suspended':'';
+    return '<div class="stock-card'+ipoClass+suspClass+'" onclick="showDetail(\''+s.c+'\')">'
       +'<div class="sc-header">'
         +'<span class="code">'+esc(s.c)+'</span>'
         +(s.su>1?'<span class="sc-streak up">🔥'+s.su+'</span>':'')
@@ -1325,6 +1353,7 @@ async function loadData(){
     const res=await fetch('./ccass.json?_='+Date.now());
     if(!res.ok) throw new Error('HTTP '+res.status);
     const data=await res.json();
+    DD=data.updated; // for suspended detection
     allStocks=baseStocks.slice();
     setBaseStocks(data.stocks);
     renderSummaryBar(data);
