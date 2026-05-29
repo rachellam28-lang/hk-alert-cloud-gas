@@ -36,11 +36,15 @@ updated = 0
 new_entries = 0
 
 def safe_float(val):
-    """Safely convert to rounded float or None."""
+    """Safely convert to rounded float or None. Filters NaN/Inf."""
     if val is None:
         return None
     try:
-        return round(float(val), 4)
+        v = float(val)
+        import math
+        if math.isnan(v) or math.isinf(v):
+            return None
+        return round(v, 4)
     except (ValueError, TypeError):
         return None
 

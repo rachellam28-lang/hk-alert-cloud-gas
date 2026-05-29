@@ -294,7 +294,7 @@ def update_ccass_json(target_date: date) -> None:
             return {k: _sanitize(v) for k, v in obj.items()}
         if isinstance(obj, list):
             return [_sanitize(v) for v in obj]
-        if isinstance(obj, float) and _math.isnan(obj):
+        if isinstance(obj, float) and (_math.isnan(obj) or _math.isinf(obj)):
             return None
         return obj
     stocks = _sanitize(stocks)
