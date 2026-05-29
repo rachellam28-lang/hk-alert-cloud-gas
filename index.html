@@ -1008,6 +1008,7 @@ function renderTable(){
     const priceVal=priceMap.get(s.c) ?? s.lp;
     const priceStr=priceVal!=null?(priceVal<1?priceVal.toFixed(3):priceVal.toFixed(2)):null;
     const saved=wl.has(s.c);
+    const yoPct = s.lp!=null && s.yo ? (s.lp/s.yo*100-100) : null;
     const d5class=s.d5!==null?(s.d5>0?'up':(s.d5<0?'dn':'muted')):'muted';
     const d20class=s.d20!==null?(s.d20>0?'up':(s.d20<0?'dn':'muted')):'muted';
     const ipoClass=hasIPO?' ipo-highlight':'';
