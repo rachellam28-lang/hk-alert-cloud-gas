@@ -731,7 +731,7 @@ function loadPreset(key){
   applyFilters();
   updateSortInfo();
 }
-var presetData={signal:{name:'信號突破',state:{sortCol:'sig',sortDir:1,sortCol2:'d5',sortDir2:-1,searchVal:'',activeFilters:[],sigFilter:'all',tpMin:null,tpMax:null,d5Min:null,d5Max:null,mcMin:null,mcMax:null,hidden:[]}},placement:{name:'配股預警',state:{sortCol:'tp',sortDir:-1,sortCol2:'d5',sortDir2:-1,searchVal:'',activeFilters:['placement'],sigFilter:'all',tpMin:30,tpMax:null,d5Min:null,d5Max:null,mcMin:null,mcMax:null,hidden:[]}},mom:{name:'高動能',state:{sortCol:'d5',sortDir:-1,sortCol2:'mc',sortDir2:-1,searchVal:'',activeFilters:[],sigFilter:'all',tpMin:null,tpMax:null,d5Min:-20,d5Max:-5,mcMin:null,mcMax:null,hidden:[]}}};
+var presetData={signal:{name:'信號突破',state:{sortCol:'sig',sortDir:1,sortCol2:'d5',sortDir2:-1,searchVal:'',activeFilters:[],sigFilter:'all',tpMin:null,tpMax:null,d5Min:null,d5Max:null,mcMin:null,mcMax:null,hidden:[]}},placement:{name:'配股預警',state:{sortCol:'tp',sortDir:-1,sortCol2:'d5',sortDir2:-1,searchVal:'',activeFilters:['placement'],sigFilter:'all',tpMin:30,tpMax:null,d5Min:null,d5Max:null,mcMin:null,mcMax:null,hidden:[]}},mom:{name:'高動能',state:{sortCol:'d5',sortDir:-1,sortCol2:'tp',sortDir2:-1,searchVal:'',activeFilters:[],sigFilter:'all',tpMin:null,tpMax:null,d5Min:3,d5Max:null,mcMin:null,mcMax:null,hidden:[]}}};
 function renderPresets(){
   var container=document.querySelector('.preset-group');
   if(!container||!userPresets.length)return;
