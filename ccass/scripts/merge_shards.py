@@ -238,6 +238,8 @@ def update_ccass_json(target_date: date) -> None:
             # Year-open + latest price
             'yo': pr.get('yo'),
             'lp': pr.get('lp'),
+            'py': pr.get('py'),
+            'py_pct': pr.get('py_pct'),
             # Sentinel Option A (compact keys)
             'ah': ah,
             'bt5': bt5,
@@ -261,6 +263,18 @@ def update_ccass_json(target_date: date) -> None:
     # First date in DB
     first_row = db.execute("SELECT MIN(trade_date) FROM ccass_daily").fetchone()
     first_date = first_row[0] if first_row and first_row[0] else target_date.strftime("%Y-%m-%d")
+
+    # Sanitize NaN → null (invalid JSON) before serializing
+    import math as _math
+    def _sanitize(obj):
+        if isinstance(obj, dict):
+            return {k: _sanitize(v) for k, v in obj.items()}
+        if isinstance(obj, list):
+            return [_sanitize(v) for v in obj]
+        if isinstance(obj, float) and _math.isnan(obj):
+            return None
+        return obj
+    stocks = _sanitize(stocks)
 
     out = {
         "updated": datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC"),
