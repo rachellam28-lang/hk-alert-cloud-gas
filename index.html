@@ -158,7 +158,7 @@ tbody tr{cursor:pointer}
 @media(max-width:820px){.hide-sig,.th-sig{display:none}}
 @media(max-width:720px){.hide-np,.th-np{display:none}}
 @media(max-width:720px){.hide-price,.th-price{display:none}}
-@media(max-width:640px){.hide-mc,.th-mc,.hide-chg,.th-chg,.hide-p52,.th-p52,.hide-pe,.th-pe{display:none}}
+@media(max-width:640px){.hide-mc,.th-mc,.hide-chg,.th-chg,.hide-p52,.th-p52,.hide-pe,.th-pe,.hide-yo_pct,.th-yo_pct{display:none}}
 @media(max-width:640px){.hide-link,.th-link{display:none}}
 @media(max-width:640px){.brand>a{font-size:11px!important;padding:2px 6px!important;margin-left:3px!important}.input.search-in{min-width:140px}.btn-ghost,.btn-csv,.preset-btn,.col-toggle-btn{padding:3px 7px!important;font-size:10px!important;border-radius:6px!important}.toolbar{padding:6px 8px!important;gap:6px!important}.toolbar-sect{gap:4px!important}}
 @media(max-width:640px){.topbar-inner{padding:6px 10px;gap:8px}.brand{gap:6px;flex-shrink:0}.brand>a{font-size:10px!important;padding:1px 5px!important;margin-left:2px!important}.logo{display:none}.brand-title{font-size:12px;white-space:nowrap}.brand-sub{display:none}.topright{gap:3px;font-size:10px}.refresh-tag{display:none}}
@@ -382,6 +382,7 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
           <option value="mc">市值</option>
           <option value="chg">今日Δ%</option>
           <option value="p52">52週%</option>
+          <option value="yo_pct">今年Δ%</option>
           <option value="pe">PE</option>
         </select>
         <button class="btn-ghost active" id="dirBtn" title="切換排序方向" onclick="sortDir*=-1;this.textContent=sortDir===1?'↑':'↓';applyFilters();">↓</button>
@@ -418,6 +419,7 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
             <label><input type="checkbox" data-col="chg" checked onchange="toggleCol(this)"> 今日Δ%</label>
             <label><input type="checkbox" data-col="p52" checked onchange="toggleCol(this)"> 52週%</label>
             <label><input type="checkbox" data-col="pe" checked onchange="toggleCol(this)"> PE</label>
+            <label><input type="checkbox" data-col="yo_pct" checked onchange="toggleCol(this)"> 今年Δ%</label>
             <label><input type="checkbox" data-col="link" checked onchange="toggleCol(this)"> 連結</label>
           </div>
         </div>
@@ -458,6 +460,7 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
           <th class="sortable th-pypct" data-sort="pypct" onclick="sortBy('pypct',event)"><span>前年Δ%</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable" data-sort="n" onclick="sortBy('n',event)"><span>名稱</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable th-price" data-sort="price" onclick="sortBy('price',event)"><span>價格</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
+          <th class="sortable th-yo_pct hide-yo_pct" data-sort="yo_pct" onclick="sortBy('yo_pct',event)"><span>今年Δ%</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable th-sig" data-sort="sig" onclick="sortBy('sig',event)"><span>信號</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable" data-sort="tp" onclick="sortBy('tp',event)"><span>CCASS%</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable th-t5" data-sort="t5" onclick="sortBy('t5',event)"><span>Top5%</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
@@ -640,6 +643,9 @@ function getSortVal(s,col){
   if(col==='p52'){
     return s.p52 != null ? s.p52 : null;
   }
+  if(col==='yo_pct'){
+    return (s.lp!=null && s.yo) ? (s.lp/s.yo*100-100) : null;
+  }
   if(col==='pe'){
     return s.pe != null ? s.pe : null;
   }
@@ -657,7 +663,7 @@ function cmpSortVal(va,vb,dir){
 function updateSortInfo(){
   var el=document.getElementById('sortInfo');
   if(!el)return;
-  var names={code:'代碼',n:'名稱',price:'價格',tp:'CCASS%',t5:'Top5%',t10:'Top10%',d5:'5日Δ',d20:'20日Δ',d60:'60日Δ',d120:'120日Δ',np:'參與者',mc:'市值',chg:'今日Δ%',p52:'52週%',pe:'PE',sig:'信號',su:'連續增持',sd:'連續減持',yearyo:'🔺年開',prevyo:'😻前年',pypct:'前年Δ%'};
+  var names={code:'代碼',n:'名稱',price:'價格',yo_pct:'今年Δ%',tp:'CCASS%',t5:'Top5%',t10:'Top10%',d5:'5日Δ',d20:'20日Δ',d60:'60日Δ',d120:'120日Δ',np:'參與者',mc:'市值',chg:'今日Δ%',p52:'52週%',pe:'PE',sig:'信號',su:'連續增持',sd:'連續減持',yearyo:'🔺年開',prevyo:'😻前年',pypct:'前年Δ%'};
   var p=names[sortCol]||sortCol,pa=sortDir===1?'▲':'▼';
   if(sortCol2){var sn=names[sortCol2]||sortCol2,sa=sortDir2===1?'▲':'▼';el.innerHTML='<b>'+p+' '+pa+'</b><span class=\"si-sep\">|</span><span style=\"opacity:.7\">'+sn+' '+sa+'</span>';}
   else el.innerHTML='<b>'+p+' '+pa+'</b>';
@@ -930,8 +936,9 @@ function renderTable(){
     // Price with 🔺 year-open indicator
     const priceVal=priceMap.get(s.c) ?? s.lp;
     const aboveYO = s.lp && s.yo && s.lp > s.yo;
+    const yoPct = s.lp!=null && s.yo ? (s.lp/s.yo*100-100) : null;
     const priceHtml=priceVal!=null
-      ? (aboveYO?'<span class="yo-ind">🔺</span>':'')+'<span class="pv">'+esc(priceVal<1?priceVal.toFixed(3):priceVal.toFixed(2))+'</span>'+(s.yo&&s.lp!=null?'<span class="yo-price'+(aboveYO?' up':' dn')+'">'+(aboveYO?'+':'')+(s.lp/s.yo*100-100).toFixed(1)+'%</span>':'')
+      ? (aboveYO?'<span class="yo-ind">🔺</span>':'')+'<span class="pv">'+esc(priceVal<1?priceVal.toFixed(3):priceVal.toFixed(2))+'</span>'
       : '<span class="mc-null">—</span>';
 
 // Watchlist + HKEX link
@@ -953,6 +960,7 @@ function renderTable(){
             +'<td class="hide-pypct"><span class="num '+deltaClass(s.py_pct)+'">'+(s.py_pct!=null?fmtPct(s.py_pct):'—')+'</span>'+(s.py!=null?'<span class="yo-price">'+esc(s.py<1?s.py.toFixed(3):s.py.toFixed(2))+'</span>':'')+'</td>'
             +'<td><span class="name" title="'+esc(s.n)+'">'+esc(s.n)+'</span></td>'
       +'<td class="hide-price">'+priceHtml+'</td>'
+      +'<td class="hide-yo_pct"><span class="num '+deltaClass(yoPct)+'">'+(yoPct!=null?fmtPct(yoPct):'—')+'</span></td>'
       +'<td class="hide-sig cell-pills">'+sigDisplay+'</td>'
       +'<td><span class="num">'+s.tp.toFixed(2)+'%</span></td>'
       +'<td class="hide-t5"><span class="num">'+s.t5.toFixed(2)+'%</span></td>'
@@ -1013,9 +1021,10 @@ function renderTable(){
         +'<button class="btn-save'+(saved?' saved':'')+'" data-code="'+esc(s.c)+'" data-name="'+esc(s.n)+'" data-signal="" data-date="" title="加入自選" onclick="event.stopPropagation()">'+(saved?'★':'☆')+'</button>'
       +'</div>'
       +'<div class="sc-metrics">'
-        +'<div class="sc-metric"><span class="sc-metric-label">'+(s.lp&&s.yo&&s.lp>s.yo?'🔺':'')+'價格</span><span class="sc-metric-val'+(priceStr?'':' muted')+'">'+(priceStr?esc(priceStr):'—')+'</span>'+(s.yo&&s.lp!=null?'<span class="yo-price'+(s.lp>s.yo?' up':' dn')+'">'+(s.lp>s.yo?'+':'')+(s.lp/s.yo*100-100).toFixed(1)+'%</span>':'')+'</div>'
+        +'<div class="sc-metric"><span class="sc-metric-label">'+(s.lp&&s.yo&&s.lp>s.yo?'🔺':'')+'價格</span><span class="sc-metric-val'+(priceStr?'':' muted')+'">'+(priceStr?esc(priceStr):'—')+'</span></div>'
         +'<div class="sc-metric"><span class="sc-metric-label">CCASS</span><span class="sc-metric-val">'+s.tp.toFixed(1)+'%</span><div class="pbar" style="width:100%;max-width:none;margin-top:2px"><div class="pbar-fill pbar-'+cc(s.tp)+'" style="width:'+Math.min(s.tp,100)+'%"></div></div></div>'
         +(s.py_pct!=null?'<div class="sc-metric"><span class="sc-metric-label">前年Δ%</span><span class="sc-metric-val '+(s.py_pct>=0?'up':'dn')+'">'+fmtPct(s.py_pct)+'</span>'+(s.py!=null?'<span class="yo-price">'+esc(s.py<1?s.py.toFixed(3):s.py.toFixed(2))+'</span>':'')+'</div>':'')
+        +(yoPct!=null?'<div class="sc-metric"><span class="sc-metric-label">今年Δ%</span><span class="sc-metric-val '+(yoPct>=0?'up':'dn')+'">'+fmtPct(yoPct)+'</span></div>':'')
         +'<div class="sc-metric"><span class="sc-metric-label">5日Δ</span><span class="sc-metric-val '+d5class+'">'+(s.d5!=null?fmtPct(s.d5):'—')+'</span></div>'
         +'<div class="sc-metric"><span class="sc-metric-label">20日Δ</span><span class="sc-metric-val '+d20class+'">'+(s.d20!=null?fmtPct(s.d20):'—')+'</span></div>'
         +(s.su>1?'<div class="sc-metric"><span class="sc-metric-label">🔥增持</span><span class="sc-metric-val up">'+s.su+'日</span></div>':'')
