@@ -362,7 +362,7 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
     <div class="toolbar">
       <div class="toolbar-sect">
         <input class="input search-in" id="searchInput" placeholder="搜尋代碼/名稱…" autocomplete="off" oninput="searchVal=this.value;applyFilters();">
-        <select class="input" id="sortSelect" style="font-size:12px" onchange="sortCol=this.value;applyFilters();">
+        <select class="input" id="sortSelect" style="font-size:12px" onchange="sortBy(this.value)">
           <option value="d5">5日Δ</option>
           <option value="tp">CCASS%</option>
           <option value="t5">Top5%</option>
@@ -1124,13 +1124,11 @@ function applyFilters(){
   // Multi-column sort
   filtered.sort((a,b)=>{
     // Primary sort
-    var va=getSortVal(a,sortCol),vb=getSortVal(b,sortCol);
-    var cmp=va<vb?sortDir:va>vb?-sortDir:0;
+    var cmp=cmpSortVal(getSortVal(a,sortCol),getSortVal(b,sortCol),sortDir);
     if(cmp!==0)return cmp;
     // Secondary sort
     if(sortCol2){
-      va=getSortVal(a,sortCol2);vb=getSortVal(b,sortCol2);
-      cmp=va<vb?sortDir2:va>vb?-sortDir2:0;
+      cmp=cmpSortVal(getSortVal(a,sortCol2),getSortVal(b,sortCol2),sortDir2);
       if(cmp!==0)return cmp;
     }
     return 0;
@@ -1300,7 +1298,7 @@ function resetAllFilters(){
   var sf=document.getElementById('sigFilter');if(sf)sf.value='all';
   // Reset sort to default
   sortCol='code';sortDir=-1;sortCol2='';sortDir2=1;
-  var ss=document.getElementById('sortSelect');if(ss)ss.value='d5';
+  var ss=document.getElementById('sortSelect');if(ss)ss.value='code';
   var db=document.getElementById('dirBtn');if(db)db.textContent='↓';
   // Reset search
   searchVal='';

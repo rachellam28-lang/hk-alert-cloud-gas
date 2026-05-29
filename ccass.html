@@ -17,7 +17,7 @@
 body{background:var(--bg);color:var(--text);font:14px/1.55 Inter,system-ui,"PingFang TC","Noto Sans TC",Arial,sans-serif;-webkit-font-smoothing:antialiased}
 a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .topbar{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.88);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
-.topbar-inner{max-width:1440px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.topbar-inner{max-width:100%;margin:0 auto;padding:8px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
 .brand{display:flex;align-items:center;gap:10px}
 .logo{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#0284c7,#0ea5e9);display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
 .brand-title{font-size:14px;font-weight:600}.brand-sub{font-size:10px;color:var(--mute);text-transform:uppercase;letter-spacing:.16em}
@@ -26,12 +26,12 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .dot.loading{background:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.18)}
 .dot.error{background:#ef4444;box-shadow:0 0 0 3px rgba(239,68,68,.18)}
 .refresh-tag{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:11px;color:var(--text-soft)}
-.wrap{max-width:1440px;margin:0 auto;padding:18px 20px 36px}
+.wrap{max-width:100%;margin:0 auto;padding:14px 24px 36px}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
 .toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line)}
 .toolbar-sect{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
 .spacer{flex:1}
-.summary-bar{display:flex;flex-wrap:wrap;gap:8px;padding:12px 14px;border-top:1px solid var(--line-soft)}
+.summary-bar{display:flex;flex-wrap:wrap;gap:6px;padding:8px 10px;border-top:1px solid var(--line-soft);font-size:11px}
 .scnt{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--mute);padding:3px 8px;border-radius:999px;border:1px solid var(--line);background:var(--surface-soft)}
 .scnt b{font-weight:600;font-variant-numeric:tabular-nums}
 .input{background:var(--surface);border:1px solid var(--line);color:var(--text);padding:6px 10px;border-radius:8px;font:400 12.5px inherit;outline:none}
@@ -161,7 +161,7 @@ tbody tr{cursor:pointer}
 @media(max-width:640px){.hide-mc,.th-mc,.hide-chg,.th-chg,.hide-p52,.th-p52,.hide-pe,.th-pe,.hide-yo_pct,.th-yo_pct{display:none}}
 @media(max-width:640px){.hide-link,.th-link{display:none}}
 @media(max-width:640px){.brand>a{font-size:11px!important;padding:2px 6px!important;margin-left:3px!important}.input.search-in{min-width:140px}.btn-ghost,.btn-csv,.preset-btn,.col-toggle-btn{padding:3px 7px!important;font-size:10px!important;border-radius:6px!important}.toolbar{padding:6px 8px!important;gap:6px!important}.toolbar-sect{gap:4px!important}}
-@media(max-width:640px){.topbar-inner{padding:6px 10px;gap:8px}.brand{gap:6px;flex-shrink:0}.brand>a{font-size:10px!important;padding:1px 5px!important;margin-left:2px!important}.logo{display:none}.brand-title{font-size:12px;white-space:nowrap}.brand-sub{display:none}.topright{gap:3px;font-size:10px}.refresh-tag{display:none}}
+@media(max-width:640px){.topbar-inner{padding:6px 10px;gap:8px}.brand{gap:6px;flex-shrink:0}.brand>a{font-size:10px!important;padding:1px 5px!important;margin-left:2px!important}.logo{display:none}.brand-title{font-size:12px;white-space:nowrap}.brand-sub{display:none}.topright{gap:3px;font-size:10px}.refresh-tag{display:none}.wrap{padding:8px 2px 20px!important}}
 @media(max-width:560px){.hide-d120,.th-d120{display:none}}
 @media(max-width:480px){.hide-d60,.th-d60{display:none}.btn-ghost,.btn-csv,.preset-btn,.col-toggle-btn{padding:2px 5px!important;font-size:9px!important}}
 @media(max-width:360px){.hide-d20,.th-d20{display:none}.topbar-inner{padding:4px 6px;gap:4px}.brand-title{font-size:11px}.brand>a{font-size:9px!important;padding:1px 4px!important}.topright span:last-child{font-size:8px}}
@@ -177,7 +177,7 @@ tbody tr{cursor:pointer}
 .tf-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
 .tf-code{font:600 13px "JetBrains Mono",ui-monospace,monospace;color:var(--text)}
 .tf-name{font-size:12px;color:var(--text-soft);margin-left:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px}
-.tf-total{font:600 12px "JetBrains Mono",ui-monospace,monospace;color:var(--primary)}
+.tf-total{font:600 12px "JetBrains Mono",ui-monospace,monospace;color:var(--primary)}.tf-pct{font-size:9px;color:var(--mute);font-weight:600}
 .tf-flows{display:flex;gap:8px}
 .tf-side{flex:1;font-size:11px}
 .tf-side-label{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px}
@@ -190,24 +190,24 @@ tbody tr{cursor:pointer}
 .tf-out .tf-shares{color:var(--down)}
 @media(max-width:520px){.transfer-grid{grid-template-columns:1fr}}
 /* Mobile card layout */
-.stock-cards{display:none;flex-direction:column;gap:6px;padding:0}
-.stock-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;cursor:pointer}
+.stock-cards{display:none;flex-direction:column;gap:5px;padding:0}
+.stock-card{background:var(--surface);border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow);overflow:hidden;cursor:pointer}
 .stock-card:hover{border-color:var(--primary-border);background:var(--surface-soft)}
 .stock-card.ipo-highlight{border-left:3px solid var(--amber);background:linear-gradient(90deg,var(--amber-soft),transparent 50%)}
-.sc-header{display:flex;align-items:center;justify-content:space-between;padding:6px 10px 3px;border-bottom:1px solid var(--line-soft);gap:5px}
-.sc-header .code{font-size:12px}.sc-header .name{font-size:11px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-soft)}
-.sc-header .btn-save{font-size:14px;padding:0 2px;flex-shrink:0}
-.sc-badge{display:inline-flex;align-items:center;padding:1px 6px;border-radius:999px;background:var(--primary-soft);color:var(--primary);border:1px solid var(--primary-border);font:600 10px inherit;line-height:1.4;flex-shrink:0}
+.sc-header{display:flex;align-items:center;justify-content:space-between;padding:5px 8px 3px;gap:5px}
+.sc-header .code{font-size:12px;font-weight:700}.sc-header .name{font-size:10px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-soft)}
+.sc-header .btn-save{font-size:13px;padding:0 2px;flex-shrink:0}
+.sc-badge{display:inline-flex;align-items:center;font-size:10px;background:var(--primary-soft);color:var(--primary);padding:1px 6px;border-radius:999px;font-weight:700;flex-shrink:0}
 .sc-metrics{display:flex;gap:2px;padding:3px 8px;background:var(--surface)}
-.sc-metric{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:0;padding:2px 2px}
-.sc-metric-label{font-size:8px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.06em;line-height:1.3}
-.sc-metric-val{font:600 13px "JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;line-height:1.5}
+.sc-metric{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:1px;padding:2px 1px}
+.sc-metric-label{font-size:8px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.04em;line-height:1.3}
+.sc-metric-val{font:600 12px "JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;line-height:1.4}
 .sc-metric-val.up{color:var(--up)}.sc-metric-val.dn{color:var(--down)}.sc-metric-val.muted{color:var(--mute-2)}
-.sc-pills{padding:3px 8px 5px;display:flex;flex-wrap:wrap;gap:2px;border-top:1px solid var(--line-soft);background:var(--surface)}
-.sc-pills .cpill{font-size:9.5px;padding:1px 6px}
-.sc-pills .spill{font-size:10px;padding:1px 7px}
-@media(max-width:720px){table{display:none}.stock-cards{display:flex}}
-@media(max-width:375px){.stock-card{border-radius:8px}.sc-header{padding:4px 8px 2px}.sc-header .code{font-size:11px}.sc-header .name{font-size:10px}.sc-metrics{padding:2px 6px}.sc-metric-val{font-size:11px}.sc-metric-label{font-size:7px}.sc-pills{padding:2px 6px 4px}}
+.sc-pills{padding:3px 8px 4px;display:flex;flex-wrap:wrap;gap:2px;border-top:1px solid var(--line-soft);background:var(--surface)}
+.sc-pills .cpill{font-size:10px;padding:1px 6px}
+.sc-pills .spill{font-size:10px;padding:1px 6px}
+@media(max-width:720px){table{display:none}.stock-cards{display:flex;padding:0 8px}}
+@media(max-width:375px){.stock-card{border-radius:6px}.sc-header{padding:3px 6px 1px}.sc-header .code{font-size:10px}.sc-header .name{font-size:9px}.sc-metrics{padding:1px 4px}.sc-metric-val{font-size:10px}.sc-metric-label{font-size:6px}.sc-pills{padding:1px 4px 2px}}
 @media(max-width:520px){.bt-cards{flex-direction:column!important}.ipo-card{min-width:100%!important;flex:none!important}.ipo-tbl td{padding:3px 8px}.ipo-tbl .code{font-size:11px}.ipo-tbl .name{font-size:11px}}
 /* IPO highlight for table rows */
 tbody tr.ipo-highlight{background:linear-gradient(90deg,var(--amber-soft),transparent 50%)!important;border-left:3px solid var(--amber)}
@@ -362,7 +362,7 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
     <div class="toolbar">
       <div class="toolbar-sect">
         <input class="input search-in" id="searchInput" placeholder="搜尋代碼/名稱…" autocomplete="off" oninput="searchVal=this.value;applyFilters();">
-        <select class="input" id="sortSelect" style="font-size:12px" onchange="sortCol=this.value;applyFilters();">
+        <select class="input" id="sortSelect" style="font-size:12px" onchange="sortBy(this.value)">
           <option value="d5">5日Δ</option>
           <option value="tp">CCASS%</option>
           <option value="t5">Top5%</option>
@@ -424,6 +424,13 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
           </div>
         </div>
         <button class="btn-csv" onclick="ecsv()" title="匯出 CSV">📥 CSV</button>
+        <div class="preset-group">
+        <span class="rf-lbl" style="margin-right:2px">📋</span>
+        <button class="preset-btn" onclick="loadPreset('signal')">信號突破</button>
+        <button class="preset-btn" onclick="loadPreset('placement')">配股預警</button>
+        <button class="preset-btn" onclick="loadPreset('mom')">高動能</button>
+        <button class="preset-save" onclick="savePreset()" title="儲存當前篩選為預設">+</button>
+      </div>
       </div>
       <div class="toolbar-sect">
         <button class="btn-ghost" id="filterAll" onclick="toggleFilter('all')">全部</button>
@@ -439,26 +446,14 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
         <button class="btn-ghost" id="filterLargeMC" onclick="toggleFilter('large_mc')">大市值</button>
       </div>
     </div>
-    <div class="adv-filter-bar" id="advFilterBar">
-      <span class="rf-lbl">🔍 進階篩選</span>
-      <div class="rf-group"><span class="rf-lbl">CCASS%</span><input class="rf-in" id="rfTpMin" placeholder="30" oninput="applyFilters()"><span class="rf-sep">~</span><input class="rf-in" id="rfTpMax" placeholder="80" oninput="applyFilters()"></div>
-      <div class="rf-group"><span class="rf-lbl">5日Δ</span><input class="rf-in" id="rfD5Min" placeholder="-10" oninput="applyFilters()"><span class="rf-sep">~</span><input class="rf-in" id="rfD5Max" placeholder="10" oninput="applyFilters()"></div>
-      <div class="rf-group"><span class="rf-lbl">市值(億)</span><input class="rf-in" id="rfMcMin" oninput="applyFilters()"><span class="rf-sep">~</span><input class="rf-in" id="rfMcMax" oninput="applyFilters()"></div>
-      <div class="preset-group">
-        <span class="rf-lbl" style="margin-right:2px">📋</span>
-        <button class="preset-btn" onclick="loadPreset('signal')">信號突破</button>
-        <button class="preset-btn" onclick="loadPreset('placement')">配股預警</button>
-        <button class="preset-btn" onclick="loadPreset('mom')">高動能</button>
-        <button class="preset-save" onclick="savePreset()" title="儲存當前篩選為預設">+</button>
-      </div>
-    </div>
+
     <div style="overflow-x:auto">
       <table>
         <thead><tr>
           <th class="sortable sort-active sort-desc" data-sort="code" onclick="sortBy('code',event)"><span>代碼</span><span class="sort-icon">▼</span><span class="sort2-icon"></span></th>
+          <th class="sortable" data-sort="n" onclick="sortBy('n',event)"><span>名稱</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable th-prevyo" data-sort="prevyo" onclick="sortBy('prevyo',event)"><span>😻</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable th-pypct" data-sort="pypct" onclick="sortBy('pypct',event)"><span>前年Δ%</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
-          <th class="sortable" data-sort="n" onclick="sortBy('n',event)"><span>名稱</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable th-price" data-sort="price" onclick="sortBy('price',event)"><span>價格</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable th-yo_pct hide-yo_pct" data-sort="yo_pct" onclick="sortBy('yo_pct',event)"><span>今年Δ%</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable th-sig" data-sort="sig" onclick="sortBy('sig',event)"><span>信號</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
@@ -484,6 +479,12 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
   <div class="stock-cards" id="stockCards"></div>
   <div id="pagination" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px"></div>
   <div class="summary-bar" id="summaryBar" style="margin-top:8px"></div>
+  <div class="adv-filter-bar" id="advFilterBar">
+      <span class="rf-lbl">🔍 進階篩選</span>
+      <div class="rf-group"><span class="rf-lbl">CCASS%</span><input class="rf-in" id="rfTpMin" placeholder="30" oninput="applyFilters()"><span class="rf-sep">~</span><input class="rf-in" id="rfTpMax" placeholder="80" oninput="applyFilters()"></div>
+      <div class="rf-group"><span class="rf-lbl">5日Δ</span><input class="rf-in" id="rfD5Min" placeholder="-10" oninput="applyFilters()"><span class="rf-sep">~</span><input class="rf-in" id="rfD5Max" placeholder="10" oninput="applyFilters()"></div>
+      <div class="rf-group"><span class="rf-lbl">市值(億)</span><input class="rf-in" id="rfMcMin" oninput="applyFilters()"><span class="rf-sep">~</span><input class="rf-in" id="rfMcMax" oninput="applyFilters()"></div>
+    </div>
 
   <!-- Transfers section -->
   <div class="section-head">
@@ -701,7 +702,18 @@ function savePreset(){
   renderPresets();
   bindDynamicTapFixes();
 }
+var activePreset=null;
 function loadPreset(key){
+  // Toggle: if same preset clicked again, reset to default
+  if(activePreset===key){
+    activePreset=null;
+    resetAllFilters();
+    return;
+  }
+  activePreset=key;
+  // Visual: mark active button
+  document.querySelectorAll('.preset-btn').forEach(function(b){b.classList.remove('active');});
+  document.querySelectorAll('.preset-btn').forEach(function(b){if(b.textContent===presetData[key]?.name)b.classList.add('active');});
   var preset=presetData[key];if(!preset)return;
   var s=preset.state;
   if(s.sortCol){sortCol=s.sortCol;sortDir=s.sortDir;sortCol2=s.sortCol2||'';sortDir2=s.sortDir2||1;}
@@ -730,7 +742,7 @@ function loadPreset(key){
   applyFilters();
   updateSortInfo();
 }
-var presetData={signal:{name:'信號突破',state:{sortCol:'sig',sortDir:1,sortCol2:'d5',sortDir2:-1,searchVal:'',activeFilters:[],sigFilter:'all',tpMin:null,tpMax:null,d5Min:null,d5Max:null,mcMin:null,mcMax:null,hidden:[]}},placement:{name:'配股預警',state:{sortCol:'tp',sortDir:-1,sortCol2:'d5',sortDir2:-1,searchVal:'',activeFilters:['placement'],sigFilter:'all',tpMin:30,tpMax:null,d5Min:null,d5Max:null,mcMin:null,mcMax:null,hidden:[]}},mom:{name:'高動能',state:{sortCol:'d5',sortDir:-1,sortCol2:'mc',sortDir2:-1,searchVal:'',activeFilters:[],sigFilter:'all',tpMin:null,tpMax:null,d5Min:-20,d5Max:-5,mcMin:null,mcMax:null,hidden:[]}}};
+var presetData={signal:{name:'信號突破',state:{sortCol:'sig',sortDir:1,sortCol2:'d5',sortDir2:-1,searchVal:'',activeFilters:[],sigFilter:'all',tpMin:null,tpMax:null,d5Min:null,d5Max:null,mcMin:null,mcMax:null,hidden:[]}},placement:{name:'配股預警',state:{sortCol:'tp',sortDir:-1,sortCol2:'d5',sortDir2:-1,searchVal:'',activeFilters:['placement'],sigFilter:'all',tpMin:30,tpMax:null,d5Min:null,d5Max:null,mcMin:null,mcMax:null,hidden:[]}},mom:{name:'高動能',state:{sortCol:'d5',sortDir:-1,sortCol2:'tp',sortDir2:-1,searchVal:'',activeFilters:[],sigFilter:'all',tpMin:null,tpMax:null,d5Min:3,d5Max:null,mcMin:null,mcMax:null,hidden:[]}}};
 function renderPresets(){
   var container=document.querySelector('.preset-group');
   if(!container||!userPresets.length)return;
@@ -956,9 +968,9 @@ function renderTable(){
     if(hasIPO)hlClass+=' hl-ipo';
     return '<tr class="'+ipoClass+hlClass+'" onclick="showDetail(\''+s.c+'\')">'
       +'<td><span class="code">'+esc(s.c)+'</span>'+(s.suspended?' <span class="suspended-badge">停牌</span>':'')+'</td>'
+            +'<td><span class="name" title="'+esc(s.n)+'">'+esc(s.n)+'</span></td>'
             +'<td class="hide-prevyo">'+(s.lp&&s.py&&s.lp>s.py?'😻':'')+'</td>'
             +'<td class="hide-pypct"><span class="num '+deltaClass(s.py_pct)+'">'+(s.py_pct!=null?fmtPct(s.py_pct):'—')+'</span>'+(s.py!=null?'<span class="yo-price">'+esc(s.py<1?s.py.toFixed(3):s.py.toFixed(2))+'</span>':'')+'</td>'
-            +'<td><span class="name" title="'+esc(s.n)+'">'+esc(s.n)+'</span></td>'
       +'<td class="hide-price">'+priceHtml+'</td>'
       +'<td class="hide-yo_pct"><span class="num '+deltaClass(yoPct)+'">'+(yoPct!=null?fmtPct(yoPct):'—')+'</span></td>'
       +'<td class="hide-sig cell-pills">'+sigDisplay+'</td>'
@@ -1008,6 +1020,7 @@ function renderTable(){
     const priceVal=priceMap.get(s.c) ?? s.lp;
     const priceStr=priceVal!=null?(priceVal<1?priceVal.toFixed(3):priceVal.toFixed(2)):null;
     const saved=wl.has(s.c);
+    const yoPct = s.lp!=null && s.yo ? (s.lp/s.yo*100-100) : null;
     const d5class=s.d5!==null?(s.d5>0?'up':(s.d5<0?'dn':'muted')):'muted';
     const d20class=s.d20!==null?(s.d20>0?'up':(s.d20<0?'dn':'muted')):'muted';
     const ipoClass=hasIPO?' ipo-highlight':'';
@@ -1111,13 +1124,11 @@ function applyFilters(){
   // Multi-column sort
   filtered.sort((a,b)=>{
     // Primary sort
-    var va=getSortVal(a,sortCol),vb=getSortVal(b,sortCol);
-    var cmp=va<vb?sortDir:va>vb?-sortDir:0;
+    var cmp=cmpSortVal(getSortVal(a,sortCol),getSortVal(b,sortCol),sortDir);
     if(cmp!==0)return cmp;
     // Secondary sort
     if(sortCol2){
-      va=getSortVal(a,sortCol2);vb=getSortVal(b,sortCol2);
-      cmp=va<vb?sortDir2:va>vb?-sortDir2:0;
+      cmp=cmpSortVal(getSortVal(a,sortCol2),getSortVal(b,sortCol2),sortDir2);
       if(cmp!==0)return cmp;
     }
     return 0;
@@ -1267,6 +1278,7 @@ function sortBy(col,ev){
 const FILTER_IDS={filterAll:'all',filterUp:'up',filterDn:'dn',filterConcentrated:'concentrated',filterPlacement:'placement',filterRights:'rights',filterSmallMC:'small_mc',filterMidMC:'mid_mc',filterLargeMC:'large_mc'};
 
 function toggleFilter(mode){
+  activePreset=null;
   if(mode==='all'){activeFilters.clear();updateFilterUI();applyFilters();return;}
   if(activeFilters.has(mode)){activeFilters.delete(mode);updateFilterUI();applyFilters();return;}
   if(mode==='up'||mode==='dn'){activeFilters.delete('up');activeFilters.delete('dn');}
@@ -1274,6 +1286,25 @@ function toggleFilter(mode){
     activeFilters.delete('small_mc');activeFilters.delete('mid_mc');activeFilters.delete('large_mc');}
   activeFilters.add(mode);
   updateFilterUI();applyFilters();
+}
+
+function resetAllFilters(){
+  activePreset=null;
+  activeFilters.clear();
+  updateFilterUI();
+  // Reset range inputs
+  document.querySelectorAll('#rfTpMin,#rfTpMax,#rfD5Min,#rfD5Max,#rfMcMin,#rfMcMax').forEach(function(e){e.value='';});
+  // Reset signal filter
+  var sf=document.getElementById('sigFilter');if(sf)sf.value='all';
+  // Reset sort to default
+  sortCol='code';sortDir=-1;sortCol2='';sortDir2=1;
+  var ss=document.getElementById('sortSelect');if(ss)ss.value='code';
+  var db=document.getElementById('dirBtn');if(db)db.textContent='↓';
+  // Reset search
+  searchVal='';
+  var si=document.getElementById('searchInput');if(si)si.value='';
+  applyFilters();
+  updateSortInfo();
 }
 
 function updateFilterUI(){
@@ -1528,28 +1559,46 @@ function renderWebb(data){
 // --- Transfers ---
 function fmtShares(n){
   if(n==null)return'—';
-  if(Math.abs(n)>=1e9) return (n/1e9).toFixed(2)+'B';
-  if(Math.abs(n)>=1e6) return (n/1e6).toFixed(1)+'M';
-  if(Math.abs(n)>=1e3) return (n/1e3).toFixed(0)+'K';
-  return n.toFixed(0);
+  if(Math.abs(n)>=1e8) return (n/1e8).toFixed(2)+'億';
+  if(Math.abs(n)>=1e4) return (n/1e4).toFixed(1)+'萬';
+  return n.toLocaleString();
 }
-function renderTransfers(data){
+function renderTransfers(data, priceMap){
   var card = document.getElementById('transfersCard');
   if(!card) return;
   if(!data||!data.transfers||!data.transfers.length){
     card.innerHTML='<div style="padding:12px;color:var(--mute);text-align:center;font-size:12px">暫無轉倉記錄</div>';
     return;
   }
+  var pm = priceMap || new Map();
   var items = data.transfers.map(function(t){
     var topIn = t.ins[0]||{};
     var topOut = t.outs[0]||{};
+    var price = pm.get(t.code);
+    var totalShares = t.total_in + t.total_out;
+    var valueStr = '';
+    if(price && totalShares){
+      var val = totalShares * price;
+      if(val>=1e8) valueStr = (val/1e8).toFixed(2)+'億';
+      else if(val>=1e4) valueStr = (val/1e4).toFixed(0)+'萬';
+      else valueStr = val.toLocaleString();
+    }
+    var pctStr = '';
+    var transferVol = Math.max(t.total_in, t.total_out);
+    if(t.total_shares && transferVol){
+      var pct = transferVol / t.total_shares * 100;
+      pctStr = '<span class="tf-pct">佔CCASS '+pct.toFixed(2)+'%</span>';
+    }
     return '<div class="transfer-card" onclick="showDetail(\''+esc(t.code)+'\')">'
       +'<div class="tf-head">'
         +'<div style="display:flex;align-items:center">'
           +'<span class="tf-code">'+esc(t.code)+'</span>'
           +'<span class="tf-name" title="'+esc(t.name)+'">'+esc(t.name)+'</span>'
         +'</div>'
-        +'<span class="tf-total">'+fmtShares(t.total_in+t.total_out)+'</span>'
+        +'<div style="text-align:right">'
+          +'<span class="tf-total">'+fmtShares(totalShares)+(valueStr?' · $'+valueStr:'')+'</span>'
+          +(pctStr?'<div>'+pctStr+'</div>':'')
+        +'</div>'
       +'</div>'
       +'<div class="tf-flows">'
         +'<div class="tf-side tf-in">'
@@ -1600,7 +1649,7 @@ async function loadData(){
     // Fetch transfers
     fetch('./data/transfers.json?_='+Date.now())
       .then(r=>r.ok?r.json():null)
-      .then(t=>{if(t)renderTransfers(t);})
+      .then(t=>{if(t)renderTransfers(t, priceMap);})
       .catch(()=>{});
 
     // Fetch GAS
