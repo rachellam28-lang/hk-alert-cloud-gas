@@ -385,7 +385,7 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
           <option value="yo_pct">今年Δ%</option>
           <option value="pe">PE</option>
         </select>
-        <button class="btn-ghost active" id="dirBtn" title="切換排序方向" onclick="sortDir*=-1;this.textContent=sortDir===1?'↑':'↓';applyFilters();">↓</button>
+        <button class="btn-ghost active" id="dirBtn" title="切換排序方向" onclick="sortBy(sortCol)">↓</button>
         <span id="sortInfo" class="sort-info"></span>
         <select class="input" id="sigFilter" style="font-size:12px" onchange="applyFilters();">
           <option value="all">所有信號</option>
@@ -1137,6 +1137,9 @@ function applyFilters(){
   encodeState();
   updateSortInfo();
   renderTable();
+  // Sync dropdown to current sort
+  var ss=document.getElementById('sortSelect');
+  if(ss){var matched=false;for(var i=0;i<ss.options.length;i++){if(ss.options[i].value===sortCol){ss.value=sortCol;matched=true;break;}}if(!matched)ss.value='';}
 }
 
 // --- detail drawer ---
