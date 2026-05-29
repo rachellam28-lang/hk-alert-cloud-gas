@@ -190,22 +190,22 @@ tbody tr{cursor:pointer}
 .tf-out .tf-shares{color:var(--down)}
 @media(max-width:520px){.transfer-grid{grid-template-columns:1fr}}
 /* Mobile card layout */
-.stock-cards{display:none;flex-direction:column;gap:4px;padding:0}
+.stock-cards{display:none;flex-direction:column;gap:5px;padding:0}
 .stock-card{background:var(--surface);border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow);overflow:hidden;cursor:pointer}
 .stock-card:hover{border-color:var(--primary-border);background:var(--surface-soft)}
 .stock-card.ipo-highlight{border-left:3px solid var(--amber);background:linear-gradient(90deg,var(--amber-soft),transparent 50%)}
-.sc-header{display:flex;align-items:center;justify-content:space-between;padding:4px 8px 2px;gap:4px}
-.sc-header .code{font-size:11px;font-weight:700}.sc-header .name{font-size:10px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-soft)}
-.sc-header .btn-save{font-size:12px;padding:0 2px;flex-shrink:0}
-.sc-badge{display:inline-flex;align-items:center;font-size:9px;background:var(--primary-soft);color:var(--primary);padding:1px 5px;border-radius:999px;font-weight:700;flex-shrink:0}
-.sc-metrics{display:flex;gap:1px;padding:2px 6px;background:var(--surface)}
-.sc-metric{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:0;padding:1px 1px}
-.sc-metric-label{font-size:7px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.04em;line-height:1.2}
-.sc-metric-val{font:600 11px "JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;line-height:1.3}
+.sc-header{display:flex;align-items:center;justify-content:space-between;padding:5px 8px 3px;gap:5px}
+.sc-header .code{font-size:12px;font-weight:700}.sc-header .name{font-size:10px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-soft)}
+.sc-header .btn-save{font-size:13px;padding:0 2px;flex-shrink:0}
+.sc-badge{display:inline-flex;align-items:center;font-size:10px;background:var(--primary-soft);color:var(--primary);padding:1px 6px;border-radius:999px;font-weight:700;flex-shrink:0}
+.sc-metrics{display:flex;gap:2px;padding:3px 8px;background:var(--surface)}
+.sc-metric{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:1px;padding:2px 1px}
+.sc-metric-label{font-size:8px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.04em;line-height:1.3}
+.sc-metric-val{font:600 12px "JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;line-height:1.4}
 .sc-metric-val.up{color:var(--up)}.sc-metric-val.dn{color:var(--down)}.sc-metric-val.muted{color:var(--mute-2)}
-.sc-pills{padding:2px 6px 3px;display:flex;flex-wrap:wrap;gap:2px;border-top:1px solid var(--line-soft);background:var(--surface)}
-.sc-pills .cpill{font-size:9px;padding:1px 5px}
-.sc-pills .spill{font-size:9px;padding:1px 5px}
+.sc-pills{padding:3px 8px 4px;display:flex;flex-wrap:wrap;gap:2px;border-top:1px solid var(--line-soft);background:var(--surface)}
+.sc-pills .cpill{font-size:10px;padding:1px 6px}
+.sc-pills .spill{font-size:10px;padding:1px 6px}
 @media(max-width:720px){table{display:none}.stock-cards{display:flex;padding:0 8px}}
 @media(max-width:375px){.stock-card{border-radius:6px}.sc-header{padding:3px 6px 1px}.sc-header .code{font-size:10px}.sc-header .name{font-size:9px}.sc-metrics{padding:1px 4px}.sc-metric-val{font-size:10px}.sc-metric-label{font-size:6px}.sc-pills{padding:1px 4px 2px}}
 @media(max-width:520px){.bt-cards{flex-direction:column!important}.ipo-card{min-width:100%!important;flex:none!important}.ipo-tbl td{padding:3px 8px}.ipo-tbl .code{font-size:11px}.ipo-tbl .name{font-size:11px}}
@@ -424,6 +424,13 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
           </div>
         </div>
         <button class="btn-csv" onclick="ecsv()" title="匯出 CSV">📥 CSV</button>
+        <div class="preset-group">
+        <span class="rf-lbl" style="margin-right:2px">📋</span>
+        <button class="preset-btn" onclick="loadPreset('signal')">信號突破</button>
+        <button class="preset-btn" onclick="loadPreset('placement')">配股預警</button>
+        <button class="preset-btn" onclick="loadPreset('mom')">高動能</button>
+        <button class="preset-save" onclick="savePreset()" title="儲存當前篩選為預設">+</button>
+      </div>
       </div>
       <div class="toolbar-sect">
         <button class="btn-ghost" id="filterAll" onclick="toggleFilter('all')">全部</button>
@@ -439,26 +446,14 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
         <button class="btn-ghost" id="filterLargeMC" onclick="toggleFilter('large_mc')">大市值</button>
       </div>
     </div>
-    <div class="adv-filter-bar" id="advFilterBar">
-      <span class="rf-lbl">🔍 進階篩選</span>
-      <div class="rf-group"><span class="rf-lbl">CCASS%</span><input class="rf-in" id="rfTpMin" placeholder="30" oninput="applyFilters()"><span class="rf-sep">~</span><input class="rf-in" id="rfTpMax" placeholder="80" oninput="applyFilters()"></div>
-      <div class="rf-group"><span class="rf-lbl">5日Δ</span><input class="rf-in" id="rfD5Min" placeholder="-10" oninput="applyFilters()"><span class="rf-sep">~</span><input class="rf-in" id="rfD5Max" placeholder="10" oninput="applyFilters()"></div>
-      <div class="rf-group"><span class="rf-lbl">市值(億)</span><input class="rf-in" id="rfMcMin" oninput="applyFilters()"><span class="rf-sep">~</span><input class="rf-in" id="rfMcMax" oninput="applyFilters()"></div>
-      <div class="preset-group">
-        <span class="rf-lbl" style="margin-right:2px">📋</span>
-        <button class="preset-btn" onclick="loadPreset('signal')">信號突破</button>
-        <button class="preset-btn" onclick="loadPreset('placement')">配股預警</button>
-        <button class="preset-btn" onclick="loadPreset('mom')">高動能</button>
-        <button class="preset-save" onclick="savePreset()" title="儲存當前篩選為預設">+</button>
-      </div>
-    </div>
+
     <div style="overflow-x:auto">
       <table>
         <thead><tr>
           <th class="sortable sort-active sort-desc" data-sort="code" onclick="sortBy('code',event)"><span>代碼</span><span class="sort-icon">▼</span><span class="sort2-icon"></span></th>
+          <th class="sortable" data-sort="n" onclick="sortBy('n',event)"><span>名稱</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable th-prevyo" data-sort="prevyo" onclick="sortBy('prevyo',event)"><span>😻</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable th-pypct" data-sort="pypct" onclick="sortBy('pypct',event)"><span>前年Δ%</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
-          <th class="sortable" data-sort="n" onclick="sortBy('n',event)"><span>名稱</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable th-price" data-sort="price" onclick="sortBy('price',event)"><span>價格</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable th-yo_pct hide-yo_pct" data-sort="yo_pct" onclick="sortBy('yo_pct',event)"><span>今年Δ%</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable th-sig" data-sort="sig" onclick="sortBy('sig',event)"><span>信號</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
@@ -484,6 +479,12 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
   <div class="stock-cards" id="stockCards"></div>
   <div id="pagination" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px"></div>
   <div class="summary-bar" id="summaryBar" style="margin-top:8px"></div>
+  <div class="adv-filter-bar" id="advFilterBar">
+      <span class="rf-lbl">🔍 進階篩選</span>
+      <div class="rf-group"><span class="rf-lbl">CCASS%</span><input class="rf-in" id="rfTpMin" placeholder="30" oninput="applyFilters()"><span class="rf-sep">~</span><input class="rf-in" id="rfTpMax" placeholder="80" oninput="applyFilters()"></div>
+      <div class="rf-group"><span class="rf-lbl">5日Δ</span><input class="rf-in" id="rfD5Min" placeholder="-10" oninput="applyFilters()"><span class="rf-sep">~</span><input class="rf-in" id="rfD5Max" placeholder="10" oninput="applyFilters()"></div>
+      <div class="rf-group"><span class="rf-lbl">市值(億)</span><input class="rf-in" id="rfMcMin" oninput="applyFilters()"><span class="rf-sep">~</span><input class="rf-in" id="rfMcMax" oninput="applyFilters()"></div>
+
 
   <!-- Transfers section -->
   <div class="section-head">
@@ -956,9 +957,9 @@ function renderTable(){
     if(hasIPO)hlClass+=' hl-ipo';
     return '<tr class="'+ipoClass+hlClass+'" onclick="showDetail(\''+s.c+'\')">'
       +'<td><span class="code">'+esc(s.c)+'</span>'+(s.suspended?' <span class="suspended-badge">停牌</span>':'')+'</td>'
+            +'<td><span class="name" title="'+esc(s.n)+'">'+esc(s.n)+'</span></td>'
             +'<td class="hide-prevyo">'+(s.lp&&s.py&&s.lp>s.py?'😻':'')+'</td>'
             +'<td class="hide-pypct"><span class="num '+deltaClass(s.py_pct)+'">'+(s.py_pct!=null?fmtPct(s.py_pct):'—')+'</span>'+(s.py!=null?'<span class="yo-price">'+esc(s.py<1?s.py.toFixed(3):s.py.toFixed(2))+'</span>':'')+'</td>'
-            +'<td><span class="name" title="'+esc(s.n)+'">'+esc(s.n)+'</span></td>'
       +'<td class="hide-price">'+priceHtml+'</td>'
       +'<td class="hide-yo_pct"><span class="num '+deltaClass(yoPct)+'">'+(yoPct!=null?fmtPct(yoPct):'—')+'</span></td>'
       +'<td class="hide-sig cell-pills">'+sigDisplay+'</td>'
