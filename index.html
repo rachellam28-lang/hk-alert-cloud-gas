@@ -950,7 +950,7 @@ function renderTable(){
     const aboveYO = s.lp && s.yo && s.lp > s.yo;
     const yoPct = s.lp!=null && s.yo ? (s.lp/s.yo*100-100) : null;
     const priceHtml=priceVal!=null
-      ? (aboveYO?'<span class="yo-ind">🔺</span>':'')+'<span class="pv">'+esc(priceVal<1?priceVal.toFixed(3):priceVal.toFixed(2))+'</span>'
+      ? '<span class="pv">'+esc(priceVal<1?priceVal.toFixed(3):priceVal.toFixed(2))+'</span>'
       : '<span class="mc-null">—</span>';
 
 // Watchlist + HKEX link
@@ -972,7 +972,7 @@ function renderTable(){
             +'<td class="hide-prevyo">'+(s.lp&&s.py&&s.lp>s.py?'😻':'')+'</td>'
             +'<td class="hide-pypct"><span class="num '+deltaClass(s.py_pct)+'">'+(s.py_pct!=null?fmtPct(s.py_pct):'—')+'</span>'+(s.py!=null?'<span class="yo-price">'+esc(s.py<1?s.py.toFixed(3):s.py.toFixed(2))+'</span>':'')+'</td>'
       +'<td class="hide-price">'+priceHtml+'</td>'
-      +'<td class="hide-yo_pct"><span class="num '+deltaClass(yoPct)+'">'+(yoPct!=null?fmtPct(yoPct):'—')+'</span></td>'
+      +'<td class="hide-yo_pct"><span class="num '+deltaClass(yoPct)+'">'+(aboveYO?'🔺':'')+(yoPct!=null?fmtPct(yoPct):'—')+'</span></td>'
       +'<td class="hide-sig cell-pills">'+sigDisplay+'</td>'
       +'<td><span class="num">'+s.tp.toFixed(2)+'%</span></td>'
       +'<td class="hide-t5"><span class="num">'+s.t5.toFixed(2)+'%</span></td>'
@@ -1021,6 +1021,7 @@ function renderTable(){
     const priceStr=priceVal!=null?(priceVal<1?priceVal.toFixed(3):priceVal.toFixed(2)):null;
     const saved=wl.has(s.c);
     const yoPct = s.lp!=null && s.yo ? (s.lp/s.yo*100-100) : null;
+    const aboveYO = s.lp && s.yo && s.lp > s.yo;
     const d5class=s.d5!==null?(s.d5>0?'up':(s.d5<0?'dn':'muted')):'muted';
     const d20class=s.d20!==null?(s.d20>0?'up':(s.d20<0?'dn':'muted')):'muted';
     const ipoClass=hasIPO?' ipo-highlight':'';
@@ -1034,10 +1035,10 @@ function renderTable(){
         +'<button class="btn-save'+(saved?' saved':'')+'" data-code="'+esc(s.c)+'" data-name="'+esc(s.n)+'" data-signal="" data-date="" title="加入自選" onclick="event.stopPropagation()">'+(saved?'★':'☆')+'</button>'
       +'</div>'
       +'<div class="sc-metrics">'
-        +'<div class="sc-metric"><span class="sc-metric-label">'+(s.lp&&s.yo&&s.lp>s.yo?'🔺':'')+'現價</span><span class="sc-metric-val'+(priceStr?'':' muted')+'">'+(priceStr?esc(priceStr):'—')+'</span></div>'
+        +'<div class="sc-metric"><span class="sc-metric-label">現價</span><span class="sc-metric-val'+(priceStr?'':' muted')+'">'+(priceStr?esc(priceStr):'—')+'</span></div>'
         +'<div class="sc-metric"><span class="sc-metric-label">CCASS</span><span class="sc-metric-val">'+s.tp.toFixed(1)+'%</span><div class="pbar" style="width:100%;max-width:none;margin-top:2px"><div class="pbar-fill pbar-'+cc(s.tp)+'" style="width:'+Math.min(s.tp,100)+'%"></div></div></div>'
         +(s.py_pct!=null?'<div class="sc-metric"><span class="sc-metric-label">前年Δ%</span><span class="sc-metric-val '+(s.py_pct>=0?'up':'dn')+'">'+fmtPct(s.py_pct)+'</span>'+(s.py!=null?'<span class="yo-price">'+esc(s.py<1?s.py.toFixed(3):s.py.toFixed(2))+'</span>':'')+'</div>':'')
-        +(yoPct!=null?'<div class="sc-metric"><span class="sc-metric-label">今年Δ%</span><span class="sc-metric-val '+(yoPct>=0?'up':'dn')+'">'+fmtPct(yoPct)+'</span></div>':'')
+        +(yoPct!=null?'<div class="sc-metric"><span class="sc-metric-label">'+(aboveYO?'🔺':'')+'今年Δ%</span><span class="sc-metric-val '+(yoPct>=0?'up':'dn')+'">'+fmtPct(yoPct)+'</span></div>':'')
         +'<div class="sc-metric"><span class="sc-metric-label">5日Δ</span><span class="sc-metric-val '+d5class+'">'+(s.d5!=null?fmtPct(s.d5):'—')+'</span></div>'
         +'<div class="sc-metric"><span class="sc-metric-label">20日Δ</span><span class="sc-metric-val '+d20class+'">'+(s.d20!=null?fmtPct(s.d20):'—')+'</span></div>'
         +(s.su>1?'<div class="sc-metric"><span class="sc-metric-label">🔥增持</span><span class="sc-metric-val up">'+s.su+'日</span></div>':'')
