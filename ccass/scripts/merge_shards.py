@@ -222,6 +222,11 @@ def update_ccass_json(target_date: date) -> None:
         mc = mc_map.get(sc)
         pr = price_map.get(sc, {})
 
+        # Price sanity: cap extreme py_pct (likely share consolidation not tracked by Yahoo)
+        raw_py_pct = pr.get('py_pct')
+        if raw_py_pct is not None and (raw_py_pct > 1000 or raw_py_pct < -99):
+            raw_py_pct = None  # suppress misleading value
+
         stocks.append({
             'c': sc,
             'n': names.get(sc, sc),
@@ -240,7 +245,7 @@ def update_ccass_json(target_date: date) -> None:
             'yo': pr.get('yo'),
             'lp': pr.get('lp'),
             'py': pr.get('py'),
-            'py_pct': pr.get('py_pct'),
+            'py_pct': raw_py_pct,
             # Sentinel Option A (compact keys)
             'ah': ah,
             'bt5': bt5,
