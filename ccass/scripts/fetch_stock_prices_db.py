@@ -8,6 +8,7 @@ Usage:
 import sqlite3, time, argparse
 from pathlib import Path
 from datetime import date, timedelta
+import pandas as pd
 
 PROJECT = Path(__file__).parent.parent
 DB = PROJECT / "ccass.db"
@@ -144,8 +145,6 @@ def main():
         end_date = date.today()
         start_date = end_date - timedelta(days=90)
         print(f"Incremental: {start_date} → {end_date}")
-    
-    import pandas as pd  # needed for pd.notna
     
     new_rows = fetch_and_store(codes, start_date, end_date)
     print(f"\nDone. New rows added: {new_rows}")
