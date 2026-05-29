@@ -241,6 +241,7 @@ def update_ccass_json(target_date: date) -> None:
             'lp': pr.get('lp'),
             'py': pr.get('py'),
             'py_pct': pr.get('py_pct'),
+            'py_warn': bool(pr.get('py_pct') is not None and (pr.get('py_pct') > 1000 or pr.get('py_pct') < -99)),
             # Sentinel Option A (compact keys)
             'ah': ah,
             'bt5': bt5,
