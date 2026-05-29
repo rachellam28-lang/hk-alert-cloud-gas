@@ -148,7 +148,7 @@ tbody tr{cursor:pointer}
 .section-toggle.collapsed .toggle-arrow{transform:rotate(-90deg)}
 .section-body{overflow:hidden;transition:height .2s ease}
 /* Responsive */
-@media(max-width:820px){.hide-t5,.th-t5{display:none}}
+@media(max-width:820px){.hide-t5,.th-t5,.hide-pypct,.th-pypct{display:none}}
 @media(max-width:820px){.hide-sig,.th-sig{display:none}}
 @media(max-width:720px){.hide-np,.th-np{display:none}}
 @media(max-width:720px){.hide-price,.th-price{display:none}}
@@ -329,6 +329,7 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
           <div class="col-toggle-panel" id="colPanel">
             <label><input type="checkbox" data-col="yearyo" checked onchange="toggleCol(this)"> 🔺年開</label>
             <label><input type="checkbox" data-col="prevyo" checked onchange="toggleCol(this)"> 😻前年</label>
+            <label><input type="checkbox" data-col="pypct" checked onchange="toggleCol(this)"> 前年Δ%</label>
             <label><input type="checkbox" data-col="price" checked onchange="toggleCol(this)"> 價格</label>
             <label><input type="checkbox" data-col="sig" checked onchange="toggleCol(this)"> 信號</label>
             <label><input type="checkbox" data-col="t5" checked onchange="toggleCol(this)"> Top5%</label>
@@ -377,6 +378,7 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
           <th class="sortable sort-active sort-desc" data-sort="code" onclick="sortBy('code',event)"><span>代碼</span><span class="sort-icon">▼</span><span class="sort2-icon"></span></th>
           <th class="sortable th-yearyo" data-sort="yearyo" onclick="sortBy('yearyo',event)"><span>🔺</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable th-prevyo" data-sort="prevyo" onclick="sortBy('prevyo',event)"><span>😻</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
+          <th class="sortable th-pypct" data-sort="pypct" onclick="sortBy('pypct',event)"><span>前年Δ%</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable" data-sort="n" onclick="sortBy('n',event)"><span>名稱</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable th-price" data-sort="price" onclick="sortBy('price',event)"><span>價格</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable th-sig" data-sort="sig" onclick="sortBy('sig',event)"><span>信號</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
@@ -454,7 +456,7 @@ function cc(v){if(v>=80)return'vhi';if(v>=60)return'hi';if(v>=40)return'mid';ret
 function cl(v){if(v>=80)return'非常高';if(v>=60)return'高';if(v>=40)return'中';return'低';}
 function dc(v){if(v==null)return'<span class="dcell zero">—</span>';var c=v>0?'up':(v<0?'dn':'zero');var a=v>0?'▲':(v<0?'▼':'—');var s=v>0?'+':'';return'<span class="dcell '+c+'"><span style="font-size:9px">'+a+'</span>'+s+v.toFixed(2)+'%</span>';}
 function sl(d5,d20,d60,d120){var v=[d5||0,d20||0,d60||0,d120||0];var mx=Math.max.apply(null,v.map(function(x){return Math.abs(x);}));if(mx<1)mx=1;var w=80,h=28;function px(i){return(i/3)*w;}function py(vv){return h/2-(vv/mx)*(h/2-4)*(vv>=0?1:-1);}var pts=v.map(function(vv,i){return px(i)+','+py(vv);}).join(' ');var lc=v[v.length-1]>=0?'var(--up)':'var(--down)';var lb=['5日','20日','60日','120日'];return'<div class="spark-wrap"><svg class="spark-svg" width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'"><line x1="0" y1="'+h/2+'" x2="'+w+'" y2="'+h/2+'" stroke="var(--line)" stroke-width="1" stroke-dasharray="2,2"/><polyline points="'+pts+'" fill="none" stroke="'+lc+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="'+px(0)+'" cy="'+py(v[0])+'" r="2" fill="'+lc+'"/><circle cx="'+px(3)+'" cy="'+py(v[3])+'" r="2.5" fill="'+lc+'"/></svg><div class="spark-labels">'+lb.map(function(l,i){return'<span class="spark-lbl"><span class="spark-dot '+(v[i]>=0?'up':'dn')+'"></span>'+l+': '+(v[i]>=0?'+':'')+v[i].toFixed(2)+'%</span>';}).join('')+'</div></div>';}
-function ecsv(){var h=['代碼','名稱','價格','CCASS%','Top5%','Top10%','5日Δ','20日Δ','60日Δ','120日Δ','參與者數','市值(億)'];var r=filtered.map(function(s){var p=priceMap.get(s.c);return[esc(s.c),esc(s.n),p||'',s.tp.toFixed(2),s.t5.toFixed(2),s.t10.toFixed(2),s.d5!=null?s.d5.toFixed(2):'',s.d20!=null?s.d20.toFixed(2):'',s.d60!=null?s.d60.toFixed(2):'',s.d120!=null?s.d120.toFixed(2):'',s.np,s.mc!=null?s.mc.toFixed(1):''].join(',');}).join('\n');var csv='\uFEFF'+h.join(',')+'\n'+r;var b=new Blob([csv],{type:'text/csv;charset=utf-8'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='ccass_'+new Date().toISOString().slice(0,10)+'.csv';a.click();URL.revokeObjectURL(a.href);}
+function ecsv(){var h=['代碼','名稱','前年Δ%','價格','CCASS%','Top5%','Top10%','5日Δ','20日Δ','60日Δ','120日Δ','參與者數','市值(億)'];var r=filtered.map(function(s){var p=priceMap.get(s.c);return[esc(s.c),esc(s.n),s.py_pct!=null?s.py_pct.toFixed(2)+'%':'',p||'',s.tp.toFixed(2),s.t5.toFixed(2),s.t10.toFixed(2),s.d5!=null?s.d5.toFixed(2):'',s.d20!=null?s.d20.toFixed(2):'',s.d60!=null?s.d60.toFixed(2):'',s.d120!=null?s.d120.toFixed(2):'',s.np,s.mc!=null?s.mc.toFixed(1):''].join(',');}).join('\n');var csv='\uFEFF'+h.join(',')+'\n'+r;var b=new Blob([csv],{type:'text/csv;charset=utf-8'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='ccass_'+new Date().toISOString().slice(0,10)+'.csv';a.click();URL.revokeObjectURL(a.href);}
 
 function hasMC(s){return Number.isFinite(s.mc)&&s.mc>0;}
 function normalizeStockMC(s){
@@ -840,6 +842,7 @@ function renderTable(){
       +'<td><span class="code">'+esc(s.c)+'</span></td>'
             +'<td class="hide-yearyo">'+(s.lp&&s.yo&&s.lp>s.yo?'🔺':'')+'</td>'
             +'<td class="hide-prevyo">'+(s.lp&&s.py&&s.lp>s.py?'😻':'')+'</td>'
+            +'<td class="hide-pypct"><span class="num '+deltaClass(s.py_pct)+'">'+(s.py_pct!=null?fmtPct(s.py_pct):'—')+'</span></td>'
             +'<td><span class="name" title="'+esc(s.n)+'">'+esc(s.n)+'</span></td>'
       +'<td class="hide-price">'+priceHtml+'</td>'
       +'<td class="hide-sig cell-pills">'+sigDisplay+'</td>'
@@ -901,6 +904,7 @@ function renderTable(){
       +'<div class="sc-metrics">'
         +'<div class="sc-metric"><span class="sc-metric-label">價格</span><span class="sc-metric-val'+(priceStr?'':' muted')+'">'+(priceStr?esc(priceStr):'—')+'</span></div>'
         +'<div class="sc-metric"><span class="sc-metric-label">CCASS</span><span class="sc-metric-val">'+s.tp.toFixed(1)+'%</span><div class="pbar" style="width:100%;max-width:none;margin-top:2px"><div class="pbar-fill pbar-'+cc(s.tp)+'" style="width:'+Math.min(s.tp,100)+'%"></div></div></div>'
+        +(s.py_pct!=null?'<div class="sc-metric"><span class="sc-metric-label">前年Δ%</span><span class="sc-metric-val '+(s.py_pct>=0?'up':'dn')+'">'+fmtPct(s.py_pct)+'</span></div>':'')
         +'<div class="sc-metric"><span class="sc-metric-label">5日Δ</span><span class="sc-metric-val '+d5class+'">'+(s.d5!=null?fmtPct(s.d5):'—')+'</span></div>'
         +'<div class="sc-metric"><span class="sc-metric-label">20日Δ</span><span class="sc-metric-val '+d20class+'">'+(s.d20!=null?fmtPct(s.d20):'—')+'</span></div>'
         +(s.su>1?'<div class="sc-metric"><span class="sc-metric-label">🔥增持</span><span class="sc-metric-val up">'+s.su+'日</span></div>':'')

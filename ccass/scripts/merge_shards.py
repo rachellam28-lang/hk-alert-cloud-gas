@@ -195,7 +195,7 @@ def update_ccass_json(target_date: date) -> None:
     # Stock prices (year-open + latest) from fetch_stock_prices.py
     price_map = {}
     try:
-        price_path = PROJECT_ROOT.parent / "data" / "stock_prices.json"
+        price_path = PROJECT_ROOT / "data" / "stock_prices.json"
         if price_path.exists():
             price_data = _json.loads(price_path.read_text(encoding='utf-8'))
             price_map = price_data
