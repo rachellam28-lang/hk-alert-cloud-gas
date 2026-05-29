@@ -702,7 +702,18 @@ function savePreset(){
   renderPresets();
   bindDynamicTapFixes();
 }
+var activePreset=null;
 function loadPreset(key){
+  // Toggle: if same preset clicked again, reset to default
+  if(activePreset===key){
+    activePreset=null;
+    resetAllFilters();
+    return;
+  }
+  activePreset=key;
+  // Visual: mark active button
+  document.querySelectorAll('.preset-btn').forEach(function(b){b.classList.remove('active');});
+  document.querySelectorAll('.preset-btn').forEach(function(b){if(b.textContent===presetData[key]?.name)b.classList.add('active');});
   var preset=presetData[key];if(!preset)return;
   var s=preset.state;
   if(s.sortCol){sortCol=s.sortCol;sortDir=s.sortDir;sortCol2=s.sortCol2||'';sortDir2=s.sortDir2||1;}
@@ -1269,6 +1280,7 @@ function sortBy(col,ev){
 const FILTER_IDS={filterAll:'all',filterUp:'up',filterDn:'dn',filterConcentrated:'concentrated',filterPlacement:'placement',filterRights:'rights',filterSmallMC:'small_mc',filterMidMC:'mid_mc',filterLargeMC:'large_mc'};
 
 function toggleFilter(mode){
+  activePreset=null;
   if(mode==='all'){activeFilters.clear();updateFilterUI();applyFilters();return;}
   if(activeFilters.has(mode)){activeFilters.delete(mode);updateFilterUI();applyFilters();return;}
   if(mode==='up'||mode==='dn'){activeFilters.delete('up');activeFilters.delete('dn');}
@@ -1276,6 +1288,25 @@ function toggleFilter(mode){
     activeFilters.delete('small_mc');activeFilters.delete('mid_mc');activeFilters.delete('large_mc');}
   activeFilters.add(mode);
   updateFilterUI();applyFilters();
+}
+
+function resetAllFilters(){
+  activePreset=null;
+  activeFilters.clear();
+  updateFilterUI();
+  // Reset range inputs
+  document.querySelectorAll('#rfTpMin,#rfTpMax,#rfD5Min,#rfD5Max,#rfMcMin,#rfMcMax').forEach(function(e){e.value='';});
+  // Reset signal filter
+  var sf=document.getElementById('sigFilter');if(sf)sf.value='all';
+  // Reset sort to default
+  sortCol='code';sortDir=-1;sortCol2='';sortDir2=1;
+  var ss=document.getElementById('sortSelect');if(ss)ss.value='d5';
+  var db=document.getElementById('dirBtn');if(db)db.textContent='↓';
+  // Reset search
+  searchVal='';
+  var si=document.getElementById('searchInput');if(si)si.value='';
+  applyFilters();
+  updateSortInfo();
 }
 
 function updateFilterUI(){
