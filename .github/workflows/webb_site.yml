@@ -10,6 +10,7 @@ permissions:
 
 jobs:
   scrape:
+    if: false  # Webb-site SHUT DOWN Oct 2025 — all URLs redirect to substack
     runs-on: ubuntu-latest
     timeout-minutes: 15
 

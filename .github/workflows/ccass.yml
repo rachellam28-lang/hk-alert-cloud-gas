@@ -50,10 +50,8 @@ jobs:
           else
             QUERY_DATE=$(python -c "
             from datetime import date, timedelta
-            import holidays
-            hk = holidays.HongKong()
             d = date.today() - timedelta(days=1)
-            while d.weekday() >= 5 or d in hk:
+            while d.weekday() >= 5:
                 d -= timedelta(days=1)
             print(d.strftime('%Y-%m-%d'))
             ")
@@ -116,10 +114,8 @@ jobs:
           else
             QUERY_DATE=$(python -c "
             from datetime import date, timedelta
-            import holidays
-            hk = holidays.HongKong()
             d = date.today() - timedelta(days=1)
-            while d.weekday() >= 5 or d in hk:
+            while d.weekday() >= 5:
                 d -= timedelta(days=1)
             print(d.strftime('%Y-%m-%d'))
             ")
