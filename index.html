@@ -1,6 +1,12 @@
 <!doctype html>
 <html lang="zh-HK"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#0284c7">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="CCASS">
+<link rel="apple-touch-icon" href="./icons/icon-192.png">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -426,9 +432,17 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
   </section>
 
   <div class="foot">數據來源：HKEX CCASS · 自動更新 10分鐘 · 僅供參考</div>
-</main>
+  </main>
 
-<!-- Detail drawer -->
+  <script>
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('./service-worker.js')
+      .then(() => console.log('SW registered'))
+      .catch(e => console.log('SW failed:', e));
+  }
+  </script>
+
+  <!-- Detail drawer -->
 <div class="drawer-overlay" id="drawerOverlay"></div>
 <div class="drawer" id="drawer">
   <div class="drawer-head">
