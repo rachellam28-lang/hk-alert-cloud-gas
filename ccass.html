@@ -158,7 +158,7 @@ tbody tr{cursor:pointer}
 @media(max-width:820px){.hide-sig,.th-sig{display:none}}
 @media(max-width:720px){.hide-np,.th-np{display:none}}
 @media(max-width:720px){.hide-price,.th-price{display:none}}
-@media(max-width:640px){.hide-mc,.th-mc{display:none}}
+@media(max-width:640px){.hide-mc,.th-mc,.hide-chg,.th-chg,.hide-p52,.th-p52,.hide-pe,.th-pe{display:none}}
 @media(max-width:640px){.hide-link,.th-link{display:none}}
 @media(max-width:640px){.brand>a{font-size:11px!important;padding:2px 6px!important;margin-left:3px!important}.input.search-in{min-width:140px}.btn-ghost,.btn-csv,.preset-btn,.col-toggle-btn{padding:3px 7px!important;font-size:10px!important;border-radius:6px!important}.toolbar{padding:6px 8px!important;gap:6px!important}.toolbar-sect{gap:4px!important}}
 @media(max-width:640px){.topbar-inner{padding:6px 10px;gap:8px}.brand{gap:6px;flex-shrink:0}.brand>a{font-size:10px!important;padding:1px 5px!important;margin-left:2px!important}.logo{display:none}.brand-title{font-size:12px;white-space:nowrap}.brand-sub{display:none}.topright{gap:3px;font-size:10px}.refresh-tag{display:none}}
@@ -314,6 +314,9 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
           <option value="prevyo">😻前年</option>
           <option value="pypct">前年Δ%</option>
           <option value="mc">市值</option>
+          <option value="chg">今日Δ%</option>
+          <option value="p52">52週%</option>
+          <option value="pe">PE</option>
         </select>
         <button class="btn-ghost active" id="dirBtn" title="切換排序方向" onclick="sortDir*=-1;this.textContent=sortDir===1?'↑':'↓';applyFilters();">↓</button>
         <span id="sortInfo" class="sort-info"></span>
@@ -347,6 +350,9 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
             <label><input type="checkbox" data-col="d120" checked onchange="toggleCol(this)"> 120日Δ</label>
             <label><input type="checkbox" data-col="np" checked onchange="toggleCol(this)"> 參與者</label>
             <label><input type="checkbox" data-col="mc" checked onchange="toggleCol(this)"> 市值</label>
+            <label><input type="checkbox" data-col="chg" checked onchange="toggleCol(this)"> 今日Δ%</label>
+            <label><input type="checkbox" data-col="p52" checked onchange="toggleCol(this)"> 52週%</label>
+            <label><input type="checkbox" data-col="pe" checked onchange="toggleCol(this)"> PE</label>
             <label><input type="checkbox" data-col="link" checked onchange="toggleCol(this)"> 連結</label>
           </div>
         </div>
@@ -399,6 +405,9 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
           <th class="sortable th-d120" data-sort="d120" onclick="sortBy('d120',event)"><span>120日Δ</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable th-np" data-sort="np" onclick="sortBy('np',event)"><span>參與者</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable th-mc" data-sort="mc" onclick="sortBy('mc',event)"><span>市值</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
+          <th class="sortable th-chg" data-sort="chg" onclick="sortBy('chg',event)"><span>今日Δ%</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
+          <th class="sortable th-p52" data-sort="p52" onclick="sortBy('p52',event)"><span>52週%</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
+          <th class="sortable th-pe" data-sort="pe" onclick="sortBy('pe',event)"><span>PE</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="th-link"><span>連結</span></th>
         </tr></thead>
         <tbody id="tbody"></tbody>
@@ -550,6 +559,15 @@ function getSortVal(s,col){
   if(col==='pypct'){
     return s.py_pct != null ? s.py_pct : null;
   }
+  if(col==='chg'){
+    return s.chg != null ? s.chg : null;
+  }
+  if(col==='p52'){
+    return s.p52 != null ? s.p52 : null;
+  }
+  if(col==='pe'){
+    return s.pe != null ? s.pe : null;
+  }
   let v=s[col];
   if(typeof v==='string')v=v.toLowerCase();
   return v==null ? null : v;
@@ -564,7 +582,7 @@ function cmpSortVal(va,vb,dir){
 function updateSortInfo(){
   var el=document.getElementById('sortInfo');
   if(!el)return;
-  var names={code:'代碼',n:'名稱',price:'價格',tp:'CCASS%',t5:'Top5%',t10:'Top10%',d5:'5日Δ',d20:'20日Δ',d60:'60日Δ',d120:'120日Δ',np:'參與者',mc:'市值',sig:'信號',su:'連續增持',sd:'連續減持',yearyo:'🔺年開',prevyo:'😻前年',pypct:'前年Δ%'};
+  var names={code:'代碼',n:'名稱',price:'價格',tp:'CCASS%',t5:'Top5%',t10:'Top10%',d5:'5日Δ',d20:'20日Δ',d60:'60日Δ',d120:'120日Δ',np:'參與者',mc:'市值',chg:'今日Δ%',p52:'52週%',pe:'PE',sig:'信號',su:'連續增持',sd:'連續減持',yearyo:'🔺年開',prevyo:'😻前年',pypct:'前年Δ%'};
   var p=names[sortCol]||sortCol,pa=sortDir===1?'▲':'▼';
   if(sortCol2){var sn=names[sortCol2]||sortCol2,sa=sortDir2===1?'▲':'▼';el.innerHTML='<b>'+p+' '+pa+'</b><span class=\"si-sep\">|</span><span style=\"opacity:.7\">'+sn+' '+sa+'</span>';}
   else el.innerHTML='<b>'+p+' '+pa+'</b>';
@@ -871,6 +889,9 @@ function renderTable(){
       +'<td class="hide-d120">'+d120+'</td>'
       +'<td class="hide-np"><span class="num">'+s.np+'</span></td>'
       +'<td class="hide-mc"><span class="num">'+fmtMC(s.mc)+'</span></td>'
+      +'<td class="hide-chg">'+(s.chg!=null?'<span class="num '+deltaClass(s.chg)+'">'+fmtPct(s.chg)+'</span>':'<span class="num delta-null">—</span>')+'</td>'
+      +'<td class="hide-p52">'+(s.p52!=null?pbar(s.p52, s.p52>=70?'hi':s.p52>=30?'mid':'lo'):'<span class="mc-null">—</span>')+'</td>'
+      +'<td class="hide-pe"><span class="num">'+(s.pe!=null?s.pe.toFixed(1):'—')+'</span></td>'
       +'<td class="hide-link" onclick="event.stopPropagation()">'+linkHtml+'</td>'
       +'</tr>';
   }).join('');
@@ -1082,6 +1103,16 @@ async function showDetail(code){
     +'<div class="dmeta"><span class="dmeta-label">Top5%</span><span class="dmeta-val">'+s.t5.toFixed(2)+'%</span></div>'
     +'<div class="dmeta"><span class="dmeta-label">Top10%</span><span class="dmeta-val">'+s.t10.toFixed(2)+'%</span></div>'
     +'<div class="dmeta"><span class="dmeta-label">參與者</span><span class="dmeta-val">'+s.np+'</span></div>'
+    +'</div>'
+    +'<div class="drawer-meta">'
+    +(s.chg!=null?'<div class="dmeta"><span class="dmeta-label">今日Δ%</span><span class="dmeta-val '+(s.chg>=0?'up':'dn')+'\">'+fmtPct(s.chg)+'</span></div>':'')
+    +(s.hi52!=null?'<div class="dmeta"><span class="dmeta-label">52週高</span><span class="dmeta-val">'+(s.hi52<1?s.hi52.toFixed(3):s.hi52.toFixed(2))+'</span></div>':'')
+    +(s.lo52!=null?'<div class="dmeta"><span class="dmeta-label">52週低</span><span class="dmeta-val">'+(s.lo52<1?s.lo52.toFixed(3):s.lo52.toFixed(2))+'</span></div>':'')
+    +(s.p52!=null?'<div class="dmeta"><span class="dmeta-label">52週位置</span><span class="dmeta-val">'+s.p52.toFixed(0)+'%</span></div>':'')
+    +(s.vol!=null?'<div class="dmeta"><span class="dmeta-label">成交額</span><span class="dmeta-val">'+(s.vol>=1e6?(s.vol/1e6).toFixed(1)+'M':(s.vol/1e3).toFixed(0)+'K')+'</span></div>':'')
+    +(s.pe!=null?'<div class="dmeta"><span class="dmeta-label">PE</span><span class="dmeta-val">'+s.pe.toFixed(1)+'</span></div>':'')
+    +(s.beta!=null?'<div class="dmeta"><span class="dmeta-label">Beta</span><span class="dmeta-val">'+s.beta.toFixed(2)+'</span></div>':'')
+    +(s.avg_vol!=null?'<div class="dmeta"><span class="dmeta-label">均成交</span><span class="dmeta-val">'+(s.avg_vol>=1e6?(s.avg_vol/1e6).toFixed(1)+'M':(s.avg_vol/1e3).toFixed(0)+'K')+'</span></div>':'')
     +'</div>'
     +'<div class="drawer-meta">'
     +'<div class="dmeta">'+d5html+'</div>'

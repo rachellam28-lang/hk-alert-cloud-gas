@@ -241,6 +241,15 @@ def update_ccass_json(target_date: date) -> None:
             'lp': pr.get('lp'),
             'py': pr.get('apy', pr.get('py')),
             'py_pct': pr.get('apy_pct', pr.get('py_pct')),
+            # YFinance live fields (compact keys)
+            'chg': pr.get('chg'),            # 今日變幅%
+            'vol': pr.get('vol'),            # 成交額
+            'hi52': pr.get('hi52'),          # 52週高
+            'lo52': pr.get('lo52'),          # 52週低
+            'p52': pr.get('p52'),            # 52週位置%
+            'pe': pr.get('pe'),              # PE ratio
+            'beta': pr.get('beta'),          # Beta
+            'avg_vol': pr.get('avg_vol'),    # 平均成交量
             # Sentinel Option A (compact keys)
             'ah': ah,
             'bt5': bt5,
