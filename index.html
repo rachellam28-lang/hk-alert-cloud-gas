@@ -853,7 +853,7 @@ function renderTable(){
     if(s.tp>=80)hlClass+=' hl-conc';
     if(hasIPO)hlClass+=' hl-ipo';
     return '<tr class="'+ipoClass+hlClass+'" onclick="showDetail(\''+s.c+'\')">'
-      +'<td><span class="code">'+esc(s.c)+'</span></td>'
+      +'<td><span class="code">'+(s.py_warn?'⚠️ ':'')+esc(s.c)+'</span></td>'
             +'<td class="hide-yearyo">'+(s.lp&&s.yo&&s.lp>s.yo?'🔺':'')+'</td>'
             +'<td class="hide-prevyo">'+(s.lp&&s.py&&s.lp>s.py?'😻':'')+'</td>'
             +'<td class="hide-pypct"><span class="num '+deltaClass(s.py_pct)+'">'+(s.py_pct!=null?fmtPct(s.py_pct):'—')+(s.py_warn?' <span title="可能合股/拆股 — yahoo無記錄" style="font-size:10px;cursor:help">⚠️</span>':'')+'</span></td>'
@@ -908,7 +908,7 @@ function renderTable(){
     const ipoClass=hasIPO?' ipo-highlight':'';
     return '<div class="stock-card'+ipoClass+'" onclick="showDetail(\''+s.c+'\')">'
       +'<div class="sc-header">'
-        +'<span class="code">'+(s.lp&&s.yo&&s.lp>s.yo?'🔺 ':'')+(s.lp&&s.py&&s.lp>s.py?'😻 ':'')+esc(s.c)+'</span>'
+        +'<span class="code">'+(s.lp&&s.yo&&s.lp>s.yo?'🔺 ':'')+(s.lp&&s.py&&s.lp>s.py?'😻 ':'')+(s.py_warn?'⚠️ ':'')+esc(s.c)+'</span>'
         +(s.su>1?'<span class="sc-streak up">🔥'+s.su+'</span>':'')
         +(s.sd>1?'<span class="sc-streak dn">❄️'+s.sd+'</span>':'')
         +'<span class="name" title="'+esc(s.n)+'">'+esc(s.n)+'</span>'
