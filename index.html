@@ -154,7 +154,7 @@ tbody tr{cursor:pointer}
 .section-toggle.collapsed .toggle-arrow{transform:rotate(-90deg)}
 .section-body{overflow:hidden;transition:height .2s ease}
 /* Responsive */
-@media(max-width:820px){.hide-t5,.th-t5,.hide-pypct,.th-pypct{display:none}}
+@media(max-width:820px){.hide-t5,.th-t5,.hide-t10,.th-t10,.hide-pypct,.th-pypct{display:none}}
 @media(max-width:820px){.hide-sig,.th-sig{display:none}}
 @media(max-width:720px){.hide-np,.th-np{display:none}}
 @media(max-width:720px){.hide-price,.th-price{display:none}}
@@ -495,7 +495,7 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
           <th class="sortable th-sig" data-sort="sig" onclick="sortBy('sig',event)"><span>信號</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable" data-sort="tp" onclick="sortBy('tp',event)"><span>CCASS%</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable th-t5" data-sort="t5" onclick="sortBy('t5',event)"><span>Top5%</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
-          <th class="sortable th-t5" data-sort="t10" onclick="sortBy('t10',event)"><span>Top10%</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
+          <th class="sortable th-t10" data-sort="t10" onclick="sortBy('t10',event)"><span>Top10%</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable" data-sort="d5" onclick="sortBy('d5',event)"><span>5日Δ</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable th-streak" data-sort="su" onclick="sortBy('su',event)"><span>🔁連續</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable th-d20" data-sort="d20" onclick="sortBy('d20',event)"><span>20日Δ</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
@@ -623,6 +623,7 @@ function shortLabel(lbl){
 // --- state ---
 let allStocks=[];
 let baseStocks=[];
+let userPresets=[];try{userPresets=JSON.parse(localStorage.getItem('ccass_presets')||'[]');}catch(e){}
 let stockByCode=new Map();
 let filtered=[];
 let sortCol='code';
@@ -1016,7 +1017,7 @@ function renderTable(){
       +'<td class="hide-sig cell-pills">'+sigDisplay+'</td>'
       +'<td><span class="num">'+s.tp.toFixed(2)+'%</span></td>'
       +'<td class="hide-t5"><span class="num">'+s.t5.toFixed(2)+'%</span></td>'
-      +'<td class="hide-t5"><span class="num">'+s.t10.toFixed(2)+'%</span></td>'
+      +'<td class="hide-t10"><span class="num">'+s.t10.toFixed(2)+'%</span></td>'
       +'<td>'+d5+'</td>'
       +'<td class="th-streak">'+streak+'</td>'
       +'<td class="hide-d20">'+d20+'</td>'
@@ -1312,7 +1313,7 @@ function sortBy(col,ev){
   // Re-show secondary indicator
   if(sortCol2){var th2=document.querySelector('th[data-sort="'+sortCol2+'"] .sort2-icon');if(th2)th2.textContent=sortDir2===1?'▲':'▼';}
   // If sorting by signal but GAS data not loaded yet, defer sort to GAS callback
-  if(col==='sig'&&techSignalMap.size===0)return;
+  if(col==='sig'&&techSignalMap.size===0){sortCol='sig';sortDir=-1;return;}
   updateSortInfo();
   applyFilters();
 }
@@ -1706,7 +1707,6 @@ async function loadData(){
     const res=await fetch('./ccass.json?_='+Date.now());
     if(!res.ok) throw new Error('HTTP '+res.status);
     const data=await res.json();
-    allStocks=baseStocks.slice();
     setBaseStocks(data.stocks);
     renderSummaryBar(data);
     applyFilters();
@@ -1814,13 +1814,14 @@ async function loadData(){
           }})
         applyFilters();
         updateSortInfo();
+        const savedScroll=sessionStorage.getItem('ccassScroll');if(savedScroll)window.scrollTo(0,parseInt(savedScroll,10));
       }).catch(()=>{});
     dot.className='dot';
     upd.textContent='更新於 '+data.updated;
   }catch(err){
     dot.className='dot error';
     upd.textContent='載入失敗';
-    document.querySelector('.card').innerHTML='<div class="loading-msg" style="color:#ef4444">載入失敗：'+esc(err.message)+'<br><small>請稍後重試</small></div>';
+    document.getElementById('tbody').innerHTML='<tr><td colspan="20" style="color:#ef4444;text-align:center;padding:20px">載入失敗：'+esc(err.message)+'<br><small>請稍後重試</small></td></tr>';
   }
 }
 loadData();
@@ -1833,10 +1834,6 @@ updateSortInfo();
 document.addEventListener('click',function(e){var p=document.getElementById('colPanel');if(p&&!e.target.closest('.col-toggle'))p.classList.remove('open');});
 
 // Auto-refresh every 10 minutes
-setTimeout(()=>{sessionStorage.setItem('ccassScroll',String(window.scrollY));location.reload();},600000);
-
-// Restore scroll position
-const saved=sessionStorage.getItem('ccassScroll');
-if(saved)window.scrollTo(0,parseInt(saved,10));
+setTimeout(()=>{if(document.querySelector('.drawer-open'))return;sessionStorage.setItem('ccassScroll',String(window.scrollY));location.reload();},600000);
 </script>
 </body></html>
