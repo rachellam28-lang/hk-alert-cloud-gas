@@ -188,7 +188,19 @@ tbody tr{cursor:pointer}
 .tf-shares{font:600 11px "JetBrains Mono",ui-monospace,monospace}
 .tf-in .tf-shares{color:var(--up)}
 .tf-out .tf-shares{color:var(--down)}
-@media(max-width:520px){.transfer-grid{grid-template-columns:1fr}}
+@media(max-width:720px){.transfer-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;padding:1px 3px}
+.transfer-card{padding:0 3px;border-radius:2px;line-height:1}
+.transfer-card .tf-head{display:flex;align-items:center;gap:1px;margin-bottom:0;white-space:nowrap}
+.transfer-card .tf-code{font-size:6px}
+.transfer-card .tf-name{font-size:5px;max-width:20px;margin-left:2px}
+.transfer-card .tf-total{font-size:5px}
+.transfer-card .tf-pct{font-size:5px}
+.transfer-card .tf-flows{display:flex;flex-direction:row;gap:1px}
+.transfer-card .tf-side{font-size:5px;display:flex;align-items:center;gap:1px}
+.transfer-card .tf-side-label{font-size:4px;margin-right:1px}
+.transfer-card .tf-pid{font-size:5px}
+.transfer-card .tf-pname{font-size:5px;max-width:20px}
+.transfer-card .tf-shares{font-size:5px}}
 /* Vr alert - compact */
 .vr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:3px;padding:5px 8px}
 .vr-card{background:var(--surface-soft);border:1px solid var(--line-soft);border-radius:4px;padding:3px 5px;cursor:pointer;transition:border-color .15s}
@@ -342,6 +354,17 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
   </div>
   <div class="section-body" id="body-volratio">
     <section class="card" id="vrCard"><div class="loading-msg">載入中…</div></section>
+  </div>
+
+  <!-- Transfers section -->
+  <div class="section-head">
+    <button class="section-toggle" onclick="toggleSection('transfers',this)" id="toggle-transfers">
+      <h2>📦 存倉轉倉監測</h2>
+      <span class="toggle-arrow">▼</span>
+    </button>
+  </div>
+  <div class="section-body" id="body-transfers">
+    <section class="card" id="transfersCard"><div class="loading-msg">載入中…</div></section>
   </div>
 
   <div class="section-head">
@@ -522,17 +545,6 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
       <div class="rf-group"><span class="rf-lbl">5日Δ</span><input class="rf-in" id="rfD5Min" placeholder="-10" oninput="applyFilters()"><span class="rf-sep">~</span><input class="rf-in" id="rfD5Max" placeholder="10" oninput="applyFilters()"></div>
       <div class="rf-group"><span class="rf-lbl">市值(億)</span><input class="rf-in" id="rfMcMin" oninput="applyFilters()"><span class="rf-sep">~</span><input class="rf-in" id="rfMcMax" oninput="applyFilters()"></div>
     </div>
-
-  <!-- Transfers section -->
-  <div class="section-head">
-    <button class="section-toggle" onclick="toggleSection('transfers',this)" id="toggle-transfers">
-      <h2>📦 存倉轉倉監測</h2>
-      <span class="toggle-arrow">▼</span>
-    </button>
-  </div>
-  <div class="section-body" id="body-transfers">
-    <section class="card" id="transfersCard"><div class="loading-msg">載入中…</div></section>
-  </div>
 
   <!-- Signal section -->
   
@@ -1660,7 +1672,15 @@ function renderTransfers(data, priceMap){
       +'</div>'
     +'</div>';
   }).join('');
-  card.innerHTML = '<div class="transfer-grid">'+items+'</div>'
+  var showLimit = 8;
+  var visible = items.slice(0, showLimit);
+  var hidden = items.slice(showLimit);
+  var html = '<div class="transfer-grid">'+visible.join('')+'</div>';
+  if(hidden.length){
+    html += '<div id="tfMore" style="display:none"><div class="transfer-grid">'+hidden.join('')+'</div></div>';
+    html += '<div style="text-align:center;padding:4px 0 6px"><button class="showmore-btn" onclick="var m=document.getElementById(\'tfMore\');var b=this;if(m.style.display===\'none\'){m.style.display=\'block\';b.textContent=\'▲ 收起\';}else{m.style.display=\'none\';b.textContent=\'▼ 顯示全部 ('+hidden.length+'項)\';}" style="font-size:10px;padding:2px 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--text-soft);cursor:pointer">▼ 顯示全部 ('+hidden.length+'項)</button></div>';
+  }
+  card.innerHTML = html
     +'<div style="padding:4px 14px 10px;font-size:10px;color:var(--mute-2)">更新於 '+esc(data.updated)+' · '+data.count+'項</div>';
 }
 
@@ -1687,7 +1707,15 @@ function renderVrAlert(){
       +'</div>'
     +'</div>';
   }).join('');
-  card.innerHTML = '<div class="vr-grid">'+items+'</div>'
+  var showLimit = 8;
+  var visible = items.slice(0, showLimit);
+  var hidden = items.slice(showLimit);
+  var html = '<div class="vr-grid">'+visible.join('')+'</div>';
+  if(hidden.length){
+    html += '<div id="vrMore" style="display:none"><div class="vr-grid">'+hidden.join('')+'</div></div>';
+    html += '<div style="text-align:center;padding:4px 0 6px"><button onclick="var m=document.getElementById(\'vrMore\');var b=this;if(m.style.display===\'none\'){m.style.display=\'block\';b.textContent=\'▲ 收起\';}else{m.style.display=\'none\';b.textContent=\'▼ 顯示全部 ('+hidden.length+'隻)\';}" style="font-size:10px;padding:2px 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--text-soft);cursor:pointer">▼ 顯示全部 ('+hidden.length+'隻)</button></div>';
+  }
+  card.innerHTML = html
     +'<div style="padding:4px 14px 10px;font-size:10px;color:var(--mute-2)">量比≥2 · '+ranked.length+'隻</div>';
 }
 
