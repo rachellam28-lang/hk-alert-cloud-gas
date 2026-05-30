@@ -152,9 +152,12 @@ def _restore_db():
         return  # Already have a valid DB
     if db_gz_path.exists():
         logger.info("Restoring ccass.db from ccass.db.gz (%d bytes)", db_gz_path.stat().st_size)
+        # ✅ P1-9: atomic restore via temp file (prevents race condition)
+        tmp_path = db_path.with_suffix(".db.tmp")
         with gzip.open(db_gz_path, 'rb') as f_in:
-            with open(db_path, 'wb') as f_out:
+            with open(tmp_path, 'wb') as f_out:
                 shutil.copyfileobj(f_in, f_out)
+        tmp_path.replace(db_path)
         logger.info("Restored ccass.db: %d bytes", db_path.stat().st_size)
 
 
@@ -591,7 +594,10 @@ def _export_json(query_date: date, alerts_today: int) -> None:
             "top_decrease": top_decrease,
         }
         out_path = Path(__file__).parent.parent.parent / "ccass.json"
-        out_path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+        # ✅ P1-6: atomic write via temp file
+        tmp_path = out_path.with_suffix(".tmp")
+        tmp_path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+        tmp_path.replace(out_path)
         logger.info(
             "Exported ccass.json (%d stocks, %d up, %d down)",
             len(stocks), len(top_increase), len(top_decrease),

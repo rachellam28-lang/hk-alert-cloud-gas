@@ -250,6 +250,7 @@ def update_ccass_json(target_date: date) -> None:
             'pe': pr.get('pe'),              # PE ratio
             'beta': pr.get('beta'),          # Beta
             'avg_vol': pr.get('avg_vol'),    # 平均成交量
+            'vr': (pr.get('vol') or 0) / (pr.get('avg_vol') or 1) if pr.get('avg_vol') else None,  # 量比
             # Sentinel Option A (compact keys)
             'ah': ah,
             'bt5': bt5,
@@ -309,7 +310,9 @@ def update_ccass_json(target_date: date) -> None:
         "total_participants": total_participants,
     }
     path = PROJECT_ROOT.parent / "ccass.json"
-    path.write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
+    tmp = path.with_suffix(".tmp")
+    tmp.write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
+    tmp.replace(path)  # ✅ P1-6: atomic rename
     print(f"  ccass.json updated: {len(stocks)} stocks")
     db.close()
 

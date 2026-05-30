@@ -345,6 +345,9 @@ class CCASSScraper:
         """Last-resort: find most-frequent large number (>=10M) in raw HTML — likely total shares."""
         from collections import Counter
         candidates = re.findall(r'(?<![0-9])([0-9]{1,3}(?:,[0-9]{3}){2,})', html)
+        # ✅ P1-7: also match unformatted large numbers (>=10M without commas)
+        if not candidates:
+            candidates = re.findall(r'(?<![0-9])([0-9]{8,})(?![0-9])', html)
         nums = []
         for c in candidates:
             try:
@@ -519,52 +522,42 @@ def save_snapshot(snap: CCASSSnapshot) -> None:
     cm = _compute_concentration_metrics(snap.holdings)
 
     with get_conn() as conn:
-        conn.execute(
-            """INSERT INTO ccass_daily
-                 (stock_code, trade_date, total_shares, total_pct,
-                  num_participants, top5_pct, top10_pct,
-                  adj_hhi, broker_top5_pct, top_broker_id, top_broker_name,
-                  top_broker_pct, futu_pct, a00005_pct, adjusted_float,
-                  scraped_at, validation_failed)
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)
-               ON CONFLICT(stock_code, trade_date) DO UPDATE SET
-                 total_shares = excluded.total_shares,
-                 total_pct = excluded.total_pct,
-                 num_participants = excluded.num_participants,
-                 top5_pct = excluded.top5_pct,
-                 top10_pct = excluded.top10_pct,
-                 adj_hhi = excluded.adj_hhi,
-                 broker_top5_pct = excluded.broker_top5_pct,
-                 top_broker_id = excluded.top_broker_id,
-                 top_broker_name = excluded.top_broker_name,
-                 top_broker_pct = excluded.top_broker_pct,
-                 futu_pct = excluded.futu_pct,
-                 a00005_pct = excluded.a00005_pct,
-                 adjusted_float = excluded.adjusted_float,
-                 scraped_at = excluded.scraped_at,
-                 validation_failed = 0""",
-            (
-                snap.stock_code,
-                snap.trade_date,
-                snap.total_shares,
-                snap.total_pct,
-                snap.num_participants,
-                top5_pct,
-                top10_pct,
-                cm.get("adj_hhi"),
-                cm.get("broker_top5_pct"),
-                cm.get("top_broker_id"),
-                cm.get("top_broker_name"),
-                cm.get("top_broker_pct"),
-                cm.get("futu_pct"),
-                cm.get("a00005_pct"),
-                cm.get("adjusted_float"),
-                now_iso,
-            ),
-        )
-        # Atomic replace: DELETE + INSERT in single transaction (P0-2 fix)
+        # ✅ P0-4 fix: single atomic transaction for daily + holdings
         conn.execute("BEGIN IMMEDIATE")
         try:
+            conn.execute(
+                """INSERT INTO ccass_daily
+                     (stock_code, trade_date, total_shares, total_pct,
+                      num_participants, top5_pct, top10_pct,
+                      adj_hhi, broker_top5_pct, top_broker_id, top_broker_name,
+                      top_broker_pct, futu_pct, a00005_pct, adjusted_float,
+                      scraped_at, validation_failed)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)
+                   ON CONFLICT(stock_code, trade_date) DO UPDATE SET
+                     total_shares = excluded.total_shares,
+                     total_pct = excluded.total_pct,
+                     num_participants = excluded.num_participants,
+                     top5_pct = excluded.top5_pct,
+                     top10_pct = excluded.top10_pct,
+                     adj_hhi = excluded.adj_hhi,
+                     broker_top5_pct = excluded.broker_top5_pct,
+                     top_broker_id = excluded.top_broker_id,
+                     top_broker_name = excluded.top_broker_name,
+                     top_broker_pct = excluded.top_broker_pct,
+                     futu_pct = excluded.futu_pct,
+                     a00005_pct = excluded.a00005_pct,
+                     adjusted_float = excluded.adjusted_float,
+                     scraped_at = excluded.scraped_at,
+                     validation_failed = 0""",
+                (
+                    snap.stock_code, snap.trade_date, snap.total_shares,
+                    snap.total_pct, snap.num_participants, top5_pct, top10_pct,
+                    cm.get("adj_hhi"), cm.get("broker_top5_pct"),
+                    cm.get("top_broker_id"), cm.get("top_broker_name"),
+                    cm.get("top_broker_pct"), cm.get("futu_pct"),
+                    cm.get("a00005_pct"), cm.get("adjusted_float"), now_iso,
+                ),
+            )
             conn.execute(
                 "DELETE FROM ccass_holdings WHERE stock_code = ? AND trade_date = ?",
                 (snap.stock_code, snap.trade_date),
@@ -575,14 +568,9 @@ def save_snapshot(snap: CCASSSnapshot) -> None:
                       shares, pct_of_issued)
                    VALUES (?, ?, ?, ?, ?, ?)""",
                 [
-                    (
-                        snap.stock_code,
-                        snap.trade_date,
-                        h["participant_id"],
-                        h["participant_name"],
-                        h["shares"],
-                        h["pct_of_issued"],
-                    )
+                    (snap.stock_code, snap.trade_date,
+                     h["participant_id"], h["participant_name"],
+                     h["shares"], h["pct_of_issued"])
                     for h in snap.holdings
                 ],
             )
