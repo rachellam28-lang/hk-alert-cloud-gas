@@ -202,14 +202,15 @@ tbody tr{cursor:pointer}
 .vr-card .tf-side-label{font-size:6px;margin-bottom:0}
 .vr-card .tf-shares{font-size:8px}
 .vr-card .tf-head span{margin-left:2px}
-@media(max-width:720px){.vr-grid{grid-template-columns:repeat(auto-fill,minmax(66px,1fr));gap:1px;padding:2px 3px}
-.vr-card{padding:1px 2px;border-radius:2px}
+@media(max-width:720px){.vr-grid{display:flex;flex-direction:column;gap:2px;padding:3px 5px}
+.vr-card{padding:2px 4px;border-radius:2px;display:flex;flex-direction:row;align-items:center;gap:3px;flex-wrap:nowrap}
+.vr-card .tf-head{display:flex;align-items:center;gap:2px;margin-bottom:0;flex-shrink:0}
 .vr-card .tf-head .code{font-size:6px}
-.vr-card .tf-head .name{font-size:6px;max-width:36px}
+.vr-card .tf-head .name{font-size:6px;max-width:30px}
 .vr-card .tf-head .tf-total{font-size:6px}
-.vr-card .tf-flows{gap:1px}
-.vr-card .tf-side{font-size:6px}
-.vr-card .tf-side-label{font-size:5px}
+.vr-card .tf-flows{display:flex;flex-direction:row;gap:3px;flex-shrink:0}
+.vr-card .tf-side{font-size:6px;display:flex;align-items:center;gap:1px}
+.vr-card .tf-side-label{font-size:5px;margin-right:1px}
 .vr-card .tf-shares{font-size:6px}}
 /* Mobile card layout */
 .stock-cards{display:none;flex-direction:column;gap:5px;padding:0}
