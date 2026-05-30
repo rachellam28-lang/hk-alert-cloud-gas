@@ -1,6 +1,7 @@
 """Bulk fill missing CCASS stocks for specific dates."""
 import json, sqlite3, subprocess, sys, os, time
 from pathlib import Path
+from datetime import datetime
 
 PROJECT = Path(__file__).parent.parent
 DB = PROJECT / "ccass.db"
@@ -55,8 +56,9 @@ def fill_missing(target_date: str, max_stocks: int = 3000):
                 failed.append(code)
                 continue
             
-            # Save to DB
-            now = __import__("datetime").datetime.utcnow().isoformat()
+            # Save to DB — atomic: DELETE old holdings + INSERT new
+            now = datetime.utcnow().isoformat()
+            db.execute("BEGIN IMMEDIATE")
             db.execute("""
                 INSERT OR REPLACE INTO ccass_daily
                 (stock_code, trade_date, total_shares, total_pct,
@@ -76,6 +78,9 @@ def fill_missing(target_date: str, max_stocks: int = 3000):
                 data.get("futu_pct"), data.get("a00005_pct"),
                 data.get("adjusted_float"), now,
             ))
+            # ✅ P0-2 fix: DELETE old holdings before INSERT new (ghost data prevention)
+            db.execute("DELETE FROM ccass_holdings WHERE stock_code = ? AND trade_date = ?",
+                       (data["stock_code"], data["trade_date"]))
             for h in data.get("holdings", []):
                 db.execute("""
                     INSERT OR REPLACE INTO ccass_holdings

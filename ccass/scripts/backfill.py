@@ -81,9 +81,10 @@ def backfill_range(start: date, end: date) -> None:
         # Skip universe refresh if DB already has stocks (avoids HKEX requests.get() hang)
         import sqlite3
         from src.db import DB_PATH
-        existing = sqlite3.connect(str(DB_PATH)).execute(
-            "SELECT COUNT(*) FROM stock_universe"
-        ).fetchone()[0]
+        with sqlite3.connect(str(DB_PATH)) as conn:
+            existing = conn.execute(
+                "SELECT COUNT(*) FROM stock_universe"
+            ).fetchone()[0]
         if existing < 500:
             if not get_active_stocks():
                 logger.info("Universe empty, refreshing...")

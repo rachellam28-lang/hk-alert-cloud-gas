@@ -23,6 +23,8 @@ from pathlib import Path
 
 import yaml
 
+import pytz
+
 from src.db import init_db, get_conn
 from src.logger import setup_logger
 from src.trading_calendar import today_hk, is_trading_day, previous_trading_day
@@ -204,7 +206,7 @@ def run_daily(
     logger.info("Querying CCASS data for %s", query_date)
 
     # 1. Start run log
-    now_iso = datetime.now(tz=__import__("pytz").timezone("Asia/Hong_Kong")).isoformat()
+    now_iso = datetime.now(tz=pytz.timezone("Asia/Hong_Kong")).isoformat()
     with get_conn() as conn:
         cur = conn.execute(
             """INSERT INTO scrape_runs (run_date, started_at, status)
@@ -248,6 +250,7 @@ def run_daily(
         if not skip_scrape:
             sc_cfg = config["scraping"]
             n_workers = sc_cfg.get("parallel_workers", 1)
+            assert n_workers == 1, "FATAL-003: parallel_workers must be 1"
 
             if n_workers > 1 and len(stocks) > 100:
                 attempted, succeeded, failed_stocks = _scrape_parallel(
@@ -286,7 +289,7 @@ def run_daily(
                             # Save to DB in main process (avoids SQLite lock contention)
                             try:
                                 with get_conn() as conn:
-                                    now_iso = __import__("datetime").datetime.utcnow().isoformat()
+                                    now_iso = datetime.utcnow().isoformat()
                                     conn.execute("""
                                         INSERT OR REPLACE INTO ccass_daily
                                         (stock_code, trade_date, total_shares, total_pct,
