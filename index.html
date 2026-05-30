@@ -412,7 +412,17 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
       <b>🔄 更新頻率</b><br>
       • CCASS 數據：每日 HKEX update 後（約7am HKT）<br>
       • 股價 + 停牌：每日 9pm HKT yfinance refresh<br>
-      • 信號：GAS 自動推送<br>
+      • 信號：GAS 自動推送<br><br>
+
+      <b>🔬 數據精準度</b><br>
+      另類數據嘅靈魂在於清洗顆粒度與精準度，及深度關聯處理。<br>
+      • <b>8重驗證</b>：range（持倉% 0-100）、pct consistency（daily vs holdings sum ≤5%誤差）、shares consistency（總股 vs 持倉sum ≤2%）、day-over-day jump（>30%跳變檢測）、coverage gap（<50% median → alert）、zero participant（有股數無參與者）、orphan row（daily無對應holdings）、concentration sanity（top5>total）<br>
+      • <b>NaN/Infinity sanitize</b>：export JSON 前 math.isnan() → None，防 dashboard 白畫面<br>
+      • <b>幽靈數據防護</b>：fill_missing DELETE before INSERT，避免重複 scrape 疊加<br>
+      • <b>Scraper bug detection</b>：pct 大變但 shares 不變 → 判定為 scraper error<br>
+      • <b>Corporate action 識別</b>：pct + shares 同時大變 → 判定為公司行動（非數據錯誤）<br>
+      • <b>WAF protection</b>：sequential scrape only，subprocess 60s hard timeout，fail rate >5% → admin alert<br>
+      • 腳本：verify_dashboard.py（JSON層） + verify_data.py（DB 8重深度檢查）<br>
     </section>
   </div>
 
