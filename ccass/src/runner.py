@@ -250,6 +250,7 @@ def run_daily(
             raise RuntimeError("Empty universe — cannot proceed")
 
         # 3. Scrape
+        collected_for_shard: list[dict] = []  # snapshots for shard JSON (out_path mode)
         if not skip_scrape:
             sc_cfg = config["scraping"]
             n_workers = sc_cfg.get("parallel_workers", 1)
@@ -325,6 +326,15 @@ def run_daily(
                                 failed_stocks.append(code)
                                 continue
                             succeeded += 1
+                            if out_path:
+                                collected_for_shard.append({
+                                    "stock_code": data["stock_code"],
+                                    "trade_date": data["trade_date"],
+                                    "total_shares": data.get("total_shares"),
+                                    "total_pct": data.get("total_pct"),
+                                    "num_participants": data.get("num_participants", 0),
+                                    "holdings": data.get("holdings", []),
+                                })
                         else:
                             failed_stocks.append(code)
                     except _sp.TimeoutExpired:
@@ -333,6 +343,32 @@ def run_daily(
                     except Exception as e:
                         logger.exception("Unexpected error on %s", code)
                         failed_stocks.append(code)
+
+        # Shard output mode: write artifact JSON + early return.
+        # Trends / alerts / events / ccass.json are handled by the merge phase.
+        if out_path:
+            _write_shard_output(
+                out_path, query_date, shard, shard_total,
+                len(stocks), succeeded, failed_stocks, collected_for_shard,
+            )
+            logger.info(
+                "Shard %s/%s: wrote %d snapshots → %s",
+                shard, shard_total, len(collected_for_shard), out_path,
+            )
+            with get_conn() as conn:
+                conn.execute(
+                    """UPDATE scrape_runs
+                         SET finished_at=?, stocks_attempted=?,
+                             stocks_succeeded=?, stocks_failed=?, status=?
+                       WHERE id=?""",
+                    (
+                        datetime.utcnow().isoformat(), attempted, succeeded,
+                        len(failed_stocks),
+                        "success" if not failed_stocks else "partial",
+                        run_id,
+                    ),
+                )
+            return 0
 
         # 4. Trends
         try:
@@ -790,6 +826,37 @@ def _write_shard_json(
     }
     Path(out_path).parent.mkdir(parents=True, exist_ok=True)
     Path(out_path).write_text(_json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+
+
+def _write_shard_output(
+    out_path: str,
+    query_date: date,
+    shard: int | None,
+    shard_total: int | None,
+    stocks_total: int,
+    succeeded: int,
+    failed_stocks: list[str],
+    snapshots: list[dict],
+) -> None:
+    """Write shard artifact JSON from pre-built dicts (subprocess scrape results).
+
+    Accepts plain dicts (not CCASSSnapshot objects) so it can be called
+    directly from the sequential subprocess scrape loop in run_daily.
+    """
+    payload = {
+        "shard": shard if shard is not None else 0,
+        "shard_total": shard_total or 1,
+        "query_date": query_date.strftime("%Y-%m-%d"),
+        "target_date": query_date.strftime("%Y-%m-%d"),
+        "stocks_total": stocks_total,
+        "stocks_in_shard": stocks_total,
+        "succeeded": succeeded,
+        "failed": len(failed_stocks),
+        "failed_stocks": failed_stocks,
+        "snapshots": snapshots,
+    }
+    Path(out_path).parent.mkdir(parents=True, exist_ok=True)
+    Path(out_path).write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
 
 
 def main():

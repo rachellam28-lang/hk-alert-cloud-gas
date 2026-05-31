@@ -15,7 +15,7 @@ import sys
 from datetime import datetime, date
 from pathlib import Path
 
-SHARD_TOTAL = 1  # P0-3: single-shard mode (FATAL-003 — parallel disabled)
+SHARD_TOTAL = 6  # 6-shard GHA matrix (ccass.yml)
 SHARD_PREFIX = "ccass-shard"
 PROJECT_ROOT = Path(__file__).parent.parent
 
@@ -324,6 +324,22 @@ def main():
 
     date_str = args.date
     print(f"Merge: query_date={date_str}")
+
+    # Restore DB from ccass.db.gz if missing (fresh GHA checkout)
+    db_path = PROJECT_ROOT / "ccass.db"
+    db_gz_path = PROJECT_ROOT / "ccass.db.gz"
+    if not db_path.exists() or db_path.stat().st_size == 0:
+        if db_gz_path.exists():
+            import gzip, shutil
+            print(f"Restoring ccass.db from ccass.db.gz ({db_gz_path.stat().st_size} bytes)...")
+            tmp_path = db_path.with_suffix(".db.tmp")
+            with gzip.open(db_gz_path, "rb") as f_in:
+                with open(tmp_path, "wb") as f_out:
+                    shutil.copyfileobj(f_in, f_out)
+            tmp_path.replace(db_path)
+            print(f"Restored ccass.db: {db_path.stat().st_size} bytes")
+        else:
+            print("WARNING: ccass.db.gz not found — trends will be empty")
 
     # Validate
     print("Validating shards...")
