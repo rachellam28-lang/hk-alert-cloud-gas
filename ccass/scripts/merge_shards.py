@@ -15,7 +15,7 @@ import sys
 from datetime import datetime, date
 from pathlib import Path
 
-SHARD_TOTAL = 6  # 6-shard GHA matrix (ccass.yml)
+SHARD_TOTAL = 1  # single-shard mode (GHA disabled — local sequential only)
 SHARD_PREFIX = "ccass-shard"
 PROJECT_ROOT = Path(__file__).parent.parent
 
