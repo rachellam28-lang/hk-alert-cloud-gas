@@ -187,8 +187,12 @@ def update_ccass_json(target_date: date) -> None:
         mc_path = dated_path if dated_path.exists() else (legacy_path if legacy_path.exists() else None)
         if mc_path and mc_path.exists():
             mc_data = _json.loads(mc_path.read_text(encoding='utf-8'))
-            for item in mc_data:
-                mc_map[item.get('stock_code', '')] = item.get('market_cap')
+            # Support both list-of-dicts AND dict format (runner.py uses dict)
+            if isinstance(mc_data, list):
+                for item in mc_data:
+                    mc_map[item.get('stock_code', '')] = item.get('market_cap')
+            elif isinstance(mc_data, dict):
+                mc_map = mc_data
     except Exception:
         pass
 

@@ -17,7 +17,11 @@ def main():
     from src.scraper import CCASSScraper, _compute_concentration_metrics
     from datetime import date
     
-    s = CCASSScraper(user_agent, delay_min=0, delay_max=0, timeout=15, max_retries=1)
+    delay_min = float(sys.argv[4]) if len(sys.argv) > 4 else 4.0
+    delay_max = float(sys.argv[5]) if len(sys.argv) > 5 else 10.0
+    timeout = int(sys.argv[6]) if len(sys.argv) > 6 else 30
+    max_retries = int(sys.argv[7]) if len(sys.argv) > 7 else 3
+    s = CCASSScraper(user_agent, delay_min=delay_min, delay_max=delay_max, timeout=timeout, max_retries=max_retries)
     dt = date.fromisoformat(query_date)
     snap = s.scrape_stock(stock_code, dt)
     

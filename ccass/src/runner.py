@@ -264,7 +264,7 @@ def run_daily(
                 # Sequential: subprocess per stock — kills reliably, ~2s overhead but never hangs.
                 import subprocess as _sp
                 import os as _os
-                HARD_TIMEOUT = 60
+                HARD_TIMEOUT = sc_cfg["timeout_seconds"] * sc_cfg["max_retries"] + 30  # P0-2: dynamic timeout
                 _scrape_one = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "scrape_one.py")
                 for i, code in enumerate(stocks, 1):
                     attempted += 1
@@ -273,7 +273,11 @@ def run_daily(
                     try:
                         result = _sp.run(
                             [sys.executable, _scrape_one, code, query_date.strftime("%Y-%m-%d"),
-                             sc_cfg["user_agent"]],
+                             sc_cfg["user_agent"],
+                             str(sc_cfg["delay_min_seconds"]),
+                             str(sc_cfg["delay_max_seconds"]),
+                             str(sc_cfg["timeout_seconds"]),
+                             str(sc_cfg["max_retries"])],
                             capture_output=True, text=True, timeout=HARD_TIMEOUT,
                         )
                         if result.returncode != 0:
@@ -607,12 +611,23 @@ def _export_json(query_date: date, alerts_today: int) -> None:
             "updated": date_str,
             "first_date": first_date,
             "alerts_today": alerts_today,
-            "total_stocks": len(stocks),
+            "stock_count": len(stocks),
             "total_participants": total_participants,
             "stocks": stocks,
             "top_increase": top_increase,
             "top_decrease": top_decrease,
         }
+        # Sanitize NaN/Infinity → null (invalid in JSON spec)
+        import math as _math
+        def _sanitize(obj):
+            if isinstance(obj, dict):
+                return {k: _sanitize(v) for k, v in obj.items()}
+            if isinstance(obj, list):
+                return [_sanitize(v) for v in obj]
+            if isinstance(obj, float) and (_math.isnan(obj) or _math.isinf(obj)):
+                return None
+            return obj
+        payload = _sanitize(payload)
         out_path = Path(__file__).parent.parent.parent / "ccass.json"
         # ✅ P1-6: atomic write via temp file
         tmp_path = out_path.with_suffix(".tmp")

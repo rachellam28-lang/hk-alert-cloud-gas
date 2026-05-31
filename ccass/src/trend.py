@@ -81,12 +81,19 @@ def compute_trends_for_date(target_date: date, windows: list[int] | None = None)
         delta_cols.append("delta_{w}d_pct".format(w=w))
         delta_cols.append("delta_{w}d_shares".format(w=w))
 
-    # Fill remaining columns (60d, 120d) with NULL
+    # Fill remaining columns (60d, 120d) with NULL — both on INSERT and UPDATE
     extra_null_cols = ""
     extra_null_vals = ""
+    extra_update_nulls = ""
     if 60 not in windows:
         extra_null_cols = ", delta_60d_pct, delta_120d_pct, delta_60d_shares, delta_120d_shares"
         extra_null_vals = ", NULL, NULL, NULL, NULL"
+        extra_update_nulls = (
+            ",\n        delta_60d_pct = NULL,"
+            "\n        delta_120d_pct = NULL,"
+            "\n        delta_60d_shares = NULL,"
+            "\n        delta_120d_shares = NULL"
+        )
 
     update_set = ",\n        ".join(
         "{c} = excluded.{c}".format(c=c) for c in delta_cols
@@ -98,7 +105,7 @@ def compute_trends_for_date(target_date: date, windows: list[int] | None = None)
         "     consecutive_increase_days, consecutive_decrease_days, computed_at)\n"
         "VALUES (?, ?, {placeholders}{extra_null_vals}, ?, ?, ?)\n"
         "ON CONFLICT(stock_code, trade_date) DO UPDATE SET\n"
-        "    {update_set},\n"
+        "    {update_set}{extra_update_nulls},\n"
         "    consecutive_increase_days = excluded.consecutive_increase_days,\n"
         "    consecutive_decrease_days = excluded.consecutive_decrease_days,\n"
         "    computed_at = excluded.computed_at"
@@ -108,6 +115,7 @@ def compute_trends_for_date(target_date: date, windows: list[int] | None = None)
         placeholders=", ".join(["?" for _ in delta_cols]),
         extra_null_vals=extra_null_vals,
         update_set=update_set,
+        extra_update_nulls=extra_update_nulls,
     )
 
     count = 0
