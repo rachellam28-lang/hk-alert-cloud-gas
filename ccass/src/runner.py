@@ -260,16 +260,7 @@ def run_daily(
                     stocks, query_date, sc_cfg, n_workers,
                 )
             else:
-                scraper = CCASSScraper(
-                    user_agent=sc_cfg["user_agent"],
-                    delay_min=sc_cfg["delay_min_seconds"],
-                    delay_max=sc_cfg["delay_max_seconds"],
-                    timeout=sc_cfg["timeout_seconds"],
-                    max_retries=sc_cfg["max_retries"],
-                )
-                snapshots = []
-                # NOTE: ThreadPoolExecutor CANNOT kill hung C-level I/O in requests.
-                # Use subprocess per stock — kills reliably, ~2s overhead but never hangs.
+                # Sequential: subprocess per stock — kills reliably, ~2s overhead but never hangs.
                 import subprocess as _sp
                 import os as _os
                 HARD_TIMEOUT = 60
@@ -342,13 +333,6 @@ def run_daily(
                     except Exception as e:
                         logger.exception("Unexpected error on %s", code)
                         failed_stocks.append(code)
-
-                # If outputting to file (shard mode), write JSON
-                if out_path and snapshots:
-                    _write_shard_json(out_path, query_date, shard, shard_total,
-                                     len(stocks), succeeded, failed_stocks, snapshots)
-                    logger.info("Shard saved to %s: %d snapshots", out_path, len(snapshots))
-                    return 0  # shard mode: skip trends/alerts/events
 
         # 4. Trends
         try:

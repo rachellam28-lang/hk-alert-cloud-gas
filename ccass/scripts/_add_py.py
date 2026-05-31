@@ -1,7 +1,8 @@
 """Add 2025 year-open prices to existing stock_prices.json cache."""
 import json, yfinance as yf, time, sys
+from pathlib import Path
 
-CACHE_PATH = r"C:\Users\Administrator\Desktop\automatic\ccass-debug\ccass\data\stock_prices.json"
+CACHE_PATH = str(Path(__file__).parent.parent / "data" / "stock_prices.json")
 
 cache = json.load(open(CACHE_PATH, encoding='utf-8'))
 

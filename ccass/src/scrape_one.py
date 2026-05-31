@@ -12,6 +12,8 @@ def main():
     # P2-6: suppress scraper logger noise in subprocess stdout (stderr only)
     import logging
     logging.root.setLevel(logging.WARNING)
+    # Also suppress the scraper module's own logger (has explicit INFO level)
+    logging.getLogger("scraper").setLevel(logging.WARNING)
     from src.scraper import CCASSScraper, _compute_concentration_metrics
     from datetime import date
     

@@ -135,9 +135,12 @@ class CCASSScraper:
         Akamai frequently answers bots with a 200-status 'Access Denied'
         or reference-error page. Treating that as success is what let the
         old consecutive-503 counter reset and never fire.
+        
+        Note: empty html is NOT automatically treated as blocked — it could
+        be a network error, not a WAF response.
         """
         if not html:
-            return True
+            return False
         head = html[:10000].lower()  # P2-2: increase from 3000 to catch viewstate in large pages
         markers = (
             "access denied",

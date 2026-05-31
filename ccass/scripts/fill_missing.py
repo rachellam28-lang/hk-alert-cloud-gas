@@ -14,13 +14,16 @@ BATCH_SLEEP = 0.1  # small delay between stocks
 
 def fill_missing(target_date: str, max_stocks: int = 3000):
     db = sqlite3.connect(str(DB))
+    db.execute("PRAGMA journal_mode=WAL")
+    db.execute("PRAGMA foreign_keys=ON")
 
     # Get full universe from 05-26 (exclude non-equity: temp codes, prefs, warrants)
     EXCLUDE_PATTERNS = ["029%", "04621", "8%"]
-    exclude_where = " AND ".join([f"stock_code NOT LIKE '{p}'" for p in EXCLUDE_PATTERNS])
+    # Use parameterized LIKE patterns in a single query
+    exclude_clauses = " AND ".join(["stock_code NOT LIKE ?" for _ in EXCLUDE_PATTERNS])
     full = set(r[0] for r in db.execute(
-        f"SELECT DISTINCT stock_code FROM ccass_daily WHERE trade_date=? AND {exclude_where}",
-        ('2026-05-26',)
+        f"SELECT DISTINCT stock_code FROM ccass_daily WHERE trade_date=? AND {exclude_clauses}",
+        ('2026-05-26', *EXCLUDE_PATTERNS)
     ))
     have = set(r[0] for r in db.execute(
         'SELECT DISTINCT stock_code FROM ccass_daily WHERE trade_date=?',
@@ -58,42 +61,46 @@ def fill_missing(target_date: str, max_stocks: int = 3000):
             
             # Save to DB — atomic: DELETE old holdings + INSERT new
             now = datetime.utcnow().isoformat()
-            db.execute("BEGIN IMMEDIATE")
-            db.execute("""
-                INSERT OR REPLACE INTO ccass_daily
-                (stock_code, trade_date, total_shares, total_pct,
-                 num_participants, top5_pct, top10_pct,
-                 adj_hhi, broker_top5_pct, top_broker_id,
-                 top_broker_name, top_broker_pct,
-                 futu_pct, a00005_pct, adjusted_float,
-                 scraped_at, validation_failed)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)
-            """, (
-                data["stock_code"], data["trade_date"],
-                data.get("total_shares"), data.get("total_pct"),
-                data.get("num_participants"), data.get("top5_pct"),
-                data.get("top10_pct"), data.get("adj_hhi"),
-                data.get("broker_top5_pct"), data.get("top_broker_id"),
-                data.get("top_broker_name"), data.get("top_broker_pct"),
-                data.get("futu_pct"), data.get("a00005_pct"),
-                data.get("adjusted_float"), now,
-            ))
-            # ✅ P0-2 fix: DELETE old holdings before INSERT new (ghost data prevention)
-            db.execute("DELETE FROM ccass_holdings WHERE stock_code = ? AND trade_date = ?",
-                       (data["stock_code"], data["trade_date"]))
-            for h in data.get("holdings", []):
+            try:
+                db.execute("BEGIN IMMEDIATE")
                 db.execute("""
-                    INSERT OR REPLACE INTO ccass_holdings
-                    (stock_code, trade_date, participant_id,
-                     participant_name, shares, pct_of_issued)
-                    VALUES (?, ?, ?, ?, ?, ?)
+                    INSERT OR REPLACE INTO ccass_daily
+                    (stock_code, trade_date, total_shares, total_pct,
+                     num_participants, top5_pct, top10_pct,
+                     adj_hhi, broker_top5_pct, top_broker_id,
+                     top_broker_name, top_broker_pct,
+                     futu_pct, a00005_pct, adjusted_float,
+                     scraped_at, validation_failed)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)
                 """, (
                     data["stock_code"], data["trade_date"],
-                    h.get("participant_id"), h.get("participant_name"),
-                    h.get("shares"), h.get("pct_of_issued"),
+                    data.get("total_shares"), data.get("total_pct"),
+                    data.get("num_participants"), data.get("top5_pct"),
+                    data.get("top10_pct"), data.get("adj_hhi"),
+                    data.get("broker_top5_pct"), data.get("top_broker_id"),
+                    data.get("top_broker_name"), data.get("top_broker_pct"),
+                    data.get("futu_pct"), data.get("a00005_pct"),
+                    data.get("adjusted_float"), now,
                 ))
-            db.commit()
-            succeeded += 1
+                # ✅ P0-2 fix: DELETE old holdings before INSERT new (ghost data prevention)
+                db.execute("DELETE FROM ccass_holdings WHERE stock_code = ? AND trade_date = ?",
+                           (data["stock_code"], data["trade_date"]))
+                for h in data.get("holdings", []):
+                    db.execute("""
+                        INSERT OR REPLACE INTO ccass_holdings
+                        (stock_code, trade_date, participant_id,
+                         participant_name, shares, pct_of_issued)
+                        VALUES (?, ?, ?, ?, ?, ?)
+                    """, (
+                        data["stock_code"], data["trade_date"],
+                        h.get("participant_id"), h.get("participant_name"),
+                        h.get("shares"), h.get("pct_of_issued"),
+                    ))
+                db.commit()
+                succeeded += 1
+            except Exception:
+                db.rollback()
+                raise
             
         except subprocess.TimeoutExpired:
             failed.append(code)

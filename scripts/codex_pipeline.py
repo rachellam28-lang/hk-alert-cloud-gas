@@ -4,7 +4,7 @@ Codex 全自動審查流水線 — 一句 trigger，A review → auto-apply → 
 用法: python codex_pipeline.py "檢查 ccass.html 有冇 mobile bug" C:/path/to/project [--auto-commit]
 """
 
-import subprocess, sys, os, datetime, tempfile, re, shutil
+import subprocess, sys, os, datetime, tempfile, re, shutil, shlex
 
 PROJECT = sys.argv[2] if len(sys.argv) > 2 else os.getcwd()
 PROMPT = sys.argv[1] if len(sys.argv) > 1 else "Review this project for bugs"
@@ -153,8 +153,8 @@ if AUTO_COMMIT:
     out_diff, _ = run("git diff --cached --stat")
     print(out_diff)
     if applied > 0:
-        commit_msg = f"fix: Codex auto-review — {applied} fixes\n\n{PROMPT}\n\nBranch: {BRANCH}"
-        run(f'git commit -m "{commit_msg}"')
+        commit_msg = f"fix: Codex auto-review — {applied} fixes\\n\\n{PROMPT}\\n\\nBranch: {BRANCH}"
+        run(f'git commit -m {shlex.quote(commit_msg)}')
         run(f"git push origin {BRANCH}")
         print(f"✅ Pushed to {BRANCH}")
     else:

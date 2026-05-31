@@ -30,33 +30,31 @@ LOCK_FILE = os.path.join(tempfile.gettempdir(), "ccass_backfill.lock")
 
 def _acquire_lock() -> bool:
     """Try to acquire the backfill lock. Returns True if lock acquired."""
-    if os.path.exists(LOCK_FILE):
+    # Atomic create with O_CREAT | O_EXCL — no TOCTOU race
+    try:
+        fd = os.open(LOCK_FILE, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+        os.write(fd, str(os.getpid()).encode())
+        os.close(fd)
+        logger.info("Lock acquired (PID %d)", os.getpid())
+        return True
+    except FileExistsError:
+        # Lock exists — check if old process is still alive
         try:
             with open(LOCK_FILE) as f:
                 old_pid = int(f.read().strip())
-            # Check if old process is still alive
-            import ctypes
-            kernel32 = ctypes.windll.kernel32
-            handle = kernel32.OpenProcess(0x0400, False, old_pid)
-            if handle:
-                kernel32.CloseHandle(handle)
-                logger.error(
-                    "FATAL-003: Another backfill is already running (PID %d). "
-                    "Lock file: %s. Exiting.",
-                    old_pid, LOCK_FILE,
-                )
-                return False
-            else:
-                logger.warning("Stale lock from dead PID %d, removing.", old_pid)
-                os.remove(LOCK_FILE)
-        except (ValueError, OSError):
-            logger.warning("Corrupt lock file, removing.")
+            # Portable process check: os.kill(pid, 0) works on Windows + Unix
+            os.kill(old_pid, 0)
+            logger.error(
+                "FATAL-003: Another backfill is already running (PID %d). "
+                "Lock file: %s. Exiting.",
+                old_pid, LOCK_FILE,
+            )
+            return False
+        except (OSError, ValueError):
+            # Process not found or corrupt lock — remove and retry
+            logger.warning("Stale lock from dead/corrupt PID, removing.")
             os.remove(LOCK_FILE)
-
-    with open(LOCK_FILE, "w") as f:
-        f.write(str(os.getpid()))
-    logger.info("Lock acquired (PID %d)", os.getpid())
-    return True
+            return _acquire_lock()  # retry with fresh O_CREAT|O_EXCL
 
 
 def _release_lock() -> None:

@@ -1,5 +1,6 @@
 # CCASS - don't commit data or secrets
 ccass/backups/
+backups/
 ccass/logs/
 ccass/debug/
 ccass/codes.json

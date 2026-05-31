@@ -15,7 +15,7 @@ import sys
 from datetime import datetime, date
 from pathlib import Path
 
-SHARD_TOTAL = 1  # P0-3: match parallel_backfill.py single-shard mode
+SHARD_TOTAL = 1  # P0-3: single-shard mode (FATAL-003 — parallel disabled)
 SHARD_PREFIX = "ccass-shard"
 PROJECT_ROOT = Path(__file__).parent.parent
 

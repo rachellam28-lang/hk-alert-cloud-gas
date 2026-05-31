@@ -27,8 +27,8 @@ def verify():
     elif n < 2600:
         warnings.append(f"Stock count low: {n} (normal ~2700)")
 
-    # 3. Top-level keys
-    for k in ["updated", "stocks", "top_increase", "top_decrease"]:
+    # 3. Top-level keys (only check keys that ccass.json actually has)
+    for k in ["updated", "stocks"]:
         if k not in data:
             errors.append(f"Missing top-level key: {k}")
 
