@@ -3,8 +3,9 @@ Refresh yfinance data: prices, volume, 52wk hi/lo, PE, beta, suspended detection
 Saves: data/stock_prices.json + data/suspended_stocks.json
 Run: python scripts/refresh_prices_and_suspended.py
 """
-import yfinance as yf, sqlite3, json, time, os
+import yfinance as yf, sqlite3, json, time, os, sys
 from pathlib import Path
+sys.stdout.reconfigure(line_buffering=True) if hasattr(sys.stdout, 'reconfigure') else None
 
 PROJECT_ROOT = Path(__file__).parent.parent
 DB_PATH = PROJECT_ROOT / "ccass.db"
@@ -29,7 +30,7 @@ rows = db.execute("""
 db.close()
 
 all_codes = [row[0] for row in rows]
-print(f"Fetching yfinance data for {len(all_codes)} stocks...")
+print(f"Fetching yfinance data for {len(all_codes)} stocks...", flush=True)
 
 suspended = {}
 updated = 0
@@ -121,4 +122,4 @@ print(f"  Suspended: {len(suspended)}")
 print(f"  Updated: {updated}")
 print(f"  New: {new_entries}")
 print(f"  Total in price_map: {len(price_map)}")
-print(f"\nFields per stock: lp, chg, vol, hi52, lo52, p52, pe, beta, avg_vol")
+print(f"\nFields per stock: lp, chg, vol, hi52, lo52, p52, pe, beta, avg_vol", flush=True)

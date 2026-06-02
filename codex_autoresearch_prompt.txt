@@ -1,0 +1,30 @@
+# 任務：autoresearch (karpathy) 對 CCASS 系統有冇用？
+
+## 背景
+autoresearch 係 Karpathy 嘅 LLM training 自主研究 framework：
+- AI agent 自己改 model architecture/hyperparameters
+- 每次 train 5 分鐘
+- Check val_bpb 有冇改善 → keep/discard
+- 通宵 loop
+
+## CCASS 系統
+- HKEX scraping 港股持倉數據
+- SQLite DB + Dashboard
+- Trend analysis (5d/20d delta)
+- Alert signals (FVG, POC, 量比)
+- 已經有 TimesFM (時序預測) + TradingAgents (AI分析師團隊)
+
+## 問題
+autoresearch 個自主實驗框架可唔可以改嚟用喺 CCASS？
+例如：
+- 令 AI agent 自己試唔同嘅 trading signal 組合
+- 自己 optimize alert threshold
+- 自己試唔同嘅數據處理 pipeline
+- 甚至 fine-tune 一個細 model 去 predict CCASS 持倉變化
+
+定係真係完全唔關事？
+
+## 要求
+分析要具體，講明 exactly 邊個 component 可以點改、點接落 CCASS。
+唔好齋講「可以」，要講「點做」。
+如果真係冇用，都要解釋點解。

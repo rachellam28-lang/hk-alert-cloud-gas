@@ -1,0 +1,26 @@
+# Blog: 散戶現在能用的 AI 投資系統：7 個 GitHub Repo
+
+## 四層架構
+
+### 第一層：預測與壓力測試
+1. **TimesFM** (google-research/timesfm) — 19,500★ — Google 時序預測基礎模型，2億參數，支援 16,000 時間點 context，XReg 外部變數迴歸，已整合 BigQuery ML
+2. **MiroFish** (666ghj/MiroFish) — 同時間跑幾千個 AI agent 模擬黑天鵝衝擊事件
+
+### 第二層：研究與分析
+3. **TradingAgents** (TauricResearch/TradingAgents) — 4個 AI 分析師（基本面/技術/情緒/總經）+ 辯論環節 + Trader agent 綜合建議
+4. **Anthropic financial-services** (anthropics/financial-services) — 8個金融 agent（Earnings Reviewer, Market Researcher, Model Builder, KYC Screener 等），整合 Morningstar/FactSet/S&P Global
+
+### 第三層：策略與執行
+5. **Vibe-Trading** (HKUDS/Vibe-Trading) — 6,000★ 港大出品，中文描述策略→自動回測→匯出 Pine Script，74個預建金融技能，支援 A股港股美股加密貨幣
+
+### 第四層：自動化與整合
+6. **autoresearch** (karpathy/autoresearch) — 79,800★ — 自主迭代 loop，5分鐘一個週期自動改code→評估→保留
+7. **Paperclip** (paperclipai/paperclip) — 63,600★ — agent 協作框架，定義角色/排程/預算，把所有工具串起身
+
+## CCASS 系統現況
+- 已有: HKEX scraping, SQLite DB, Dashboard, 5d/20d delta trends, FVG + POC signals, 量比
+- 已裝: TimesFM, TradingAgents, autoresearch
+- 未裝: MiroFish, Anthropic financial-services, Vibe-Trading, Paperclip
+
+## 問題
+呢 7 個入面，邊樣最啱 CCASS？邊樣應該裝？邊樣完全冇用？

@@ -1,0 +1,53 @@
+{
+  "alerted": [],
+  "watchlisted": [
+    {
+      "code": "00419",
+      "name": "HONY MEDIA",
+      "types": "配股",
+      "types_list": [
+        "配股"
+      ],
+      "title_cn": "補充公告 TO 認購新股（一般授權）",
+      "volume_ratio": 0.94,
+      "cur_price": 0.5,
+      "prev_week_low": 0.41,
+      "year_open": 0.355,
+      "year_open_rel": "🔺高於年開",
+      "release_time": "01/06/2026 16:40",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0601/2026060101702.pdf",
+      "tv_url": "https://www.tradingview.com/chart/?symbol=HKEX%3A0419",
+      "priority": 1,
+      "immediate": false
+    },
+    {
+      "code": "01815",
+      "name": "EVEREST GOLD",
+      "types": "配股",
+      "types_list": [
+        "配股"
+      ],
+      "title_cn": "公司公告：UPDATE ON CERTAIN SUBSCRIPTIONS OF NEW SHARES UNDER GENERAL MANDATE",
+      "volume_ratio": 0.85,
+      "cur_price": 0.8500000238418579,
+      "prev_week_low": 0.77,
+      "year_open": 2.43,
+      "year_open_rel": "🔻低於年開",
+      "release_time": "01/06/2026 07:54",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0601/2026060100041.pdf",
+      "tv_url": "https://www.tradingview.com/chart/?symbol=HKEX%3A1815",
+      "priority": 1,
+      "immediate": false
+    }
+  ],
+  "summary": {
+    "date": "2026/06/01",
+    "date_iso": "2026-06-01",
+    "weekday": "星期一",
+    "total_raw": 63,
+    "today_count": 2,
+    "volume_multiplier": 1.5,
+    "alerted_count": 0,
+    "watchlisted_count": 2
+  }
+}

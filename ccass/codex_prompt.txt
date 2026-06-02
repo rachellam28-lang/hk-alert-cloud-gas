@@ -1,0 +1,38 @@
+# GOAL MODE — 完善 CCASS 港股持倉監測系統
+
+## 任務級別
+Priority: 5.5/5 (最高優先級)
+Quality: xhigh (最高品質，徹底審查+修復)
+Speed: fast (平行處理，唔好逐個文件慢慢睇)
+Browser: enabled (可以用 browser 睇 live dashboard https://rachellam28-lang.github.io/hk-alert-cloud-gas/)
+
+## 系統背景
+呢個係 CCASS 港股持倉監測系統，包括：
+- HKEX scraping (backfill.py, scraper.py) — 爬香港交易所 CCASS 持倉數據
+- SQLite 數據庫 (ccass.db) — 儲存所有持倉記錄
+- Dashboard (ccass.html) — GitHub Pages 前端，顯示持倉變化、突破信號、量比警報、存倉轉倉
+- 警報掃描 (hk_alert_scanner) — FVG、POC 等技術信號掃描
+- AI Team (ai_team.py) — LLM 分析層
+
+## 你要做的事
+1. **全面審查所有代碼** — 搵出 bugs、安全漏洞、性能問題、代碼質量問題
+2. **用 browser 睇 live dashboard** — 檢查前端有冇 JS error、UI bug、數據顯示問題
+3. **修復所有發現的問題** — 唔好只係報告，直接 fix
+4. **優化系統** — 減少重複代碼、改善錯誤處理、加速 scraping
+5. **驗證修復** — 確定所有改動唔會 break 現有功能
+
+## 重要規則
+- 唔好用 GHA / GitHub Actions — 已證實次次全滅
+- Local backfill 係唯一成功方法
+- 所有改動要保持向後兼容
+- 數據準確性係第一優先
+- Dashboard 要 compact，唔好整到太大
+
+## 工作目錄
+C:\Users\Administrator\Desktop\automatic\ccass-debug\ccass\
+
+## 輸出格式
+完成後輸出：
+1. 發現的問題清單 (按嚴重程度排序)
+2. 已修復的問題 + 改了什麼
+3. 任何需要人手處理的事項

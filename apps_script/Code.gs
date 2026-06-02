@@ -302,7 +302,7 @@ function getActiveWatchlist_() {
     const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
     const sh = ss.getSheetByName(WATCHLIST_SHEET);
     if (!sh || sh.getLastRow() <= 1) return [];
-    const expiryDays = 5;
+    const expiryDays = 365;
     const cutoff = new Date(Date.now() - expiryDays * 86400000);
     const lastRow = sh.getLastRow();
     const data = sh.getRange(2, 1, lastRow - 1, WATCHLIST_HEADERS.length).getValues();
