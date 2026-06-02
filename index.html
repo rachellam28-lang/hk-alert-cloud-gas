@@ -159,7 +159,7 @@ tbody tr{cursor:pointer}
 @media(max-width:820px){.hide-sig,.th-sig{display:none}}
 @media(max-width:720px){.hide-np,.th-np{display:none}}
 @media(max-width:720px){.hide-price,.th-price{display:none}}
-@media(max-width:640px){.hide-mc,.th-mc,.hide-chg,.th-chg,.hide-p52,.th-p52,.hide-pe,.th-pe,.hide-yo_pct,.th-yo_pct{display:none}}
+@media(max-width:640px){.hide-mc,.th-mc,.hide-chg,.th-chg,.hide-p52,.th-p52,.hide-pe,.th-pe,.hide-yo_pct,.th-yo_pct,.hide-score,.th-score{display:none}}
 @media(max-width:640px){.hide-link,.th-link{display:none}}
 @media(max-width:640px){.brand>a{font-size:11px!important;padding:2px 6px!important;margin-left:3px!important}.input.search-in{min-width:140px}.btn-ghost,.btn-csv,.preset-btn,.col-toggle-btn{padding:3px 7px!important;font-size:10px!important;border-radius:6px!important}.toolbar{padding:6px 8px!important;gap:6px!important}.toolbar-sect{gap:4px!important}}
 @media(max-width:640px){.topbar-inner{padding:6px 10px;gap:8px}.brand{gap:6px;flex-shrink:0}.brand>a{font-size:10px!important;padding:1px 5px!important;margin-left:2px!important}.logo{display:none}.brand-title{font-size:12px;white-space:nowrap}.brand-sub{display:none}.topright{gap:3px;font-size:10px}.refresh-tag{display:none}.wrap{padding:8px 2px 20px!important}}
@@ -432,6 +432,7 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
         <input class="input search-in" id="searchInput" placeholder="搜尋代碼/名稱…" autocomplete="off" oninput="searchVal=this.value;applyFilters();">
         <select class="input" id="sortSelect" style="font-size:12px" onchange="sortBy(this.value)">
           <option value="d5">5日Δ</option>
+          <option value="score">⭐評分</option>
           <option value="tp">CCASS%</option>
           <option value="t5">Top5%</option>
           <option value="t10">Top10%</option>
@@ -490,6 +491,7 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
             <label><input type="checkbox" data-col="pe" checked onchange="toggleCol(this)"> PE</label>
             <label><input type="checkbox" data-col="vr" checked onchange="toggleCol(this)"> 量比</label>
             <label><input type="checkbox" data-col="yo_pct" checked onchange="toggleCol(this)"> 今年Δ%</label>
+            <label><input type="checkbox" data-col="score" checked onchange="toggleCol(this)"> ⭐評分</label>
             <label><input type="checkbox" data-col="link" checked onchange="toggleCol(this)"> 連結</label>
           </div>
         </div>
@@ -532,6 +534,7 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
           <th class="sortable th-t5" data-sort="t5" onclick="sortBy('t5',event)"><span>Top5%</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable th-t10" data-sort="t10" onclick="sortBy('t10',event)"><span>Top10%</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable" data-sort="d5" onclick="sortBy('d5',event)"><span>5日Δ</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
+          <th class="sortable th-score" data-sort="score" onclick="sortBy('score',event)"><span>⭐評分</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable th-streak" data-sort="su" onclick="sortBy('su',event)"><span>🔁連續</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable th-d20" data-sort="d20" onclick="sortBy('d20',event)"><span>20日Δ</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
           <th class="sortable th-d60" data-sort="d60" onclick="sortBy('d60',event)"><span>60日Δ</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
@@ -643,6 +646,17 @@ function shortLabel(lbl){
   if(!lbl)return'';
   return lbl.replace('IPO首日高突破','🚀高破').replace('IPO首日開突破','🚀開破').replace('半年POC','半POC').replace('3年POC','3yPOC').replace('12月POC','12mPOC');
 }
+// P2: Composite score 0-10
+function calcScore(s){
+  var d5v=s.d5, aboveYO=s.lp&&s.yo&&s.lp>s.yo, p52=s.p52, vr=s.vr;
+  var sc=0;
+  if(d5v!=null){sc+=d5v>0?2:(d5v<0?0:1);}
+  if(aboveYO)sc+=2;
+  if(p52!=null)sc+=Math.round(p52/25);
+  if(vr!=null){sc+=vr>=3?2:(vr>=1.5?1:0);}
+  return Math.min(sc,10);
+}
+function scoreColor(sc){return sc>=7?'var(--up)':sc>=4?'var(--amber)':'var(--mute-2)';}
 
 // --- state ---
 let allStocks=[];
@@ -714,6 +728,9 @@ function getSortVal(s,col){
   if(col==='vr'){
     return s.vr != null ? s.vr : null;
   }
+  if(col==='score'){
+    return calcScore(s);
+  }
   let v=s[col];
   if(typeof v==='string')v=v.toLowerCase();
   return v==null ? null : v;
@@ -728,7 +745,7 @@ function cmpSortVal(va,vb,dir){
 function updateSortInfo(){
   var el=document.getElementById('sortInfo');
   if(!el)return;
-  var names={code:'代碼',n:'名稱',price:'現價',yo_pct:'今年Δ%',tp:'CCASS%',t5:'Top5%',t10:'Top10%',d5:'5日Δ',d20:'20日Δ',d60:'60日Δ',d120:'120日Δ',np:'參與者',mc:'市值',chg:'今日Δ%',p52:'52週%',pe:'PE',vr:'量比',sig:'信號',su:'連續增持',sd:'連續減持',yearyo:'🔺年開',prevyo:'😻前年',pypct:'前年Δ%'};
+  var names={code:'代碼',n:'名稱',price:'現價',yo_pct:'今年Δ%',tp:'CCASS%',t5:'Top5%',t10:'Top10%',d5:'5日Δ',d20:'20日Δ',d60:'60日Δ',d120:'120日Δ',np:'參與者',mc:'市值',chg:'今日Δ%',p52:'52週%',pe:'PE',vr:'量比',sig:'信號',su:'連續增持',sd:'連續減持',yearyo:'🔺年開',prevyo:'😻前年',pypct:'前年Δ%',score:'⭐評分'};
   var p=names[sortCol]||sortCol,pa=sortDir===1?'▲':'▼';
   if(sortCol2){var sn=names[sortCol2]||sortCol2,sa=sortDir2===1?'▲':'▼';el.innerHTML='<b>'+p+' '+pa+'</b><span class=\"si-sep\">|</span><span style=\"opacity:.7\">'+sn+' '+sa+'</span>';}
   else el.innerHTML='<b>'+p+' '+pa+'</b>';
@@ -1043,6 +1060,8 @@ function renderTable(){
       +'<td class="hide-t5"><span class="num">'+s.t5.toFixed(2)+'%</span></td>'
       +'<td class="hide-t10"><span class="num">'+s.t10.toFixed(2)+'%</span></td>'
       +'<td>'+d5+'</td>'
+      // P2: Composite score column
+      +'<td class="hide-score"><span class="num" style="font-weight:700;color:'+scoreColor(calcScore(s))+'">'+calcScore(s)+'</span></td>'
       +'<td class="th-streak">'+streak+'</td>'
       +'<td class="hide-d20">'+d20+'</td>'
       +'<td class="hide-d60">'+d60+'</td>'
@@ -1278,6 +1297,28 @@ async function showDetail(code){
     +(s.beta!=null?'<div class="dmeta"><span class="dmeta-label">Beta</span><span class="dmeta-val">'+s.beta.toFixed(2)+'</span></div>':'')
     +(s.avg_vol!=null?'<div class="dmeta"><span class="dmeta-label">均成交</span><span class="dmeta-val">'+(s.avg_vol>=1e6?(s.avg_vol/1e6).toFixed(1)+'M':(s.avg_vol/1e3).toFixed(0)+'K')+'</span></div>':'')
     +'</div>'
+    // P1+P3: Stop-loss / Risk / Target / Buy Zone row
+    +(()=>{
+      const lp=s.lp, hi52=s.hi52, lo52=s.lo52;
+      if(!lp&&!hi52&&!lo52)return'';
+      const price=Number.isFinite(Number(lp))?Number(lp):null;
+      const lo=Number.isFinite(Number(lo52))?Number(lo52):null;
+      const hi=Number.isFinite(Number(hi52))?Number(hi52):null;
+      // Stop-loss: use 52-week low as fallback (no SMA5 in frontend)
+      const stopVal=lo||price||0;
+      const riskPct=price&&stopVal>0?((1-stopVal/price)*100):null;
+      const buyLower=stopVal; // max(SMA5 stop, lo52) ≈ lo52
+      const buyUpper=price?price*0.95:null;
+      const mid=price&&hi?((hi+price)/2):null;
+      const expRet=price&&hi&&mid>0?((hi/mid-1)*100):null;
+      const fmtP=function(v){return v<1?v.toFixed(3):v.toFixed(2);};
+      var html='<div class="drawer-meta">'
+        +'<div class="dmeta"><span class="dmeta-label">止蝕(est.)</span><span class="dmeta-val" style="color:var(--down);font-size:14px">$'+(lo?fmtP(lo):'—')+'</span><span class="dmeta-sub">'+(riskPct!=null?'風險 '+riskPct.toFixed(1)+'%':'—')+'</span></div>'
+        +'<div class="dmeta"><span class="dmeta-label">🎯52週目標</span><span class="dmeta-val" style="color:var(--up);font-size:14px">$'+(hi?fmtP(hi):'—')+'</span>'+(expRet!=null?'<span class="dmeta-sub">預期回報 +'+expRet.toFixed(1)+'%</span>':'')+'</div>'
+        +'<div class="dmeta"><span class="dmeta-label">建議買入區</span><span class="dmeta-val" style="font-size:13px">$'+fmtP(buyLower)+' ~ $'+(buyUpper?fmtP(buyUpper):'—')+'</span><span class="dmeta-sub">下限=52週低 · 上限=現價×0.95</span></div>'
+        +'</div>';
+      return html;
+    })()
     +'<div class="drawer-meta">'
     +'<div class="dmeta">'+d5html+'</div>'
     +'<div class="dmeta">'+d20html+'</div>'

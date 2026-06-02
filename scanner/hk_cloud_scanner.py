@@ -87,7 +87,7 @@ TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "")
 GAS_WEBHOOK_URL = os.getenv("GAS_WEBHOOK_URL", "")
 GAS_SECRET = os.getenv("GAS_SECRET", "")
 
-WATCHLIST_EXPIRY_DAYS = int(os.getenv("WATCHLIST_EXPIRY_DAYS", "5"))
+WATCHLIST_EXPIRY_DAYS = int(os.getenv("WATCHLIST_EXPIRY_DAYS", "365"))
 VOLUME_MULTIPLIER = float(os.getenv("VOLUME_MULTIPLIER", "1.5"))
 VOLUME_AVG_DAYS = int(os.getenv("VOLUME_AVG_DAYS", "20"))
 
@@ -175,6 +175,66 @@ def sl_yr_line(pw_low: float | None, price: float, df: pd.DataFrame) -> str:
     if yr_mark:
         return yr_mark.strip()
     return ""
+
+
+# ── P0: SMA5 stop-loss + risk% + target prices ──────────────────────────────────
+
+
+def compute_sma_stop_loss(df: pd.DataFrame, period: int = 5) -> float | None:
+    """Compute SMA-{period} of close prices as a dynamic stop-loss level.
+    Returns None if insufficient data."""
+    if df is None or df.empty or len(df) < period:
+        return None
+    closes = df["close"].tail(period).astype(float)
+    if closes.isna().any():
+        return None
+    return round(float(closes.mean()), 3)
+
+
+def compute_target_prices(df: pd.DataFrame) -> tuple[float | None, float | None]:
+    """Return (52-week high, 3-year high) from daily OHLCV data.
+    Uses available data: 52w = max high in last ~252 trading days;
+    3y = max high in full df if >= 756 days, else 52w fallback."""
+    if df is None or df.empty:
+        return None, None
+    highs = df["high"].astype(float)
+    if highs.empty or highs.isna().all():
+        return None, None
+    n = len(df)
+    # 52-week high: last ~252 bars (or all available)
+    lookback_52w = min(n, 252)
+    hi52 = round(float(highs.tail(lookback_52w).max()), 3)
+    # 3-year high: last ~756 bars, or fallback to 52-week high
+    if n >= 756:
+        hi3y = round(float(highs.tail(min(n, 756)).max()), 3)
+    else:
+        hi3y = hi52  # not enough data for 3y; reuse 52w
+    return hi52, hi3y
+
+
+def format_risk_stop_target(price: float, sma5: float | None, hi52: float | None, hi3y: float | None) -> str:
+    """Format a compact Telegram line: stop-loss (SMA5), risk%, 🎯 targets.
+    Returns empty string if no price data."""
+    if price <= 0:
+        return ""
+    parts: list[str] = []
+    # Stop-loss at SMA5
+    if sma5 is not None and sma5 > 0:
+        parts.append(f"止蝕(SMA5)：{sma5}")
+        # Risk %
+        risk_pct = round((1 - sma5 / price) * 100, 1) if price > 0 else 0
+        parts.append(f"風險：{risk_pct}%")
+    else:
+        parts.append("止蝕(SMA5)：—　風險：—%")
+    # Target prices
+    targets: list[str] = []
+    if hi52 is not None and hi52 > 0:
+        targets.append(f"{hi52}(52週)")
+    if hi3y is not None and hi3y > 0 and hi3y != hi52:
+        targets.append(f"{hi3y}(3年)")
+    if targets:
+        parts.append("🎯目標：" + "→".join(targets))
+    return "\n".join(parts)
 
 
 def build_inline_keyboard_(buttons: list[tuple[str, str]]) -> dict:
@@ -954,11 +1014,18 @@ def run_corp_actions() -> None:
         cur_price = float(df.iloc[-1]["close"]) if not df.empty else 0.0
         _sl = sl_yr_line(pw_low, cur_price, df) if not df.empty else ""
         sl_part = f"\n\n{_sl}" if _sl else ""
+        # P0: SMA5 stop-loss + target prices
+        cur_price_f = float(df.iloc[-1]["close"]) if not df.empty else 0.0
+        sma5 = compute_sma_stop_loss(df) if not df.empty else None
+        hi52_target, hi3y_target = compute_target_prices(df) if not df.empty else (None, None)
+        rst_line = format_risk_stop_target(cur_price_f, sma5, hi52_target, hi3y_target) if not df.empty else ""
+        rst_part = f"\n\n{rst_line}" if rst_line else ""
         caption = (
             f"📰{types}\n"
             f"{date_vol}\n"
             f"{code} {ann['name']}"
             f"{sl_part}"
+            f"{rst_part}"
         )
         corp_kb = build_inline_keyboard_([
             ("📰 披露易", ann["url"]),
@@ -995,6 +1062,13 @@ def run_corp_actions() -> None:
         export_breakthroughs_json()
     except Exception as exc:
         print(f"[breakthrough] pipeline failed: {exc}")
+
+    # Check watchlist stocks for year-open breakout (lightweight — watchlist only)
+    try:
+        print("[corp] checking watchlist for year-open breakout...")
+        run_watchlist_year_open_breakout()
+    except Exception as exc:
+        print(f"[corp] watchlist year-open check failed: {exc}")
 
 
 def clean_stock_list(df: pd.DataFrame) -> pd.DataFrame:
@@ -1459,11 +1533,17 @@ def _emit_ipo_high_hit(result: dict[str, Any], df: pd.DataFrame, wl_entry: dict 
     pw_low = get_prev_week_low(df)
     _sl = sl_yr_line(pw_low, float(result["Today Close"]), df)
     sl_line = f"\n{_sl}" if _sl else ""
+    # P0: SMA5 stop-loss + target prices
+    ipo_price = float(result["Today Close"])
+    sma5 = compute_sma_stop_loss(df)
+    hi52_target, hi3y_target = compute_target_prices(df)
+    rst_line = format_risk_stop_target(ipo_price, sma5, hi52_target, hi3y_target)
+    rst_part = f"\n{rst_line}" if rst_line else ""
     caption = (
         f"🚀首日高：{result['IPO High']}（{result['IPO Date']}）\n"
         f"{code} {result['Name']}\n"
         + (f"{wl_line.strip()}\n" if wl_line else "")
-        + f"突破：{result['Today High']}　<b>{break_sign}{result['Break %']}%</b>{sl_line}"
+        + f"突破：{result['Today High']}　<b>{break_sign}{result['Break %']}%</b>{sl_line}{rst_part}"
     )
     ipo_high_levels = [("IPO首日高", result["IPO High"], "#fbbf24")]
     if pw_low is not None:
@@ -1516,11 +1596,17 @@ def _emit_ipo_open_hit(result: dict[str, Any], df: pd.DataFrame, wl_entry: dict 
     pw_low = get_prev_week_low(df)
     _sl = sl_yr_line(pw_low, float(result["Today Close"]), df)
     sl_line = f"\n{_sl}" if _sl else ""
+    # P0: SMA5 stop-loss + target prices
+    ipo_price2 = float(result["Today Close"])
+    sma5 = compute_sma_stop_loss(df)
+    hi52_target, hi3y_target = compute_target_prices(df)
+    rst_line = format_risk_stop_target(ipo_price2, sma5, hi52_target, hi3y_target)
+    rst_part = f"\n{rst_line}" if rst_line else ""
     caption = (
         f"🚀首日開：{result['IPO Open']}（{result['IPO Date']}）\n"
         f"{code} {result['Name']}\n"
         + (f"{wl_line.strip()}\n" if wl_line else "")
-        + f"突破：{result['Today Close']}　<b>{break_sign}{result['Break %']}%</b>{sl_line}"
+        + f"突破：{result['Today Close']}　<b>{break_sign}{result['Break %']}%</b>{sl_line}{rst_part}"
     )
     ipo_open_levels = [("IPO首日開", result["IPO Open"], "#a78bfa")]
     if pw_low is not None:
@@ -1679,6 +1765,13 @@ def _emit_poc_hit(
         f"📈{code} {result['Name']}",
         f"高於觸發：<b>{break_sign}{result['Break %']}%</b> ({result['Break Value']})",
     ]
+    # P0: SMA5 stop-loss + target prices
+    poc_price = float(result["Today Close"])
+    sma5 = compute_sma_stop_loss(df)
+    hi52_target, hi3y_target = compute_target_prices(df)
+    rst_line = format_risk_stop_target(poc_price, sma5, hi52_target, hi3y_target)
+    if rst_line:
+        caption_lines.append(rst_line)
     if _sl:
         caption_lines.append(_sl)
     if labels:
@@ -1941,11 +2034,17 @@ def run_year_open_breakout() -> None:
             pw_low = get_prev_week_low(df)
             _sl = sl_yr_line(pw_low, float(result["Today Close"]), df)
             sl_line = f"\n{_sl}" if _sl else ""
+            # P0: SMA5 stop-loss + target prices
+            yr_price = float(result["Today Close"])
+            sma5 = compute_sma_stop_loss(df)
+            hi52_target, hi3y_target = compute_target_prices(df)
+            rst_line = format_risk_stop_target(yr_price, sma5, hi52_target, hi3y_target)
+            rst_part = f"\n{rst_line}" if rst_line else ""
             caption = (
                 f"📅{current_year}年開：{result['Year Open']}（{result['Year Open Date']}）\n"
                 f"{code} {result['Name']}\n"
                 + (f"{wl_line.strip()}\n" if wl_line else "")
-                + f"突破：{result['Break Value']}　<b>{break_sign}{result['Break %']}%</b>{sl_line}"
+                + f"突破：{result['Break Value']}　<b>{break_sign}{result['Break %']}%</b>{sl_line}{rst_part}"
             )
             yr_levels = [(f"{current_year}年首日開", result["Year Open"], "#f59e0b")]
             if pw_low is not None:
@@ -1966,6 +2065,105 @@ def run_year_open_breakout() -> None:
     send_telegram_message(f"年開突破掃描完成，共 {hits} 隻（掃描 {processed}/{total}）。")
 
 
+def run_watchlist_year_open_breakout() -> None:
+    """Scan only watchlist stocks for year-open breakout. Lightweight — skips the
+    full 2600+ universe scan. Called after corp actions to check if any tracked
+    stock has broken above year-open during the 365-day watch period."""
+    current_year = datetime.now(HKT_TZ).year
+    print("[year_open_wl] fetching watchlist from GAS...")
+    try:
+        watchlist_map = fetch_watchlist_from_gas()
+    except Exception as exc:
+        print(f"[year_open_wl] watchlist fetch failed: {exc}")
+        return
+    if not watchlist_map:
+        print("[year_open_wl] no watchlist entries — skipping")
+        return
+
+    codes = list(watchlist_map.keys())
+    total = len(codes)
+    print(f"[year_open_wl] checking {total} watchlist stocks for year-open breakout...")
+    hits = 0
+    started = time.monotonic()
+
+    for batch_start in range(0, total, YF_BATCH_SIZE):
+        chunk = codes[batch_start: batch_start + YF_BATCH_SIZE]
+        try:
+            data = get_daily_history_batch(chunk, "1y")
+        except Exception as exc:
+            print(f"[year_open_wl] batch failed: {exc}")
+            data = {}
+        for code in chunk:
+            df = data.get(code)
+            if df is None or df.empty:
+                continue
+            wl_entry = watchlist_map.get(code)
+            try:
+                result = check_year_open_breakout(code, wl_entry.get("name", ""), df)
+            except Exception as exc:
+                print(f"[year_open_wl] {code} check failed: {exc}")
+                continue
+            if not result:
+                continue
+            hits += 1
+            tv_url = tradingview_url(code)
+            wl_types = " / ".join(wl_entry.get("types") or [])
+            wl_date = wl_entry.get("ann_date") or wl_entry.get("announcement_date", "")
+            wl_line = f"⭐ 公告後突破 · {wl_types}（{wl_date}）\n"
+            break_sign = "+" if result["Break %"] >= 0 else ""
+            payload = {
+                "source": "cloud_scanner",
+                "category": "year_open_watchlist",
+                "code": code,
+                "symbol": hk_code_to_yahoo(code),
+                "name": result["Name"],
+                "signal": "年開突破（觀察名單）",
+                "timeframe": "1D",
+                "price": result["Today Close"],
+                "message": (
+                    f"{current_year}年首日開：{result['Year Open']}（{result['Year Open Date']}）；"
+                    f"突破幅度：{result['Break %']}%"
+                ),
+                "strategy": "Year Open Breakout (Watchlist)",
+                "chart_url": "",
+                "source_url": "",
+                "tags": ["年開突破", "觀察名單"],
+                "priority": 3,
+                "raw": json.dumps(result, ensure_ascii=False),
+            }
+            pw_low = get_prev_week_low(df)
+            _sl = sl_yr_line(pw_low, float(result["Today Close"]), df)
+            sl_line = f"\n{_sl}" if _sl else ""
+            # P0: SMA5 stop-loss + target prices
+            yr_price = float(result["Today Close"])
+            sma5 = compute_sma_stop_loss(df)
+            hi52_target, hi3y_target = compute_target_prices(df)
+            rst_line = format_risk_stop_target(yr_price, sma5, hi52_target, hi3y_target)
+            rst_part = f"\n{rst_line}" if rst_line else ""
+            caption = (
+                f"⭐📅 觀察名單年開突破\n"
+                f"{current_year}年開：{result['Year Open']}（{result['Year Open Date']}）\n"
+                f"{code} {result['Name']}\n"
+                f"{wl_line.strip()}\n"
+                f"突破：{result['Break Value']}　<b>{break_sign}{result['Break %']}%</b>{sl_line}{rst_part}"
+            )
+            yr_levels = [(f"{current_year}年首日開", result["Year Open"], "#f59e0b")]
+            if pw_low is not None:
+                yr_levels.append(("前周低", pw_low, "#ef4444"))
+            chart_path = render_chart(
+                df, code, result["Name"], f"年開突破 {current_year}",
+                levels=yr_levels,
+                lookback_days=CHART_LOOKBACK_DAYS,
+            )
+            emit_alert(payload, caption, chart_path, reply_markup=build_inline_keyboard_([("📊 走勢圖", tv_url)]))
+            time.sleep(0.5)
+
+    elapsed = time.monotonic() - started
+    print(f"[year_open_wl] done: {hits} hits / {total} checked ({elapsed:.0f}s)")
+    if hits:
+        send_telegram_message(f"⭐ 觀察名單年開突破：{hits} 隻（掃描 {total} 隻，{elapsed:.0f}s）")
+
+
 def main() -> None:
     mode = sys.argv[1] if len(sys.argv) > 1 else "all"
     if mode == "corp":
@@ -1976,6 +2174,8 @@ def main() -> None:
         run_poc()
     elif mode == "year_open":
         run_year_open_breakout()
+    elif mode == "year_open_watchlist":
+        run_watchlist_year_open_breakout()
     elif mode == "us":
         from us_scanner import run_us_corp_actions
         run_us_corp_actions()
