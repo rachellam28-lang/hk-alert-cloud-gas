@@ -1,5 +1,18 @@
 {
-  "updated": "2026-06-02 23:43 UTC",
-  "count": 0,
-  "alerts": []
+  "updated": "2026-06-03 13:21 UTC",
+  "count": 1,
+  "alerts": [
+    {
+      "ticker": "0941.HK",
+      "name": "0941.HK",
+      "market": "HK",
+      "timeframe": "日線",
+      "tf_short": "D",
+      "gap_low": 85.5,
+      "gap_high": 85.550003,
+      "current": 85.550003,
+      "fvg_date": "2026-06-03",
+      "status": "in"
+    }
+  ]
 }
