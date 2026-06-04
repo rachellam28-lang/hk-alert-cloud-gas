@@ -1812,9 +1812,10 @@ async function loadData(){
       .then(t=>{if(t)renderTransfers(t, priceMap);})
       .catch(()=>{});
 
-    // Fetch GAS
+    // Fetch price data: try GAS first, fallback to static prices.json (yfinance EOD)
     fetch(GAS_URL+'?format=json')
       .then(r=>r.ok?r.json():null)
+      .then(d=>d&&d.groups?d:fetch('./data/prices.json?_='+Date.now()).then(r=>r.ok?r.json():null))
       .then(d=>{
         if(d&&d.groups){
           // Merge GAS data into localStorage cache (9-month retention)
