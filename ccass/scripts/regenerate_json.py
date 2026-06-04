@@ -1,5 +1,5 @@
 """Regenerate ccass.json directly from DB — skips shard validation."""
-import sys, sqlite3, argparse
+import json, sys, sqlite3, argparse
 from pathlib import Path
 
 # Add ccass/ to path
@@ -28,4 +28,10 @@ if __name__ == "__main__":
 
     print(f"Regenerating ccass.json for {target_date}...")
     update_ccass_json(target_date)
+    out_path = Path(__file__).parent.parent.parent / "ccass.json"
+    data = json.loads(out_path.read_text(encoding="utf-8"))
+    expected = target_date.isoformat()
+    if data.get("updated") != expected:
+        print(f"ERROR: ccass.json stale date: {data.get('updated')} != {expected}")
+        sys.exit(1)
     print("Done.")

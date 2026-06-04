@@ -42,11 +42,53 @@ from scanner.events_detector import detect_events  # type: ignore[import-unused]
 
 logger = setup_logger("runner")
 CONFIG_PATH = Path(__file__).parent.parent / "config.yaml"
+STATE_DIR = Path(__file__).parent.parent / "state"
+COOLDOWN_PATH = STATE_DIR / "hkex_cooldown.json"
+COOLDOWN_HOURS = 12
+MIN_SUCCESS_COVERAGE = 0.95
 
 
 def load_config() -> dict:
     with open(CONFIG_PATH, encoding="utf-8") as f:
         return yaml.safe_load(f)
+
+
+def _active_cooldown_reason() -> str | None:
+    if not COOLDOWN_PATH.exists():
+        return None
+    try:
+        data = json.loads(COOLDOWN_PATH.read_text(encoding="utf-8"))
+        until = datetime.fromisoformat(data["cooldown_until_utc"])
+        from datetime import timezone
+        if until.tzinfo is None:
+            until = until.replace(tzinfo=timezone.utc)
+        if datetime.now(timezone.utc) < until:
+            return f"HKEX cooldown active until {until.isoformat()}: {data.get('reason', '')}"
+    except Exception:
+        return "HKEX cooldown marker is corrupt; refusing scrape until marker is inspected"
+    return None
+
+
+def _mark_cooldown(reason: str) -> None:
+    from datetime import timezone
+    STATE_DIR.mkdir(parents=True, exist_ok=True)
+    now = datetime.now(timezone.utc)
+    payload = {
+        "created_at_utc": now.isoformat(),
+        "cooldown_until_utc": (now + timedelta(hours=COOLDOWN_HOURS)).isoformat(),
+        "reason": reason[:500],
+    }
+    tmp = COOLDOWN_PATH.with_suffix(".tmp")
+    tmp.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    tmp.replace(COOLDOWN_PATH)
+
+
+def _clear_cooldown() -> None:
+    try:
+        if COOLDOWN_PATH.exists():
+            COOLDOWN_PATH.unlink()
+    except OSError:
+        logger.warning("Failed to clear cooldown marker: %s", COOLDOWN_PATH)
 
 
 def should_refresh_universe(force: bool = False) -> bool:
@@ -189,6 +231,12 @@ def run_daily(
     _restore_db()  # Decompress ccass.db.gz if DB is empty (fresh checkout)
     config = load_config()
     target_date = target_date or today_hk()
+
+    if not skip_scrape:
+        cooldown_reason = _active_cooldown_reason()
+        if cooldown_reason:
+            logger.error("FATAL-003: %s", cooldown_reason)
+            return 2
 
     logger.info("=" * 60)
     logger.info("CCASS daily run for %s", target_date)
@@ -372,7 +420,8 @@ def run_daily(
                         run_id,
                     ),
                 )
-            return 0
+            coverage = succeeded / max(attempted, 1)
+            return 0 if coverage >= MIN_SUCCESS_COVERAGE else 1
 
         # 4. Trends
         try:
@@ -423,7 +472,8 @@ def run_daily(
                 f"Sample failed: {failed_stocks[:10]}"
             )
 
-        status = "success" if not failed_stocks else "partial"
+        coverage = succeeded / max(attempted, 1) if attempted else 1.0
+        status = "success" if coverage >= MIN_SUCCESS_COVERAGE else "partial"
         finished_iso = datetime.utcnow().isoformat()
         with get_conn() as conn:
             conn.execute(
@@ -444,12 +494,20 @@ def run_daily(
                 ),
             )
 
-        logger.info("Done: %d/%d succeeded, %d failed", succeeded, attempted, len(failed_stocks))
+        logger.info(
+            "Done: %d/%d succeeded, %d failed, coverage %.1f%%",
+            succeeded, attempted, len(failed_stocks), coverage * 100,
+        )
         _export_json(query_date, len(alerts_found))
-        return 0  # partial failures are normal; only fatal exceptions return non-zero
+        if coverage < MIN_SUCCESS_COVERAGE:
+            logger.error("Coverage %.1f%% < %.1f%%; returning partial failure", coverage * 100, MIN_SUCCESS_COVERAGE * 100)
+            return 1
+        _clear_cooldown()
+        return 0
 
     except HKEXBlockedError as e:
         logger.error("HKEX block detected: %s", e)
+        _mark_cooldown(str(e))
         finished_iso = datetime.utcnow().isoformat()
         with get_conn() as conn:
             conn.execute(
@@ -633,6 +691,11 @@ def _export_json(query_date: date, alerts_today: int) -> None:
         tmp_path = out_path.with_suffix(".tmp")
         tmp_path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
         tmp_path.replace(out_path)
+        verified = json.loads(out_path.read_text(encoding="utf-8"))
+        if verified.get("updated") != date_str:
+            raise RuntimeError(f"ccass.json stale date: {verified.get('updated')} != {date_str}")
+        if verified.get("stock_count") != len(stocks):
+            raise RuntimeError(f"ccass.json stock_count mismatch: {verified.get('stock_count')} != {len(stocks)}")
         logger.info(
             "Exported ccass.json (%d stocks, %d up, %d down)",
             len(stocks), len(top_increase), len(top_decrease),

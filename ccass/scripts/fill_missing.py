@@ -1,18 +1,30 @@
 """Bulk fill missing CCASS stocks for specific dates."""
-import json, sqlite3, subprocess, sys, os, time
+import json, random, sqlite3, subprocess, sys, os, time
 from pathlib import Path
 from datetime import datetime
+import yaml
 
 PROJECT = Path(__file__).parent.parent
 DB = PROJECT / "ccass.db"
 SCRAPE_ONE = PROJECT / "src" / "scrape_one.py"
+CONFIG = PROJECT / "config.yaml"
 
-# Config — same as config.yaml
-USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
-HARD_TIMEOUT = 60
-BATCH_SLEEP = 0.1  # small delay between stocks
+
+def _load_scraping_config() -> dict:
+    with open(CONFIG, encoding="utf-8") as f:
+        cfg = yaml.safe_load(f) or {}
+    sc = cfg.get("scraping", {})
+    return {
+        "user_agent": sc.get("user_agent", "Mozilla/5.0"),
+        "delay_min_seconds": float(sc.get("delay_min_seconds", 4.0)),
+        "delay_max_seconds": float(sc.get("delay_max_seconds", 10.0)),
+        "timeout_seconds": int(sc.get("timeout_seconds", 30)),
+        "max_retries": int(sc.get("max_retries", 3)),
+    }
 
 def fill_missing(target_date: str, max_stocks: int = 3000):
+    sc_cfg = _load_scraping_config()
+    hard_timeout = sc_cfg["timeout_seconds"] * sc_cfg["max_retries"] + 30
     db = sqlite3.connect(str(DB))
     db.execute("PRAGMA journal_mode=WAL")
     db.execute("PRAGMA foreign_keys=ON")
@@ -39,8 +51,15 @@ def fill_missing(target_date: str, max_stocks: int = 3000):
     for i, code in enumerate(missing, 1):
         try:
             result = subprocess.run(
-                [sys.executable, str(SCRAPE_ONE), code, target_date, USER_AGENT],
-                capture_output=True, text=True, timeout=HARD_TIMEOUT,
+                [
+                    sys.executable, str(SCRAPE_ONE), code, target_date,
+                    sc_cfg["user_agent"],
+                    str(sc_cfg["delay_min_seconds"]),
+                    str(sc_cfg["delay_max_seconds"]),
+                    str(sc_cfg["timeout_seconds"]),
+                    str(sc_cfg["max_retries"]),
+                ],
+                capture_output=True, text=True, timeout=hard_timeout,
             )
             if result.returncode != 0:
                 failed.append(code)
@@ -111,7 +130,7 @@ def fill_missing(target_date: str, max_stocks: int = 3000):
         if i % 50 == 0:
             print(f"  Progress: {i}/{len(missing)} ({100*i/len(missing):.1f}%), succeeded={succeeded}, failed={len(failed)}")
         
-        time.sleep(BATCH_SLEEP)
+        time.sleep(random.uniform(sc_cfg["delay_min_seconds"], sc_cfg["delay_max_seconds"]))
     
     db.close()
     print(f"\nDone: {succeeded} succeeded, {len(failed)} failed")

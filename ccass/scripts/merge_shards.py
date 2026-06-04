@@ -305,7 +305,7 @@ def update_ccass_json(target_date: date) -> None:
     stocks = _sanitize(stocks)
 
     out = {
-        "updated": datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC"),
+        "updated": target_date.strftime("%Y-%m-%d"),
         "stock_count": len(stocks),
         "stocks": stocks,
         "top_increase": top_increase,
@@ -317,6 +317,11 @@ def update_ccass_json(target_date: date) -> None:
     tmp = path.with_suffix(".tmp")
     tmp.write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
     tmp.replace(path)  # ✅ P1-6: atomic rename
+    verified = json.loads(path.read_text(encoding="utf-8"))
+    if verified.get("updated") != target_date.strftime("%Y-%m-%d"):
+        raise RuntimeError(f"ccass.json stale date: {verified.get('updated')} != {target_date}")
+    if verified.get("stock_count") != len(stocks):
+        raise RuntimeError(f"ccass.json stock_count mismatch: {verified.get('stock_count')} != {len(stocks)}")
     print(f"  ccass.json updated: {len(stocks)} stocks")
     db.close()
 
