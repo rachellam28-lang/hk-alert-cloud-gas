@@ -1812,10 +1812,33 @@ async function loadData(){
       .then(t=>{if(t)renderTransfers(t, priceMap);})
       .catch(()=>{});
 
-    // Fetch price data: try GAS first, fallback to static prices.json (yfinance EOD)
+    // Fetch price data: try GAS first, fallback to static prices.json + signals.json
     fetch(GAS_URL+'?format=json')
       .then(r=>r.ok?r.json():null)
-      .then(d=>d&&d.groups?d:fetch('./data/prices.json?_='+Date.now()).then(r=>r.ok?r.json():null))
+      .then(d=>{
+        if(d&&d.groups) return d;
+        // GAS failed — load both fallback sources in parallel
+        return Promise.all([
+          fetch('./data/prices.json?_='+Date.now()).then(r=>r.ok?r.json():null),
+          fetch('./data/signals.json?_='+Date.now()).then(r=>r.ok?r.json():null)
+        ]).then(([prices, signals])=>{
+          if(prices&&prices.groups&&signals&&signals.groups){
+            // Merge signals/corpTypes/hkexLink into prices groups
+            const sigByCode = new Map(signals.groups.map(g=>[String(g.code||'').padStart(5,'0'), g]));
+            prices.groups.forEach(g=>{
+              const code = String(g.code||'').padStart(5,'0');
+              const sig = sigByCode.get(code);
+              if(sig){
+                g.signals = sig.signals||[];
+                g.corpTypes = sig.corpTypes||{};
+                g.hkexLink = sig.hkexLink||'';
+              }
+            });
+          }
+          if(signals) prices.recentCorps = signals.recentCorps||[];
+          return prices;
+        });
+      })
       .then(d=>{
         if(d&&d.groups){
           // Merge GAS data into localStorage cache (9-month retention)

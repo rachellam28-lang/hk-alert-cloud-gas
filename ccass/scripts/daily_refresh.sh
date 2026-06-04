@@ -30,6 +30,9 @@ python scripts/refresh_prices_and_suspended.py || { echo "ERROR: price refresh f
 echo "2.5/5 Generate prices.json for dashboard fallback..."
 python scripts/generate_prices_json.py || { echo "ERROR: prices.json generation failed"; exit 1; }
 
+echo "2.6/5 Generate signals.json for dashboard fallback..."
+python scripts/generate_signals_json.py || { echo "ERROR: signals.json generation failed"; exit 1; }
+
 echo "3/5 Regenerate ccass.json..."
 python scripts/regenerate_json.py || { echo "ERROR: ccass.json regeneration failed"; exit 1; }
 
@@ -38,7 +41,7 @@ python ../verify_dashboard.py || { echo "ERROR: dashboard verification failed"; 
 
 echo "5/5 Deploy to GitHub..."
 cd ..
-git add ccass.json ccass/data/stock_prices.json ccass/data/suspended_stocks.json data/prices.json
+git add ccass.json ccass/data/stock_prices.json ccass/data/suspended_stocks.json data/prices.json data/signals.json
 if git commit -m "daily: ccass refresh $(date +%Y-%m-%d)"; then
     git push || { echo "ERROR: git push failed"; exit 1; }
 else
