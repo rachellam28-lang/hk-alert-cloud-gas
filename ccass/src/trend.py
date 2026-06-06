@@ -20,7 +20,7 @@ def compute_trends_for_date(target_date: date, windows: list[int] | None = None)
     回傳成功計嘅股票數。
     """
     if windows is None:
-        windows = [5, 20]
+        windows = [5, 20, 60, 120]
     date_str = target_date.strftime("%Y-%m-%d")
     now_iso = datetime.utcnow().isoformat()
 
@@ -175,7 +175,6 @@ def _consecutive_streak(conn, stock_code: str, end_date: date) -> tuple[int, int
                 streak_dir = -1
             else:
                 break
-        else:
-            break
+        # else: cur == prev → neutral day, skip without breaking streak
 
     return up, down
