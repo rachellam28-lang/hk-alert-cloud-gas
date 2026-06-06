@@ -236,8 +236,8 @@ async function main(){
       if(!transfers.length){
         html += '<div class="empty">暫無存倉轉倉</div>';
       } else {
-        var priceMap = {};
-        (ccass.stocks||[]).forEach(function(s){ priceMap[s.c] = s.lp; });
+        var priceMap = {}, mcMap = {};
+        (ccass.stocks||[]).forEach(function(s){ priceMap[s.c] = s.lp; mcMap[s.c] = s.mc||0; });
         // Compute totalVal, sort by $ value descending
         transfers.forEach(function(t){
           var totalChg = (t.total_in||0)+(t.total_out||0);
@@ -246,8 +246,8 @@ async function main(){
           t._totalVal = totalChg * lp;
         });
         transfers.sort(function(a,b){ return b._totalVal - a._totalVal; });
-        var high = transfers.filter(function(t){ return t._totalVal >= 2e9; });
-        var low  = transfers.filter(function(t){ return t._totalVal < 2e9; });
+        var high = transfers.filter(function(t){ return (mcMap[t.code]||0) >= 20; });
+        var low  = transfers.filter(function(t){ return (mcMap[t.code]||0) < 20; });
 
         function renderTransferCard(t){
           var totalPct = t.total_shares>0 ? (t._totalChg/t.total_shares*100) : 0;
@@ -272,13 +272,13 @@ async function main(){
         }
 
         if(high.length){
-          html += '<div class="sec-sub" style="font-weight:700;color:var(--down);margin-top:6px">🔥 總$20億以上 · '+high.length+'項</div>';
+          html += '<div class="sec-sub" style="font-weight:700;color:var(--down);margin-top:6px">🔥 市值20億以上 · '+high.length+'項</div>';
           html += '<div class="tf-grid">';
           high.forEach(function(t){ html += renderTransferCard(t); });
           html += '</div>';
         }
         if(low.length){
-          html += '<div class="sec-sub" style="margin-top:6px">總$20億或以下 · '+low.length+'項</div>';
+          html += '<div class="sec-sub" style="margin-top:6px">市值20億以下 · '+low.length+'項</div>';
           html += '<div class="tf-grid">';
           low.forEach(function(t){ html += renderTransferCard(t); });
           html += '</div>';
