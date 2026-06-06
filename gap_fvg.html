@@ -179,25 +179,35 @@ async function main(){
         html += '<span><span class="code">'+E(s.code)+'</span> '+E(s.name)+(s.corp?' <span class="badge corp">'+E(s.corp)+'</span>':'')+'</span>';
         html += '<span style="font-size:11px;color:var(--mute)">🔼'+g.length+' 📈'+f.length+' 🎯'+p.length+'</span>';
         html += '</div><div class="card-body">';
-        s.items.forEach(function(i){
+        var show = s.items.slice(0,3);
+        var rest = s.items.slice(3);
+        function ri(i){
           var isG=i.type==='向上跳空缺口', isF=i.type==='向上FVG';
           var icon=isG?'🔼':(isF?'📈':'🎯');
           var cls=isG?'gap':(isF?'fvg':'poc');
-          html += '<div class="row">';
-          html += '<span>'+icon+'</span><span style="font-size:10px;color:var(--mute-2);min-width:72px">'+E(i.date)+'</span>';
-          html += '<span class="badge '+cls+'">'+E(i.type)+'</span>';
+          var h = '<div class="row">';
+          h += '<span>'+icon+'</span><span style="font-size:10px;color:var(--mute-2);min-width:72px">'+E(i.date)+'</span>';
+          h += '<span class="badge '+cls+'">'+E(i.type)+'</span>';
           if(isG){
-            html += '<span class="val" style="color:var(--up)">+'+i.gap_pct+'%</span>';
-            html += '<span class="detail">開 '+i.open+' vs 前高 '+i.prev_high+' → 收 '+i.close+'</span>';
+            h += '<span class="val" style="color:var(--up)">+'+i.gap_pct+'%</span>';
+            h += '<span class="detail">開 '+i.open+' vs 前高 '+i.prev_high+' → 收 '+i.close+'</span>';
           } else if(isF){
-            html += '<span class="val" style="color:var(--violet)">+'+i.fvg_pct+'%</span>';
-            html += '<span class="detail">gap '+i.gap_low+'–'+i.gap_high+' → '+i.current+'</span>';
+            h += '<span class="val" style="color:var(--violet)">+'+i.fvg_pct+'%</span>';
+            h += '<span class="detail">gap '+i.gap_low+'–'+i.gap_high+' → '+i.current+'</span>';
           } else {
-            html += '<span class="val" style="color:var(--primary)">+'+i.breakout_pct+'%</span>';
-            html += '<span class="detail">POC '+i.poc+' → '+i.current+'</span>';
+            h += '<span class="val" style="color:var(--primary)">+'+i.breakout_pct+'%</span>';
+            h += '<span class="detail">POC '+i.poc+' → '+i.current+'</span>';
           }
+          h += '</div>';
+          return h;
+        }
+        show.forEach(function(i){ html += ri(i); });
+        if(rest.length){
+          html += '<div id="more_'+E(s.code)+'" style="display:none">';
+          rest.forEach(function(i){ html += ri(i); });
           html += '</div>';
-        });
+          html += '<div style="text-align:center;padding:2px;font-size:10px;color:var(--primary);cursor:pointer" onclick="var d=document.getElementById('more_'+E(s.code)+'');var t=this;if(d.style.display==='none'){d.style.display='';t.textContent='▲ 收起'}else{d.style.display='none';t.textContent='▼ 顯示全部 '+rest.length+' 項'}">▼ 顯示全部 '+rest.length+' 項</div>';
+        }
         html += '</div></div>';
       });
     }
