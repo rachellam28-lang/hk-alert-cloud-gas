@@ -232,8 +232,12 @@ async function main(){
       } else {
         var priceMap = {};
         (ccass.stocks||[]).forEach(function(s){ priceMap[s.c] = s.lp; });
-        // Sort by total volume descending
-        transfers.sort(function(a,b){ return ((b.total_in||0)+(b.total_out||0)) - ((a.total_in||0)+(a.total_out||0)); });
+        // Sort by pct% descending
+        transfers.sort(function(a,b){
+          var pa = ((a.total_in||0)+(a.total_out||0)) / (a.total_shares||1) * 100;
+          var pb = ((b.total_in||0)+(b.total_out||0)) / (b.total_shares||1) * 100;
+          return pb - pa;
+        });
         html += '<div class="tf-grid">';
         transfers.forEach(function(t){
           var totalChg = (t.total_in||0)+(t.total_out||0);
