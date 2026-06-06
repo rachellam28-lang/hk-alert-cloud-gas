@@ -106,8 +106,7 @@ var E = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>
 function fmtMoney(v) {
   if (!v || v <= 0) return '';
   var abs = Math.abs(v);
-  if (abs >= 1e7) return '$'+(v/1e7).toFixed(1)+'千萬';
-  if (abs >= 1e6) return '$'+(v/1e6).toFixed(1)+'百萬';
+  if (abs >= 1e8) return '$'+(v/1e8).toFixed(2)+'億';
   return '$'+(v/1e4).toFixed(1)+'萬';
 }
 
