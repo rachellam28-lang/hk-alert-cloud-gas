@@ -216,6 +216,8 @@ async function main(){
       html += '</div>';
     }
 
+    html += '</aside></div>';
+
     // ─── 3. 存倉轉倉 ───
     if(r3.ok){
       html += '<div class="sec"><div class="sec-title">📦 存倉轉倉監測</div>';
@@ -247,8 +249,6 @@ async function main(){
       }
       html += '</div>';
     }
-
-    html += '</aside></div>';
 
     document.getElementById('root').innerHTML = html;
     dot.className = 'dot';
