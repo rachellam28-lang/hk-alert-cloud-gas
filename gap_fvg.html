@@ -109,6 +109,18 @@ function fmtMoney(v) {
   if (abs >= 1e8) return '$'+(v/1e8).toFixed(2)+'億';
   return '$'+(v/1e4).toFixed(1)+'萬';
 }
+window.toggleMore = function(el) {
+  var id = el.getAttribute('data-target');
+  var d = document.getElementById(id);
+  if (!d) return;
+  if (d.style.display === 'none') {
+    d.style.display = '';
+    el.textContent = '▲ 收起';
+  } else {
+    d.style.display = 'none';
+    el.textContent = '▼ 顯示全部';
+  }
+};
 
 async function main(){
   var dot = document.getElementById('dot'), upd = document.getElementById('upd');
@@ -206,7 +218,7 @@ async function main(){
           html += '<div id="more_'+E(s.code)+'" style="display:none">';
           rest.forEach(function(i){ html += ri(i); });
           html += '</div>';
-          html += '<div style="text-align:center;padding:2px;font-size:10px;color:var(--primary);cursor:pointer" onclick="var d=document.getElementById('more_'+E(s.code)+'');var t=this;if(d.style.display==='none'){d.style.display='';t.textContent='▲ 收起'}else{d.style.display='none';t.textContent='▼ 顯示全部 '+rest.length+' 項'}">▼ 顯示全部 '+rest.length+' 項</div>';
+          html += '<div style="text-align:center;padding:2px;font-size:10px;color:var(--primary);cursor:pointer" data-target="more_'+E(s.code)+'" onclick="toggleMore(this)">▼ 顯示全部 '+rest.length+' 項</div>';
         }
         html += '</div></div>';
       });
