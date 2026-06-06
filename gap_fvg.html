@@ -3,27 +3,33 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>警報中心 — Gap/FVG · 量比 · 轉倉</title>
 <style>
-:root{--bg:#f5f7fa;--surface:#fff;--surface-soft:#f8fafc;--text:#0f172a;--text-soft:#334155;--mute:#64748b;--mute-2:#94a3b8;--line:#e2e8f0;--primary:#0284c7;--up:#15803d;--up-soft:#dcfce7;--down:#b91c1c;--down-soft:#fee2e2;--violet:#6d28d9;--amber:#b45309;--amber-soft:#fef3c7;--radius:10px;--shadow:0 1px 2px rgba(15,23,42,.04)}
+:root{--bg:#f5f7fa;--surface:#fff;--surface-soft:#f8fafc;--text:#0f172a;--text-soft:#1e293b;--mute:#475569;--mute-2:#64748b;--line:#dbe3ee;--line-soft:#edf2f7;--primary:#0369a1;--primary-soft:#e0f2fe;--up:#15803d;--up-soft:#dcfce7;--down:#b91c1c;--down-soft:#fee2e2;--violet:#6d28d9;--violet-soft:#ede9fe;--amber:#b45309;--amber-soft:#fef3c7;--radius:8px;--shadow:0 1px 2px rgba(15,23,42,.05)}
 *{box-sizing:border-box}html,body{margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font:14px/1.55 Inter,system-ui,"PingFang TC",Arial,sans-serif;-webkit-font-smoothing:antialiased}
 a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .topbar{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.88);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
-.topbar-inner{max-width:1200px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.topbar-inner{max-width:1440px;margin:0 auto;padding:10px 18px;display:flex;align-items:center;justify-content:space-between;gap:16px}
 .brand{display:flex;align-items:center;gap:10px}
 .logo{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#b45309,#f59e0b);display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px}
 .brand-title{font-size:14px;font-weight:600}.brand-sub{font-size:10px;color:var(--mute)}
 .topright{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--mute)}
 .dot{width:7px;height:7px;border-radius:999px;background:#22c55e}.dot.loading{background:#f59e0b}.dot.error{background:#ef4444}
-.wrap{max-width:1200px;margin:0 auto;padding:12px 16px 30px}
-.sec{margin-bottom:18px}
+.wrap{max-width:1440px;margin:0 auto;padding:12px 18px 30px}
+.summary-bar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:0 0 12px}
+.summary-item{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:8px 10px;box-shadow:var(--shadow)}
+.summary-label{font-size:12px;color:var(--mute);font-weight:600}
+.summary-val{font-size:18px;line-height:1.15;font-weight:800;color:var(--text);margin-top:2px}
+.alert-layout{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(340px,.85fr);gap:14px;align-items:start}
+.side-rail{display:grid;gap:14px}
+.sec{margin-bottom:14px}
 .sec-title{font-size:15px;font-weight:700;padding:8px 0 6px;display:flex;align-items:center;gap:6px}
 .sec-sub{font-size:11px;color:var(--mute);margin-bottom:8px}
 
-.card{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;margin-bottom:10px}
-.card-head{padding:10px 14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-weight:600;font-size:13px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;margin-bottom:8px}
+.card-head{padding:8px 12px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px;cursor:pointer;font-weight:700;font-size:13px}
 .card-head:hover{background:var(--surface-soft)}
 .card-body{padding:6px 0}
-.row{display:flex;align-items:center;gap:8px;padding:5px 14px;font-size:12px;border-bottom:1px solid var(--line-soft);flex-wrap:wrap}
+.row{display:grid;grid-template-columns:20px 78px minmax(96px,auto) 64px minmax(180px,1fr);align-items:center;gap:8px;padding:5px 12px;font-size:12px;border-bottom:1px solid var(--line-soft)}
 .row:last-child{border-bottom:none}
 .code{font-weight:700;color:var(--violet);min-width:52px}
 .name{color:var(--text-soft);min-width:80px}
@@ -33,9 +39,10 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .badge.poc{background:var(--primary-soft);color:var(--primary)}
 .badge.corp{background:var(--amber-soft);color:var(--amber)}
 .val{font-weight:700;min-width:55px;text-align:right}
-.detail{font-size:10px;color:var(--mute);flex-basis:100%}
+.detail{font-size:12px;color:var(--text-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-.vr-card{display:inline-block;width:calc(50% - 5px);padding:8px;border:1px solid var(--line);border-radius:8px;margin:3px 2px;cursor:pointer;vertical-align:top}
+.vr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:6px}
+.vr-card{display:block;padding:7px 8px;border:1px solid var(--line);border-radius:8px;cursor:pointer;background:var(--surface);min-height:62px}
 .vr-card:hover{background:var(--surface-soft)}
 .vr-code{font-weight:700;font-size:13px;color:var(--violet)}
 .vr-name{font-size:11px;color:var(--text-soft)}
@@ -55,9 +62,18 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .loading{padding:20px;text-align:center;color:var(--mute);font-size:13px}
 
 @media(max-width:720px){
-  .vr-card{width:calc(50% - 4px);padding:5px;margin:2px 1px}
+  .topbar-inner{padding:8px 12px}
+  .brand-sub{display:none}
+  .topright{gap:6px;font-size:12px;white-space:nowrap}
+  .wrap{padding:10px 10px 24px}
+  .summary-bar{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .alert-layout{display:block}
+  .side-rail{display:block}
+  .vr-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .vr-card{padding:6px}
   .vr-val{font-size:14px}
-  .row{font-size:11px;padding:4px 8px}
+  .row{grid-template-columns:18px 72px minmax(82px,1fr) 58px;gap:6px;font-size:12px;padding:5px 8px}
+  .detail{grid-column:2 / -1;font-size:12px;white-space:normal}
   .code{min-width:44px}
   .name{min-width:60px}
 }
@@ -89,8 +105,11 @@ async function main(){
   var html = '';
 
   try {
-    // ─── 1. Gap/FVG/POC alerts ───
     var r1 = await fetch('./data/alerts.json?_='+Date.now());
+    var r2 = await fetch('./ccass.json?_='+Date.now());
+    var r3 = await fetch('./data/transfers.json?_='+Date.now());
+
+    // ─── 1. Gap/FVG/POC alerts ───
     var alerts = r1.ok ? ((await r1.json()).alerts||[]) : [];
     var byCode = {};
     alerts.forEach(function(a){
@@ -107,6 +126,32 @@ async function main(){
       });
     });
     var stocks = Object.values(byCode).sort((a,b)=>b.items.length-a.items.length);
+    var ccass = r2.ok ? await r2.json() : {stocks:[]};
+    var ranked = (ccass.stocks||[]).filter(function(s){return s.vr!=null&&s.vr>=2;}).sort(function(a,b){return b.vr-a.vr;}).slice(0,40);
+    var tdata = r3.ok ? await r3.json() : {transfers:[]};
+    var transfers = tdata.transfers || [];
+    var totalGap = alerts.filter(function(a){
+      var p = (typeof a.payload==='string'?JSON.parse(a.payload):a.payload) || {};
+      var sig = p.signal || {};
+      return (a.signal || sig.type || '') === '向上跳空缺口';
+    }).length;
+    var totalFvg = alerts.filter(function(a){
+      var p = (typeof a.payload==='string'?JSON.parse(a.payload):a.payload) || {};
+      var sig = p.signal || {};
+      return (a.signal || sig.type || '') === '向上FVG';
+    }).length;
+    var totalPoc = alerts.filter(function(a){
+      var p = (typeof a.payload==='string'?JSON.parse(a.payload):a.payload) || {};
+      var sig = p.signal || {};
+      return (a.signal || sig.type || '') === '上破POC 12M';
+    }).length;
+
+    html += '<div class="summary-bar">';
+    html += '<div class="summary-item"><div class="summary-label">⤴ Gap/FVG/POC</div><div class="summary-val">'+alerts.length+'</div></div>';
+    html += '<div class="summary-item"><div class="summary-label">🔼 跳空缺口</div><div class="summary-val" style="color:var(--up)">'+totalGap+'</div></div>';
+    html += '<div class="summary-item"><div class="summary-label">📊 量比≥2</div><div class="summary-val" style="color:var(--amber)">'+ranked.length+'</div></div>';
+    html += '<div class="summary-item"><div class="summary-label">📦 轉倉</div><div class="summary-val" style="color:var(--primary)">'+transfers.length+'</div></div>';
+    html += '</div><div class="alert-layout"><main>';
 
     html += '<div class="sec"><div class="sec-title">⤴ Gap / FVG / POC 警報</div>';
     html += '<div class="sec-sub">配股供股股票嘅向上跳空缺口、FVG、POC 12M 突破</div>';
@@ -146,18 +191,16 @@ async function main(){
       });
     }
     html += '</div>';
+    html += '</main><aside class="side-rail">';
 
     // ─── 2. 量比警報 (from ccass.json) ───
-    var r2 = await fetch('./ccass.json?_='+Date.now());
     if(r2.ok){
-      var ccass = await r2.json();
-      var ranked = (ccass.stocks||[]).filter(function(s){return s.vr!=null&&s.vr>=2;}).sort(function(a,b){return b.vr-a.vr;}).slice(0,40);
       html += '<div class="sec"><div class="sec-title">📊 量比警報</div>';
       html += '<div class="sec-sub">量比≥2 · '+ranked.length+'隻</div>';
       if(!ranked.length){
         html += '<div class="empty">暫無異常量比</div>';
       } else {
-        html += '<div style="font-size:0">';
+        html += '<div class="vr-grid">';
         ranked.forEach(function(s){
           var p = s.lp!=null ? (s.lp<1?s.lp.toFixed(3):s.lp.toFixed(2)) : '—';
           var clr = s.vr>=5 ? 'var(--up)' : 'var(--amber)';
@@ -174,10 +217,7 @@ async function main(){
     }
 
     // ─── 3. 存倉轉倉 ───
-    var r3 = await fetch('./data/transfers.json?_='+Date.now());
     if(r3.ok){
-      var tdata = await r3.json();
-      var transfers = tdata.transfers || [];
       html += '<div class="sec"><div class="sec-title">📦 存倉轉倉監測</div>';
       html += '<div class="sec-sub">'+E(tdata.updated||'')+' · '+transfers.length+'項</div>';
       if(!transfers.length){
@@ -207,6 +247,8 @@ async function main(){
       }
       html += '</div>';
     }
+
+    html += '</aside></div>';
 
     document.getElementById('root').innerHTML = html;
     dot.className = 'dot';
