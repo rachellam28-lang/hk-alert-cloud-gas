@@ -246,8 +246,9 @@ async function main(){
           t._totalVal = totalChg * lp;
         });
         transfers.sort(function(a,b){ return b._totalVal - a._totalVal; });
-        var high = transfers.filter(function(t){ return (mcMap[t.code]||0) >= 20; });
-        var low  = transfers.filter(function(t){ return (mcMap[t.code]||0) < 20; });
+        var high    = transfers.filter(function(t){ return mcMap[t.code] >= 20; });
+        var low     = transfers.filter(function(t){ var m=mcMap[t.code]; return m!=null && m < 20; });
+        var unknown = transfers.filter(function(t){ return mcMap[t.code] == null; });
 
         function renderTransferCard(t){
           var totalPct = t.total_shares>0 ? (t._totalChg/t.total_shares*100) : 0;
@@ -281,6 +282,12 @@ async function main(){
           html += '<div class="sec-sub" style="margin-top:6px">市值20億以下 · '+low.length+'項</div>';
           html += '<div class="tf-grid">';
           low.forEach(function(t){ html += renderTransferCard(t); });
+          html += '</div>';
+        }
+        if(unknown.length){
+          html += '<div class="sec-sub" style="color:var(--mute);margin-top:6px">市值不明 · '+unknown.length+'項</div>';
+          html += '<div class="tf-grid">';
+          unknown.forEach(function(t){ html += renderTransferCard(t); });
           html += '</div>';
         }
       }
