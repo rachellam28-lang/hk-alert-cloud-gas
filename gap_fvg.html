@@ -232,11 +232,11 @@ async function main(){
       } else {
         var priceMap = {};
         (ccass.stocks||[]).forEach(function(s){ priceMap[s.c] = s.lp; });
-        // Sort by pct% descending
+        // Sort by $ value descending
         transfers.sort(function(a,b){
-          var pa = ((a.total_in||0)+(a.total_out||0)) / (a.total_shares||1) * 100;
-          var pb = ((b.total_in||0)+(b.total_out||0)) / (b.total_shares||1) * 100;
-          return pb - pa;
+          var va = ((a.total_in||0)+(a.total_out||0)) * (priceMap[a.code]||0);
+          var vb = ((b.total_in||0)+(b.total_out||0)) * (priceMap[b.code]||0);
+          return vb - va;
         });
         html += '<div class="tf-grid">';
         transfers.forEach(function(t){
