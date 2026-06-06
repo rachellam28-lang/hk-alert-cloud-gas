@@ -1,8 +1,9 @@
 // CCASS PWA Service Worker — cache-first for offline access
-const CACHE_NAME = 'ccass-v2';
+const CACHE_NAME = 'ccass-v3';
 
 const PRECACHE = [
   './index.html',
+  './gap_fvg.html',
   './watchlist.html',
   './history.html',
   './ccass.json',
