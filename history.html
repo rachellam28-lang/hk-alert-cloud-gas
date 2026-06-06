@@ -167,7 +167,7 @@ function weekday(dateStr) {
 }
 
 function pillHtml(a) {
-  const sig  = Array.isArray(a.signal) ? a.signal.join(' ') : String((a.signal || '')).trim();
+  const sig  = safeSig(a).trim();
   const cat  = (a.category || '').trim();
   const tags = (a.tags || '').toLowerCase();
   const blob = sig + ' ' + tags;
