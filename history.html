@@ -124,8 +124,10 @@ let allDays = [];
 
 function safeSig(a) {
   var s = a.signal;
-  if (Array.isArray(s)) return s.join(' ');
-  return String(s || '');
+  if (!s) return '';
+  if (Array.isArray(s)) return s.map(function(x){return typeof x==='object'?(x.label||x.type||''):String(x);}).join(' ');
+  if (typeof s === 'object') return s.label || s.type || s.name || '';
+  return String(s);
 }
 
 function matchSigType(a, sigType) {
