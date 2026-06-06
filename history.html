@@ -109,7 +109,7 @@ tbody tr:hover{background:var(--surface-soft)}
 
 <script>
 (function(){
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbxov_zEI5TvIp0Xg4ie937Rci_PEfFrUEyk7YH8RKVPz07i0RNS0fqkythLn-iErjVqZA/exec';
+// (GAS removed — using local data/history.json)
 const root = document.getElementById('historyRoot');
 const dot  = document.getElementById('statusDot');
 const upd  = document.getElementById('updatedAt');
@@ -269,11 +269,17 @@ clrBtn.addEventListener('click', function(){
   applyFilter();
 });
 
+// SW Kill Switch — unregister any stale Service Worker on load
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(regs => {
+    regs.forEach(r => r.unregister());
+  }).catch(() => {});
+}
+
 async function load() {
   try {
     dot.className = 'dot loading';
-    const res = await fetch(GAS_URL + '?format=history');
-    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const res = await fetch('./data/history.json?_=v2_'+Date.now(), {cache:'no-store'});
     const data = await res.json();
     if (!data.ok) throw new Error(data.error || 'GAS error');
     // 港股歷史頁：排除美股信號
