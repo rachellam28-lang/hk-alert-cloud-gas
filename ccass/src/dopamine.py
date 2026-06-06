@@ -309,10 +309,38 @@ def compute_dopamine() -> dict:
 
 
 def save_dopamine(result: dict) -> Path:
+    """Save to JSON file AND ccass.db dopamine_history table."""
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     out = DATA_DIR / "dopamine.json"
     with open(out, "w", encoding="utf-8") as f:
         json.dump(result, f, ensure_ascii=False, indent=2)
+
+    # Also write to DB
+    try:
+        import sqlite3
+        db_path = DATA_DIR.parent / "ccass.db"
+        db = sqlite3.connect(str(db_path))
+        c = result.get("components", {})
+        db.execute(
+            """INSERT INTO dopamine_history
+            (date, score, level, breadth_pct, up_count, down_count,
+             avg_change_pct, avg_volume_ratio, high_vr_count, sig_movers_count,
+             spike_threshold_pct, consecutive_days, raw_json)
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+            (
+                result["date"], result["dopamine"], result["level"],
+                c.get("breadth_pct"), c.get("up_count"), c.get("down_count"),
+                c.get("avg_change_pct"), c.get("avg_volume_ratio"),
+                c.get("high_volume_ratio_count"), c.get("significant_movers_count"),
+                result["spike_threshold_pct"], result["consecutive_days"],
+                json.dumps(result, ensure_ascii=False),
+            ),
+        )
+        db.commit()
+        db.close()
+    except Exception as e:
+        print(f"  [warn] DB write failed: {e}", file=sys.stderr)
+
     return out
 
 
