@@ -184,7 +184,7 @@
    184|</main>
    185|
    186|<script>
-   187|const GAS_URL = 'https://script.google.com/macros/s/AKfycbxov_zEI5TvIp0Xg4ie937Rci_PEfFrUEyk7YH8RKVPz07i0RNS0fqkythLn-iErjVqZA/exec';
+   187|// (GAS removed — using local data)
    188|const REFRESH_MS = 600000;
    189|const CORP_CACHE_KEY='hk_corp_signal_cache_v2';
    190|
@@ -246,16 +246,17 @@
    246|  const price = g.latestPrice;
    247|  const priceHtml = price ? `<span class="pv">${esc((price<1?price.toFixed(3):price.toFixed(2)))}</span>` : '<span class="muted">—</span>';
    248|
-   249|  function sigType(lbl){
-   250|    if(lbl.indexOf('POC')>=0)return'poc';if(lbl.indexOf('FVG')>=0)return'fvg';
-   251|    if(lbl.indexOf('年開')>=0)return'yearopen';if(lbl.indexOf('IPO')>=0)return'ipo';
-   252|    return'';
-   253|  }
-   254|  const sigPills = (g.signals||[]).slice(0,4).map(s=>{
-   255|    const dateStr = s.date ? '<span class="spill-date">'+fmtDate(s.date).slice(5)+'</span>' : '';
-   256|    const t=sigType(s.label),cls='spill'+(t?' spill-'+t:'');
-   257|    const body=`<span class="${cls}">${esc(s.label)}${dateStr}</span>`;
-   258|    return s.link?`<a class="splink" href="${esc(s.link)}" target="_blank" rel="noopener">${body}</a>`:body;
+   function sigType(lbl){
+     if(!lbl)return'';
+     if(lbl.indexOf('POC')>=0)return'poc';if(lbl.indexOf('FVG')>=0)return'fvg';
+     if(lbl.indexOf('年開')>=0)return'yearopen';if(lbl.indexOf('IPO')>=0)return'ipo';
+     return'';
+   }
+   const sigPills = (g.signals||[]).slice(0,4).map(s=>{
+     const dateStr = s.date ? '<span class="spill-date">'+fmtDate(s.date).slice(5)+'</span>' : '';
+     const t=sigType(s.label),cls='spill'+(t?' spill-'+t:'');
+     const body=`<span class="${cls}">${esc(s.label)}${dateStr}</span>`;
+     return s.link?`<a class="splink" href="${esc(s.link)}" target="_blank" rel="noopener">${body}</a>`:body;
    259|  }).join(' ');
    260|
    261|  const corpOrder=['placement','increase','rights','other'];
@@ -484,7 +485,7 @@
    484|  dot.className='dot loading';
    485|  upd.textContent='載入中…';
    486|  try{
-   487|    const res = await fetch(GAS_URL+'?format=json');
+   487|    const res = await fetch('./data/signals.json?_='+Date.now());
    488|    const data = await res.json();
    489|    if(!data.ok) throw new Error(data.error||'API error');
    490|    let hkGroups=(data.groups||[]).filter(g=>{

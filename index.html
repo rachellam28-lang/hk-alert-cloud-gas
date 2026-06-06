@@ -619,6 +619,7 @@ function fmtMC(mc){
   return mc.toFixed(1)+'億';
 }
 function sigType(lbl){
+  if(!lbl)return'';
   if(lbl.indexOf('POC')>=0)return'poc';if(lbl.indexOf('FVG')>=0)return'fvg';
   if(lbl.indexOf('年開')>=0)return'yearopen';if(lbl.indexOf('IPO')>=0)return'ipo';
   return '';

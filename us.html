@@ -174,7 +174,7 @@
    174|</main>
    175|
    176|<script>
-   177|const GAS_URL = 'https://script.google.com/macros/s/AKfycbxov_zEI5TvIp0Xg4ie937Rci_PEfFrUEyk7YH8RKVPz07i0RNS0fqkythLn-iErjVqZA/exec';
+   177|// (GAS removed — using local data)
    178|const REFRESH_MS = 600000;
    179|
    180|function toggleSection(id, btn) {
@@ -209,16 +209,17 @@
    209|  const price = g.latestPrice;
    210|  const priceHtml = price ? `<span class="pv">${esc((price<1?price.toFixed(3):price.toFixed(2)))}</span>` : '<span class="muted">—</span>';
    211|
-   212|  function sigType(lbl){
-   213|    if(lbl.indexOf('POC')>=0)return'poc';if(lbl.indexOf('FVG')>=0)return'fvg';
-   214|    if(lbl.indexOf('年開')>=0)return'yearopen';if(lbl.indexOf('IPO')>=0)return'ipo';
-   215|    return'';
-   216|  }
-   217|  const sigPills = (g.signals||[]).slice(0,4).map(s=>{
-   218|    const dateStr = s.date ? '<span class="spill-date">'+fmtDate(s.date).slice(5)+'</span>' : '';
-   219|    const t=sigType(s.label),cls='spill'+(t?' spill-'+t:'');
-   220|    const body=`<span class="${cls}">${esc(s.label)}${dateStr}</span>`;
-   221|    return s.link?`<a class="splink" href="${esc(s.link)}" target="_blank" rel="noopener">${body}</a>`:body;
+   function sigType(lbl){
+     if(!lbl)return'';
+     if(lbl.indexOf('POC')>=0)return'poc';if(lbl.indexOf('FVG')>=0)return'fvg';
+     if(lbl.indexOf('年開')>=0)return'yearopen';if(lbl.indexOf('IPO')>=0)return'ipo';
+     return'';
+   }
+   const sigPills = (g.signals||[]).slice(0,4).map(s=>{
+     const dateStr = s.date ? '<span class="spill-date">'+fmtDate(s.date).slice(5)+'</span>' : '';
+     const t=sigType(s.label),cls='spill'+(t?' spill-'+t:'');
+     const body=`<span class="${cls}">${esc(s.label)}${dateStr}</span>`;
+     return s.link?`<a class="splink" href="${esc(s.link)}" target="_blank" rel="noopener">${body}</a>`:body;
    222|  }).join(' ');
    223|
    224|  const corpOrder=['placement','increase','rights','other'];
@@ -447,7 +448,7 @@
    447|  dot.className='dot loading';
    448|  upd.textContent='載入中…';
    449|  try{
-   450|    const res = await fetch(GAS_URL+'?format=json');
+   450|    const res = await fetch('./data/signals.json?_='+Date.now());
    451|    const data = await res.json();
    452|    if(!data.ok) throw new Error(data.error||'API error');
    453|    renderTable(data.groups||[]);
