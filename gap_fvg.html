@@ -193,7 +193,7 @@ async function main(){
         html += '</div><div class="card-body">';
         var show = s.items.slice(0,3);
         var rest = s.items.slice(3);
-        function ri(i){
+        var ri = function(i){
           var isG=i.type==='向上跳空缺口', isF=i.type==='向上FVG';
           var icon=isG?'🔼':(isF?'📈':'🎯');
           var cls=isG?'gap':(isF?'fvg':'poc');
@@ -272,7 +272,7 @@ async function main(){
         var mid   = transfers.filter(function(t){ return t._totalVal >= 1e8 && t._totalVal < 5e8; });
         var low   = transfers.filter(function(t){ return t._totalVal < 1e8; });
 
-        function renderTransferCard(t){
+        var renderTransferCard = function(t){
           var totalPct = t.total_shares>0 ? (t._totalChg/t.total_shares*100) : 0;
           var totalValStr = fmtMoney(t._totalVal);
           var biggest = null, biggestAbs = 0;
