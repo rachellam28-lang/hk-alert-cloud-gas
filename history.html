@@ -122,9 +122,15 @@ const cntEl= document.getElementById('matchCount');
 
 let allDays = [];
 
+function safeSig(a) {
+  var s = a.signal;
+  if (Array.isArray(s)) return s.join(' ');
+  return String(s || '');
+}
+
 function matchSigType(a, sigType) {
   if (!sigType || sigType === 'all') return true;
-  const sig  = (a.signal   || '').toLowerCase();
+  const sig  = safeSig(a).toLowerCase();
   const tags = (a.tags     || '').toLowerCase();
   const cat  = (a.category || '');
   const blob = sig + ' ' + tags;
@@ -185,7 +191,7 @@ function renderDay(day, filter, sigType) {
     const f = filter.toLowerCase();
     return (a.code||'').toLowerCase().includes(f)
         || (a.name||'').toLowerCase().includes(f)
-        || (a.signal||'').toLowerCase().includes(f)
+        || safeSig(a).toLowerCase().includes(f)
         || (a.message||'').toLowerCase().includes(f);
   });
   if (!alerts.length) return '';
@@ -237,7 +243,7 @@ function render(filter, sigType, fromDate, toDate) {
         if (!filter) return true;
         const f = filter.toLowerCase();
         return (a.code||'').toLowerCase().includes(f)||(a.name||'').toLowerCase().includes(f)
-              ||(a.signal||'').toLowerCase().includes(f)||(a.message||'').toLowerCase().includes(f);
+              ||safeSig(a).toLowerCase().includes(f)||(a.message||'').toLowerCase().includes(f);
       }).length;
       html += s; daysShown++;
     }
