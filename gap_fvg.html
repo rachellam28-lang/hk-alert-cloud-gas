@@ -244,7 +244,7 @@ async function main(){
           var totalPct = t.total_shares>0 ? (totalChg/t.total_shares*100) : 0;
           var lp = priceMap[t.code] || 0;
           var totalVal = totalChg * lp;
-          var totalValStr = totalVal>0 ? '$'+(totalVal/10000).toFixed(1)+'萬' : '';
+          var totalValStr = totalVal>0 ? '$'+(totalVal/1000000).toFixed(1)+'百萬' : '';
           var biggest = null, biggestAbs = 0;
           (t.ins||[]).forEach(function(x){
             var a = Math.abs(x.chg||0);
@@ -255,7 +255,7 @@ async function main(){
             if(a > biggestAbs){ biggestAbs = a; biggest = {dir:'out', pid:x.pid, pname:x.pname, chg:Math.abs(x.chg||0), pct:x.pct_chg}; }
           });
           var bigVal = biggest ? (biggest.chg * lp) : 0;
-          var bigValStr = bigVal>0 ? '$'+(bigVal/10000).toFixed(1)+'萬' : '';
+          var bigValStr = bigVal>0 ? '$'+(bigVal/1000000).toFixed(1)+'百萬' : '';
           html += '<div class="tf-card" onclick="window.open(\'https://www.tradingview.com/chart/?symbol=HKEX%3A'+E(t.code)+'\',\'_blank\')">';
           html += '<div><span class="tf-code">'+E(t.code)+'</span> <span class="tf-name">'+E(t.name||'')+'</span></div>';
           html += '<div style="font-weight:700;font-size:12px;margin-top:2px;color:var(--text)">'+Number(Math.round(totalChg/10000)).toLocaleString()+'萬股</div>';
