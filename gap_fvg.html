@@ -119,7 +119,7 @@ async function main(){
         var f=s.items.filter(i=>i.type==='向上FVG');
         var p=s.items.filter(i=>i.type==='上破POC 12M');
         html += '<div class="card">';
-        html += '<div class="card-head" onclick="var b=this.nextElementSibling;b.style.display=b.style.display===\'none\'?\'\':\'none\'">';
+        html += `<div class="card-head" onclick="var b=this.nextElementSibling;b.style.display=b.style.display==='none'?'':'none'">`;
         html += '<span><span class="code">'+E(s.code)+'</span> '+E(s.name)+(s.corp?' <span class="badge corp">'+E(s.corp)+'</span>':'')+'</span>';
         html += '<span style="font-size:11px;color:var(--mute)">🔼'+g.length+' 📈'+f.length+' 🎯'+p.length+'</span>';
         html += '</div><div class="card-body">';
@@ -161,7 +161,7 @@ async function main(){
         ranked.forEach(function(s){
           var p = s.lp!=null ? (s.lp<1?s.lp.toFixed(3):s.lp.toFixed(2)) : '—';
           var clr = s.vr>=5 ? 'var(--up)' : 'var(--amber)';
-          html += '<div class="vr-card" onclick="window.open(\'https://www.tradingview.com/chart/?symbol=HKEX%3A'+E(s.c)+'\',\'_blank\')">';
+          html += `<div class="vr-card" onclick="window.open('https://www.tradingview.com/chart/?symbol=HKEX%3A${E(s.c)}','_blank')">`;
           html += '<div><span class="vr-code">'+E(s.c)+'</span> <span class="vr-name">'+E(s.n)+'</span></div>';
           html += '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:4px">';
           html += '<span class="vr-val" style="color:'+clr+'">'+s.vr.toFixed(1)+'x</span>';
