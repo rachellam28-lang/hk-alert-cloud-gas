@@ -11,17 +11,15 @@ OUT_PATH = PROJECT_ROOT / "data" / "transfers.json"
 
 db = sqlite3.connect(str(DB_PATH))
 
-# Get last 2 dates with actual data (skip 05-28=05-27 proxy)
+# Get last 2 dates with actual data
 dates = [r[0] for r in db.execute(
-    "SELECT DISTINCT trade_date FROM ccass_holdings ORDER BY trade_date DESC LIMIT 10"
+    "SELECT DISTINCT trade_date FROM ccass_holdings ORDER BY trade_date DESC LIMIT 5"
 ).fetchall()]
-# Skip 05-28 if same as 05-27 (proxy data)
-if len(dates) >= 3 and dates[0] == '2026-05-28' and dates[1] == '2026-05-27':
-    d1, d2 = dates[2], dates[1]  # Use 05-26 vs 05-27, or better 05-22 vs 05-26
-    # Actually use the biggest gap with data
-    d1, d2 = dates[3], dates[2] if len(dates) >= 4 else (dates[1], dates[2])  # 05-22 vs 05-26
-else:
-    d1, d2 = dates[0], dates[1]
+if len(dates) < 2:
+    print("ERROR: Not enough dates in ccass_holdings")
+    db.close()
+    exit(1)
+d1, d2 = dates[0], dates[1]
 print(f"Comparing {d1} vs {d2}...")
 
 # Get all participants with >500K share change per stock (indexed query)
@@ -70,6 +68,15 @@ for code, items in stock_changes.items():
             (code, d1)
         ).fetchone()
         total_shares = total_shares_row[0] if total_shares_row[0] else 0
+
+        # Compute outstanding/issued shares from ccass_daily (total_pct)
+        outstanding_shares = total_shares  # fallback
+        daily_row = db.execute(
+            "SELECT total_shares, total_pct FROM ccass_daily WHERE stock_code=? AND trade_date=?",
+            (code, d1)
+        ).fetchone()
+        if daily_row and daily_row[1] and daily_row[1] > 0:
+            outstanding_shares = daily_row[0] / (daily_row[1] / 100)
         
         total_in = sum(i['chg'] for i in ins)
         total_out = sum(abs(i['chg']) for i in outs)
@@ -80,6 +87,7 @@ for code, items in stock_changes.items():
             'total_in': total_in,
             'total_out': total_out,
             'total_shares': total_shares,
+            'outstanding_shares': int(outstanding_shares),
             'ins': sorted(ins, key=lambda x: -x['chg']),
             'outs': sorted(outs, key=lambda x: x['chg']),
         })
