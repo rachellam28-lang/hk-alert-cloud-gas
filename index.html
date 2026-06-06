@@ -347,27 +347,9 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
     </div>
   </div>
 
-  <!-- 量比警報 -->
-  <div class="section-head">
-    <button class="section-toggle" onclick="toggleSection('volratio',this)" id="toggle-volratio">
-      <h2>📊 量比警報</h2>
-      <span class="toggle-arrow">▼</span>
-    </button>
-  </div>
-  <div class="section-body" id="body-volratio">
-    <section class="card" id="vrCard"><div class="loading-msg">載入中…</div></section>
-  </div>
+  <!-- 量比警報 → 已移至警報中心 (gap_fvg.html) -->
 
-  <!-- Transfers section -->
-  <div class="section-head">
-    <button class="section-toggle" onclick="toggleSection('transfers',this)" id="toggle-transfers">
-      <h2>📦 存倉轉倉監測</h2>
-      <span class="toggle-arrow">▼</span>
-    </button>
-  </div>
-  <div class="section-body" id="body-transfers">
-    <section class="card" id="transfersCard"><div class="loading-msg">載入中…</div></section>
-  </div>
+  <!-- 存倉轉倉監測 → 已移至警報中心 (gap_fvg.html) -->
 
   <div class="section-head">
     <button class="section-toggle" onclick="toggleSection('guide',this)" id="toggle-guide">
@@ -1793,7 +1775,7 @@ async function loadData(){
     renderSummaryBar(data);
     applyFilters();
     updateSortInfo();
-    renderVrAlert();
+    // renderVrAlert();  // moved to gap_fvg.html
 
     // Fetch market.json
     fetch('./market.json?_='+Date.now())
@@ -1807,11 +1789,11 @@ async function loadData(){
       .then(w=>{if(w&&w.sources)renderWebb(w);})
       .catch(()=>{});
 
-    // Fetch transfers
-    fetch('./data/transfers.json?_='+Date.now())
+    // Fetch transfers (moved to gap_fvg.html)
+    /* fetch('./data/transfers.json?_='+Date.now())
       .then(r=>r.ok?r.json():null)
       .then(t=>{if(t)renderTransfers(t, priceMap);})
-      .catch(()=>{});
+      .catch(()=>{}); */
 
     // Fetch price data: use local prices.json + signals.json (GAS removed)
     Promise.all([
