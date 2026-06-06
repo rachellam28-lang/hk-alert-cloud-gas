@@ -1,21 +1,25 @@
 {
-  "date": "2026-06-06 17:38:51",
-  "dopamine": 52.3,
+  "date": "2026-06-06 18:05:14",
+  "dopamine": 55.0,
   "level": "normal",
   "spike_threshold_pct": 5.0,
   "consecutive_days": 3,
   "components": {
+    "market_regime_score": 56.8,
     "realized_volatility_annualized_pct": 16.36,
-    "volatility_score": 47.8,
+    "volatility_score": 59.1,
     "trend_strength": 50.8,
     "daily_range_ratio": 1.157,
     "range_score": 65.7,
-    "volume_ratio": 0.978,
-    "volume_score": 47.8,
+    "hsi_volume_ratio": 0.978,
+    "hsi_volume_score": 47.8,
     "hsi_last_close": 24961.95,
-    "hsi_data_days": 45
+    "hsi_data_days": 45,
+    "retail_attention_score": 52.2,
+    "retail_source": "Google Trends HK (港股+股票+牛熊證)"
   },
   "error": null,
   "level_emoji": "⚖️",
-  "level_desc": "正常市況 — 標準門檻"
+  "level_desc": "正常市況 — 標準門檻",
+  "version": 2
 }
