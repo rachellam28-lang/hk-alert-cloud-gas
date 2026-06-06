@@ -1,15 +1,17 @@
 """
-多巴胺系統 v3 — 長橋真實人氣數據 + 恆指市場 regime，自動調 CCASS alert 門檻。
+多巴胺系統 v4 — 三層真實數據，自動調 CCASS alert 門檻。
 
-數據來源（全部真實，無估算）：
-  A. 長橋人氣榜（50%）— Longbridge MCP API
+  A. 長橋人氣榜（40%）— Longbridge MCP API — 逐隻股票散戶關注
      1. market_temperature — 市場溫度 (0-100)
-     2. 關注度排名 (watchlist_heat-hk) — TOP 30 散戶最關注股票
-     3. 總熱度排名 (hot_all-hk) — TOP 50 綜合人氣
+     2. 關注度排名 (watchlist_heat-hk) — TOP 30
+     3. 總熱度排名 (hot_all-hk) — TOP 50
 
-  B. 恆指市場 regime（50%）— yfinance ^HSI
+  B. 恆指市場 regime（30%）— yfinance ^HSI — 技術面波動
      4. Realized volatility (20-day annualized)
      5. Trend strength + range + volume
+
+  C. Google Trends 大市熱度（30%）— 宏觀零售搜尋情緒
+     6. 「港股」「股票」「牛熊證」HK 搜尋熱度
 
 Output: dopamine 0-100
   0-30  → 低多巴胺（凍市+散戶離場）：收緊門檻
@@ -166,7 +168,53 @@ def compute_longbridge_score(lb: dict) -> float:
 
 
 # ═══════════════════════════════════════════════════════════════════
-# B. 恆指市場 regime (50%) — yfinance ^HSI
+# B. Google Trends 大市熱度（30%）— 宏觀零售搜尋情緒
+# ═══════════════════════════════════════════════════════════════════
+
+_GT_KEYWORDS = ["港股", "股票", "牛熊證"]
+_GT_GEO = "HK"
+_GT_LOOKBACK = "today 3-m"
+
+
+def fetch_google_trends_score() -> float:
+    """Returns retail attention score 0-100 from Google Trends HK."""
+    try:
+        from pytrends.request import TrendReq
+    except ImportError:
+        return 50.0
+
+    try:
+        pytrends = TrendReq(hl="zh-HK", tz=360, timeout=10)
+        scores = []
+        for kw in _GT_KEYWORDS:
+            try:
+                pytrends.build_payload([kw], timeframe=_GT_LOOKBACK, geo=_GT_GEO)
+                df = pytrends.interest_over_time()
+                if df is None or df.empty or kw not in df.columns:
+                    continue
+                series = df[kw].values
+                if len(series) < 14:
+                    continue
+                recent_7d = np.mean(series[-7:])
+                baseline_30d = np.mean(series[-30:]) if len(series) >= 30 else np.mean(series)
+                if baseline_30d > 0:
+                    ratio = recent_7d / baseline_30d
+                else:
+                    ratio = 1.0
+                normalized = max(0, min(100, (ratio - 0.5) / 1.5 * 100))
+                scores.append(normalized)
+            except Exception:
+                continue
+        if not scores:
+            return 50.0
+        return float(np.mean(scores))
+    except Exception as e:
+        print(f"[dopamine] Google Trends failed: {e}", file=sys.stderr)
+        return 50.0
+
+
+# ═══════════════════════════════════════════════════════════════════
+# C. 恆指市場 regime（30%）— yfinance ^HSI
 # ═══════════════════════════════════════════════════════════════════
 
 def fetch_hsi_history(lookback_days: int = 60) -> Optional[dict]:
@@ -270,7 +318,7 @@ def compute_hsi_regime(closes, highs, lows, volumes) -> tuple[float, dict]:
 def compute_dopamine() -> dict:
     result = {
         "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "version": 3,
+        "version": 4,
         "dopamine": 50.0,
         "level": "normal",
         "spike_threshold_pct": 5.0,
@@ -279,11 +327,14 @@ def compute_dopamine() -> dict:
         "error": None,
     }
 
-    # ── A. Longbridge sentiment (50%) ──
+    # ── A. Longbridge sentiment (40%) ──
     lb = fetch_longbridge_sentiment()
     lb_score = compute_longbridge_score(lb)
 
-    # ── B. HSI regime (50%) ──
+    # ── B. Google Trends 大市熱度 (30%) ──
+    gt_score = fetch_google_trends_score()
+
+    # ── C. HSI regime (30%) ──
     hsi = fetch_hsi_history()
     if hsi is None:
         result["error"] = "Failed to fetch ^HSI"
@@ -293,8 +344,8 @@ def compute_dopamine() -> dict:
         hsi["close"], hsi["high"], hsi["low"], hsi["volume"]
     )
 
-    # ── Combined ──
-    dopamine = lb_score * 0.50 + hsi_score * 0.50
+    # ── Combined 40/30/30 ──
+    dopamine = lb_score * 0.40 + gt_score * 0.30 + hsi_score * 0.30
 
     # Level & thresholds
     if dopamine >= 60:
@@ -324,7 +375,7 @@ def compute_dopamine() -> dict:
         "spike_threshold_pct": spike_threshold_pct,
         "consecutive_days": consecutive_days,
         "components": {
-            # Longbridge (real attention data)
+            # Longbridge (real per-stock attention)
             "longbridge_score": round(lb_score, 1),
             "market_temperature": lb.get("temperature", 50),
             "market_temperature_desc": lb.get("temperature_desc", ""),
@@ -335,6 +386,8 @@ def compute_dopamine() -> dict:
             "discussed_stocks_count": lb.get("discussed_stocks_count", 0),
             "top_watched": lb.get("top_watched", []),
             "longbridge_error": lb.get("error"),
+            # Google Trends (macro retail sentiment)
+            "google_trends_score": round(gt_score, 1),
             # HSI regime
             "hsi_regime_score": round(hsi_score, 1),
             "hsi_last_close": round(hsi["close"][-1], 2) if hsi["close"] else None,
@@ -365,13 +418,13 @@ if __name__ == "__main__":
     spike = result["spike_threshold_pct"]
     cons = result["consecutive_days"]
 
-    print(f"\n{emoji} 多巴胺 v3: {d:.1f} ({lvl})")
+    print(f"\n{emoji} 多巴胺 v4: {d:.1f} ({lvl})")
     print(f"   {desc}")
     print(f"   spike≥{spike:.1f}% | consecutive≥{cons}d")
     print(f"   → saved to {path}\n")
 
     c = result["components"]
-    print(f"── 長橋人氣 (50%) — 真實散戶數據 ──")
+    print(f"── 長橋人氣 (40%) — 逐隻股票散戶關注 ──")
     print(f"   longbridge_score:    {c['longbridge_score']:.1f}")
     print(f"   market_temperature:  {c['market_temperature']}/100 — {c.get('market_temperature_desc','')}")
     print(f"   sentiment:           {c['market_sentiment']}/100")
@@ -382,7 +435,10 @@ if __name__ == "__main__":
     for s in c.get("top_watched", [])[:5]:
         print(f"     {s['code']} {s['name']} ${s['last_done']} chg={s['chg']}")
 
-    print(f"\n── 恆指 regime (50%) ──")
+    print(f"\n── Google Trends 大市熱度 (30%) — 宏觀零售搜尋情緒 ──")
+    print(f"   google_trends_score: {c['google_trends_score']:.1f}")
+
+    print(f"\n── 恆指 regime (30%) ──")
     print(f"   hsi_regime_score: {c['hsi_regime_score']:.1f}")
     print(f"   HSI: {c['hsi_last_close']}")
     print(f"   volatility: {c['realized_volatility_annualized_pct']}%")

@@ -1,7 +1,7 @@
 {
-  "date": "2026-06-06 18:14:24",
-  "version": 3,
-  "dopamine": 67.4,
+  "date": "2026-06-06 18:18:26",
+  "version": 4,
+  "dopamine": 66.7,
   "level": "high",
   "spike_threshold_pct": 3.0,
   "consecutive_days": 2,
@@ -77,6 +77,7 @@
       }
     ],
     "longbridge_error": null,
+    "google_trends_score": 61.5,
     "hsi_regime_score": 56.2,
     "hsi_last_close": 24961.95,
     "hsi_data_days": 45,
