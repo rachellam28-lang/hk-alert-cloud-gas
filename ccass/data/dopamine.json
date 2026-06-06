@@ -1,0 +1,21 @@
+{
+  "date": "2026-06-06 17:38:51",
+  "dopamine": 52.3,
+  "level": "normal",
+  "spike_threshold_pct": 5.0,
+  "consecutive_days": 3,
+  "components": {
+    "realized_volatility_annualized_pct": 16.36,
+    "volatility_score": 47.8,
+    "trend_strength": 50.8,
+    "daily_range_ratio": 1.157,
+    "range_score": 65.7,
+    "volume_ratio": 0.978,
+    "volume_score": 47.8,
+    "hsi_last_close": 24961.95,
+    "hsi_data_days": 45
+  },
+  "error": null,
+  "level_emoji": "⚖️",
+  "level_desc": "正常市況 — 標準門檻"
+}

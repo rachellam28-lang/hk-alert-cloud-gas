@@ -7,9 +7,11 @@ Throttle 規則（FATAL-001）：
 """
 from __future__ import annotations
 
+import json
 import os
 import time
 from datetime import datetime, date
+from pathlib import Path
 from typing import Optional
 
 import requests
@@ -20,6 +22,47 @@ from src.logger import setup_logger
 
 load_dotenv()
 logger = setup_logger("alerts")
+
+# ── Dopamine integration ────────────────────────────────────────────
+_DATA_DIR = Path(__file__).resolve().parent.parent / "data"
+_DOPAMINE_PATH = _DATA_DIR / "dopamine.json"
+
+DEFAULT_SPIKE_THRESHOLD = 5.0
+DEFAULT_CONSECUTIVE_DAYS = 3
+
+
+def load_dopamine_thresholds() -> tuple[float, int]:
+    """Read dopamine.json and return (spike_threshold_pct, consecutive_days).
+    Falls back to defaults if file missing or stale (>24h).
+    """
+    try:
+        if not _DOPAMINE_PATH.exists():
+            return DEFAULT_SPIKE_THRESHOLD, DEFAULT_CONSECUTIVE_DAYS
+        with open(_DOPAMINE_PATH, encoding="utf-8") as f:
+            data = json.load(f)
+        # Check freshness (within 24h)
+        ts = data.get("date", "")
+        try:
+            dt = datetime.fromisoformat(ts)
+            age_h = (datetime.now() - dt).total_seconds() / 3600
+            if age_h > 24:
+                logger.info("Dopamine data stale (%.1fh old), using defaults", age_h)
+                return DEFAULT_SPIKE_THRESHOLD, DEFAULT_CONSECUTIVE_DAYS
+        except (ValueError, TypeError):
+            pass
+        spike = float(data.get("spike_threshold_pct", DEFAULT_SPIKE_THRESHOLD))
+        cons = int(data.get("consecutive_days", DEFAULT_CONSECUTIVE_DAYS))
+        logger.info(
+            "Dopamine: %s (score=%.1f) → spike≥%.1f%%, cons≥%dd",
+            data.get("level", "normal"),
+            data.get("dopamine", 50),
+            spike,
+            cons,
+        )
+        return spike, cons
+    except Exception as e:
+        logger.warning("Failed to load dopamine: %s, using defaults", e)
+        return DEFAULT_SPIKE_THRESHOLD, DEFAULT_CONSECUTIVE_DAYS
 
 TELEGRAM_API = "https://api.telegram.org/bot{token}/sendMessage"
 
@@ -71,11 +114,23 @@ def send_telegram(
 
 def detect_alerts(
     target_date: date,
-    spike_threshold_pct: float = 5.0,
-    consecutive_days: int = 3,
+    spike_threshold_pct: Optional[float] = None,
+    consecutive_days: Optional[int] = None,
     consecutive_min_daily_pct: float = 1.0,
 ) -> list[dict]:
-    """偵測異常並回傳 alert list（未 send）。"""
+    """偵測異常並回傳 alert list（未 send）。
+
+    當 spike_threshold_pct 或 consecutive_days 為 None 時，
+    自動從 data/dopamine.json 讀取市場自適應門檻。
+    """
+    # Auto-load dopamine thresholds if not explicitly provided
+    if spike_threshold_pct is None or consecutive_days is None:
+        d_spike, d_cons = load_dopamine_thresholds()
+        if spike_threshold_pct is None:
+            spike_threshold_pct = d_spike
+        if consecutive_days is None:
+            consecutive_days = d_cons
+
     date_str = target_date.strftime("%Y-%m-%d")
 
     with get_conn() as conn:
