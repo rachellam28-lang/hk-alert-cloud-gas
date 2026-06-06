@@ -10,6 +10,12 @@ from typing import Any
 import yfinance as yf
 import pandas as pd
 
+# local dopamine system
+try:
+    from scanner.dopamine import compute_dopamine, save_dopamine
+except ImportError:
+    from dopamine import compute_dopamine, save_dopamine
+
 HKT = timezone(timedelta(hours=8))
 PROJECT = Path(__file__).resolve().parent.parent
 DB = PROJECT / "ccass" / "ccass.db"
@@ -151,14 +157,14 @@ def save_alert(code: str, name: str, signal: dict, corp_type: str = ""):
     finally:
         db.close()
 
-def export_alerts_json():
+def export_alerts_json(dopamine_cap: int = 50):
     """Export recent gap/FVG alerts to data/alerts.json for dashboard."""
     db = get_db()
     try:
-        rows = db.execute("""SELECT code, category, signal, message, created_at, payload_json
+        rows = db.execute(f"""SELECT code, category, signal, message, created_at, payload_json
             FROM scanner_alerts WHERE category='gap_fvg'
             AND created_at >= datetime('now', '-7 days')
-            ORDER BY created_at DESC LIMIT 50""").fetchall()
+            ORDER BY created_at DESC LIMIT {dopamine_cap}""").fetchall()
         alerts = [dict(r) for r in rows]
         for a in alerts:
             if a.get("payload_json"):
@@ -210,6 +216,17 @@ def main():
         print("No corp action stocks found.")
         return
 
+    # ── Dopamine system ──
+    dop = compute_dopamine()
+    save_dopamine(dop)
+    th = dop.get("thresholds", {})
+    poc_min = th.get("poc_min_pct", 2.5)
+    gap_min = th.get("gap_min_pct", 1.0)
+    fvg_min = th.get("fvg_min_pct", 1.0)
+    alert_cap = th.get("alert_cap", 50)
+    print(f"🧠 Dopamine: {dop['dopamine']} ({dop['label']}) | HSI {dop['hsi']} | "
+          f"poc≥{poc_min}% gap≥{gap_min}% fvg≥{fvg_min}% cap={alert_cap}")
+
     print(f"Scanning {len(stocks)} corp-action stocks for upward gaps/FVGs...")
     found = 0
 
@@ -225,11 +242,15 @@ def main():
         fvgs = detect_bullish_fvgs(df)
         
         for gap in gaps:
+            if gap["gap_pct"] < gap_min:
+                continue
             if save_alert(code, name, gap, corp):
                 print(f"  🔼 {code} {name}: {gap['type']} {gap['gap_pct']}% ({gap['date']})")
                 found += 1
         
         for fvg in fvgs:
+            if fvg["fvg_pct"] < fvg_min:
+                continue
             if save_alert(code, name, fvg, corp):
                 print(f"  📈 {code} {name}: {fvg['type']} {fvg['fvg_pct']}% ({fvg['date']})")
                 found += 1
@@ -237,6 +258,8 @@ def main():
         # Check POC 12M breakout
         pocs = detect_poc_12m_breakout(code)
         for poc in pocs:
+            if poc["breakout_pct"] < poc_min:
+                continue
             if save_alert(code, name, poc, corp):
                 print(f"  🎯 {code} {name}: {poc['type']} {poc['breakout_pct']}% (POC={poc['poc']})")
                 found += 1
@@ -246,8 +269,8 @@ def main():
         
         time.sleep(0.3)  # gentle rate limit
 
-    n = export_alerts_json()
-    print(f"\nDone: {found} alerts found, {n} exported to {ALERT_FILE}")
+    n = export_alerts_json(alert_cap)
+    print(f"Done: {found} alerts found, {n} exported to {ALERT_FILE}")
 
 if __name__ == "__main__":
     main()
