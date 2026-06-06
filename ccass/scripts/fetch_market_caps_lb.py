@@ -1,4 +1,4 @@
-"""Get stock market caps from Longbridge static_info."""
+"""Fetch stock market caps from Longbridge static_info + quote."""
 import subprocess, json, os, sys
 from pathlib import Path
 
@@ -20,14 +20,14 @@ def lb_mcp(method, args=None):
     token = get_token()
     if not token:
         return {}
-    auth = "Authorization: Bearer " + token
+    auth = "Bearer " + token
     body = {"jsonrpc": "2.0", "id": 1, "method": "tools/call",
             "params": {"name": method, "arguments": args or {}}}
     r = subprocess.run([
         "curl", "-s", "-X", "POST", "https://mcp.longbridge.com",
         "-H", "Content-Type: application/json",
         "-H", "Accept: application/json, text/event-stream",
-        "-H", auth,
+        "-H", "Authorization: " + auth,
         "-d", json.dumps(body),
     ], capture_output=True, text=True, timeout=30)
     raw = r.stdout.strip()
@@ -38,66 +38,86 @@ def lb_mcp(method, args=None):
     return json.loads(c[0]["text"]) if c else {}
 
 
-def get_market_caps(symbols: list[str]) -> dict:
+def get_market_caps(symbols):
     """
-    Fetch market caps for a list of symbols from Longbridge.
-    symbols: list of 'XXXXX.HK' format strings.
-    Returns {symbol: {"name": ..., "market_cap": ..., "exchange": ...}}
+    Fetch market caps by combining static_info (total_shares) + quote (last_done).
+    symbols: list of 'XXXXX.HK' strings.
+    Returns {symbol: {name_cn, total_shares, last_done, market_cap_hkd}}
     """
     result = {}
-    # static_info can take up to 50 symbols at once
+
+    # Step 1: static_info for all symbols (batch 50)
+    info_map = {}
     for i in range(0, len(symbols), 50):
         batch = symbols[i:i+50]
         data = lb_mcp("static_info", {"symbols": batch})
-        if not data:
-            continue
-        items = data.get("items", data.get("lists", []))
+        items = data if isinstance(data, list) else data.get("items", data.get("lists", []))
         for item in items:
             sym = item.get("symbol", "")
-            result[sym] = {
+            info_map[sym] = {
                 "name_cn": item.get("name_cn", ""),
                 "name_en": item.get("name_en", ""),
-                "market_cap": item.get("market_cap", ""),
+                "total_shares": float(item.get("total_shares", 0) or 0),
                 "exchange": item.get("exchange", ""),
             }
-        print(f"  batch {i//50 + 1}: {len(items)} stocks")
+        print("  static_info batch {}: {} stocks".format(i//50 + 1, len(items)))
+
+    # Step 2: quote for prices (batch 500)
+    all_syms = list(info_map.keys())
+    for i in range(0, len(all_syms), 500):
+        batch = all_syms[i:i+500]
+        data = lb_mcp("quote", {"symbols": batch})
+        items = data if isinstance(data, list) else data.get("items", data.get("lists", []))
+        for item in items:
+            sym = item.get("symbol", "")
+            if sym in info_map:
+                last_done = float(item.get("last_done", 0) or 0)
+                info_map[sym]["last_done"] = last_done
+        print("  quote batch {}: {} stocks".format(i//500 + 1, len(items)))
+
+    # Step 3: compute market cap
+    for sym, info in info_map.items():
+        shares = info.get("total_shares", 0)
+        price = info.get("last_done", 0)
+        mc = shares * price if shares and price else 0
+        result[sym] = {
+            "name_cn": info["name_cn"],
+            "name_en": info["name_en"],
+            "total_shares": shares,
+            "last_done": price,
+            "market_cap_hkd": mc,
+            "exchange": info["exchange"],
+        }
 
     return result
+
+
+def fmt_mc(value):
+    """Format market cap in HK style 萬/億."""
+    if value >= 1e8:
+        return "{:.2f}億".format(value / 1e8)
+    elif value >= 1e4:
+        return "{:.1f}萬".format(value / 1e4)
+    else:
+        return str(int(value))
 
 
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument("--symbols", nargs="*", help="Symbols to fetch (e.g. 00700.HK)")
-    parser.add_argument("--from-file", help="File with one symbol per line")
-    parser.add_argument("--from-json", help="JSON file with symbol keys")
+    parser.add_argument("--symbols", nargs="*")
     parser.add_argument("--output", default=str(DATA_DIR / "market_caps.json"))
     args = parser.parse_args()
 
-    symbols = []
-    if args.symbols:
-        symbols = args.symbols
-    elif args.from_file:
-        with open(args.from_file) as f:
-            symbols = [l.strip() for l in f if l.strip()]
-    elif args.from_json:
-        with open(args.from_json) as f:
-            data = json.load(f)
-            # Try to extract stock codes
-            if isinstance(data, list):
-                symbols = [s.get("symbol", s.get("code", "")) for s in data if isinstance(s, dict)]
-            elif isinstance(data, dict):
-                symbols = list(data.keys())
+    symbols = args.symbols if args.symbols else []
 
     if not symbols:
-        # Default: get top watched stocks from Longbridge
         print("Fetching top watched stocks first...")
         watchlist = lb_mcp("rank_list", {"key": "ib_watchlist_heat-hk", "market": "HK", "size": 30})
         items = watchlist.get("lists", watchlist.get("items", []))
         symbols = [(i.get("code", "") + ".HK") for i in items if i.get("code")]
-        print(f"  Got {len(symbols)} symbols from watchlist")
+        print("  Got {} symbols from watchlist".format(len(symbols)))
 
-    # Clean symbols
     cleaned = []
     for s in symbols:
         s = s.strip()
@@ -107,19 +127,21 @@ if __name__ == "__main__":
             s = s + ".HK"
         cleaned.append(s)
 
-    print(f"Fetching market caps for {len(cleaned)} stocks...")
+    print("Fetching market caps for {} stocks...".format(len(cleaned)))
     caps = get_market_caps(cleaned)
 
-    # Save
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     out_path = Path(args.output)
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(caps, f, ensure_ascii=False, indent=2)
 
-    print(f"\nSaved {len(caps)} stocks to {out_path}")
+    print("\nSaved {} stocks to {}".format(len(caps), out_path))
 
-    # Show sample
-    for sym, info in list(caps.items())[:5]:
-        mc = info.get("market_cap", "")
-        name = info.get("name_cn", info.get("name_en", ""))
-        print(f"  {sym} {name}: market_cap={mc}")
+    # Show top 10 by market cap
+    ranked = sorted(caps.items(), key=lambda x: x[1].get("market_cap_hkd", 0), reverse=True)
+    print("\nTop 10 by market cap:")
+    for sym, info in ranked[:10]:
+        mc = fmt_mc(info["market_cap_hkd"])
+        name = info["name_cn"] or info["name_en"]
+        print("  {} {}  ${}  MC: {}".format(
+            sym.replace(".HK",""), name[:20], info["last_done"], mc))

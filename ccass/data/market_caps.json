@@ -1,0 +1,242 @@
+{
+  "01810.HK": {
+    "name_cn": "小米集团-W",
+    "name_en": "XIAOMI-W",
+    "total_shares": 25839890294.0,
+    "last_done": 27.8,
+    "market_cap_hkd": 718348950173.2001,
+    "exchange": "SEHK"
+  },
+  "09988.HK": {
+    "name_cn": "阿里巴巴-W",
+    "name_en": "BABA-W",
+    "total_shares": 19193071958.0,
+    "last_done": 122.4,
+    "market_cap_hkd": 2349232007659.2,
+    "exchange": "SEHK"
+  },
+  "00700.HK": {
+    "name_cn": "腾讯控股",
+    "name_en": "TENCENT",
+    "total_shares": 9118123492.0,
+    "last_done": 453.2,
+    "market_cap_hkd": 4132333566574.4,
+    "exchange": "SEHK"
+  },
+  "09992.HK": {
+    "name_cn": "泡泡玛特",
+    "name_en": "POP MART",
+    "total_shares": 1331723150.0,
+    "last_done": 176.4,
+    "market_cap_hkd": 234915963660.0,
+    "exchange": "SEHK"
+  },
+  "01879.HK": {
+    "name_cn": "曦智科技-P",
+    "name_en": "XIZHI TECH-P",
+    "total_shares": 94037377.0,
+    "last_done": 551.0,
+    "market_cap_hkd": 51814594727.0,
+    "exchange": "SEHK"
+  },
+  "02476.HK": {
+    "name_cn": "胜宏科技",
+    "name_en": "VGT",
+    "total_shares": 982784813.0,
+    "last_done": 368.6,
+    "market_cap_hkd": 362254482071.80005,
+    "exchange": "SEHK"
+  },
+  "02513.HK": {
+    "name_cn": "智谱",
+    "name_en": "KNOWLEDGE ATLAS",
+    "total_shares": 445843090.0,
+    "last_done": 1297.0,
+    "market_cap_hkd": 578258487730.0,
+    "exchange": "SEHK"
+  },
+  "00981.HK": {
+    "name_cn": "中芯国际",
+    "name_en": "SMIC",
+    "total_shares": 8013494877.0,
+    "last_done": 75.65,
+    "market_cap_hkd": 606220887445.05,
+    "exchange": "SEHK"
+  },
+  "00100.HK": {
+    "name_cn": "MINIMAX-W",
+    "name_en": "MINIMAX-W",
+    "total_shares": 313635308.0,
+    "last_done": 553.0,
+    "market_cap_hkd": 173440325324.0,
+    "exchange": "SEHK"
+  },
+  "00068.HK": {
+    "name_cn": "群核科技",
+    "name_en": "MANYCORE TECH",
+    "total_shares": 1726199340.0,
+    "last_done": 17.2,
+    "market_cap_hkd": 29690628648.0,
+    "exchange": "SEHK"
+  },
+  "06871.HK": {
+    "name_cn": "翼菲科技",
+    "name_en": "ROBOTPHOENIX",
+    "total_shares": 244953968.0,
+    "last_done": 24.38,
+    "market_cap_hkd": 5971977739.84,
+    "exchange": "SEHK"
+  },
+  "03690.HK": {
+    "name_cn": "美团-W",
+    "name_en": "MEITUAN",
+    "total_shares": 6174619006.0,
+    "last_done": 79.95,
+    "market_cap_hkd": 493660789529.7,
+    "exchange": "SEHK"
+  },
+  "07666.HK": {
+    "name_cn": "剂泰科技-P",
+    "name_en": "METIS TECHBIO-P",
+    "total_shares": 1152513850.0,
+    "last_done": 14.06,
+    "market_cap_hkd": 16204344731.0,
+    "exchange": "SEHK"
+  },
+  "07688.HK": {
+    "name_cn": "拓璞数控",
+    "name_en": "TOPNC",
+    "total_shares": 409281790.0,
+    "last_done": 33.5,
+    "market_cap_hkd": 13710939965.0,
+    "exchange": "SEHK"
+  },
+  "00992.HK": {
+    "name_cn": "联想集团",
+    "name_en": "LENOVO GROUP",
+    "total_shares": 12404659302.0,
+    "last_done": 24.88,
+    "market_cap_hkd": 308627923433.76,
+    "exchange": "SEHK"
+  },
+  "01236.HK": {
+    "name_cn": "乐动机器人",
+    "name_en": "LDROBOT",
+    "total_shares": 333333400.0,
+    "last_done": 36.5,
+    "market_cap_hkd": 12166669100.0,
+    "exchange": "SEHK"
+  },
+  "01347.HK": {
+    "name_cn": "华虹半导体",
+    "name_en": "HUA HONG SEMI",
+    "total_shares": 1737678568.0,
+    "last_done": 145.3,
+    "market_cap_hkd": 252484695930.40002,
+    "exchange": "SEHK"
+  },
+  "06809.HK": {
+    "name_cn": "澜起科技",
+    "name_en": "MONTAGE TECH",
+    "total_shares": 1222200021.0,
+    "last_done": 368.8,
+    "market_cap_hkd": 450747367744.8,
+    "exchange": "SEHK"
+  },
+  "06869.HK": {
+    "name_cn": "长飞光纤光缆",
+    "name_en": "YOFC",
+    "total_shares": 827905108.0,
+    "last_done": 239.2,
+    "market_cap_hkd": 198034901833.59998,
+    "exchange": "SEHK"
+  },
+  "01511.HK": {
+    "name_cn": "驭势科技",
+    "name_en": "UISEE TECH",
+    "total_shares": 162485020.0,
+    "last_done": 82.0,
+    "market_cap_hkd": 13323771640.0,
+    "exchange": "SEHK"
+  },
+  "01609.HK": {
+    "name_cn": "天星医疗",
+    "name_en": "STAR SPORTS MED",
+    "total_shares": 54831344.0,
+    "last_done": 198.0,
+    "market_cap_hkd": 10856606112.0,
+    "exchange": "SEHK"
+  },
+  "02723.HK": {
+    "name_cn": "深演智能",
+    "name_en": "DEEPZERO",
+    "total_shares": 90679175.0,
+    "last_done": 360.0,
+    "market_cap_hkd": 32644503000.0,
+    "exchange": "SEHK"
+  },
+  "03388.HK": {
+    "name_cn": "创想三维",
+    "name_en": "CREALITY",
+    "total_shares": 466840101.0,
+    "last_done": 20.9,
+    "market_cap_hkd": 9756958110.9,
+    "exchange": "SEHK"
+  },
+  "03986.HK": {
+    "name_cn": "兆易创新",
+    "name_en": "GIGADEVICE",
+    "total_shares": 701102451.0,
+    "last_done": 723.0,
+    "market_cap_hkd": 506897072073.0,
+    "exchange": "SEHK"
+  },
+  "09866.HK": {
+    "name_cn": "蔚来-SW",
+    "name_en": "NIO-SW",
+    "total_shares": 2505667022.0,
+    "last_done": 44.0,
+    "market_cap_hkd": 110249348968.0,
+    "exchange": "SEHK"
+  },
+  "09868.HK": {
+    "name_cn": "小鹏集团-W",
+    "name_en": "XPENG-W",
+    "total_shares": 1914427023.0,
+    "last_done": 65.0,
+    "market_cap_hkd": 124437756495.0,
+    "exchange": "SEHK"
+  },
+  "06166.HK": {
+    "name_cn": "剑桥科技",
+    "name_en": "CIG",
+    "total_shares": 368250373.0,
+    "last_done": 133.3,
+    "market_cap_hkd": 49087774720.9,
+    "exchange": "SEHK"
+  },
+  "03750.HK": {
+    "name_cn": "宁德时代",
+    "name_en": "CATL",
+    "total_shares": 4626627170.0,
+    "last_done": 711.0,
+    "market_cap_hkd": 3289531917870.0,
+    "exchange": "SEHK"
+  },
+  "06872.HK": {
+    "name_cn": "丹诺医药-B",
+    "name_en": "TENNOR THERAP-B",
+    "total_shares": 52328926.0,
+    "last_done": 215.4,
+    "market_cap_hkd": 11271650660.4,
+    "exchange": "SEHK"
+  },
+  "02015.HK": {
+    "name_cn": "理想汽车-W",
+    "name_en": "LI AUTO-W",
+    "total_shares": 2050309098.0,
+    "last_done": 56.65,
+    "market_cap_hkd": 116150010401.7,
+    "exchange": "SEHK"
+  }
+}
