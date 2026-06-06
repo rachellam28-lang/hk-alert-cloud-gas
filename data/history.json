@@ -1,0 +1,1138 @@
+{
+  "ok": true,
+  "total": 87,
+  "days": [
+    {
+      "date": "2026-06-06",
+      "alerts": [
+        {
+          "code": "01860",
+          "name": "MOBVISTA",
+          "signal": {
+            "type": "上破POC 12M",
+            "poc": 5.765,
+            "current": 13.92,
+            "breakout_pct": 141.44,
+            "date": "2026-06-05"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01860",
+          "name": "MOBVISTA",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 2.39,
+            "gap_low": 14.25,
+            "gap_high": 14.59,
+            "current": 16.16,
+            "date": "2026-05-29"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01860",
+          "name": "MOBVISTA",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 5.74,
+            "gap_low": 16.73,
+            "gap_high": 17.69,
+            "current": 18.15,
+            "date": "2026-05-05"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01860",
+          "name": "MOBVISTA",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 2.85,
+            "gap_low": 15.1,
+            "gap_high": 15.53,
+            "current": 16.3,
+            "date": "2026-04-30"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01860",
+          "name": "MOBVISTA",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 0.99,
+            "gap_low": 14.11,
+            "gap_high": 14.25,
+            "current": 14.82,
+            "date": "2026-04-27"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01860",
+          "name": "MOBVISTA",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 2.21,
+            "gap_low": 14.5,
+            "gap_high": 14.82,
+            "current": 14.97,
+            "date": "2026-04-15"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01860",
+          "name": "MOBVISTA",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 4.42,
+            "gap_low": 13.81,
+            "gap_high": 14.42,
+            "current": 14.43,
+            "date": "2026-04-09"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01860",
+          "name": "MOBVISTA",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 4.36,
+            "gap_low": 15.15,
+            "gap_high": 15.81,
+            "current": 16.31,
+            "date": "2026-03-16"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01860",
+          "name": "MOBVISTA",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 11.29,
+            "gap_low": 14.0,
+            "gap_high": 15.58,
+            "current": 16.88,
+            "date": "2026-03-13"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01860",
+          "name": "MOBVISTA",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 2.03,
+            "gap_low": 13.82,
+            "gap_high": 14.1,
+            "current": 14.94,
+            "date": "2026-03-12"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01860",
+          "name": "MOBVISTA",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 6.95,
+            "gap_low": 12.52,
+            "gap_high": 13.39,
+            "current": 13.82,
+            "date": "2026-03-11"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01860",
+          "name": "MOBVISTA",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 1.47,
+            "open": 14.46,
+            "prev_high": 14.25,
+            "date": "2026-05-28",
+            "close": 14.36
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01860",
+          "name": "MOBVISTA",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 0.3,
+            "open": 16.78,
+            "prev_high": 16.73,
+            "date": "2026-05-04",
+            "close": 17.75
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01860",
+          "name": "MOBVISTA",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 2.44,
+            "open": 15.56,
+            "prev_high": 15.19,
+            "date": "2026-04-16",
+            "close": 15.52
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01860",
+          "name": "MOBVISTA",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 2.28,
+            "open": 14.83,
+            "prev_high": 14.5,
+            "date": "2026-04-14",
+            "close": 14.69
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01860",
+          "name": "MOBVISTA",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 3.37,
+            "open": 15.66,
+            "prev_high": 15.15,
+            "date": "2026-03-13",
+            "close": 16.88
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01860",
+          "name": "MOBVISTA",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 1.14,
+            "open": 14.16,
+            "prev_high": 14.0,
+            "date": "2026-03-12",
+            "close": 14.94
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01860",
+          "name": "MOBVISTA",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 3.19,
+            "open": 12.92,
+            "prev_high": 12.52,
+            "date": "2026-03-10",
+            "close": 13.64
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01808",
+          "name": "ENTERPRISE DEV",
+          "signal": {
+            "type": "上破POC 12M",
+            "poc": 1.314,
+            "current": 2.22,
+            "breakout_pct": 68.9,
+            "date": "2026-06-05"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01808",
+          "name": "ENTERPRISE DEV",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 18.58,
+            "gap_low": 1.83,
+            "gap_high": 2.17,
+            "current": 2.22,
+            "date": "2026-06-05"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01808",
+          "name": "ENTERPRISE DEV",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 2.52,
+            "gap_low": 1.59,
+            "gap_high": 1.63,
+            "current": 1.74,
+            "date": "2026-06-02"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01808",
+          "name": "ENTERPRISE DEV",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 7.27,
+            "gap_low": 1.1,
+            "gap_high": 1.18,
+            "current": 1.3,
+            "date": "2026-05-08"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01808",
+          "name": "ENTERPRISE DEV",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 4.17,
+            "gap_low": 2.4,
+            "gap_high": 2.5,
+            "current": 2.5,
+            "date": "2026-04-10"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01808",
+          "name": "ENTERPRISE DEV",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 3.85,
+            "gap_low": 2.6,
+            "gap_high": 2.7,
+            "current": 2.7,
+            "date": "2026-03-30"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01808",
+          "name": "ENTERPRISE DEV",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 4.0,
+            "gap_low": 2.5,
+            "gap_high": 2.6,
+            "current": 2.6,
+            "date": "2026-03-27"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01808",
+          "name": "ENTERPRISE DEV",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 8.68,
+            "gap_low": 2.42,
+            "gap_high": 2.63,
+            "current": 2.63,
+            "date": "2026-03-17"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01808",
+          "name": "ENTERPRISE DEV",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 6.52,
+            "gap_low": 2.3,
+            "gap_high": 2.45,
+            "current": 2.79,
+            "date": "2026-03-16"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01808",
+          "name": "ENTERPRISE DEV",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 2.62,
+            "open": 2.74,
+            "prev_high": 2.67,
+            "date": "2026-06-05",
+            "close": 2.22
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01808",
+          "name": "ENTERPRISE DEV",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 0.53,
+            "open": 1.9,
+            "prev_high": 1.89,
+            "date": "2026-06-02",
+            "close": 1.74
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01808",
+          "name": "ENTERPRISE DEV",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 6.21,
+            "open": 1.54,
+            "prev_high": 1.45,
+            "date": "2026-05-18",
+            "close": 1.3
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01808",
+          "name": "ENTERPRISE DEV",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 52.63,
+            "open": 2.9,
+            "prev_high": 1.9,
+            "date": "2026-04-27",
+            "close": 1.66
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01808",
+          "name": "ENTERPRISE DEV",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 3.32,
+            "open": 2.8,
+            "prev_high": 2.71,
+            "date": "2026-03-31",
+            "close": 2.6
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01808",
+          "name": "ENTERPRISE DEV",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 3.85,
+            "open": 2.7,
+            "prev_high": 2.6,
+            "date": "2026-03-30",
+            "close": 2.7
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01808",
+          "name": "ENTERPRISE DEV",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 4.0,
+            "open": 2.6,
+            "prev_high": 2.5,
+            "date": "2026-03-26",
+            "close": 2.6
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01808",
+          "name": "ENTERPRISE DEV",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 1.24,
+            "open": 2.45,
+            "prev_high": 2.42,
+            "date": "2026-03-16",
+            "close": 2.79
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01808",
+          "name": "ENTERPRISE DEV",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 4.35,
+            "open": 2.4,
+            "prev_high": 2.3,
+            "date": "2026-03-13",
+            "close": 2.4
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "03360",
+          "name": "FE HORIZON",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 1.22,
+            "gap_low": 7.37,
+            "gap_high": 7.46,
+            "current": 7.48,
+            "date": "2026-06-05"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "03360",
+          "name": "FE HORIZON",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 0.66,
+            "gap_low": 7.55,
+            "gap_high": 7.6,
+            "current": 7.71,
+            "date": "2026-05-07"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "03360",
+          "name": "FE HORIZON",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 1.81,
+            "gap_low": 7.18,
+            "gap_high": 7.31,
+            "current": 7.44,
+            "date": "2026-04-09"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "03360",
+          "name": "FE HORIZON",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 0.14,
+            "gap_low": 7.06,
+            "gap_high": 7.07,
+            "current": 7.12,
+            "date": "2026-04-01"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "03360",
+          "name": "FE HORIZON",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 0.27,
+            "open": 7.5,
+            "prev_high": 7.48,
+            "date": "2026-05-21",
+            "close": 7.29
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "03360",
+          "name": "FE HORIZON",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 0.67,
+            "open": 7.55,
+            "prev_high": 7.5,
+            "date": "2026-05-04",
+            "close": 7.52
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "03360",
+          "name": "FE HORIZON",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 0.53,
+            "open": 7.58,
+            "prev_high": 7.54,
+            "date": "2026-04-23",
+            "close": 7.44
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "03360",
+          "name": "FE HORIZON",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 0.67,
+            "open": 7.56,
+            "prev_high": 7.51,
+            "date": "2026-04-20",
+            "close": 7.43
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "03360",
+          "name": "FE HORIZON",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 0.54,
+            "open": 7.5,
+            "prev_high": 7.46,
+            "date": "2026-04-10",
+            "close": 7.52
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "03360",
+          "name": "FE HORIZON",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 1.11,
+            "open": 7.26,
+            "prev_high": 7.18,
+            "date": "2026-04-08",
+            "close": 7.4
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "03360",
+          "name": "FE HORIZON",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 3.11,
+            "open": 7.29,
+            "prev_high": 7.07,
+            "date": "2026-04-01",
+            "close": 7.12
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "03360",
+          "name": "FE HORIZON",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 1.34,
+            "open": 7.55,
+            "prev_high": 7.45,
+            "date": "2026-03-10",
+            "close": 7.44
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "03958",
+          "name": "DFZQ",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 0.16,
+            "gap_low": 6.12,
+            "gap_high": 6.13,
+            "current": 6.26,
+            "date": "2026-04-29"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "03958",
+          "name": "DFZQ",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 0.85,
+            "gap_low": 5.91,
+            "gap_high": 5.96,
+            "current": 5.97,
+            "date": "2026-04-15"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "03958",
+          "name": "DFZQ",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 1.08,
+            "gap_low": 5.56,
+            "gap_high": 5.62,
+            "current": 5.66,
+            "date": "2026-04-09"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "03958",
+          "name": "DFZQ",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 0.77,
+            "open": 6.55,
+            "prev_high": 6.5,
+            "date": "2026-05-07",
+            "close": 6.05
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "03958",
+          "name": "DFZQ",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 12.97,
+            "open": 6.88,
+            "prev_high": 6.09,
+            "date": "2026-04-20",
+            "close": 6.01
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "03958",
+          "name": "DFZQ",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 0.72,
+            "open": 5.6,
+            "prev_high": 5.56,
+            "date": "2026-04-08",
+            "close": 5.73
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "09966",
+          "name": "ALPHAMAB-B",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 0.33,
+            "gap_low": 9.11,
+            "gap_high": 9.14,
+            "current": 9.85,
+            "date": "2026-05-26"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "09966",
+          "name": "ALPHAMAB-B",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 3.56,
+            "gap_low": 8.7,
+            "gap_high": 9.01,
+            "current": 9.35,
+            "date": "2026-05-22"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "09966",
+          "name": "ALPHAMAB-B",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 0.95,
+            "gap_low": 11.58,
+            "gap_high": 11.69,
+            "current": 11.9,
+            "date": "2026-04-17"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "09966",
+          "name": "ALPHAMAB-B",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 1.01,
+            "gap_low": 10.84,
+            "gap_high": 10.95,
+            "current": 11.23,
+            "date": "2026-04-15"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "09966",
+          "name": "ALPHAMAB-B",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 13.11,
+            "gap_low": 9.46,
+            "gap_high": 10.7,
+            "current": 11.2,
+            "date": "2026-04-14"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "09966",
+          "name": "ALPHAMAB-B",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 4.19,
+            "gap_low": 8.36,
+            "gap_high": 8.71,
+            "current": 9.04,
+            "date": "2026-04-02"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "09966",
+          "name": "ALPHAMAB-B",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 3.6,
+            "gap_low": 8.05,
+            "gap_high": 8.34,
+            "current": 8.93,
+            "date": "2026-03-11"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "09966",
+          "name": "ALPHAMAB-B",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 0.1,
+            "open": 10.16,
+            "prev_high": 10.15,
+            "date": "2026-05-06",
+            "close": 10.03
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "09966",
+          "name": "ALPHAMAB-B",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 0.25,
+            "open": 11.98,
+            "prev_high": 11.95,
+            "date": "2026-04-23",
+            "close": 11.47
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "09966",
+          "name": "ALPHAMAB-B",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 0.99,
+            "open": 12.2,
+            "prev_high": 12.08,
+            "date": "2026-04-20",
+            "close": 11.4
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "09966",
+          "name": "ALPHAMAB-B",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 0.09,
+            "open": 10.85,
+            "prev_high": 10.84,
+            "date": "2026-04-14",
+            "close": 11.2
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "09966",
+          "name": "ALPHAMAB-B",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 0.64,
+            "open": 9.43,
+            "prev_high": 9.37,
+            "date": "2026-04-09",
+            "close": 9.06
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "09966",
+          "name": "ALPHAMAB-B",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 1.7,
+            "open": 8.36,
+            "prev_high": 8.22,
+            "date": "2026-03-24",
+            "close": 8.16
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "09966",
+          "name": "ALPHAMAB-B",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 0.62,
+            "open": 8.1,
+            "prev_high": 8.05,
+            "date": "2026-03-10",
+            "close": 8.65
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01128",
+          "name": "WYNN MACAU",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 2.11,
+            "gap_low": 5.7,
+            "gap_high": 5.82,
+            "current": 5.95,
+            "date": "2026-06-03"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01128",
+          "name": "WYNN MACAU",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 2.47,
+            "gap_low": 5.504,
+            "gap_high": 5.64,
+            "current": 5.9,
+            "date": "2026-06-02"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01128",
+          "name": "WYNN MACAU",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 0.23,
+            "gap_low": 5.417,
+            "gap_high": 5.43,
+            "current": 5.66,
+            "date": "2026-06-01"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01128",
+          "name": "WYNN MACAU",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 0.52,
+            "gap_low": 5.494,
+            "gap_high": 5.523,
+            "current": 5.6,
+            "date": "2026-05-08"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01128",
+          "name": "WYNN MACAU",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 2.32,
+            "gap_low": 5.389,
+            "gap_high": 5.513,
+            "current": 5.59,
+            "date": "2026-05-07"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01128",
+          "name": "WYNN MACAU",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 0.18,
+            "gap_low": 5.427,
+            "gap_high": 5.437,
+            "current": 5.475,
+            "date": "2026-04-08"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01128",
+          "name": "WYNN MACAU",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 0.54,
+            "gap_low": 5.331,
+            "gap_high": 5.36,
+            "current": 5.437,
+            "date": "2026-04-02"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01128",
+          "name": "WYNN MACAU",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 2.75,
+            "gap_low": 5.244,
+            "gap_high": 5.389,
+            "current": 5.427,
+            "date": "2026-03-25"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01128",
+          "name": "WYNN MACAU",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 0.56,
+            "gap_low": 5.187,
+            "gap_high": 5.216,
+            "current": 5.427,
+            "date": "2026-03-24"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01128",
+          "name": "WYNN MACAU",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 1.38,
+            "open": 5.58,
+            "prev_high": 5.504,
+            "date": "2026-06-01",
+            "close": 5.66
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01128",
+          "name": "WYNN MACAU",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 0.71,
+            "open": 5.456,
+            "prev_high": 5.417,
+            "date": "2026-05-29",
+            "close": 5.427
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01128",
+          "name": "WYNN MACAU",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 0.35,
+            "open": 5.523,
+            "prev_high": 5.504,
+            "date": "2026-05-14",
+            "close": 5.485
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01128",
+          "name": "WYNN MACAU",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 0.87,
+            "open": 5.542,
+            "prev_high": 5.494,
+            "date": "2026-05-07",
+            "close": 5.59
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01128",
+          "name": "WYNN MACAU",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 0.52,
+            "open": 5.533,
+            "prev_high": 5.504,
+            "date": "2026-04-22",
+            "close": 5.475
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01128",
+          "name": "WYNN MACAU",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 0.0,
+            "open": 5.456,
+            "prev_high": 5.456,
+            "date": "2026-03-11",
+            "close": 5.523
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01808",
+          "name": "ENTERPRISE DEV",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 18.58,
+            "gap_low": 1.83,
+            "gap_high": 2.17,
+            "current": 2.22
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01808",
+          "name": "ENTERPRISE DEV",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 2.62,
+            "open": 2.74,
+            "prev_high": 2.67
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "03360",
+          "name": "FE HORIZON",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 1.22,
+            "gap_low": 7.37,
+            "gap_high": 7.46,
+            "current": 7.48
+          },
+          "corp_type": ""
+        }
+      ]
+    },
+    {
+      "date": "2026-06-05",
+      "alerts": [
+        {
+          "source": "test",
+          "category": "tech",
+          "code": "00700",
+          "name": "騰訊",
+          "signal": "測試信號",
+          "price": 380.0,
+          "message": "測試訊息",
+          "tags": "test"
+        }
+      ]
+    }
+  ]
+}
