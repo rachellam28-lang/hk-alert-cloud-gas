@@ -249,6 +249,7 @@ async function main(){
           var valStr = val>0 ? '$'+Number(val).toLocaleString() : '';
           html += '<div class="tf-card" onclick="window.open(\'https://www.tradingview.com/chart/?symbol=HKEX%3A'+E(t.code)+'\',\'_blank\')">';
           html += '<div><span class="tf-code">'+E(t.code)+'</span> <span class="tf-name">'+E(t.name||'')+'</span></div>';
+          html += '<div style="font-weight:700;font-size:12px;margin-top:2px;color:var(--text)">'+totalChg.toLocaleString()+'股</div>';
           if(biggest){
             var dirIcon = biggest.dir==='in'?'📥':'📤';
             var dirClr = biggest.dir==='in'?'color:var(--up)':'color:var(--down)';
