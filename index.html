@@ -319,6 +319,7 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
     <a style="font-size:12px;color:var(--primary);margin-left:6px;padding:3px 9px;border:1px solid var(--line);border-radius:6px;white-space:nowrap;font-weight:600" href="./index.html">🇭🇰 港股版 ←</a>
     <a style="font-size:12px;color:#b45309;margin-left:4px;padding:3px 9px;border:1px solid #fcd34d;border-radius:6px;white-space:nowrap;font-weight:600" href="./watchlist.html">⭐ 自選 →</a>
     <a style="font-size:12px;color:#6d28d9;margin-left:4px;padding:3px 9px;border:1px solid #c4b5fd;border-radius:6px;white-space:nowrap;font-weight:600" href="./history.html">🕐 每日訊號 / 公告歷史 →</a>
+    <a style="font-size:12px;color:#b45309;margin-left:4px;padding:3px 9px;border:1px solid #fcd34d;border-radius:6px;white-space:nowrap;font-weight:600" href="./gap_fvg.html">⤴ Gap/FVG →</a>
   </div>
   <div class="topright">
     <span class="dot loading" id="statusDot"></span>
@@ -670,7 +671,7 @@ let searchVal='';
 let activeFilters=new Set();
 let page=0;
 const PAGE_SIZE=200;
-const GAS_URL='https://script.google.com/macros/s/AKfycbxov_zEI5TvIp0Xg4ie937Rci_PEfFrUEyk7YH8RKVPz07i0RNS0fqkythLn-iErjVqZA/exec';
+// (GAS removed — using local data/signals.json)
 let signalMap=new Map();
 let priceMap=new Map();
 let hkexLinkMap=new Map();
@@ -1812,16 +1813,11 @@ async function loadData(){
       .then(t=>{if(t)renderTransfers(t, priceMap);})
       .catch(()=>{});
 
-    // Fetch price data: try GAS first, fallback to static prices.json + signals.json
-    fetch(GAS_URL+'?format=json')
-      .then(r=>r.ok?r.json():null)
-      .then(d=>{
-        if(d&&d.groups) return d;
-        // GAS failed — load both fallback sources in parallel
-        return Promise.all([
-          fetch('./data/prices.json?_='+Date.now()).then(r=>r.ok?r.json():null),
-          fetch('./data/signals.json?_='+Date.now()).then(r=>r.ok?r.json():null)
-        ]).then(([prices, signals])=>{
+    // Fetch price data: use local prices.json + signals.json (GAS removed)
+    Promise.all([
+      fetch('./data/prices.json?_='+Date.now()).then(r=>r.ok?r.json():null),
+      fetch('./data/signals.json?_='+Date.now()).then(r=>r.ok?r.json():null)
+    ]).then(([prices, signals])=>{
           if(prices&&prices.groups&&signals&&signals.groups){
             // Merge signals/corpTypes/hkexLink into prices groups
             const sigByCode = new Map(signals.groups.map(g=>[String(g.code||'').padStart(5,'0'), g]));
@@ -1837,24 +1833,24 @@ async function loadData(){
           }
           if(signals) prices.recentCorps = signals.recentCorps||[];
           return prices;
-        });
-      })
-      .then(d=>{
+    })
+    .then(d=>{
         if(d&&d.groups){
           // Merge GAS data into localStorage cache (9-month retention)
           const cache=pruneCorpCache();
           d.groups.forEach(g=>{
             const ct=g.corpTypes||{};
             const code=String(g.code||"").padStart(5,"0");
+            // P3: CorpTypes are booleans {placement:true/false, rights:true/false, increase:true/false}
+            // Cache presence (not link) since hkexLink is stored separately.
             ['placement','rights','increase'].forEach(t=>{
-              if(ct[t]&&ct[t].link){
-                const date=extractDateFromLink(ct[t].link);
-                if(date){
-                  if(!cache[code]) cache[code]={};
-                  const existing=cache[code][t];
-                  if(!existing||date>existing.date)
-                    cache[code][t]={count:ct[t].count,link:ct[t].link,date};
-                }
+              if(ct[t]){
+                const link = g.hkexLink || '';
+                const date = extractDateFromLink(link);
+                if(!cache[code]) cache[code]={};
+                const existing=cache[code][t];
+                if(!existing) cache[code][t]={count:1, link:link, date:date||new Date().toISOString().slice(0,10)};
+                else {cache[code][t].count=(cache[code][t].count||0)+1;}
               }
             });
           });

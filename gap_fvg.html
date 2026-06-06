@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="zh-HK"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gap/FVG 警報 — 配股供股股票</title>
+<style>
+:root{--bg:#f5f7fa;--surface:#fff;--surface-soft:#f8fafc;--text:#0f172a;--text-soft:#334155;--mute:#64748b;--mute-2:#94a3b8;--line:#e2e8f0;--primary:#0284c7;--primary-soft:#e0f2fe;--up:#15803d;--up-soft:#dcfce7;--up-border:#86efac;--down:#b91c1c;--down-soft:#fee2e2;--down-border:#fca5a5;--violet:#6d28d9;--violet-soft:#ede9fe;--violet-border:#c4b5fd;--amber:#b45309;--amber-soft:#fef3c7;--amber-border:#fcd34d;--radius:10px;--shadow:0 1px 2px rgba(15,23,42,.04)}
+*{box-sizing:border-box}html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font:14px/1.55 Inter,system-ui,"PingFang TC","Noto Sans TC",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
+
+.topbar{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.88);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topbar-inner{max-width:1200px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:10px}
+.logo{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#b45309,#f59e0b);display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px}
+.brand-title{font-size:14px;font-weight:600}.brand-sub{font-size:10px;color:var(--mute)}
+.topright{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--mute)}
+.dot{width:7px;height:7px;border-radius:999px;background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.18)}
+.dot.loading{background:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.18)}
+
+.wrap{max-width:1200px;margin:0 auto;padding:18px 20px 40px}
+.page-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.page-title{font-size:18px;font-weight:700}
+.page-sub{font-size:12px;color:var(--mute);margin-top:2px}
+
+.stock-card{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:14px;overflow:hidden}
+.stock-head{padding:12px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+.stock-head:hover{background:var(--surface-soft)}
+.stock-code{font-weight:700;font-size:15px;color:var(--violet)}
+.stock-name{font-size:13px;color:var(--text-soft);margin-left:8px}
+.stock-corp{font-size:11px;background:var(--amber-soft);color:var(--amber);padding:2px 8px;border-radius:4px;margin-left:8px}
+.stock-count{font-size:12px;color:var(--mute)}
+.stock-body{padding:8px 0}
+
+.alert-row{display:flex;align-items:center;gap:10px;padding:6px 16px;font-size:13px;border-bottom:1px solid var(--line-soft)}
+.alert-row:last-child{border-bottom:none}
+.alert-icon{width:28px;text-align:center;font-size:16px;flex-shrink:0}
+.alert-date{font-size:11px;color:var(--mute-2);min-width:80px}
+.alert-type{font-weight:600;min-width:90px}
+.alert-type.gap{color:var(--up)}
+.alert-type.fvg{color:var(--violet)}
+.alert-value{font-weight:700;min-width:70px;text-align:right}
+.alert-detail{font-size:11px;color:var(--mute)}
+
+.empty{text-align:center;padding:40px 20px;color:var(--mute)}
+.loading{text-align:center;padding:40px 20px;color:var(--mute)}
+</style>
+</head><body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="logo">⤴</div>
+      <div><div class="brand-title">Gap/FVG 警報</div><div class="brand-sub">配股供股 · 向上跳空</div></div>
+    </div>
+    <div class="topright">
+      <span id="statusDot" class="dot loading"></span>
+      <span id="updatedAt">載入中…</span>
+      <a href="./">← 港股版</a>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="page-head">
+    <div><div class="page-title">📊 向上跳空缺口 / FVG 警報</div><div class="page-sub">追蹤近期配股/供股股票嘅向上 gap 同 Fair Value Gap</div></div>
+  </div>
+
+  <div id="content"><div class="loading">載入中…</div></div>
+</div>
+
+<script>
+var esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+async function load(){
+  var dot = document.getElementById('statusDot');
+  var upd = document.getElementById('updatedAt');
+  dot.className = 'dot loading';
+  upd.textContent = '載入中…';
+
+  try {
+    var r = await fetch('./data/alerts.json?_='+Date.now());
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    var data = await r.json();
+    var alerts = data.alerts || [];
+
+    // Group by stock code
+    var byCode = {};
+    alerts.forEach(function(a){
+      var p = a.payload || {};
+      var code = a.code || p.code || '';
+      if(!byCode[code]) byCode[code] = {code: code, name: p.name||'', corp: p.corp_type||'', items: []};
+      var sig = p.signal || {};
+      byCode[code].items.push({
+        type: a.signal || sig.type || '',
+        date: sig.date || a.created_at?.slice(0,10) || '',
+        gap_pct: sig.gap_pct,
+        fvg_pct: sig.fvg_pct,
+        open: sig.open,
+        close: sig.close,
+        prev_high: sig.prev_high,
+        gap_low: sig.gap_low,
+        gap_high: sig.gap_high,
+        current: sig.current
+      });
+    });
+
+    var stocks = Object.values(byCode).sort((a,b)=>b.items.length - a.items.length);
+
+    if(!stocks.length){
+      document.getElementById('content').innerHTML = '<div class="empty">暫無 Gap/FVG 警報</div>';
+    } else {
+      var html = '';
+      stocks.forEach(function(s){
+        var gaps = s.items.filter(i=>i.type==='向上跳空缺口');
+        var fvgs = s.items.filter(i=>i.type==='向上FVG');
+        // sort by date descending
+        s.items.sort((a,b)=>b.date.localeCompare(a.date));
+
+        html += '<div class="stock-card">';
+        html += '<div class="stock-head" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\\'none\\'?\'\':\'none\'">';
+        html += '<div><span class="stock-code">'+esc(s.code)+'</span><span class="stock-name">'+esc(s.name)+'</span>';
+        if(s.corp) html += '<span class="stock-corp">'+esc(s.corp)+'</span>';
+        html += '</div>';
+        html += '<div class="stock-count">🔼'+gaps.length+' 📈'+fvgs.length+'</div>';
+        html += '</div>';
+
+        html += '<div class="stock-body">';
+        s.items.forEach(function(item){
+          var isGap = item.type==='向上跳空缺口';
+          html += '<div class="alert-row">';
+          html += '<div class="alert-icon">'+(isGap?'🔼':'📈')+'</div>';
+          html += '<div class="alert-date">'+esc(item.date)+'</div>';
+          html += '<div class="alert-type '+(isGap?'gap':'fvg')+'">'+esc(item.type)+'</div>';
+          if(isGap){
+            html += '<div class="alert-value" style="color:var(--up)">+'+item.gap_pct+'%</div>';
+            html += '<div class="alert-detail">開 '+item.open+' vs 前高 '+item.prev_high+' → 收 '+item.close+'</div>';
+          } else {
+            html += '<div class="alert-value" style="color:var(--violet)">+'+item.fvg_pct+'%</div>';
+            html += '<div class="alert-detail">gap '+item.gap_low+'–'+item.gap_high+' → 現價 '+item.current+'</div>';
+          }
+          html += '</div>';
+        });
+        html += '</div></div>';
+      });
+      document.getElementById('content').innerHTML = html;
+    }
+
+    dot.className = 'dot';
+    upd.textContent = '更新於 '+data.updated;
+  } catch(e){
+    dot.className = 'dot error';
+    upd.textContent = '載入失敗';
+    document.getElementById('content').innerHTML = '<div class="empty" style="color:#ef4444">載入失敗：'+esc(e.message)+'</div>';
+  }
+}
+
+load();
+</script>
+</body></html>
