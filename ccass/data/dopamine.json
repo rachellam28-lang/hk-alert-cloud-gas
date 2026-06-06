@@ -1,95 +1,35 @@
 {
-  "date": "2026-06-06 18:18:26",
-  "version": 4,
-  "dopamine": 66.7,
-  "level": "high",
-  "spike_threshold_pct": 3.0,
-  "consecutive_days": 2,
+  "date": "2026-06-06 23:32:44",
+  "version": 5,
+  "source": "futu",
+  "dopamine": 52.1,
+  "level": "normal",
+  "spike_threshold_pct": 5.0,
+  "consecutive_days": 3,
   "components": {
-    "longbridge_score": 78.5,
-    "market_temperature": 57,
-    "market_temperature_desc": "Temp Comfortable & Gradually Rising",
-    "market_sentiment": 36,
-    "market_valuation": 79,
-    "watched_stocks_count": 30,
-    "hot_stocks_count": 50,
-    "discussed_stocks_count": 30,
-    "top_watched": [
-      {
-        "code": "01810",
-        "name": "小米集团-W",
-        "last_done": "27.800",
-        "chg": "-0.0204"
-      },
-      {
-        "code": "09988",
-        "name": "阿里巴巴-W",
-        "last_done": "122.400",
-        "chg": "-0.0089"
-      },
-      {
-        "code": "00700",
-        "name": "腾讯控股",
-        "last_done": "453.200",
-        "chg": "-0.0126"
-      },
-      {
-        "code": "09992",
-        "name": "泡泡玛特",
-        "last_done": "176.400",
-        "chg": "-0.0062"
-      },
-      {
-        "code": "01879",
-        "name": "曦智科技-P",
-        "last_done": "551.000",
-        "chg": "-0.0325"
-      },
-      {
-        "code": "02476",
-        "name": "胜宏科技",
-        "last_done": "368.600",
-        "chg": "-0.1118"
-      },
-      {
-        "code": "02513",
-        "name": "智谱",
-        "last_done": "1297.000",
-        "chg": "-0.0905"
-      },
-      {
-        "code": "00981",
-        "name": "中芯国际",
-        "last_done": "75.650",
-        "chg": "-0.0718"
-      },
-      {
-        "code": "00100",
-        "name": "MINIMAX-W",
-        "last_done": "553.000",
-        "chg": "-0.1665"
-      },
-      {
-        "code": "00068",
-        "name": "群核科技",
-        "last_done": "17.200",
-        "chg": "-0.0434"
-      }
-    ],
-    "longbridge_error": null,
-    "google_trends_score": 61.5,
-    "hsi_regime_score": 56.2,
-    "hsi_last_close": 24961.95,
-    "hsi_data_days": 45,
-    "realized_volatility_annualized_pct": 16.36,
-    "volatility_score": 59.1,
-    "trend_strength": 50.8,
-    "daily_range_ratio": 1.157,
-    "range_score": 65.7,
-    "hsi_volume_ratio": 0.978,
-    "hsi_volume_score": 47.8
+    "stocks_sampled": 635,
+    "breadth_pct": 24.3,
+    "up_count": 154,
+    "down_count": 446,
+    "flat_count": 35,
+    "avg_change_pct": -1.3,
+    "abs_avg_change_pct": 2.15,
+    "avg_volume_ratio": 1.276,
+    "median_volume_ratio": 0.826,
+    "avg_turnover": 440528945.02,
+    "total_turnover": 279735880090.0,
+    "high_volume_ratio_count": 112,
+    "significant_movers_count": 138,
+    "breadth_score": 12.2,
+    "volume_enthusiasm_score": 66.6,
+    "momentum_score": 63.0,
+    "turnover_heat_score": 92.9,
+    "weight_breadth": 35,
+    "weight_volume": 25,
+    "weight_momentum": 20,
+    "weight_turnover": 20
   },
   "error": null,
-  "level_emoji": "🔥",
-  "level_desc": "熱市+散戶關注 — 門檻放鬆"
+  "level_emoji": "⚖️",
+  "level_desc": "正常市況 — 標準門檻"
 }

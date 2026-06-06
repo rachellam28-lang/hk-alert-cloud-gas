@@ -1,17 +1,13 @@
 """
-多巴胺系統 v4 — 三層真實數據，自動調 CCASS alert 門檻。
+多巴胺系統 v5 — 富途 100%，真實散戶交易數據。
 
-  A. 長橋人氣榜（40%）— Longbridge MCP API — 逐隻股票散戶關注
-     1. market_temperature — 市場溫度 (0-100)
-     2. 關注度排名 (watchlist_heat-hk) — TOP 30
-     3. 總熱度排名 (hot_all-hk) — TOP 50
+Data source: Futu OpenD gateway (127.0.0.1:11111)
 
-  B. 恆指市場 regime（30%）— yfinance ^HSI — 技術面波動
-     4. Realized volatility (20-day annualized)
-     5. Trend strength + range + volume
-
-  C. Google Trends 大市熱度（30%）— 宏觀零售搜尋情緒
-     6. 「港股」「股票」「牛熊證」HK 搜尋熱度
+Metrics (all from Futu market snapshots of 港股通 stocks):
+  1. Market breadth — % of stocks with positive daily change (weight 35%)
+  2. Volume enthusiasm — average volume ratio vs normal (weight 25%)
+  3. Momentum strength — average absolute change rate (weight 20%)
+  4. Turnover heat — average turnover ratio (weight 20%)
 
 Output: dopamine 0-100
   0-30  → 低多巴胺（凍市+散戶離場）：收緊門檻
@@ -25,300 +21,229 @@ Threshold mapping:
 from __future__ import annotations
 
 import json
-import math
-import subprocess
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
-from typing import Optional
 
-import yfinance as yf
 import numpy as np
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 
-# ═══════════════════════════════════════════════════════════════════
-# Token loading
-# ═══════════════════════════════════════════════════════════════════
+# ── Futu connection ──
+_FUTU_HOST = "127.0.0.1"
+_FUTU_PORT = 11111
 
-def _load_longbridge_token() -> str:
-    """Read LONGBRIDGE_ACCESS_TOKEN from .env."""
-    env_paths = [
-        DATA_DIR.parent / ".env",
-        Path.home() / "Desktop" / "automatic" / "ccass-debug" / ".env",
-    ]
-    for p in env_paths:
-        if p.exists():
-            with open(p) as f:
-                for line in f:
-                    if "LONGBRIDGE_ACCESS_TOKEN" in line:
-                        return line.strip().split("=", 1)[1]
-    return ""
+
+def _get_quote_ctx():
+    """Get a fresh OpenQuoteContext. Caller must close it."""
+    from futu import OpenQuoteContext
+    return OpenQuoteContext(_FUTU_HOST, _FUTU_PORT)
 
 
 # ═══════════════════════════════════════════════════════════════════
-# A. 長橋人氣榜 (50%) — 真實散戶關注數據
+# Data fetching
 # ═══════════════════════════════════════════════════════════════════
 
-_LB_TOKEN = None
-
-
-def _lb_token():
-    global _LB_TOKEN
-    if _LB_TOKEN is None:
-        _LB_TOKEN = _load_longbridge_token()
-    return _LB_TOKEN
-
-
-def _lb_mcp(method: str, args: dict | None = None) -> dict:
-    """Call Longbridge MCP tool."""
-    token = _lb_token()
-    if not token:
-        return {}
-    body = {
-        "jsonrpc": "2.0", "id": 1, "method": "tools/call",
-        "params": {"name": method, "arguments": args or {}},
-    }
+def fetch_ganggu_stocks() -> list[str]:
+    """Get all 港股通 stock codes."""
+    q = _get_quote_ctx()
     try:
-        auth = "Authorization: Bearer " + token
-        r = subprocess.run([
-            "curl", "-s", "-X", "POST", "https://mcp.longbridge.com",
-            "-H", "Content-Type: application/json",
-            "-H", "Accept: application/json, text/event-stream",
-            "-H", auth,
-            "-d", json.dumps(body),
-        ], capture_output=True, text=True, timeout=30)
-        raw = r.stdout.strip()
-        if raw.startswith("data: "):
-            raw = raw[6:]
-        res = json.loads(raw)
-        if "error" in res:
-            return {}
-        content = res.get("result", {}).get("content", [])
-        return json.loads(content[0]["text"]) if content else {}
-    except Exception as e:
-        print(f"[dopamine] Longbridge MCP error ({method}): {e}", file=sys.stderr)
-        return {}
+        from futu import RET_OK, Market, Plate
+        ret, data = q.get_plate_stock("HK.GangGuTong")
+        if ret != RET_OK:
+            print(f"[dopamine] get_plate_stock failed: {data}", file=sys.stderr)
+            return []
+        return data["code"].tolist()
+    finally:
+        q.close()
 
 
-def fetch_longbridge_sentiment() -> dict:
+def fetch_market_snapshots(codes: list[str]) -> dict:
     """
-    Fetch Longbridge market temperature + popularity leaderboards.
-    Returns dict with temperature_score and popularity stats.
+    Fetch market snapshots in batches (max 200 per call).
+    Returns aggregated metrics dict.
     """
-    result = {"temperature": 50, "hot_stocks_count": 0, "watched_stocks_count": 0,
-              "discussed_stocks_count": 0, "top_watched": [], "error": None}
+    from futu import RET_OK
 
+    BATCH = 200
+    all_change_rates = []
+    all_volume_ratios = []
+    all_turnover_ratios = []
+    up_count = 0
+    down_count = 0
+    flat_count = 0
+    total = 0
+    total_turnover = 0.0
+    total_volume = 0.0
+
+    q = _get_quote_ctx()
+    data = {}
     try:
-        # 1. Market temperature
-        temp = _lb_mcp("market_temperature", {"market": "HK"})
-        if temp:
-            result["temperature"] = temp.get("temperature", 50)
-            result["temperature_desc"] = temp.get("description", "")
-            result["sentiment"] = temp.get("sentiment", 50)
-            result["valuation"] = temp.get("valuation", 50)
-
-        # 2. Watchlist heat (關注度) — most important for retail attention
-        watchlist = _lb_mcp("rank_list", {"key": "ib_watchlist_heat-hk", "market": "HK", "size": 30})
-        items = watchlist.get("lists", watchlist.get("items", []))
-        result["watched_stocks_count"] = len(items)
-        result["top_watched"] = [
-            {"code": i.get("code", ""), "name": i.get("name", ""),
-             "last_done": i.get("last_done", ""), "chg": i.get("chg", "")}
-            for i in items[:10]
-        ]
-
-        # 3. Hot all (總熱度)
-        hot = _lb_mcp("rank_list", {"key": "ib_hot_all-hk", "market": "HK", "size": 50})
-        hot_items = hot.get("lists", hot.get("items", []))
-        result["hot_stocks_count"] = len(hot_items)
-
-        # 4. Discuss heat (熱議)
-        discuss = _lb_mcp("rank_list", {"key": "ib_discuss_heat-hk", "market": "HK", "size": 30})
-        disc_items = discuss.get("lists", discuss.get("items", []))
-        result["discussed_stocks_count"] = len(disc_items)
-
-    except Exception as e:
-        result["error"] = str(e)
-        print(f"[dopamine] Longbridge fetch failed: {e}", file=sys.stderr)
-
-    return result
-
-
-def compute_longbridge_score(lb: dict) -> float:
-    """
-    Convert Longbridge sentiment data to 0-100 attention score.
-
-    Components:
-      - market_temperature: directly 0-100, weight 50%
-      - watchlist heat density: more watched stocks = higher attention, weight 30%
-      - discuss heat density: more discussion = higher FOMO, weight 20%
-    """
-    temp = lb.get("temperature", 50)
-
-    # Watchlist: 30 max, normalize to 0-100
-    watched = lb.get("watched_stocks_count", 0)
-    watch_score = min(100, watched / 30 * 100)
-
-    # Discussion: 30 max, normalize
-    discussed = lb.get("discussed_stocks_count", 0)
-    discuss_score = min(100, discussed / 30 * 100)
-
-    return temp * 0.50 + watch_score * 0.30 + discuss_score * 0.20
-
-
-# ═══════════════════════════════════════════════════════════════════
-# B. Google Trends 大市熱度（30%）— 宏觀零售搜尋情緒
-# ═══════════════════════════════════════════════════════════════════
-
-_GT_KEYWORDS = ["港股", "股票", "牛熊證"]
-_GT_GEO = "HK"
-_GT_LOOKBACK = "today 3-m"
-
-
-def fetch_google_trends_score() -> float:
-    """Returns retail attention score 0-100 from Google Trends HK."""
-    try:
-        from pytrends.request import TrendReq
-    except ImportError:
-        return 50.0
-
-    try:
-        pytrends = TrendReq(hl="zh-HK", tz=360, timeout=10)
-        scores = []
-        for kw in _GT_KEYWORDS:
-            try:
-                pytrends.build_payload([kw], timeframe=_GT_LOOKBACK, geo=_GT_GEO)
-                df = pytrends.interest_over_time()
-                if df is None or df.empty or kw not in df.columns:
-                    continue
-                series = df[kw].values
-                if len(series) < 14:
-                    continue
-                recent_7d = np.mean(series[-7:])
-                baseline_30d = np.mean(series[-30:]) if len(series) >= 30 else np.mean(series)
-                if baseline_30d > 0:
-                    ratio = recent_7d / baseline_30d
-                else:
-                    ratio = 1.0
-                normalized = max(0, min(100, (ratio - 0.5) / 1.5 * 100))
-                scores.append(normalized)
-            except Exception:
+        for i in range(0, len(codes), BATCH):
+            batch = codes[i:i + BATCH]
+            ret, snap = q.get_market_snapshot(batch)
+            if ret != RET_OK:
+                print(f"[dopamine] snapshot batch {i} failed: {snap}", file=sys.stderr)
                 continue
-        if not scores:
-            return 50.0
-        return float(np.mean(scores))
-    except Exception as e:
-        print(f"[dopamine] Google Trends failed: {e}", file=sys.stderr)
-        return 50.0
 
+            total += len(snap)
 
-# ═══════════════════════════════════════════════════════════════════
-# C. 恆指市場 regime（30%）— yfinance ^HSI
-# ═══════════════════════════════════════════════════════════════════
+            # Change rate: compute from last_price / prev_close_price
+            if "last_price" in snap.columns and "prev_close_price" in snap.columns:
+                lp = snap["last_price"]
+                pc = snap["prev_close_price"]
+                mask = pc > 0
+                changes = np.where(mask, (lp - pc) / pc * 100, 0.0)
+                all_change_rates.extend(changes.tolist())
+                up_count += int((changes > 0).sum())
+                down_count += int((changes < 0).sum())
+                flat_count += int((changes == 0).sum())
 
-def fetch_hsi_history(lookback_days: int = 60) -> Optional[dict]:
-    try:
-        ticker = yf.Ticker("^HSI")
-        end = datetime.now()
-        start = end - timedelta(days=lookback_days + 10)
-        df = ticker.history(start=start.strftime("%Y-%m-%d"), end=end.strftime("%Y-%m-%d"))
-        if df.empty or len(df) < 20:
-            return None
-        return {
-            "dates": [str(d.date()) for d in df.index],
-            "close": df["Close"].values.tolist(),
-            "high": df["High"].values.tolist(),
-            "low": df["Low"].values.tolist(),
-            "volume": df["Volume"].values.tolist(),
-        }
-    except Exception as e:
-        print(f"[dopamine] yfinance ^HSI failed: {e}", file=sys.stderr)
-        return None
+            # Volume ratio
+            if "volume_ratio" in snap.columns:
+                vr = snap["volume_ratio"].dropna().values
+                all_volume_ratios.extend(vr.tolist())
 
+            # Turnover
+            if "turnover" in snap.columns:
+                to = snap["turnover"].dropna().values
+                all_turnover_ratios.extend(to.tolist())
+                total_turnover += float(to.sum())
 
-def realized_volatility(closes: list[float], window: int = 20) -> float:
-    if len(closes) < window + 1:
-        return 0.0
-    recent = closes[-(window + 1):]
-    log_returns = [math.log(recent[i] / recent[i - 1]) for i in range(1, len(recent))]
-    daily_vol = np.std(log_returns) if log_returns else 0.0
-    return daily_vol * math.sqrt(252) * 100
+            # Volume
+            if "volume" in snap.columns:
+                total_volume += float(snap["volume"].dropna().sum())
 
+            # Market date from update_time
+            if "update_time" in snap.columns:
+                ut = snap["update_time"].dropna()
+                if len(ut) > 0:
+                    data["market_date"] = str(ut.iloc[0])[:10]
 
-def trend_strength(closes: list[float], ma_window: int = 20) -> float:
-    if len(closes) < ma_window + 5:
-        return 50.0
-    ma20 = np.mean(closes[-ma_window:])
-    current = closes[-1]
-    distance_pct = abs(current - ma20) / ma20 * 100
-    ma5_recent = np.mean(closes[-5:])
-    slope_pct = (ma5_recent - ma20) / ma20 * 100
-    capped_dist = min(distance_pct, 10.0)
-    score = 50 + slope_pct * 5 + capped_dist * 2
-    return max(0.0, min(100.0, score))
+    finally:
+        q.close()
 
+    if total == 0:
+        return {"error": "No snapshot data"}
 
-def daily_range_ratio(highs: list[float], lows: list[float], closes: list[float]) -> float:
-    if len(highs) < 20:
-        return 1.0
-    ranges = [(h - l) / c * 100 for h, l, c in zip(highs, lows, closes)]
-    recent_5 = np.mean(ranges[-5:]) if ranges[-5:] else 0
-    full_20 = np.mean(ranges[-20:]) if ranges[-20:] else 0
-    if full_20 == 0:
-        return 1.0
-    return recent_5 / full_20
+    breadth_pct = up_count / total * 100 if total > 0 else 50
+    avg_change = float(np.mean(all_change_rates)) if all_change_rates else 0.0
+    abs_change = float(np.mean(np.abs(all_change_rates))) if all_change_rates else 0.0
+    avg_vr = float(np.mean(all_volume_ratios)) if all_volume_ratios else 0.5
+    avg_turnover = float(np.mean(all_turnover_ratios)) if all_turnover_ratios else 0.0
+    median_vr = float(np.median(all_volume_ratios)) if all_volume_ratios else 0.5
 
+    # High activity threshold: volume ratio > 1.5
+    high_vr_count = int((np.array(all_volume_ratios) > 1.5).sum()) if all_volume_ratios else 0
 
-def volume_ratio(volumes: list[float]) -> float:
-    if len(volumes) < 20:
-        return 1.0
-    vol5 = np.mean(volumes[-5:]) if volumes[-5:] else 0
-    vol20 = np.mean(volumes[-20:]) if volumes[-20:] else 0
-    if vol20 == 0:
-        return 1.0
-    return vol5 / vol20
+    # Significant movers: |change| > 3%
+    sig_movers = int((np.abs(all_change_rates) > 3).sum()) if all_change_rates else 0
 
-
-def compute_hsi_regime(closes, highs, lows, volumes) -> tuple[float, dict]:
-    rv = realized_volatility(closes, window=20)
-    if rv <= 10:
-        vol_score = rv / 10 * 40
-    elif rv <= 20:
-        vol_score = 40 + (rv - 10) / 10 * 30
-    elif rv <= 35:
-        vol_score = 70 + (rv - 20) / 15 * 20
-    else:
-        vol_score = 90 + min((rv - 35) / 15 * 10, 10)
-
-    trend = trend_strength(closes)
-    range_r = daily_range_ratio(highs, lows, closes)
-    range_score = max(0, min(100, (range_r - 0.5) * 100))
-    vol_r = volume_ratio(volumes)
-    hsi_vol_score = max(0, min(100, (vol_r - 0.5) * 100))
-
-    regime = (vol_score * 0.35 + trend * 0.30 + range_score * 0.20 + hsi_vol_score * 0.15)
-
-    details = {
-        "realized_volatility_annualized_pct": round(rv, 2),
-        "volatility_score": round(vol_score, 1),
-        "trend_strength": round(trend, 1),
-        "daily_range_ratio": round(range_r, 3),
-        "range_score": round(range_score, 1),
-        "hsi_volume_ratio": round(vol_r, 3),
-        "hsi_volume_score": round(hsi_vol_score, 1),
+    return {
+        "stocks_sampled": total,
+        "breadth_pct": round(breadth_pct, 1),
+        "up_count": up_count,
+        "down_count": down_count,
+        "flat_count": flat_count,
+        "avg_change_pct": round(avg_change, 2),
+        "abs_avg_change_pct": round(abs_change, 2),
+        "avg_volume_ratio": round(avg_vr, 3),
+        "median_volume_ratio": round(median_vr, 3),
+        "avg_turnover": round(avg_turnover, 2),
+        "total_turnover": round(total_turnover, 2),
+        "high_volume_ratio_count": high_vr_count,
+        "significant_movers_count": sig_movers,
     }
-    return regime, details
 
 
 # ═══════════════════════════════════════════════════════════════════
-# 主計算
+# Score computation
+# ═══════════════════════════════════════════════════════════════════
+
+def compute_dopamine_score(data: dict) -> tuple[float, dict]:
+    """
+    Convert market snapshot data to 0-100 dopamine score.
+
+    Four components:
+      1. Breadth (35%): % of stocks positive today
+      2. Volume enthusiasm (25%): avg volume ratio vs baseline 1.0
+      3. Momentum (20%): avg absolute change rate
+      4. Turnover heat (20%): normalized from avg turnover
+    """
+    if "error" in data:
+        return 50.0, {"error": data["error"]}
+
+    # ── 1. Breadth score (35%) ──
+    breadth = data["breadth_pct"]
+    if breadth >= 70:
+        breadth_score = 80 + min(20, (breadth - 70) / 30 * 20)
+    elif breadth >= 55:
+        breadth_score = 50 + (breadth - 55) / 15 * 30
+    elif breadth >= 40:
+        breadth_score = 20 + (breadth - 40) / 15 * 30
+    else:
+        breadth_score = max(0, breadth / 40 * 20)
+
+    # ── 2. Volume enthusiasm (25%) ──
+    vr = data["avg_volume_ratio"]
+    if vr >= 1.5:
+        vr_score = 80 + min(20, (vr - 1.5) / 1.0 * 20)
+    elif vr >= 1.0:
+        vr_score = 50 + (vr - 1.0) / 0.5 * 30
+    elif vr >= 0.7:
+        vr_score = 20 + (vr - 0.7) / 0.3 * 30
+    else:
+        vr_score = max(0, vr / 0.7 * 20)
+
+    # ── 3. Momentum (20%) ──
+    abs_chg = data["abs_avg_change_pct"]
+    if abs_chg >= 3.0:
+        mom_score = 80 + min(20, (abs_chg - 3.0) / 3.0 * 20)
+    elif abs_chg >= 1.5:
+        mom_score = 50 + (abs_chg - 1.5) / 1.5 * 30
+    elif abs_chg >= 0.5:
+        mom_score = 20 + (abs_chg - 0.5) / 1.0 * 30
+    else:
+        mom_score = max(0, abs_chg / 0.5 * 20)
+
+    # ── 4. Turnover heat (20%) ──
+    # Raw avg turnover is usually very large, normalize relative to stock count
+    avg_to_per_stock = data["avg_turnover"] if data["avg_turnover"] > 0 else 0
+    # Typical range: 0 to billions. Use log scale.
+    if avg_to_per_stock > 0:
+        log_to = np.log10(avg_to_per_stock)
+        # log10(1e6)=6 -> score 20, log10(1e8)=8 -> score 60, log10(1e9)=9 -> score 90
+        turnover_score = max(0, min(100, (log_to - 4) / 5 * 100))
+    else:
+        turnover_score = 20
+
+    # ── Combined ──
+    dopamine = (
+        breadth_score * 0.35
+        + vr_score * 0.25
+        + mom_score * 0.20
+        + turnover_score * 0.20
+    )
+
+    scores = {
+        "breadth_score": round(breadth_score, 1),
+        "volume_enthusiasm_score": round(vr_score, 1),
+        "momentum_score": round(mom_score, 1),
+        "turnover_heat_score": round(turnover_score, 1),
+    }
+
+    return round(dopamine, 1), scores
+
+
+# ═══════════════════════════════════════════════════════════════════
+# Main
 # ═══════════════════════════════════════════════════════════════════
 
 def compute_dopamine() -> dict:
     result = {
         "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "version": 4,
+        "version": 5,
+        "source": "futu",
         "dopamine": 50.0,
         "level": "normal",
         "spike_threshold_pct": 5.0,
@@ -327,25 +252,21 @@ def compute_dopamine() -> dict:
         "error": None,
     }
 
-    # ── A. Longbridge sentiment (40%) ──
-    lb = fetch_longbridge_sentiment()
-    lb_score = compute_longbridge_score(lb)
+    print("[dopamine v5] Fetching 港股通 stock list...", file=sys.stderr)
+    codes = fetch_ganggu_stocks()
+    if not codes:
+        result["error"] = "Failed to fetch stock list from Futu"
+        return result
+    print(f"[dopamine v5] {len(codes)} stocks, fetching snapshots...", file=sys.stderr)
 
-    # ── B. Google Trends 大市熱度 (30%) ──
-    gt_score = fetch_google_trends_score()
-
-    # ── C. HSI regime (30%) ──
-    hsi = fetch_hsi_history()
-    if hsi is None:
-        result["error"] = "Failed to fetch ^HSI"
+    data = fetch_market_snapshots(codes)
+    if "error" in data:
+        result["error"] = data["error"]
         return result
 
-    hsi_score, hsi_details = compute_hsi_regime(
-        hsi["close"], hsi["high"], hsi["low"], hsi["volume"]
-    )
+    print(f"[dopamine v5] {data['stocks_sampled']} sampled, computing score...", file=sys.stderr)
 
-    # ── Combined 40/30/30 ──
-    dopamine = lb_score * 0.40 + gt_score * 0.30 + hsi_score * 0.30
+    dopamine, scores = compute_dopamine_score(data)
 
     # Level & thresholds
     if dopamine >= 60:
@@ -353,7 +274,7 @@ def compute_dopamine() -> dict:
         spike_threshold_pct = 3.0
         consecutive_days = 2
         level_emoji = "🔥"
-        desc = "熱市+散戶關注 — 門檻放鬆"
+        desc = "熱市+散戶活躍 — 門檻放鬆"
     elif dopamine >= 30:
         level = "normal"
         spike_threshold_pct = 5.0
@@ -368,31 +289,19 @@ def compute_dopamine() -> dict:
         desc = "凍市+散戶離場 — 門檻收緊"
 
     result.update({
-        "dopamine": round(dopamine, 1),
+        "dopamine": dopamine,
         "level": level,
         "level_emoji": level_emoji,
         "level_desc": desc,
         "spike_threshold_pct": spike_threshold_pct,
         "consecutive_days": consecutive_days,
         "components": {
-            # Longbridge (real per-stock attention)
-            "longbridge_score": round(lb_score, 1),
-            "market_temperature": lb.get("temperature", 50),
-            "market_temperature_desc": lb.get("temperature_desc", ""),
-            "market_sentiment": lb.get("sentiment", 50),
-            "market_valuation": lb.get("valuation", 50),
-            "watched_stocks_count": lb.get("watched_stocks_count", 0),
-            "hot_stocks_count": lb.get("hot_stocks_count", 0),
-            "discussed_stocks_count": lb.get("discussed_stocks_count", 0),
-            "top_watched": lb.get("top_watched", []),
-            "longbridge_error": lb.get("error"),
-            # Google Trends (macro retail sentiment)
-            "google_trends_score": round(gt_score, 1),
-            # HSI regime
-            "hsi_regime_score": round(hsi_score, 1),
-            "hsi_last_close": round(hsi["close"][-1], 2) if hsi["close"] else None,
-            "hsi_data_days": len(hsi["close"]),
-            **hsi_details,
+            **data,
+            **scores,
+            "weight_breadth": 35,
+            "weight_volume": 25,
+            "weight_momentum": 20,
+            "weight_turnover": 20,
         },
     })
 
@@ -418,30 +327,24 @@ if __name__ == "__main__":
     spike = result["spike_threshold_pct"]
     cons = result["consecutive_days"]
 
-    print(f"\n{emoji} 多巴胺 v4: {d:.1f} ({lvl})")
+    print(f"\n{emoji} 多巴胺 v5 (富途100%): {d:.1f} ({lvl})")
     print(f"   {desc}")
     print(f"   spike≥{spike:.1f}% | consecutive≥{cons}d")
     print(f"   → saved to {path}\n")
 
     c = result["components"]
-    print(f"── 長橋人氣 (40%) — 逐隻股票散戶關注 ──")
-    print(f"   longbridge_score:    {c['longbridge_score']:.1f}")
-    print(f"   market_temperature:  {c['market_temperature']}/100 — {c.get('market_temperature_desc','')}")
-    print(f"   sentiment:           {c['market_sentiment']}/100")
-    print(f"   關注度榜:             {c['watched_stocks_count']}隻上榜")
-    print(f"   總熱度榜:             {c['hot_stocks_count']}隻上榜")
-    print(f"   熱議榜:               {c['discussed_stocks_count']}隻上榜")
-    print(f"   散戶最關注 TOP 5:")
-    for s in c.get("top_watched", [])[:5]:
-        print(f"     {s['code']} {s['name']} ${s['last_done']} chg={s['chg']}")
+    print(f"── 富途市場掃描 ({c.get('stocks_sampled', 0)} stocks via 港股通) ──")
+    print(f"   漲跌比: {c.get('up_count', 0)}↑ / {c.get('down_count', 0)}↓ / {c.get('flat_count', 0)}─")
+    print(f"   廣度:   {c.get('breadth_pct', 0)}%")
+    print(f"   平均漲跌幅: {c.get('avg_change_pct', 0):+.2f}% (abs: {c.get('abs_avg_change_pct', 0):.2f}%)")
+    print(f"   平均量比:   {c.get('avg_volume_ratio', 0):.2f} (median: {c.get('median_volume_ratio', 0):.2f})")
+    print(f"   高量比(>1.5): {c.get('high_volume_ratio_count', 0)}隻")
+    print(f"   顯著波動(>3%): {c.get('significant_movers_count', 0)}隻")
 
-    print(f"\n── Google Trends 大市熱度 (30%) — 宏觀零售搜尋情緒 ──")
-    print(f"   google_trends_score: {c['google_trends_score']:.1f}")
-
-    print(f"\n── 恆指 regime (30%) ──")
-    print(f"   hsi_regime_score: {c['hsi_regime_score']:.1f}")
-    print(f"   HSI: {c['hsi_last_close']}")
-    print(f"   volatility: {c['realized_volatility_annualized_pct']}%")
-    print(f"   trend: {c['trend_strength']}")
-    print(f"   range_ratio: {c['daily_range_ratio']}")
-    print(f"   volume_ratio: {c['hsi_volume_ratio']}")
+    print(f"\n── 評分細項 ──")
+    print(f"   廣度分:       {c.get('breadth_score', 0):.1f} (×35%)")
+    print(f"   量能分:       {c.get('volume_enthusiasm_score', 0):.1f} (×25%)")
+    print(f"   動量分:       {c.get('momentum_score', 0):.1f} (×20%)")
+    print(f"   成交熱度分:   {c.get('turnover_heat_score', 0):.1f} (×20%)")
+    print(f"   ───────────────────────")
+    print(f"   總分:         {d:.1f}")
