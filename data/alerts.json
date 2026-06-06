@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-06T09:31:59.484834+08:00",
+  "updated": "2026-06-06T09:41:08.309235+08:00",
   "count": 50,
   "alerts": [
     {
@@ -7,7 +7,7 @@
       "category": "gap_fvg",
       "signal": "向上FVG",
       "message": "01860 MOBVISTA 📈FVG 2.39% (2026-05-29)",
-      "created_at": "2026-06-06T09:31:59.181655+08:00",
+      "created_at": "2026-06-06T09:41:07.766166+08:00",
       "payload_json": "{\"code\": \"01860\", \"name\": \"MOBVISTA\", \"signal\": {\"type\": \"向上FVG\", \"fvg_pct\": 2.39, \"gap_low\": 14.25, \"gap_high\": 14.59, \"current\": 16.16, \"date\": \"2026-05-29\"}, \"corp_type\": \"\"}",
       "payload": {
         "code": "01860",
@@ -28,7 +28,7 @@
       "category": "gap_fvg",
       "signal": "向上FVG",
       "message": "01860 MOBVISTA 📈FVG 5.74% (2026-05-05)",
-      "created_at": "2026-06-06T09:31:59.179661+08:00",
+      "created_at": "2026-06-06T09:41:07.765168+08:00",
       "payload_json": "{\"code\": \"01860\", \"name\": \"MOBVISTA\", \"signal\": {\"type\": \"向上FVG\", \"fvg_pct\": 5.74, \"gap_low\": 16.73, \"gap_high\": 17.69, \"current\": 18.15, \"date\": \"2026-05-05\"}, \"corp_type\": \"\"}",
       "payload": {
         "code": "01860",
@@ -49,7 +49,7 @@
       "category": "gap_fvg",
       "signal": "向上FVG",
       "message": "01860 MOBVISTA 📈FVG 2.85% (2026-04-30)",
-      "created_at": "2026-06-06T09:31:59.177666+08:00",
+      "created_at": "2026-06-06T09:41:07.763173+08:00",
       "payload_json": "{\"code\": \"01860\", \"name\": \"MOBVISTA\", \"signal\": {\"type\": \"向上FVG\", \"fvg_pct\": 2.85, \"gap_low\": 15.1, \"gap_high\": 15.53, \"current\": 16.3, \"date\": \"2026-04-30\"}, \"corp_type\": \"\"}",
       "payload": {
         "code": "01860",
@@ -70,7 +70,7 @@
       "category": "gap_fvg",
       "signal": "向上FVG",
       "message": "01860 MOBVISTA 📈FVG 0.99% (2026-04-27)",
-      "created_at": "2026-06-06T09:31:59.175672+08:00",
+      "created_at": "2026-06-06T09:41:07.761179+08:00",
       "payload_json": "{\"code\": \"01860\", \"name\": \"MOBVISTA\", \"signal\": {\"type\": \"向上FVG\", \"fvg_pct\": 0.99, \"gap_low\": 14.11, \"gap_high\": 14.25, \"current\": 14.82, \"date\": \"2026-04-27\"}, \"corp_type\": \"\"}",
       "payload": {
         "code": "01860",
@@ -91,7 +91,7 @@
       "category": "gap_fvg",
       "signal": "向上FVG",
       "message": "01860 MOBVISTA 📈FVG 2.21% (2026-04-15)",
-      "created_at": "2026-06-06T09:31:59.173677+08:00",
+      "created_at": "2026-06-06T09:41:07.759185+08:00",
       "payload_json": "{\"code\": \"01860\", \"name\": \"MOBVISTA\", \"signal\": {\"type\": \"向上FVG\", \"fvg_pct\": 2.21, \"gap_low\": 14.5, \"gap_high\": 14.82, \"current\": 14.97, \"date\": \"2026-04-15\"}, \"corp_type\": \"\"}",
       "payload": {
         "code": "01860",
@@ -112,7 +112,7 @@
       "category": "gap_fvg",
       "signal": "向上FVG",
       "message": "01860 MOBVISTA 📈FVG 4.42% (2026-04-09)",
-      "created_at": "2026-06-06T09:31:59.172680+08:00",
+      "created_at": "2026-06-06T09:41:07.757189+08:00",
       "payload_json": "{\"code\": \"01860\", \"name\": \"MOBVISTA\", \"signal\": {\"type\": \"向上FVG\", \"fvg_pct\": 4.42, \"gap_low\": 13.81, \"gap_high\": 14.42, \"current\": 14.43, \"date\": \"2026-04-09\"}, \"corp_type\": \"\"}",
       "payload": {
         "code": "01860",
@@ -133,7 +133,7 @@
       "category": "gap_fvg",
       "signal": "向上FVG",
       "message": "01860 MOBVISTA 📈FVG 4.36% (2026-03-16)",
-      "created_at": "2026-06-06T09:31:59.170685+08:00",
+      "created_at": "2026-06-06T09:41:07.755195+08:00",
       "payload_json": "{\"code\": \"01860\", \"name\": \"MOBVISTA\", \"signal\": {\"type\": \"向上FVG\", \"fvg_pct\": 4.36, \"gap_low\": 15.15, \"gap_high\": 15.81, \"current\": 16.31, \"date\": \"2026-03-16\"}, \"corp_type\": \"\"}",
       "payload": {
         "code": "01860",
@@ -154,7 +154,7 @@
       "category": "gap_fvg",
       "signal": "向上FVG",
       "message": "01860 MOBVISTA 📈FVG 11.29% (2026-03-13)",
-      "created_at": "2026-06-06T09:31:59.168691+08:00",
+      "created_at": "2026-06-06T09:41:07.753200+08:00",
       "payload_json": "{\"code\": \"01860\", \"name\": \"MOBVISTA\", \"signal\": {\"type\": \"向上FVG\", \"fvg_pct\": 11.29, \"gap_low\": 14.0, \"gap_high\": 15.58, \"current\": 16.88, \"date\": \"2026-03-13\"}, \"corp_type\": \"\"}",
       "payload": {
         "code": "01860",
@@ -175,7 +175,7 @@
       "category": "gap_fvg",
       "signal": "向上FVG",
       "message": "01860 MOBVISTA 📈FVG 2.03% (2026-03-12)",
-      "created_at": "2026-06-06T09:31:59.166696+08:00",
+      "created_at": "2026-06-06T09:41:07.751206+08:00",
       "payload_json": "{\"code\": \"01860\", \"name\": \"MOBVISTA\", \"signal\": {\"type\": \"向上FVG\", \"fvg_pct\": 2.03, \"gap_low\": 13.82, \"gap_high\": 14.1, \"current\": 14.94, \"date\": \"2026-03-12\"}, \"corp_type\": \"\"}",
       "payload": {
         "code": "01860",
@@ -196,7 +196,7 @@
       "category": "gap_fvg",
       "signal": "向上FVG",
       "message": "01860 MOBVISTA 📈FVG 6.95% (2026-03-11)",
-      "created_at": "2026-06-06T09:31:59.165699+08:00",
+      "created_at": "2026-06-06T09:41:07.750208+08:00",
       "payload_json": "{\"code\": \"01860\", \"name\": \"MOBVISTA\", \"signal\": {\"type\": \"向上FVG\", \"fvg_pct\": 6.95, \"gap_low\": 12.52, \"gap_high\": 13.39, \"current\": 13.82, \"date\": \"2026-03-11\"}, \"corp_type\": \"\"}",
       "payload": {
         "code": "01860",
@@ -217,7 +217,7 @@
       "category": "gap_fvg",
       "signal": "向上跳空缺口",
       "message": "01860 MOBVISTA 🔼缺口 1.47% (2026-05-28)",
-      "created_at": "2026-06-06T09:31:59.163704+08:00",
+      "created_at": "2026-06-06T09:41:07.748214+08:00",
       "payload_json": "{\"code\": \"01860\", \"name\": \"MOBVISTA\", \"signal\": {\"type\": \"向上跳空缺口\", \"gap_pct\": 1.47, \"open\": 14.46, \"prev_high\": 14.25, \"date\": \"2026-05-28\", \"close\": 14.36}, \"corp_type\": \"\"}",
       "payload": {
         "code": "01860",
@@ -238,7 +238,7 @@
       "category": "gap_fvg",
       "signal": "向上跳空缺口",
       "message": "01860 MOBVISTA 🔼缺口 0.3% (2026-05-04)",
-      "created_at": "2026-06-06T09:31:59.161710+08:00",
+      "created_at": "2026-06-06T09:41:07.746220+08:00",
       "payload_json": "{\"code\": \"01860\", \"name\": \"MOBVISTA\", \"signal\": {\"type\": \"向上跳空缺口\", \"gap_pct\": 0.3, \"open\": 16.78, \"prev_high\": 16.73, \"date\": \"2026-05-04\", \"close\": 17.75}, \"corp_type\": \"\"}",
       "payload": {
         "code": "01860",
@@ -259,7 +259,7 @@
       "category": "gap_fvg",
       "signal": "向上跳空缺口",
       "message": "01860 MOBVISTA 🔼缺口 2.44% (2026-04-16)",
-      "created_at": "2026-06-06T09:31:59.159715+08:00",
+      "created_at": "2026-06-06T09:41:07.744225+08:00",
       "payload_json": "{\"code\": \"01860\", \"name\": \"MOBVISTA\", \"signal\": {\"type\": \"向上跳空缺口\", \"gap_pct\": 2.44, \"open\": 15.56, \"prev_high\": 15.19, \"date\": \"2026-04-16\", \"close\": 15.52}, \"corp_type\": \"\"}",
       "payload": {
         "code": "01860",
@@ -280,7 +280,7 @@
       "category": "gap_fvg",
       "signal": "向上跳空缺口",
       "message": "01860 MOBVISTA 🔼缺口 2.28% (2026-04-14)",
-      "created_at": "2026-06-06T09:31:59.157720+08:00",
+      "created_at": "2026-06-06T09:41:07.742230+08:00",
       "payload_json": "{\"code\": \"01860\", \"name\": \"MOBVISTA\", \"signal\": {\"type\": \"向上跳空缺口\", \"gap_pct\": 2.28, \"open\": 14.83, \"prev_high\": 14.5, \"date\": \"2026-04-14\", \"close\": 14.69}, \"corp_type\": \"\"}",
       "payload": {
         "code": "01860",
@@ -301,7 +301,7 @@
       "category": "gap_fvg",
       "signal": "向上跳空缺口",
       "message": "01860 MOBVISTA 🔼缺口 3.37% (2026-03-13)",
-      "created_at": "2026-06-06T09:31:59.155749+08:00",
+      "created_at": "2026-06-06T09:41:07.740235+08:00",
       "payload_json": "{\"code\": \"01860\", \"name\": \"MOBVISTA\", \"signal\": {\"type\": \"向上跳空缺口\", \"gap_pct\": 3.37, \"open\": 15.66, \"prev_high\": 15.15, \"date\": \"2026-03-13\", \"close\": 16.88}, \"corp_type\": \"\"}",
       "payload": {
         "code": "01860",
@@ -322,7 +322,7 @@
       "category": "gap_fvg",
       "signal": "向上跳空缺口",
       "message": "01860 MOBVISTA 🔼缺口 1.14% (2026-03-12)",
-      "created_at": "2026-06-06T09:31:59.153755+08:00",
+      "created_at": "2026-06-06T09:41:07.738241+08:00",
       "payload_json": "{\"code\": \"01860\", \"name\": \"MOBVISTA\", \"signal\": {\"type\": \"向上跳空缺口\", \"gap_pct\": 1.14, \"open\": 14.16, \"prev_high\": 14.0, \"date\": \"2026-03-12\", \"close\": 14.94}, \"corp_type\": \"\"}",
       "payload": {
         "code": "01860",
@@ -343,7 +343,7 @@
       "category": "gap_fvg",
       "signal": "向上跳空缺口",
       "message": "01860 MOBVISTA 🔼缺口 3.19% (2026-03-10)",
-      "created_at": "2026-06-06T09:31:59.149743+08:00",
+      "created_at": "2026-06-06T09:41:07.736246+08:00",
       "payload_json": "{\"code\": \"01860\", \"name\": \"MOBVISTA\", \"signal\": {\"type\": \"向上跳空缺口\", \"gap_pct\": 3.19, \"open\": 12.92, \"prev_high\": 12.52, \"date\": \"2026-03-10\", \"close\": 13.64}, \"corp_type\": \"\"}",
       "payload": {
         "code": "01860",
@@ -364,7 +364,7 @@
       "category": "gap_fvg",
       "signal": "向上FVG",
       "message": "01808 ENTERPRISE DEV 📈FVG 18.58% (2026-06-05)",
-      "created_at": "2026-06-06T09:31:58.603248+08:00",
+      "created_at": "2026-06-06T09:41:06.928857+08:00",
       "payload_json": "{\"code\": \"01808\", \"name\": \"ENTERPRISE DEV\", \"signal\": {\"type\": \"向上FVG\", \"fvg_pct\": 18.58, \"gap_low\": 1.83, \"gap_high\": 2.17, \"current\": 2.22, \"date\": \"2026-06-05\"}, \"corp_type\": \"\"}",
       "payload": {
         "code": "01808",
@@ -385,7 +385,7 @@
       "category": "gap_fvg",
       "signal": "向上FVG",
       "message": "01808 ENTERPRISE DEV 📈FVG 2.52% (2026-06-02)",
-      "created_at": "2026-06-06T09:31:58.601226+08:00",
+      "created_at": "2026-06-06T09:41:06.927859+08:00",
       "payload_json": "{\"code\": \"01808\", \"name\": \"ENTERPRISE DEV\", \"signal\": {\"type\": \"向上FVG\", \"fvg_pct\": 2.52, \"gap_low\": 1.59, \"gap_high\": 1.63, \"current\": 1.74, \"date\": \"2026-06-02\"}, \"corp_type\": \"\"}",
       "payload": {
         "code": "01808",
@@ -406,7 +406,7 @@
       "category": "gap_fvg",
       "signal": "向上FVG",
       "message": "01808 ENTERPRISE DEV 📈FVG 7.27% (2026-05-08)",
-      "created_at": "2026-06-06T09:31:58.599231+08:00",
+      "created_at": "2026-06-06T09:41:06.925864+08:00",
       "payload_json": "{\"code\": \"01808\", \"name\": \"ENTERPRISE DEV\", \"signal\": {\"type\": \"向上FVG\", \"fvg_pct\": 7.27, \"gap_low\": 1.1, \"gap_high\": 1.18, \"current\": 1.3, \"date\": \"2026-05-08\"}, \"corp_type\": \"\"}",
       "payload": {
         "code": "01808",
@@ -427,7 +427,7 @@
       "category": "gap_fvg",
       "signal": "向上FVG",
       "message": "01808 ENTERPRISE DEV 📈FVG 4.17% (2026-04-10)",
-      "created_at": "2026-06-06T09:31:58.597264+08:00",
+      "created_at": "2026-06-06T09:41:06.923870+08:00",
       "payload_json": "{\"code\": \"01808\", \"name\": \"ENTERPRISE DEV\", \"signal\": {\"type\": \"向上FVG\", \"fvg_pct\": 4.17, \"gap_low\": 2.4, \"gap_high\": 2.5, \"current\": 2.5, \"date\": \"2026-04-10\"}, \"corp_type\": \"\"}",
       "payload": {
         "code": "01808",
@@ -448,7 +448,7 @@
       "category": "gap_fvg",
       "signal": "向上FVG",
       "message": "01808 ENTERPRISE DEV 📈FVG 3.85% (2026-03-30)",
-      "created_at": "2026-06-06T09:31:58.595241+08:00",
+      "created_at": "2026-06-06T09:41:06.921875+08:00",
       "payload_json": "{\"code\": \"01808\", \"name\": \"ENTERPRISE DEV\", \"signal\": {\"type\": \"向上FVG\", \"fvg_pct\": 3.85, \"gap_low\": 2.6, \"gap_high\": 2.7, \"current\": 2.7, \"date\": \"2026-03-30\"}, \"corp_type\": \"\"}",
       "payload": {
         "code": "01808",
@@ -469,7 +469,7 @@
       "category": "gap_fvg",
       "signal": "向上FVG",
       "message": "01808 ENTERPRISE DEV 📈FVG 4.0% (2026-03-27)",
-      "created_at": "2026-06-06T09:31:58.593246+08:00",
+      "created_at": "2026-06-06T09:41:06.919881+08:00",
       "payload_json": "{\"code\": \"01808\", \"name\": \"ENTERPRISE DEV\", \"signal\": {\"type\": \"向上FVG\", \"fvg_pct\": 4.0, \"gap_low\": 2.5, \"gap_high\": 2.6, \"current\": 2.6, \"date\": \"2026-03-27\"}, \"corp_type\": \"\"}",
       "payload": {
         "code": "01808",
@@ -490,7 +490,7 @@
       "category": "gap_fvg",
       "signal": "向上FVG",
       "message": "01808 ENTERPRISE DEV 📈FVG 8.68% (2026-03-17)",
-      "created_at": "2026-06-06T09:31:58.591252+08:00",
+      "created_at": "2026-06-06T09:41:06.917886+08:00",
       "payload_json": "{\"code\": \"01808\", \"name\": \"ENTERPRISE DEV\", \"signal\": {\"type\": \"向上FVG\", \"fvg_pct\": 8.68, \"gap_low\": 2.42, \"gap_high\": 2.63, \"current\": 2.63, \"date\": \"2026-03-17\"}, \"corp_type\": \"\"}",
       "payload": {
         "code": "01808",
@@ -511,7 +511,7 @@
       "category": "gap_fvg",
       "signal": "向上FVG",
       "message": "01808 ENTERPRISE DEV 📈FVG 6.52% (2026-03-16)",
-      "created_at": "2026-06-06T09:31:58.590255+08:00",
+      "created_at": "2026-06-06T09:41:06.914895+08:00",
       "payload_json": "{\"code\": \"01808\", \"name\": \"ENTERPRISE DEV\", \"signal\": {\"type\": \"向上FVG\", \"fvg_pct\": 6.52, \"gap_low\": 2.3, \"gap_high\": 2.45, \"current\": 2.79, \"date\": \"2026-03-16\"}, \"corp_type\": \"\"}",
       "payload": {
         "code": "01808",
@@ -532,7 +532,7 @@
       "category": "gap_fvg",
       "signal": "向上跳空缺口",
       "message": "01808 ENTERPRISE DEV 🔼缺口 2.62% (2026-06-05)",
-      "created_at": "2026-06-06T09:31:58.588260+08:00",
+      "created_at": "2026-06-06T09:41:06.883978+08:00",
       "payload_json": "{\"code\": \"01808\", \"name\": \"ENTERPRISE DEV\", \"signal\": {\"type\": \"向上跳空缺口\", \"gap_pct\": 2.62, \"open\": 2.74, \"prev_high\": 2.67, \"date\": \"2026-06-05\", \"close\": 2.22}, \"corp_type\": \"\"}",
       "payload": {
         "code": "01808",
@@ -553,7 +553,7 @@
       "category": "gap_fvg",
       "signal": "向上跳空缺口",
       "message": "01808 ENTERPRISE DEV 🔼缺口 0.53% (2026-06-02)",
-      "created_at": "2026-06-06T09:31:58.586265+08:00",
+      "created_at": "2026-06-06T09:41:06.881983+08:00",
       "payload_json": "{\"code\": \"01808\", \"name\": \"ENTERPRISE DEV\", \"signal\": {\"type\": \"向上跳空缺口\", \"gap_pct\": 0.53, \"open\": 1.9, \"prev_high\": 1.89, \"date\": \"2026-06-02\", \"close\": 1.74}, \"corp_type\": \"\"}",
       "payload": {
         "code": "01808",
@@ -574,7 +574,7 @@
       "category": "gap_fvg",
       "signal": "向上跳空缺口",
       "message": "01808 ENTERPRISE DEV 🔼缺口 6.21% (2026-05-18)",
-      "created_at": "2026-06-06T09:31:58.584271+08:00",
+      "created_at": "2026-06-06T09:41:06.879989+08:00",
       "payload_json": "{\"code\": \"01808\", \"name\": \"ENTERPRISE DEV\", \"signal\": {\"type\": \"向上跳空缺口\", \"gap_pct\": 6.21, \"open\": 1.54, \"prev_high\": 1.45, \"date\": \"2026-05-18\", \"close\": 1.3}, \"corp_type\": \"\"}",
       "payload": {
         "code": "01808",
@@ -595,7 +595,7 @@
       "category": "gap_fvg",
       "signal": "向上跳空缺口",
       "message": "01808 ENTERPRISE DEV 🔼缺口 52.63% (2026-04-27)",
-      "created_at": "2026-06-06T09:31:58.582277+08:00",
+      "created_at": "2026-06-06T09:41:06.877994+08:00",
       "payload_json": "{\"code\": \"01808\", \"name\": \"ENTERPRISE DEV\", \"signal\": {\"type\": \"向上跳空缺口\", \"gap_pct\": 52.63, \"open\": 2.9, \"prev_high\": 1.9, \"date\": \"2026-04-27\", \"close\": 1.66}, \"corp_type\": \"\"}",
       "payload": {
         "code": "01808",
@@ -616,7 +616,7 @@
       "category": "gap_fvg",
       "signal": "向上跳空缺口",
       "message": "01808 ENTERPRISE DEV 🔼缺口 3.32% (2026-03-31)",
-      "created_at": "2026-06-06T09:31:58.580282+08:00",
+      "created_at": "2026-06-06T09:41:06.875999+08:00",
       "payload_json": "{\"code\": \"01808\", \"name\": \"ENTERPRISE DEV\", \"signal\": {\"type\": \"向上跳空缺口\", \"gap_pct\": 3.32, \"open\": 2.8, \"prev_high\": 2.71, \"date\": \"2026-03-31\", \"close\": 2.6}, \"corp_type\": \"\"}",
       "payload": {
         "code": "01808",
@@ -637,7 +637,7 @@
       "category": "gap_fvg",
       "signal": "向上跳空缺口",
       "message": "01808 ENTERPRISE DEV 🔼缺口 3.85% (2026-03-30)",
-      "created_at": "2026-06-06T09:31:58.578288+08:00",
+      "created_at": "2026-06-06T09:41:06.874005+08:00",
       "payload_json": "{\"code\": \"01808\", \"name\": \"ENTERPRISE DEV\", \"signal\": {\"type\": \"向上跳空缺口\", \"gap_pct\": 3.85, \"open\": 2.7, \"prev_high\": 2.6, \"date\": \"2026-03-30\", \"close\": 2.7}, \"corp_type\": \"\"}",
       "payload": {
         "code": "01808",
@@ -658,7 +658,7 @@
       "category": "gap_fvg",
       "signal": "向上跳空缺口",
       "message": "01808 ENTERPRISE DEV 🔼缺口 4.0% (2026-03-26)",
-      "created_at": "2026-06-06T09:31:58.576293+08:00",
+      "created_at": "2026-06-06T09:41:06.872010+08:00",
       "payload_json": "{\"code\": \"01808\", \"name\": \"ENTERPRISE DEV\", \"signal\": {\"type\": \"向上跳空缺口\", \"gap_pct\": 4.0, \"open\": 2.6, \"prev_high\": 2.5, \"date\": \"2026-03-26\", \"close\": 2.6}, \"corp_type\": \"\"}",
       "payload": {
         "code": "01808",
@@ -679,7 +679,7 @@
       "category": "gap_fvg",
       "signal": "向上跳空缺口",
       "message": "01808 ENTERPRISE DEV 🔼缺口 1.24% (2026-03-16)",
-      "created_at": "2026-06-06T09:31:58.573328+08:00",
+      "created_at": "2026-06-06T09:41:06.870015+08:00",
       "payload_json": "{\"code\": \"01808\", \"name\": \"ENTERPRISE DEV\", \"signal\": {\"type\": \"向上跳空缺口\", \"gap_pct\": 1.24, \"open\": 2.45, \"prev_high\": 2.42, \"date\": \"2026-03-16\", \"close\": 2.79}, \"corp_type\": \"\"}",
       "payload": {
         "code": "01808",
@@ -700,7 +700,7 @@
       "category": "gap_fvg",
       "signal": "向上跳空缺口",
       "message": "01808 ENTERPRISE DEV 🔼缺口 4.35% (2026-03-13)",
-      "created_at": "2026-06-06T09:31:58.570310+08:00",
+      "created_at": "2026-06-06T09:41:06.866026+08:00",
       "payload_json": "{\"code\": \"01808\", \"name\": \"ENTERPRISE DEV\", \"signal\": {\"type\": \"向上跳空缺口\", \"gap_pct\": 4.35, \"open\": 2.4, \"prev_high\": 2.3, \"date\": \"2026-03-13\", \"close\": 2.4}, \"corp_type\": \"\"}",
       "payload": {
         "code": "01808",
@@ -721,7 +721,7 @@
       "category": "gap_fvg",
       "signal": "向上FVG",
       "message": "03360 FE HORIZON 📈FVG 1.22% (2026-06-05)",
-      "created_at": "2026-06-06T09:31:56.549512+08:00",
+      "created_at": "2026-06-06T09:41:04.646407+08:00",
       "payload_json": "{\"code\": \"03360\", \"name\": \"FE HORIZON\", \"signal\": {\"type\": \"向上FVG\", \"fvg_pct\": 1.22, \"gap_low\": 7.37, \"gap_high\": 7.46, \"current\": 7.48, \"date\": \"2026-06-05\"}, \"corp_type\": \"\"}",
       "payload": {
         "code": "03360",
@@ -742,7 +742,7 @@
       "category": "gap_fvg",
       "signal": "向上FVG",
       "message": "03360 FE HORIZON 📈FVG 0.66% (2026-05-07)",
-      "created_at": "2026-06-06T09:31:56.548515+08:00",
+      "created_at": "2026-06-06T09:41:04.644413+08:00",
       "payload_json": "{\"code\": \"03360\", \"name\": \"FE HORIZON\", \"signal\": {\"type\": \"向上FVG\", \"fvg_pct\": 0.66, \"gap_low\": 7.55, \"gap_high\": 7.6, \"current\": 7.71, \"date\": \"2026-05-07\"}, \"corp_type\": \"\"}",
       "payload": {
         "code": "03360",
@@ -763,7 +763,7 @@
       "category": "gap_fvg",
       "signal": "向上FVG",
       "message": "03360 FE HORIZON 📈FVG 1.81% (2026-04-09)",
-      "created_at": "2026-06-06T09:31:56.546521+08:00",
+      "created_at": "2026-06-06T09:41:04.642414+08:00",
       "payload_json": "{\"code\": \"03360\", \"name\": \"FE HORIZON\", \"signal\": {\"type\": \"向上FVG\", \"fvg_pct\": 1.81, \"gap_low\": 7.18, \"gap_high\": 7.31, \"current\": 7.44, \"date\": \"2026-04-09\"}, \"corp_type\": \"\"}",
       "payload": {
         "code": "03360",
@@ -784,7 +784,7 @@
       "category": "gap_fvg",
       "signal": "向上FVG",
       "message": "03360 FE HORIZON 📈FVG 0.14% (2026-04-01)",
-      "created_at": "2026-06-06T09:31:56.544526+08:00",
+      "created_at": "2026-06-06T09:41:04.639427+08:00",
       "payload_json": "{\"code\": \"03360\", \"name\": \"FE HORIZON\", \"signal\": {\"type\": \"向上FVG\", \"fvg_pct\": 0.14, \"gap_low\": 7.06, \"gap_high\": 7.07, \"current\": 7.12, \"date\": \"2026-04-01\"}, \"corp_type\": \"\"}",
       "payload": {
         "code": "03360",
@@ -805,7 +805,7 @@
       "category": "gap_fvg",
       "signal": "向上跳空缺口",
       "message": "03360 FE HORIZON 🔼缺口 0.27% (2026-05-21)",
-      "created_at": "2026-06-06T09:31:56.542532+08:00",
+      "created_at": "2026-06-06T09:41:04.618479+08:00",
       "payload_json": "{\"code\": \"03360\", \"name\": \"FE HORIZON\", \"signal\": {\"type\": \"向上跳空缺口\", \"gap_pct\": 0.27, \"open\": 7.5, \"prev_high\": 7.48, \"date\": \"2026-05-21\", \"close\": 7.29}, \"corp_type\": \"\"}",
       "payload": {
         "code": "03360",
@@ -826,7 +826,7 @@
       "category": "gap_fvg",
       "signal": "向上跳空缺口",
       "message": "03360 FE HORIZON 🔼缺口 0.67% (2026-05-04)",
-      "created_at": "2026-06-06T09:31:56.540537+08:00",
+      "created_at": "2026-06-06T09:41:04.616498+08:00",
       "payload_json": "{\"code\": \"03360\", \"name\": \"FE HORIZON\", \"signal\": {\"type\": \"向上跳空缺口\", \"gap_pct\": 0.67, \"open\": 7.55, \"prev_high\": 7.5, \"date\": \"2026-05-04\", \"close\": 7.52}, \"corp_type\": \"\"}",
       "payload": {
         "code": "03360",
@@ -847,7 +847,7 @@
       "category": "gap_fvg",
       "signal": "向上跳空缺口",
       "message": "03360 FE HORIZON 🔼缺口 0.53% (2026-04-23)",
-      "created_at": "2026-06-06T09:31:56.538542+08:00",
+      "created_at": "2026-06-06T09:41:04.614493+08:00",
       "payload_json": "{\"code\": \"03360\", \"name\": \"FE HORIZON\", \"signal\": {\"type\": \"向上跳空缺口\", \"gap_pct\": 0.53, \"open\": 7.58, \"prev_high\": 7.54, \"date\": \"2026-04-23\", \"close\": 7.44}, \"corp_type\": \"\"}",
       "payload": {
         "code": "03360",
@@ -868,7 +868,7 @@
       "category": "gap_fvg",
       "signal": "向上跳空缺口",
       "message": "03360 FE HORIZON 🔼缺口 0.67% (2026-04-20)",
-      "created_at": "2026-06-06T09:31:56.536547+08:00",
+      "created_at": "2026-06-06T09:41:04.612499+08:00",
       "payload_json": "{\"code\": \"03360\", \"name\": \"FE HORIZON\", \"signal\": {\"type\": \"向上跳空缺口\", \"gap_pct\": 0.67, \"open\": 7.56, \"prev_high\": 7.51, \"date\": \"2026-04-20\", \"close\": 7.43}, \"corp_type\": \"\"}",
       "payload": {
         "code": "03360",
@@ -889,7 +889,7 @@
       "category": "gap_fvg",
       "signal": "向上跳空缺口",
       "message": "03360 FE HORIZON 🔼缺口 0.54% (2026-04-10)",
-      "created_at": "2026-06-06T09:31:56.534553+08:00",
+      "created_at": "2026-06-06T09:41:04.611498+08:00",
       "payload_json": "{\"code\": \"03360\", \"name\": \"FE HORIZON\", \"signal\": {\"type\": \"向上跳空缺口\", \"gap_pct\": 0.54, \"open\": 7.5, \"prev_high\": 7.46, \"date\": \"2026-04-10\", \"close\": 7.52}, \"corp_type\": \"\"}",
       "payload": {
         "code": "03360",
@@ -910,7 +910,7 @@
       "category": "gap_fvg",
       "signal": "向上跳空缺口",
       "message": "03360 FE HORIZON 🔼缺口 1.11% (2026-04-08)",
-      "created_at": "2026-06-06T09:31:56.532559+08:00",
+      "created_at": "2026-06-06T09:41:04.609504+08:00",
       "payload_json": "{\"code\": \"03360\", \"name\": \"FE HORIZON\", \"signal\": {\"type\": \"向上跳空缺口\", \"gap_pct\": 1.11, \"open\": 7.26, \"prev_high\": 7.18, \"date\": \"2026-04-08\", \"close\": 7.4}, \"corp_type\": \"\"}",
       "payload": {
         "code": "03360",
@@ -931,7 +931,7 @@
       "category": "gap_fvg",
       "signal": "向上跳空缺口",
       "message": "03360 FE HORIZON 🔼缺口 3.11% (2026-04-01)",
-      "created_at": "2026-06-06T09:31:56.531562+08:00",
+      "created_at": "2026-06-06T09:41:04.607504+08:00",
       "payload_json": "{\"code\": \"03360\", \"name\": \"FE HORIZON\", \"signal\": {\"type\": \"向上跳空缺口\", \"gap_pct\": 3.11, \"open\": 7.29, \"prev_high\": 7.07, \"date\": \"2026-04-01\", \"close\": 7.12}, \"corp_type\": \"\"}",
       "payload": {
         "code": "03360",
@@ -952,7 +952,7 @@
       "category": "gap_fvg",
       "signal": "向上跳空缺口",
       "message": "03360 FE HORIZON 🔼缺口 1.34% (2026-03-10)",
-      "created_at": "2026-06-06T09:31:56.529567+08:00",
+      "created_at": "2026-06-06T09:41:04.604511+08:00",
       "payload_json": "{\"code\": \"03360\", \"name\": \"FE HORIZON\", \"signal\": {\"type\": \"向上跳空缺口\", \"gap_pct\": 1.34, \"open\": 7.55, \"prev_high\": 7.45, \"date\": \"2026-03-10\", \"close\": 7.44}, \"corp_type\": \"\"}",
       "payload": {
         "code": "03360",
@@ -973,7 +973,7 @@
       "category": "gap_fvg",
       "signal": "向上FVG",
       "message": "03958 DFZQ 📈FVG 0.16% (2026-04-29)",
-      "created_at": "2026-06-06T09:31:55.915598+08:00",
+      "created_at": "2026-06-06T09:41:03.759280+08:00",
       "payload_json": "{\"code\": \"03958\", \"name\": \"DFZQ\", \"signal\": {\"type\": \"向上FVG\", \"fvg_pct\": 0.16, \"gap_low\": 6.12, \"gap_high\": 6.13, \"current\": 6.26, \"date\": \"2026-04-29\"}, \"corp_type\": \"\"}",
       "payload": {
         "code": "03958",
@@ -994,7 +994,7 @@
       "category": "gap_fvg",
       "signal": "向上FVG",
       "message": "03958 DFZQ 📈FVG 0.85% (2026-04-15)",
-      "created_at": "2026-06-06T09:31:55.913603+08:00",
+      "created_at": "2026-06-06T09:41:03.757291+08:00",
       "payload_json": "{\"code\": \"03958\", \"name\": \"DFZQ\", \"signal\": {\"type\": \"向上FVG\", \"fvg_pct\": 0.85, \"gap_low\": 5.91, \"gap_high\": 5.96, \"current\": 5.97, \"date\": \"2026-04-15\"}, \"corp_type\": \"\"}",
       "payload": {
         "code": "03958",
@@ -1015,7 +1015,7 @@
       "category": "gap_fvg",
       "signal": "向上FVG",
       "message": "03958 DFZQ 📈FVG 1.08% (2026-04-09)",
-      "created_at": "2026-06-06T09:31:55.911609+08:00",
+      "created_at": "2026-06-06T09:41:03.755284+08:00",
       "payload_json": "{\"code\": \"03958\", \"name\": \"DFZQ\", \"signal\": {\"type\": \"向上FVG\", \"fvg_pct\": 1.08, \"gap_low\": 5.56, \"gap_high\": 5.62, \"current\": 5.66, \"date\": \"2026-04-09\"}, \"corp_type\": \"\"}",
       "payload": {
         "code": "03958",
@@ -1036,7 +1036,7 @@
       "category": "gap_fvg",
       "signal": "向上跳空缺口",
       "message": "03958 DFZQ 🔼缺口 0.77% (2026-05-07)",
-      "created_at": "2026-06-06T09:31:55.909615+08:00",
+      "created_at": "2026-06-06T09:41:03.753289+08:00",
       "payload_json": "{\"code\": \"03958\", \"name\": \"DFZQ\", \"signal\": {\"type\": \"向上跳空缺口\", \"gap_pct\": 0.77, \"open\": 6.55, \"prev_high\": 6.5, \"date\": \"2026-05-07\", \"close\": 6.05}, \"corp_type\": \"\"}",
       "payload": {
         "code": "03958",

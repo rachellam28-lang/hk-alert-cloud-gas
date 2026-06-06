@@ -113,6 +113,7 @@ async function load(){
       stocks.forEach(function(s){
         var gaps = s.items.filter(i=>i.type==='向上跳空缺口');
         var fvgs = s.items.filter(i=>i.type==='向上FVG');
+        var pocs = s.items.filter(i=>i.type==='上破POC 12M');
         // sort by date descending
         s.items.sort((a,b)=>b.date.localeCompare(a.date));
 
@@ -121,22 +122,26 @@ async function load(){
         html += '<div><span class="stock-code">'+esc(s.code)+'</span><span class="stock-name">'+esc(s.name)+'</span>';
         if(s.corp) html += '<span class="stock-corp">'+esc(s.corp)+'</span>';
         html += '</div>';
-        html += '<div class="stock-count">🔼'+gaps.length+' 📈'+fvgs.length+'</div>';
+        html += '<div class="stock-count">🔼'+gaps.length+' 📈'+fvgs.length+' 🎯'+pocs.length+'</div>';
         html += '</div>';
 
         html += '<div class="stock-body">';
         s.items.forEach(function(item){
           var isGap = item.type==='向上跳空缺口';
+          var isFvg = item.type==='向上FVG';
           html += '<div class="alert-row">';
-          html += '<div class="alert-icon">'+(isGap?'🔼':'📈')+'</div>';
+          html += '<div class="alert-icon">'+(isGap?'🔼':(isFvg?'📈':'🎯'))+'</div>';
           html += '<div class="alert-date">'+esc(item.date)+'</div>';
           html += '<div class="alert-type '+(isGap?'gap':'fvg')+'">'+esc(item.type)+'</div>';
           if(isGap){
             html += '<div class="alert-value" style="color:var(--up)">+'+item.gap_pct+'%</div>';
             html += '<div class="alert-detail">開 '+item.open+' vs 前高 '+item.prev_high+' → 收 '+item.close+'</div>';
-          } else {
+          } else if(item.type==='向上FVG'){
             html += '<div class="alert-value" style="color:var(--violet)">+'+item.fvg_pct+'%</div>';
             html += '<div class="alert-detail">gap '+item.gap_low+'–'+item.gap_high+' → 現價 '+item.current+'</div>';
+          } else {
+            html += '<div class="alert-value" style="color:var(--primary)">+'+item.breakout_pct+'%</div>';
+            html += '<div class="alert-detail">POC '+item.poc+' → 現價 '+item.current+'</div>';
           }
           html += '</div>';
         });
