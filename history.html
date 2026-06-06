@@ -198,7 +198,20 @@ function renderDay(day, filter, sigType) {
   });
   if (!alerts.length) return '';
 
-  const rows = alerts.map(a => {
+  // Dedup: keep entry with more detail
+  var seen = {};
+  var deduped = [];
+  alerts.forEach(function(a){
+    var key = (a.code||'') + '|' + safeSig(a);
+    var prev = seen[key];
+    if (!prev) { seen[key] = a; deduped.push(a); }
+    else if ((!prev.message && a.message) || (!prev.created_at && a.created_at)) {
+      var idx = deduped.indexOf(prev);
+      if (idx >= 0) { seen[key] = a; deduped[idx] = a; }
+    }
+  });
+
+  var rows = deduped.map(function(a) {
     const code = a.code || '';
     const name = a.name || '';
     const t    = fmtTime(a.created_at);
@@ -255,7 +268,7 @@ function render(filter, sigType, fromDate, toDate) {
   const hasFilter = filter || (sigType && sigType !== 'all') || fromDate || toDate;
   cntEl.textContent = hasFilter
     ? daysShown + ' 天 · ' + total + ' 條訊號'
-    : allDays.length + ' 天 · ' + allDays.reduce((s,d)=>s+d.count,0) + ' 條訊號';
+    : allDays.length + ' 天 · ' + allDays.reduce(function(s,d){return s+(d.alerts?d.alerts.length:0);},0) + ' 條訊號';
 }
 
 function applyFilter() {
