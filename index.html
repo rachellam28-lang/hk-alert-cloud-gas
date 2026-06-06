@@ -28,16 +28,16 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .refresh-tag{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:11px;color:var(--text-soft)}
 .wrap{max-width:100%;margin:0 auto;padding:14px 24px 36px}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
-.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line)}
-.toolbar-sect{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
-.spacer{flex:1}
+.toolbar{display:flex;flex-wrap:nowrap;align-items:center;gap:6px;padding:6px 10px;border-bottom:1px solid var(--line);overflow-x:auto}
+.toolbar-sect{display:flex;flex-wrap:nowrap;align-items:center;gap:5px}
+.spacer{flex:0 0 6px}
 .summary-bar{display:flex;flex-wrap:wrap;gap:6px;padding:8px 10px;border-top:1px solid var(--line-soft);font-size:11px}
 .scnt{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--mute);padding:3px 8px;border-radius:999px;border:1px solid var(--line);background:var(--surface-soft)}
 .scnt b{font-weight:600;font-variant-numeric:tabular-nums}
 .input{background:var(--surface);border:1px solid var(--line);color:var(--text);padding:6px 10px;border-radius:8px;font:400 12.5px inherit;outline:none}
 .input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(2,132,199,.15)}
 .input.search-in{min-width:200px}
-.btn-ghost{appearance:none;background:transparent;border:1px solid var(--line);color:var(--text-soft);padding:5px 10px;border-radius:8px;font:500 12px inherit;cursor:pointer;white-space:nowrap}
+.btn-ghost{appearance:none;background:transparent;border:1px solid var(--line);color:var(--text-soft);padding:4px 7px;border-radius:6px;font:500 11px inherit;cursor:pointer;white-space:nowrap}
 .btn-ghost:hover{background:var(--surface-soft)}
 .btn-ghost.active{border-color:var(--primary);background:var(--primary-soft);color:var(--primary)}
 .group-sep{color:var(--line);margin:0 2px;user-select:none;font-weight:300}
@@ -161,7 +161,7 @@ tbody tr{cursor:pointer}
 @media(max-width:720px){.hide-price,.th-price{display:none}}
 @media(max-width:640px){.hide-mc,.th-mc,.hide-chg,.th-chg,.hide-p52,.th-p52,.hide-pe,.th-pe,.hide-yo_pct,.th-yo_pct,.hide-score,.th-score{display:none}}
 @media(max-width:640px){.hide-link,.th-link{display:none}}
-@media(max-width:640px){.brand>a{font-size:11px!important;padding:2px 6px!important;margin-left:3px!important}.input.search-in{min-width:140px}.btn-ghost,.btn-csv,.preset-btn,.col-toggle-btn{padding:3px 7px!important;font-size:10px!important;border-radius:6px!important}.toolbar{padding:6px 8px!important;gap:6px!important}.toolbar-sect{gap:4px!important}}
+@media(max-width:640px){.brand>a{font-size:11px!important;padding:2px 6px!important;margin-left:3px!important}.input.search-in{min-width:120px}.btn-ghost,.btn-csv,.preset-btn,.col-toggle-btn{padding:2px 5px!important;font-size:9px!important;border-radius:4px!important}.toolbar{padding:4px 6px!important;gap:4px!important;flex-wrap:nowrap!important;overflow-x:auto!important}.toolbar-sect{gap:3px!important}}
 @media(max-width:640px){.topbar-inner{padding:6px 10px;gap:8px}.brand{gap:6px;flex-shrink:0}.brand>a{font-size:10px!important;padding:1px 5px!important;margin-left:2px!important}.logo{display:none}.brand-title{font-size:12px;white-space:nowrap}.brand-sub{display:none}.topright{gap:3px;font-size:10px}.refresh-tag{display:none}.wrap{padding:8px 2px 20px!important}}
 @media(max-width:560px){.hide-d120,.th-d120{display:none}}
 @media(max-width:480px){.hide-d60,.th-d60{display:none}.btn-ghost,.btn-csv,.preset-btn,.col-toggle-btn{padding:2px 5px!important;font-size:9px!important}}
@@ -427,7 +427,6 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
         <button class="preset-btn" onclick="loadPreset('placement')">配股預警</button>
         <button class="preset-btn" onclick="loadPreset('mom')">高動能</button>
         <button class="preset-save" onclick="savePreset()" title="儲存當前篩選為預設">+</button>
-      </div>
       </div>
       <div class="toolbar-sect">
         <button class="btn-ghost" id="filterAll" onclick="toggleFilter('all')">全部</button>
