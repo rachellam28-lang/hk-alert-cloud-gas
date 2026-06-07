@@ -432,23 +432,24 @@ function renderConfluence(data){
       '</div>';
   }
 
-  // Group by computed label level
-  var groups={'🔥 可炒上':[],'📈 留意':[],'👀 觀察':[],'⚠️ 小心':[]};
+  // Group by pattern type
+  var patGroups={'catalyst':[],'dual':[],'frontrun':[]};
   data.forEach(function(r){
-    if(groups[r._label]) groups[r._label].push(r);
+    if(patGroups[r.pattern]) patGroups[r.pattern].push(r);
   });
+  // Sort each group by signal_count desc
+  for(var k in patGroups){ patGroups[k].sort(function(a,b){ return (b.signal_count||0)-(a.signal_count||0); }); }
 
   var html='';
-  var levelColors={'🔥 可炒上':'#15803d','📈 留意':'#166534','👀 觀察':'#854d0e','⚠️ 小心':'#b91c1c'};
-  var levelBg={'🔥 可炒上':'#dcfce7','📈 留意':'#f0fdf4','👀 觀察':'#fefce8','⚠️ 小心':'#fef2f2'};
-  var order=['🔥 可炒上','📈 留意','👀 觀察','⚠️ 小心'];
-  for(var i=0;i<order.length;i++){
-    var level=order[i];
-    var items=groups[level];
+  var patColors={'catalyst':'#15803d','dual':'#6d28d9','frontrun':'#991b1b'};
+  var patBg={'catalyst':'#dcfce7','dual':'#ede9fe','frontrun':'#fef2f2'};
+  var patOrder=[{key:'catalyst',label:'🚀 催化'},{key:'dual',label:'💎 雙向'},{key:'frontrun',label:'🦆 搶跑'}];
+  for(var i=0;i<patOrder.length;i++){
+    var p=patOrder[i];
+    var items=patGroups[p.key];
     if(!items||!items.length) continue;
-    items.sort(function(a,b){ return (b.signal_count||0)-(a.signal_count||0); });
-    html+='<div style="margin-top:8px;padding:6px 8px;border-radius:6px;background:'+levelBg[level]+';border:1px solid '+levelColors[level]+'">';
-    html+='<div style="font-weight:700;font-size:14px;color:'+levelColors[level]+';margin-bottom:4px">'+level+' <span style="font-size:10px;font-weight:400;color:var(--mute)">'+items.length+'項</span></div>';
+    html+='<div style="margin-top:8px;padding:6px 8px;border-radius:6px;background:'+patBg[p.key]+';border:1px solid '+patColors[p.key]+'">';
+    html+='<div style="font-weight:700;font-size:14px;color:'+patColors[p.key]+';margin-bottom:4px">'+p.label+' <span style="font-size:10px;font-weight:400;color:var(--mute)">'+items.length+'項</span></div>';
     html+='<div class="confluence-grid">';
     html+=items.map(renderItem).join('');
     html+='</div></div>';
