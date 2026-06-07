@@ -536,6 +536,37 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
       <div class="rf-group"><span class="rf-lbl">市值(億)</span><input class="rf-in" id="rfMcMin" oninput="applyFilters()"><span class="rf-sep">~</span><input class="rf-in" id="rfMcMax" oninput="applyFilters()"></div>
     </div>
 
+  <!-- Market cap split sections -->
+  <div class="section-head"><h2><span class="ico">🐟</span> 小市值 (&lt;20億)</h2></div>
+  <div class="card" style="margin-bottom:12px">
+    <div style="overflow-x:auto"><table>
+      <thead><tr>
+        <th>代碼</th><th>名稱</th><th>現價</th><th>CCASS%</th><th>5日Δ</th><th>20日Δ</th><th>市值</th><th>信號</th><th>連結</th>
+      </tr></thead>
+      <tbody id="mcSmallBody"></tbody>
+    </table></div>
+  </div>
+
+  <div class="section-head"><h2><span class="ico">🐬</span> 中市值 (20-100億)</h2></div>
+  <div class="card" style="margin-bottom:12px">
+    <div style="overflow-x:auto"><table>
+      <thead><tr>
+        <th>代碼</th><th>名稱</th><th>現價</th><th>CCASS%</th><th>5日Δ</th><th>20日Δ</th><th>市值</th><th>信號</th><th>連結</th>
+      </tr></thead>
+      <tbody id="mcMidBody"></tbody>
+    </table></div>
+  </div>
+
+  <div class="section-head"><h2><span class="ico">🐋</span> 大市值 (≥100億)</h2></div>
+  <div class="card" style="margin-bottom:12px">
+    <div style="overflow-x:auto"><table>
+      <thead><tr>
+        <th>代碼</th><th>名稱</th><th>現價</th><th>CCASS%</th><th>5日Δ</th><th>20日Δ</th><th>市值</th><th>信號</th><th>連結</th>
+      </tr></thead>
+      <tbody id="mcLargeBody"></tbody>
+    </table></div>
+  </div>
+
   <!-- Signal section -->
   
 
@@ -1174,6 +1205,50 @@ function gotoPage(p){
   renderTable();
   const el=window.innerWidth<=720?document.getElementById('stockCards'):document.getElementById('tbody').parentElement;
   if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// --- Market cap split sections ---
+function renderMarketCapSections(){
+  function renderSection(bodyId, stocks, limit){
+    stocks.sort(function(a,b){var va=a.d5!=null?a.d5:-999;var vb=b.d5!=null?b.d5:-999;return vb-va;});
+    var top=stocks.slice(0,limit||20);
+    var html=top.map(function(s){
+      var p=priceMap.get(s.c)??s.lp;
+      var priceStr=p!=null?(p<1?p.toFixed(3):p.toFixed(2)):'—';
+      var d5s=s.d5!=null?(s.d5>0?'+':'')+s.d5.toFixed(2)+'%':'—';
+      var d5cl=s.d5!=null?(s.d5>0?'up':'dn'):'muted';
+      var d20s=s.d20!=null?(s.d20>0?'+':'')+s.d20.toFixed(2)+'%':'—';
+      var d20cl=s.d20!=null?(s.d20>0?'up':'dn'):'muted';
+      var sig=signalMap.get(s.c);
+      var sigHtml='';
+      if(sig){if(sig.pl)sigHtml+='<span class="cpill cpill-placement">配</span>';if(sig.ri)sigHtml+='<span class="cpill cpill-rights">供</span>';if(sig.inc)sigHtml+='<span class="cpill cpill-increase">增</span>';}
+      var linkHtml='<a class="btn-csv" style="font-size:10px;padding:2px 4px" href="#" onclick="showDetail(\''+s.c+'\');return false">詳</a>';
+      return '<tr onclick="showDetail(\''+s.c+'\')" style="cursor:pointer">'+
+        '<td><span class="code">'+esc(s.c)+'</span></td>'+
+        '<td><span class="name" style="max-width:120px">'+esc(s.n)+'</span></td>'+
+        '<td class="num">'+esc(priceStr)+'</td>'+
+        '<td class="num">'+s.tp.toFixed(1)+'%</td>'+
+        '<td class="num '+d5cl+'">'+d5s+'</td>'+
+        '<td class="num '+d20cl+'">'+d20s+'</td>'+
+        '<td class="num">'+fmtMC(s.mc)+'</td>'+
+        '<td>'+sigHtml+'</td>'+
+        '<td>'+linkHtml+'</td>'+
+        '</tr>';
+    }).join('');
+    var el=document.getElementById(bodyId);
+    if(el)el.innerHTML=html||'<tr><td colspan="9" style="color:var(--mute);text-align:center;padding:8px">暫無</td></tr>';
+  }
+  if(!baseStocks.length)return;
+  var small=[], mid=[], large=[];
+  baseStocks.forEach(function(s){
+    if(!hasMC(s))return;
+    if(s.mc<20)small.push(s);
+    else if(s.mc<100)mid.push(s);
+    else large.push(s);
+  });
+  renderSection('mcSmallBody', small, 15);
+  renderSection('mcMidBody', mid, 15);
+  renderSection('mcLargeBody', large, 15);
 }
 
 function applyFilters(){
@@ -1961,6 +2036,7 @@ async function loadData(){
         allStocks=baseStocks.slice();
         renderSummaryBar(data);
         renderBT();
+        renderMarketCapSections();
         renderRecent(d?.recentCorps||[]);
         // Also load local announcements archive
         fetch('./data/announcements.json?_='+Date.now())
