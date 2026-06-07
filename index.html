@@ -616,17 +616,6 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
   <div class="summary-bar" id="summaryBar" style="margin-top:8px"></div>
   <div class="adv-filter-bar" id="advFilterBar">
       <span class="rf-lbl">🔍 進階篩選</span>
-      <select id="sigFilter" onchange="applyFilters()" style="padding:3px 6px;border:1px solid var(--line);border-radius:5px;background:var(--surface);color:var(--text);font:11px inherit;max-width:130px">
-        <option value="all">🖐 全部信號</option>
-        <option value="poc">🎯 POC</option>
-        <option value="poc_half">📅 半年POC</option>
-        <option value="poc3">📅 3年POC</option>
-        <option value="fvg">📈 向上FVG</option>
-        <option value="yearopen">🔺 年開突破</option>
-        <option value="ipo">🆕 IPO首日突破</option>
-        <option value="ccass_up">📈 CCASS增持</option>
-        <option value="ccass_dn">📉 CCASS減持</option>
-      </select>
       <div class="rf-group"><span class="rf-lbl">CCASS%</span><input class="rf-in" id="rfTpMin" placeholder="30" oninput="applyFilters()"><span class="rf-sep">~</span><input class="rf-in" id="rfTpMax" placeholder="80" oninput="applyFilters()"></div>
       <div class="rf-group"><span class="rf-lbl">5日Δ</span><input class="rf-in" id="rfD5Min" placeholder="-10" oninput="applyFilters()"><span class="rf-sep">~</span><input class="rf-in" id="rfD5Max" placeholder="10" oninput="applyFilters()"></div>
       <div class="rf-group"><span class="rf-lbl">市值(億)</span><input class="rf-in" id="rfMcMin" oninput="applyFilters()"><span class="rf-sep">~</span><input class="rf-in" id="rfMcMax" oninput="applyFilters()"></div>
@@ -749,7 +738,7 @@ let sortCol='vr';
 let sortDir=-1; // -1 = desc
 let searchVal='';
 let activeFilters=new Set();
-let page=0;
+let page=0;let pageSmall=0,pageMid=0,pageLarge=0;
 const PAGE_SIZE=200;
 // (GAS removed — using local data/signals.json)
 let signalMap=new Map();
@@ -1109,7 +1098,7 @@ function renderTable(){
     var pagEl=document.getElementById('mcPag'+cap);
     if(countEl) countEl.textContent=stocks.length+'隻';
     var totalPages=Math.ceil(stocks.length/PAGE);
-    var p=page||0;
+    var p=(section==='small'?pageSmall:section==='mid'?pageMid:pageLarge)||0;
     if(p>=totalPages) p=0;
     var start2=p*PAGE, end2=Math.min(start2+PAGE, stocks.length);
     var slice=stocks.slice(start2, end2);
@@ -1194,9 +1183,10 @@ function renderTable(){
     if(pagEl){
       if(totalPages<=1){pagEl.innerHTML='';}
       else{
-        pagEl.innerHTML='<button class="btn-ghost" onclick="gotoPage('+(p-1)+')" '+(p<=0?'disabled style="opacity:.4"':'')+'>‹</button>'
+        var sec=section;
+        pagEl.innerHTML='<button class="btn-ghost" onclick="page'+'SmallMidLarge'.substring((section==='small'?0:section==='mid'?5:8),(section==='small'?5:section==='mid'?8:13))+'=Math.max(0,'+(p-1)+');renderTable();" '+(p<=0?'disabled style="opacity:.4"':'')+'>‹</button>'
           +'<span>頁 '+(p+1)+' / '+totalPages+'</span>'
-          +'<button class="btn-ghost" onclick="gotoPage('+(p+1)+')" '+(p>=totalPages-1?'disabled style="opacity:.4"':'')+'>›</button>';
+          +'<button class="btn-ghost" onclick="page'+'SmallMidLarge'.substring((section==='small'?0:section==='mid'?5:8),(section==='small'?5:section==='mid'?8:13))+'=Math.min('+(totalPages-1)+','+(p+1)+');renderTable();" '+(p>=totalPages-1?'disabled style="opacity:.4"':'')+'>›</button>';
       }
     }
   }
