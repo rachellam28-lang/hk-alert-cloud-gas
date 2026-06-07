@@ -535,7 +535,7 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
           <th class="sortable th-chg" data-sort="chg" onclick="sortBy('chg',event)"><span>今日Δ%</span><span class="sort-icon"></span></th>
           <th class="sortable th-p52" data-sort="p52" onclick="sortBy('p52',event)"><span>52週%</span><span class="sort-icon"></span></th>
           <th class="sortable th-pe" data-sort="pe" onclick="sortBy('pe',event)"><span>PE</span><span class="sort-icon"></span></th>
-          <th class="th-link"><span>連結</span></th>
+          <th class="sortable th-link"><span>連結</span></th>
         </tr></thead>
         <tbody id="mcSmallTbody"></tbody>
       </table></div>
@@ -569,7 +569,7 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
           <th class="sortable th-chg" data-sort="chg" onclick="sortBy('chg',event)"><span>今日Δ%</span><span class="sort-icon"></span></th>
           <th class="sortable th-p52" data-sort="p52" onclick="sortBy('p52',event)"><span>52週%</span><span class="sort-icon"></span></th>
           <th class="sortable th-pe" data-sort="pe" onclick="sortBy('pe',event)"><span>PE</span><span class="sort-icon"></span></th>
-          <th class="th-link"><span>連結</span></th>
+          <th class="sortable th-link"><span>連結</span></th>
         </tr></thead>
         <tbody id="mcMidTbody"></tbody>
       </table></div>
@@ -603,7 +603,7 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
           <th class="sortable th-chg" data-sort="chg" onclick="sortBy('chg',event)"><span>今日Δ%</span><span class="sort-icon"></span></th>
           <th class="sortable th-p52" data-sort="p52" onclick="sortBy('p52',event)"><span>52週%</span><span class="sort-icon"></span></th>
           <th class="sortable th-pe" data-sort="pe" onclick="sortBy('pe',event)"><span>PE</span><span class="sort-icon"></span></th>
-          <th class="th-link"><span>連結</span></th>
+          <th class="sortable th-link"><span>連結</span></th>
         </tr></thead>
         <tbody id="mcLargeTbody"></tbody>
       </table></div>
@@ -1494,14 +1494,14 @@ function sortBy(col,ev){
   updateSortInfo();
   applyFilters();
 }
-// Delegated sort click — catches ALL clicks on th.sortable (mobile + desktop)
+// Delegated sort click — catches clicks on th.sortable without inline onclick
+// (inline onclick handles its own clicks; this prevents double-fire)
 document.addEventListener('click', function(e){
   var th = e.target.closest('th.sortable');
   if (!th) return;
+  if (th.hasAttribute('onclick')) return; // inline onclick already handled it
   var col = th.getAttribute('data-sort');
   if (!col) return;
-  e.preventDefault();
-  e.stopPropagation();
   sortBy(col, e);
 });
 
@@ -1612,7 +1612,7 @@ function bindTouchClickFallback(selector){
   });
 }
 function bindDynamicTapFixes(){
-  bindTouchClickFallback('#filterAll,#filterUp,#filterDn,#filterConcentrated,#filterPlacement,#filterRights,#filterSmallMC,#filterMidMC,#filterLargeMC,#dirBtn,.btn-csv,.btn-save,.col-toggle-btn,.preset-btn,.preset-save,th.sortable,#pagination button,.section-toggle,.drawer-close');
+  bindTouchClickFallback('#filterAll,#filterUp,#filterDn,#filterConcentrated,#filterPlacement,#filterRights,#filterSmallMC,#filterMidMC,#filterLargeMC,#dirBtn,.btn-csv,.btn-save,.col-toggle-btn,.preset-btn,.preset-save,#pagination button,.section-toggle,.drawer-close');
 }
 bindDynamicTapFixes();
 document.getElementById('stockCards').addEventListener('click',e=>{
