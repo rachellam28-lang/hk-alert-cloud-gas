@@ -1290,7 +1290,7 @@ function applyFilters(){
       // Search signal labels
       var matchSig=false;
       var ts=techSignalMap.get(s.c)||[];
-      for(var ti=0;ti<ts.length;ti++){if(ts[ti].label&&ts[ti].label.includes(q)){matchSig=true;break;}}
+      for(var ti=0;ti<ts.length;ti++){if(ts[ti].label&&String(ts[ti].label).includes(q)){matchSig=true;break;}}
       if(!matchSig){var sm2=signalMap.get(s.c);if(sm2){var cp='';if(sm2.pl)cp+='配股';if(sm2.ri)cp+='供股';if(sm2.inc)cp+='增持';if(cp.includes(q))matchSig=true;}}
       if(!matchCode&&!matchName&&!matchStreak&&!matchSig) return false;
     }
