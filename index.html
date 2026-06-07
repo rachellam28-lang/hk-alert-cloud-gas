@@ -1559,12 +1559,20 @@ function saveToWatch(btn){
   }catch(e){}
 }
 // Use capture phase so this fires before td onclick stopPropagation
-document.getElementById('tbody').addEventListener('click',e=>{
-  const btn=e.target.closest('.btn-save');if(!btn)return;
-  e.stopPropagation();
-  e.preventDefault();
-  saveToWatch(btn);
-}, true);
+// Bind to MC table tbodies (3 sections)
+['mcSmallTbody','mcMidTbody','mcLargeTbody'].forEach(function(id){
+  var el=document.getElementById(id);
+  if(!el)return;
+  el.addEventListener('click',e=>{
+    const btn=e.target.closest('.btn-save');if(!btn)return;
+    e.stopPropagation();
+    e.preventDefault();
+    saveToWatch(btn);
+  }, true);
+  el.addEventListener('click',e=>{
+    if(e.target.closest('a'))e.stopPropagation();
+  }, true);
+});
 // Card watchlist handler
 document.getElementById('stockCards').addEventListener('click',e=>{
   const btn=e.target.closest('.btn-save');if(!btn)return;
@@ -1589,10 +1597,6 @@ function bindDynamicTapFixes(){
   bindTouchClickFallback('#filterAll,#filterUp,#filterDn,#filterConcentrated,#filterPlacement,#filterRights,#filterSmallMC,#filterMidMC,#filterLargeMC,#dirBtn,.btn-csv,.btn-save,.col-toggle-btn,.preset-btn,.preset-save,th.sortable,#pagination button,.section-toggle,.drawer-close');
 }
 bindDynamicTapFixes();
-// Prevent row click when clicking links inside rows
-document.getElementById('tbody').addEventListener('click',e=>{
-  if(e.target.closest('a'))e.stopPropagation();
-}, true);
 document.getElementById('stockCards').addEventListener('click',e=>{
   if(e.target.closest('a'))e.stopPropagation();
 }, true);
@@ -2055,7 +2059,13 @@ async function loadData(){
   }catch(err){
     dot.className='dot error';
     upd.textContent='載入失敗';
-    document.getElementById('tbody').innerHTML='<tr><td colspan="20" style="color:#ef4444;text-align:center;padding:20px">載入失敗：'+esc(err.message)+'<br><small>請稍後重試</small></td></tr>';
+    var errHtml='<tr><td colspan="20" style="color:#ef4444;text-align:center;padding:20px">載入失敗：'+esc(err.message)+'<br><small>請稍後重試</small></td></tr>';
+    var smallTb=document.getElementById('mcSmallTbody');
+    var midTb=document.getElementById('mcMidTbody');
+    var largeTb=document.getElementById('mcLargeTbody');
+    if(smallTb)smallTb.innerHTML=errHtml;
+    if(midTb)midTb.innerHTML=errHtml;
+    if(largeTb)largeTb.innerHTML=errHtml;
   }
 }
 loadData();
