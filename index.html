@@ -829,7 +829,7 @@ function updateConFilterUI(){
   var ids={catalyst:'conBtnCat',dual:'conBtnDual',frontrun:'conBtnFr'};
   for(var k in ids){var b=document.getElementById(ids[k]);if(b)b.classList.toggle('active',conFilter===k);}
 }
-var presetData={signal:{name:'信號突破',state:{sortCol:'sig',sortDir:1,sortCol2:'d5',sortDir2:-1,searchVal:'',activeFilters:[],sigFilter:'all',tpMin:null,tpMax:null,d5Min:null,d5Max:null,mcMin:null,mcMax:null,hidden:[]}},placement:{name:'配股預警',state:{sortCol:'tp',sortDir:-1,sortCol2:'d5',sortDir2:-1,searchVal:'',activeFilters:['placement'],sigFilter:'all',tpMin:30,tpMax:null,d5Min:null,d5Max:null,mcMin:null,mcMax:null,hidden:[]}},mom:{name:'高動能',state:{sortCol:'d5',sortDir:-1,sortCol2:'tp',sortDir2:-1,searchVal:'',activeFilters:[],sigFilter:'all',tpMin:null,tpMax:null,d5Min:3,d5Max:null,mcMin:null,mcMax:null,hidden:[]}}};
+var presetData={signal:{name:'信號突破',state:{sortCol:'sig',sortDir:-1,sortCol2:'d5',sortDir2:-1,searchVal:'',activeFilters:[],sigFilter:'yearopen',tpMin:null,tpMax:null,d5Min:null,d5Max:null,mcMin:null,mcMax:null,hidden:[]}},placement:{name:'配股預警',state:{sortCol:'tp',sortDir:-1,sortCol2:'d5',sortDir2:-1,searchVal:'',activeFilters:['placement'],sigFilter:'all',tpMin:30,tpMax:null,d5Min:null,d5Max:null,mcMin:null,mcMax:null,hidden:[]}},mom:{name:'高動能',state:{sortCol:'d5',sortDir:-1,sortCol2:'tp',sortDir2:-1,searchVal:'',activeFilters:[],sigFilter:'all',tpMin:null,tpMax:null,d5Min:3,d5Max:null,mcMin:null,mcMax:null,hidden:[]}}};
 function renderPresets(){
   var container=document.querySelector('.preset-group');
   if(!container||!userPresets.length)return;
@@ -1416,10 +1416,15 @@ function toggleFilter(mode){
   else if(mode==='small_mc'||mode==='mid_mc'||mode==='large_mc'){
     activeFilters.delete('small_mc');activeFilters.delete('mid_mc');activeFilters.delete('large_mc');}
   activeFilters.add(mode);
-  // Auto-sort for placement/rights: by date (most recent first)
+  // Auto-sort based on filter mode
   if(mode==='placement'){sortCol='pldate';sortDir=-1;sortCol2='';}
   else if(mode==='rights'){sortCol='ridate';sortDir=-1;sortCol2='';}
-  else if(mode==='up'||mode==='dn'){sortCol='d5';sortDir=-1;sortCol2='';}
+  else if(mode==='up'){sortCol='d5';sortDir=-1;sortCol2='';}    // 增持最多在前
+  else if(mode==='dn'){sortCol='d5';sortDir=1;sortCol2='';}     // 減持最多在前
+  else if(mode==='concentrated'){sortCol='t5';sortDir=-1;sortCol2='';} // 集中度最高在前
+  else if(mode==='small_mc'){sortCol='mc';sortDir=1;sortCol2='';}  // 市值最小在前
+  else if(mode==='mid_mc'){sortCol='mc';sortDir=-1;sortCol2='';}   // 中間市值 desc
+  else if(mode==='large_mc'){sortCol='mc';sortDir=-1;sortCol2='';} // 市值最大在前
   updateFilterUI();applyFilters();
 }
 
@@ -1634,6 +1639,15 @@ function renderBT(){
 }
 
 // --- Recent announcements ---
+var corpFilter='all';
+var allCorpData=[];
+function setCorpFilter(val,btn){
+  corpFilter=val;
+  // Update button active states
+  document.querySelectorAll('#corpFilterBar .btn-ghost').forEach(function(b){b.classList.remove('active');});
+  if(btn)btn.classList.add('active');
+  if(allCorpData.length)renderRecent(allCorpData);
+}
 function renderRecent(recentCorps){
   if(!recentCorps||!recentCorps.length){
     document.getElementById('recentWrap').innerHTML='<div style="padding:12px;color:var(--mute);text-align:center;font-size:12px">暫無公告</div>';
