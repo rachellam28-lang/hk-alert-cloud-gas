@@ -1,11 +1,7 @@
-// CCASS PWA Service Worker — cache-first for offline access
-const CACHE_NAME = 'ccass-v4';
+// CCASS PWA Service Worker — network-first for HTML, cache data files
+const CACHE_NAME = 'ccass-v5';
 
 const PRECACHE = [
-  './index.html',
-  './gap_fvg.html',
-  './watchlist.html',
-  './history.html',
   './ccass.json',
   './manifest.json',
   './icons/icon-192.png',
@@ -13,7 +9,7 @@ const PRECACHE = [
   './icons/icon-512-maskable.png'
 ];
 
-// Install: precache core assets
+// Install: precache data assets (NOT HTML — always fetch fresh)
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(PRECACHE))
@@ -31,22 +27,34 @@ self.addEventListener('activate', event => {
   self.clients.claim();
 });
 
-// Fetch: cache-first, fallback to network
+// Fetch: network-first for HTML, cache-first for everything else
 self.addEventListener('fetch', event => {
-  // Skip non-GET and browser extensions
   if (event.request.method !== 'GET') return;
 
-  event.respondWith(
-    caches.match(event.request).then(cached => {
-      const fetchPromise = fetch(event.request).then(response => {
-        if (response && response.status === 200) {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
-        }
-        return response;
-      }).catch(() => cached);
+  const url = new URL(event.request.url);
+  const isHTML = event.request.headers.get('accept')?.includes('text/html') ||
+                 url.pathname.endsWith('.html') ||
+                 url.pathname === '/' ||
+                 !url.pathname.includes('.');
 
-      return cached || fetchPromise;
-    })
-  );
+  if (isHTML) {
+    // Network-first: always try to get fresh HTML
+    event.respondWith(
+      fetch(event.request).catch(() => caches.match(event.request))
+    );
+  } else {
+    // Cache-first for static assets and data files
+    event.respondWith(
+      caches.match(event.request).then(cached => {
+        const fetchPromise = fetch(event.request).then(response => {
+          if (response && response.status === 200) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+          }
+          return response;
+        }).catch(() => cached);
+        return cached || fetchPromise;
+      })
+    );
+  }
 });
