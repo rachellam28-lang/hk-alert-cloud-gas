@@ -1920,6 +1920,7 @@ async function loadData(){
     setBaseStocks(data.stocks);
     renderSummaryBar(data);
     applyFilters();
+    renderMarketCapSections();
     updateSortInfo();
     // renderVrAlert();  // moved to gap_fvg.html
 
@@ -2036,7 +2037,6 @@ async function loadData(){
         allStocks=baseStocks.slice();
         renderSummaryBar(data);
         renderBT();
-        renderMarketCapSections();
         renderRecent(d?.recentCorps||[]);
         // Also load local announcements archive
         fetch('./data/announcements.json?_='+Date.now())
@@ -2054,6 +2054,7 @@ async function loadData(){
             applyFilters();renderBT();
           }})
         applyFilters();
+        renderMarketCapSections();
         updateSortInfo();
         const savedScroll=sessionStorage.getItem('ccassScroll');if(savedScroll)window.scrollTo(0,parseInt(savedScroll,10));
       }).catch(()=>{});
