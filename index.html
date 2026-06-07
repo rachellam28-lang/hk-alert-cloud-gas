@@ -615,6 +615,17 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
   <div class="summary-bar" id="summaryBar" style="margin-top:8px"></div>
   <div class="adv-filter-bar" id="advFilterBar">
       <span class="rf-lbl">🔍 進階篩選</span>
+      <select id="sigFilter" onchange="applyFilters()" style="padding:3px 6px;border:1px solid var(--line);border-radius:5px;background:var(--surface);color:var(--text);font:11px inherit;max-width:130px">
+        <option value="all">🖐 全部信號</option>
+        <option value="poc">🎯 POC</option>
+        <option value="poc_half">📅 半年POC</option>
+        <option value="poc3">📅 3年POC</option>
+        <option value="fvg">📈 向上FVG</option>
+        <option value="yearopen">🔺 年開突破</option>
+        <option value="ipo">🆕 IPO首日突破</option>
+        <option value="ccass_up">📈 CCASS增持</option>
+        <option value="ccass_dn">📉 CCASS減持</option>
+      </select>
       <div class="rf-group"><span class="rf-lbl">CCASS%</span><input class="rf-in" id="rfTpMin" placeholder="30" oninput="applyFilters()"><span class="rf-sep">~</span><input class="rf-in" id="rfTpMax" placeholder="80" oninput="applyFilters()"></div>
       <div class="rf-group"><span class="rf-lbl">5日Δ</span><input class="rf-in" id="rfD5Min" placeholder="-10" oninput="applyFilters()"><span class="rf-sep">~</span><input class="rf-in" id="rfD5Max" placeholder="10" oninput="applyFilters()"></div>
       <div class="rf-group"><span class="rf-lbl">市值(億)</span><input class="rf-in" id="rfMcMin" oninput="applyFilters()"><span class="rf-sep">~</span><input class="rf-in" id="rfMcMax" oninput="applyFilters()"></div>
@@ -1271,10 +1282,16 @@ function applyFilters(){
   var d5Min=getRF('rfD5Min'),d5Max=getRF('rfD5Max');
   var mcMin=getRF('rfMcMin'),mcMax=getRF('rfMcMax');
   filtered=allStocks.filter(s=>{
-    if(q && !s.c.includes(q) && !s.n.toLowerCase().includes(q)){
-      // Also search by streak (su/sd)
-      const streakStr = (s.su>1?'🔥'+s.su+'日':'')+(s.sd>1?'❄️'+s.sd+'日':'');
-      if(!streakStr.includes(q)) return false;
+    if(q){
+      var matchCode=s.c.includes(q);
+      var matchName=s.n.toLowerCase().includes(q);
+      var matchStreak=((s.su>1?'🔥'+s.su+'日':'')+(s.sd>1?'❄️'+s.sd+'日':'')).includes(q);
+      // Search signal labels
+      var matchSig=false;
+      var ts=techSignalMap.get(s.c)||[];
+      for(var ti=0;ti<ts.length;ti++){if(ts[ti].label&&ts[ti].label.includes(q)){matchSig=true;break;}}
+      if(!matchSig){var sm2=signalMap.get(s.c);if(sm2){var cp='';if(sm2.pl)cp+='配股';if(sm2.ri)cp+='供股';if(sm2.inc)cp+='增持';if(cp.includes(q))matchSig=true;}}
+      if(!matchCode&&!matchName&&!matchStreak&&!matchSig) return false;
     }
 
     // Multi-select AND-logic filters
