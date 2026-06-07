@@ -176,7 +176,7 @@ tbody tr{cursor:pointer}
 @media(max-width:520px){.confluence-grid{grid-template-columns:1fr;gap:4px;padding:4px 6px}.confluence-item{padding:4px 6px;gap:4px;font-size:10px}.confluence-item .cf-code{font-size:11px}.confluence-item .cf-name{font-size:9.5px}}
 /* Recent announcements */
 .recent-card{padding:2px 0}
-.ra-list{list-style:none;margin:0;padding:4px 10px;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:0}
+.ra-list{list-style:none;margin:0;padding:4px 10px;display:flex;flex-direction:column;gap:0}
 .ra-item{display:flex;align-items:center;gap:7px;padding:4px 4px;font-size:11.5px;border-bottom:1px solid var(--line-soft);min-width:0}
 .ra-item:last-child{border-bottom:none}.ra-label{flex:0 0 auto}
 .ra-date{flex:0 0 auto;font:600 11px "JetBrains Mono",ui-monospace,monospace;color:var(--text-soft);min-width:44px}
@@ -481,8 +481,12 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
         <button class="btn-ghost" id="filterConcentrated" onclick="toggleFilter('concentrated')">高集中度</button>
         <button class="btn-ghost" id="filterPlacement" onclick="toggleFilter('placement')">配股</button>
         <button class="btn-ghost" id="filterRights" onclick="toggleFilter('rights')">供股</button>
+      </div>
+      <div class="toolbar-sect">
         <span class="group-sep">·</span>
         <button class="btn-ghost" id="filterSmallMC" onclick="toggleFilter('small_mc')">小市值</button>
+      </div>
+      <div class="toolbar-sect">
         <button class="btn-ghost" id="filterMidMC" onclick="toggleFilter('mid_mc')">中市值</button>
         <button class="btn-ghost" id="filterLargeMC" onclick="toggleFilter('large_mc')">大市值</button>
       </div>
