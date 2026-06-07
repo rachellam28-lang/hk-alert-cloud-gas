@@ -665,7 +665,7 @@ function getStockCode(s){
 }
 function isDisplayStock(s){
   const c=getStockCode(s);
-  return /^\d{5}$/.test(c)&&Number(c)<80000;
+  return /^\d{5}$/.test(c)&&Number(c)<80000&&!c.startsWith('043');
 }
 function setBaseStocks(stocks){
   baseStocks=(stocks||[]).filter(isDisplayStock).map(normalizeStockMC);
