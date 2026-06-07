@@ -541,7 +541,14 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
   <div class="card" style="margin-bottom:12px">
     <div style="overflow-x:auto"><table>
       <thead><tr>
-        <th>代碼</th><th>名稱</th><th>現價</th><th>CCASS%</th><th>5日Δ</th><th>20日Δ</th><th>市值</th><th>信號</th><th>連結</th>
+        <th class="sortable" onclick="sortMC('small','code')">代碼<span class="sort-icon" id="mcSmall_icon_code"></span></th>
+        <th class="sortable" onclick="sortMC('small','n')">名稱<span class="sort-icon" id="mcSmall_icon_n"></span></th>
+        <th class="sortable" onclick="sortMC('small','price')">現價<span class="sort-icon" id="mcSmall_icon_price"></span></th>
+        <th class="sortable" onclick="sortMC('small','tp')">CCASS%<span class="sort-icon" id="mcSmall_icon_tp"></span></th>
+        <th class="sortable" onclick="sortMC('small','d5')">5日Δ<span class="sort-icon" id="mcSmall_icon_d5"></span></th>
+        <th class="sortable" onclick="sortMC('small','d20')">20日Δ<span class="sort-icon" id="mcSmall_icon_d20"></span></th>
+        <th class="sortable" onclick="sortMC('small','mc')">市值<span class="sort-icon" id="mcSmall_icon_mc"></span></th>
+        <th>信號</th><th>連結</th>
       </tr></thead>
       <tbody id="mcSmallBody"></tbody>
     </table></div>
@@ -551,7 +558,14 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
   <div class="card" style="margin-bottom:12px">
     <div style="overflow-x:auto"><table>
       <thead><tr>
-        <th>代碼</th><th>名稱</th><th>現價</th><th>CCASS%</th><th>5日Δ</th><th>20日Δ</th><th>市值</th><th>信號</th><th>連結</th>
+        <th class="sortable" onclick="sortMC('mid','code')">代碼<span class="sort-icon" id="mcMid_icon_code"></span></th>
+        <th class="sortable" onclick="sortMC('mid','n')">名稱<span class="sort-icon" id="mcMid_icon_n"></span></th>
+        <th class="sortable" onclick="sortMC('mid','price')">現價<span class="sort-icon" id="mcMid_icon_price"></span></th>
+        <th class="sortable" onclick="sortMC('mid','tp')">CCASS%<span class="sort-icon" id="mcMid_icon_tp"></span></th>
+        <th class="sortable" onclick="sortMC('mid','d5')">5日Δ<span class="sort-icon" id="mcMid_icon_d5"></span></th>
+        <th class="sortable" onclick="sortMC('mid','d20')">20日Δ<span class="sort-icon" id="mcMid_icon_d20"></span></th>
+        <th class="sortable" onclick="sortMC('mid','mc')">市值<span class="sort-icon" id="mcMid_icon_mc"></span></th>
+        <th>信號</th><th>連結</th>
       </tr></thead>
       <tbody id="mcMidBody"></tbody>
     </table></div>
@@ -561,7 +575,14 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
   <div class="card" style="margin-bottom:12px">
     <div style="overflow-x:auto"><table>
       <thead><tr>
-        <th>代碼</th><th>名稱</th><th>現價</th><th>CCASS%</th><th>5日Δ</th><th>20日Δ</th><th>市值</th><th>信號</th><th>連結</th>
+        <th class="sortable" onclick="sortMC('large','code')">代碼<span class="sort-icon" id="mcLarge_icon_code"></span></th>
+        <th class="sortable" onclick="sortMC('large','n')">名稱<span class="sort-icon" id="mcLarge_icon_n"></span></th>
+        <th class="sortable" onclick="sortMC('large','price')">現價<span class="sort-icon" id="mcLarge_icon_price"></span></th>
+        <th class="sortable" onclick="sortMC('large','tp')">CCASS%<span class="sort-icon" id="mcLarge_icon_tp"></span></th>
+        <th class="sortable" onclick="sortMC('large','d5')">5日Δ<span class="sort-icon" id="mcLarge_icon_d5"></span></th>
+        <th class="sortable" onclick="sortMC('large','d20')">20日Δ<span class="sort-icon" id="mcLarge_icon_d20"></span></th>
+        <th class="sortable" onclick="sortMC('large','mc')">市值<span class="sort-icon" id="mcLarge_icon_mc"></span></th>
+        <th>信號</th><th>連結</th>
       </tr></thead>
       <tbody id="mcLargeBody"></tbody>
     </table></div>
@@ -1208,47 +1229,73 @@ function gotoPage(p){
 }
 
 // --- Market cap split sections ---
+var mcSort={small:{col:'d5',dir:-1},mid:{col:'d5',dir:-1},large:{col:'d5',dir:-1}};
+var mcStocks={small:[],mid:[],large:[]};
+function sortMC(section, col){
+  var s=mcSort[section];
+  if(s.col===col){s.dir=-s.dir;}else{s.col=col;s.dir=-1;}
+  renderMCSection(section);
+}
+function updateMCSortIcons(section){
+  var s=mcSort[section], prefix='mc'+(section==='small'?'Small':section==='mid'?'Mid':'Large');
+  ['code','n','price','tp','d5','d20','mc'].forEach(function(c){
+    var el=document.getElementById(prefix+'_icon_'+c);
+    if(el)el.textContent=c===s.col?(s.dir===1?'▲':'▼'):'';
+  });
+}
+function renderMCSection(section){
+  var bodyId=section==='small'?'mcSmallBody':section==='mid'?'mcMidBody':'mcLargeBody';
+  var s=mcSort[section], stocks=mcStocks[section], limit=15;
+  // Sort
+  var dir=s.dir, col=s.col;
+  stocks.sort(function(a,b){
+    var va=col==='price'?(priceMap.get(a.c)??a.lp):col==='tp'?a.tp:col==='mc'?a.mc:col==='d5'?a.d5:col==='d20'?a.d20:col==='n'?a.n:a.c;
+    var vb=col==='price'?(priceMap.get(b.c)??b.lp):col==='tp'?b.tp:col==='mc'?b.mc:col==='d5'?b.d5:col==='d20'?b.d20:col==='n'?b.n:b.c;
+    if(va==null&&vb==null)return 0;
+    if(va==null)return 1;if(vb==null)return -1;
+    if(typeof va==='string')va=va.toLowerCase();if(typeof vb==='string')vb=vb.toLowerCase();
+    return va<vb?-dir:va>vb?dir:0;
+  });
+  var top=stocks.slice(0,limit);
+  var html=top.map(function(s){
+    var p=priceMap.get(s.c)??s.lp;
+    var priceStr=p!=null?(p<1?p.toFixed(3):p.toFixed(2)):'—';
+    var d5s=s.d5!=null?(s.d5>0?'+':'')+s.d5.toFixed(2)+'%':'—';
+    var d5cl=s.d5!=null?(s.d5>0?'up':'dn'):'muted';
+    var d20s=s.d20!=null?(s.d20>0?'+':'')+s.d20.toFixed(2)+'%':'—';
+    var d20cl=s.d20!=null?(s.d20>0?'up':'dn'):'muted';
+    var sig=signalMap.get(s.c);
+    var sigHtml='';
+    if(sig){if(sig.pl)sigHtml+='<span class="cpill cpill-placement">配</span>';if(sig.ri)sigHtml+='<span class="cpill cpill-rights">供</span>';if(sig.inc)sigHtml+='<span class="cpill cpill-increase">增</span>';}
+    var linkHtml='<a class="btn-csv" style="font-size:10px;padding:2px 4px" href="#" onclick="showDetail(\''+s.c+'\');return false">詳</a>';
+    return '<tr onclick="showDetail(\''+s.c+'\')" style="cursor:pointer">'+
+      '<td><span class="code">'+esc(s.c)+'</span></td>'+
+      '<td><span class="name" style="max-width:120px">'+esc(s.n)+'</span></td>'+
+      '<td class="num">'+esc(priceStr)+'</td>'+
+      '<td class="num">'+s.tp.toFixed(1)+'%</td>'+
+      '<td class="num '+d5cl+'">'+d5s+'</td>'+
+      '<td class="num '+d20cl+'">'+d20s+'</td>'+
+      '<td class="num">'+fmtMC(s.mc)+'</td>'+
+      '<td>'+sigHtml+'</td>'+
+      '<td>'+linkHtml+'</td>'+
+      '</tr>';
+  }).join('');
+  var el=document.getElementById(bodyId);
+  if(el)el.innerHTML=html||'<tr><td colspan="9" style="color:var(--mute);text-align:center;padding:8px">暫無</td></tr>';
+  updateMCSortIcons(section);
+}
 function renderMarketCapSections(){
-  function renderSection(bodyId, stocks, limit){
-    stocks.sort(function(a,b){var va=a.d5!=null?a.d5:-999;var vb=b.d5!=null?b.d5:-999;return vb-va;});
-    var top=stocks.slice(0,limit||20);
-    var html=top.map(function(s){
-      var p=priceMap.get(s.c)??s.lp;
-      var priceStr=p!=null?(p<1?p.toFixed(3):p.toFixed(2)):'—';
-      var d5s=s.d5!=null?(s.d5>0?'+':'')+s.d5.toFixed(2)+'%':'—';
-      var d5cl=s.d5!=null?(s.d5>0?'up':'dn'):'muted';
-      var d20s=s.d20!=null?(s.d20>0?'+':'')+s.d20.toFixed(2)+'%':'—';
-      var d20cl=s.d20!=null?(s.d20>0?'up':'dn'):'muted';
-      var sig=signalMap.get(s.c);
-      var sigHtml='';
-      if(sig){if(sig.pl)sigHtml+='<span class="cpill cpill-placement">配</span>';if(sig.ri)sigHtml+='<span class="cpill cpill-rights">供</span>';if(sig.inc)sigHtml+='<span class="cpill cpill-increase">增</span>';}
-      var linkHtml='<a class="btn-csv" style="font-size:10px;padding:2px 4px" href="#" onclick="showDetail(\''+s.c+'\');return false">詳</a>';
-      return '<tr onclick="showDetail(\''+s.c+'\')" style="cursor:pointer">'+
-        '<td><span class="code">'+esc(s.c)+'</span></td>'+
-        '<td><span class="name" style="max-width:120px">'+esc(s.n)+'</span></td>'+
-        '<td class="num">'+esc(priceStr)+'</td>'+
-        '<td class="num">'+s.tp.toFixed(1)+'%</td>'+
-        '<td class="num '+d5cl+'">'+d5s+'</td>'+
-        '<td class="num '+d20cl+'">'+d20s+'</td>'+
-        '<td class="num">'+fmtMC(s.mc)+'</td>'+
-        '<td>'+sigHtml+'</td>'+
-        '<td>'+linkHtml+'</td>'+
-        '</tr>';
-    }).join('');
-    var el=document.getElementById(bodyId);
-    if(el)el.innerHTML=html||'<tr><td colspan="9" style="color:var(--mute);text-align:center;padding:8px">暫無</td></tr>';
-  }
   if(!baseStocks.length)return;
-  var small=[], mid=[], large=[];
+  mcStocks.small=[];mcStocks.mid=[];mcStocks.large=[];
   baseStocks.forEach(function(s){
     if(!hasMC(s))return;
-    if(s.mc<20)small.push(s);
-    else if(s.mc<100)mid.push(s);
-    else large.push(s);
+    if(s.mc<20)mcStocks.small.push(s);
+    else if(s.mc<100)mcStocks.mid.push(s);
+    else mcStocks.large.push(s);
   });
-  renderSection('mcSmallBody', small, 15);
-  renderSection('mcMidBody', mid, 15);
-  renderSection('mcLargeBody', large, 15);
+  renderMCSection('small');
+  renderMCSection('mid');
+  renderMCSection('large');
 }
 
 function applyFilters(){
