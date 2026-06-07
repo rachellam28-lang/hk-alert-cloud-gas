@@ -452,6 +452,30 @@ async function loadData(){
     const data = await res.json();
     if(!data.ok) throw new Error(data.error||'API error');
     renderTable(data.groups||[]);
+    // Merge tech alerts (POC/FVG/Gap) from alerts.json
+    fetch('./data/alerts.json?_='+Date.now())
+      .then(r=>r.ok?r.json():null)
+      .then(ad=>{
+        if(ad&&ad.alerts){
+          var alertByCode={};
+          ad.alerts.forEach(function(a){
+            var p=typeof a.payload==='string'?JSON.parse(a.payload):(a.payload||{});
+            var code=String(p.code||a.code||'').padStart(5,'0');
+            var sig=p.signal||{};
+            if(!alertByCode[code])alertByCode[code]=[];
+            alertByCode[code].push({label:a.signal||sig.type||'',date:sig.date||(a.created_at||'').slice(0,10)});
+          });
+          (data.groups||[]).forEach(function(g){
+            var code=String(g.code||'').padStart(5,'0');
+            var alerts=alertByCode[code];
+            if(alerts&&alerts.length){
+              if(!g.signals)g.signals=[];
+              alerts.forEach(function(a){g.signals.push(a);});
+            }
+          });
+          renderTable(data.groups||[]);
+        }
+      }).catch(function(){});
     fetch('./market.json?_='+Date.now())
       .then(r=>r.ok?r.json():null)
       .then(m=>{renderMarket(m);renderBreadth(m);})
