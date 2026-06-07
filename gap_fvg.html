@@ -449,7 +449,8 @@ function renderConfluence(data){
     var items=patGroups[k];
     var fireCount=items.filter(function(r){ return r._label==='🔥 可炒上'; }).length;
     var avgSig=items.reduce(function(s,r){ return s+(r.signal_count||0); },0)/Math.max(items.length,1);
-    patOrder.push({key:k,label:patLabels[k],fire:fireCount,avg:avgSig,count:items.length});
+    var firePct=fireCount/Math.max(items.length,1);
+    patOrder.push({key:k,label:patLabels[k],fire:firePct,avg:avgSig,count:items.length});
   }
   patOrder.sort(function(a,b){ return b.fire-a.fire || b.avg-a.avg; });
 
