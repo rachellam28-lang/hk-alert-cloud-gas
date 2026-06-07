@@ -1804,7 +1804,7 @@ async function loadData(){
     // Fetch confluence data for pattern badges in main table
     fetch('./data/confluence.json?_='+Date.now())
       .then(r=>r.ok?r.json():null)
-      .then(cf=>{if(cf){confluenceMap=new Map();cf.forEach(r=>{confluenceMap.set(String(r.code||'').padStart(5,'0'),r.pattern||'');});}})
+      .then(cf=>{if(cf){confluenceMap=new Map();cf.forEach(r=>{confluenceMap.set(String(r.code||'').padStart(5,'0'),r.pattern||'');});renderTable();}})
       .catch(()=>{});
 
     // Fetch Webb-site summary
