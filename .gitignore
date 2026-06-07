@@ -40,3 +40,4 @@ CCASS使用說明書.md
 # Local Netlify folder
 .netlify
 ccass.db*
+ccass.db.backup.*
