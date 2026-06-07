@@ -74,6 +74,11 @@ tbody tr{cursor:pointer}
 .cpill-block_trade{background:var(--amber-soft);color:var(--amber);border-color:var(--amber-border)}
 .cpill-shell_clear{background:#1e1b4b;color:#fbbf24;border-color:#312e81}
 .cpill-breakthrough{background:var(--amber-soft);color:var(--amber);border-color:var(--amber-border)}
+/* Confluence pattern badges */
+.cpill-confluence{font-weight:700;font-size:10px;padding:1px 6px;border-radius:999px;margin-right:2px}
+.cpill-con-catalyst{background:#dcfce7;color:#15803d;border:1px solid #86efac}
+.cpill-con-dual{background:#ede9fe;color:#6d28d9;border:1px solid #c4b5fd}
+.cpill-con-frontrun{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
 .cpill-other{background:var(--surface-soft);color:var(--mute);border-color:var(--line)}
 .foot{margin-top:24px;padding-top:14px;border-top:1px solid var(--line);text-align:center;color:var(--mute-2);font-size:11px}
 .mc-null{color:var(--mute-2);font-size:11px}
@@ -642,6 +647,7 @@ let priceMap=new Map();
 let hkexLinkMap=new Map();
 let techSignalMap=new Map();
 let breakthroughMap={};
+let confluenceMap=new Map();
 let activePrices={};
 let corpFilter='all';
 let allCorpData=[];
@@ -998,8 +1004,14 @@ function renderTable(){
     let btHtml='';
     const bt=breakthroughMap[s.c];
     if(bt){btHtml='<span class="cpill cpill-breakthrough">🚀上破'+(bt.type==='placement'?'配股':'供股')+'價 $'+bt.offer_price+'</span>';}
+    // Confluence pattern badge
+    const conPat=confluenceMap.get(s.c);
+    let conBadge='';
+    if(conPat==='catalyst') conBadge='<span class="cpill cpill-confluence cpill-con-catalyst">🚀催化</span>';
+    else if(conPat==='dual') conBadge='<span class="cpill cpill-confluence cpill-con-dual">💎雙向</span>';
+    else if(conPat==='frontrun') conBadge='<span class="cpill cpill-confluence cpill-con-frontrun">🦆搶跑</span>';
     const mergedSig=(techHtml||'')+(corpHtml?'<div class="cpillrow">'+corpHtml+'</div>':'');
-    const sigDisplay=(btHtml||'')+mergedSig||'<span class="mc-null">—</span>';
+    const sigDisplay=conBadge+(btHtml||'')+mergedSig||'<span class="mc-null">—</span>';
 
     // Price with 🔺 year-open indicator
     const priceVal=priceMap.get(s.c) ?? s.lp;
@@ -1065,13 +1077,19 @@ function renderTable(){
     let btHtml='';
     const bt=breakthroughMap[s.c];
     if(bt){btHtml='<span class="cpill cpill-breakthrough">🚀上破'+(bt.type==='placement'?'配股':'供股')+'價 $'+bt.offer_price+'</span>';}
+    // Confluence pattern badge
+    const conPat=confluenceMap.get(s.c);
+    let conBadge='';
+    if(conPat==='catalyst') conBadge='<span class="cpill cpill-confluence cpill-con-catalyst">🚀催化</span>';
+    else if(conPat==='dual') conBadge='<span class="cpill cpill-confluence cpill-con-dual">💎雙向</span>';
+    else if(conPat==='frontrun') conBadge='<span class="cpill cpill-confluence cpill-con-frontrun">🦆搶跑</span>';
     const techHtml=techSig.slice(0,4).map(ss=>{
       const dateStr=ss.date?'<span class="spill-date">'+fmtDate(ss.date).slice(5)+'</span>':'';
       const t=sigType(ss.label),cls='spill'+(t?' spill-'+t:'');
       const body='<span class="'+cls+'">'+esc(shortLabel(ss.label))+dateStr+'</span>';
       return ss.link?'<a class="splink" href="'+esc(ss.link)+'" target="_blank" rel="noopener">'+body+'</a>':body;
     }).join(' ');
-    const sigPills=(btHtml||'')+(techHtml||'')+(corpHtml?' '+corpHtml:'');
+    const sigPills=conBadge+(btHtml||'')+(techHtml||'')+(corpHtml?' '+corpHtml:'');
     const techCount=techSig.length;
     const corpCount=sig?[sig.pl,sig.ri,sig.inc].filter(Boolean).length:0;
     const totalSigCount=techCount+corpCount;
@@ -1781,6 +1799,12 @@ async function loadData(){
     fetch('./market.json?_='+Date.now())
       .then(r=>r.ok?r.json():null)
       .then(m=>{renderMarket(m);renderBreadth(m);})
+      .catch(()=>{});
+
+    // Fetch confluence data for pattern badges in main table
+    fetch('./data/confluence.json?_='+Date.now())
+      .then(r=>r.ok?r.json():null)
+      .then(cf=>{if(cf){confluenceMap=new Map();cf.forEach(r=>{confluenceMap.set(String(r.code||'').padStart(5,'0'),r.pattern||'');});}})
       .catch(()=>{});
 
     // Fetch Webb-site summary
