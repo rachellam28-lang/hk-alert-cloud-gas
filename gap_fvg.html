@@ -440,10 +440,20 @@ function renderConfluence(data){
   // Sort each group by signal_count desc
   for(var k in patGroups){ patGroups[k].sort(function(a,b){ return (b.signal_count||0)-(a.signal_count||0); }); }
 
-  var html='';
+  // Sort pattern sections by explosiveness (🔥可炒上 count → avg signal_count)
+  var patLabels={'catalyst':'🚀 催化','dual':'💎 雙向','frontrun':'🦆 搶跑'};
   var patColors={'catalyst':'#15803d','dual':'#6d28d9','frontrun':'#991b1b'};
   var patBg={'catalyst':'#dcfce7','dual':'#ede9fe','frontrun':'#fef2f2'};
-  var patOrder=[{key:'catalyst',label:'🚀 催化'},{key:'dual',label:'💎 雙向'},{key:'frontrun',label:'🦆 搶跑'}];
+  var patOrder=[];
+  for(var k in patGroups){
+    var items=patGroups[k];
+    var fireCount=items.filter(function(r){ return r._label==='🔥 可炒上'; }).length;
+    var avgSig=items.reduce(function(s,r){ return s+(r.signal_count||0); },0)/Math.max(items.length,1);
+    patOrder.push({key:k,label:patLabels[k],fire:fireCount,avg:avgSig,count:items.length});
+  }
+  patOrder.sort(function(a,b){ return b.fire-a.fire || b.avg-a.avg; });
+
+  var html='';
   for(var i=0;i<patOrder.length;i++){
     var p=patOrder[i];
     var items=patGroups[p.key];
