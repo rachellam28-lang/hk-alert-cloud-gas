@@ -63,6 +63,16 @@ tbody tr{cursor:pointer}
 .cpill-placement{background:var(--down-soft);color:var(--down);border-color:var(--down-border)}
 .cpill-rights{background:var(--violet-soft);color:var(--violet);border-color:var(--violet-border)}
 .cpill-increase{background:var(--up-soft);color:var(--up);border-color:var(--up-border)}
+.cpill-decrease{background:var(--down-soft);color:var(--down);border-color:var(--down-border)}
+.cpill-buyback{background:var(--primary-soft);color:var(--primary);border-color:var(--primary-border)}
+.cpill-acquisition{background:var(--violet-soft);color:var(--violet);border-color:var(--violet-border)}
+.cpill-transfer{background:var(--amber-soft);color:var(--amber);border-color:var(--amber-border)}
+.cpill-consolidation{background:#fce7f3;color:#9d174d;border-color:#fbcfe8}
+.cpill-split{background:#ecfdf5;color:#065f46;border-color:#a7f3d0}
+.cpill-privatisation{background:#fef2f2;color:#991b1b;border-color:#fecaca}
+.cpill-special_div{background:#fefce8;color:#854d0e;border-color:#fef08a}
+.cpill-block_trade{background:var(--amber-soft);color:var(--amber);border-color:var(--amber-border)}
+.cpill-shell_clear{background:#1e1b4b;color:#fbbf24;border-color:#312e81}
 .cpill-breakthrough{background:var(--amber-soft);color:var(--amber);border-color:var(--amber-border)}
 .cpill-other{background:var(--surface-soft);color:var(--mute);border-color:var(--line)}
 .foot{margin-top:24px;padding-top:14px;border-top:1px solid var(--line);text-align:center;color:var(--mute-2);font-size:11px}
@@ -136,6 +146,29 @@ tbody tr{cursor:pointer}
 .bs-hi{color:#16a34a;font-weight:600}.bs-lo{color:#dc2626;font-weight:600}.bs-n{color:var(--mute-2)}
 /* IPO card */
 .ipo-card{margin-bottom:10px;background:var(--surface);border:1px solid var(--amber-border);border-radius:var(--radius);overflow:hidden}.ipo-head{display:flex;align-items:center;justify-content:space-between;padding:5px 14px 3px;font-size:11px;font-weight:700;color:var(--amber)}.ipo-count{font-size:10px;font-weight:600;color:var(--mute);background:var(--amber-soft);padding:1px 8px;border-radius:10px;border:1px solid var(--amber-border)}.ipo-tbl{width:100%;border-collapse:collapse;font-size:12px}.ipo-tbl th{text-align:left;padding:2px 10px;font-size:10px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.1em;border-top:1px solid var(--amber-border);background:rgba(251,191,36,.04)}.ipo-tbl td{padding:2px 10px;border-bottom:1px solid var(--line-soft)}.ipo-tbl tr:last-child td{border-bottom:none}.ipo-tbl a{color:var(--text);text-decoration:none;font-weight:600}.ipo-tbl a:hover{color:var(--amber)}.ipo-tbl .code{margin-right:6px}.ipo-tbl .name{color:var(--text);font-size:12px;display:inline;max-width:none}.badge{display:inline-block;font-size:10px;font-weight:600;padding:1px 8px;border-radius:4px;line-height:1.5}.badge-high{background:var(--amber-soft);color:var(--amber);border:1px solid var(--amber-border)}.badge-open{background:var(--primary-soft);color:var(--primary);border:1px solid var(--primary-border)}
+/* Confluence cards */
+.confluence-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:6px;padding:8px 10px}
+.confluence-item{display:flex;align-items:center;gap:7px;padding:6px 8px;background:var(--surface-soft);border:1px solid var(--line-soft);border-radius:8px;font-size:11px;flex-wrap:wrap}
+.confluence-item .cf-dir{font-size:12px;flex:0 0 auto}
+.confluence-item .cf-code{font:600 12px "JetBrains Mono",monospace;color:var(--text);flex:0 0 auto}
+.confluence-item .cf-name{font-size:10.5px;color:var(--mute);flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:60px}
+.confluence-item .cf-sig{display:flex;flex-wrap:wrap;gap:2px;flex:1 1 100%}
+.confluence-item .cf-meta{display:flex;align-items:center;gap:4px;flex:1 1 100%;margin-top:1px}
+.cf-lvl{display:inline-block;font-size:9px;font-weight:700;padding:1px 6px;border-radius:4px}
+.cf-lvl.high{background:#fef3c7;color:#92400e;border:1px solid #fcd34d}
+.cf-lvl.neutral{background:var(--surface);color:var(--mute);border:1px solid var(--line)}
+.cf-lvl.low{background:var(--down-soft);color:var(--down);border:1px solid var(--down-border)}
+.cf-pattern{display:inline-block;font-size:9px;font-weight:700;padding:1px 6px;border-radius:4px;margin-left:2px}
+.cf-pat-frontrun{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
+.cf-pat-dual{background:#ede9fe;color:#6d28d9;border:1px solid #c4b5fd}
+.cf-pat-catalyst{background:#dcfce7;color:#15803d;border:1px solid #86efac}
+.cf-score{display:inline-block;font-size:9px;font-weight:700;padding:1px 7px;border-radius:4px;margin-left:2px}
+.cf-sc-strong-buy{background:#dcfce7;color:#15803d;border:1px solid #86efac}
+.cf-sc-buy{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0}
+.cf-sc-watch{background:#fefce8;color:#854d0e;border:1px solid #fef08a}
+.cf-sc-caution{background:#fef2f2;color:#b91c1c;border:1px solid #fecaca}
+.cf-sc-avoid{background:#fef2f2;color:#991b1b;border:1px solid #fca5a5}
+@media(max-width:520px){.confluence-grid{grid-template-columns:1fr;gap:4px;padding:4px 6px}.confluence-item{padding:4px 6px;gap:4px;font-size:10px}.confluence-item .cf-code{font-size:11px}.confluence-item .cf-name{font-size:9.5px}}
 /* Recent announcements */
 .recent-card{padding:2px 0}
 .ra-list{list-style:none;margin:0;padding:4px 10px;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:0}
@@ -496,9 +529,16 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
       <span class="toggle-arrow">▼</span>
     </button>
   </div>
+  <div class="toolbar" style="padding:4px 10px;gap:4px" id="corpFilterBar">
+    <button class="btn-ghost active" onclick="setCorpFilter('all',this)">全部 139</button>
+    <button class="btn-ghost" onclick="setCorpFilter('up',this)" style="color:#15803d">🟢 可炒上</button>
+    <button class="btn-ghost" onclick="setCorpFilter('neutral',this)" style="color:#64748b">🟡 中性</button>
+  </div>
   <div class="section-body" id="body-corps">
     <section class="card recent-card" id="recentWrap"><div class="loading-msg">載入中…</div></section>
   </div>
+
+
 
   <div class="section-head">
     <h2><span class="ico">🌐</span> Webb-site CCASS 數據</h2>
@@ -507,64 +547,6 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
     <div class="toolbar"><span class="tlabel">Webb-site 每日監察</span></div>
     <div style="padding:10px 14px;font-size:12px;line-height:1.6" id="webbBody"></div>
   </section>
-
-  <div class="section-head" style="margin-top:24px">
-    <button class="section-toggle" onclick="toggleSection('guide',this)" id="toggle-guide">
-      <h2><span class="ico">📖</span> CCASS 使用說明書</h2>
-      <span class="toggle-arrow">▼</span>
-    </button>
-  </div>
-  <div class="section-body" id="body-guide">
-    <section class="card" style="font-size:12px;line-height:1.8;padding:12px 16px;color:var(--text)">
-      <b>🔍 呢個 dashboard 係咩？</b><br>
-      追蹤港股 CCASS（中央結算系統）持倉數據 — 睇邊個大戶/券商正在收貨或散貨。<br><br>
-
-      <b>📊 數據來源</b><br>
-      • <b>CCASS 持倉</b>：HKEX 每日 CCASS 持股報告（持倉%、Top5/Top10 集中度、HHI）<br>
-      • <b>股價</b>：GAS 實時報價 + yfinance 歷史數據（今日Δ%、52週高低、PE、Beta）<br>
-      • <b>信號</b>：技術分析信號（POC、FVG、年開突破、IPO首日突破）<br>
-      • <b>配股/供股</b>：配股價、供股價突破監測<br><br>
-
-      <b>🎯 點樣用嚟炒？</b><br>
-      <b>1. CCASS% ↑ + 股價 ↑</b> → 大戶收貨中，跟勢追入<br>
-      <b>2. CCASS% ↑ + 股價 ↓</b> → 大戶壓價收貨，留意見底信號<br>
-      <b>3. CCASS% ↓ + 股價 ↑</b> → 大戶散貨中，高位減持<br>
-      <b>4. Top5% > 80%</b> → 高度集中，莊家股，大波動<br>
-      <b>5. 連續增持（🔥）</b> → 大戶持續買入，強勢信號<br>
-      <b>6. 連續減持（❄️）</b> → 大戶持續沽出，避開<br>
-      <b>7. 🔺 年開突破</b> → 現價高過今年開市價，多頭趨勢<br>
-      <b>8. 52週%近0%</b> → 股價近52週低位，可能見底<br>
-      <b>9. 52週%近100%</b> → 股價近52週高位，小心高追<br><br>
-
-      <b>📌 關鍵數字解讀</b><br>
-      • <b>持倉%（tp）</b>：CCASS 總持股佔發行量%，>60%即高集中<br>
-      • <b>5日Δ（d5）</b>：近5日CCASS%變化，+值=收貨，-值=散貨<br>
-      • <b>今日Δ%（chg）</b>：今日股價變幅（yfinance）<br>
-      • <b>PE</b>：市盈率，<10可能低估，>100可能高估<br>
-      • <b>Beta</b>：波動性，>1比大市波動大<br>
-      • <b>HHI</b>（drawer入面）：持倉集中度指數，>1500=高度集中<br><br>
-
-      <b>⚡ 快篩 Presets</b><br>
-      • <b>信號突破</b>：按技術信號數量排序<br>
-      • <b>配股預警</b>：CCASS%>30 + 有配股記錄<br>
-      • <b>高動能</b>：5日Δ跌5-20%（大戶低位掃貨）<br><br>
-
-      <b>🔄 更新頻率</b><br>
-      • CCASS 數據：每日 HKEX update 後（約7am HKT）<br>
-      • 股價 + 停牌：每日 9pm HKT yfinance refresh<br>
-      • 信號：GAS 自動推送<br><br>
-
-      <b>🔬 數據精準度</b><br>
-      另類數據嘅靈魂在於清洗顆粒度與精準度，及深度關聯處理。<br>
-      • <b>8重驗證</b>：range（持倉% 0-100）、pct consistency（daily vs holdings sum ≤5%誤差）、shares consistency（總股 vs 持倉sum ≤2%）、day-over-day jump（>30%跳變檢測）、coverage gap（<50% median → alert）、zero participant（有股數無參與者）、orphan row（daily無對應holdings）、concentration sanity（top5>total）<br>
-      • <b>NaN/Infinity sanitize</b>：export JSON 前 math.isnan() → None，防 dashboard 白畫面<br>
-      • <b>幽靈數據防護</b>：fill_missing DELETE before INSERT，避免重複 scrape 疊加<br>
-      • <b>Scraper bug detection</b>：pct 大變但 shares 不變 → 判定為 scraper error<br>
-      • <b>Corporate action 識別</b>：pct + shares 同時大變 → 判定為公司行動（非數據錯誤）<br>
-      • <b>WAF protection</b>：sequential scrape only，subprocess 60s hard timeout，fail rate >5% → admin alert<br>
-      • 腳本：verify_dashboard.py（JSON層） + verify_data.py（DB 8重深度檢查）<br>
-    </section>
-  </div>
 
   <div class="foot">數據來源：HKEX CCASS · 自動更新 10分鐘 · 僅供參考</div>
   </main>
@@ -661,7 +643,16 @@ let hkexLinkMap=new Map();
 let techSignalMap=new Map();
 let breakthroughMap={};
 let activePrices={};
+let corpFilter='all';
+let allCorpData=[];
 const CORP_CACHE_KEY='hk_corp_signal_cache_v2';
+
+function setCorpFilter(dir,btn){
+  corpFilter=dir;
+  document.querySelectorAll('#corpFilterBar .btn-ghost').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderRecent(allCorpData);
+}
 // --- canonical stock list helpers ---
 function getStockCode(s){
   return String(s?.c??s?.code??'').padStart(5,'0');
@@ -938,7 +929,7 @@ function toggleSection(id, btn) {
   try { localStorage.setItem(key, collapsed ? '0' : '1'); } catch(e) {}
 }
 (function initSections() {
-  ['signals','corps','guide','transfers','volratio'].forEach(function(id) {
+  ['signals','corps','transfers','volratio'].forEach(function(id) {
     try {
       if (localStorage.getItem('sec_collapsed_' + id) === '1') {
         const body = document.getElementById('body-' + id);
@@ -1597,11 +1588,19 @@ function renderRecent(recentCorps){
     document.getElementById('recentWrap').innerHTML='<div style="padding:12px;color:var(--mute);text-align:center;font-size:12px">暫無公告</div>';
     return;
   }
-  const items = recentCorps.map(r=>{
+  allCorpData = recentCorps;
+  var filtered = corpFilter==='all' ? recentCorps : recentCorps.filter(function(r){return r.direction===corpFilter;});
+  if(!filtered.length){
+    document.getElementById('recentWrap').innerHTML='<div style="padding:12px;color:var(--mute);text-align:center;font-size:12px">此分類暫無公告</div>';
+    return;
+  }
+  var dirIcon = {'up':'🟢','down':'🔴','neutral':'🟡'};
+  const items = filtered.map(r=>{
     const shortDate = r.date ? r.date.slice(5) : '—';
     const codeBlock = r.code?'<span class="ra-code">'+esc(r.code)+'</span>'+(r.name?'<span class="ra-name">'+esc(r.name)+'</span>':''):'<span class="muted">—</span>';
     const linkHtml = r.url?'<a class="ra-link" href="'+esc(r.url)+'" target="_blank" rel="noopener">HKEX</a>':'';
-    return '<li class="ra-item"><span class="ra-label"><span class="cpill cpill-'+r.type+'">'+esc(r.typeLabel||'公告')+'</span></span><span class="ra-date" title="'+esc(r.date||'')+'">'+esc(shortDate)+'</span><span class="ra-stk">'+codeBlock+'</span>'+linkHtml+'</li>';
+    const dirDot = dirIcon[r.direction]||'';
+    return '<li class="ra-item"><span class="ra-dir">'+dirDot+'</span><span class="ra-label"><span class="cpill cpill-'+r.type+'">'+esc(r.typeLabel||'公告')+'</span></span><span class="ra-date" title="'+esc(r.date||'')+'">'+esc(shortDate)+'</span><span class="ra-stk">'+codeBlock+'</span>'+linkHtml+'</li>';
   }).join('');
   document.getElementById('recentWrap').innerHTML = '<ul class="ra-list">'+items+'</ul>';
 }

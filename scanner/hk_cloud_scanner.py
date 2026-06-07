@@ -860,7 +860,18 @@ def fetch_corp_action_announcements() -> list[dict[str, Any]]:
     print(f"HKEXnews hits: {len(announcements)}")
     return announcements
 
-_TYPE_MAP = {'配股':'placement','供股':'rights','合股':'consolidation','拆細':'split','增持':'increase','減持':'decrease','回購':'buyback','私有化':'privatisation','特別息':'special_div','收購':'acquisition','轉倉':'transfer','大手上板':'block_trade','股息':'dividend','盈警':'warning','盈喜':'alert','業績':'results','董事變更':'director','其他':'other'}
+_TYPE_MAP = {'配股':'placement','供股':'rights','合股':'consolidation','拆細':'split','增持':'increase','減持':'decrease','回購':'buyback','私有化':'privatisation','特別息':'special_div','收購':'acquisition','轉倉':'transfer','大手上板':'block_trade','股東增持':'increase','大手轉倉':'block_trade','清殼':'shell_clear'}
+
+_UP_TYPES = {'配股','供股','增持','股東增持','回購','收購','私有化','清殼','特別息'}
+_DOWN_TYPES = {'減持','合股'}
+
+def _get_direction(types_list):
+    types_set = set(types_list)
+    if types_set & _UP_TYPES:
+        return 'up'
+    if types_set & _DOWN_TYPES:
+        return 'down'
+    return 'neutral'
 
 def _update_announcements_json(raw_anns: list[dict[str, Any]]) -> None:
     """Merge fetched corp announcements into data/announcements.json for dashboard."""
@@ -899,6 +910,7 @@ def _update_announcements_json(raw_anns: list[dict[str, Any]]) -> None:
             'url': ann.get('url',''),
             'type': _TYPE_MAP.get(first_type, 'other'),
             'typeLabel': types_str,
+            'direction': _get_direction(types_list),
         })
         new_count += 1
 
@@ -1098,6 +1110,30 @@ def run_corp_actions() -> None:
         run_watchlist_year_open_breakout()
     except Exception as exc:
         print(f"[corp] watchlist year-open check failed: {exc}")
+
+    # Build confluence (announcements × tech signals) and alert
+    try:
+        _build_confluence_and_alert()
+    except Exception as exc:
+        print(f"[corp] confluence build failed: {exc}")
+
+
+def _build_confluence_and_alert() -> None:
+    """Dual-direction confluence: pre-signals (春江鴨) + post-signals (追落後)."""
+    try:
+      import sys, os
+      _proj = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+      if _proj not in sys.path:
+          sys.path.insert(0, _proj)
+      from build_confluence import build, format_alert
+      from scripts.score_tradeable import score_confluence
+      data = build()
+      _ = score_confluence(data)  # saves tradeable.json
+      alert = format_alert(data)
+      if alert:
+          send_telegram_message(alert)
+    except Exception as exc:
+        print(f"[confluence] failed: {exc}")
 
 
 def clean_stock_list(df: pd.DataFrame) -> pd.DataFrame:
@@ -2216,6 +2252,11 @@ def main() -> None:
         run_ipo()
         run_poc()
         run_year_open_breakout()
+        # Rebuild confluence with fresh signal data
+        try:
+            _build_confluence_and_alert()
+        except Exception as exc:
+            print(f"[main] confluence build failed: {exc}")
     else:
         raise SystemExit(
             "Usage: python scanner/hk_cloud_scanner.py [corp|ipo|poc|year_open|us|all]"

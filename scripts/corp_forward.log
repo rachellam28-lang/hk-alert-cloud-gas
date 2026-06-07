@@ -1,0 +1,13 @@
+Loaded 725 announcements
+Bearer ready
+  100/725 ok=97 err=0 skip=3 (250s)
+  200/725 ok=192 err=0 skip=8 (492s)
+  300/725 ok=279 err=0 skip=21 (715s)
+  400/725 ok=375 err=0 skip=25 (956s)
+  500/725 ok=469 err=0 skip=31 (1199s)
+  600/725 ok=566 err=0 skip=34 (1450s)
+  700/725 ok=664 err=0 skip=36 (1705s)
+DONE: 686 ok, 0 err, 39 skip, 686 unique (1761s)
+s)
+  700/725 ok=662 err=2 skip=36 (1722s)
+DONE: 684 ok, 2 err, 39 skip, 686 unique (1781s)

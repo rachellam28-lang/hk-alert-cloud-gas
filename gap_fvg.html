@@ -82,6 +82,48 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
   .code{min-width:44px}
   .name{min-width:60px}
 }
+/* Confluence (公告×訊號) */
+.confluence-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:4px;padding:6px 8px}
+.confluence-item{display:flex;flex-wrap:wrap;align-items:center;gap:2px 5px;padding:4px 7px;background:var(--surface-soft);border:1px solid var(--line-soft);border-radius:6px;font-size:10.5px}
+.confluence-item .cf-row{flex:1 1 100%;display:flex;align-items:center;gap:5px}
+.confluence-item .cf-row2{flex:1 1 100%;display:flex;align-items:center;gap:4px;font-size:9.5px;color:var(--mute)}
+.confluence-item .cf-row3{flex:1 1 100%;display:flex;align-items:center;gap:6px;font-size:9px;color:var(--mute-2)}
+.confluence-item .cf-dir{font-size:12px}
+.confluence-item .cf-code{font:600 11px "JetBrains Mono",monospace;color:var(--text)}
+.confluence-item .cf-name{font-size:10px;color:var(--mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1 1 auto;min-width:50px}
+.confluence-item .cf-meta{font-size:9px;color:var(--mute-2);flex:0 0 auto;margin-left:auto}
+.cf-lvl{display:inline-block;font-size:9px;font-weight:700;padding:1px 6px;border-radius:4px}
+.cf-lvl.high{background:#fef3c7;color:#92400e;border:1px solid #fcd34d}
+.cf-lvl.neutral{background:var(--surface);color:var(--mute);border:1px solid var(--line)}
+.cf-lvl.low{background:var(--down-soft);color:var(--down);border:1px solid var(--down-border)}
+.cf-pattern{display:inline-block;font-size:9px;font-weight:700;padding:1px 6px;border-radius:4px;margin-left:2px}
+.cf-pat-frontrun{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
+.cf-pat-dual{background:#ede9fe;color:#6d28d9;border:1px solid #c4b5fd}
+.cf-pat-catalyst{background:#dcfce7;color:#15803d;border:1px solid #86efac}
+.cf-score{display:inline-block;font-size:9px;font-weight:700;padding:1px 7px;border-radius:4px;margin-left:2px}
+.cf-sc-strong-buy{background:#dcfce7;color:#15803d;border:1px solid #86efac}
+.cf-sc-buy{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0}
+.cf-sc-watch{background:#fefce8;color:#854d0e;border:1px solid #fef08a}
+.cf-sc-caution{background:#fef2f2;color:#b91c1c;border:1px solid #fecaca}
+.cf-sc-avoid{background:#fef2f2;color:#991b1b;border:1px solid #fca5a5}
+.cpill{display:inline-flex;align-items:center;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:999px;line-height:1.5;border:1px solid transparent;margin:1px 2px 1px 0}
+.cpill-placement{background:var(--down-soft);color:var(--down);border-color:var(--down-border)}
+.cpill-rights{background:var(--violet-soft);color:var(--violet);border-color:var(--violet-border)}
+.cpill-increase{background:var(--up-soft);color:var(--up);border-color:var(--up-border)}
+.cpill-buyback{background:var(--primary-soft);color:var(--primary);border-color:var(--primary-border)}
+.cpill-acquisition{background:var(--violet-soft);color:var(--violet);border-color:var(--violet-border)}
+.cpill-transfer{background:var(--amber-soft);color:var(--amber);border-color:var(--amber-border)}
+.cpill-consolidation{background:#fce7f3;color:#9d174d;border-color:#fbcfe8}
+.cpill-split{background:#ecfdf5;color:#065f46;border-color:#a7f3d0}
+.cpill-privatisation{background:#fef2f2;color:#991b1b;border-color:#fecaca}
+.cpill-special_div{background:#fefce8;color:#854d0e;border-color:#fef08a}
+.cpill-block_trade{background:var(--amber-soft);color:var(--amber);border-color:var(--amber-border)}
+.cpill-shell_clear{background:#1e1b4b;color:#fbbf24;border-color:#312e81}
+.spill{display:inline-flex;align-items:center;gap:4px;background:var(--primary-soft);color:#075985;border:1px solid var(--primary-border);font-size:11px;font-weight:600;padding:2px 9px;border-radius:999px;margin:1px 3px 1px 0;line-height:1.5;white-space:nowrap}
+.spill-poc{background:var(--violet-soft);color:var(--violet);border-color:var(--violet-border)}
+.spill-fvg{background:var(--up-soft);color:var(--up);border-color:var(--up-border)}
+.spill-yearopen{background:var(--amber-soft);color:var(--amber);border-color:var(--amber-border)}
+@media(max-width:520px){.confluence-grid{grid-template-columns:1fr;gap:3px;padding:4px 5px}.confluence-item{padding:3px 5px;font-size:9.5px}.confluence-item .cf-code{font-size:10px}.confluence-item .cf-name{font-size:9px}}
 </style>
 </head><body>
 
@@ -89,7 +131,7 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
   <div class="topbar-inner">
     <div class="brand">
       <div class="logo">⚠</div>
-      <div><div class="brand-title">警報中心</div><div class="brand-sub">Gap/FVG · 量比 · 轉倉</div></div>
+      <div><div class="brand-title">警報中心</div><div class="brand-sub">Confluence · Gap/FVG · 量比 · 轉倉</div></div>
     </div>
     <div class="topright">
       <span id="dot" class="dot loading"></span>
@@ -100,6 +142,11 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 </div>
 
 <div class="wrap" id="root"><div class="loading">載入中…</div></div>
+
+<div class="wrap" id="confluence-section" style="margin-top:12px">
+  <div class="sec"><div class="sec-title">🎯 Confluence 公告×訊號 <span id="confluenceCount" style="font-size:10px;color:var(--mute);font-weight:400"></span></div></div>
+  <section class="card" id="confluenceWrap" style="min-height:40px"><div class="loading-msg" style="padding:12px;color:var(--mute);font-size:12px">載入中…</div></section>
+</div>
 
 <script>
 var E = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -326,6 +373,55 @@ async function main(){
     document.getElementById('root').innerHTML = '<div class="empty" style="color:#ef4444">載入失敗：'+E(e.message)+'<br><small>請稍後重試</small></div>';
   }
 }
+
+// --- Confluence: announcements × technical signals ---
+function renderConfluence(data){
+  var wrap = document.getElementById('confluenceWrap');
+  if(!wrap) return;
+  if(!data||!data.length){
+    wrap.innerHTML='<div style="padding:12px;color:var(--mute);text-align:center;font-size:12px">暫無 Confluence 訊號</div>';
+    return;
+  }
+  document.getElementById('confluenceCount').textContent='('+data.length+')';
+  var dirIcon={'up':'🟢','down':'🔴','neutral':'🟡'};
+  var lvlEmoji={'high':'🔥','neutral':'','low':'🔻'};
+  var patEmoji={'frontrun':'🦆','dual':'💎','catalyst':'🚀'};
+  var scoreOrder={'🔥 可炒上':0,'📈 留意':1,'👀 觀察':2,'⚠️ 小心':3};
+  // Sort: high score first, then by signal_count desc
+  data.sort(function(a,b){
+    var sa=scoreOrder[a.label]||99, sb=scoreOrder[b.label]||99;
+    if(sa!==sb) return sa-sb;
+    return (b.signal_count||0)-(a.signal_count||0);
+  });
+  var sigPillClass={'上破POC':'spill-poc','向上FVG':'spill-fvg','年開突破':'spill-yearopen','向上跳空缺口':'spill-fvg'};
+  var items=data.map(function(r){
+    var dirDot=dirIcon[r.direction]||'🟡';
+    var lvl=r.price_level||'';
+    var lvlHtml=lvl?'<span class="cf-lvl '+lvl+'">'+(lvlEmoji[lvl]||'')+''+(lvlLabel[lvl]||lvl)+'</span>':'';
+    var disc=r.discount_pct!=null?'折讓'+r.discount_pct+'% ':'';
+    var pat=r.pattern||'';
+    var patBadge=pat?'<span class="cf-pattern cf-pat-'+pat+'">'+(patEmoji[pat]||'')+''+(patLabel[pat]||pat)+'</span>':'';
+    var score=r.score||0;
+    var scoreLabel=r.label||'';
+    var scoreBadge=scoreLabel?'<span class="cf-score cf-sc-'+r.label_class+'">'+E(scoreLabel)+'</span>':'';
+    var sigCount='訊號×'+r.signal_count;
+    var pre=r.pre_count||0, post=r.post_count||0;
+    var prePost='';
+    if(pre>0||post>0) prePost=' | 前×'+pre+' 後×'+post;
+    return '<div class="confluence-item">'+
+      '<div class="cf-row"><span class="cf-dir">'+dirDot+'</span><span class="cf-code">'+E(r.code)+'</span><span class="cf-name">'+E(r.name||'')+'</span><span class="cpill cpill-'+r.type+'">'+E(r.typeLabel||'公告')+'</span></div>'+
+      '<div class="cf-row2">'+scoreBadge+patBadge+lvlHtml+' <span style="font-size:9px">'+disc+'</span></div>'+
+      '<div class="cf-row3"><span>'+sigCount+'</span>'+prePost+'</div>'+
+      '</div>';
+  }).join('');
+  wrap.innerHTML='<div class="confluence-grid">'+items+'</div>';
+}
+
+// Load Confluence data
+fetch('./data/confluence.json?_='+Date.now())
+  .then(function(r){return r.ok?r.json():null;})
+  .then(function(c){if(c&&c.length)renderConfluence(c);})
+  .catch(function(){});
 
 main();
 </script>

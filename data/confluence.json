@@ -1,0 +1,7589 @@
+[
+  {
+    "code": "02028",
+    "name": "JOLIMARK",
+    "types": [
+      "配股"
+    ],
+    "title": "SUPPLEMENTAL ANNOUNCEMENT PLACING OF NEW SHARES UNDER GENERAL MANDATE",
+    "date": "2026-06-03",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0603/2026060302368.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.11,
+    "discount_pct": null,
+    "price_level": "neutral",
+    "signal_count": 6,
+    "pre_count": 6,
+    "post_count": 0,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 2,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "01826",
+    "name": "FDB HOLDINGS",
+    "types": [
+      "配股",
+      "供股"
+    ],
+    "title": "REVISED TIMETABLE IN RELATION TO THE PROPOSED RIGHTS ISSUE",
+    "date": "2026-06-03",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0603/2026060302206.pdf",
+    "type": "rights",
+    "typeLabel": "供股 / 配股",
+    "direction": "up",
+    "offer_price": 0.1,
+    "discount_pct": null,
+    "price_level": "neutral",
+    "signal_count": 5,
+    "pre_count": 5,
+    "post_count": 0,
+    "pre_types": [
+      "placement",
+      "向上FVG",
+      "向上跳空缺口",
+      "年開突破"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "placement",
+      "向上FVG",
+      "向上跳空缺口",
+      "年開突破"
+    ],
+    "first_pre_days": 2,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "02540",
+    "name": "LESI GROUP",
+    "types": [
+      "配股"
+    ],
+    "title": "COMPLETION OF PLACING OF NEW SHARES UNDER GENERAL MANDATE",
+    "date": "2026-06-04",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0604/2026060402725.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.7,
+    "discount_pct": null,
+    "price_level": "neutral",
+    "signal_count": 3,
+    "pre_count": 2,
+    "post_count": 1,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 9,
+    "first_post_days": 1,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "03919",
+    "name": "GOLDENPOWER",
+    "types": [
+      "配股"
+    ],
+    "title": "認購完成 OF NEW SHARES（一般授權）",
+    "date": "2026-05-19",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0519/2026051901191.pdf",
+    "typeLabel": "配股",
+    "type": "placement",
+    "direction": "up",
+    "offer_price": 1.2,
+    "discount_pct": null,
+    "price_level": "neutral",
+    "signal_count": 3,
+    "pre_count": 3,
+    "post_count": 0,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 11,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "09678",
+    "name": "UNISOUND",
+    "types": [
+      "配股"
+    ],
+    "title": "COMPLETION OF PLACING OF NEW H SHARES UNDER GENERAL MANDATE AND AMENDMENTS TO THE ARTICLES OF ASSOCIATION",
+    "date": "2026-06-04",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0604/2026060402869.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 228.0,
+    "discount_pct": null,
+    "price_level": "neutral",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "placement"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "placement"
+    ],
+    "first_pre_days": 7,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "06166",
+    "name": "CIG",
+    "types": [
+      "配股"
+    ],
+    "title": "COMPLETION OF PLACING OF H SHARES",
+    "date": "2026-06-04",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0604/2026060402543.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 126.66,
+    "discount_pct": null,
+    "price_level": "neutral",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "placement"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "placement"
+    ],
+    "first_pre_days": 7,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "02473",
+    "name": "XXF",
+    "types": [
+      "配股"
+    ],
+    "title": "配股完成 OF EXISTING SHARES AND TOP-UP 認購新股（一般授權）",
+    "date": "2026-05-19",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0519/2026051900743.pdf",
+    "typeLabel": "配股",
+    "type": "placement",
+    "direction": "up",
+    "offer_price": 0.82,
+    "discount_pct": null,
+    "price_level": "neutral",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "向上FVG"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": 1,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "08120",
+    "name": "CH DEMETER FIN",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES UNDER GENERAL MANDATE",
+    "date": "2026-06-02",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0602/2026060202538.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 6,
+    "pre_count": 6,
+    "post_count": 0,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 7,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "01631",
+    "name": "REF",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-05-27",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.457,
+    "signal_count": 6,
+    "pre_count": 6,
+    "post_count": 0,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 6,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "06162",
+    "name": "中國天瑞",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-05-06",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.138,
+    "signal_count": 6,
+    "pre_count": 5,
+    "post_count": 1,
+    "pre_types": [
+      "向上FVG"
+    ],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": 1,
+    "first_post_days": 28,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "08471",
+    "name": "新達控股",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-05-27",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.02,
+    "signal_count": 4,
+    "pre_count": 4,
+    "post_count": 0,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 12,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "08007",
+    "name": "環球戰略",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-04-21",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.22,
+    "signal_count": 4,
+    "pre_count": 3,
+    "post_count": 1,
+    "pre_types": [
+      "向上FVG"
+    ],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": 11,
+    "first_post_days": 23,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "09600",
+    "name": "新紐科技",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-11",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.3,
+    "signal_count": 4,
+    "pre_count": 4,
+    "post_count": 0,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 1,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "02147",
+    "name": "正味集?",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-22",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.8,
+    "signal_count": 4,
+    "pre_count": 3,
+    "post_count": 1,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 20,
+    "first_post_days": 25,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "00574",
+    "name": "PASHUN INT'L",
+    "types": [
+      "供股"
+    ],
+    "title": "ANNOUNCEMENT DISMISSAL OF SUMMONS",
+    "date": "2026-06-01",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0601/2026060103298.pdf",
+    "type": "rights",
+    "typeLabel": "供股",
+    "direction": "up",
+    "offer_price": null,
+    "discount_pct": null,
+    "price_level": "unknown",
+    "signal_count": 3,
+    "pre_count": 2,
+    "post_count": 1,
+    "pre_types": [
+      "rights",
+      "半年POC"
+    ],
+    "post_types": [
+      "rights"
+    ],
+    "signal_types_summary": [
+      "rights",
+      "半年POC"
+    ],
+    "first_pre_days": 3,
+    "first_post_days": 0,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "03958",
+    "name": "DFZQ",
+    "types": [
+      "收購"
+    ],
+    "title": "APPOINTMENT OF HONG KONG INDEPENDENT FINANCIAL ADVISER",
+    "date": "2026-05-29",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0529/2026052900668.pdf",
+    "type": "acquisition",
+    "typeLabel": "收購",
+    "direction": "up",
+    "signal_count": 3,
+    "pre_count": 2,
+    "post_count": 1,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 22,
+    "first_post_days": 8,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "02187",
+    "name": "智欣集團",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-03-20",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.68,
+    "signal_count": 3,
+    "pre_count": 2,
+    "post_count": 1,
+    "pre_types": [
+      "向上FVG"
+    ],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": 4,
+    "first_post_days": 7,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "09958",
+    "name": "力天影業",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-04",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.2,
+    "signal_count": 3,
+    "pre_count": 3,
+    "post_count": 0,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 13,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "01986",
+    "name": "TSAKER NE",
+    "types": [
+      "回購"
+    ],
+    "title": "(1) FURTHER UPDATES ON PROGRESS ON THE LISTING OF TSAKER TECHNOLOGY ON BEIJING STOCK EXCHANGE AND (2) UPDATE ON DISCLOSEABLE TRANSACTION 2024 REPURCHASE RIGHT BE VOID AB INITIO",
+    "date": "2026-06-04",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0604/2026060402623.pdf",
+    "type": "buyback",
+    "typeLabel": "回購",
+    "direction": "up",
+    "signal_count": 2,
+    "pre_count": 2,
+    "post_count": 0,
+    "pre_types": [
+      "12個月POC",
+      "placement"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "12個月POC",
+      "placement"
+    ],
+    "first_pre_days": 6,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "00020",
+    "name": "SENSETIME-W",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES UNDER GENERAL MANDATE",
+    "date": "2026-04-24",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0424/2026042400003.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 1.91,
+    "signal_count": 2,
+    "pre_count": 2,
+    "post_count": 0,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 15,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "00020",
+    "name": "商湯集團",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-04-17",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 1.91,
+    "signal_count": 2,
+    "pre_count": 2,
+    "post_count": 0,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 8,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "01020",
+    "name": "中細軟科",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-03-30",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.26,
+    "signal_count": 2,
+    "pre_count": 2,
+    "post_count": 0,
+    "pre_types": [
+      "向上FVG"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": 13,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "08489",
+    "name": "裕程物流",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-03-06",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.373,
+    "signal_count": 2,
+    "pre_count": 2,
+    "post_count": 0,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 23,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "01999",
+    "name": "MAN WAH HLDGS",
+    "types": [
+      "回購"
+    ],
+    "title": "VOLUNTARY ANNOUNCEMENT ON-MARKET REPURCHASE OF SHARES",
+    "date": "2026-06-05",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060502246.pdf",
+    "type": "buyback",
+    "typeLabel": "回購",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "向上FVG"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": 3,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "01999",
+    "name": "MAN WAH HLDGS",
+    "types": [
+      "回購"
+    ],
+    "title": "VOLUNTARY ANNOUNCEMENT ON-MARKET REPURCHASE OF SHARES",
+    "date": "2026-06-04",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0604/2026060402157.pdf",
+    "type": "buyback",
+    "typeLabel": "回購",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "向上FVG"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": 2,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "01999",
+    "name": "MAN WAH HLDGS",
+    "types": [
+      "回購"
+    ],
+    "title": "VOLUNTARY ANNOUNCEMENT ON-MARKET REPURCHASE OF SHARES",
+    "date": "2026-06-03",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0603/2026060302396.pdf",
+    "type": "buyback",
+    "typeLabel": "回購",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "向上FVG"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": 1,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "00256",
+    "name": "CITYCHAMP",
+    "types": [
+      "配股",
+      "供股"
+    ],
+    "title": "DELAY IN DESPATCH OF PROSPECTUS DOCUMENTS AND REVISED EXPECTED TIMETABLE IN RELATION TO THE RIGHTS ISSUE",
+    "date": "2026-06-03",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0603/2026060302082.pdf",
+    "type": "rights",
+    "typeLabel": "供股 / 配股",
+    "direction": "up",
+    "offer_price": null,
+    "discount_pct": null,
+    "price_level": "unknown",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "半年POC"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "半年POC"
+    ],
+    "first_pre_days": 2,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "02889",
+    "name": "PATEO",
+    "types": [
+      "增持"
+    ],
+    "title": "VOLUNTARY ANNOUNCEMENT - IN RELATION TO MEMORANDUM OF UNDERSTANDING FOR THE INTENTION OF SHARE ACQUISITION",
+    "date": "2026-06-02",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0602/2026060202776.pdf",
+    "type": "increase",
+    "typeLabel": "增持",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "向上FVG"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": 6,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "01762",
+    "name": "萬咖壹聯",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-03-24",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 1.625,
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "向上FVG"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": 12,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "01815",
+    "name": "珠峰黃金",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-03-13",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 1.61,
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "向上FVG"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": 17,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "01676",
+    "name": "高地股份",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-03-11",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.23,
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "向上FVG"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": 27,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "02273",
+    "name": "固生堂控",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-12",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 37.77,
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "向上FVG"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": 8,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "06086",
+    "name": "方舟云康",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-02",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 3.32,
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "向上FVG"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": 6,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "01826",
+    "name": "豐展控股",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-23",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.153,
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "向上FVG"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": 1,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "01501",
+    "name": "上海瑛泰",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-22",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 26.0,
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "向上FVG"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": 2,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "09863",
+    "name": "浙江零跑",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-06",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 55.49,
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "向上FVG"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": 8,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "01808",
+    "name": "ENTERPRISE DEV",
+    "types": [
+      "配股"
+    ],
+    "title": "配售新股（一般授權）",
+    "date": "2026-05-15",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0515/2026051501665.pdf",
+    "typeLabel": "配股",
+    "type": "placement",
+    "direction": "up",
+    "offer_price": 1.08,
+    "discount_pct": 19.4,
+    "price_level": "low",
+    "signal_count": 13,
+    "pre_count": 2,
+    "post_count": 11,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "上破POC 12M",
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "上破POC 12M",
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 7,
+    "first_post_days": 3,
+    "pattern": "dual"
+  },
+  {
+    "code": "01693",
+    "name": "璋利國際",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-26",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 2.2,
+    "signal_count": 18,
+    "pre_count": 6,
+    "post_count": 12,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 5,
+    "first_post_days": 0,
+    "pattern": "dual"
+  },
+  {
+    "code": "08125",
+    "name": "中新控股",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-05-19",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.425,
+    "signal_count": 15,
+    "pre_count": 10,
+    "post_count": 5,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口",
+      "年開突破"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口",
+      "年開突破"
+    ],
+    "first_pre_days": 5,
+    "first_post_days": 13,
+    "pattern": "dual"
+  },
+  {
+    "code": "08125",
+    "name": "中新控股",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-05-11",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.425,
+    "signal_count": 15,
+    "pre_count": 8,
+    "post_count": 7,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口",
+      "年開突破"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口",
+      "年開突破"
+    ],
+    "first_pre_days": 6,
+    "first_post_days": 2,
+    "pattern": "dual"
+  },
+  {
+    "code": "08106",
+    "name": "浙江芯化",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-03-11",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.31,
+    "signal_count": 15,
+    "pre_count": 5,
+    "post_count": 10,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 5,
+    "first_post_days": 2,
+    "pattern": "dual"
+  },
+  {
+    "code": "01808",
+    "name": "ENTERPRISE DEV",
+    "types": [
+      "配股"
+    ],
+    "title": "補充公告 RELATING TO 配售新股（一般授權）",
+    "date": "2026-05-19",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0519/2026051900690.pdf",
+    "typeLabel": "配股",
+    "type": "placement",
+    "direction": "up",
+    "offer_price": null,
+    "discount_pct": null,
+    "price_level": "unknown",
+    "signal_count": 13,
+    "pre_count": 3,
+    "post_count": 10,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "上破POC 12M",
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "上破POC 12M",
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 1,
+    "first_post_days": 14,
+    "pattern": "dual"
+  },
+  {
+    "code": "01575",
+    "name": "皇庭智家",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-25",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.05,
+    "signal_count": 13,
+    "pre_count": 7,
+    "post_count": 6,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 1,
+    "first_post_days": 1,
+    "pattern": "dual"
+  },
+  {
+    "code": "01792",
+    "name": "CMON",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-12",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.95,
+    "signal_count": 13,
+    "pre_count": 11,
+    "post_count": 2,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 3,
+    "first_post_days": 11,
+    "pattern": "dual"
+  },
+  {
+    "code": "01808",
+    "name": "ENTERPRISE DEV",
+    "types": [
+      "配股"
+    ],
+    "title": "LAPSE OF PLACING OF NEW SHARES UNDER GENERAL MANDATE",
+    "date": "2026-06-05",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060500684.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": null,
+    "discount_pct": null,
+    "price_level": "unknown",
+    "signal_count": 12,
+    "pre_count": 4,
+    "post_count": 8,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "上破POC 12M",
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "上破POC 12M",
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 3,
+    "first_post_days": 0,
+    "pattern": "dual"
+  },
+  {
+    "code": "08406",
+    "name": "中國口腔",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-04-02",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.079,
+    "signal_count": 12,
+    "pre_count": 6,
+    "post_count": 6,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 2,
+    "first_post_days": 7,
+    "pattern": "dual"
+  },
+  {
+    "code": "08106",
+    "name": "浙江芯化",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-25",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.31,
+    "signal_count": 12,
+    "pre_count": 3,
+    "post_count": 9,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 9,
+    "first_post_days": 8,
+    "pattern": "dual"
+  },
+  {
+    "code": "00476",
+    "name": "EV DYNAMICS",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES UNDER GENERAL MANDATE",
+    "date": "2026-04-24",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0424/2026042400001.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.512,
+    "signal_count": 11,
+    "pre_count": 8,
+    "post_count": 3,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 2,
+    "first_post_days": 11,
+    "pattern": "dual"
+  },
+  {
+    "code": "00476",
+    "name": "科軒動力",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-04-16",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.512,
+    "signal_count": 11,
+    "pre_count": 3,
+    "post_count": 8,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 16,
+    "first_post_days": 1,
+    "pattern": "dual"
+  },
+  {
+    "code": "01153",
+    "name": "JIAYUAN SERVICES",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES UNDER GENERAL MANDATE",
+    "date": "2026-04-24",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0424/2026042400002.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.25,
+    "signal_count": 10,
+    "pre_count": 3,
+    "post_count": 7,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 7,
+    "first_post_days": 10,
+    "pattern": "dual"
+  },
+  {
+    "code": "08489",
+    "name": "裕程物流",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-20",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.289,
+    "signal_count": 10,
+    "pre_count": 4,
+    "post_count": 6,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 18,
+    "first_post_days": 1,
+    "pattern": "dual"
+  },
+  {
+    "code": "08511",
+    "name": "民富國際",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-04-30",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.74,
+    "signal_count": 9,
+    "pre_count": 2,
+    "post_count": 7,
+    "pre_types": [
+      "向上FVG"
+    ],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 28,
+    "first_post_days": 11,
+    "pattern": "dual"
+  },
+  {
+    "code": "01736",
+    "name": "中國育兒",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-19",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.433,
+    "signal_count": 9,
+    "pre_count": 4,
+    "post_count": 5,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 6,
+    "first_post_days": 1,
+    "pattern": "dual"
+  },
+  {
+    "code": "08191",
+    "name": "鴻偉 (",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-15",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.128,
+    "signal_count": 9,
+    "pre_count": 6,
+    "post_count": 3,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 2,
+    "first_post_days": 4,
+    "pattern": "dual"
+  },
+  {
+    "code": "00476",
+    "name": "科軒動力",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-05-14",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.52,
+    "signal_count": 8,
+    "pre_count": 6,
+    "post_count": 2,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 9,
+    "first_post_days": 1,
+    "pattern": "dual"
+  },
+  {
+    "code": "00476",
+    "name": "科軒動力",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-05-04",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.52,
+    "signal_count": 8,
+    "pre_count": 5,
+    "post_count": 3,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 12,
+    "first_post_days": 1,
+    "pattern": "dual"
+  },
+  {
+    "code": "08403",
+    "name": "德豐宿來",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-04-30",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 2.4,
+    "signal_count": 8,
+    "pre_count": 3,
+    "post_count": 5,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 1,
+    "first_post_days": 14,
+    "pattern": "dual"
+  },
+  {
+    "code": "01703",
+    "name": "誼和股份",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-04-13",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.064,
+    "signal_count": 8,
+    "pre_count": 6,
+    "post_count": 2,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 5,
+    "first_post_days": 24,
+    "pattern": "dual"
+  },
+  {
+    "code": "08631",
+    "name": "裕豐昌控",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-29",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.39,
+    "signal_count": 8,
+    "pre_count": 6,
+    "post_count": 2,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 2,
+    "first_post_days": 14,
+    "pattern": "dual"
+  },
+  {
+    "code": "08245",
+    "name": "烽翼集團",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-04-15",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.083,
+    "signal_count": 7,
+    "pre_count": 5,
+    "post_count": 2,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 1,
+    "first_post_days": 1,
+    "pattern": "dual"
+  },
+  {
+    "code": "08245",
+    "name": "烽翼集團",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-03-30",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.083,
+    "signal_count": 7,
+    "pre_count": 3,
+    "post_count": 4,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 6,
+    "first_post_days": 14,
+    "pattern": "dual"
+  },
+  {
+    "code": "01718",
+    "name": "宏基集團",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-27",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.25,
+    "signal_count": 7,
+    "pre_count": 5,
+    "post_count": 2,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 16,
+    "first_post_days": 3,
+    "pattern": "dual"
+  },
+  {
+    "code": "01825",
+    "name": "美臻集團",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-22",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.1,
+    "signal_count": 7,
+    "pre_count": 5,
+    "post_count": 2,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 7,
+    "first_post_days": 15,
+    "pattern": "dual"
+  },
+  {
+    "code": "08631",
+    "name": "裕豐昌控",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-22",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.39,
+    "signal_count": 7,
+    "pre_count": 3,
+    "post_count": 4,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 2,
+    "first_post_days": 4,
+    "pattern": "dual"
+  },
+  {
+    "code": "08375",
+    "name": "數盟資本",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-21",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.99,
+    "signal_count": 7,
+    "pre_count": 2,
+    "post_count": 5,
+    "pre_types": [
+      "向上FVG"
+    ],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 13,
+    "first_post_days": 0,
+    "pattern": "dual"
+  },
+  {
+    "code": "01655",
+    "name": "Okur",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-13",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.143,
+    "signal_count": 6,
+    "pre_count": 4,
+    "post_count": 2,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 4,
+    "first_post_days": 3,
+    "pattern": "dual"
+  },
+  {
+    "code": "08489",
+    "name": "裕程物流",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-10",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.373,
+    "signal_count": 6,
+    "pre_count": 4,
+    "post_count": 2,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 14,
+    "first_post_days": 0,
+    "pattern": "dual"
+  },
+  {
+    "code": "02865",
+    "name": "海南鈞達",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-02",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 22.0,
+    "signal_count": 6,
+    "pre_count": 3,
+    "post_count": 3,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 7,
+    "first_post_days": 1,
+    "pattern": "dual"
+  },
+  {
+    "code": "01380",
+    "name": "中國金石",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-05-28",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.57,
+    "signal_count": 5,
+    "pre_count": 2,
+    "post_count": 3,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "placement",
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "placement",
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 24,
+    "first_post_days": 0,
+    "pattern": "dual"
+  },
+  {
+    "code": "01380",
+    "name": "CHI KINGSTONE",
+    "types": [
+      "配股"
+    ],
+    "title": "補充公告 認購新股（一般授權）",
+    "date": "2026-05-21",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0521/2026052101488.pdf",
+    "typeLabel": "配股",
+    "type": "placement",
+    "direction": "up",
+    "offer_price": null,
+    "discount_pct": null,
+    "price_level": "unknown",
+    "signal_count": 5,
+    "pre_count": 2,
+    "post_count": 3,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "placement",
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "placement",
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 17,
+    "first_post_days": 7,
+    "pattern": "dual"
+  },
+  {
+    "code": "09678",
+    "name": "雲知聲智",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-09",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 310.0,
+    "signal_count": 5,
+    "pre_count": 3,
+    "post_count": 2,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 11,
+    "first_post_days": 4,
+    "pattern": "dual"
+  },
+  {
+    "code": "02110",
+    "name": "天成控股",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-05-11",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.1,
+    "signal_count": 4,
+    "pre_count": 2,
+    "post_count": 2,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 25,
+    "first_post_days": 25,
+    "pattern": "dual"
+  },
+  {
+    "code": "09689",
+    "name": "JTF INTL",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES UNDER GENERAL MANDATE",
+    "date": "2026-05-29",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0529/2026052902336.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.694,
+    "discount_pct": 0.86,
+    "price_level": "high",
+    "signal_count": 4,
+    "pre_count": 0,
+    "post_count": 4,
+    "pre_types": [],
+    "post_types": [
+      "placement",
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "placement",
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02556",
+    "name": "MARKETINGFORCE",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：SUBSCRIPTIONS OF NEW SHARES UNDER GENERAL MANDATE",
+    "date": "2026-05-15",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0515/2026051501547.pdf",
+    "typeLabel": "配股",
+    "type": "placement",
+    "direction": "up",
+    "offer_price": 40.54,
+    "discount_pct": 1.28,
+    "price_level": "high",
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "半年POC",
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "半年POC",
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 17,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02495",
+    "name": "VOICECOMM",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：THIRD ISSUE OF NEW H SHARES UNDER GENERAL MANDATE",
+    "date": "2026-05-20",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0520/2026052000648.pdf",
+    "typeLabel": "配股",
+    "type": "placement",
+    "direction": "up",
+    "offer_price": 46.3,
+    "discount_pct": 2.32,
+    "price_level": "high",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 13,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01826",
+    "name": "FDB HOLDINGS",
+    "types": [
+      "配股",
+      "供股"
+    ],
+    "title": "PROPOSED RIGHTS ISSUE ON THE BASIS OF ONE (1) RIGHTS SHARE FOR EVERY TWO (2) SHARES HELD ON THE RECORD DATE ON A NON-UNDERWRITTEN BASIS",
+    "date": "2026-05-29",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0529/2026052903092.pdf",
+    "type": "rights",
+    "typeLabel": "供股 / 配股",
+    "direction": "up",
+    "offer_price": 0.1,
+    "discount_pct": null,
+    "price_level": "neutral",
+    "signal_count": 5,
+    "pre_count": 0,
+    "post_count": 5,
+    "pre_types": [],
+    "post_types": [
+      "placement",
+      "向上FVG",
+      "向上跳空缺口",
+      "年開突破"
+    ],
+    "signal_types_summary": [
+      "placement",
+      "向上FVG",
+      "向上跳空缺口",
+      "年開突破"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02540",
+    "name": "LESI GROUP",
+    "types": [
+      "配股"
+    ],
+    "title": "配售新股（一般授權）",
+    "date": "2026-05-22",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0522/2026052200003.pdf",
+    "typeLabel": "配股",
+    "type": "placement",
+    "direction": "up",
+    "offer_price": 0.7,
+    "discount_pct": 14.63,
+    "price_level": "neutral",
+    "signal_count": 3,
+    "pre_count": 0,
+    "post_count": 3,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01568",
+    "name": "SUNDART HLDGS",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：COMPLETION OF PLACING OF NEW SHARES UNDER GENERAL MANDATE AND RESTORATION …",
+    "date": "2026-05-21",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0521/2026052100887.pdf",
+    "typeLabel": "配股",
+    "type": "placement",
+    "direction": "up",
+    "offer_price": 0.66,
+    "discount_pct": null,
+    "price_level": "neutral",
+    "signal_count": 3,
+    "pre_count": 0,
+    "post_count": 3,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 13,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01327",
+    "name": "LUXXU GROUP",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES UNDER GENERAL MANDATE",
+    "date": "2026-06-04",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0604/2026060402395.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.5,
+    "discount_pct": 11.97,
+    "price_level": "neutral",
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 1,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02563",
+    "name": "BIOSTAR PHARM-B",
+    "types": [
+      "配股"
+    ],
+    "title": "補充公告：THE 認購新股（一般授權）",
+    "date": "2026-05-21",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0521/2026052101400.pdf",
+    "typeLabel": "配股",
+    "type": "placement",
+    "direction": "up",
+    "offer_price": 4.0,
+    "discount_pct": 11.11,
+    "price_level": "neutral",
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "半年POC",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "半年POC",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 11,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02556",
+    "name": "MARKETINGFORCE",
+    "types": [
+      "配股"
+    ],
+    "title": "認購完成S OF NEW SHARES（一般授權）",
+    "date": "2026-05-20",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0520/2026052000876.pdf",
+    "typeLabel": "配股",
+    "type": "placement",
+    "direction": "up",
+    "offer_price": 40.54,
+    "discount_pct": null,
+    "price_level": "neutral",
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "半年POC",
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "半年POC",
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 12,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01087",
+    "name": "INVESTECH HLDGS",
+    "types": [
+      "配股"
+    ],
+    "title": "COMPLETION OF PLACING OF NEW SHARES UNDER GENERAL MANDATE",
+    "date": "2026-06-02",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0602/2026060201642.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.67,
+    "discount_pct": 15.19,
+    "price_level": "low",
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 2,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01384",
+    "name": "DEEPEXI TECH",
+    "types": [
+      "配股"
+    ],
+    "title": "配股 OF NEW H SHARES（一般授權）",
+    "date": "2026-05-21",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0521/2026052100035.pdf",
+    "typeLabel": "配股",
+    "type": "placement",
+    "direction": "up",
+    "offer_price": 50.58,
+    "discount_pct": 19.78,
+    "price_level": "low",
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "placement",
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "placement",
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 7,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01340",
+    "name": "HUISHENG INTL",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：(1) PROPOSED SHARE CONSOLIDATION AND PROPOSED CHANGE IN BOARD LOT SIZE; AN…",
+    "date": "2026-05-20",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0520/2026052001896.pdf",
+    "typeLabel": "配股",
+    "type": "placement",
+    "direction": "up",
+    "offer_price": 0.046,
+    "discount_pct": 19.3,
+    "price_level": "low",
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 1,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02257",
+    "name": "SIRNAOMICS-B",
+    "types": [
+      "配股"
+    ],
+    "title": "認購新股（一般授權）",
+    "date": "2026-05-25",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0525/2026052500053.pdf",
+    "typeLabel": "配股",
+    "type": "placement",
+    "direction": "up",
+    "offer_price": 4.69,
+    "discount_pct": 15.34,
+    "price_level": "low",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "placement"
+    ],
+    "signal_types_summary": [
+      "placement"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 7,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02515",
+    "name": "TJCD",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：SUBSCRIPTION FOR NEW SHARES UNDER GENERAL MANDATE",
+    "date": "2026-05-21",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0521/2026052101980.pdf",
+    "typeLabel": "配股",
+    "type": "placement",
+    "direction": "up",
+    "offer_price": 0.85,
+    "discount_pct": 19.8,
+    "price_level": "low",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 11,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "00164",
+    "name": "CHINA BAOLI TEC",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：SUBSCRIPTIONS OF NEW SHARES UNDER GENERAL MANDATE",
+    "date": "2026-05-19",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0519/2026051901405.pdf",
+    "typeLabel": "配股",
+    "type": "placement",
+    "direction": "up",
+    "offer_price": 0.42,
+    "discount_pct": 19.23,
+    "price_level": "low",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "placement"
+    ],
+    "signal_types_summary": [
+      "placement"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 13,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01693",
+    "name": "璋利國際",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-12",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 2.2,
+    "signal_count": 13,
+    "pre_count": 0,
+    "post_count": 13,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 1,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01792",
+    "name": "CMON",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-19",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.8,
+    "signal_count": 11,
+    "pre_count": 0,
+    "post_count": 11,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "08125",
+    "name": "中新控股",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-04-23",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.425,
+    "signal_count": 10,
+    "pre_count": 0,
+    "post_count": 10,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 1,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "08406",
+    "name": "中國口腔",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-03-16",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.079,
+    "signal_count": 10,
+    "pre_count": 0,
+    "post_count": 10,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01152",
+    "name": "正乾金融",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-05-26",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.205,
+    "signal_count": 9,
+    "pre_count": 1,
+    "post_count": 8,
+    "pre_types": [
+      "向上FVG"
+    ],
+    "post_types": [
+      "12個月POC + 3年POC",
+      "IPO首日高突破",
+      "placement",
+      "向上FVG",
+      "向上跳空缺口",
+      "年開突破"
+    ],
+    "signal_types_summary": [
+      "12個月POC + 3年POC",
+      "IPO首日高突破",
+      "placement",
+      "向上FVG",
+      "向上跳空缺口",
+      "年開突破"
+    ],
+    "first_pre_days": 6,
+    "first_post_days": 2,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01575",
+    "name": "皇庭智家",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-05",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.05,
+    "signal_count": 9,
+    "pre_count": 0,
+    "post_count": 9,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 1,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01736",
+    "name": "中國育兒",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2025-12-29",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.432,
+    "signal_count": 9,
+    "pre_count": 0,
+    "post_count": 9,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 1,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01153",
+    "name": "佳源服務",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-04-15",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.25,
+    "signal_count": 8,
+    "pre_count": 0,
+    "post_count": 8,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 1,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "08489",
+    "name": "裕程物流",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2025-12-30",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.265,
+    "signal_count": 8,
+    "pre_count": 0,
+    "post_count": 8,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "08191",
+    "name": "鴻偉 (",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2025-12-29",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.12,
+    "signal_count": 8,
+    "pre_count": 0,
+    "post_count": 8,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "08245",
+    "name": "烽翼集團",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-03-20",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.083,
+    "signal_count": 7,
+    "pre_count": 0,
+    "post_count": 7,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 3,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "08106",
+    "name": "浙江芯化",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-12",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.31,
+    "signal_count": 7,
+    "pre_count": 0,
+    "post_count": 7,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 1,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "08631",
+    "name": "裕豐昌控",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-16",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.39,
+    "signal_count": 7,
+    "pre_count": 0,
+    "post_count": 7,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 3,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02028",
+    "name": "映美控股",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-05-26",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.11,
+    "signal_count": 6,
+    "pre_count": 0,
+    "post_count": 6,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "08120",
+    "name": "國農金融",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-05-15",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.6,
+    "signal_count": 6,
+    "pre_count": 1,
+    "post_count": 5,
+    "pre_types": [
+      "向上FVG"
+    ],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 1,
+    "first_post_days": 3,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01631",
+    "name": "REF",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-05-12",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.457,
+    "signal_count": 6,
+    "pre_count": 0,
+    "post_count": 6,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "06928",
+    "name": "萬馬控股",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-04-10",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.1748,
+    "signal_count": 6,
+    "pre_count": 0,
+    "post_count": 6,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 3,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "08079",
+    "name": "仍志集團",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-03-20",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.5,
+    "signal_count": 6,
+    "pre_count": 0,
+    "post_count": 6,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 3,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01703",
+    "name": "維力生活",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-03-13",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.064,
+    "signal_count": 6,
+    "pre_count": 0,
+    "post_count": 6,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 3,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01718",
+    "name": "宏基集團",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-03",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.25,
+    "signal_count": 6,
+    "pre_count": 0,
+    "post_count": 6,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 1,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01655",
+    "name": "Okur",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-23",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.143,
+    "signal_count": 6,
+    "pre_count": 0,
+    "post_count": 6,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 3,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "09963",
+    "name": "高科橋光",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-06",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.476,
+    "signal_count": 6,
+    "pre_count": 0,
+    "post_count": 6,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02350",
+    "name": "數科集團",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2025-12-31",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.7,
+    "signal_count": 6,
+    "pre_count": 0,
+    "post_count": 6,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "08120",
+    "name": "國農金融",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-04-24",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.6,
+    "signal_count": 5,
+    "pre_count": 0,
+    "post_count": 5,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 20,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "08120",
+    "name": "CH DEMETER FIN",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES UNDER GENERAL MANDATE",
+    "date": "2026-04-23",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/gem/2026/0423/2026042303262.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.425,
+    "signal_count": 5,
+    "pre_count": 0,
+    "post_count": 5,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 21,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "08320",
+    "name": "沛然環保",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-04-22",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.1,
+    "signal_count": 5,
+    "pre_count": 0,
+    "post_count": 5,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 6,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "03330",
+    "name": "靈寶黃金",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-04-22",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 26.16,
+    "signal_count": 5,
+    "pre_count": 0,
+    "post_count": 5,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 15,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "06162",
+    "name": "中國天瑞",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-04-17",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.138,
+    "signal_count": 5,
+    "pre_count": 0,
+    "post_count": 5,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 6,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "08431",
+    "name": "浩柏國際",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-03-25",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.38,
+    "signal_count": 5,
+    "pre_count": 0,
+    "post_count": 5,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 1,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "08511",
+    "name": "民富國際",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-03-23",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.66,
+    "signal_count": 5,
+    "pre_count": 0,
+    "post_count": 5,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 1,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01050",
+    "name": "嘉利國際",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-11",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 2.37,
+    "signal_count": 5,
+    "pre_count": 1,
+    "post_count": 4,
+    "pre_types": [
+      "向上FVG"
+    ],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": 1,
+    "first_post_days": 5,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "08646",
+    "name": "中國宏光",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-27",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.15,
+    "signal_count": 5,
+    "pre_count": 0,
+    "post_count": 5,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 6,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "03993",
+    "name": "洛陽欒川",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-26",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 28.03,
+    "signal_count": 5,
+    "pre_count": 0,
+    "post_count": 5,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02865",
+    "name": "海南鈞達",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-21",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 22.0,
+    "signal_count": 5,
+    "pre_count": 0,
+    "post_count": 5,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 2,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01825",
+    "name": "美臻集團",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2025-12-29",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.1,
+    "signal_count": 5,
+    "pre_count": 0,
+    "post_count": 5,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 1,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "03336",
+    "name": "JU TENG INTL",
+    "types": [
+      "收購"
+    ],
+    "title": "APPOINTMENT OF INDEPENDENT FINANCIAL ADVISER",
+    "date": "2026-05-29",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0529/2026052900770.pdf",
+    "type": "acquisition",
+    "typeLabel": "收購",
+    "direction": "up",
+    "signal_count": 4,
+    "pre_count": 0,
+    "post_count": 4,
+    "pre_types": [],
+    "post_types": [
+      "半年POC + 12個月POC + 3年POC",
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "半年POC + 12個月POC + 3年POC",
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 3,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "08471",
+    "name": "新達控股",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-05-05",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.02,
+    "signal_count": 4,
+    "pre_count": 0,
+    "post_count": 4,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 1,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02476",
+    "name": "LONG",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-05-04",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.728,
+    "signal_count": 4,
+    "pre_count": 0,
+    "post_count": 4,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 7,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01027",
+    "name": "亞洲策略",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-03-26",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 1.8,
+    "signal_count": 4,
+    "pre_count": 0,
+    "post_count": 4,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 15,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01961",
+    "name": "多牛科技",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-03-04",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.35,
+    "signal_count": 4,
+    "pre_count": 0,
+    "post_count": 4,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 1,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01498",
+    "name": "培力農本",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-26",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.49,
+    "signal_count": 4,
+    "pre_count": 0,
+    "post_count": 4,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "08268",
+    "name": "智城發展",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-23",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.3,
+    "signal_count": 4,
+    "pre_count": 0,
+    "post_count": 4,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "09600",
+    "name": "新紐科技",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-04",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.3,
+    "signal_count": 4,
+    "pre_count": 0,
+    "post_count": 4,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 1,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01050",
+    "name": "嘉利國際",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-29",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 2.37,
+    "signal_count": 4,
+    "pre_count": 0,
+    "post_count": 4,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 12,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02422",
+    "name": "潤歌互動",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-26",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.435,
+    "signal_count": 4,
+    "pre_count": 0,
+    "post_count": 4,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 3,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "09678",
+    "name": "雲知聲智",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-22",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 252.0,
+    "signal_count": 4,
+    "pre_count": 0,
+    "post_count": 4,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 6,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "08646",
+    "name": "中國宏光",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-21",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.15,
+    "signal_count": 4,
+    "pre_count": 0,
+    "post_count": 4,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 12,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "03993",
+    "name": "洛陽欒川",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-20",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 28.03,
+    "signal_count": 4,
+    "pre_count": 0,
+    "post_count": 4,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 6,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "09678",
+    "name": "雲知聲智",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-16",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 252.0,
+    "signal_count": 4,
+    "pre_count": 0,
+    "post_count": 4,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 12,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "08460",
+    "name": "基地錦標",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2025-12-30",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.437,
+    "signal_count": 4,
+    "pre_count": 0,
+    "post_count": 4,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "03700",
+    "name": "映宇宙集",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-05-28",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.85,
+    "signal_count": 3,
+    "pre_count": 0,
+    "post_count": 3,
+    "pre_types": [],
+    "post_types": [
+      "placement",
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "placement",
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01751",
+    "name": "AI ENERGY ENG",
+    "types": [
+      "供股"
+    ],
+    "title": "公司公告：RESULTS OF THE RIGHTS ISSUE",
+    "date": "2026-05-22",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0522/2026052201552.pdf",
+    "typeLabel": "供股",
+    "type": "rights",
+    "direction": "up",
+    "offer_price": null,
+    "discount_pct": null,
+    "price_level": "unknown",
+    "signal_count": 3,
+    "pre_count": 0,
+    "post_count": 3,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 11,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01568",
+    "name": "SUNDART HLDGS",
+    "types": [
+      "配股"
+    ],
+    "title": "補充公告 配售新股（一般授權）",
+    "date": "2026-05-15",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0515/2026051500589.pdf",
+    "typeLabel": "配股",
+    "type": "placement",
+    "direction": "up",
+    "offer_price": null,
+    "discount_pct": null,
+    "price_level": "unknown",
+    "signal_count": 3,
+    "pre_count": 0,
+    "post_count": 3,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 19,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "03919",
+    "name": "金力集團",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-05-06",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 1.2,
+    "signal_count": 3,
+    "pre_count": 0,
+    "post_count": 3,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 1,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01568",
+    "name": "承達集團",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-05-05",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.66,
+    "signal_count": 3,
+    "pre_count": 0,
+    "post_count": 3,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 29,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "06682",
+    "name": "範式智能",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-04-29",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 40.36,
+    "signal_count": 3,
+    "pre_count": 0,
+    "post_count": 3,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 5,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02439",
+    "name": "中寶新材",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-04-22",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.228,
+    "signal_count": 3,
+    "pre_count": 1,
+    "post_count": 2,
+    "pre_types": [
+      "向上FVG"
+    ],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": 8,
+    "first_post_days": 1,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02312",
+    "name": "LONG",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-04-17",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.728,
+    "signal_count": 3,
+    "pre_count": 0,
+    "post_count": 3,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 3,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "03330",
+    "name": "靈寶黃金",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-04-17",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 26.16,
+    "signal_count": 3,
+    "pre_count": 0,
+    "post_count": 3,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 20,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "03330",
+    "name": "靈寶黃金",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-04-14",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 26.16,
+    "signal_count": 3,
+    "pre_count": 0,
+    "post_count": 3,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 23,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "08403",
+    "name": "德豐宿來",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-04-10",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 2.4,
+    "signal_count": 3,
+    "pre_count": 0,
+    "post_count": 3,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 10,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "08007",
+    "name": "環球戰略",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-04-02",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.22,
+    "signal_count": 3,
+    "pre_count": 0,
+    "post_count": 3,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 6,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02439",
+    "name": "中寶新材",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-04-01",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.228,
+    "signal_count": 3,
+    "pre_count": 0,
+    "post_count": 3,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 13,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "08153",
+    "name": "嘉鼎國際",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-03-26",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.7,
+    "signal_count": 3,
+    "pre_count": 0,
+    "post_count": 3,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 1,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01823",
+    "name": "華昱高速",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-03-05",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.88,
+    "signal_count": 3,
+    "pre_count": 0,
+    "post_count": 3,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 6,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01726",
+    "name": "HKE",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-26",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 1.2,
+    "signal_count": 3,
+    "pre_count": 1,
+    "post_count": 2,
+    "pre_types": [
+      "向上FVG"
+    ],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 10,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01729",
+    "name": "匯聚科技",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-20",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 15.22,
+    "signal_count": 3,
+    "pre_count": 0,
+    "post_count": 3,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 5,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02459",
+    "name": "昇能集團",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-20",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.083,
+    "signal_count": 3,
+    "pre_count": 0,
+    "post_count": 3,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 3,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "03666",
+    "name": "上海小南",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-16",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.028,
+    "signal_count": 3,
+    "pre_count": 0,
+    "post_count": 3,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 4,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01726",
+    "name": "HKE",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-16",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 1.2,
+    "signal_count": 3,
+    "pre_count": 0,
+    "post_count": 3,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01729",
+    "name": "匯聚科技",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-10",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 15.22,
+    "signal_count": 3,
+    "pre_count": 0,
+    "post_count": 3,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 15,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01672",
+    "name": "歌禮製藥",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-10",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 12.18,
+    "signal_count": 3,
+    "pre_count": 1,
+    "post_count": 2,
+    "pre_types": [
+      "向上FVG"
+    ],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": 1,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02221",
+    "name": "創業集團",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-06",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 1.0,
+    "signal_count": 3,
+    "pre_count": 0,
+    "post_count": 3,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 4,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "03680",
+    "name": "瑞和數智",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-06",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.783,
+    "signal_count": 3,
+    "pre_count": 1,
+    "post_count": 2,
+    "pre_types": [
+      "向上FVG"
+    ],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": 10,
+    "first_post_days": 7,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "06681",
+    "name": "腦動極光",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-05",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 5.6,
+    "signal_count": 3,
+    "pre_count": 0,
+    "post_count": 3,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02643",
+    "name": "曹操出行",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-04",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 32.46,
+    "signal_count": 3,
+    "pre_count": 0,
+    "post_count": 3,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 5,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01726",
+    "name": "HKE",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-04",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 1.2,
+    "signal_count": 3,
+    "pre_count": 0,
+    "post_count": 3,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 12,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "03788",
+    "name": "中國罕王",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-29",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 3.8,
+    "signal_count": 3,
+    "pre_count": 1,
+    "post_count": 2,
+    "pre_types": [
+      "向上FVG"
+    ],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 6,
+    "first_post_days": 11,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02643",
+    "name": "曹操出行",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-28",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 32.46,
+    "signal_count": 3,
+    "pre_count": 0,
+    "post_count": 3,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 12,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02187",
+    "name": "智欣集團",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-26",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.68,
+    "signal_count": 3,
+    "pre_count": 0,
+    "post_count": 3,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 2,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "03680",
+    "name": "瑞和數智",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-25",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.783,
+    "signal_count": 3,
+    "pre_count": 0,
+    "post_count": 3,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 2,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "06939",
+    "name": "美佳音控",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-23",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.61,
+    "signal_count": 3,
+    "pre_count": 0,
+    "post_count": 3,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 3,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "03788",
+    "name": "中?罕王",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-22",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 3.8,
+    "signal_count": 3,
+    "pre_count": 0,
+    "post_count": 3,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 1,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "09958",
+    "name": "力天影業",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-14",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.2,
+    "signal_count": 3,
+    "pre_count": 0,
+    "post_count": 3,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 1,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01709",
+    "name": "德林控股",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-13",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 4.1,
+    "signal_count": 3,
+    "pre_count": 0,
+    "post_count": 3,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 2,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02147",
+    "name": "正味集團",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2025-12-30",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.8,
+    "signal_count": 3,
+    "pre_count": 0,
+    "post_count": 3,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 1,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "08375",
+    "name": "數盟資本",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2025-12-29",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.99,
+    "signal_count": 3,
+    "pre_count": 0,
+    "post_count": 3,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 1,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "03958",
+    "name": "DFZQ",
+    "types": [
+      "增持",
+      "收購"
+    ],
+    "title": "MONTHLY UPDATE IN RELATION TO (1) POTENTIAL NOTIFIABLE TRANSACTION - THE PROPOSED ACQUISITION OF 100% EQUITY INTERESTS IN SHANGHAI SECURITIES BY WAY OF ISSUE OF CONSIDERATION A SHARES UNDER SPECIFIC MANDATE AND PAYMENT OF CASH AND (2) APPLICATION FOR WHITEWASH WAIVER",
+    "date": "2026-06-05",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060501754.pdf",
+    "type": "increase",
+    "typeLabel": "增持 / 收購",
+    "direction": "up",
+    "signal_count": 2,
+    "pre_count": 1,
+    "post_count": 1,
+    "pre_types": [
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 29,
+    "first_post_days": 1,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01657",
+    "name": "SG GROUP HLDGS",
+    "types": [
+      "增持",
+      "收購"
+    ],
+    "title": "JOINT ANNOUNCEMENT - (1) SHARE PURCHASE AGREEMENT BETWEEN THE OFFEROR AND THE SELLERS IN RELATION TO APPROXIMATELY 74.91% OF THE TOTAL ISSUED SHARES OF THE COMPANY; (2) POSSIBLE UNCONDITIONAL MANDATORY CASH OFFER TO BE MADE BY DL SECURITIES (HK) LIMITED FOR AND ON BEHALF OF THE OFFEROR TO ACQUIRE ALL THE ISSUED SHARES OF THE COMPANY (OTHER THAN THOSE ALREADY OWNED AND/OR AGREED TO BE ACQUIRED BY THE OFFEROR AND THE OFFEROR CONCERT PARTIES); AND (3) RESUMPTION OF TRADING",
+    "date": "2026-06-04",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0604/2026060402927.pdf",
+    "type": "increase",
+    "typeLabel": "增持 / 收購",
+    "direction": "up",
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 1,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01679",
+    "name": "RISECOMM GP",
+    "types": [
+      "配股"
+    ],
+    "title": "CLARIFICATION ANNOUNCEMENT IN RELATION TO (1) CONNECTED TRANSACTIONS IN RELATION TO ISSUE OF CAPITALISATION SHARES AND CONVERTIBLE BONDS UNDER SPECIFIC MANDATE; AND (2) PLACING OF NEW SHARES UNDER SPECIFIC MANDATE",
+    "date": "2026-06-03",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0603/2026060302316.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": null,
+    "discount_pct": null,
+    "price_level": "unknown",
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01793",
+    "name": "WECON HOLDINGS",
+    "types": [
+      "收購"
+    ],
+    "title": "JOINT ANNOUNCEMENT DESPATCH OF SCHEME DOCUMENT",
+    "date": "2026-06-01",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0601/2026060100031.pdf",
+    "type": "acquisition",
+    "typeLabel": "收購",
+    "direction": "up",
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01921",
+    "name": "DALIPAL HLDG",
+    "types": [
+      "回購"
+    ],
+    "title": "VOLUNTARY ANNOUNCEMENT COMMENCEMENT OF SHARE REPURCHASE UNDER THE REPURCHASE MANDATE",
+    "date": "2026-06-01",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0601/2026060100007.pdf",
+    "type": "buyback",
+    "typeLabel": "回購",
+    "direction": "up",
+    "signal_count": 2,
+    "pre_count": 1,
+    "post_count": 1,
+    "pre_types": [
+      "向上FVG"
+    ],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": 27,
+    "first_post_days": 1,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "08031",
+    "name": "易通訊集",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-06-01",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.298,
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 1,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "00576",
+    "name": "ZHEJIANGEXPRESS",
+    "types": [
+      "收購"
+    ],
+    "title": "ANNOUNCEMENT ON THE APPROVAL BY THE SHANGHAI STOCK EXCHANGE M&A AND RESTRUCTURING REVIEW COMMITTEE FOR ABSORPTION AND MERGER OF OCEANKING DEVELOPMENT THROUGH SHARE SWAP AND ISSUANCE OF A SHARES UNDER SPECIFIC MANDATE",
+    "date": "2026-05-29",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0529/2026052903408.pdf",
+    "type": "acquisition",
+    "typeLabel": "收購",
+    "direction": "up",
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "placement",
+      "半年POC + 12個月POC"
+    ],
+    "signal_types_summary": [
+      "placement",
+      "半年POC + 12個月POC"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02431",
+    "name": "MINIEYE",
+    "types": [
+      "增持"
+    ],
+    "title": "SHARE TRANSACTION ACQUISITION OF 50% EQUITY INTEREST IN TONGTU TECHNOLOGY INVOLVING THE ISSUE OF CONSIDERATION SHARES UNDER GENERAL MANDATE",
+    "date": "2026-05-29",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0529/2026052902654.pdf",
+    "type": "increase",
+    "typeLabel": "增持",
+    "direction": "up",
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "placement",
+      "半年POC + 12個月POC"
+    ],
+    "signal_types_summary": [
+      "placement",
+      "半年POC + 12個月POC"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01986",
+    "name": "TSAKER NE",
+    "types": [
+      "配股"
+    ],
+    "title": "(1) FURTHER UPDATES ON PROGRESS ON THE LISTING OF TSAKER TECHNOLOGY ON BEIJING STOCK EXCHANGE AND (2) COMPLETION OF STRATEGIC PLACING TO CONNECTED PERSONS",
+    "date": "2026-05-29",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0529/2026052902346.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": null,
+    "discount_pct": null,
+    "price_level": "unknown",
+    "signal_count": 2,
+    "pre_count": 1,
+    "post_count": 1,
+    "pre_types": [
+      "12個月POC"
+    ],
+    "post_types": [
+      "placement"
+    ],
+    "signal_types_summary": [
+      "12個月POC",
+      "placement"
+    ],
+    "first_pre_days": 7,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "00978",
+    "name": "CHI MER LAND",
+    "types": [
+      "增持"
+    ],
+    "title": "FURTHER DELAY IN DESPATCH OF CIRCULAR REGARDING DISCLOSEABLE AND CONNECTED TRANSACTION ACQUISITION OF EQUITY INTERESTS IN TARGET COMPANY",
+    "date": "2026-05-29",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0529/2026052900760.pdf",
+    "type": "increase",
+    "typeLabel": "增持",
+    "direction": "up",
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "半年POC",
+      "年開突破"
+    ],
+    "signal_types_summary": [
+      "半年POC",
+      "年開突破"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01384",
+    "name": "滴普科技",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-05-28",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 50.58,
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "placement",
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "placement",
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01087",
+    "name": "威訊控股",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-05-13",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.67,
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 22,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01803",
+    "name": "北京體育",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-05-12",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.073,
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01921",
+    "name": "達力普控",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-05-07",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 5.28,
+    "signal_count": 2,
+    "pre_count": 1,
+    "post_count": 1,
+    "pre_types": [
+      "向上FVG"
+    ],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": 2,
+    "first_post_days": 26,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "03750",
+    "name": "寧德時代",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-04-28",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 628.2,
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 16,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01380",
+    "name": "中國金石",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-04-24",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.57,
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 4,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "06682",
+    "name": "範式智能",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-04-22",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 40.36,
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 12,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "08223",
+    "name": "紫元元控",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-04-16",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.494,
+    "signal_count": 2,
+    "pre_count": 1,
+    "post_count": 1,
+    "pre_types": [
+      "向上FVG"
+    ],
+    "post_types": [
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 14,
+    "first_post_days": 1,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02110",
+    "name": "天成控股",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-04-15",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.1,
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 1,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "08168",
+    "name": "寶積資本",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-03-30",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.114,
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 28,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "03321",
+    "name": "偉鴻集團",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-03-20",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.038,
+    "signal_count": 2,
+    "pre_count": 1,
+    "post_count": 1,
+    "pre_types": [
+      "向上FVG"
+    ],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": 9,
+    "first_post_days": 28,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02582",
+    "name": "江蘇國富",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-03-18",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 31.07,
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 22,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01020",
+    "name": "中細軟科",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-03-15",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.26,
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 1,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "08223",
+    "name": "紫元元控",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-03-09",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.5,
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 1,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02257",
+    "name": "聖諾醫藥",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-03-08",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 12.0,
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 3,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02271",
+    "name": "眾安智慧",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-27",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 1.52,
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "03928",
+    "name": "中國新零",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-25",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 8.88,
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 6,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "06978",
+    "name": "永泰生物",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-13",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 2.92,
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "09696",
+    "name": "天齊鋰業",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-11",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 45.05,
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 5,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01826",
+    "name": "豐展控股",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-11",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.153,
+    "signal_count": 2,
+    "pre_count": 1,
+    "post_count": 1,
+    "pre_types": [
+      "向上FVG"
+    ],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": 20,
+    "first_post_days": 14,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "03928",
+    "name": "中國新零",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-10",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 8.88,
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 21,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01262",
+    "name": "蠟筆小新",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-05",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 3.98,
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 11,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "09696",
+    "name": "天齊鋰業",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-04",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 45.05,
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 12,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01672",
+    "name": "歌禮製藥",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-03",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 12.18,
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 6,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02899",
+    "name": "紫金礦業",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-30",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 63.3,
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 11,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01421",
+    "name": "恒昌集團",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-28",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.34,
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 1,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "06681",
+    "name": "腦動極光",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-23",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 5.6,
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 13,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01177",
+    "name": "中國生物",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-13",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 6.66,
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 1,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01239",
+    "name": "TEAM",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-08",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.341,
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 5,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01999",
+    "name": "MAN WAH HLDGS",
+    "types": [
+      "回購"
+    ],
+    "title": "VOLUNTARY ANNOUNCEMENT ON-MARKET REPURCHASE OF SHARES",
+    "date": "2026-06-02",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0602/2026060202300.pdf",
+    "type": "buyback",
+    "typeLabel": "回購",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01999",
+    "name": "MAN WAH HLDGS",
+    "types": [
+      "回購"
+    ],
+    "title": "VOLUNTARY ANNOUNCEMENT ON-MARKET REPURCHASE OF SHARES",
+    "date": "2026-06-01",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0601/2026060103430.pdf",
+    "type": "buyback",
+    "typeLabel": "回購",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 1,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "00219",
+    "name": "SHUNHO PROPERTY",
+    "types": [
+      "轉倉",
+      "回購"
+    ],
+    "title": "JOINT ANNOUNCEMENT - (1) DELAY IN DESPATCH OF THE CONNECTED TRANSACTION CIRCULAR IN RELATION TO TRANSFER OF SHARES IN SHUN HO PROPERTY INVESTMENTS LIMITED; AND (2) DELAY IN DESPATCH OF POSSIBLE OFF-MARKET SHARE BUY-BACK CIRCULAR",
+    "date": "2026-06-01",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0601/2026060101472.pdf",
+    "type": "buyback",
+    "typeLabel": "回購 / 轉倉",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "半年POC"
+    ],
+    "signal_types_summary": [
+      "半年POC"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02158",
+    "name": "YIDU TECH",
+    "types": [
+      "增持"
+    ],
+    "title": "VOLUNTARY ANNOUNCEMENT - MEMORANDUM OF UNDERSTANDING IN RELATION TO PROPOSED ACQUISITION",
+    "date": "2026-06-01",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0601/2026060100081.pdf",
+    "type": "increase",
+    "typeLabel": "增持",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "3年POC"
+    ],
+    "signal_types_summary": [
+      "3年POC"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01823",
+    "name": "HUAYUEXPRESSWAY",
+    "types": [
+      "增持"
+    ],
+    "title": "VOLUNTARY ANNOUNCEMENT PROPOSED ACQUISITION OF 100% OF THE ISSUED SHARES OF THE TARGET COMPANY",
+    "date": "2026-05-31",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0531/2026053100011.pdf",
+    "type": "increase",
+    "typeLabel": "增持",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 5,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01371",
+    "name": "CHINA ECOTOUR",
+    "types": [
+      "收購"
+    ],
+    "title": "DESPATCH OF THE CIRCULAR RELATING TO (1) PROPOSED RESTRUCTURING INVOLVING (i) CAPITAL REORGANISATION; (ii) SHARE PREMIUM CANCELLATION; (iii) CREDITORS SCHEME; (2) CHANGE IN BOARD LOT SIZE; (3) CONNECTED TRANSACTION - ISSUE OF SCHEME SHARES UNDER SPECIFIC MANDATE; AND (4) APPLICATION FOR WHITEWASH WAIVER AND CONSENT FOR SPECIAL DEAL",
+    "date": "2026-05-29",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0529/2026052902718.pdf",
+    "type": "acquisition",
+    "typeLabel": "收購",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 7,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "06166",
+    "name": "上海劍橋",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-05-28",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 228.0,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "placement"
+    ],
+    "signal_types_summary": [
+      "placement"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "09678",
+    "name": "雲知聲智",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-05-28",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 228.0,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "placement"
+    ],
+    "signal_types_summary": [
+      "placement"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "00428",
+    "name": "中國天弓",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-05-28",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.2,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "placement"
+    ],
+    "signal_types_summary": [
+      "placement"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02257",
+    "name": "聖諾醫藥",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-05-23",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 4.69,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "placement"
+    ],
+    "signal_types_summary": [
+      "placement"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 9,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "00862",
+    "name": "VISION VALUES",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：(1) POLL RESULTS OF THE EXTRAORDINARY GENERAL MEETING HELD ON 22 MAY 2026;…",
+    "date": "2026-05-22",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0522/2026052201232.pdf",
+    "typeLabel": "配股",
+    "type": "placement",
+    "direction": "up",
+    "offer_price": null,
+    "discount_pct": null,
+    "price_level": "unknown",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "placement"
+    ],
+    "signal_types_summary": [
+      "placement"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 7,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "06181",
+    "name": "LAOPU GOLD",
+    "types": [
+      "股東增持"
+    ],
+    "title": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING BY A CONTROLLING SHAREHOLD…",
+    "date": "2026-05-20",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0520/2026052000854.pdf",
+    "typeLabel": "股東增持",
+    "type": "increase",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 13,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02473",
+    "name": "喜相逢集",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-05-13",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.82,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 5,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01468",
+    "name": "嘉高達資",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-05-07",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.1,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 28,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02889",
+    "name": "博泰車聯",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-05-06",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 127.35,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 21,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01921",
+    "name": "達力普控",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-04-28",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 5.28,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 7,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02889",
+    "name": "博泰車聯",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-04-28",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 127.35,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 29,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "08143",
+    "name": "金威醫療",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-04-28",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.085,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 30,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02522",
+    "name": "江西一脈",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-04-27",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 6.405,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 1,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01152",
+    "name": "正乾金融",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-04-27",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.254,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 23,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02623",
+    "name": "愛德新能",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-03-30",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 4.7,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 21,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01762",
+    "name": "萬咖壹聯",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-03-12",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 1.625,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "03321",
+    "name": "偉鴻集團",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-03-03",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.039,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 8,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01483",
+    "name": "網譽科技",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-26",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.88,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 1,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01796",
+    "name": "中國數智",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-13",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 3.0,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 3,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01483",
+    "name": "網譽科技",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-11",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.88,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 16,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01396",
+    "name": "粵港灣控",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-09",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 6.0,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 30,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01815",
+    "name": "珠峰黃金",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-06",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 1.61,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 18,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02629",
+    "name": "Mirx",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-02-05",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 32.5,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 11,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "03306",
+    "name": "江南布衣",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-30",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 18.78,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 11,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01483",
+    "name": "網譽科技",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-30",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.88,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 28,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02629",
+    "name": "Mirx",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-29",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 32.5,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "向上跳空缺口"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 18,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "03800",
+    "name": "協鑫科技",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-28",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 1.6,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 8,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "06086",
+    "name": "方舟云康",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-27",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 3.32,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "03899",
+    "name": "中集安瑞",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-27",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 9.79,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 8,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02273",
+    "name": "固生堂控",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-26",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 37.77,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 9,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02570",
+    "name": "上海重塑",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-26",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 58.38,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 28,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "03306",
+    "name": "江南布衣",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-23",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 18.78,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 18,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "03899",
+    "name": "中集安瑞",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-20",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 9.79,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 15,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01519",
+    "name": "極兔速遞",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-15",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 10.1,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 26,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "06936",
+    "name": "順豐控股",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-15",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 36.74,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 21,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01501",
+    "name": "上海瑛泰",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-14",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 26.0,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 6,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01826",
+    "name": "豐展控股",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-12",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.152,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 10,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01421",
+    "name": "恒昌集團",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-01-06",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.34,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 23,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01815",
+    "name": "珠峰黃金",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2025-12-31",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 1.61,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 5,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01676",
+    "name": "高地股份",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2025-12-30",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.52,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 21,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "09863",
+    "name": "浙江零跑",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2025-12-28",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 55.29,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 1,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "03313",
+    "name": "雅高控股",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2025-12-24",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.106,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 12,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "08659",
+    "name": "易和國際",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2025-12-24",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.12,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 6,
+    "pattern": "catalyst"
+  }
+]

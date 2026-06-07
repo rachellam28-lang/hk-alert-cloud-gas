@@ -90,12 +90,6 @@ CORP_KEYWORDS = {
     "收購": ["收購", "MERGER", "TAKEOVER", "要約", "OFFER"],
     "轉倉": ["轉倉", "TRANSFER", "大手轉倉"],
     "大手上板": ["大手上板", "BLOCK TRADE", "CROSS TRADE"],
-    "股息": ["股息", "DIVIDEND", "分紅", "末期息", "中期息"],
-    "盈警": ["盈警", "PROFIT WARNING", "虧損", "LOSS"],
-    "盈喜": ["盈喜", "PROFIT ALERT", "盈利預喜", "POSITIVE PROFIT"],
-    "業績": ["業績", "年報", "年終業績", "中期業績", "ANNUAL RESULTS", "INTERIM RESULTS"],
-    "董事變更": ["董事變更", "董事辭任", "委任董事", "DIRECTOR", "RESIGNATION"],
-    "其他": ["須予披露", "關連交易", "NOTIFIABLE", "CONNECTED TRANSACTION"],
 }
 
 def _classify(text):
@@ -106,6 +100,13 @@ def _classify(text):
             if kw.upper() in t:
                 result.append(cat)
                 break
+    # Detect shell-clearing: special dividend + major disposal = 清殼
+    has_special_div = '特別息' in result
+    has_disposal = '減持' in result
+    has_very_substantial = 'VERY SUBSTANTIAL DISPOSAL' in t or '非常重大出售' in text
+    if has_special_div and (has_disposal or has_very_substantial):
+        result = [r for r in result if r != '特別息']
+        result.append('清殼')
     return result if result else []
 
 # --- GAS Bearer ---
@@ -199,7 +200,7 @@ try:
     _seen = set()
     for _a in _existing:
         _seen.add((str(_a.get('code','')).zfill(5), _a.get('date',''), ' / '.join(_a.get('types',[]))))
-    _type_map = {'配股':'placement','供股':'rights','合股':'consolidation','拆細':'split','增持':'increase','減持':'decrease','回購':'buyback','私有化':'privatisation','特別息':'special_div','收購':'acquisition','轉倉':'transfer','大手上板':'block_trade','股息':'dividend','盈警':'warning','盈喜':'alert','業績':'results','董事變更':'director','其他':'other'}
+    _type_map = {'配股':'placement','供股':'rights','合股':'consolidation','拆細':'split','增持':'increase','減持':'decrease','回購':'buyback','私有化':'privatisation','特別息':'special_div','收購':'acquisition','轉倉':'transfer','大手上板':'block_trade','股東增持':'increase','大手轉倉':'block_trade','清殼':'shell_clear'}
     _new = 0
     for _ann in anns:
         _code = str(_ann.get('code','')).zfill(5)
@@ -209,7 +210,11 @@ try:
         if (_code, _rd, _ts) in _seen: continue
         _seen.add((_code, _rd, _ts))
         _ft = _tl[0] if _tl else '其他'
-        _existing.append({'code':_code,'name':_ann.get('name',''),'types':_tl,'title':_ann.get('title',''),'date':_rd,'url':_ann.get('url',''),'type':_type_map.get(_ft,'other'),'typeLabel':_ts})
+        _up = {'配股','供股','增持','股東增持','回購','收購','私有化','清殼','特別息'}
+        _down = {'減持','合股'}
+        _tset = set(_tl)
+        _dir = 'up' if _tset & _up else ('down' if _tset & _down else 'neutral')
+        _existing.append({'code':_code,'name':_ann.get('name',''),'types':_tl,'title':_ann.get('title',''),'date':_rd,'url':_ann.get('url',''),'type':_type_map.get(_ft,'other'),'typeLabel':_ts,'direction':_dir})
         _new += 1
     _existing.sort(key=lambda x: x.get('date',''), reverse=True)
     _os.makedirs(_os.path.dirname(_path), exist_ok=True)
