@@ -1,0 +1,45 @@
+# CCASS 多巴胺系統設計
+
+## 背景
+我地有個 CCASS 港股掃描器（hk_cloud_scanner.py），出 POC breakout / IPO breakthrough / 量比突破 signals。
+
+而家想加一個「多巴胺系統」控制交易活躍程度：
+- 多巴胺高 → 放大倉位、減少交易限制（例如信號閾值降低）
+- 多巴胺低 → 減小倉位、增加開倉限制（例如信號閾值提高）
+
+## 四種方案
+
+### 1. 近期勝率
+- 過去 N 個 signal 中咗幾多（例如 breakout signal 出咗之後 5 日內有冇真係升 3%+）
+- 純數據驅動，冇主觀成分
+
+### 2. 市場 regime
+- 恆指/道指 trend（升市多巴胺高，跌市多巴胺低）
+- 可以用 MA/ADX/波動率判斷
+
+### 3. 手動設定
+- 用戶憑感覺 set 一個 0-100 嘅 dopamine level
+- 最簡單但冇自動化
+
+### 4. 混合
+- 勝率 + 市場 + 手動 override
+
+## 實際使用場景
+- Scanner 係 cron job，定時行（唔係 real-time trading bot）
+- 出 signal 經 Telegram send 俾人睇
+- Scanner 本身唔 execute trade，只係出 alert
+- 多巴胺系統應該影響：signal 閾值（例如 POC breakout % threshold）、alert 頻率、signal 優先級標記
+
+## 要求
+請分析四個方案，考慮：
+1. 實現複雜度
+2. 對現有 scanner 嘅改動量
+3. 實際效用（scanner 出 alert 俾人睇，唔係自動 trade）
+4. 你推薦邊個方案 + 點 implement
+
+請俾具體建議（唔好齋講抽象野），包括：
+- 推薦方案
+- 多巴胺 level 點計（formula）
+- 點影響現有 signal threshold
+- 需要改邊啲 files
+- 大概幾多行 code

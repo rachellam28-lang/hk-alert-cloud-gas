@@ -18,7 +18,7 @@ scraping:
   user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
   parallel_workers: 1   # MUST be 1 — sequential only (ProcessPool/cloudscraper abandoned 2026-05-27)
 
-trend_windows: [5, 20]
+trend_windows: [5, 20, 60, 120]
 
 alerts:
   spike_threshold_pct: 5.0       # 5日 total_pct 變化 ≥ 呢個 trigger

@@ -1,0 +1,21 @@
+POC scan currently uses yfinance to download 126/252/756 days of OHLCV for 2600+ HK stocks. This is slow and yfinance is unreliable.
+
+Question: Can Longbridge API replace yfinance for POC price data?
+
+Existing infrastructure:
+- Longbridge SDK installed, token in .env (LONGBRIDGE_ACCESS_TOKEN)
+- lb_mcp_auth.py / lb_auth.py for authentication
+- longbridge_provider.py already wraps broker_holding_detail API
+- stock_prices table in SQLite has 1.6M rows of daily close prices (not full OHLCV)
+- POC needs OHLCV for POC calculation (high/low/close/volume)
+
+Concerns:
+- Longbridge paper trading has ~1000 calls/day limit
+- POC scan needs price data for 2600+ stocks × 126-756 days each
+- Can we do it in batch? Per-stock history endpoint?
+
+Read hk_cloud_scanner.py POC section, longbridge_provider.py, and the Longbridge API docs.
+Is this feasible? What's the API call structure? How many calls would it take?
+
+Priority: 5.5/5
+Speed: fast

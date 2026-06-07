@@ -1,0 +1,2 @@
+data: {"jsonrpc":"2.0","id":2,"error":{"code":-32602,"message":"The authorization code is invalid or has expired. Generate a new one at https://open.longbridge.com/connect and call `authenticate` again. (authorization code was already used)"}}
+

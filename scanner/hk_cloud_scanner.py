@@ -34,6 +34,18 @@ from bs4 import BeautifulSoup
 
 warnings.filterwarnings("ignore")
 
+# ── Local alert store (replaces GAS) ────────────────────────────────────────
+from local_alert_store import store_alert, fetch_watchlist, add_to_watchlist
+
+# ── TelegramPusher import (initialized below after env vars) ─────────────────
+try:
+    from telegram_pusher import TelegramPusher
+    _HAS_TELEGRAM_PUSHER = True
+except Exception as _exc:
+    print(f"[telegram_pusher] import failed: {_exc}")
+    _HAS_TELEGRAM_PUSHER = False
+    TelegramPusher = None  # type: ignore
+
 # Matplotlib is optional - if it fails to import we fall back to text-only alerts.
 try:
     import matplotlib
@@ -79,13 +91,21 @@ YF_BATCH_THREADS = int(os.getenv("YF_BATCH_THREADS", "8"))
 # Hard wall-clock budget for the POC scan (seconds). 0 = no budget.
 POC_TIME_BUDGET_SEC = int(os.getenv("POC_TIME_BUDGET_SEC", "1500"))
 CHART_LOOKBACK_DAYS = int(os.getenv("CHART_LOOKBACK_DAYS", "180"))
-# Cap base64 image size sent to GAS so we don't blow up the Drive upload payload.
-GAS_CHART_MAX_BYTES = int(os.getenv("GAS_CHART_MAX_BYTES", "350000"))
 
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN", "")
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "")
-GAS_WEBHOOK_URL = os.getenv("GAS_WEBHOOK_URL", "")
-GAS_SECRET = os.getenv("GAS_SECRET", "")
+
+# ── 初始化 TelegramPusher（穩健重試/降級） ──────────────────────────────────
+_tg_pusher = None
+if _HAS_TELEGRAM_PUSHER and TELEGRAM_TOKEN and TELEGRAM_CHAT_ID:
+    try:
+        _tg_pusher = TelegramPusher(
+            bot_token=TELEGRAM_TOKEN,
+            chat_id=TELEGRAM_CHAT_ID,
+        )
+        print(f"[telegram_pusher] initialized (token={TELEGRAM_TOKEN[:8]}...)")
+    except Exception as _exc:
+        print(f"[telegram_pusher] init failed: {_exc}")
 
 WATCHLIST_EXPIRY_DAYS = int(os.getenv("WATCHLIST_EXPIRY_DAYS", "365"))
 VOLUME_MULTIPLIER = float(os.getenv("VOLUME_MULTIPLIER", "1.5"))
@@ -304,21 +324,8 @@ def send_telegram_alert(caption_html: str, photo_path: str | None, reply_markup:
 
 
 def post_gas_alert(payload: dict[str, Any]) -> bool:
-    if not GAS_WEBHOOK_URL:
-        print("[GAS] GAS_WEBHOOK_URL not configured")
-        return False
-    body = dict(payload)
-    if GAS_SECRET:
-        body["secret"] = GAS_SECRET
-    try:
-        r = requests.post(GAS_WEBHOOK_URL, json=body, timeout=30)
-        if r.status_code == 200:
-            print("[GAS] posted")
-            return True
-        print(f"[GAS] failed: {r.status_code} {r.text[:300]}")
-    except Exception as exc:
-        print(f"[GAS] error: {exc}")
-    return False
+    """[DEPRECATED] Now delegates to local_alert_store."""
+    return store_alert(payload)
 
 
 def encode_chart_for_gas(chart_path: str | None) -> tuple[str | None, str | None]:
@@ -366,11 +373,12 @@ def _is_above_year_open(df: pd.DataFrame) -> bool | None:
 
 def emit_alert(payload: dict[str, Any], caption_html: str, chart_path: str | None, reply_markup: dict | None = None, df: pd.DataFrame | None = None) -> None:
     payload.setdefault("created_at", datetime.now().isoformat(timespec="seconds"))
-    chart_b64, chart_name = encode_chart_for_gas(chart_path)
-    if chart_b64:
-        payload["chart_image_b64"] = chart_b64
-        payload["chart_image_name"] = chart_name
-    post_gas_alert(payload)
+
+    # Local store — replaces GAS (non-fatal)
+    try:
+        store_alert(payload)
+    except Exception as _store_exc:
+        print(f"[local] emit_alert store error (non-fatal): {_store_exc}")
 
     # -- year-open filter: skip Telegram for stocks below current-year first-day open --
     if df is not None:
@@ -382,6 +390,16 @@ def emit_alert(payload: dict[str, Any], caption_html: str, chart_path: str | Non
             return
 
     send_telegram_alert(caption_html, chart_path, reply_markup=reply_markup)
+
+    # ── TelegramPusher 並行通道（穩健重試/降級，唔依賴 GAS） ──────────────────
+    if _tg_pusher is not None:
+        try:
+            code = payload.get("code", "?")
+            alert_type = payload.get("signal", payload.get("category", "alert"))
+            _tg_pusher.send_alert(code, alert_type, caption_html)
+        except Exception as _tgp_exc:
+            print(f"[telegram_pusher] emit_alert error (non-fatal): {_tgp_exc}")
+
     _cleanup_chart(chart_path)
 
 
@@ -409,56 +427,13 @@ def format_volume_ratio(ratio: float | None) -> str:
 
 
 def fetch_watchlist_from_gas() -> dict[str, dict]:
-    """Fetch active watched stocks from GAS. Returns {code: entry} dict."""
-    if not GAS_WEBHOOK_URL:
-        return {}
-    params: dict[str, str] = {"mode": "watchlist"}
-    if GAS_SECRET:
-        params["secret"] = GAS_SECRET
-    try:
-        r = requests.get(GAS_WEBHOOK_URL, params=params, timeout=15)
-        if r.status_code == 200:
-            data = r.json()
-            entries = data if isinstance(data, list) else data.get("watchlist", [])
-            out: dict[str, dict] = {}
-            if isinstance(entries, dict):
-                # Already a {code: entry} map
-                for code, entry in entries.items():
-                    out[str(code).zfill(5)] = entry
-            else:
-                for entry in entries:
-                    code = str(entry.get("code", "")).zfill(5)
-                    if code:
-                        out[code] = entry
-            print(f"[watchlist] fetched {len(out)} active entries")
-            return out
-    except Exception as exc:
-        print(f"[watchlist] fetch failed: {exc}")
-    return {}
+    """[DEPRECATED] Now reads from local SQLite."""
+    return fetch_watchlist()
 
 
 def post_watchlist_to_gas(code: str, name: str, types: list[str], ann_date: str) -> None:
-    """Add a stock to the GAS watchlist for N-day follow-up tracking."""
-    if not GAS_WEBHOOK_URL:
-        return
-    body: dict[str, Any] = {
-        "type": "watchlist",
-        "code": code,
-        "name": name,
-        "types": types,
-        "ann_date": ann_date,
-        "expiry_days": WATCHLIST_EXPIRY_DAYS,
-    }
-    if GAS_SECRET:
-        body["secret"] = GAS_SECRET
-    try:
-        r = requests.post(GAS_WEBHOOK_URL, json=body, timeout=15)
-        if r.status_code == 200:
-            print(f"[watchlist] added {code} ({', '.join(types)})")
-        else:
-            print(f"[watchlist] add failed {code}: {r.status_code} {r.text[:200]}")
-    except Exception as exc:
-        print(f"[watchlist] add error {code}: {exc}")
+    """[DEPRECATED] Now writes to local SQLite."""
+    add_to_watchlist(code, name, types, ann_date)
 
 
 def render_chart(
@@ -965,8 +940,8 @@ def run_corp_actions() -> None:
         if not immediate:
             vol_str = f"{vol_ratio:.1f}x" if vol_ratio is not None else "N/A"
             print(f"[corp] {code} watchlist-only — volume={vol_str} types={types_list}")
-            # Post low-priority record to Alerts sheet so it appears in dashboard 最近公告.
-            post_gas_alert({
+            # Post low-priority record to local store for dashboard.
+            store_alert({
                 "source": "hkexnews",
                 "category": "corp_action",
                 "code": code,

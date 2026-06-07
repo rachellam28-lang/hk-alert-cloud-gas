@@ -7,7 +7,10 @@
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive",
     "https://www.googleapis.com/auth/script.external_request",
-    "https://www.googleapis.com/auth/cache",
     "https://www.googleapis.com/auth/script.scriptapp"
-  ]
+  ],
+  "webapp": {
+    "access": "ANYONE",
+    "executeAs": "USER_DEPLOYING"
+  }
 }

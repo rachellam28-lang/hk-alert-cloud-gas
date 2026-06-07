@@ -9,7 +9,7 @@ from urllib.error import URLError
 sys.path.insert(0, str(Path(__file__).parent.parent))
 from scanner.breakthrough_detector import save_price_cache, load_price_cache, export_breakthroughs_json
 
-GAS_URL = "https://script.google.com/macros/s/AKfycbxov_zEI5TvIp0Xg4ie937Rci_PEfFrUEyk7YH8RKVPz07i0RNS0fqkythLn-iErjVqZA/exec?format=json"
+GAS_URL = "https://script.google.com/macros/s/AKfycbw4ySZih9cXdtPDzkr9QkVAY-UrIdfl1SXcUE64Q_dxk-nytyr7RnnFXEquk_qb_A54DA/exec?format=json"
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
 
 # Price extraction patterns from HKEX PDF raw text

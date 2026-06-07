@@ -191,7 +191,7 @@ def _emit_telegram(alert: dict) -> None:
 
 def _post_to_gas(alert: dict) -> None:
     sys.path.insert(0, os.path.dirname(__file__))
-    from hk_cloud_scanner import post_gas_alert
+    from local_alert_store import store_alert
 
     if alert["market"] == "HK":
         code = alert["ticker"].replace(".HK", "").zfill(5)
@@ -203,7 +203,7 @@ def _post_to_gas(alert: dict) -> None:
         if alert["status"] == "near" else "在FVG內"
     )
 
-    post_gas_alert({
+    store_alert({
         "source":    "fvg_scanner",
         "category":  "tech",
         "code":      code,

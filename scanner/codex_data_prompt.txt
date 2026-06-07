@@ -1,0 +1,23 @@
+# 有冇平價 CCASS 數據買，唔洗自己 scrape？
+
+## 現狀
+- 自己用 fill_missing.py scrape HKEX CCASS，但 IP 成日被 Akamai rate-limit
+- 要每日 scrape ~2700 隻港股 CCASS 持倉數據
+- Sequential only，4-10s delay per stock → 正常 ~5 min/日，rate-limit 就 ~20h/日
+
+## 已查過
+- **HKEX 官方 Data Marketplace**: HKD 15,000/月（年費 18 萬）— 太貴
+- **ccassflow.com**: HK$98/月（早鳥）— 但係 web dashboard only，冇 API/data export
+- **Wind 萬得 / Choice 東方財富**: 企業級，幾萬一年
+- **EODHD**: 有 HK stock data 但唔包 CCASS custodian-level holdings
+
+## 問題
+1. 有冇其他平價 source 可以買到 CCASS 持倉 raw data（要 API/download，唔係 web dashboard）？
+2. 有冇人做 CCASS data reselling？（例如有人 scrape 完賣）
+3. 如果有得揀，值唔值俾錢 vs 繼續 scrape？
+4. 有冇 creative 嘅 alternative？（例如用港股通持股數據做 proxy？）
+
+## Context
+- 用戶係 individual trader，budget 有限（唔係 institutional）
+- 需要 raw data feed 入自己個 scanner + dashboard
+- 重點係 custodian-level holdings（券商持倉分佈），唔係價格數據

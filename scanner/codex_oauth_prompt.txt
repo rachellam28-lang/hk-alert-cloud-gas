@@ -1,0 +1,21 @@
+# Longbridge OAuth 卡住 — 求救
+
+## 現狀
+- 已 register OAuth client: `client_id=d4ec1a5c-07eb-45bf-9d95-b94e33690b00`
+- 已開 localhost:60355 HTTP server 等 callback
+- 用戶喺 Windows browser 打開咗 auth URL
+- 用戶 send 咗張 screenshot 但我睇唔到
+- Token 未收到（server 冇 output）
+
+## Auth URL
+https://openapi.longbridge.com/oauth2/authorize?client_id=d4ec1a5c-07eb-45bf-9d95-b94e33690b00&redirect_uri=http://localhost:60355/callback&response_type=code&scope=4+6+10+11
+
+## Server code (oauth_server.py)
+- 行緊 background，port 60355 LISTENING
+- 收到 GET /callback?code=xxx → POST token endpoint → save JSON
+- 但到而家 server 冇任何 output（可能 stdout buffered）
+
+## 問題
+1. Longbridge OAuth authorization page 可能會有咩 error？（scope 唔啱？redirect_uri 唔 match？）
+2. 用 API Key（legacy）方法係咪更簡單？User Center 條 link 係咩？
+3. 有冇其他辦法完成 auth？

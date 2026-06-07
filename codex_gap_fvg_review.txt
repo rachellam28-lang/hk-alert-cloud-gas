@@ -1,0 +1,39 @@
+Review the CCASS alert center page and suggest layout improvements. The user says "個排板改下" (change the layout).
+
+Page URL: https://rachellam28-lang.github.io/hk-alert-cloud-gas/gap_fvg.html
+Local file: C:/Users/Administrator/Desktop/automatic/ccass-debug/gap_fvg.html
+
+Current layout: 3 sections stacked vertically:
+1. Gap/FVG/POC alerts — grouped by stock code, expandable cards
+2. Volume ratio alerts — 2-column grid of cards (vr>=2)
+3. Transfer monitoring — card list
+
+User preferences (from memory):
+- Compact cards > wide, hates wasted space
+- Mobile must work (stack vertical at ≤720px)
+- Direct text color > muted
+- 12px fonts minimum
+- Likes summary/overview at top
+- Hates being asked questions — just fix it
+
+Please:
+1. Read the local HTML file
+2. Also fetch the live page to see current state
+3. Suggest concrete layout improvements focused on readability and information density
+4. Output specific CSS/HTML patches in V4A format
+
+Focus on:
+- Better use of screen space (desktop: too much empty space on sides?)
+- Card density (can we show more info per card?)
+- Summary bar at top showing totals
+- Mobile layout
+- Color/contrast for alerts
+
+Output each change as:
+*** Begin Patch
+*** Update File: path/to/file
+@@ description @@
+ context
+-old
++new
+*** End Patch

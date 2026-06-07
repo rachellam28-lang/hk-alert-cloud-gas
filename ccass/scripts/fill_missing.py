@@ -29,13 +29,25 @@ def fill_missing(target_date: str, max_stocks: int = 3000):
     db.execute("PRAGMA journal_mode=WAL")
     db.execute("PRAGMA foreign_keys=ON")
 
-    # Get full universe from 05-26 (exclude non-equity: temp codes, prefs, warrants)
+    # Get full universe from the date with most stocks
     EXCLUDE_PATTERNS = ["029%", "04621", "8%"]
-    # Use parameterized LIKE patterns in a single query
     exclude_clauses = " AND ".join(["stock_code NOT LIKE ?" for _ in EXCLUDE_PATTERNS])
+    
+    # Find the date with the most stocks (reference universe)
+    ref_row = db.execute(
+        "SELECT trade_date, COUNT(*) AS n FROM ccass_daily "
+        "WHERE " + " AND ".join(["stock_code NOT LIKE ?" for _ in EXCLUDE_PATTERNS]) +
+        " GROUP BY trade_date ORDER BY n DESC LIMIT 1",
+        tuple(EXCLUDE_PATTERNS)
+    ).fetchone()
+    if not ref_row:
+        print("ERROR: No reference universe found")
+        return
+    ref_date = ref_row[0]
+    
     full = set(r[0] for r in db.execute(
         f"SELECT DISTINCT stock_code FROM ccass_daily WHERE trade_date=? AND {exclude_clauses}",
-        ('2026-05-26', *EXCLUDE_PATTERNS)
+        (ref_date, *EXCLUDE_PATTERNS)
     ))
     have = set(r[0] for r in db.execute(
         'SELECT DISTINCT stock_code FROM ccass_daily WHERE trade_date=?',

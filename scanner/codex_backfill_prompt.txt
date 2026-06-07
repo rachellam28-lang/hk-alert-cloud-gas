@@ -1,0 +1,24 @@
+# CCASS Backfill Slow — 之前成功方法 vs 而家
+
+## 現狀
+- 行緊 `python scripts/fill_missing.py 2026-06-04`
+- 3.2h 先得 354 stocks（目標 2776）
+- 速度 ~33s/stock，HKEX rate-limit
+
+## 背景
+- 06-03 有 3 個 concurrent backfill 被 kill，之後 IP 被 Akamai rate-limit
+- fill_missing.py 已 fix：用 config.yaml delay（4-10s），唔再係 BATCH_SLEEP=0.1
+- Cooldown file 已 expired 但冇等就重跑
+
+## 問題
+之前 local 成功方法就係呢個 fill_missing.py。但而家 IP 污糟咗所以慢。
+
+1. Kill 而家個 run → 等 6h IP cooldown → 重跑，值唔值？
+2. 定係由佢繼續慢慢過？
+3. 有冇其他加速方法？（VPN/proxy？換 user-agent？）
+
+## Context
+- 要 fill 4 個 date：06-04（0 stocks）, 06-03（1779）, 06-02（749）, 06-01（2567）
+- 全部 newest-first
+- 唔可以用 parallel/concurrent（會觸發 HKEX blacklist）
+- GHA 已 del，純 local

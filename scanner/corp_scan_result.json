@@ -1,112 +1,235 @@
 {
   "alerted": [
     {
-      "code": "09863",
-      "name": "LEAPMOTOR",
-      "types": "股東增持",
-      "types_list": [
-        "股東增持"
-      ],
-      "title_cn": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING OF THE COMPANY BY SHAREHOL…",
-      "volume_ratio": 0.47,
-      "cur_price": 40.97999954223633,
-      "prev_week_low": 39.3,
-      "year_open": 49.14,
-      "year_open_rel": "🔻低於年開",
-      "gap": {
-        "pct": -0.34,
-        "direction": "🔽"
-      },
-      "fvg": null,
-      "release_time": "04/06/2026 16:53",
-      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0604/2026060401183.pdf",
-      "tv_url": "https://www.tradingview.com/chart/?symbol=HKEX%3A9863",
-      "priority": 3,
-      "immediate": true
-    },
-    {
-      "code": "01952",
-      "name": "EVEREST MED",
-      "types": "股東增持",
-      "types_list": [
-        "股東增持"
-      ],
-      "title_cn": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING BY SUBSTANTIAL SHAREHOLDER…",
-      "volume_ratio": 1.02,
-      "cur_price": 29.040000915527344,
-      "prev_week_low": 28.5,
-      "year_open": 37.28,
-      "year_open_rel": "🔻低於年開",
-      "gap": {
-        "pct": 1.33,
-        "direction": "🔼"
-      },
-      "fvg": null,
-      "release_time": "04/06/2026 07:01",
-      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0604/2026060400115.pdf",
-      "tv_url": "https://www.tradingview.com/chart/?symbol=HKEX%3A1952",
-      "priority": 3,
-      "immediate": true
-    },
-    {
-      "code": "02186",
-      "name": "LUYE PHARMA",
+      "code": "01128",
+      "name": "WYNN MACAU",
       "types": "配股",
       "types_list": [
         "配股"
       ],
-      "title_cn": "公司公告：(1) PROPOSED CONCURRENT REPURCHASE OF US$180,000,000 6.25 PER CENT. CONVER…",
-      "volume_ratio": 6.82,
-      "cur_price": 1.850000023841858,
-      "prev_week_low": 2.09,
-      "year_open": 2.74,
+      "title_cn": "公司公告：Adjustment to Conversion Price of the Convertible Bonds",
+      "volume_ratio": 7.71,
+      "cur_price": 5.769999980926514,
+      "prev_week_low": 5.49,
+      "year_open": 5.95,
       "year_open_rel": "🔻低於年開",
       "gap": {
-        "pct": -5.07,
+        "pct": -1.02,
+        "direction": "🔽"
+      },
+      "fvg": {
+        "top": 5.43,
+        "bottom": 5.4,
+        "idx": 198,
+        "size_pct": 0.56,
+        "dist_pct": -5.89
+      },
+      "release_time": "05/06/2026 19:26",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060501722.pdf",
+      "tv_url": "https://www.tradingview.com/chart/?symbol=HKEX%3A1128",
+      "priority": 1,
+      "immediate": true
+    },
+    {
+      "code": "00110",
+      "name": "CHINA FORTUNE",
+      "types": "配股",
+      "types_list": [
+        "配股"
+      ],
+      "title_cn": "認購完成 OF NEW SHARES（一般授權）",
+      "volume_ratio": 64.24,
+      "cur_price": 0.4000000059604645,
+      "prev_week_low": 0.425,
+      "year_open": 0.22,
+      "year_open_rel": "🔺高於年開",
+      "gap": {
+        "pct": -7.59,
+        "direction": "🔽"
+      },
+      "fvg": {
+        "top": 0.36,
+        "bottom": 0.28,
+        "idx": 209,
+        "size_pct": 28.57,
+        "dist_pct": -10.0
+      },
+      "release_time": "05/06/2026 16:32",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060500473.pdf",
+      "tv_url": "https://www.tradingview.com/chart/?symbol=HKEX%3A0110",
+      "priority": 1,
+      "immediate": true
+    },
+    {
+      "code": "09966",
+      "name": "ALPHAMAB-B",
+      "types": "股東增持",
+      "types_list": [
+        "股東增持"
+      ],
+      "title_cn": "公司公告：VOLUNTARY ANNOUNCEMENT - INCREASE IN SHAREHOLDING BY EXECUTIVE DIRECTOR AN…",
+      "volume_ratio": 1.02,
+      "cur_price": 6.949999809265137,
+      "prev_week_low": 8.92,
+      "year_open": 9.8,
+      "year_open_rel": "🔻低於年開",
+      "gap": {
+        "pct": -0.84,
         "direction": "🔽"
       },
       "fvg": null,
-      "release_time": "04/06/2026 07:00",
-      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0604/2026060400109.pdf",
-      "tv_url": "https://www.tradingview.com/chart/?symbol=HKEX%3A2186",
-      "priority": 1,
+      "release_time": "05/06/2026 08:00",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060500115.pdf",
+      "tv_url": "https://www.tradingview.com/chart/?symbol=HKEX%3A9966",
+      "priority": 3,
       "immediate": true
     }
   ],
   "watchlisted": [
     {
-      "code": "01327",
-      "name": "LUXXU GROUP",
+      "code": "03958",
+      "name": "DFZQ",
       "types": "配股",
       "types_list": [
         "配股"
       ],
-      "title_cn": "配售新股（一般授權）",
-      "volume_ratio": 0.72,
-      "cur_price": 0.5,
-      "prev_week_low": 0.55,
-      "year_open": 0.73,
+      "title_cn": "公司公告：MONTHLY UPDATE IN RELATION TO (1) POTENTIAL NOTIFIABLE TRANSACTION - THE P…",
+      "volume_ratio": null,
+      "cur_price": 0.0,
+      "prev_week_low": null,
+      "year_open": null,
+      "year_open_rel": "",
+      "gap": null,
+      "fvg": null,
+      "release_time": "05/06/2026 19:33",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060501754.pdf",
+      "tv_url": "https://www.tradingview.com/chart/?symbol=HKEX%3A3958",
+      "priority": 1,
+      "immediate": false
+    },
+    {
+      "code": "03360",
+      "name": "FE HORIZON",
+      "types": "配股",
+      "types_list": [
+        "配股"
+      ],
+      "title_cn": "公司公告：UNIVERSE TREK LIMITED - FULL CONVERSION AND CANCELLATION OF U.S.$250,000,0…",
+      "volume_ratio": 1.01,
+      "cur_price": 7.480000019073486,
+      "prev_week_low": 7.22,
+      "year_open": 8.28,
+      "year_open_rel": "🔻低於年開",
+      "gap": {
+        "pct": 0.8,
+        "direction": "🔼"
+      },
+      "fvg": {
+        "top": 7.46,
+        "bottom": 7.37,
+        "idx": 246,
+        "size_pct": 1.22,
+        "dist_pct": -0.27
+      },
+      "release_time": "05/06/2026 19:14",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060501602.pdf",
+      "tv_url": "https://www.tradingview.com/chart/?symbol=HKEX%3A3360",
+      "priority": 1,
+      "immediate": false
+    },
+    {
+      "code": "00493",
+      "name": "GOME RETAIL",
+      "types": "配股",
+      "types_list": [
+        "配股"
+      ],
+      "title_cn": "公司公告：1. DISCLOSEABLE TRANSACTION INVOLVING ISSUE OF CONSIDERATION SHARES UNDER …",
+      "volume_ratio": 0.64,
+      "cur_price": 0.013000000268220901,
+      "prev_week_low": 0.011,
+      "year_open": 0.014,
       "year_open_rel": "🔻低於年開",
       "gap": {
         "pct": 0.0,
         "direction": ""
       },
       "fvg": null,
-      "release_time": "04/06/2026 19:02",
-      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0604/2026060402395.pdf",
-      "tv_url": "https://www.tradingview.com/chart/?symbol=HKEX%3A1327",
+      "release_time": "05/06/2026 18:42",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060501422.pdf",
+      "tv_url": "https://www.tradingview.com/chart/?symbol=HKEX%3A0493",
+      "priority": 1,
+      "immediate": false
+    },
+    {
+      "code": "01808",
+      "name": "ENTERPRISE DEV",
+      "types": "配股",
+      "types_list": [
+        "配股"
+      ],
+      "title_cn": "LAPSE OF 配售新股（一般授權）",
+      "volume_ratio": 0.54,
+      "cur_price": 2.2200000286102295,
+      "prev_week_low": 1.29,
+      "year_open": 2.92,
+      "year_open_rel": "🔻低於年開",
+      "gap": {
+        "pct": 5.38,
+        "direction": "🔼"
+      },
+      "fvg": {
+        "top": 2.17,
+        "bottom": 1.83,
+        "idx": 246,
+        "size_pct": 18.58,
+        "dist_pct": -2.25
+      },
+      "release_time": "05/06/2026 16:46",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060500684.pdf",
+      "tv_url": "https://www.tradingview.com/chart/?symbol=HKEX%3A1808",
+      "priority": 1,
+      "immediate": false
+    },
+    {
+      "code": "01860",
+      "name": "MOBVISTA",
+      "types": "配股",
+      "types_list": [
+        "配股"
+      ],
+      "title_cn": "公司公告：VOLUNTARY ANNOUNCEMENT - COMPLETION OF CONVERSION OF CONVERTIBLE BONDS",
+      "volume_ratio": 0.43,
+      "cur_price": 13.920000076293945,
+      "prev_week_low": 13.65,
+      "year_open": 15.28,
+      "year_open_rel": "🔻低於年開",
+      "gap": {
+        "pct": 0.5,
+        "direction": "🔼"
+      },
+      "fvg": {
+        "top": 13.39,
+        "bottom": 12.52,
+        "idx": 189,
+        "size_pct": 6.95,
+        "dist_pct": -3.81
+      },
+      "release_time": "05/06/2026 16:34",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060500511.pdf",
+      "tv_url": "https://www.tradingview.com/chart/?symbol=HKEX%3A1860",
       "priority": 1,
       "immediate": false
     }
   ],
   "summary": {
-    "date": "2026/06/04",
-    "date_iso": "2026-06-04",
-    "weekday": "星期四",
+    "date": "2026/06/05",
+    "date_iso": "2026-06-05",
+    "weekday": "星期五",
     "total_raw": 70,
-    "today_count": 4,
+    "today_count": 8,
     "volume_multiplier": 1.5,
     "alerted_count": 3,
-    "watchlisted_count": 1
+    "watchlisted_count": 5
   }
 }

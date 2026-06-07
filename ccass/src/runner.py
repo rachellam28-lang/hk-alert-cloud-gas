@@ -233,10 +233,12 @@ def run_daily(
     target_date = target_date or today_hk()
 
     if not skip_scrape:
-        cooldown_reason = _active_cooldown_reason()
-        if cooldown_reason:
-            logger.error("FATAL-003: %s", cooldown_reason)
-            return 2
+        provider = os.environ.get("CCASS_PROVIDER", "hkex").lower()
+        if provider == "hkex":
+            cooldown_reason = _active_cooldown_reason()
+            if cooldown_reason:
+                logger.error("FATAL-003: %s", cooldown_reason)
+                return 2
 
     logger.info("=" * 60)
     logger.info("CCASS daily run for %s", target_date)
@@ -595,15 +597,23 @@ def _export_json(query_date: date, alerts_today: int) -> None:
 
     try:
         with get_conn() as conn:
+            # P3: Query from ccass_daily first (not ccass_trends) so stocks without trends still appear.
+            # This matches the merge_shards.py update_ccass_json behavior.
             rows = conn.execute(
-                """SELECT t.stock_code, u.stock_name, t.delta_5d_pct, t.delta_20d_pct,
-                          t.delta_60d_pct, t.delta_120d_pct,
-                          d.total_pct, d.top5_pct, d.top10_pct, d.num_participants,
+                """SELECT cd.stock_code, u.stock_name,
+                          cd.total_pct, cd.top5_pct, cd.top10_pct, cd.num_participants,
+                          cd.adj_hhi, cd.broker_top5_pct, cd.top_broker_id,
+                          cd.top_broker_name, cd.top_broker_pct,
+                          cd.futu_pct, cd.a00005_pct,
+                          t.delta_5d_pct, t.delta_20d_pct, t.delta_60d_pct, t.delta_120d_pct,
                           t.consecutive_increase_days, t.consecutive_decrease_days
-                   FROM ccass_trends t
-                   LEFT JOIN stock_universe u ON u.stock_code = t.stock_code
-                   LEFT JOIN ccass_daily d ON d.stock_code = t.stock_code AND d.trade_date = t.trade_date
-                   WHERE t.trade_date = ?
+                   FROM ccass_daily cd
+                   LEFT JOIN stock_universe u ON u.stock_code = cd.stock_code
+                   LEFT JOIN ccass_trends t ON t.stock_code = cd.stock_code AND t.trade_date = cd.trade_date
+                   WHERE cd.trade_date = ? AND cd.validation_failed = 0
+                     AND cd.stock_code NOT LIKE '029%'
+                     AND cd.stock_code NOT LIKE '04621'
+                     AND cd.stock_code NOT LIKE '8%'
                    ORDER BY t.delta_5d_pct DESC""",
                 (date_str,),
             ).fetchall()
@@ -611,19 +621,34 @@ def _export_json(query_date: date, alerts_today: int) -> None:
         # Full stocks array for standalone page (short keys to minimise size)
         stocks: list[dict] = []
         for r in rows:
+            # P3: Include Sentinel Option A concentration fields (matches merge_shards.py)
+            sc = r["stock_code"]
+            tp_val = round(r["total_pct"] or 0, 2)
+            np_val = r["num_participants"] or 0
+            t5_val = round(r["top5_pct"] or 0, 2)
+            t10_val = round(r["top10_pct"] or 0, 2)
+
             stocks.append({
-                "c": r["stock_code"],
-                "n": r["stock_name"] or r["stock_code"],
-                "tp": round(r["total_pct"] or 0, 2),
-                "t5": round(r["top5_pct"] or 0, 2),
-                "t10": round(r["top10_pct"] or 0, 2),
+                "c": sc,
+                "n": r["stock_name"] or sc,
+                "tp": tp_val,
+                "t5": t5_val,
+                "t10": t10_val,
                 "d5": round(r["delta_5d_pct"], 2) if r["delta_5d_pct"] is not None else None,
-                "d20": round(r["delta_20d_pct"] or 0, 2) if r["delta_20d_pct"] is not None else None,
+                "d20": round(r["delta_20d_pct"], 2) if r["delta_20d_pct"] is not None else None,
                 "d60": round(r["delta_60d_pct"], 2) if r["delta_60d_pct"] is not None else None,
                 "d120": round(r["delta_120d_pct"], 2) if r["delta_120d_pct"] is not None else None,
                 "su": r["consecutive_increase_days"] or 0,
                 "sd": r["consecutive_decrease_days"] or 0,
-                "np": r["num_participants"] or 0,
+                "np": np_val,
+                # Sentinel Option A (compact keys)
+                "ah": round(r["adj_hhi"], 1) if r["adj_hhi"] is not None else None,
+                "bt5": round(r["broker_top5_pct"], 2) if r["broker_top5_pct"] is not None else None,
+                "tb": r["top_broker_id"] or "",
+                "tbn": r["top_broker_name"] or "",
+                "tbp": round(r["top_broker_pct"], 2) if r["top_broker_pct"] is not None else None,
+                "fp": round(r["futu_pct"], 2) if r["futu_pct"] is not None else None,
+                "a5": round(r["a00005_pct"], 2) if r["a00005_pct"] is not None else None,
             })
             # Backward compat top_increase/top_decrease
             entry = {
@@ -711,13 +736,9 @@ def _post_movers_to_gas(
     top_decrease: list[dict],
     date_str: str,
 ) -> None:
-    import os
-    import requests as _req
-    webhook_url = os.getenv("GAS_WEBHOOK_URL", "")
-    secret = os.getenv("GAS_SECRET", "")
-    if not webhook_url:
-        logger.debug("GAS_WEBHOOK_URL not set, skip CCASS GAS post")
-        return
+    import os, sys
+    sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scanner"))
+    from local_alert_store import store_alert
     created_at = date_str + "T17:00:00"
 
     def _post(entry: dict, signal: str) -> None:
@@ -734,19 +755,16 @@ def _post_movers_to_gas(
             "message":    f"5日持倉 {pct5:+.1f}%（20日 {pct20:+.1f}%）",
             "tags":       "CCASS",
         }
-        if secret:
-            body["secret"] = secret
         try:
-            r = _req.post(webhook_url, json=body, timeout=30)
-            logger.debug("GAS %s %s → %s", code, signal, r.status_code)
+            store_alert(body)
         except Exception as exc:
-            logger.warning("GAS post failed %s: %s", code, exc)
+            logger.warning("store_alert failed %s: %s", code, exc)
 
     for e in top_increase:
         _post(e, "CCASS增持")
     for e in top_decrease:
         _post(e, "CCASS減持")
-    logger.info("Posted %d CCASS signals to GAS", len(top_increase) + len(top_decrease))
+    logger.info("Stored %d CCASS signals locally", len(top_increase) + len(top_decrease))
 
 
 def _stage_outputs(json_path):

@@ -260,7 +260,8 @@ def _fetch_rights() -> list[dict]:
 
 def _emit(result: dict, mc: float | None) -> None:
     sys.path.insert(0, os.path.dirname(__file__))
-    from hk_cloud_scanner import post_gas_alert, send_telegram_alert, build_inline_keyboard_
+    from hk_cloud_scanner import send_telegram_alert, build_inline_keyboard_
+    from local_alert_store import store_alert
 
     ticker = result["ticker"]
     name   = result.get("name") or ticker
@@ -303,7 +304,7 @@ def _emit(result: dict, mc: float | None) -> None:
         "tags": tags, "priority": 2,
         "raw": json.dumps(result, ensure_ascii=False),
     }
-    post_gas_alert(payload)
+    store_alert(payload)
     send_telegram_alert(caption, None, reply_markup=build_inline_keyboard_([
         ("📊 走勢圖", tv_url),
         ("📋 SEC", result["url"]),

@@ -1,10 +1,10 @@
-"""Merge 6 shard JSON files into SQLite DB — CI merge phase.
+"""Merge shard JSON files into SQLite DB — CI merge phase.
 
 用法:
     python -m scripts.merge_shards --date 2026-05-23
 
-Expects ccass-shard-0.json through ccass-shard-5.json in cwd.
-Validates all 6, merges into DB, computes trends, sends alerts,
+Expects ccass-shard-0.json through ccass-shard-{SHARD_TOTAL-1}.json in repo root.
+Validates all shards, merges into DB, computes trends, sends alerts,
 and updates ccass.json for the dashboard.
 """
 from __future__ import annotations
