@@ -396,7 +396,8 @@ function renderConfluence(data){
     return (b.signal_count||0)-(a.signal_count||0);
   });
   var sigPillClass={'上破POC':'spill-poc','向上FVG':'spill-fvg','年開突破':'spill-yearopen','向上跳空缺口':'spill-fvg'};
-  var items=data.map(function(r){
+
+  function renderItem(r){
     var dirDot=dirIcon[r.direction]||'🟡';
     var lvl=r.price_level||'';
     var lvlHtml=lvl?'<span class="cf-lvl '+lvl+'">'+(lvlEmoji[lvl]||'')+''+(lvlLabel[lvl]||lvl)+'</span>':'';
@@ -415,8 +416,35 @@ function renderConfluence(data){
       '<div class="cf-row2">'+scoreBadge+patBadge+lvlHtml+' <span style="font-size:9px">'+disc+'</span></div>'+
       '<div class="cf-row3"><span>'+sigCount+'</span>'+prePost+'</div>'+
       '</div>';
-  }).join('');
-  wrap.innerHTML='<div class="confluence-grid">'+items+'</div>';
+  }
+
+  // Group by label level
+  var groups={'🔥 可炒上':[],'📈 留意':[],'👀 觀察':[],'⚠️ 小心':[]};
+  var unlabeled=[];
+  data.forEach(function(r){
+    if(groups[r.label]) groups[r.label].push(r);
+    else unlabeled.push(r);
+  });
+
+  var html='';
+  var levelColors={'🔥 可炒上':'#15803d','📈 留意':'#166534','👀 觀察':'#854d0e','⚠️ 小心':'#b91c1c'};
+  var levelBg={'🔥 可炒上':'#dcfce7','📈 留意':'#f0fdf4','👀 觀察':'#fefce8','⚠️ 小心':'#fef2f2'};
+  var order=['🔥 可炒上','📈 留意','👀 觀察','⚠️ 小心'];
+  for(var i=0;i<order.length;i++){
+    var level=order[i];
+    var items=groups[level];
+    if(!items||!items.length) continue;
+    items.sort(function(a,b){ return (b.signal_count||0)-(a.signal_count||0); });
+    html+='<div style="margin-top:8px;padding:6px 8px;border-radius:6px;background:'+levelBg[level]+';border:1px solid '+levelColors[level]+'">';
+    html+='<div style="font-weight:700;font-size:14px;color:'+levelColors[level]+';margin-bottom:4px">'+level+' <span style="font-size:10px;font-weight:400;color:var(--mute)">'+items.length+'項</span></div>';
+    html+='<div class="confluence-grid">';
+    html+=items.map(renderItem).join('');
+    html+='</div></div>';
+  }
+  if(unlabeled.length){
+    html+='<div style="margin-top:8px"><div class="confluence-grid">'+unlabeled.map(renderItem).join('')+'</div></div>';
+  }
+  wrap.innerHTML=html||'<div style="padding:12px;color:var(--mute);text-align:center;font-size:12px">暫無 Confluence 訊號</div>';
 }
 
 // Load Confluence data
