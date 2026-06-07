@@ -972,11 +972,8 @@ function renderSummaryBar(data){
   const dn=data.top_decrease?.length||0;
   let pCnt=0, rCnt=0;
   allStocks.forEach(s=>{const m=signalMap.get(s.c);if(m&&m.pl)pCnt++;if(m&&m.ri)rCnt++;});
-  let totalMc=0, mcCnt=0;
-  allStocks.forEach(s=>{if(hasMC(s)){totalMc+=s.mc; mcCnt++;}});
   bar.innerHTML='<span class="scnt">📅 <b>'+esc(data.updated)+'</b></span>'
     +'<span class="scnt">📦 <b>'+allStocks.length+'</b> 隻股票</span>'
-    +(mcCnt?'<span class="scnt">💰 <b>'+totalMc.toFixed(0)+'億</b> 總市值</span>':'')
     +'<span class="scnt">📊 <b>'+data.first_date+'</b> 至 <b>'+esc(data.updated)+'</b></span>'+(pCnt?'<span class="scnt" style="border-color:var(--down-border);background:var(--down-soft);color:var(--down)">配股 <b>'+pCnt+'</b></span>':'')+(rCnt?'<span class="scnt" style="border-color:var(--violet-border);background:var(--violet-soft);color:var(--violet)">供股 <b>'+rCnt+'</b></span>':'')
     +'<span class="scnt" style="border-color:var(--up-border);background:var(--up-soft);color:var(--up)">▲ <b>'+up+'</b> 增持</span>'
     +'<span class="scnt" style="border-color:var(--down-border);background:var(--down-soft);color:var(--down)">▼ <b>'+dn+'</b> 減持</span>';
@@ -1403,6 +1400,7 @@ const FILTER_IDS={filterAll:'all',filterUp:'up',filterDn:'dn',filterConcentrated
 
 function toggleFilter(mode){
   activePreset=null;
+  conFilter='';updateConFilterUI();
   if(mode==='all'){activeFilters.clear();updateFilterUI();applyFilters();return;}
   if(activeFilters.has(mode)){activeFilters.delete(mode);updateFilterUI();applyFilters();return;}
   if(mode==='up'||mode==='dn'){activeFilters.delete('up');activeFilters.delete('dn');}
