@@ -329,6 +329,10 @@ tbody tr.ipo-highlight{background:linear-gradient(90deg,var(--amber-soft),transp
 .preset-btn{appearance:none;background:var(--surface-soft);border:1px solid var(--line);color:var(--text-soft);padding:2px 8px;border-radius:5px;font:500 10px inherit;cursor:pointer;white-space:nowrap}
 .preset-btn:hover{background:var(--primary-soft);color:var(--primary);border-color:var(--primary-border)}
 .preset-btn.active{background:var(--primary-soft);color:var(--primary);border-color:var(--primary)}
+/* Confluence button active colors */
+.con-btn-con-catalyst.active{background:#dcfce7!important;color:#15803d!important;border-color:#86efac!important}
+.con-btn-con-dual.active{background:#ede9fe!important;color:#6d28d9!important;border-color:#c4b5fd!important}
+.con-btn-con-frontrun.active{background:#fef2f2!important;color:#991b1b!important;border-color:#fecaca!important}
 .preset-save{appearance:none;background:none;border:none;color:var(--primary);cursor:pointer;font:600 11px inherit;padding:2px 4px}
 /* Sort indicator for secondary sort */
 .sort-info{font-size:10px;color:var(--mute);display:inline-flex;align-items:center;gap:3px;margin-left:6px}
@@ -464,6 +468,9 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
         <button class="preset-btn" onclick="loadPreset('signal')">信號突破</button>
         <button class="preset-btn" onclick="loadPreset('placement')">配股預警</button>
         <button class="preset-btn" onclick="loadPreset('mom')">高動能</button>
+        <button class="preset-btn con-btn-con-catalyst" id="conBtnCat" onclick="toggleConFilter('catalyst')">🚀催化</button>
+        <button class="preset-btn con-btn-con-dual" id="conBtnDual" onclick="toggleConFilter('dual')">💎雙向</button>
+        <button class="preset-btn con-btn-con-frontrun" id="conBtnFr" onclick="toggleConFilter('frontrun')">🦆搶跑</button>
         <button class="preset-save" onclick="savePreset()" title="儲存當前篩選為預設">+</button>
       </div>
       <div class="toolbar-sect">
@@ -648,6 +655,7 @@ let hkexLinkMap=new Map();
 let techSignalMap=new Map();
 let breakthroughMap={};
 let confluenceMap=new Map();
+let conFilter='';
 let activePrices={};
 let corpFilter='all';
 let allCorpData=[];
@@ -773,6 +781,7 @@ function loadPreset(key){
     return;
   }
   activePreset=key;
+  conFilter='';updateConFilterUI();
   // Visual: mark active button
   document.querySelectorAll('.preset-btn').forEach(function(b){b.classList.remove('active');});
   document.querySelectorAll('.preset-btn').forEach(function(b){if(b.textContent===presetData[key]?.name)b.classList.add('active');});
@@ -803,6 +812,16 @@ function loadPreset(key){
   if(db)db.textContent=sortDir===1?'↑':'↓';
   applyFilters();
   updateSortInfo();
+}
+// --- confluence pattern toggle ---
+function toggleConFilter(pat){
+  conFilter=(conFilter===pat)?'':pat;
+  updateConFilterUI();
+  page=0;applyFilters();
+}
+function updateConFilterUI(){
+  var ids={catalyst:'conBtnCat',dual:'conBtnDual',frontrun:'conBtnFr'};
+  for(var k in ids){var b=document.getElementById(ids[k]);if(b)b.classList.toggle('active',conFilter===k);}
 }
 var presetData={signal:{name:'信號突破',state:{sortCol:'sig',sortDir:1,sortCol2:'d5',sortDir2:-1,searchVal:'',activeFilters:[],sigFilter:'all',tpMin:null,tpMax:null,d5Min:null,d5Max:null,mcMin:null,mcMax:null,hidden:[]}},placement:{name:'配股預警',state:{sortCol:'tp',sortDir:-1,sortCol2:'d5',sortDir2:-1,searchVal:'',activeFilters:['placement'],sigFilter:'all',tpMin:30,tpMax:null,d5Min:null,d5Max:null,mcMin:null,mcMax:null,hidden:[]}},mom:{name:'高動能',state:{sortCol:'d5',sortDir:-1,sortCol2:'tp',sortDir2:-1,searchVal:'',activeFilters:[],sigFilter:'all',tpMin:null,tpMax:null,d5Min:3,d5Max:null,mcMin:null,mcMax:null,hidden:[]}}};
 function renderPresets(){
@@ -1197,6 +1216,8 @@ function applyFilters(){
       else if(sigFilterVal==='ccass_dn') sigOK=s.d5!=null&&s.d5<0;
       if(!sigOK) return false;
     }
+    // Confluence pattern filter
+    if(conFilter && confluenceMap.get(s.c)!==conFilter) return false;
     return true;
   });
   // Multi-column sort
@@ -1394,6 +1415,7 @@ function toggleFilter(mode){
 function resetAllFilters(){
   activePreset=null;
   activeFilters.clear();
+  conFilter='';updateConFilterUI();
   updateFilterUI();
   // Reset range inputs
   document.querySelectorAll('#rfTpMin,#rfTpMax,#rfD5Min,#rfD5Max,#rfMcMin,#rfMcMax').forEach(function(e){e.value='';});
