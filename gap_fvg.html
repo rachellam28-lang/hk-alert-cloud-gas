@@ -385,7 +385,9 @@ function renderConfluence(data){
   document.getElementById('confluenceCount').textContent='('+data.length+')';
   var dirIcon={'up':'🟢','down':'🔴','neutral':'🟡'};
   var lvlEmoji={'high':'🔥','neutral':'','low':'🔻'};
+  var lvlLabel={'high':'高價','neutral':'中性','low':'低價'};
   var patEmoji={'frontrun':'🦆','dual':'💎','catalyst':'🚀'};
+  var patLabel={'frontrun':'搶跑','dual':'雙向','catalyst':'催化'};
   var scoreOrder={'🔥 可炒上':0,'📈 留意':1,'👀 觀察':2,'⚠️ 小心':3};
   // Sort: high score first, then by signal_count desc
   data.sort(function(a,b){
