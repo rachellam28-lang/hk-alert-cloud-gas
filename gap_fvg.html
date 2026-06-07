@@ -388,10 +388,26 @@ function renderConfluence(data){
   var lvlLabel={'high':'高價','neutral':'中性','low':'低價'};
   var patEmoji={'frontrun':'🦆','dual':'💎','catalyst':'🚀'};
   var patLabel={'frontrun':'搶跑','dual':'雙向','catalyst':'催化'};
-  var scoreOrder={'🔥 可炒上':0,'📈 留意':1,'👀 觀察':2,'⚠️ 小心':3};
+
+  // Compute score + label from available fields (data has no pre-computed label)
+  function computeLabel(r){
+    var dirScore = r.direction==='up'?3:r.direction==='down'?-3:0;
+    var patScore = r.pattern==='catalyst'?3:r.pattern==='dual'?2:r.pattern==='frontrun'?1:0;
+    var lvlScore = r.price_level==='low'?2:r.price_level==='high'?-1:0;
+    var sigBonus = Math.min(r.signal_count||0, 5);
+    var discBonus = (r.discount_pct||0) > 5 ? 1 : 0;
+    var total = dirScore + patScore + lvlScore + sigBonus + discBonus;
+    if(total >= 8)       { r._label='🔥 可炒上'; r._labelClass='strong-buy'; }
+    else if(total >= 4)  { r._label='📈 留意';   r._labelClass='buy'; }
+    else if(total >= 0)  { r._label='👀 觀察';   r._labelClass='watch'; }
+    else                 { r._label='⚠️ 小心';   r._labelClass='caution'; }
+  }
+  data.forEach(computeLabel);
+
   // Sort: high score first, then by signal_count desc
+  var scoreOrder={'🔥 可炒上':0,'📈 留意':1,'👀 觀察':2,'⚠️ 小心':3};
   data.sort(function(a,b){
-    var sa=scoreOrder[a.label]||99, sb=scoreOrder[b.label]||99;
+    var sa=scoreOrder[a._label]||99, sb=scoreOrder[b._label]||99;
     if(sa!==sb) return sa-sb;
     return (b.signal_count||0)-(a.signal_count||0);
   });
@@ -404,9 +420,7 @@ function renderConfluence(data){
     var disc=r.discount_pct!=null?'折讓'+r.discount_pct+'% ':'';
     var pat=r.pattern||'';
     var patBadge=pat?'<span class="cf-pattern cf-pat-'+pat+'">'+(patEmoji[pat]||'')+''+(patLabel[pat]||pat)+'</span>':'';
-    var score=r.score||0;
-    var scoreLabel=r.label||'';
-    var scoreBadge=scoreLabel?'<span class="cf-score cf-sc-'+r.label_class+'">'+E(scoreLabel)+'</span>':'';
+    var scoreBadge='<span class="cf-score cf-sc-'+r._labelClass+'">'+E(r._label)+'</span>';
     var sigCount='訊號×'+r.signal_count;
     var pre=r.pre_count||0, post=r.post_count||0;
     var prePost='';
@@ -418,12 +432,10 @@ function renderConfluence(data){
       '</div>';
   }
 
-  // Group by label level
+  // Group by computed label level
   var groups={'🔥 可炒上':[],'📈 留意':[],'👀 觀察':[],'⚠️ 小心':[]};
-  var unlabeled=[];
   data.forEach(function(r){
-    if(groups[r.label]) groups[r.label].push(r);
-    else unlabeled.push(r);
+    if(groups[r._label]) groups[r._label].push(r);
   });
 
   var html='';
@@ -440,9 +452,6 @@ function renderConfluence(data){
     html+='<div class="confluence-grid">';
     html+=items.map(renderItem).join('');
     html+='</div></div>';
-  }
-  if(unlabeled.length){
-    html+='<div style="margin-top:8px"><div class="confluence-grid">'+unlabeled.map(renderItem).join('')+'</div></div>';
   }
   wrap.innerHTML=html||'<div style="padding:12px;color:var(--mute);text-align:center;font-size:12px">暫無 Confluence 訊號</div>';
 }
