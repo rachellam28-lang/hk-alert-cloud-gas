@@ -860,6 +860,54 @@ def fetch_corp_action_announcements() -> list[dict[str, Any]]:
     print(f"HKEXnews hits: {len(announcements)}")
     return announcements
 
+_TYPE_MAP = {'配股':'placement','供股':'rights','合股':'consolidation','拆細':'split','增持':'increase','減持':'decrease','回購':'buyback','私有化':'privatisation','特別息':'special_div','收購':'acquisition','轉倉':'transfer','大手上板':'block_trade','股息':'dividend','盈警':'warning','盈喜':'alert','業績':'results','董事變更':'director','其他':'other'}
+
+def _update_announcements_json(raw_anns: list[dict[str, Any]]) -> None:
+    """Merge fetched corp announcements into data/announcements.json for dashboard."""
+    import json, os
+    _proj = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    path = os.path.join(_proj, 'data', 'announcements.json')
+    existing = []
+    if os.path.exists(path):
+        try:
+            with open(path, 'r', encoding='utf-8') as f:
+                existing = json.load(f)
+        except Exception:
+            pass
+
+    seen = set()
+    for a in existing:
+        seen.add((str(a.get('code','')).zfill(5), a.get('date',''), ' / '.join(a.get('types',[]))))
+
+    new_count = 0
+    for ann in raw_anns:
+        code = str(ann.get('code','')).zfill(5)
+        rd = ann.get('release_date','')
+        types_list = ann.get('types',[]) if isinstance(ann.get('types'), list) else [ann.get('types','')]
+        types_str = ' / '.join(types_list)
+        key = (code, rd, types_str)
+        if key in seen:
+            continue
+        seen.add(key)
+        first_type = types_list[0] if types_list else '其他'
+        existing.append({
+            'code': code,
+            'name': ann.get('name',''),
+            'types': types_list,
+            'title': ann.get('title',''),
+            'date': rd,
+            'url': ann.get('url',''),
+            'type': _TYPE_MAP.get(first_type, 'other'),
+            'typeLabel': types_str,
+        })
+        new_count += 1
+
+    existing.sort(key=lambda x: x.get('date',''), reverse=True)
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, 'w', encoding='utf-8') as f:
+        json.dump(existing, f, ensure_ascii=False)
+    print(f"[corp] announcements.json: {new_count} new, {len(existing)} total")
+
 
 def run_corp_actions() -> None:
     today_hkt = hkt_today_str()
@@ -902,6 +950,12 @@ def run_corp_actions() -> None:
         export_breakthroughs_json()
     except Exception as exc:
         print(f"[breakthrough] export failed: {exc}")
+
+    # Update data/announcements.json for dashboard (all fetched, not just today)
+    try:
+        _update_announcements_json(raw_anns)
+    except Exception as exc:
+        print(f"[corp] announcements.json update failed: {exc}")
 
     if not anns:
         send_telegram_message(f"披露易掃描完成，無 {today_hkt} 當日相關公告。")
