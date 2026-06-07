@@ -1720,15 +1720,6 @@ function renderBT(){
 }
 
 // --- Recent announcements ---
-var corpFilter='all';
-var allCorpData=[];
-function setCorpFilter(val,btn){
-  corpFilter=val;
-  // Update button active states
-  document.querySelectorAll('#corpFilterBar .btn-ghost').forEach(function(b){b.classList.remove('active');});
-  if(btn)btn.classList.add('active');
-  if(allCorpData.length)renderRecent(allCorpData);
-}
 function renderRecent(recentCorps){
   if(!recentCorps||!recentCorps.length){
     document.getElementById('recentWrap').innerHTML='<div style="padding:12px;color:var(--mute);text-align:center;font-size:12px">暫無公告</div>';
