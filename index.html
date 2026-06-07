@@ -1082,12 +1082,13 @@ function renderSummaryBar(data){
 function renderTable(){
   var wl=loadWatchlist();
   var groups={small:[],mid:[],large:[]};
-  filtered.forEach(function(s){
-    if(!hasMC(s)) return;
-    if(s.mc<20) groups.small.push(s);
-    else if(s.mc<100) groups.mid.push(s);
-    else groups.large.push(s);
-  });
+    filtered.forEach(function(s){
+      var mc=s.mc;
+      if(mc==null||!Number.isFinite(mc)||mc<=0){groups.small.push(s);}
+      else if(mc<20) groups.small.push(s);
+      else if(mc<100) groups.mid.push(s);
+      else groups.large.push(s);
+    });
   var PAGE=100;
   function renderOne(section, stocks){
     var cap=(section==='small'?'Small':section==='mid'?'Mid':'Large');
