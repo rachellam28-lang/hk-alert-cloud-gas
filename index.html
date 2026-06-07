@@ -183,6 +183,12 @@ tbody tr{cursor:pointer}
 .ra-stk{flex:1 1 auto;display:flex;align-items:baseline;gap:5px;min-width:0;overflow:hidden}
 .ra-code{font:600 11.5px "JetBrains Mono",ui-monospace,monospace}.ra-name{color:var(--mute);font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ra-link{flex:0 0 auto;display:inline-flex;padding:2px 6px;border-radius:5px;border:1px solid var(--violet-border);background:var(--violet-soft);color:var(--violet);font:600 9px inherit;text-decoration:none}
+/* MC split sections */
+.mc-section{border-bottom:1px solid var(--line)}
+.mc-section:last-child{border-bottom:none}
+.mc-section-head{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--surface-soft);font-size:12px;font-weight:700;color:var(--text);border-bottom:1px solid var(--line-soft);position:sticky;top:45px;z-index:2}
+.mc-count{font-weight:400;font-size:10px;color:var(--mute)}
+.mc-pagination{display:flex;align-items:center;justify-content:center;gap:6px;padding:4px;font-size:11px;border-top:1px solid var(--line-soft)}
 /* Section toggle */
 .section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:20px 0 10px}
 .section-head h2{margin:0;display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.16em}
@@ -495,35 +501,106 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
     </div>
     </div>
 
-    <div style="overflow-x:auto">
-      <table>
+    <!-- MC split: 小市值 -->
+    <div class="mc-section" id="mcSectionSmall">
+      <div class="mc-section-head">🐟 小市值 (&lt;20億) <span class="mc-count" id="mcCountSmall"></span></div>
+      <div style="overflow-x:auto"><table>
         <thead><tr>
-          <th class="sortable sort-active sort-desc" data-sort="code" onclick="sortBy('code',event)"><span>代碼</span><span class="sort-icon">▼</span><span class="sort2-icon"></span></th>
-          <th class="sortable" data-sort="n" onclick="sortBy('n',event)"><span>名稱</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
-          <th class="sortable th-prevyo" data-sort="prevyo" onclick="sortBy('prevyo',event)"><span>😻</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
-          <th class="sortable th-pypct" data-sort="pypct" onclick="sortBy('pypct',event)"><span>前年Δ%</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
-          <th class="sortable th-vr" data-sort="vr" onclick="sortBy('vr',event)"><span>量比</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
-          <th class="sortable th-price" data-sort="price" onclick="sortBy('price',event)"><span>現價</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
-          <th class="sortable th-yo_pct hide-yo_pct" data-sort="yo_pct" onclick="sortBy('yo_pct',event)"><span>今年Δ%</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
-          <th class="sortable th-sig" data-sort="sig" onclick="sortBy('sig',event)"><span>信號</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
-          <th class="sortable" data-sort="tp" onclick="sortBy('tp',event)"><span>CCASS%</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
-          <th class="sortable th-t5" data-sort="t5" onclick="sortBy('t5',event)"><span>Top5%</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
-          <th class="sortable th-t10" data-sort="t10" onclick="sortBy('t10',event)"><span>Top10%</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
-          <th class="sortable" data-sort="d5" onclick="sortBy('d5',event)"><span>5日Δ</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
-          <th class="sortable th-score" data-sort="score" onclick="sortBy('score',event)"><span>⭐評分</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
-          <th class="sortable th-streak" data-sort="su" onclick="sortBy('su',event)"><span>🔁連續</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
-          <th class="sortable th-d20" data-sort="d20" onclick="sortBy('d20',event)"><span>20日Δ</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
-          <th class="sortable th-d60" data-sort="d60" onclick="sortBy('d60',event)"><span>60日Δ</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
-          <th class="sortable th-d120" data-sort="d120" onclick="sortBy('d120',event)"><span>120日Δ</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
-          <th class="sortable th-np" data-sort="np" onclick="sortBy('np',event)"><span>參與者</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
-          <th class="sortable th-mc" data-sort="mc" onclick="sortBy('mc',event)"><span>市值</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
-          <th class="sortable th-chg" data-sort="chg" onclick="sortBy('chg',event)"><span>今日Δ%</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
-          <th class="sortable th-p52" data-sort="p52" onclick="sortBy('p52',event)"><span>52週%</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
-          <th class="sortable th-pe" data-sort="pe" onclick="sortBy('pe',event)"><span>PE</span><span class="sort-icon"></span><span class="sort2-icon"></span></th>
+          <th class="sortable sort-active sort-desc" data-sort="code" onclick="sortBy('code',event)"><span>代碼</span><span class="sort-icon">▼</span></th>
+          <th class="sortable" data-sort="n" onclick="sortBy('n',event)"><span>名稱</span><span class="sort-icon"></span></th>
+          <th class="sortable th-prevyo" data-sort="prevyo" onclick="sortBy('prevyo',event)"><span>😻</span><span class="sort-icon"></span></th>
+          <th class="sortable th-pypct" data-sort="pypct" onclick="sortBy('pypct',event)"><span>前年Δ%</span><span class="sort-icon"></span></th>
+          <th class="sortable th-vr" data-sort="vr" onclick="sortBy('vr',event)"><span>量比</span><span class="sort-icon"></span></th>
+          <th class="sortable th-price" data-sort="price" onclick="sortBy('price',event)"><span>現價</span><span class="sort-icon"></span></th>
+          <th class="sortable th-yo_pct hide-yo_pct" data-sort="yo_pct" onclick="sortBy('yo_pct',event)"><span>今年Δ%</span><span class="sort-icon"></span></th>
+          <th class="sortable th-sig" data-sort="sig" onclick="sortBy('sig',event)"><span>信號</span><span class="sort-icon"></span></th>
+          <th class="sortable" data-sort="tp" onclick="sortBy('tp',event)"><span>CCASS%</span><span class="sort-icon"></span></th>
+          <th class="sortable th-t5" data-sort="t5" onclick="sortBy('t5',event)"><span>Top5%</span><span class="sort-icon"></span></th>
+          <th class="sortable th-t10" data-sort="t10" onclick="sortBy('t10',event)"><span>Top10%</span><span class="sort-icon"></span></th>
+          <th class="sortable" data-sort="d5" onclick="sortBy('d5',event)"><span>5日Δ</span><span class="sort-icon"></span></th>
+          <th class="sortable th-score" data-sort="score" onclick="sortBy('score',event)"><span>⭐評分</span><span class="sort-icon"></span></th>
+          <th class="sortable th-streak" data-sort="su" onclick="sortBy('su',event)"><span>🔁連續</span><span class="sort-icon"></span></th>
+          <th class="sortable th-d20" data-sort="d20" onclick="sortBy('d20',event)"><span>20日Δ</span><span class="sort-icon"></span></th>
+          <th class="sortable th-d60" data-sort="d60" onclick="sortBy('d60',event)"><span>60日Δ</span><span class="sort-icon"></span></th>
+          <th class="sortable th-d120" data-sort="d120" onclick="sortBy('d120',event)"><span>120日Δ</span><span class="sort-icon"></span></th>
+          <th class="sortable th-np" data-sort="np" onclick="sortBy('np',event)"><span>參與者</span><span class="sort-icon"></span></th>
+          <th class="sortable th-mc" data-sort="mc" onclick="sortBy('mc',event)"><span>市值</span><span class="sort-icon"></span></th>
+          <th class="sortable th-chg" data-sort="chg" onclick="sortBy('chg',event)"><span>今日Δ%</span><span class="sort-icon"></span></th>
+          <th class="sortable th-p52" data-sort="p52" onclick="sortBy('p52',event)"><span>52週%</span><span class="sort-icon"></span></th>
+          <th class="sortable th-pe" data-sort="pe" onclick="sortBy('pe',event)"><span>PE</span><span class="sort-icon"></span></th>
           <th class="th-link"><span>連結</span></th>
         </tr></thead>
-        <tbody id="tbody"></tbody>
-      </table>
+        <tbody id="mcSmallTbody"></tbody>
+      </table></div>
+      <div class="mc-pagination" id="mcPagSmall"></div>
+    </div>
+
+    <!-- MC split: 中市值 -->
+    <div class="mc-section" id="mcSectionMid">
+      <div class="mc-section-head">🐬 中市值 (20-100億) <span class="mc-count" id="mcCountMid"></span></div>
+      <div style="overflow-x:auto"><table>
+        <thead><tr>
+          <th class="sortable" data-sort="code" onclick="sortBy('code',event)"><span>代碼</span><span class="sort-icon"></span></th>
+          <th class="sortable" data-sort="n" onclick="sortBy('n',event)"><span>名稱</span><span class="sort-icon"></span></th>
+          <th class="sortable th-prevyo" data-sort="prevyo" onclick="sortBy('prevyo',event)"><span>😻</span><span class="sort-icon"></span></th>
+          <th class="sortable th-pypct" data-sort="pypct" onclick="sortBy('pypct',event)"><span>前年Δ%</span><span class="sort-icon"></span></th>
+          <th class="sortable th-vr" data-sort="vr" onclick="sortBy('vr',event)"><span>量比</span><span class="sort-icon"></span></th>
+          <th class="sortable th-price" data-sort="price" onclick="sortBy('price',event)"><span>現價</span><span class="sort-icon"></span></th>
+          <th class="sortable th-yo_pct hide-yo_pct" data-sort="yo_pct" onclick="sortBy('yo_pct',event)"><span>今年Δ%</span><span class="sort-icon"></span></th>
+          <th class="sortable th-sig" data-sort="sig" onclick="sortBy('sig',event)"><span>信號</span><span class="sort-icon"></span></th>
+          <th class="sortable" data-sort="tp" onclick="sortBy('tp',event)"><span>CCASS%</span><span class="sort-icon"></span></th>
+          <th class="sortable th-t5" data-sort="t5" onclick="sortBy('t5',event)"><span>Top5%</span><span class="sort-icon"></span></th>
+          <th class="sortable th-t10" data-sort="t10" onclick="sortBy('t10',event)"><span>Top10%</span><span class="sort-icon"></span></th>
+          <th class="sortable" data-sort="d5" onclick="sortBy('d5',event)"><span>5日Δ</span><span class="sort-icon"></span></th>
+          <th class="sortable th-score" data-sort="score" onclick="sortBy('score',event)"><span>⭐評分</span><span class="sort-icon"></span></th>
+          <th class="sortable th-streak" data-sort="su" onclick="sortBy('su',event)"><span>🔁連續</span><span class="sort-icon"></span></th>
+          <th class="sortable th-d20" data-sort="d20" onclick="sortBy('d20',event)"><span>20日Δ</span><span class="sort-icon"></span></th>
+          <th class="sortable th-d60" data-sort="d60" onclick="sortBy('d60',event)"><span>60日Δ</span><span class="sort-icon"></span></th>
+          <th class="sortable th-d120" data-sort="d120" onclick="sortBy('d120',event)"><span>120日Δ</span><span class="sort-icon"></span></th>
+          <th class="sortable th-np" data-sort="np" onclick="sortBy('np',event)"><span>參與者</span><span class="sort-icon"></span></th>
+          <th class="sortable th-mc" data-sort="mc" onclick="sortBy('mc',event)"><span>市值</span><span class="sort-icon"></span></th>
+          <th class="sortable th-chg" data-sort="chg" onclick="sortBy('chg',event)"><span>今日Δ%</span><span class="sort-icon"></span></th>
+          <th class="sortable th-p52" data-sort="p52" onclick="sortBy('p52',event)"><span>52週%</span><span class="sort-icon"></span></th>
+          <th class="sortable th-pe" data-sort="pe" onclick="sortBy('pe',event)"><span>PE</span><span class="sort-icon"></span></th>
+          <th class="th-link"><span>連結</span></th>
+        </tr></thead>
+        <tbody id="mcMidTbody"></tbody>
+      </table></div>
+      <div class="mc-pagination" id="mcPagMid"></div>
+    </div>
+
+    <!-- MC split: 大市值 -->
+    <div class="mc-section" id="mcSectionLarge">
+      <div class="mc-section-head">🐋 大市值 (≥100億) <span class="mc-count" id="mcCountLarge"></span></div>
+      <div style="overflow-x:auto"><table>
+        <thead><tr>
+          <th class="sortable" data-sort="code" onclick="sortBy('code',event)"><span>代碼</span><span class="sort-icon"></span></th>
+          <th class="sortable" data-sort="n" onclick="sortBy('n',event)"><span>名稱</span><span class="sort-icon"></span></th>
+          <th class="sortable th-prevyo" data-sort="prevyo" onclick="sortBy('prevyo',event)"><span>😻</span><span class="sort-icon"></span></th>
+          <th class="sortable th-pypct" data-sort="pypct" onclick="sortBy('pypct',event)"><span>前年Δ%</span><span class="sort-icon"></span></th>
+          <th class="sortable th-vr" data-sort="vr" onclick="sortBy('vr',event)"><span>量比</span><span class="sort-icon"></span></th>
+          <th class="sortable th-price" data-sort="price" onclick="sortBy('price',event)"><span>現價</span><span class="sort-icon"></span></th>
+          <th class="sortable th-yo_pct hide-yo_pct" data-sort="yo_pct" onclick="sortBy('yo_pct',event)"><span>今年Δ%</span><span class="sort-icon"></span></th>
+          <th class="sortable th-sig" data-sort="sig" onclick="sortBy('sig',event)"><span>信號</span><span class="sort-icon"></span></th>
+          <th class="sortable" data-sort="tp" onclick="sortBy('tp',event)"><span>CCASS%</span><span class="sort-icon"></span></th>
+          <th class="sortable th-t5" data-sort="t5" onclick="sortBy('t5',event)"><span>Top5%</span><span class="sort-icon"></span></th>
+          <th class="sortable th-t10" data-sort="t10" onclick="sortBy('t10',event)"><span>Top10%</span><span class="sort-icon"></span></th>
+          <th class="sortable" data-sort="d5" onclick="sortBy('d5',event)"><span>5日Δ</span><span class="sort-icon"></span></th>
+          <th class="sortable th-score" data-sort="score" onclick="sortBy('score',event)"><span>⭐評分</span><span class="sort-icon"></span></th>
+          <th class="sortable th-streak" data-sort="su" onclick="sortBy('su',event)"><span>🔁連續</span><span class="sort-icon"></span></th>
+          <th class="sortable th-d20" data-sort="d20" onclick="sortBy('d20',event)"><span>20日Δ</span><span class="sort-icon"></span></th>
+          <th class="sortable th-d60" data-sort="d60" onclick="sortBy('d60',event)"><span>60日Δ</span><span class="sort-icon"></span></th>
+          <th class="sortable th-d120" data-sort="d120" onclick="sortBy('d120',event)"><span>120日Δ</span><span class="sort-icon"></span></th>
+          <th class="sortable th-np" data-sort="np" onclick="sortBy('np',event)"><span>參與者</span><span class="sort-icon"></span></th>
+          <th class="sortable th-mc" data-sort="mc" onclick="sortBy('mc',event)"><span>市值</span><span class="sort-icon"></span></th>
+          <th class="sortable th-chg" data-sort="chg" onclick="sortBy('chg',event)"><span>今日Δ%</span><span class="sort-icon"></span></th>
+          <th class="sortable th-p52" data-sort="p52" onclick="sortBy('p52',event)"><span>52週%</span><span class="sort-icon"></span></th>
+          <th class="sortable th-pe" data-sort="pe" onclick="sortBy('pe',event)"><span>PE</span><span class="sort-icon"></span></th>
+          <th class="th-link"><span>連結</span></th>
+        </tr></thead>
+        <tbody id="mcLargeTbody"></tbody>
+      </table></div>
+      <div class="mc-pagination" id="mcPagLarge"></div>
     </div>
   </div>
   <div class="stock-cards" id="stockCards"></div>
@@ -535,58 +612,6 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
       <div class="rf-group"><span class="rf-lbl">5日Δ</span><input class="rf-in" id="rfD5Min" placeholder="-10" oninput="applyFilters()"><span class="rf-sep">~</span><input class="rf-in" id="rfD5Max" placeholder="10" oninput="applyFilters()"></div>
       <div class="rf-group"><span class="rf-lbl">市值(億)</span><input class="rf-in" id="rfMcMin" oninput="applyFilters()"><span class="rf-sep">~</span><input class="rf-in" id="rfMcMax" oninput="applyFilters()"></div>
     </div>
-
-  <!-- Market cap split sections -->
-  <div class="section-head"><h2><span class="ico">🐟</span> 小市值 (&lt;20億)</h2></div>
-  <div class="card" style="margin-bottom:12px">
-    <div style="overflow-x:auto"><table>
-      <thead><tr>
-        <th class="sortable" onclick="sortMC('small','code')">代碼<span class="sort-icon" id="mcSmall_icon_code"></span></th>
-        <th class="sortable" onclick="sortMC('small','n')">名稱<span class="sort-icon" id="mcSmall_icon_n"></span></th>
-        <th class="sortable" onclick="sortMC('small','price')">現價<span class="sort-icon" id="mcSmall_icon_price"></span></th>
-        <th class="sortable" onclick="sortMC('small','tp')">CCASS%<span class="sort-icon" id="mcSmall_icon_tp"></span></th>
-        <th class="sortable" onclick="sortMC('small','d5')">5日Δ<span class="sort-icon" id="mcSmall_icon_d5"></span></th>
-        <th class="sortable" onclick="sortMC('small','d20')">20日Δ<span class="sort-icon" id="mcSmall_icon_d20"></span></th>
-        <th class="sortable" onclick="sortMC('small','mc')">市值<span class="sort-icon" id="mcSmall_icon_mc"></span></th>
-        <th>信號</th><th>連結</th>
-      </tr></thead>
-      <tbody id="mcSmallBody"></tbody>
-    </table></div>
-  </div>
-
-  <div class="section-head"><h2><span class="ico">🐬</span> 中市值 (20-100億)</h2></div>
-  <div class="card" style="margin-bottom:12px">
-    <div style="overflow-x:auto"><table>
-      <thead><tr>
-        <th class="sortable" onclick="sortMC('mid','code')">代碼<span class="sort-icon" id="mcMid_icon_code"></span></th>
-        <th class="sortable" onclick="sortMC('mid','n')">名稱<span class="sort-icon" id="mcMid_icon_n"></span></th>
-        <th class="sortable" onclick="sortMC('mid','price')">現價<span class="sort-icon" id="mcMid_icon_price"></span></th>
-        <th class="sortable" onclick="sortMC('mid','tp')">CCASS%<span class="sort-icon" id="mcMid_icon_tp"></span></th>
-        <th class="sortable" onclick="sortMC('mid','d5')">5日Δ<span class="sort-icon" id="mcMid_icon_d5"></span></th>
-        <th class="sortable" onclick="sortMC('mid','d20')">20日Δ<span class="sort-icon" id="mcMid_icon_d20"></span></th>
-        <th class="sortable" onclick="sortMC('mid','mc')">市值<span class="sort-icon" id="mcMid_icon_mc"></span></th>
-        <th>信號</th><th>連結</th>
-      </tr></thead>
-      <tbody id="mcMidBody"></tbody>
-    </table></div>
-  </div>
-
-  <div class="section-head"><h2><span class="ico">🐋</span> 大市值 (≥100億)</h2></div>
-  <div class="card" style="margin-bottom:12px">
-    <div style="overflow-x:auto"><table>
-      <thead><tr>
-        <th class="sortable" onclick="sortMC('large','code')">代碼<span class="sort-icon" id="mcLarge_icon_code"></span></th>
-        <th class="sortable" onclick="sortMC('large','n')">名稱<span class="sort-icon" id="mcLarge_icon_n"></span></th>
-        <th class="sortable" onclick="sortMC('large','price')">現價<span class="sort-icon" id="mcLarge_icon_price"></span></th>
-        <th class="sortable" onclick="sortMC('large','tp')">CCASS%<span class="sort-icon" id="mcLarge_icon_tp"></span></th>
-        <th class="sortable" onclick="sortMC('large','d5')">5日Δ<span class="sort-icon" id="mcLarge_icon_d5"></span></th>
-        <th class="sortable" onclick="sortMC('large','d20')">20日Δ<span class="sort-icon" id="mcLarge_icon_d20"></span></th>
-        <th class="sortable" onclick="sortMC('large','mc')">市值<span class="sort-icon" id="mcLarge_icon_mc"></span></th>
-        <th>信號</th><th>連結</th>
-      </tr></thead>
-      <tbody id="mcLargeBody"></tbody>
-    </table></div>
-  </div>
 
   <!-- Signal section -->
   
@@ -1047,144 +1072,157 @@ function renderSummaryBar(data){
 }
 
 function renderTable(){
-  const tbody=document.getElementById('tbody');
-  const start=page*PAGE_SIZE;
-  const end=Math.min(start+PAGE_SIZE, filtered.length);
-  const slice=filtered.slice(start, end);
-  const wl=loadWatchlist();
+  var wl=loadWatchlist();
+  var groups={small:[],mid:[],large:[]};
+  filtered.forEach(function(s){
+    if(!hasMC(s)) return;
+    if(s.mc<20) groups.small.push(s);
+    else if(s.mc<100) groups.mid.push(s);
+    else groups.large.push(s);
+  });
+  var PAGE=100;
+  function renderOne(section, stocks){
+    var cap=(section==='small'?'Small':section==='mid'?'Mid':'Large');
+    var tbody=document.getElementById('mc'+cap+'Tbody');
+    var countEl=document.getElementById('mcCount'+cap);
+    var pagEl=document.getElementById('mcPag'+cap);
+    if(countEl) countEl.textContent=stocks.length+'隻';
+    var totalPages=Math.ceil(stocks.length/PAGE);
+    var p=page||0;
+    if(p>=totalPages) p=0;
+    var start2=p*PAGE, end2=Math.min(start2+PAGE, stocks.length);
+    var slice=stocks.slice(start2, end2);
 
-  tbody.innerHTML=slice.map(s=>{
-    const streak=fmtStreak(s.su, s.sd);
-    const d5=s.d5!==null?`<span class="num ${deltaClass(s.d5)}">${fmtPct(s.d5)}</span>`:'<span class="num delta-null">—</span>';
-    const d20=s.d20!==null?`<span class="num ${deltaClass(s.d20)}">${fmtPct(s.d20)}</span>`:'<span class="num delta-null">—</span>';
-    const d60=s.d60!==null?`<span class="num ${deltaClass(s.d60)}">${fmtPct(s.d60)}</span>`:'<span class="num delta-null">—</span>';
-    const d120=s.d120!==null?`<span class="num ${deltaClass(s.d120)}">${fmtPct(s.d120)}</span>`:'<span class="num delta-null">—</span>';
+    tbody.innerHTML=slice.map(function(s){
+      var streak=fmtStreak(s.su, s.sd);
+      var d5=s.d5!==null?'<span class="num '+deltaClass(s.d5)+'">'+fmtPct(s.d5)+'</span>':'<span class="num delta-null">—</span>';
+      var d20=s.d20!==null?'<span class="num '+deltaClass(s.d20)+'">'+fmtPct(s.d20)+'</span>':'<span class="num delta-null">—</span>';
+      var d60=s.d60!==null?'<span class="num '+deltaClass(s.d60)+'">'+fmtPct(s.d60)+'</span>':'<span class="num delta-null">—</span>';
+      var d120=s.d120!==null?'<span class="num '+deltaClass(s.d120)+'">'+fmtPct(s.d120)+'</span>':'<span class="num delta-null">—</span>';
+      var sig=signalMap.get(s.c);
+      var corpHtml='';
+      if(sig){
+        if(sig.pl) corpHtml+='<span class="cpill cpill-placement"><span>📋</span>配股'+(sig.plDate?' <em>'+sig.plDate.slice(5)+'</em>':'')+'</span>';
+        if(sig.ri) corpHtml+='<span class="cpill cpill-rights"><span>📦</span>供股'+(sig.riDate?' <em>'+sig.riDate.slice(5)+'</em>':'')+'</span>';
+        if(sig.inc) corpHtml+='<span class="cpill cpill-increase"><span>📈</span>增持</span>';
+      }
+      var techSig=techSignalMap.get(s.c)||[];
+      var techHtml=techSig.slice(0,4).map(function(ss){
+        var dateStr=ss.date?'<span class="spill-date">'+fmtDate(ss.date).slice(5)+'</span>':'';
+        var t=sigType(ss.label),cls='spill'+(t?' spill-'+t:'');
+        var body='<span class="'+cls+'">'+esc(shortLabel(ss.label))+dateStr+'</span>';
+        return ss.link?'<a class="splink" href="'+esc(ss.link)+'" target="_blank" rel="noopener">'+body+'</a>':body;
+      }).join(' ');
+      var techCount=techSig.length;
+      var corpCount=sig?[sig.pl,sig.ri,sig.inc].filter(Boolean).length:0;
+      var totalSigCount=techCount+corpCount;
+      var hasIPO=techSig.some(function(x){return x.label&&x.label.indexOf('IPO首日')>=0;});
+      var btHtml='';
+      var bt=breakthroughMap[s.c];
+      if(bt){btHtml='<span class="cpill cpill-breakthrough">🚀上破'+(bt.type==='placement'?'配股':'供股')+'價 $'+bt.offer_price+'</span>';}
+      var conPat=confluenceMap.get(s.c);
+      var conBadge='';
+      if(conPat==='catalyst') conBadge='<span class="cpill cpill-confluence cpill-con-catalyst">🚀催化</span>';
+      else if(conPat==='dual') conBadge='<span class="cpill cpill-confluence cpill-con-dual">💎雙向</span>';
+      else if(conPat==='frontrun') conBadge='<span class="cpill cpill-confluence cpill-con-frontrun">🦆搶跑</span>';
+      var mergedSig=(techHtml||'')+(corpHtml?'<div class="cpillrow">'+corpHtml+'</div>':'');
+      var sigDisplay=conBadge+(btHtml||'')+mergedSig||'<span class="mc-null">—</span>';
+      var priceVal=priceMap.get(s.c) ?? s.lp;
+      var aboveYO = s.lp && s.yo && s.lp > s.yo;
+      var yoPct = s.lp!=null && s.yo ? (s.lp/s.yo*100-100) : null;
+      var priceHtml=priceVal!=null
+        ? '<span class="pv">'+esc(priceVal<1?priceVal.toFixed(3):priceVal.toFixed(2))+'</span>'
+        : '<span class="mc-null">—</span>';
+      var savedWl=wl.has(s.c);
+      var hkexLnk=hkexLinkMap.get(s.c);
+      var linkHtml='<button class="btn-save'+(savedWl?' saved':'')+'" data-code="'+esc(s.c)+'" data-name="'+esc(s.n)+'" data-signal="" data-date="" title="加入自選">'+(savedWl?'★':'☆')+'</button>'+(hkexLnk?' <a class="lnk" href="'+esc(hkexLnk)+'" target="_blank" rel="noopener" title="HKEX 披露易">HKEX</a>':'');
+      var ipoClass=hasIPO?' ipo-highlight':'';
+      var hlClass='';
+      if(totalSigCount>0)hlClass+=' hl-signal';
+      if(s.d5!==null&&s.d5>2)hlClass+=' hl-up';
+      if(s.d5!==null&&s.d5<-2)hlClass+=' hl-dn';
+      if(s.tp>=80)hlClass+=' hl-conc';
+      if(hasIPO)hlClass+=' hl-ipo';
+      return '<tr class="'+ipoClass+hlClass+'" onclick="showDetail(\''+s.c+'\')">'
+        +'<td><span class="code">'+esc(s.c)+'</span>'+(s.suspended?' <span class="suspended-badge">停牌</span>':'')+'</td>'
+        +'<td><span class="name" title="'+esc(s.n)+'">'+esc(s.n)+'</span></td>'
+        +'<td class="hide-prevyo">'+(s.lp&&s.py&&s.lp>s.py?'😻':'')+'</td>'
+        +'<td class="hide-pypct"><span class="num '+deltaClass(s.py_pct)+'">'+(s.py_pct!=null?fmtPct(s.py_pct):'—')+'</span>'+(s.py!=null?'<span class="yo-price">'+esc(s.py<1?s.py.toFixed(3):s.py.toFixed(2))+'</span>':'')+'</td>'
+        +'<td class="hide-vr"><span class="num'+(s.vr&&s.vr>=2?' up':'')+'">'+(s.vr!=null?s.vr.toFixed(1):'—')+'</span></td>'
+        +'<td class="hide-price">'+priceHtml+'</td>'
+        +'<td class="hide-yo_pct"><span class="num '+deltaClass(yoPct)+'">'+(aboveYO?'🔺':'')+(yoPct!=null?fmtPct(yoPct):'—')+'</span></td>'
+        +'<td class="hide-sig cell-pills">'+sigDisplay+'</td>'
+        +'<td><span class="num">'+s.tp.toFixed(2)+'%</span></td>'
+        +'<td class="hide-t5"><span class="num">'+s.t5.toFixed(2)+'%</span></td>'
+        +'<td class="hide-t10"><span class="num">'+s.t10.toFixed(2)+'%</span></td>'
+        +'<td>'+d5+'</td>'
+        +'<td class="hide-score"><span class="num" style="font-weight:700;color:'+scoreColor(calcScore(s))+'">'+calcScore(s)+'</span></td>'
+        +'<td class="th-streak">'+streak+'</td>'
+        +'<td class="hide-d20">'+d20+'</td>'
+        +'<td class="hide-d60">'+d60+'</td>'
+        +'<td class="hide-d120">'+d120+'</td>'
+        +'<td class="hide-np"><span class="num">'+s.np+'</span></td>'
+        +'<td class="hide-mc"><span class="num">'+fmtMC(s.mc)+'</span></td>'
+        +'<td class="hide-chg">'+(s.chg!=null?'<span class="num '+deltaClass(s.chg)+'">'+fmtPct(s.chg)+'</span>':'<span class="num delta-null">—</span>')+'</td>'
+        +'<td class="hide-p52">'+(s.p52!=null?pbar(s.p52, s.p52>=70?'hi':s.p52>=30?'mid':'lo'):'<span class="mc-null">—</span>')+'</td>'
+        +'<td class="hide-pe"><span class="num">'+(s.pe!=null?s.pe.toFixed(1):'—')+'</span></td>'
+        +'<td class="hide-link" onclick="event.stopPropagation()">'+linkHtml+'</td>'
+        +'</tr>';
+    }).join('');
 
-    // Corp signal pills
-    const sig=signalMap.get(s.c);
-    let corpHtml='';
+    if(pagEl){
+      if(totalPages<=1){pagEl.innerHTML='';}
+      else{
+        pagEl.innerHTML='<button class="btn-ghost" onclick="gotoPage('+(p-1)+')" '+(p<=0?'disabled style="opacity:.4"':'')+'>‹</button>'
+          +'<span>頁 '+(p+1)+' / '+totalPages+'</span>'
+          +'<button class="btn-ghost" onclick="gotoPage('+(p+1)+')" '+(p>=totalPages-1?'disabled style="opacity:.4"':'')+'>›</button>';
+      }
+    }
+  }
+
+  renderOne('small', groups.small);
+  renderOne('mid', groups.mid);
+  renderOne('large', groups.large);
+
+  // Mobile cards
+  var cardsContainer=document.getElementById('stockCards');
+  var cardSlice=filtered.slice(0, 100);
+  cardsContainer.innerHTML=cardSlice.map(function(s){
+    var sig=signalMap.get(s.c);
+    var corpHtml='';
     if(sig){
       if(sig.pl) corpHtml+='<span class="cpill cpill-placement"><span>📋</span>配股'+(sig.plDate?' <em>'+sig.plDate.slice(5)+'</em>':'')+'</span>';
       if(sig.ri) corpHtml+='<span class="cpill cpill-rights"><span>📦</span>供股'+(sig.riDate?' <em>'+sig.riDate.slice(5)+'</em>':'')+'</span>';
       if(sig.inc) corpHtml+='<span class="cpill cpill-increase"><span>📈</span>增持</span>';
-          }
-
-    // Tech signal pills from GAS
-    const techSig=techSignalMap.get(s.c)||[];
-    const techHtml=techSig.slice(0,4).map(sig=>{
-      const dateStr=sig.date?'<span class="spill-date">'+fmtDate(sig.date).slice(5)+'</span>':'';
-      const t=sigType(sig.label),cls='spill'+(t?' spill-'+t:'');
-      const body='<span class="'+cls+'">'+esc(shortLabel(sig.label))+dateStr+'</span>';
-      return sig.link?'<a class="splink" href="'+esc(sig.link)+'" target="_blank" rel="noopener">'+body+'</a>':body;
-    }).join(' ');
-
-    // Signal count + IPO detection
-    const techCount=techSig.length;
-    const corpCount=sig?[sig.pl,sig.ri,sig.inc].filter(Boolean).length:0;
-    const totalSigCount=techCount+corpCount;
-    const hasIPO=techSig.some(x=>x.label&&x.label.indexOf('IPO首日')>=0);
-    // Breakthrough pill
-    let btHtml='';
-    const bt=breakthroughMap[s.c];
+    }
+    var techSig=techSignalMap.get(s.c)||[];
+    var btHtml='';
+    var bt=breakthroughMap[s.c];
     if(bt){btHtml='<span class="cpill cpill-breakthrough">🚀上破'+(bt.type==='placement'?'配股':'供股')+'價 $'+bt.offer_price+'</span>';}
-    // Confluence pattern badge
-    const conPat=confluenceMap.get(s.c);
-    let conBadge='';
+    var conPat=confluenceMap.get(s.c);
+    var conBadge='';
     if(conPat==='catalyst') conBadge='<span class="cpill cpill-confluence cpill-con-catalyst">🚀催化</span>';
     else if(conPat==='dual') conBadge='<span class="cpill cpill-confluence cpill-con-dual">💎雙向</span>';
     else if(conPat==='frontrun') conBadge='<span class="cpill cpill-confluence cpill-con-frontrun">🦆搶跑</span>';
-    const mergedSig=(techHtml||'')+(corpHtml?'<div class="cpillrow">'+corpHtml+'</div>':'');
-    const sigDisplay=conBadge+(btHtml||'')+mergedSig||'<span class="mc-null">—</span>';
-
-    // Price with 🔺 year-open indicator
-    const priceVal=priceMap.get(s.c) ?? s.lp;
-    const aboveYO = s.lp && s.yo && s.lp > s.yo;
-    const yoPct = s.lp!=null && s.yo ? (s.lp/s.yo*100-100) : null;
-    const priceHtml=priceVal!=null
-      ? '<span class="pv">'+esc(priceVal<1?priceVal.toFixed(3):priceVal.toFixed(2))+'</span>'
-      : '<span class="mc-null">—</span>';
-
-// Watchlist + HKEX link
-    const savedWl=wl.has(s.c);
-    const hkexLnk=hkexLinkMap.get(s.c);
-    const linkHtml='<button class="btn-save'+(savedWl?' saved':'')+'" data-code="'+esc(s.c)+'" data-name="'+esc(s.n)+'" data-signal="" data-date="" title="加入自選">'+(savedWl?'★':'☆')+'</button>'+(hkexLnk?' <a class="lnk" href="'+esc(hkexLnk)+'" target="_blank" rel="noopener" title="HKEX 披露易">HKEX</a>':'');
-
-    const ipoClass=hasIPO?' ipo-highlight':'';
-    // Row highlighting
-    var hlClass='';
-    if(totalSigCount>0)hlClass+=' hl-signal';
-    if(s.d5!==null&&s.d5>2)hlClass+=' hl-up';
-    if(s.d5!==null&&s.d5<-2)hlClass+=' hl-dn';
-    if(s.tp>=80)hlClass+=' hl-conc';
-    if(hasIPO)hlClass+=' hl-ipo';
-    return '<tr class="'+ipoClass+hlClass+'" onclick="showDetail(\''+s.c+'\')">'
-      +'<td><span class="code">'+esc(s.c)+'</span>'+(s.suspended?' <span class="suspended-badge">停牌</span>':'')+'</td>'
-            +'<td><span class="name" title="'+esc(s.n)+'">'+esc(s.n)+'</span></td>'
-            +'<td class="hide-prevyo">'+(s.lp&&s.py&&s.lp>s.py?'😻':'')+'</td>'
-            +'<td class="hide-pypct"><span class="num '+deltaClass(s.py_pct)+'">'+(s.py_pct!=null?fmtPct(s.py_pct):'—')+'</span>'+(s.py!=null?'<span class="yo-price">'+esc(s.py<1?s.py.toFixed(3):s.py.toFixed(2))+'</span>':'')+'</td>'
-      +'<td class="hide-vr"><span class="num'+(s.vr&&s.vr>=2?' up':'')+'">'+(s.vr!=null?s.vr.toFixed(1):'—')+'</span></td>'
-      +'<td class="hide-price">'+priceHtml+'</td>'
-      +'<td class="hide-yo_pct"><span class="num '+deltaClass(yoPct)+'">'+(aboveYO?'🔺':'')+(yoPct!=null?fmtPct(yoPct):'—')+'</span></td>'
-      +'<td class="hide-sig cell-pills">'+sigDisplay+'</td>'
-      +'<td><span class="num">'+s.tp.toFixed(2)+'%</span></td>'
-      +'<td class="hide-t5"><span class="num">'+s.t5.toFixed(2)+'%</span></td>'
-      +'<td class="hide-t10"><span class="num">'+s.t10.toFixed(2)+'%</span></td>'
-      +'<td>'+d5+'</td>'
-      // P2: Composite score column
-      +'<td class="hide-score"><span class="num" style="font-weight:700;color:'+scoreColor(calcScore(s))+'">'+calcScore(s)+'</span></td>'
-      +'<td class="th-streak">'+streak+'</td>'
-      +'<td class="hide-d20">'+d20+'</td>'
-      +'<td class="hide-d60">'+d60+'</td>'
-      +'<td class="hide-d120">'+d120+'</td>'
-      +'<td class="hide-np"><span class="num">'+s.np+'</span></td>'
-      +'<td class="hide-mc"><span class="num">'+fmtMC(s.mc)+'</span></td>'
-      +'<td class="hide-chg">'+(s.chg!=null?'<span class="num '+deltaClass(s.chg)+'">'+fmtPct(s.chg)+'</span>':'<span class="num delta-null">—</span>')+'</td>'
-      +'<td class="hide-p52">'+(s.p52!=null?pbar(s.p52, s.p52>=70?'hi':s.p52>=30?'mid':'lo'):'<span class="mc-null">—</span>')+'</td>'
-      +'<td class="hide-pe"><span class="num">'+(s.pe!=null?s.pe.toFixed(1):'—')+'</span></td>'
-      +'<td class="hide-link" onclick="event.stopPropagation()">'+linkHtml+'</td>'
-      +'</tr>';
-  }).join('');
-
-  // Mobile cards (signal-focused compact layout)
-  const cardsContainer=document.getElementById('stockCards');
-  cardsContainer.innerHTML=slice.map(s=>{
-    const sig=signalMap.get(s.c);
-    let corpHtml='';
-    if(sig){
-      if(sig.pl) corpHtml+='<span class="cpill cpill-placement"><span>📋</span>配股'+(sig.plDate?' <em>'+sig.plDate.slice(5)+'</em>':'')+'</span>';
-      if(sig.ri) corpHtml+='<span class="cpill cpill-rights"><span>📦</span>供股'+(sig.riDate?' <em>'+sig.riDate.slice(5)+'</em>':'')+'</span>';
-      if(sig.inc) corpHtml+='<span class="cpill cpill-increase"><span>📈</span>增持</span>';
-          }
-    const techSig=techSignalMap.get(s.c)||[];
-    // Breakthrough pill
-    let btHtml='';
-    const bt=breakthroughMap[s.c];
-    if(bt){btHtml='<span class="cpill cpill-breakthrough">🚀上破'+(bt.type==='placement'?'配股':'供股')+'價 $'+bt.offer_price+'</span>';}
-    // Confluence pattern badge
-    const conPat=confluenceMap.get(s.c);
-    let conBadge='';
-    if(conPat==='catalyst') conBadge='<span class="cpill cpill-confluence cpill-con-catalyst">🚀催化</span>';
-    else if(conPat==='dual') conBadge='<span class="cpill cpill-confluence cpill-con-dual">💎雙向</span>';
-    else if(conPat==='frontrun') conBadge='<span class="cpill cpill-confluence cpill-con-frontrun">🦆搶跑</span>';
-    const techHtml=techSig.slice(0,4).map(ss=>{
-      const dateStr=ss.date?'<span class="spill-date">'+fmtDate(ss.date).slice(5)+'</span>':'';
-      const t=sigType(ss.label),cls='spill'+(t?' spill-'+t:'');
-      const body='<span class="'+cls+'">'+esc(shortLabel(ss.label))+dateStr+'</span>';
+    var techHtml=techSig.slice(0,4).map(function(ss){
+      var dateStr=ss.date?'<span class="spill-date">'+fmtDate(ss.date).slice(5)+'</span>':'';
+      var t=sigType(ss.label),cls='spill'+(t?' spill-'+t:'');
+      var body='<span class="'+cls+'">'+esc(shortLabel(ss.label))+dateStr+'</span>';
       return ss.link?'<a class="splink" href="'+esc(ss.link)+'" target="_blank" rel="noopener">'+body+'</a>':body;
     }).join(' ');
-    const sigPills=conBadge+(btHtml||'')+(techHtml||'')+(corpHtml?' '+corpHtml:'');
-    const techCount=techSig.length;
-    const corpCount=sig?[sig.pl,sig.ri,sig.inc].filter(Boolean).length:0;
-    const totalSigCount=techCount+corpCount;
-    const hasIPO=techSig.some(x=>x.label&&x.label.indexOf('IPO首日')>=0);
-    const priceVal=priceMap.get(s.c) ?? s.lp;
-    const priceStr=priceVal!=null?(priceVal<1?priceVal.toFixed(3):priceVal.toFixed(2)):null;
-    const saved=wl.has(s.c);
-    const yoPct = s.lp!=null && s.yo ? (s.lp/s.yo*100-100) : null;
-    const aboveYO = s.lp && s.yo && s.lp > s.yo;
-    const d5class=s.d5!==null?(s.d5>0?'up':(s.d5<0?'dn':'muted')):'muted';
-    const d20class=s.d20!==null?(s.d20>0?'up':(s.d20<0?'dn':'muted')):'muted';
-    const ipoClass=hasIPO?' ipo-highlight':'';
+    var sigPills=conBadge+(btHtml||'')+(techHtml||'')+(corpHtml?' '+corpHtml:'');
+    var techCount=techSig.length;
+    var corpCount=sig?[sig.pl,sig.ri,sig.inc].filter(Boolean).length:0;
+    var totalSigCount=techCount+corpCount;
+    var hasIPO=techSig.some(function(x){return x.label&&x.label.indexOf('IPO首日')>=0;});
+    var priceVal=priceMap.get(s.c) ?? s.lp;
+    var priceStr=priceVal!=null?(priceVal<1?priceVal.toFixed(3):priceVal.toFixed(2)):null;
+    var saved=wl.has(s.c);
+    var yoPct = s.lp!=null && s.yo ? (s.lp/s.yo*100-100) : null;
+    var aboveYO = s.lp && s.yo && s.lp > s.yo;
+    var d5class=s.d5!==null?(s.d5>0?'up':(s.d5<0?'dn':'muted')):'muted';
+    var d20class=s.d20!==null?(s.d20>0?'up':(s.d20<0?'dn':'muted')):'muted';
+    var ipoClass=hasIPO?' ipo-highlight':'';
     return '<div class="stock-card'+ipoClass+'" onclick="showDetail(\''+s.c+'\')">'
       +'<div class="sc-header">'
         +'<span class="code">'+(s.lp&&s.py&&s.lp>s.py?'😻 ':'')+esc(s.c)+(s.suspended?' <span class="suspended-badge">停牌</span>':'')+'</span>'
@@ -1196,106 +1234,24 @@ function renderTable(){
       +'</div>'
       +'<div class="sc-metrics">'
         +'<div class="sc-metric"><span class="sc-metric-label">現價</span><span class="sc-metric-val'+(priceStr?'':' muted')+'">'+(priceStr?esc(priceStr):'—')+'</span></div>'
-        +'<div class="sc-metric"><span class="sc-metric-label">CCASS</span><span class="sc-metric-val">'+s.tp.toFixed(1)+'%</span><div class="pbar" style="width:100%;max-width:none;margin-top:2px"><div class="pbar-fill pbar-'+cc(s.tp)+'" style="width:'+Math.min(s.tp,100)+'%"></div></div></div>'
-        +(s.py_pct!=null?'<div class="sc-metric"><span class="sc-metric-label">前年Δ%</span><span class="sc-metric-val '+(s.py_pct>=0?'up':'dn')+'">'+fmtPct(s.py_pct)+'</span>'+(s.py!=null?'<span class="yo-price">'+esc(s.py<1?s.py.toFixed(3):s.py.toFixed(2))+'</span>':'')+'</div>':'')
-        +(yoPct!=null?'<div class="sc-metric"><span class="sc-metric-label">'+(aboveYO?'🔺':'')+'今年Δ%</span><span class="sc-metric-val '+(yoPct>=0?'up':'dn')+'">'+fmtPct(yoPct)+'</span></div>':'')
-        +'<div class="sc-metric"><span class="sc-metric-label">5日Δ</span><span class="sc-metric-val '+d5class+'">'+(s.d5!=null?fmtPct(s.d5):'—')+'</span></div>'
-        +'<div class="sc-metric"><span class="sc-metric-label">20日Δ</span><span class="sc-metric-val '+d20class+'">'+(s.d20!=null?fmtPct(s.d20):'—')+'</span></div>'
-        +(s.su>1?'<div class="sc-metric"><span class="sc-metric-label">🔥增持</span><span class="sc-metric-val up">'+s.su+'日</span></div>':'')
-        +(s.sd>1?'<div class="sc-metric"><span class="sc-metric-label">❄️減持</span><span class="sc-metric-val dn">'+s.sd+'日</span></div>':'')
+        +'<div class="sc-metric"><span class="sc-metric-label">CCASS</span><span class="sc-metric-val">'+s.tp.toFixed(1)+'%</span></div>'
+        +(s.py_pct!=null?'<div class="sc-metric"><span class="sc-metric-label">前年Δ%</span><span class="sc-metric-val '+(s.py_pct>=0?'up':'dn')+'">'+fmtPct(s.py_pct)+'</span></div>':'')
+        +'<div class="sc-metric"><span class="sc-metric-label">5日</span><span class="sc-metric-val '+d5class+'">'+(s.d5!=null?fmtPct(s.d5):'—')+'</span></div>'
+        +'<div class="sc-metric"><span class="sc-metric-label">20日</span><span class="sc-metric-val '+d20class+'">'+(s.d20!=null?fmtPct(s.d20):'—')+'</span></div>'
+        +(yoPct!=null?'<div class="sc-metric"><span class="sc-metric-label">今年Δ%</span><span class="sc-metric-val '+(yoPct>=0?'up':'dn')+'">'+(aboveYO?'🔺':'')+fmtPct(yoPct)+'</span></div>':'')
+        +'<div class="sc-metric"><span class="sc-metric-label">Top5</span><span class="sc-metric-val">'+s.t5.toFixed(0)+'%</span></div>'
       +'</div>'
-      +(sigPills?'<div class="sc-pills">'+sigPills+'</div>':'')
-    +'</div>';
+      +(sigPills?'<div class="sc-sigs">'+sigPills+'</div>':'')
+      +'</div>';
   }).join('');
 
-  // Pagination
-  const totalPages=Math.ceil(filtered.length/PAGE_SIZE);
-  const pag=document.getElementById('pagination');
-  if(totalPages<=1){pag.innerHTML='';return;}
-  let html='<span class="scnt"><b>'+filtered.length+'</b> 隻</span>';
-  html+='<button class="btn-ghost" onclick="gotoPage('+(page-1)+')" '+(page<=0?'disabled style="opacity:.4"':'')+'>‹</button>';
-  html+='<span style="font-size:12px;color:var(--mute)">頁 '+(page+1)+' / '+totalPages+'</span>';
-  html+='<button class="btn-ghost" onclick="gotoPage('+(page+1)+')" '+(page>=totalPages-1?'disabled style="opacity:.4"':'')+'>›</button>';
-  pag.innerHTML=html;
   bindDynamicTapFixes();
 }
 
 function gotoPage(p){
-  const totalPages=Math.ceil(filtered.length/PAGE_SIZE);
-  page=Math.max(0, Math.min(p, totalPages-1));
+  page=Math.max(0, p);
   renderTable();
-  const el=window.innerWidth<=720?document.getElementById('stockCards'):document.getElementById('tbody').parentElement;
-  if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
-}
-
-// --- Market cap split sections ---
-var mcSort={small:{col:'d5',dir:-1},mid:{col:'d5',dir:-1},large:{col:'d5',dir:-1}};
-var mcStocks={small:[],mid:[],large:[]};
-function sortMC(section, col){
-  var s=mcSort[section];
-  if(s.col===col){s.dir=-s.dir;}else{s.col=col;s.dir=-1;}
-  renderMCSection(section);
-}
-function updateMCSortIcons(section){
-  var s=mcSort[section], prefix='mc'+(section==='small'?'Small':section==='mid'?'Mid':'Large');
-  ['code','n','price','tp','d5','d20','mc'].forEach(function(c){
-    var el=document.getElementById(prefix+'_icon_'+c);
-    if(el)el.textContent=c===s.col?(s.dir===1?'▲':'▼'):'';
-  });
-}
-function renderMCSection(section){
-  var bodyId=section==='small'?'mcSmallBody':section==='mid'?'mcMidBody':'mcLargeBody';
-  var s=mcSort[section], stocks=mcStocks[section], limit=15;
-  // Sort
-  var dir=s.dir, col=s.col;
-  stocks.sort(function(a,b){
-    var va=col==='price'?(priceMap.get(a.c)??a.lp):col==='tp'?a.tp:col==='mc'?a.mc:col==='d5'?a.d5:col==='d20'?a.d20:col==='n'?a.n:a.c;
-    var vb=col==='price'?(priceMap.get(b.c)??b.lp):col==='tp'?b.tp:col==='mc'?b.mc:col==='d5'?b.d5:col==='d20'?b.d20:col==='n'?b.n:b.c;
-    if(va==null&&vb==null)return 0;
-    if(va==null)return 1;if(vb==null)return -1;
-    if(typeof va==='string')va=va.toLowerCase();if(typeof vb==='string')vb=vb.toLowerCase();
-    return va<vb?-dir:va>vb?dir:0;
-  });
-  var top=stocks.slice(0,limit);
-  var html=top.map(function(s){
-    var p=priceMap.get(s.c)??s.lp;
-    var priceStr=p!=null?(p<1?p.toFixed(3):p.toFixed(2)):'—';
-    var d5s=s.d5!=null?(s.d5>0?'+':'')+s.d5.toFixed(2)+'%':'—';
-    var d5cl=s.d5!=null?(s.d5>0?'up':'dn'):'muted';
-    var d20s=s.d20!=null?(s.d20>0?'+':'')+s.d20.toFixed(2)+'%':'—';
-    var d20cl=s.d20!=null?(s.d20>0?'up':'dn'):'muted';
-    var sig=signalMap.get(s.c);
-    var sigHtml='';
-    if(sig){if(sig.pl)sigHtml+='<span class="cpill cpill-placement">配</span>';if(sig.ri)sigHtml+='<span class="cpill cpill-rights">供</span>';if(sig.inc)sigHtml+='<span class="cpill cpill-increase">增</span>';}
-    var linkHtml='<a class="btn-csv" style="font-size:10px;padding:2px 4px" href="#" onclick="showDetail(\''+s.c+'\');return false">詳</a>';
-    return '<tr onclick="showDetail(\''+s.c+'\')" style="cursor:pointer">'+
-      '<td><span class="code">'+esc(s.c)+'</span></td>'+
-      '<td><span class="name" style="max-width:120px">'+esc(s.n)+'</span></td>'+
-      '<td class="num">'+esc(priceStr)+'</td>'+
-      '<td class="num">'+s.tp.toFixed(1)+'%</td>'+
-      '<td class="num '+d5cl+'">'+d5s+'</td>'+
-      '<td class="num '+d20cl+'">'+d20s+'</td>'+
-      '<td class="num">'+fmtMC(s.mc)+'</td>'+
-      '<td>'+sigHtml+'</td>'+
-      '<td>'+linkHtml+'</td>'+
-      '</tr>';
-  }).join('');
-  var el=document.getElementById(bodyId);
-  if(el)el.innerHTML=html||'<tr><td colspan="9" style="color:var(--mute);text-align:center;padding:8px">暫無</td></tr>';
-  updateMCSortIcons(section);
-}
-function renderMarketCapSections(){
-  if(!baseStocks.length)return;
-  mcStocks.small=[];mcStocks.mid=[];mcStocks.large=[];
-  baseStocks.forEach(function(s){
-    if(!hasMC(s))return;
-    if(s.mc<20)mcStocks.small.push(s);
-    else if(s.mc<100)mcStocks.mid.push(s);
-    else mcStocks.large.push(s);
-  });
-  renderMCSection('small');
-  renderMCSection('mid');
-  renderMCSection('large');
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
 function applyFilters(){
@@ -1958,7 +1914,6 @@ async function loadData(){
     setBaseStocks(data.stocks);
     renderSummaryBar(data);
     applyFilters();
-    renderMarketCapSections();
     updateSortInfo();
     // renderVrAlert();  // moved to gap_fvg.html
 
@@ -2092,7 +2047,6 @@ async function loadData(){
             applyFilters();renderBT();
           }})
         applyFilters();
-        renderMarketCapSections();
         updateSortInfo();
         const savedScroll=sessionStorage.getItem('ccassScroll');if(savedScroll)window.scrollTo(0,parseInt(savedScroll,10));
       }).catch(()=>{});
