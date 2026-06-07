@@ -720,6 +720,12 @@ function getSortVal(s,col){
   if(col==='score'){
     return calcScore(s);
   }
+  if(col==='pldate'){
+    return s._plDate || '0000';
+  }
+  if(col==='ridate'){
+    return s._riDate || '0000';
+  }
   let v=s[col];
   if(typeof v==='string')v=v.toLowerCase();
   return v==null ? null : v;
@@ -972,8 +978,11 @@ function renderSummaryBar(data){
   const dn=data.top_decrease?.length||0;
   let pCnt=0, rCnt=0;
   allStocks.forEach(s=>{const m=signalMap.get(s.c);if(m&&m.pl)pCnt++;if(m&&m.ri)rCnt++;});
+  let totalMc=0, mcCnt=0;
+  allStocks.forEach(s=>{if(hasMC(s)){totalMc+=s.mc; mcCnt++;}});
   bar.innerHTML='<span class="scnt">📅 <b>'+esc(data.updated)+'</b></span>'
     +'<span class="scnt">📦 <b>'+allStocks.length+'</b> 隻股票</span>'
+    +(mcCnt?'<span class="scnt">💰 <b>'+totalMc.toFixed(0)+'億</b> 總市值</span>':'')
     +'<span class="scnt">📊 <b>'+data.first_date+'</b> 至 <b>'+esc(data.updated)+'</b></span>'+(pCnt?'<span class="scnt" style="border-color:var(--down-border);background:var(--down-soft);color:var(--down)">配股 <b>'+pCnt+'</b></span>':'')+(rCnt?'<span class="scnt" style="border-color:var(--violet-border);background:var(--violet-soft);color:var(--violet)">供股 <b>'+rCnt+'</b></span>':'')
     +'<span class="scnt" style="border-color:var(--up-border);background:var(--up-soft);color:var(--up)">▲ <b>'+up+'</b> 增持</span>'
     +'<span class="scnt" style="border-color:var(--down-border);background:var(--down-soft);color:var(--down)">▼ <b>'+dn+'</b> 減持</span>';
@@ -1407,6 +1416,10 @@ function toggleFilter(mode){
   else if(mode==='small_mc'||mode==='mid_mc'||mode==='large_mc'){
     activeFilters.delete('small_mc');activeFilters.delete('mid_mc');activeFilters.delete('large_mc');}
   activeFilters.add(mode);
+  // Auto-sort for placement/rights: by date (most recent first)
+  if(mode==='placement'){sortCol='pldate';sortDir=-1;sortCol2='';}
+  else if(mode==='rights'){sortCol='ridate';sortDir=-1;sortCol2='';}
+  else if(mode==='up'||mode==='dn'){sortCol='d5';sortDir=-1;sortCol2='';}
   updateFilterUI();applyFilters();
 }
 
@@ -1916,6 +1929,11 @@ async function loadData(){
           priceMap = newPriceMap;
           hkexLinkMap = newHkexLinkMap;
           techSignalMap = newTechSignalMap;
+          // Inject placement/rights dates into stock objects for sorting
+          allStocks.forEach(function(s){
+            var sm=signalMap.get(s.c);
+            if(sm){s._plDate=sm.plDate||null;s._riDate=sm.riDate||null;}
+          });
           // Signal summary count
           const techCodes=new Set(d.groups.filter(g=>(g.signals||[]).length>0).map(g=>String(g.code||"").padStart(5,"0")));
         }
