@@ -2060,7 +2060,7 @@ async function loadData(){
                   if(!stockByCode.has(code))return;
                   var sig=p.signal||{};
                   var existing=techSignalMap.get(code)||[];
-                  existing.push({label:a.signal||sig.type||'',date:sig.date||(a.created_at||'').slice(0,10),gap_pct:sig.gap_pct,fvg_pct:sig.fvg_pct,breakout_pct:sig.breakout_pct,poc:sig.poc});
+                  existing.push({label:sig.type||'',date:sig.date||(a.created_at||'').slice(0,10),gap_pct:sig.gap_pct,fvg_pct:sig.fvg_pct,breakout_pct:sig.breakout_pct,poc:sig.poc});
                   techSignalMap.set(code,existing);
                 });
                 applyFilters();

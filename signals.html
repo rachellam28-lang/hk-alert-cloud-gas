@@ -528,7 +528,7 @@ async function loadData(){
             var code=String(p.code||a.code||'').padStart(5,'0');
             var sig=p.signal||{};
             if(!alertByCode[code])alertByCode[code]=[];
-            alertByCode[code].push({label:a.signal||sig.type||'',date:sig.date||(a.created_at||'').slice(0,10)});
+            alertByCode[code].push({label:sig.type||'',date:sig.date||(a.created_at||'').slice(0,10)});
           });
           hkGroups.forEach(function(g){
             var code=String(g.code||'').padStart(5,'0');
