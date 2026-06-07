@@ -1493,6 +1493,16 @@ function sortBy(col,ev){
   updateSortInfo();
   applyFilters();
 }
+// Delegated sort click — catches ALL clicks on th.sortable (mobile + desktop)
+document.addEventListener('click', function(e){
+  var th = e.target.closest('th.sortable');
+  if (!th) return;
+  var col = th.getAttribute('data-sort');
+  if (!col) return;
+  e.preventDefault();
+  e.stopPropagation();
+  sortBy(col, e);
+});
 
 // --- toolbar ---
 // --- filter buttons (multi-select) ---
