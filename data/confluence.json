@@ -28,33 +28,31 @@
     "pattern": "frontrun"
   },
   {
-    "code": "01860",
-    "name": "MOBVISTA",
+    "code": "01378",
+    "name": "CHINAHONGQIAO",
     "types": [
-      "配股"
+      "股東增持"
     ],
-    "title": "公司公告：VOLUNTARY ANNOUNCEMENT - COMPLETION OF CONVERSION OF CONVERTIBLE BONDS",
-    "date": "2026-06-05",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060500511.pdf",
-    "type": "placement",
-    "typeLabel": "配股",
+    "title": "公司公告：VOLUNTARY ANNOUNCEMENT - INCREASE IN SHAREHOLDING BY THE CONTROLLING SHARE…",
+    "date": "2026-06-08",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0608/2026060801209.pdf",
+    "type": "increase",
+    "typeLabel": "股東增持",
     "direction": "up",
     "signal_count": 3,
     "pre_count": 2,
     "post_count": 1,
     "pre_types": [
-      "向上FVG",
       "向上跳空缺口"
     ],
     "post_types": [
-      "上破POC 12M"
+      "披露易公告 - 股東增持"
     ],
     "signal_types_summary": [
-      "上破POC 12M",
-      "向上FVG",
-      "向上跳空缺口"
+      "向上跳空缺口",
+      "披露易公告 - 股東增持"
     ],
-    "first_pre_days": 7,
+    "first_pre_days": 18,
     "first_post_days": 0,
     "pattern": "frontrun"
   },
@@ -84,6 +82,35 @@
     ],
     "first_pre_days": 10,
     "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "01378",
+    "name": "CHINAHONGQIAO",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：ADJUSTMENT OF CONVERSION PRICE OF US$300,000,000 1.50% CONVERTIBLE BONDS D…",
+    "date": "2026-06-02",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0602/2026060200901.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 3,
+    "pre_count": 2,
+    "post_count": 1,
+    "pre_types": [
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "披露易公告 - 股東增持"
+    ],
+    "signal_types_summary": [
+      "向上跳空缺口",
+      "披露易公告 - 股東增持"
+    ],
+    "first_pre_days": 12,
+    "first_post_days": 6,
     "pattern": "frontrun"
   },
   {
@@ -182,9 +209,9 @@
     "offer_price": 1.08,
     "discount_pct": 19.4,
     "price_level": "low",
-    "signal_count": 10,
+    "signal_count": 11,
     "pre_count": 2,
-    "post_count": 8,
+    "post_count": 9,
     "pre_types": [
       "向上FVG",
       "向上跳空缺口"
@@ -218,9 +245,9 @@
     "offer_price": null,
     "discount_pct": null,
     "price_level": "unknown",
-    "signal_count": 10,
+    "signal_count": 11,
     "pre_count": 3,
-    "post_count": 7,
+    "post_count": 8,
     "pre_types": [
       "向上FVG",
       "向上跳空缺口"
@@ -254,9 +281,9 @@
     "offer_price": null,
     "discount_pct": null,
     "price_level": "unknown",
-    "signal_count": 9,
+    "signal_count": 10,
     "pre_count": 4,
-    "post_count": 5,
+    "post_count": 6,
     "pre_types": [
       "向上FVG",
       "向上跳空缺口"
@@ -302,6 +329,37 @@
       "向上跳空缺口"
     ],
     "first_pre_days": 15,
+    "first_post_days": 0,
+    "pattern": "dual"
+  },
+  {
+    "code": "01860",
+    "name": "MOBVISTA",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：VOLUNTARY ANNOUNCEMENT - COMPLETION OF CONVERSION OF CONVERTIBLE BONDS",
+    "date": "2026-06-05",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060500511.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 4,
+    "pre_count": 2,
+    "post_count": 2,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "上破POC 12M"
+    ],
+    "signal_types_summary": [
+      "上破POC 12M",
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 7,
     "first_post_days": 0,
     "pattern": "dual"
   },
@@ -483,6 +541,162 @@
     "pattern": "catalyst"
   },
   {
+    "code": "01333",
+    "name": "BRETON",
+    "types": [
+      "股東增持"
+    ],
+    "title": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING BY THE DIRECTOR AND CONTRO…",
+    "date": "2026-06-08",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0608/2026060801604.pdf",
+    "type": "increase",
+    "typeLabel": "股東增持",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "披露易公告 - 股東增持"
+    ],
+    "signal_types_summary": [
+      "披露易公告 - 股東增持"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "00994",
+    "name": "CT VISION",
+    "types": [
+      "配股"
+    ],
+    "title": "補充公告 TO (1) 發行新股（一般授權）; AND (2) 配售新股（一般授權）",
+    "date": "2026-06-08",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0608/2026060801574.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "觀察·配股"
+    ],
+    "signal_types_summary": [
+      "觀察·配股"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02186",
+    "name": "LUYE PHARMA",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：OVERSEAS REGULATORY ANNOUNCEMENT",
+    "date": "2026-06-08",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0608/2026060801570.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "披露易公告 - 配股"
+    ],
+    "signal_types_summary": [
+      "披露易公告 - 配股"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "00953",
+    "name": "SHAW BROTHERS",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：MONTHLY UPDATE IN RELATION TO (1) POTENTIAL EXTREME AND CONNECTED TRANSACT…",
+    "date": "2026-06-08",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0608/2026060801462.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "披露易公告 - 配股"
+    ],
+    "signal_types_summary": [
+      "披露易公告 - 配股"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "00254",
+    "name": "NUR HOLDINGS",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：SUPPLEMENTAL ANNOUNCEMENT IN RELATION TO (I) SUBSCRIPTION OF NEW SHARES UN…",
+    "date": "2026-06-08",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0608/2026060801438.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "觀察·配股"
+    ],
+    "signal_types_summary": [
+      "觀察·配股"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01333",
+    "name": "BRETON",
+    "types": [
+      "股東增持"
+    ],
+    "title": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING BY THE DIRECTOR AND CONTRO…",
+    "date": "2026-06-05",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060502208.pdf",
+    "type": "increase",
+    "typeLabel": "股東增持",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "披露易公告 - 股東增持"
+    ],
+    "signal_types_summary": [
+      "披露易公告 - 股東增持"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 3,
+    "pattern": "catalyst"
+  },
+  {
     "code": "01676",
     "name": "GAODI HOLDINGS",
     "types": [
@@ -536,6 +750,58 @@
     "pattern": "catalyst"
   },
   {
+    "code": "02186",
+    "name": "LUYE PHARMA",
+    "types": [
+      "回購"
+    ],
+    "title": "(1) PROPOSED CONCURRENT REPURCHASE OF US$180,000,000 6.25 PER CENT. CONVERTIBLE BONDS DUE 2028; AND (2) PROPOSED ISSUE OF US$180,000,000 5.25 PER CENT. CONVERTIBLE BONDS DUE 2031",
+    "date": "2026-06-04",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0604/2026060400109.pdf",
+    "type": "buyback",
+    "typeLabel": "回購",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "披露易公告 - 配股"
+    ],
+    "signal_types_summary": [
+      "披露易公告 - 配股"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 4,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01333",
+    "name": "BRETON",
+    "types": [
+      "股東增持"
+    ],
+    "title": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING BY THE DIRECTOR AND CONTRO…",
+    "date": "2026-06-04",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0604/2026060402683.pdf",
+    "type": "increase",
+    "typeLabel": "股東增持",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "披露易公告 - 股東增持"
+    ],
+    "signal_types_summary": [
+      "披露易公告 - 股東增持"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 4,
+    "pattern": "catalyst"
+  },
+  {
     "code": "09863",
     "name": "LEAPMOTOR",
     "types": [
@@ -559,6 +825,84 @@
     ],
     "first_pre_days": null,
     "first_post_days": 4,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02186",
+    "name": "LUYE PHARMA",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：(1) PROPOSED CONCURRENT REPURCHASE OF US$180,000,000 6.25 PER CENT. CONVER…",
+    "date": "2026-06-04",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0604/2026060400109.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "披露易公告 - 配股"
+    ],
+    "signal_types_summary": [
+      "披露易公告 - 配股"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 4,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02186",
+    "name": "LUYE PHARMA",
+    "types": [
+      "回購"
+    ],
+    "title": "(1) PROPOSED CONCURRENT REPURCHASE OF US$180,000,000 6.25 PER CENT. CONVERTIBLE BONDS DUE 2028; AND (2) PROPOSED ISSUE OF USD-DENOMINATED CONVERTIBLE BONDS",
+    "date": "2026-06-03",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0603/2026060302514.pdf",
+    "type": "buyback",
+    "typeLabel": "回購",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "披露易公告 - 配股"
+    ],
+    "signal_types_summary": [
+      "披露易公告 - 配股"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 5,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02186",
+    "name": "LUYE PHARMA",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：(1) PROPOSED CONCURRENT REPURCHASE OF US$180,000,000 6.25 PER CENT. CONVER…",
+    "date": "2026-06-03",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0603/2026060302514.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "披露易公告 - 配股"
+    ],
+    "signal_types_summary": [
+      "披露易公告 - 配股"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 5,
     "pattern": "catalyst"
   },
   {
@@ -721,6 +1065,60 @@
     "pattern": "catalyst"
   },
   {
+    "code": "00254",
+    "name": "國家聯合",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-05-28",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.77,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "觀察·配股"
+    ],
+    "signal_types_summary": [
+      "觀察·配股"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 11,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "00994",
+    "name": "中天宏信",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-05-27",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.36,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "觀察·配股"
+    ],
+    "signal_types_summary": [
+      "觀察·配股"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 12,
+    "pattern": "catalyst"
+  },
+  {
     "code": "08471",
     "name": "新達控股",
     "types": [
@@ -774,6 +1172,32 @@
     ],
     "first_pre_days": null,
     "first_post_days": 17,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01333",
+    "name": "BRETON",
+    "types": [
+      "股東增持"
+    ],
+    "title": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING BY THE DIRECTOR AND CONTRO…",
+    "date": "2026-05-21",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0521/2026052101750.pdf",
+    "typeLabel": "股東增持",
+    "type": "increase",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "披露易公告 - 股東增持"
+    ],
+    "signal_types_summary": [
+      "披露易公告 - 股東增持"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 18,
     "pattern": "catalyst"
   },
   {
