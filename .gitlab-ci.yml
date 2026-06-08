@@ -1,0 +1,18 @@
+# GitLab Pages — deploy static CCASS dashboard from private repo
+pages:
+  stage: deploy
+  script:
+    - mkdir -p public
+    - cp *.html public/
+    - cp *.json public/
+    - cp *.js public/ 2>/dev/null || true
+    - cp *.svg public/ 2>/dev/null || true
+    - cp *.png public/ 2>/dev/null || true
+    - cp manifest.json public/ 2>/dev/null || true
+    - cp -r data public/ 2>/dev/null || true
+    - cp -r icons public/ 2>/dev/null || true
+  artifacts:
+    paths:
+      - public
+  only:
+    - main

@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="zh-HK"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=0.3,minimum-scale=0.2,maximum-scale=5,user-scalable=yes">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>資金流向</title>
+<style>
+:root{--bg:#f5f7fa;--surface:#fff;--surface-soft:#f8fafc;--text:#0f172a;--text-soft:#334155;--mute:#64748b;--mute-2:#94a3b8;--line:#e2e8f0;--line-soft:#eef1f6;--primary:#0284c7;--primary-soft:#e0f2fe;--up:#15803d;--up-soft:#dcfce7;--up-border:#86efac;--down:#b91c1c;--down-soft:#fee2e2;--down-border:#fca5a5;--amber:#b45309;--amber-soft:#fef3c7;--violet:#6d28d9;--violet-soft:#ede9fe;--radius:10px;--shadow:0 1px 2px rgba(15,23,42,.04)}
+*{box-sizing:border-box}html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font:14px/1.55 Inter,system-ui,"PingFang TC","Noto Sans TC",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.topbar{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.88);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topbar-inner{max-width:100%;margin:0 auto;padding:8px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-title{font-size:14px;font-weight:600}.brand-sub{font-size:10px;color:var(--mute);letter-spacing:.16em}
+.nav{display:flex;gap:6px;flex-wrap:wrap}
+.nav a{font-size:11px;color:var(--mute);text-decoration:none;padding:4px 10px;border-radius:6px;border:1px solid var(--line);white-space:nowrap}
+.nav a:hover,.nav a.active{background:var(--primary-soft);color:var(--primary);border-color:var(--primary)}
+.wrap{max-width:100%;margin:0 auto;padding:14px 24px 36px}
+h2{font-size:15px;margin:16px 0 10px;display:flex;align-items:center;gap:8px}
+h2 .icon{font-size:18px}
+.flow-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.card-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--line);font-size:12px;font-weight:600}
+.card-header .badge{font-size:10px;padding:2px 8px;border-radius:999px}
+.badge-in{background:var(--up-soft);color:var(--up)}
+.badge-out{background:var(--down-soft);color:var(--down)}
+.badge-short{background:var(--amber-soft);color:var(--amber)}
+.badge-sb{background:var(--violet-soft);color:var(--violet)}
+table{width:100%;border-collapse:collapse}
+thead th{background:var(--surface-soft);color:var(--mute);font-size:10px;text-align:right;padding:7px 8px;text-transform:uppercase;letter-spacing:.1em;font-weight:600;border-bottom:1px solid var(--line);white-space:nowrap}
+thead th:first-child{text-align:left}
+tbody td{padding:6px 8px;border-bottom:1px solid var(--line-soft);font-size:11px;text-align:right}
+tbody td:first-child{text-align:left}
+tbody tr:hover{background:var(--surface-soft)}
+tbody tr:last-child td{border-bottom:none}
+.code{font:600 12px "JetBrains Mono",monospace}
+.name{font-size:11px;color:var(--text-soft);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block;vertical-align:middle}
+.num{font:600 11px "JetBrains Mono",monospace;font-variant-numeric:tabular-nums}
+.up{color:var(--up)}.dn{color:var(--down)}.zero{color:var(--mute-2)}
+.flow-bar{display:inline-block;height:4px;border-radius:2px;vertical-align:middle;margin-left:4px}
+.bar-in{background:var(--up)}.bar-out{background:var(--down)}
+a.stock-link{color:var(--text);text-decoration:none}
+a.stock-link:hover{color:var(--primary)}
+.updated{font-size:10px;color:var(--mute-2);text-align:right;padding:8px 0}
+@media(max-width:720px){
+  .flow-grid{grid-template-columns:1fr}
+  .name{max-width:80px}
+}
+</style>
+</head><body>
+
+<div class="topbar">
+<div class="topbar-inner">
+<div class="brand"><span class="brand-title">💰 資金流向</span><span class="brand-sub" id="updated"></span></div>
+<div class="nav">
+<a href="index.html">📊 CCASS</a>
+<a href="fundflow.html" class="active">💰 資金</a>
+<a href="gap_fvg.html">📡 警報</a>
+<a href="signals.html">🔔 信號</a>
+<a href="history.html">🕐 歷史</a>
+<a href="guide.html">📖 說明</a>
+</div>
+</div>
+</div>
+
+<div class="wrap">
+
+<div class="flow-grid">
+
+<!-- Main Inflow -->
+<div class="card">
+<div class="card-header">🔥 大戶流入 Top 20 <span class="badge badge-in">主買</span></div>
+<table><thead><tr><th>代碼</th><th>名稱</th><th>主力淨買</th><th>總淨流入</th></tr></thead>
+<tbody id="main-in-tbody"></tbody></table>
+</div>
+
+<!-- Main Outflow -->
+<div class="card">
+<div class="card-header">❄️ 大戶流出 Top 20 <span class="badge badge-out">主賣</span></div>
+<table><thead><tr><th>代碼</th><th>名稱</th><th>主力淨賣</th><th>總淨流出</th></tr></thead>
+<tbody id="main-out-tbody"></tbody></table>
+</div>
+
+<!-- Short Selling -->
+<div class="card">
+<div class="card-header">📉 沽空比率 Top 20 <span class="badge badge-short">沽空</span></div>
+<table><thead><tr><th>代碼</th><th>名稱</th><th>沽空%</th><th>沽空額</th></tr></thead>
+<tbody id="short-tbody"></tbody></table>
+</div>
+
+<!-- Southbound -->
+<div class="card">
+<div class="card-header">🇨🇳 港股通變動 Top 20 <span class="badge badge-sb">北水</span></div>
+<table><thead><tr><th>代碼</th><th>名稱</th><th>持倉%</th><th>日變動</th></tr></thead>
+<tbody id="sb-tbody"></tbody></table>
+</div>
+
+</div>
+
+<div class="updated" id="footer"></div>
+</div>
+
+<script>
+(async () => {
+  // Load names
+  let names = {};
+  try {
+    let r = await fetch('ccass.json');
+    let d = await r.json();
+    for (let s of d.stocks) names[s.c] = s.n;
+  } catch(e) {}
+
+  // Load fundflow
+  let r = await fetch('data/fundflow.json');
+  let d = await r.json();
+  document.getElementById('updated').textContent = d.updated || '';
+  document.getElementById('footer').textContent = '數據來源: 騰訊自選股 westock-data | 更新: ' + (d.updated || '--');
+
+  function fmtB(n) { // format billions/millions
+    if (n === undefined || n === null) return '--';
+    let abs = Math.abs(n);
+    if (abs >= 1e8) return (n/1e8).toFixed(2) + '億';
+    if (abs >= 1e4) return (n/1e4).toFixed(0) + '萬';
+    return n.toFixed(0);
+  }
+
+  function renderTable(tbodyId, items, cols, formatters) {
+    let tbody = document.getElementById(tbodyId);
+    tbody.innerHTML = items.map((item, i) => {
+      let code = item.c;
+      let name = names[code] || '';
+      let cls = (v, key) => {
+        if (v > 0) return 'num up';
+        if (v < 0) return 'num dn';
+        return 'num zero';
+      };
+      let colVals = cols.map((col, ci) => {
+        let v = item[col];
+        let fmt = formatters[ci] || (x => x);
+        let val = fmt(v);
+        let css = (ci >= 1 && typeof v === 'number') ? cls(v, col) : 'num';
+        return `<td class="${css}">${val}</td>`;
+      });
+      return `<tr>
+        <td><a href="index.html?q=${code}" class="stock-link"><span class="code">${code}</span></a></td>
+        <td><span class="name">${name}</span></td>
+        ${colVals.join('')}
+      </tr>`;
+    }).join('');
+  }
+
+  // Main In
+  renderTable('main-in-tbody', d.top_main_in,
+    ['main_net', 'total_net'],
+    [fmtB, fmtB]);
+
+  // Main Out
+  renderTable('main-out-tbody', d.top_main_out,
+    ['main_net', 'total_net'],
+    [fmtB, fmtB]);
+
+  // Short
+  renderTable('short-tbody', d.top_short,
+    ['short_ratio', 'short_amount'],
+    [v => v ? v.toFixed(1) + '%' : '--', fmtB]);
+
+  // Southbound
+  renderTable('sb-tbody', d.top_southbound,
+    ['lgt_hold_ratio', 'lgt_cap_chg_daily'],
+    [v => v ? v.toFixed(1) + '%' : '--', fmtB]);
+})();
+</script>
+</body></html>

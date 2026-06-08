@@ -1,7 +1,55 @@
 {
-  "updated": "2026-06-07 18:40 UTC",
-  "count": 1,
+  "updated": "2026-06-08 13:16 UTC",
+  "count": 7,
   "watchlist": [
+    {
+      "code": "01378",
+      "name": "CHINAHONGQIAO",
+      "types": [
+        "股東增持"
+      ],
+      "ann_date": "2026-06-08"
+    },
+    {
+      "code": "00254",
+      "name": "NUR HOLDINGS",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-06-08"
+    },
+    {
+      "code": "00953",
+      "name": "SHAW BROTHERS",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-06-08"
+    },
+    {
+      "code": "02186",
+      "name": "LUYE PHARMA",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-06-08"
+    },
+    {
+      "code": "00994",
+      "name": "CT VISION",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-06-08"
+    },
+    {
+      "code": "01333",
+      "name": "BRETON",
+      "types": [
+        "股東增持"
+      ],
+      "ann_date": "2026-06-08"
+    },
     {
       "code": "00700",
       "name": "騰訊",

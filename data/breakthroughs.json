@@ -1,55 +1,55 @@
 {
-  "updated": "2026-06-08T02:40:13.418253+08:00",
+  "updated": "2026-06-08T21:10:39.552110+08:00",
   "breakthroughs": [
     {
       "type": "ipo",
-      "offer_price": 0.224,
-      "current_price": 0.232,
-      "pct_above": 3.6,
+      "offer_price": 0.275,
+      "current_price": 0.275,
+      "pct_above": 0.0,
       "date": "",
-      "title": "YNBY International Limited",
+      "title": "Oriental Media Group Limited",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "00030"
+      "stock_code": "00018"
     },
     {
       "type": "ipo",
-      "offer_price": 2.1,
-      "current_price": 2.11,
+      "offer_price": 5.92,
+      "current_price": 5.95,
       "pct_above": 0.5,
       "date": "",
-      "title": "Shougang Century Holdings Limited",
+      "title": "The Hongkong and Shanghai Hotels, Limited",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "00103"
+      "stock_code": "00045"
     },
     {
       "type": "ipo",
-      "offer_price": 0.124,
-      "current_price": 0.128,
-      "pct_above": 3.2,
+      "offer_price": 1.22,
+      "current_price": 1.22,
+      "pct_above": 0.0,
       "date": "",
-      "title": "Smart Fish Wealthlink Holdings Limited",
+      "title": "Computer And Technologies Holdings Limited",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "00139"
+      "stock_code": "00046"
     },
     {
       "type": "ipo",
-      "offer_price": 0.113,
-      "current_price": 0.118,
-      "pct_above": 4.4,
+      "offer_price": 0.385,
+      "current_price": 0.39,
+      "pct_above": 1.3,
       "date": "",
-      "title": "Wanda Hotel Development Company Limited",
+      "title": "ENM Holdings Limited",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "00169"
+      "stock_code": "00128"
     },
     {
       "type": "ipo",
-      "offer_price": 0.87,
-      "current_price": 0.9,
-      "pct_above": 3.4,
+      "offer_price": 0.19,
+      "current_price": 0.246,
+      "pct_above": 29.5,
       "date": "",
-      "title": "Raymond Industrial Limited",
+      "title": "Gemini Investments (Holdings) Limited",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "00229"
+      "stock_code": "00174"
     },
     {
       "type": "ipo",
@@ -63,43 +63,93 @@
     },
     {
       "type": "ipo",
-      "offer_price": 0.285,
-      "current_price": 0.29,
+      "offer_price": 0.395,
+      "current_price": 0.4,
+      "pct_above": 1.3,
+      "date": "",
+      "title": "Energy International Investments Holdings Limited",
+      "breakthrough_date": "2026-06-08",
+      "stock_code": "00353"
+    },
+    {
+      "type": "ipo",
+      "offer_price": 0.056,
+      "current_price": 0.057,
       "pct_above": 1.8,
       "date": "",
-      "title": "Chinney Alliance Group Limited",
+      "title": "DT Capital Limited",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "00385"
+      "stock_code": "00356"
     },
     {
       "type": "ipo",
-      "offer_price": 0.013,
-      "current_price": 0.013,
-      "pct_above": 0.0,
+      "offer_price": 1.17,
+      "current_price": 1.2,
+      "pct_above": 2.6,
       "date": "",
-      "title": "GOME Retail Holdings Limited",
+      "title": "YGM Trading Limited",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "00493"
+      "stock_code": "00375"
     },
     {
       "type": "ipo",
-      "offer_price": 6.78,
-      "current_price": 6.8,
+      "offer_price": 0.13,
+      "current_price": 0.132,
+      "pct_above": 1.5,
+      "date": "",
+      "title": "China Ever Grand Financial Leasing Group Co., Ltd.",
+      "breakthrough_date": "2026-06-08",
+      "stock_code": "00379"
+    },
+    {
+      "type": "ipo",
+      "offer_price": 0.71,
+      "current_price": 0.73,
+      "pct_above": 2.8,
+      "date": "",
+      "title": "Founder Holdings Limited",
+      "breakthrough_date": "2026-06-08",
+      "stock_code": "00418"
+    },
+    {
+      "type": "ipo",
+      "offer_price": 0.71,
+      "current_price": 0.72,
+      "pct_above": 1.4,
+      "date": "",
+      "title": "Fountain Set (Holdings) Limited",
+      "breakthrough_date": "2026-06-08",
+      "stock_code": "00420"
+    },
+    {
+      "type": "ipo",
+      "offer_price": 0.185,
+      "current_price": 0.193,
+      "pct_above": 4.3,
+      "date": "",
+      "title": "Qingdao Holdings International Limited",
+      "breakthrough_date": "2026-06-08",
+      "stock_code": "00499"
+    },
+    {
+      "type": "ipo",
+      "offer_price": 6.0,
+      "current_price": 6.74,
+      "pct_above": 12.3,
+      "date": "",
+      "title": "Shandong Molong Petroleum Machinery Company Limited",
+      "breakthrough_date": "2026-06-08",
+      "stock_code": "00568"
+    },
+    {
+      "type": "ipo",
+      "offer_price": 3.2,
+      "current_price": 3.21,
       "pct_above": 0.3,
       "date": "",
-      "title": "Shenzhen Expressway Corporation Limited",
+      "title": "Imagi International Holdings Limited",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "00548"
-    },
-    {
-      "type": "ipo",
-      "offer_price": 0.285,
-      "current_price": 0.3,
-      "pct_above": 5.3,
-      "date": "",
-      "title": "SCE Intelligent Commercial Management Holdings Limited",
-      "breakthrough_date": "2026-06-08",
-      "stock_code": "00606"
+      "stock_code": "00585"
     },
     {
       "type": "ipo",
@@ -113,153 +163,133 @@
     },
     {
       "type": "ipo",
-      "offer_price": 0.25,
-      "current_price": 0.26,
-      "pct_above": 4.0,
+      "offer_price": 2.56,
+      "current_price": 2.57,
+      "pct_above": 0.4,
       "date": "",
-      "title": "Chaoda Modern Agriculture (Holdings) Limited",
+      "title": "Infinity Development Holdings Company Limited",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "00682"
+      "stock_code": "00640"
     },
     {
       "type": "ipo",
-      "offer_price": 1.71,
-      "current_price": 1.71,
+      "offer_price": 117.0,
+      "current_price": 117.5,
+      "pct_above": 0.4,
+      "date": "",
+      "title": "Techtronic Industries Company Limited",
+      "breakthrough_date": "2026-06-08",
+      "stock_code": "00669"
+    },
+    {
+      "type": "ipo",
+      "offer_price": 0.68,
+      "current_price": 0.68,
       "pct_above": 0.0,
       "date": "",
-      "title": "Shoucheng Holdings Limited",
+      "title": "Crown International Corporation Limited",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "00697"
+      "stock_code": "00727"
     },
     {
       "type": "ipo",
-      "offer_price": 0.12,
-      "current_price": 0.121,
-      "pct_above": 0.8,
+      "offer_price": 0.38,
+      "current_price": 0.46,
+      "pct_above": 21.1,
       "date": "",
-      "title": "Capital Industrial Financial Services Group Limited",
+      "title": "Zhong Ji Longevity Science Group Limited",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "00730"
+      "stock_code": "00767"
     },
     {
       "type": "ipo",
-      "offer_price": 2.01,
-      "current_price": 2.02,
-      "pct_above": 0.5,
+      "offer_price": 0.28,
+      "current_price": 0.295,
+      "pct_above": 5.4,
       "date": "",
-      "title": "China Education Group Holdings Limited",
+      "title": "Beijing Jingkelong Company Limited",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "00839"
+      "stock_code": "00814"
     },
     {
       "type": "ipo",
-      "offer_price": 8.69,
-      "current_price": 8.72,
-      "pct_above": 0.3,
+      "offer_price": 0.76,
+      "current_price": 0.77,
+      "pct_above": 1.3,
       "date": "",
-      "title": "China Construction Bank Corporation",
+      "title": "IPE Group Limited",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "00939"
+      "stock_code": "00929"
     },
     {
       "type": "ipo",
-      "offer_price": 0.208,
-      "current_price": 0.211,
-      "pct_above": 1.4,
+      "offer_price": 0.28,
+      "current_price": 0.28,
+      "pct_above": 0.0,
       "date": "",
-      "title": "China Renewable Energy Investment Limited",
+      "title": "Kaisa Capital Investment Holdings Limited",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "00987"
+      "stock_code": "00936"
     },
     {
       "type": "ipo",
-      "offer_price": 1.36,
-      "current_price": 1.41,
-      "pct_above": 3.7,
+      "offer_price": 301.4,
+      "current_price": 302.0,
+      "pct_above": 0.2,
       "date": "",
-      "title": "International Entertainment Corporation",
+      "title": "Manulife Financial Corporation",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "01009"
+      "stock_code": "00945"
     },
     {
       "type": "ipo",
-      "offer_price": 0.231,
-      "current_price": 0.24,
-      "pct_above": 3.9,
+      "offer_price": 0.485,
+      "current_price": 0.485,
+      "pct_above": 0.0,
       "date": "",
-      "title": "Xinchen China Power Holdings Limited",
+      "title": "Sitoy Group Holdings Limited",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "01148"
+      "stock_code": "01023"
     },
     {
       "type": "ipo",
-      "offer_price": 0.125,
-      "current_price": 0.133,
-      "pct_above": 6.4,
+      "offer_price": 0.6,
+      "current_price": 0.6,
+      "pct_above": 0.0,
       "date": "",
-      "title": "Tang Palace (China) Holdings Limited",
+      "title": "Maxnerva Technology Services Limited",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "01181"
+      "stock_code": "01037"
     },
     {
       "type": "ipo",
-      "offer_price": 31.52,
-      "current_price": 33.0,
-      "pct_above": 4.7,
+      "offer_price": 0.415,
+      "current_price": 0.43,
+      "pct_above": 3.6,
       "date": "",
-      "title": "Cofoe Medical Technology Co.,Ltd.",
+      "title": "Kantone Holdings Limited",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "01187"
+      "stock_code": "01059"
     },
     {
       "type": "ipo",
-      "offer_price": 2.0,
-      "current_price": 2.02,
+      "offer_price": 38.82,
+      "current_price": 39.2,
       "pct_above": 1.0,
       "date": "",
-      "title": "Tesson Holdings Limited",
+      "title": "Shenzhen Ldrobot Co., Ltd",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "01201"
+      "stock_code": "01236"
     },
     {
       "type": "ipo",
-      "offer_price": 0.32,
-      "current_price": 0.33,
-      "pct_above": 3.1,
+      "offer_price": 0.64,
+      "current_price": 0.74,
+      "pct_above": 15.6,
       "date": "",
-      "title": "Zhongyuan Bank Co., Ltd.",
+      "title": "Wai Chi Holdings Company Limited",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "01216"
-    },
-    {
-      "type": "ipo",
-      "offer_price": 0.012,
-      "current_price": 0.012,
-      "pct_above": 0.0,
-      "date": "",
-      "title": "China Innovation Investment Limited",
-      "breakthrough_date": "2026-06-08",
-      "stock_code": "01217"
-    },
-    {
-      "type": "ipo",
-      "offer_price": 0.039,
-      "current_price": 0.04,
-      "pct_above": 2.6,
-      "date": "",
-      "title": "China First Capital Group Limited",
-      "breakthrough_date": "2026-06-08",
-      "stock_code": "01269"
-    },
-    {
-      "type": "ipo",
-      "offer_price": 3.95,
-      "current_price": 4.12,
-      "pct_above": 4.3,
-      "date": "",
-      "title": "iMotion Automotive Technology (Suzhou) Co., Ltd.",
-      "breakthrough_date": "2026-06-08",
-      "stock_code": "01274"
+      "stock_code": "01305"
     },
     {
       "type": "ipo",
@@ -273,43 +303,23 @@
     },
     {
       "type": "ipo",
-      "offer_price": 0.068,
-      "current_price": 0.073,
-      "pct_above": 7.4,
-      "date": "",
-      "title": "Huisheng International Holdings Limited",
-      "breakthrough_date": "2026-06-08",
-      "stock_code": "01340"
-    },
-    {
-      "type": "ipo",
-      "offer_price": 0.7,
-      "current_price": 0.71,
-      "pct_above": 1.4,
-      "date": "",
-      "title": "International Housewares Retail Company Limited",
-      "breakthrough_date": "2026-06-08",
-      "stock_code": "01373"
-    },
-    {
-      "type": "ipo",
-      "offer_price": 6.8,
-      "current_price": 6.83,
-      "pct_above": 0.4,
-      "date": "",
-      "title": "Industrial and Commercial Bank of China Limited",
-      "breakthrough_date": "2026-06-08",
-      "stock_code": "01398"
-    },
-    {
-      "type": "ipo",
-      "offer_price": 0.33,
-      "current_price": 0.33,
+      "offer_price": 0.024,
+      "current_price": 0.024,
       "pct_above": 0.0,
       "date": "",
-      "title": "China Shengmu Organic Milk Limited",
+      "title": "Hao Tian International Construction Investment Group Limited",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "01432"
+      "stock_code": "01341"
+    },
+    {
+      "type": "ipo",
+      "offer_price": 0.126,
+      "current_price": 0.127,
+      "pct_above": 0.8,
+      "date": "",
+      "title": "Wei Yuan Holdings Limited",
+      "breakthrough_date": "2026-06-08",
+      "stock_code": "01343"
     },
     {
       "type": "ipo",
@@ -323,23 +333,63 @@
     },
     {
       "type": "ipo",
-      "offer_price": 0.186,
-      "current_price": 0.186,
-      "pct_above": 0.0,
+      "offer_price": 0.53,
+      "current_price": 0.54,
+      "pct_above": 1.9,
       "date": "",
-      "title": "Guangdong Join-Share Financing Guarantee Investment Co., Ltd.",
+      "title": "GC Construction Holdings Limited",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "01543"
+      "stock_code": "01489"
     },
     {
       "type": "ipo",
-      "offer_price": 0.46,
-      "current_price": 0.49,
-      "pct_above": 6.5,
+      "offer_price": 0.131,
+      "current_price": 0.139,
+      "pct_above": 6.1,
       "date": "",
-      "title": "K. H. Group Holdings Limited",
+      "title": "Design Capital Limited",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "01557"
+      "stock_code": "01545"
+    },
+    {
+      "type": "ipo",
+      "offer_price": 1.51,
+      "current_price": 1.54,
+      "pct_above": 2.0,
+      "date": "",
+      "title": "Guangzhou Rural Commercial Bank Co., Ltd.",
+      "breakthrough_date": "2026-06-08",
+      "stock_code": "01551"
+    },
+    {
+      "type": "ipo",
+      "offer_price": 0.029,
+      "current_price": 0.032,
+      "pct_above": 10.3,
+      "date": "",
+      "title": "MIE Holdings Corporation",
+      "breakthrough_date": "2026-06-08",
+      "stock_code": "01555"
+    },
+    {
+      "type": "ipo",
+      "offer_price": 0.28,
+      "current_price": 0.28,
+      "pct_above": 0.0,
+      "date": "",
+      "title": "Chinney Kin Wing Holdings Limited",
+      "breakthrough_date": "2026-06-08",
+      "stock_code": "01556"
+    },
+    {
+      "type": "ipo",
+      "offer_price": 0.096,
+      "current_price": 0.096,
+      "pct_above": 0.0,
+      "date": "",
+      "title": "China Art Financial Holdings Limited",
+      "breakthrough_date": "2026-06-08",
+      "stock_code": "01572"
     },
     {
       "type": "ipo",
@@ -353,93 +403,43 @@
     },
     {
       "type": "ipo",
-      "offer_price": 0.16,
-      "current_price": 0.161,
-      "pct_above": 0.6,
+      "offer_price": 0.178,
+      "current_price": 0.178,
+      "pct_above": 0.0,
       "date": "",
-      "title": "Shun Wo Group Holdings Limited",
+      "title": "Synertone Communication Corporation",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "01591"
+      "stock_code": "01613"
     },
     {
       "type": "ipo",
-      "offer_price": 0.59,
-      "current_price": 0.6,
-      "pct_above": 1.7,
+      "offer_price": 0.365,
+      "current_price": 0.375,
+      "pct_above": 2.7,
       "date": "",
-      "title": "Hebei Yichen Industrial Group Corporation Limited",
+      "title": "Kin Shing Holdings Limited",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "01596"
+      "stock_code": "01630"
     },
     {
       "type": "ipo",
-      "offer_price": 2.78,
-      "current_price": 2.8,
-      "pct_above": 0.7,
+      "offer_price": 0.485,
+      "current_price": 0.485,
+      "pct_above": 0.0,
       "date": "",
-      "title": "Tian Lun Gas Holdings Limited",
+      "title": "China Strategic Technology Group Limited",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "01600"
+      "stock_code": "01725"
     },
     {
       "type": "ipo",
-      "offer_price": 195.8,
-      "current_price": 198.0,
-      "pct_above": 1.1,
+      "offer_price": 0.57,
+      "current_price": 0.58,
+      "pct_above": 1.8,
       "date": "",
-      "title": "Star Sports Medicine Co., Ltd.",
+      "title": "Shanshan Brand Management Co., Ltd.",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "01609"
-    },
-    {
-      "type": "ipo",
-      "offer_price": 0.58,
-      "current_price": 0.73,
-      "pct_above": 25.9,
-      "date": "",
-      "title": "Nanfang Communication Holdings Limited",
-      "breakthrough_date": "2026-06-08",
-      "stock_code": "01617"
-    },
-    {
-      "type": "ipo",
-      "offer_price": 31.3,
-      "current_price": 61.6,
-      "pct_above": 96.8,
-      "date": "",
-      "title": "SG Group Holdings Limited",
-      "breakthrough_date": "2026-06-08",
-      "stock_code": "01657"
-    },
-    {
-      "type": "ipo",
-      "offer_price": 5.03,
-      "current_price": 5.04,
-      "pct_above": 0.2,
-      "date": "",
-      "title": "Postal Savings Bank of China Co., Ltd.",
-      "breakthrough_date": "2026-06-08",
-      "stock_code": "01658"
-    },
-    {
-      "type": "ipo",
-      "offer_price": 0.52,
-      "current_price": 0.79,
-      "pct_above": 51.9,
-      "date": "",
-      "title": "Putian Communication Group Limited",
-      "breakthrough_date": "2026-06-08",
-      "stock_code": "01720"
-    },
-    {
-      "type": "ipo",
-      "offer_price": 0.079,
-      "current_price": 0.089,
-      "pct_above": 12.7,
-      "date": "",
-      "title": "Kin Pang Holdings Limited",
-      "breakthrough_date": "2026-06-08",
-      "stock_code": "01722"
+      "stock_code": "01749"
     },
     {
       "type": "ipo",
@@ -453,53 +453,33 @@
     },
     {
       "type": "ipo",
-      "offer_price": 0.138,
-      "current_price": 0.145,
-      "pct_above": 5.1,
+      "offer_price": 0.385,
+      "current_price": 0.395,
+      "pct_above": 2.6,
       "date": "",
-      "title": "KWG Group Holdings Limited",
+      "title": "BExcellent Group Holdings Limited",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "01813"
+      "stock_code": "01775"
     },
     {
       "type": "ipo",
-      "offer_price": 0.82,
-      "current_price": 0.86,
-      "pct_above": 4.9,
+      "offer_price": 0.91,
+      "current_price": 0.91,
+      "pct_above": 0.0,
       "date": "",
-      "title": "Mount Everest Gold Group Company Limited",
+      "title": "Miricor Enterprises Holdings Limited",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "01815"
+      "stock_code": "01827"
     },
     {
       "type": "ipo",
-      "offer_price": 2.38,
-      "current_price": 2.45,
-      "pct_above": 2.9,
+      "offer_price": 0.78,
+      "current_price": 0.79,
+      "pct_above": 1.3,
       "date": "",
-      "title": "JBB Builders International Limited",
+      "title": "Ritamix Global Limited",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "01903"
-    },
-    {
-      "type": "ipo",
-      "offer_price": 1.28,
-      "current_price": 1.3,
-      "pct_above": 1.6,
-      "date": "",
-      "title": "Kwung's Aroma Holdings Limited",
-      "breakthrough_date": "2026-06-08",
-      "stock_code": "01925"
-    },
-    {
-      "type": "ipo",
-      "offer_price": 0.65,
-      "current_price": 0.67,
-      "pct_above": 3.1,
-      "date": "",
-      "title": "King's Stone Holdings Group Limited",
-      "breakthrough_date": "2026-06-08",
-      "stock_code": "01943"
+      "stock_code": "01936"
     },
     {
       "type": "ipo",
@@ -513,113 +493,103 @@
     },
     {
       "type": "ipo",
-      "offer_price": 0.3,
-      "current_price": 0.3,
+      "offer_price": 8.36,
+      "current_price": 8.44,
+      "pct_above": 1.0,
+      "date": "",
+      "title": "Bank of Chongqing Co., Ltd.",
+      "breakthrough_date": "2026-06-08",
+      "stock_code": "01963"
+    },
+    {
+      "type": "ipo",
+      "offer_price": 1.3,
+      "current_price": 1.31,
+      "pct_above": 0.8,
+      "date": "",
+      "title": "Cabbeen Fashion Limited",
+      "breakthrough_date": "2026-06-08",
+      "stock_code": "02030"
+    },
+    {
+      "type": "ipo",
+      "offer_price": 0.79,
+      "current_price": 0.84,
+      "pct_above": 6.3,
+      "date": "",
+      "title": "Vedan International (Holdings) Limited",
+      "breakthrough_date": "2026-06-08",
+      "stock_code": "02317"
+    },
+    {
+      "type": "ipo",
+      "offer_price": 0.012,
+      "current_price": 0.013,
+      "pct_above": 8.3,
+      "date": "",
+      "title": "Jiu Rong Holdings Limited",
+      "breakthrough_date": "2026-06-08",
+      "stock_code": "02358"
+    },
+    {
+      "type": "ipo",
+      "offer_price": 2.96,
+      "current_price": 3.1,
+      "pct_above": 4.7,
+      "date": "",
+      "title": "Eagle Nice (International) Holdings Limited",
+      "breakthrough_date": "2026-06-08",
+      "stock_code": "02368"
+    },
+    {
+      "type": "ipo",
+      "offer_price": 0.84,
+      "current_price": 0.85,
+      "pct_above": 1.2,
+      "date": "",
+      "title": "Coolpad Group Limited",
+      "breakthrough_date": "2026-06-08",
+      "stock_code": "02369"
+    },
+    {
+      "type": "ipo",
+      "offer_price": 0.61,
+      "current_price": 0.61,
       "pct_above": 0.0,
       "date": "",
-      "title": "LH Group Limited",
+      "title": "Powerwin Tech Group Limited",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "01978"
+      "stock_code": "02405"
     },
     {
       "type": "ipo",
-      "offer_price": 3.45,
-      "current_price": 3.46,
-      "pct_above": 0.3,
+      "offer_price": 1.06,
+      "current_price": 1.08,
+      "pct_above": 1.9,
       "date": "",
-      "title": "China Minsheng Banking Corp., Ltd.",
+      "title": "Soft International Group Ltd.",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "01988"
+      "stock_code": "02569"
     },
     {
       "type": "ipo",
-      "offer_price": 0.75,
-      "current_price": 0.77,
-      "pct_above": 2.7,
+      "offer_price": 5.03,
+      "current_price": 5.15,
+      "pct_above": 2.4,
       "date": "",
-      "title": "China Ludao Technology Company Limited",
+      "title": "Bayzed Health Group Inc",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "02023"
+      "stock_code": "02609"
     },
     {
       "type": "ipo",
-      "offer_price": 3.0,
-      "current_price": 3.01,
-      "pct_above": 0.3,
+      "offer_price": 123.5,
+      "current_price": 130.4,
+      "pct_above": 5.6,
       "date": "",
-      "title": "YesAsia Holdings Limited",
+      "title": "Shanghai Able Digital Science&Tech Co., Ltd.",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "02209"
-    },
-    {
-      "type": "ipo",
-      "offer_price": 0.101,
-      "current_price": 0.111,
-      "pct_above": 9.9,
-      "date": "",
-      "title": "Glory Health Industry Limited",
-      "breakthrough_date": "2026-06-08",
-      "stock_code": "02329"
-    },
-    {
-      "type": "ipo",
-      "offer_price": 1.26,
-      "current_price": 1.35,
-      "pct_above": 7.1,
-      "date": "",
-      "title": "United Strength Power Holdings Limited",
-      "breakthrough_date": "2026-06-08",
-      "stock_code": "02337"
-    },
-    {
-      "type": "ipo",
-      "offer_price": 1.71,
-      "current_price": 1.72,
-      "pct_above": 0.6,
-      "date": "",
-      "title": "Best Mart 360 Holdings Limited",
-      "breakthrough_date": "2026-06-08",
-      "stock_code": "02360"
-    },
-    {
-      "type": "ipo",
-      "offer_price": 1.01,
-      "current_price": 1.15,
-      "pct_above": 13.9,
-      "date": "",
-      "title": "MedSci Healthcare Holdings Limited",
-      "breakthrough_date": "2026-06-08",
-      "stock_code": "02415"
-    },
-    {
-      "type": "ipo",
-      "offer_price": 0.63,
-      "current_price": 0.64,
-      "pct_above": 1.6,
-      "date": "",
-      "title": "KRP Development Holdings Limited",
-      "breakthrough_date": "2026-06-08",
-      "stock_code": "02421"
-    },
-    {
-      "type": "ipo",
-      "offer_price": 5.82,
-      "current_price": 5.82,
-      "pct_above": 0.0,
-      "date": "",
-      "title": "Folangsi Co., Ltd.",
-      "breakthrough_date": "2026-06-08",
-      "stock_code": "02499"
-    },
-    {
-      "type": "ipo",
-      "offer_price": 123.1,
-      "current_price": 125.7,
-      "pct_above": 2.1,
-      "date": "",
-      "title": "Jiangsu New Vision Automotive",
-      "breakthrough_date": "2026-06-08",
-      "stock_code": "02632"
+      "stock_code": "02687"
     },
     {
       "type": "ipo",
@@ -633,6 +603,26 @@
     },
     {
       "type": "ipo",
+      "offer_price": 30.92,
+      "current_price": 31.2,
+      "pct_above": 0.9,
+      "date": "",
+      "title": "Foshan Haitian Flavouring and Food Company Ltd.",
+      "breakthrough_date": "2026-06-08",
+      "stock_code": "03288"
+    },
+    {
+      "type": "ipo",
+      "offer_price": 0.425,
+      "current_price": 0.425,
+      "pct_above": 0.0,
+      "date": "",
+      "title": "China Glass Holdings Limited",
+      "breakthrough_date": "2026-06-08",
+      "stock_code": "03300"
+    },
+    {
+      "type": "ipo",
       "offer_price": 0.2,
       "current_price": 0.2,
       "pct_above": 0.0,
@@ -643,93 +633,73 @@
     },
     {
       "type": "ipo",
-      "offer_price": 0.275,
-      "current_price": 0.275,
+      "offer_price": 21.28,
+      "current_price": 21.44,
+      "pct_above": 0.8,
+      "date": "",
+      "title": "Sany Heavy Industry Co.,Ltd",
+      "breakthrough_date": "2026-06-08",
+      "stock_code": "06031"
+    },
+    {
+      "type": "ipo",
+      "offer_price": 0.23,
+      "current_price": 0.234,
+      "pct_above": 1.7,
+      "date": "",
+      "title": "Huazhong In-Vehicle Holdings Company Limited",
+      "breakthrough_date": "2026-06-08",
+      "stock_code": "06830"
+    },
+    {
+      "type": "ipo",
+      "offer_price": 3.52,
+      "current_price": 3.54,
+      "pct_above": 0.6,
+      "date": "",
+      "title": "Golden Throat Holdings Group Company Limited",
+      "breakthrough_date": "2026-06-08",
+      "stock_code": "06896"
+    },
+    {
+      "type": "ipo",
+      "offer_price": 3.4,
+      "current_price": 3.4,
       "pct_above": 0.0,
       "date": "",
-      "title": "Starjoy Wellness and Travel Company Limited",
+      "title": "Changjiu Holdings Limited",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "03662"
+      "stock_code": "06959"
     },
     {
       "type": "ipo",
-      "offer_price": 5.04,
-      "current_price": 5.09,
-      "pct_above": 1.0,
+      "offer_price": 1.39,
+      "current_price": 1.42,
+      "pct_above": 2.2,
       "date": "",
-      "title": "Huishang Bank Corporation Limited",
+      "title": "City Coolxuan Company Limited",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "03698"
+      "stock_code": "08050"
     },
     {
       "type": "ipo",
-      "offer_price": 0.68,
-      "current_price": 0.71,
-      "pct_above": 4.4,
+      "offer_price": 2.47,
+      "current_price": 2.48,
+      "pct_above": 0.4,
       "date": "",
-      "title": "Lotus Horizon Holdings Limited",
+      "title": "CircuTech International Holdings Limited",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "06063"
+      "stock_code": "08051"
     },
     {
       "type": "ipo",
-      "offer_price": 0.174,
-      "current_price": 0.183,
-      "pct_above": 5.2,
+      "offer_price": 0.12,
+      "current_price": 0.123,
+      "pct_above": 2.5,
       "date": "",
-      "title": "Wing Chi Holdings Limited",
+      "title": "PPS International (Holdings) Limited",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "06080"
-    },
-    {
-      "type": "ipo",
-      "offer_price": 0.87,
-      "current_price": 0.887,
-      "pct_above": 2.0,
-      "date": "",
-      "title": "World-Link Logistics (Asia) Holding Limited",
-      "breakthrough_date": "2026-06-08",
-      "stock_code": "06083"
-    },
-    {
-      "type": "ipo",
-      "offer_price": 0.208,
-      "current_price": 0.208,
-      "pct_above": 0.0,
-      "date": "",
-      "title": "New Ray Medicine International Holding Limited",
-      "breakthrough_date": "2026-06-08",
-      "stock_code": "06108"
-    },
-    {
-      "type": "ipo",
-      "offer_price": 7.7,
-      "current_price": 7.8,
-      "pct_above": 1.3,
-      "date": "",
-      "title": "ZJLD Group Inc",
-      "breakthrough_date": "2026-06-08",
-      "stock_code": "06979"
-    },
-    {
-      "type": "ipo",
-      "offer_price": 1.9,
-      "current_price": 1.92,
-      "pct_above": 1.1,
-      "date": "",
-      "title": "China 33 Media Group Limited",
-      "breakthrough_date": "2026-06-08",
-      "stock_code": "08087"
-    },
-    {
-      "type": "ipo",
-      "offer_price": 1.36,
-      "current_price": 1.38,
-      "pct_above": 1.5,
-      "date": "",
-      "title": "Zhejiang Chang'an Renheng Technology Co., Ltd.",
-      "breakthrough_date": "2026-06-08",
-      "stock_code": "08139"
+      "stock_code": "08201"
     },
     {
       "type": "ipo",
@@ -743,143 +713,93 @@
     },
     {
       "type": "ipo",
-      "offer_price": 0.093,
-      "current_price": 0.104,
-      "pct_above": 11.8,
-      "date": "",
-      "title": "China Digital Video Holdings Limited",
-      "breakthrough_date": "2026-06-08",
-      "stock_code": "08280"
-    },
-    {
-      "type": "ipo",
-      "offer_price": 0.116,
-      "current_price": 0.12,
-      "pct_above": 3.4,
-      "date": "",
-      "title": "Expert Systems Holdings Limited",
-      "breakthrough_date": "2026-06-08",
-      "stock_code": "08319"
-    },
-    {
-      "type": "ipo",
-      "offer_price": 0.115,
-      "current_price": 0.128,
-      "pct_above": 11.3,
-      "date": "",
-      "title": "Republic Healthcare Limited",
-      "breakthrough_date": "2026-06-08",
-      "stock_code": "08357"
-    },
-    {
-      "type": "ipo",
-      "offer_price": 0.69,
-      "current_price": 0.72,
-      "pct_above": 4.3,
-      "date": "",
-      "title": "Indigo Star Holdings Limited",
-      "breakthrough_date": "2026-06-08",
-      "stock_code": "08373"
-    },
-    {
-      "type": "ipo",
-      "offer_price": 0.022,
-      "current_price": 0.023,
-      "pct_above": 4.5,
-      "date": "",
-      "title": "Dadi Education Holdings Limited",
-      "breakthrough_date": "2026-06-08",
-      "stock_code": "08417"
-    },
-    {
-      "type": "ipo",
-      "offer_price": 0.073,
-      "current_price": 0.076,
-      "pct_above": 4.1,
-      "date": "",
-      "title": "Sunlight (1977) Holdings Limited",
-      "breakthrough_date": "2026-06-08",
-      "stock_code": "08451"
-    },
-    {
-      "type": "ipo",
-      "offer_price": 0.04,
-      "current_price": 0.043,
-      "pct_above": 7.5,
-      "date": "",
-      "title": "Amuse Group Holding Limited",
-      "breakthrough_date": "2026-06-08",
-      "stock_code": "08545"
-    },
-    {
-      "type": "ipo",
-      "offer_price": 0.15,
-      "current_price": 0.155,
-      "pct_above": 3.3,
-      "date": "",
-      "title": "Asia-express Logistics Holdings Limited",
-      "breakthrough_date": "2026-06-08",
-      "stock_code": "08620"
-    },
-    {
-      "type": "ipo",
-      "offer_price": 0.102,
-      "current_price": 0.106,
-      "pct_above": 3.9,
-      "date": "",
-      "title": "Ying Hai Group Holdings Company Limited",
-      "breakthrough_date": "2026-06-08",
-      "stock_code": "08668"
-    },
-    {
-      "type": "ipo",
-      "offer_price": 34.32,
-      "current_price": 34.56,
+      "offer_price": 0.145,
+      "current_price": 0.146,
       "pct_above": 0.7,
       "date": "",
-      "title": "GDS Holdings Limited",
+      "title": "Grand Brilliance Group Holdings Limited",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "09698"
+      "stock_code": "08372"
     },
     {
       "type": "ipo",
-      "offer_price": 8.3,
-      "current_price": 8.39,
-      "pct_above": 1.1,
+      "offer_price": 3.22,
+      "current_price": 3.23,
+      "pct_above": 0.3,
       "date": "",
-      "title": "Hangzhou SF Intra-city Industrial Co., Ltd.",
+      "title": "Defeng Solife Holdings Limited",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "09699"
+      "stock_code": "08403"
     },
     {
       "type": "ipo",
-      "offer_price": 1.3,
-      "current_price": 1.31,
-      "pct_above": 0.8,
+      "offer_price": 0.37,
+      "current_price": 0.38,
+      "pct_above": 2.7,
       "date": "",
-      "title": "Helens International Holdings Company Limited",
+      "title": "Takbo Group Holdings Limited",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "09869"
+      "stock_code": "08436"
     },
     {
       "type": "ipo",
-      "offer_price": 2.3,
-      "current_price": 2.32,
-      "pct_above": 0.9,
+      "offer_price": 1.16,
+      "current_price": 1.18,
+      "pct_above": 1.7,
       "date": "",
-      "title": "Chi Kan Holdings Limited",
+      "title": "Zhong Ying International Group Limited",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "09913"
+      "stock_code": "08516"
     },
     {
       "type": "ipo",
-      "offer_price": 0.43,
-      "current_price": 0.45,
-      "pct_above": 4.7,
+      "offer_price": 4.27,
+      "current_price": 4.3,
+      "pct_above": 0.7,
       "date": "",
-      "title": "Central China New Life Limited",
+      "title": "Victory Securities (Holdings) Company Limited",
       "breakthrough_date": "2026-06-08",
-      "stock_code": "09983"
+      "stock_code": "08540"
+    },
+    {
+      "type": "ipo",
+      "offer_price": 0.06,
+      "current_price": 0.066,
+      "pct_above": 10.0,
+      "date": "",
+      "title": "Sunray Engineering Group Limited",
+      "breakthrough_date": "2026-06-08",
+      "stock_code": "08616"
+    },
+    {
+      "type": "ipo",
+      "offer_price": 112.5,
+      "current_price": 117.7,
+      "pct_above": 4.6,
+      "date": "",
+      "title": "Ubtech Robotics Corp Ltd",
+      "breakthrough_date": "2026-06-08",
+      "stock_code": "09880"
+    },
+    {
+      "type": "ipo",
+      "offer_price": 444.2,
+      "current_price": 462.0,
+      "pct_above": 4.0,
+      "date": "",
+      "title": "Shanghai Iluvatar Corex",
+      "breakthrough_date": "2026-06-08",
+      "stock_code": "09903"
+    },
+    {
+      "type": "ipo",
+      "offer_price": 40.98,
+      "current_price": 41.28,
+      "pct_above": 0.7,
+      "date": "",
+      "title": "BOC Hong Kong (Holdings) Limited",
+      "breakthrough_date": "2026-06-08",
+      "stock_code": "82388"
     }
   ],
   "active_prices": {
