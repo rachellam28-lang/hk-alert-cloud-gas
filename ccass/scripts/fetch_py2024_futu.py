@@ -1,0 +1,64 @@
+"""Fetch 2024 year-open prices via Futu OpenD (real data, not yfinance)."""
+import json, time
+from futu import *
+
+# Load existing prices
+PROJECT = 'C:/Users/Administrator/Desktop/automatic/ccass-debug'
+prices = json.load(open(f'{PROJECT}/data/stock_prices.json'))
+ccass = json.load(open(f'{PROJECT}/ccass.json'))
+codes = sorted(k for k,v in prices.items() if v.get('yo'))  # only stocks with 2026 data
+
+print(f'Fetching 2024 year-open for {len(codes)} stocks via Futu...')
+
+q = OpenQuoteContext('127.0.0.1', 11111)
+updated = 0
+failed = 0
+
+with open('py2024_futu.log', 'w') as log:
+    for i, code in enumerate(codes):
+        sym = f'HK.{code}'
+        try:
+            ret, data, page = q.request_history_kline(sym, start='2024-01-02', end='2024-01-02', ktype=KLType.K_DAY)
+            if ret == 0 and len(data) > 0:
+                py = round(float(data['open'].iloc[0]), 3)
+                prices[code]['py'] = py
+                if prices[code].get('lp') and py > 0:
+                    prices[code]['py_pct'] = round((prices[code]['lp'] - py) / py * 100, 2)
+                updated += 1
+            else:
+                failed += 1
+                log.write(f'{code}: FAIL ret={ret}\n')
+        except Exception as e:
+            failed += 1
+            log.write(f'{code}: EXCEPTION {e}\n')
+        
+        if (i+1) % 200 == 0:
+            print(f'  {i+1}/{len(codes)} updated={updated} failed={failed}')
+            # Save checkpoint
+            json.dump(prices, open(f'{PROJECT}/data/stock_prices.json','w'), ensure_ascii=False, indent=2)
+        
+        time.sleep(0.3)  # ~3 calls/sec to avoid rate limit
+
+q.close()
+
+# Final save
+json.dump(prices, open(f'{PROJECT}/data/stock_prices.json','w'), ensure_ascii=False, indent=2)
+print(f'Done: {updated} updated, {failed} failed')
+
+# Update ccass.json
+for s in ccass['stocks']:
+    code = s['c']
+    if code in prices:
+        p = prices[code]
+        if p.get('py') is not None:
+            s['py'] = p['py']
+        if p.get('py_pct') is not None:
+            s['py_pct'] = p['py_pct']
+
+json.dump(ccass, open(f'{PROJECT}/ccass.json','w'), ensure_ascii=False)
+print('ccass.json updated')
+
+# Verify
+for code in ['00700','00005','01808','00001','09988']:
+    p = prices.get(code, {})
+    print(f'{code}: py={p.get("py")}, py_pct={p.get("py_pct")}%')
