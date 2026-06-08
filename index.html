@@ -1164,7 +1164,7 @@ function renderTable(){
         +'<td class="hide-prevyo">'+(s.lp&&s.py&&s.lp>s.py?'😻':'')+'</td>'
         +'<td class="hide-pypct"><span class="num '+deltaClass(s.py_pct)+'">'+(s.py_pct!=null?fmtPct(s.py_pct):'—')+'</span>'+(s.py!=null?'<span class="yo-price">'+esc(s.py<1?s.py.toFixed(3):s.py.toFixed(2))+'</span>':'')+'</td>'
         +'<td class="hide-price">'+priceHtml+'</td>'
-        +'<td class="hide-yo_pct"><span class="num '+deltaClass(yoPct)+'">'+(aboveYO?'🔺':'')+(yoPct!=null?fmtPct(yoPct):'—')+'</span></td>'
+        +'<td class="hide-yo_pct"><span class="num '+deltaClass(yoPct)+'">'+(aboveYO?'🔺':'')+(yoPct!=null?fmtPct(yoPct):'—')+'</span>'+(s.yo!=null?'<span class="yo-price">'+esc(s.yo<1?s.yo.toFixed(3):s.yo.toFixed(2))+'</span>':'')+'</td>'
         +'<td class="hide-sig cell-pills">'+sigDisplay+'</td>'
         +'<td><span class="num">'+s.tp.toFixed(2)+'%</span></td>'
         +'<td class="hide-t5"><span class="num">'+s.t5.toFixed(2)+'%</span></td>'
@@ -1255,7 +1255,7 @@ function renderTable(){
         +(s.py_pct!=null?'<div class="sc-metric"><span class="sc-metric-label">前年Δ%</span><span class="sc-metric-val '+(s.py_pct>=0?'up':'dn')+'">'+fmtPct(s.py_pct)+'</span></div>':'')
         +'<div class="sc-metric"><span class="sc-metric-label">5日</span><span class="sc-metric-val '+d5class+'">'+(s.d5!=null?fmtPct(s.d5):'—')+'</span></div>'
         +'<div class="sc-metric"><span class="sc-metric-label">20日</span><span class="sc-metric-val '+d20class+'">'+(s.d20!=null?fmtPct(s.d20):'—')+'</span></div>'
-        +(yoPct!=null?'<div class="sc-metric"><span class="sc-metric-label">今年Δ%</span><span class="sc-metric-val '+(yoPct>=0?'up':'dn')+'">'+(aboveYO?'🔺':'')+fmtPct(yoPct)+'</span></div>':'')
+        +(yoPct!=null?'<div class="sc-metric"><span class="sc-metric-label">今年Δ% <span style="font-size:7px;color:var(--mute)">'+esc(s.yo!=null?(s.yo<1?s.yo.toFixed(3):s.yo.toFixed(2)):'—')+'</span></span><span class="sc-metric-val '+(yoPct>=0?'up':'dn')+'">'+(aboveYO?'🔺':'')+fmtPct(yoPct)+'</span></div>':'')
         +'<div class="sc-metric"><span class="sc-metric-label">Top5</span><span class="sc-metric-val">'+s.t5.toFixed(0)+'%</span></div>'
       +'</div>'
       +(sigPills?'<div class="sc-sigs">'+sigPills+'</div>':'')
