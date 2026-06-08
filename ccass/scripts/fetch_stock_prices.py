@@ -1,12 +1,12 @@
-"""Fetch year-open (2025+2026) + latest price for all CCASS stocks via yfinance.
+"""Fetch year-open (2024+2026) + latest price for all CCASS stocks via yfinance.
 Stores in data/stock_prices.json for dashboard.
 HK stock code "00001" → yfinance symbol "0001.HK" (drop leading zero).
 
 Fields per stock:
   yo: 2026 year-open price
-  py: 2025 year-open price (previous year)
+  py: 2024 year-open price (2 years ago)
   lp: latest price
-  py_pct: (lp - py) / py * 100 — % change from 2025 open
+  py_pct: (lp - py) / py * 100 — % change from 2024 open
 """
 import json, sqlite3, sys, time
 from pathlib import Path
@@ -70,10 +70,10 @@ def fetch_all():
         except Exception as e:
             print(f"  Batch ytd failed: {e}")
 
-        # Fetch 2025 year-open (first week of 2025)
+        # Fetch 2024 year-open (first week of 2024)
         py_data = {}
         try:
-            py_hist = yf.download(syms, start='2025-01-01', end='2025-01-10', progress=False, auto_adjust=False)
+            py_hist = yf.download(syms, start='2024-01-01', end='2024-01-10', progress=False, auto_adjust=False)
             for sym in syms:
                 try:
                     if sym in py_hist.columns.get_level_values(1):
@@ -83,7 +83,7 @@ def fetch_all():
                 except Exception:
                     pass
         except Exception as e:
-            print(f"  Batch 2025 failed: {e}")
+            print(f"  Batch 2024 failed: {e}")
 
         for c, sym in zip(todo, syms):
             try:
@@ -104,7 +104,7 @@ def fetch_all():
                 except Exception:
                     pass
 
-                # Compute py_pct (change from 2025 open)
+                # Compute py_pct (change from 2024 open)
                 if entry.get('lp') and entry.get('py') and entry['py'] > 0:
                     entry['py_pct'] = round((entry['lp'] - entry['py']) / entry['py'] * 100, 2)
 
