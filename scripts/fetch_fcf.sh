@@ -5,7 +5,7 @@
 PROJECT_DIR="C:/Users/Administrator/Desktop/automatic/ccass-debug"
 TEMP_DIR="C:/Users/Administrator/AppData/Local/Temp/fcf_fill"
 BATCH_SIZE=30
-TOP_N=500
+TOP_N=9999  # all stocks
 
 rm -rf "$TEMP_DIR"
 mkdir -p "$TEMP_DIR"
