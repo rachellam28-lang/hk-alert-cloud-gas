@@ -285,6 +285,8 @@ tbody tr{cursor:pointer}
 .stock-card{background:var(--surface);border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow);overflow:hidden;cursor:pointer}
 .stock-card:hover{border-color:var(--primary-border);background:var(--surface-soft)}
 .stock-card.ipo-highlight{border-left:3px solid var(--amber);background:linear-gradient(90deg,var(--amber-soft),transparent 50%)}
+.stock-card.pe-expensive{border-left:3px solid #f59e0b}
+.stock-card.pe-cheap{border-left:3px solid #22c55e}
 .sc-header{display:flex;align-items:center;justify-content:space-between;padding:5px 8px 3px;gap:5px}
 .sc-header .code{font-size:12px;font-weight:700}.sc-header .name{font-size:10px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-soft)}
 .sc-header .btn-save{font-size:13px;padding:0 2px;flex-shrink:0}
@@ -1233,8 +1235,9 @@ function renderTable(){
     var aboveYO = s.lp && s.yo && s.lp > s.yo;
     var d5class=s.d5!==null?(s.d5>0?'up':(s.d5<0?'dn':'muted')):'muted';
     var d20class=s.d20!==null?(s.d20>0?'up':(s.d20<0?'dn':'muted')):'muted';
+    var valClass=s.pe!=null?(s.pe>30?' pe-expensive':(s.pe>0&&s.pe<5?' pe-cheap':'')):'';
     var ipoClass=hasIPO?' ipo-highlight':'';
-    return '<div class="stock-card'+ipoClass+'" onclick="showDetail(\''+s.c+'\')">'
+    return '<div class="stock-card'+ipoClass+valClass+'" onclick="showDetail(\''+s.c+'\')">'
       +'<div class="sc-header">'
         +'<span class="code">'+(s.lp&&s.py&&s.lp>s.py?'😻 ':'')+esc(s.c)+(s.suspended?' <span class="suspended-badge">停牌</span>':'')+'</span>'
         +(s.su>1?'<span class="sc-streak up">🔥'+s.su+'</span>':'')
