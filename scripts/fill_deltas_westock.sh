@@ -2,13 +2,13 @@
 # Batch fill d60/d120/yo using westock-data kline
 # Usage: bash fill_deltas_westock.sh
 
-set -e
-
 CCASS_JSON="C:/Users/Administrator/Desktop/automatic/ccass-debug/ccass.json"
 TEMP_DIR="C:/Users/Administrator/AppData/Local/Temp/westock_fill"
 BATCH_SIZE=50
 DELAY=2
 
+# Clean old batch files
+rm -rf "$TEMP_DIR"
 mkdir -p "$TEMP_DIR"
 
 echo "=== Step 1: Extract stock codes ==="
