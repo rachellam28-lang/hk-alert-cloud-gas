@@ -214,7 +214,7 @@ tbody tr{cursor:pointer}
 @media(max-width:820px){.hide-sig,.th-sig{display:none}}
 @media(max-width:720px){.hide-np,.th-np{display:none}}
 @media(max-width:720px){.hide-price,.th-price{display:none}}
-@media(max-width:640px){.hide-mc,.th-mc,.hide-chg,.th-chg,.hide-p52,.th-p52,.hide-pe,.th-pe,.hide-yo_pct,.th-yo_pct,.hide-score,.th-score{display:none}}
+@media(max-width:640px){.hide-mc,.th-mc,.hide-chg,.th-chg,.hide-fcf,.th-fcf,.hide-fcfy,.th-fcfy,.hide-yo_pct,.th-yo_pct,.hide-score,.th-score{display:none}}
 @media(max-width:640px){.hide-link,.th-link{display:none}}
 @media(max-width:640px){.brand>a{font-size:11px!important;padding:2px 6px!important;margin-left:3px!important}.input.search-in{min-width:120px}.btn-ghost,.btn-csv,.preset-btn,.col-toggle-btn{padding:2px 5px!important;font-size:9px!important;border-radius:4px!important}.toolbar{padding:4px 6px!important;gap:4px!important;flex-wrap:nowrap!important;overflow-x:auto!important}.toolbar-sect{gap:3px!important}}
 @media(max-width:640px){.topbar-inner{padding:6px 10px;gap:8px}.brand{gap:6px;flex-shrink:0}.brand>a{font-size:10px!important;padding:1px 5px!important;margin-left:2px!important}.logo{display:none}.brand-title{font-size:12px;white-space:nowrap}.brand-sub{display:none}.topright{gap:3px;font-size:10px}.refresh-tag{display:none}.wrap{padding:8px 2px 20px!important}}
@@ -440,9 +440,9 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
           <option value="pypct">前年Δ%</option>
           <option value="mc">市值</option>
           <option value="chg">今日Δ%</option>
-          <option value="p52">52週%</option>
+          <option value="fcf">FCF(億)</option>
           <option value="yo_pct">今年Δ%</option>
-          <option value="pe">PE</option>
+          <option value="fcfy">FCF%</option>
           <option value="vr">量比</option>
         </select>
         <button class="btn-ghost active" id="dirBtn" title="切換排序方向" onclick="sortBy(sortCol)">↓</button>
@@ -477,8 +477,8 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
             <label><input type="checkbox" data-col="np" checked onchange="toggleCol(this)"> 參與者</label>
             <label><input type="checkbox" data-col="mc" checked onchange="toggleCol(this)"> 市值</label>
             <label><input type="checkbox" data-col="chg" checked onchange="toggleCol(this)"> 今日Δ%</label>
-            <label><input type="checkbox" data-col="p52" checked onchange="toggleCol(this)"> 52週%</label>
-            <label><input type="checkbox" data-col="pe" checked onchange="toggleCol(this)"> PE</label>
+            <label><input type="checkbox" data-col="fcf" checked onchange="toggleCol(this)"> FCF(億)</label>
+            <label><input type="checkbox" data-col="fcfy" checked onchange="toggleCol(this)"> FCF%</label>
             <label><input type="checkbox" data-col="vr" checked onchange="toggleCol(this)"> 量比</label>
             <label><input type="checkbox" data-col="yo_pct" checked onchange="toggleCol(this)"> 今年Δ%</label>
             <label><input type="checkbox" data-col="score" checked onchange="toggleCol(this)"> ⭐評分</label>
@@ -539,8 +539,8 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
           <th class="sortable th-np" data-sort="np" onclick="sortBy('np',event)"><span>參與者</span><span class="sort-icon"></span></th>
           <th class="sortable th-mc" data-sort="mc" onclick="sortBy('mc',event)"><span>市值</span><span class="sort-icon"></span></th>
           <th class="sortable th-chg" data-sort="chg" onclick="sortBy('chg',event)"><span>今日Δ%</span><span class="sort-icon"></span></th>
-          <th class="sortable th-p52" data-sort="p52" onclick="sortBy('p52',event)"><span>52週%</span><span class="sort-icon"></span></th>
-          <th class="sortable th-pe" data-sort="pe" onclick="sortBy('pe',event)"><span>PE</span><span class="sort-icon"></span></th>
+          <th class="sortable th-fcf" data-sort="fcf" onclick="sortBy('fcf',event)"><span>FCF(億)</span><span class="sort-icon"></span></th>
+          <th class="sortable th-fcfy" data-sort="fcfy" onclick="sortBy('fcfy',event)"><span>FCF%</span><span class="sort-icon"></span></th>
           <th class="sortable th-link"><span>連結</span></th>
         </tr></thead>
         <tbody id="mcSmallTbody"></tbody>
@@ -573,8 +573,8 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
           <th class="sortable th-np" data-sort="np" onclick="sortBy('np',event)"><span>參與者</span><span class="sort-icon"></span></th>
           <th class="sortable th-mc" data-sort="mc" onclick="sortBy('mc',event)"><span>市值</span><span class="sort-icon"></span></th>
           <th class="sortable th-chg" data-sort="chg" onclick="sortBy('chg',event)"><span>今日Δ%</span><span class="sort-icon"></span></th>
-          <th class="sortable th-p52" data-sort="p52" onclick="sortBy('p52',event)"><span>52週%</span><span class="sort-icon"></span></th>
-          <th class="sortable th-pe" data-sort="pe" onclick="sortBy('pe',event)"><span>PE</span><span class="sort-icon"></span></th>
+          <th class="sortable th-fcf" data-sort="fcf" onclick="sortBy('fcf',event)"><span>FCF(億)</span><span class="sort-icon"></span></th>
+          <th class="sortable th-fcfy" data-sort="fcfy" onclick="sortBy('fcfy',event)"><span>FCF%</span><span class="sort-icon"></span></th>
           <th class="sortable th-link"><span>連結</span></th>
         </tr></thead>
         <tbody id="mcMidTbody"></tbody>
@@ -607,8 +607,8 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
           <th class="sortable th-np" data-sort="np" onclick="sortBy('np',event)"><span>參與者</span><span class="sort-icon"></span></th>
           <th class="sortable th-mc" data-sort="mc" onclick="sortBy('mc',event)"><span>市值</span><span class="sort-icon"></span></th>
           <th class="sortable th-chg" data-sort="chg" onclick="sortBy('chg',event)"><span>今日Δ%</span><span class="sort-icon"></span></th>
-          <th class="sortable th-p52" data-sort="p52" onclick="sortBy('p52',event)"><span>52週%</span><span class="sort-icon"></span></th>
-          <th class="sortable th-pe" data-sort="pe" onclick="sortBy('pe',event)"><span>PE</span><span class="sort-icon"></span></th>
+          <th class="sortable th-fcf" data-sort="fcf" onclick="sortBy('fcf',event)"><span>FCF(億)</span><span class="sort-icon"></span></th>
+          <th class="sortable th-fcfy" data-sort="fcfy" onclick="sortBy('fcfy',event)"><span>FCF%</span><span class="sort-icon"></span></th>
           <th class="sortable th-link"><span>連結</span></th>
         </tr></thead>
         <tbody id="mcLargeTbody"></tbody>
@@ -723,11 +723,11 @@ function shortLabel(lbl){
 }
 // P2: Composite score 0-10
 function calcScore(s){
-  var d5v=s.d5, aboveYO=s.lp&&s.yo&&s.lp>s.yo, p52=s.p52, vr=s.vr;
+  var d5v=s.d5, aboveYO=s.lp&&s.yo&&s.lp>s.yo, fcf=s.fcf, vr=s.vr;
   var sc=0;
   if(d5v!=null){sc+=d5v>0?2:(d5v<0?0:1);}
   if(aboveYO)sc+=2;
-  if(p52!=null)sc+=Math.round(p52/25);
+  if(fcf!=null && fcf>0)sc+=Math.min(Math.round(fcf/100), 4);
   if(vr!=null){sc+=vr>=3?2:(vr>=1.5?1:0);}
   return Math.min(sc,10);
 }
@@ -802,14 +802,15 @@ function getSortVal(s,col){
   if(col==='chg'){
     return s.chg != null ? s.chg : null;
   }
-  if(col==='p52'){
-    return s.p52 != null ? s.p52 : null;
+  if(col==='fcf'){
+    return s.fcf != null ? s.fcf : null;
   }
   if(col==='yo_pct'){
     return (s.lp!=null && s.yo) ? (s.lp/s.yo*100-100) : null;
   }
-  if(col==='pe'){
-    return s.pe != null ? s.pe : null;
+  if(col==='fcfy'){
+    var mc = s.mc, fcf = s.fcf;
+    return (mc && fcf && mc>0) ? (fcf / mc * 100) : null;
   }
   if(col==='vr'){
     return s.vr != null ? s.vr : null;
@@ -837,7 +838,7 @@ function cmpSortVal(va,vb,dir){
 function updateSortInfo(){
   var el=document.getElementById('sortInfo');
   if(!el)return;
-  var names={code:'代碼',n:'名稱',price:'現價',yo_pct:'今年Δ%',tp:'CCASS%',t5:'Top5%',t10:'Top10%',d5:'5日Δ',d20:'20日Δ',d60:'60日Δ',d120:'120日Δ',np:'參與者',mc:'市值',chg:'今日Δ%',p52:'52週%',pe:'PE',vr:'量比',sig:'信號',su:'連續增持',sd:'連續減持',yearyo:'🔺年開',prevyo:'😻前年',pypct:'前年Δ%',score:'⭐評分'};
+  var names={code:'代碼',n:'名稱',price:'現價',yo_pct:'今年Δ%',tp:'CCASS%',t5:'Top5%',t10:'Top10%',d5:'5日Δ',d20:'20日Δ',d60:'60日Δ',d120:'120日Δ',np:'參與者',mc:'市值',chg:'今日Δ%',fcf:'FCF(億)',fcfy:'FCF%',vr:'量比',sig:'信號',su:'連續增持',sd:'連續減持',yearyo:'🔺年開',prevyo:'😻前年',pypct:'前年Δ%',score:'⭐評分'};
   var p=names[sortCol]||sortCol,pa=sortDir===1?'▲':'▼';
   if(sortCol2){var sn=names[sortCol2]||sortCol2,sa=sortDir2===1?'▲':'▼';el.innerHTML='<b>'+p+' '+pa+'</b><span class=\"si-sep\">|</span><span style=\"opacity:.7\">'+sn+' '+sa+'</span>';}
   else el.innerHTML='<b>'+p+' '+pa+'</b>';
@@ -1179,8 +1180,8 @@ function renderTable(){
         +'<td class="hide-np"><span class="num">'+s.np+'</span></td>'
         +'<td class="hide-mc"><span class="num">'+fmtMC(s.mc)+'</span></td>'
         +'<td class="hide-chg">'+(s.chg!=null?'<span class="num '+deltaClass(s.chg)+'">'+fmtPct(s.chg)+'</span>':'<span class="num delta-null">—</span>')+'</td>'
-        +'<td class="hide-p52">'+(s.p52!=null?pbar(s.p52, s.p52>=70?'hi':s.p52>=30?'mid':'lo'):'<span class="mc-null">—</span>')+'</td>'
-        +'<td class="hide-pe"><span class="num">'+(s.pe!=null?s.pe.toFixed(1):'—')+'</span></td>'
+        +'<td class="hide-fcf"><span class="num">'+(s.fcf!=null?s.fcf.toFixed(0):'<span class="mc-null">—</span>')+'</span></td>'
+        +'<td class="hide-fcfy"><span class="num">'+(s.fcf!=null&&s.mc?(s.fcf/s.mc*100).toFixed(1)+'%':'<span class="mc-null">—</span>')+'</span></td>'
         +'<td class="hide-link" onclick="event.stopPropagation()">'+linkHtml+'</td>'
         +'</tr>';
     }).join('');
@@ -1237,9 +1238,9 @@ function renderTable(){
     var yoPct = s.lp!=null && s.yo ? (s.lp/s.yo*100-100) : null;
     var aboveYO = s.lp && s.yo && s.lp > s.yo;
     var d5class=s.d5!==null?(s.d5>0?'up':(s.d5<0?'dn':'muted')):'muted';
-    var valBadge=s.pe!=null?(s.pe>30?'<span class="sc-val-expensive">昂貴</span>':(s.pe>0&&s.pe<5?'<span class="sc-val-cheap">便宜</span>':'')):'';
+    var valBadge=null; /* FCF replaces PE */ //'<span class="sc-val-expensive">昂貴</span>':(s.pe>0&&s.pe<5?'<span class="sc-val-cheap">便宜</span>':'')):'';
     var d20class=s.d20!==null?(s.d20>0?'up':(s.d20<0?'dn':'muted')):'muted';
-    var valClass=s.pe!=null?(s.pe>30?' pe-expensive':(s.pe>0&&s.pe<5?' pe-cheap':'')):'';
+    var valClass=""; /* FCF replaces PE */ //' pe-expensive':(s.pe>0&&s.pe<5?' pe-cheap':'')):'';
     var ipoClass=hasIPO?' ipo-highlight':'';
     return '<div class="stock-card'+ipoClass+valClass+'" onclick="showDetail(\''+s.c+'\')">'
       +'<div class="sc-header">'
@@ -1419,9 +1420,9 @@ async function showDetail(code){
     +(s.chg!=null?'<div class="dmeta"><span class="dmeta-label">今日Δ%</span><span class="dmeta-val '+(s.chg>=0?'up':'dn')+'\">'+fmtPct(s.chg)+'</span></div>':'')
     +(s.hi52!=null?'<div class="dmeta"><span class="dmeta-label">52週高</span><span class="dmeta-val">'+(s.hi52<1?s.hi52.toFixed(3):s.hi52.toFixed(2))+'</span></div>':'')
     +(s.lo52!=null?'<div class="dmeta"><span class="dmeta-label">52週低</span><span class="dmeta-val">'+(s.lo52<1?s.lo52.toFixed(3):s.lo52.toFixed(2))+'</span></div>':'')
-    +(s.p52!=null?'<div class="dmeta"><span class="dmeta-label">52週位置</span><span class="dmeta-val">'+s.p52.toFixed(0)+'%</span></div>':'')
+    +(s.fcf!=null?'<div class="dmeta"><span class="dmeta-label">FCF</span><span class="dmeta-val">'+s.fcf.toFixed(0)+'億</span></div>':'')
     +(s.vol!=null?'<div class="dmeta"><span class="dmeta-label">成交額</span><span class="dmeta-val">'+(s.vol>=1e6?(s.vol/1e6).toFixed(1)+'M':(s.vol/1e3).toFixed(0)+'K')+'</span></div>':'')
-    +(s.pe!=null?'<div class="dmeta"><span class="dmeta-label">PE</span><span class="dmeta-val">'+s.pe.toFixed(1)+'</span></div>':'')
+    +(s.fcf!=null&&s.mc?'<div class="dmeta"><span class="dmeta-label">FCF%</span><span class="dmeta-val">'+(s.fcf/s.mc*100).toFixed(1)+'%</span></div>':'')
     +(s.beta!=null?'<div class="dmeta"><span class="dmeta-label">Beta</span><span class="dmeta-val">'+s.beta.toFixed(2)+'</span></div>':'')
     +(s.avg_vol!=null?'<div class="dmeta"><span class="dmeta-label">均成交</span><span class="dmeta-val">'+(s.avg_vol>=1e6?(s.avg_vol/1e6).toFixed(1)+'M':(s.avg_vol/1e3).toFixed(0)+'K')+'</span></div>':'')
     +'</div>'
