@@ -192,7 +192,7 @@ async function main(){
       if(!byCode[code]) byCode[code] = {code:code, name:p.name||'', corp:p.corp_type||'', items:[]};
       var sig = p.signal || {};
       byCode[code].items.push({
-        type: a.signal || sig.type || '',
+        type: sig.type || '',
         date: sig.date || (a.created_at||'').slice(0,10),
         gap_pct: sig.gap_pct, fvg_pct: sig.fvg_pct, breakout_pct: sig.breakout_pct,
         open: sig.open, close: sig.close, prev_high: sig.prev_high,
@@ -208,17 +208,17 @@ async function main(){
     var totalGap = alerts.filter(function(a){
       var p = (typeof a.payload==='string'?JSON.parse(a.payload):a.payload) || {};
       var sig = p.signal || {};
-      return (a.signal || sig.type || '') === '向上跳空缺口';
+      return sig.type === '向上跳空缺口';
     }).length;
     var totalFvg = alerts.filter(function(a){
       var p = (typeof a.payload==='string'?JSON.parse(a.payload):a.payload) || {};
       var sig = p.signal || {};
-      return (a.signal || sig.type || '') === '向上FVG';
+      return sig.type === '向上FVG';
     }).length;
     var totalPoc = alerts.filter(function(a){
       var p = (typeof a.payload==='string'?JSON.parse(a.payload):a.payload) || {};
       var sig = p.signal || {};
-      return (a.signal || sig.type || '') === '上破POC 12M';
+      return sig.type === '上破POC 12M';
     }).length;
 
     html += '<div class="summary-bar">';
