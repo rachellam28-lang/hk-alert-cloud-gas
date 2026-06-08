@@ -291,6 +291,8 @@ tbody tr{cursor:pointer}
 .sc-header .code{font-size:12px;font-weight:700}.sc-header .name{font-size:10px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-soft)}
 .sc-header .btn-save{font-size:13px;padding:0 2px;flex-shrink:0}
 .sc-badge{display:inline-flex;align-items:center;font-size:10px;background:var(--primary-soft);color:var(--primary);padding:1px 6px;border-radius:999px;font-weight:700;flex-shrink:0}
+.sc-val-expensive{display:inline-flex;align-items:center;font-size:10px;background:#fee2e2;color:#dc2626;padding:1px 6px;border-radius:999px;font-weight:700;flex-shrink:0}
+.sc-val-cheap{display:inline-flex;align-items:center;font-size:10px;background:#dcfce7;color:#16a34a;padding:1px 6px;border-radius:999px;font-weight:700;flex-shrink:0}
 .sc-metrics{display:flex;gap:2px;padding:3px 8px;background:var(--surface)}
 .sc-metric{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:1px;padding:2px 1px}
 .sc-metric-label{font-size:8px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.04em;line-height:1.3}
@@ -1234,6 +1236,7 @@ function renderTable(){
     var yoPct = s.lp!=null && s.yo ? (s.lp/s.yo*100-100) : null;
     var aboveYO = s.lp && s.yo && s.lp > s.yo;
     var d5class=s.d5!==null?(s.d5>0?'up':(s.d5<0?'dn':'muted')):'muted';
+    var valBadge=s.pe!=null?(s.pe>30?'<span class="sc-val-expensive">昂貴</span>':(s.pe>0&&s.pe<5?'<span class="sc-val-cheap">便宜</span>':'')):'';
     var d20class=s.d20!==null?(s.d20>0?'up':(s.d20<0?'dn':'muted')):'muted';
     var valClass=s.pe!=null?(s.pe>30?' pe-expensive':(s.pe>0&&s.pe<5?' pe-cheap':'')):'';
     var ipoClass=hasIPO?' ipo-highlight':'';
@@ -1243,7 +1246,7 @@ function renderTable(){
         +(s.su>1?'<span class="sc-streak up">🔥'+s.su+'</span>':'')
         +(s.sd>1?'<span class="sc-streak dn">❄️'+s.sd+'</span>':'')
         +'<span class="name" title="'+esc(s.n)+'">'+esc(s.n)+'</span>'
-        +(totalSigCount>0?'<span class="sc-badge">'+totalSigCount+'</span>':'')
+        +valBadge+(totalSigCount>0?'<span class="sc-badge">'+totalSigCount+'</span>':'')
         +'<button class="btn-save'+(saved?' saved':'')+'" data-code="'+esc(s.c)+'" data-name="'+esc(s.n)+'" data-signal="" data-date="" title="加入自選" onclick="event.stopPropagation()">'+(saved?'★':'☆')+'</button>'
       +'</div>'
       +'<div class="sc-metrics">'
