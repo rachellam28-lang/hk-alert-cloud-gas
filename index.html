@@ -54,6 +54,12 @@ tbody tr:last-child td{border-bottom:none}tbody tr:hover{background:var(--surfac
 tbody tr{cursor:pointer}
 .code{font:600 13px "JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
 .name{color:var(--text-soft);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;max-width:170px}
+
+.fcf-bars{display:inline-flex;align-items:flex-end;gap:2px;height:24px;vertical-align:middle;margin-left:6px}
+.fcf-bar{width:6px;border-radius:2px 2px 0 0;min-height:2px}
+.fcf-bar.up{background:#22c55e}
+.fcf-bar.dn{background:#ef4444}
+.fcf-bar.mid{background:#f59e0b}
 .num{font:600 12.5px "JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
 .delta-up{color:var(--up)}.delta-dn{color:var(--down)}.delta-null{color:var(--mute-2)}
 .streak{font-size:10px;margin-left:3px;white-space:nowrap}
@@ -682,6 +688,18 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
 <script>
 // --- helpers ---
 function esc(s){const d=document.createElement('div');d.appendChild(document.createTextNode(s));return d.innerHTML;}
+
+function fcfBars(data){
+  if(!data||data.length<2)return'';
+  var max=Math.max.apply(null,data.map(function(d){return Math.abs(d.fcf);}));
+  if(max===0)return'';
+  return'<span class="fcf-bars">'+data.map(function(d){
+    var h=Math.max(2,Math.round(Math.abs(d.fcf)/max*20));
+    var cls=d.fcf>=0?'up':'dn';
+    return'<span class="fcf-bar '+cls+'" style="height:'+h+'px" title="'+d.y+': '+d.fcf+'億"></span>';
+  }).join('')+'</span>';
+}
+
 function fmtPct(v){if(v==null)return'—';return (v>0?'+':'')+v.toFixed(2)+'%';}
 function fmtStreak(su,sd){
   if(su>1)return '<span class="streak" style="color:var(--up)">🔥'+su+'日</span>';
@@ -1179,7 +1197,7 @@ function renderTable(){
         +'<td class="hide-np"><span class="num">'+s.np+'</span></td>'
         +'<td class="hide-mc"><span class="num">'+fmtMC(s.mc)+'</span></td>'
         +'<td class="hide-chg">'+(s.chg!=null?'<span class="num '+deltaClass(s.chg)+'">'+fmtPct(s.chg)+'</span>':'<span class="num delta-null">—</span>')+'</td>'
-        +'<td class="hide-fcf"><span class="num">'+(s.fcf!=null?s.fcf.toFixed(0):'<span class="mc-null">—</span>')+'</span></td>'
+        +'<td class="hide-fcf"><span class="num">'+(s.fcf!=null?s.fcf.toFixed(0):'<span class="mc-null">—</span>')+'</span>'+(s.fcf5y?fcfBars(s.fcf5y):'')+'</td>'
         +'<td class="hide-fcfy"><span class="num">'+(s.fcf_trend==1?'↗':s.fcf_trend==-1?'↘':s.fcf_trend===0?'→':'—')+'</span></td>'
         +'<td class="hide-link" onclick="event.stopPropagation()">'+linkHtml+'</td>'
         +'</tr>';
