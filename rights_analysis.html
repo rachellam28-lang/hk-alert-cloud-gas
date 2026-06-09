@@ -83,6 +83,12 @@ tr:hover td { background: #161b22; }
   <div class="tab" onclick="filter('先舊後新')">先舊後新<span class="count">17</span></div>
 </div>
 
+<div style="padding:0 12px 6px">
+  <input type="text" placeholder="🔍 搜股票代碼或名稱..." oninput="doSearch(this)"
+   style="background:#161b22;color:#c9d1d9;border:1px solid #30363d;border-radius:4px;padding:5px 10px;font-size:11px;width:200px;outline:none"
+   onfocus="this.style.borderColor='#58a6ff'" onblur="this.style.borderColor='#30363d'">
+</div>
+
 <div class="table-wrap">
 <table id="mainTable">
 <thead>
@@ -147,26 +153,45 @@ function render(rows) {
   }).join('');
 }
 
+let searchTerm = '';
 let currentFilter = 'all';
+
+function getFilteredRows() {
+  let rows = DATA;
+  if (currentFilter !== 'all') {
+    if (['🔥 大股東著數','⚡ 有機會','➖ 中性','❄️ 不利'].includes(currentFilter))
+      rows = rows.filter(d => (d.analysis||{}).verdict === currentFilter);
+    else
+      rows = rows.filter(d => d.category === currentFilter);
+  }
+  if (searchTerm) {
+    let s = searchTerm.toLowerCase();
+    rows = rows.filter(d => d.code.includes(s) || d.name.toLowerCase().includes(s));
+  }
+  return rows;
+}
+
+function applyFilters() {
+  render(getFilteredRows());
+}
+
+function doSearch(el) {
+  searchTerm = el.value.trim();
+  applyFilters();
+}
+
 function filter(cat) {
   currentFilter = cat;
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   event.target.classList.add('active');
-  let rows;
-  if (cat === 'all') rows = DATA;
-  else if (['🔥 大股東著數','⚡ 有機會','➖ 中性','❄️ 不利'].includes(cat)) rows = DATA.filter(d => (d.analysis||{}).verdict === cat);
-  else rows = DATA.filter(d => d.category === cat);
-  render(rows);
+  applyFilters();
 }
 
 let sortCol = 9; let sortAsc = true; // default: sort by score desc
 function sortTable(col) {
   sortAsc = sortCol === col ? !sortAsc : (col === 9 ? true : false);
   sortCol = col;
-  let rows = currentFilter === 'all' ? [...DATA] : DATA.filter(d => {
-    if (['🔥 大股東著數','⚡ 有機會','➖ 中性','❄️ 不利'].includes(currentFilter)) return (d.analysis||{}).verdict === currentFilter;
-    return d.category === currentFilter;
-  });
+  let rows = getFilteredRows();
   const keys = ['date_parsed','code','name','category','price_num','market_price','discount_pct','amount_num','pct_num','analysis_score'];
   
   rows.sort((a,b) => {
