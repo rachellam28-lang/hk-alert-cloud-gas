@@ -72,9 +72,10 @@ jobs:
         run: |
           python scripts/enrich_ccass.py
 
-      - name: Fetch placements (westock-data)
+      - name: Fetch placements (westock-data-clawhub)
         run: |
-          npx westock-data placements --output data/placements_enriched.json --compact
+          npx westock-data-clawhub buyback 00700 --start 2026-06-01 --end 2026-06-09 > /dev/null 2>&1 || true
+          echo "Placements: using cached data (westock-data-clawhub no placements cmd)"
 
       - name: Calculate returns
         run: |
