@@ -11,7 +11,7 @@ from datetime import date, timedelta
 import pandas as pd
 
 PROJECT = Path(__file__).parent.parent
-DB = PROJECT / "ccass.db"
+DB = PROJECT / "holdings.db"
 
 BATCH = 100  # yfinance batch download size
 

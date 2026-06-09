@@ -5,9 +5,9 @@ import json, time, math
 from pathlib import Path
 from futu import OpenQuoteContext, RET_OK
 
-ROOT = Path(__file__).parent.parent.parent  # ccass-debug/
+ROOT = Path(__file__).parent.parent.parent  # holdings-debug/
 PRICES = ROOT / "data" / "stock_prices.json"
-CCASS = ROOT / "ccass.json"
+HOLDINGS = ROOT / "holdings.json"
 
 prices = json.loads(PRICES.read_text(encoding='utf-8'))
 codes = sorted(k for k,v in prices.items() if v.get('yo'))
@@ -77,18 +77,18 @@ def sanitize(obj):
 prices = sanitize(prices)
 PRICES.write_text(json.dumps(prices, ensure_ascii=False, indent=2), encoding='utf-8')
 
-# Update ccass.json
-ccass = json.loads(CCASS.read_text(encoding='utf-8'))
-for s in ccass['stocks']:
+# Update holdings.json
+holdings = json.loads(HOLDINGS.read_text(encoding='utf-8'))
+for s in holdings['stocks']:
     code = s['c']
     e = prices.get(code, {})
     for k in ['lp','mc','hi52','lo52','pe','vol','vr','chg','p52','py_pct']:
         if e.get(k) is not None:
             s[k] = e[k]
 
-ccass['stocks'] = sanitize(ccass['stocks'])
-tmp = CCASS.with_suffix('.tmp')
-tmp.write_text(json.dumps(ccass, ensure_ascii=False, indent=2), encoding='utf-8')
-tmp.replace(CCASS)
+holdings['stocks'] = sanitize(holdings['stocks'])
+tmp = HOLDINGS.with_suffix('.tmp')
+tmp.write_text(json.dumps(holdings, ensure_ascii=False, indent=2), encoding='utf-8')
+tmp.replace(HOLDINGS)
 
 print(f"Done: {counts}")

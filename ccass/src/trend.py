@@ -42,7 +42,7 @@ def compute_trends_for_date(target_date: date, windows: list[int] | None = None)
         if ref_dates[w] is not None:
             rd = ref_dates[w].strftime("%Y-%m-%d")
             ref_joins.append(
-                "LEFT JOIN ccass_daily AS ref{w} "
+                "LEFT JOIN holdings_daily AS ref{w} "
                 "ON cur.stock_code = ref{w}.stock_code "
                 "AND ref{w}.trade_date = ? "
                 "AND ref{w}.validation_failed = 0".format(w=w)
@@ -65,7 +65,7 @@ def compute_trends_for_date(target_date: date, windows: list[int] | None = None)
         "    cur.stock_code,\n"
         "    cur.trade_date,\n"
         "    {ref_select_block}\n"
-        "FROM ccass_daily AS cur\n"
+        "FROM holdings_daily AS cur\n"
         "{ref_join_block}\n"
         "WHERE cur.trade_date = ?\n"
         "  AND cur.validation_failed = 0"
@@ -100,7 +100,7 @@ def compute_trends_for_date(target_date: date, windows: list[int] | None = None)
     )
 
     insert_sql = (
-        "INSERT INTO ccass_trends\n"
+        "INSERT INTO holdings_trends\n"
         "    (stock_code, trade_date, {delta_cols}{extra_null_cols},\n"
         "     consecutive_increase_days, consecutive_decrease_days, computed_at)\n"
         "VALUES (?, ?, {placeholders}{extra_null_vals}, ?, ?, ?)\n"
@@ -145,7 +145,7 @@ def _consecutive_streak(conn, stock_code: str, end_date: date) -> tuple[int, int
     end_str = end_date.strftime("%Y-%m-%d")
     rows = conn.execute(
         """SELECT trade_date, total_pct, total_shares
-           FROM ccass_daily
+           FROM holdings_daily
            WHERE stock_code = ? AND trade_date <= ? AND validation_failed = 0
            ORDER BY trade_date DESC
            LIMIT 30""",

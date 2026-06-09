@@ -2,7 +2,7 @@
 import subprocess, json, os
 
 # Read token
-env_path = os.path.expanduser("~/Desktop/automatic/ccass-debug/.env")
+env_path = os.path.expanduser("~/Desktop/automatic/holdings-debug/.env")
 token = ""
 with open(env_path) as f:
     for line in f:

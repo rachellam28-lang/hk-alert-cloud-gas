@@ -2,7 +2,7 @@
 import subprocess, json, os
 
 def get_token():
-    for p in [os.path.expanduser("~/Desktop/automatic/ccass-debug/.env")]:
+    for p in [os.path.expanduser("~/Desktop/automatic/holdings-debug/.env")]:
         p = os.path.normpath(p)
         if os.path.exists(p):
             with open(p) as f:

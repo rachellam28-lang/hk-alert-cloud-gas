@@ -1,18 +1,18 @@
 #!/usr/bin/env python
-"""Longbridge CCASS backfill — sequential, single-process, ~8 calls/sec.
-Usage: CCASS_PROVIDER=longbridge python -u scripts/lb_backfill.py 2026-06-04 2026-06-03 2026-06-02 2026-06-01
+"""Longbridge HOLDINGS backfill — sequential, single-process, ~8 calls/sec.
+Usage: HOLDINGS_PROVIDER=longbridge python -u scripts/lb_backfill.py 2026-06-04 2026-06-03 2026-06-02 2026-06-01
 """
 import os, sys, time, sqlite3
 from datetime import date, datetime
 from pathlib import Path
 
-os.environ['CCASS_PROVIDER'] = 'longbridge'
+os.environ['HOLDINGS_PROVIDER'] = 'longbridge'
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from src.longbridge_provider import scrape_stock
 from src.scraper import save_snapshot
 
-DB_PATH = Path(__file__).resolve().parent.parent / 'ccass.db'
+DB_PATH = Path(__file__).resolve().parent.parent / 'holdings.db'
 CALL_DELAY = 1.0 / 8  # ~8 calls/sec
 
 def log(msg):
@@ -69,7 +69,7 @@ def backfill_date(target_date):
 
     # Verify
     db = sqlite3.connect(str(DB_PATH))
-    row = db.execute("SELECT COUNT(*) FROM ccass_daily WHERE trade_date=?", (date_str,)).fetchone()
+    row = db.execute("SELECT COUNT(*) FROM holdings_daily WHERE trade_date=?", (date_str,)).fetchone()
     log(f"DB count for {date_str}: {row[0]} stocks")
     db.close()
 

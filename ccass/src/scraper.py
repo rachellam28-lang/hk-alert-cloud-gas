@@ -1,6 +1,6 @@
-"""CCASS Scraper.
+"""HOLDINGS Scraper.
 
-HKEX CCASS Shareholding Search:
+HKEX HOLDINGS Shareholding Search:
   https://www3.hkexnews.hk/sdw/search/searchsdw.aspx
 
 呢個 endpoint 接受 POST，要傳 viewstate / eventvalidation token (ASP.NET form)。
@@ -37,7 +37,7 @@ DEBUG_DIR = Path(__file__).parent.parent / "debug"
 
 
 @dataclass
-class CCASSSnapshot:
+class HOLDINGSSnapshot:
     stock_code: str
     trade_date: str          # YYYY-MM-DD
     total_shares: int
@@ -47,11 +47,11 @@ class CCASSSnapshot:
 
 
 class HKEXBlockedError(RuntimeError):
-    """HKEX CCASS is blocking/rate-limiting this IP. Propagate to exit 2."""
+    """HKEX HOLDINGS is blocking/rate-limiting this IP. Propagate to exit 2."""
     pass
 
 
-class CCASSScraper:
+class HOLDINGSScraper:
     def __init__(
         self,
         user_agent: str,
@@ -94,7 +94,7 @@ class CCASSScraper:
         if "__VIEWSTATE" not in tokens:
             logger.warning("No __VIEWSTATE found. Page title: %s",
                            (soup.find("title") or "").get_text()[:80] if soup.find("title") else "")
-            raise RuntimeError("Cannot find __VIEWSTATE on CCASS search page")
+            raise RuntimeError("Cannot find __VIEWSTATE on HOLDINGS search page")
         logger.info("Got %d form tokens: %s", len(tokens), list(tokens.keys()))
         # Log form field names to diagnose structure changes
         all_inputs = [(el.get("name",""), el.get("type",""), el.get("value","")[:30] if el.get("value") else "")
@@ -123,7 +123,7 @@ class CCASSScraper:
         if (len(self._outcome_window) == self._outcome_window.maxlen
                 and bad_count >= self._abort_threshold):
             raise HKEXBlockedError(
-                f"HKEX CCASS appears DOWN or BLOCKING — "
+                f"HKEX HOLDINGS appears DOWN or BLOCKING — "
                 f"{bad_count}/{len(self._outcome_window)} recent requests failed. "
                 f"Aborting scrape."
             )
@@ -154,7 +154,7 @@ class CCASSScraper:
         # The last tuple entry is already a bool; the rest are substring tests.
         return any(m if isinstance(m, bool) else (m in head) for m in markers)
 
-    def scrape_stock(self, stock_code: str, query_date: date) -> Optional[CCASSSnapshot]:
+    def scrape_stock(self, stock_code: str, query_date: date) -> Optional[HOLDINGSSnapshot]:
         """
         Scrape 一隻股票一個日期。
         Returns None 如果 stock 唔存在 / 嗰日冇數據。
@@ -226,18 +226,18 @@ class CCASSScraper:
 
     def _parse(
         self, stock_code: str, query_date: date, html: str
-    ) -> Optional[CCASSSnapshot]:
-        """Parse CCASS HTML. 加 schema validation。"""
+    ) -> Optional[HOLDINGSSnapshot]:
+        """Parse HOLDINGS HTML. 加 schema validation。"""
         soup = BeautifulSoup(html, "lxml")
 
         # 1. 偵測「冇數據」: HKEX 會 render error message
-        err_block = soup.find("div", class_="ccass-search-msg")
+        err_block = soup.find("div", class_="holdings-search-msg")
         if err_block:
             msg_text = err_block.get_text(strip=True).lower()
             if "no record" in msg_text or "no data" in msg_text or "not found" in msg_text:
-                logger.info("No CCASS data for %s on %s", stock_code, query_date)
+                logger.info("No HOLDINGS data for %s on %s", stock_code, query_date)
                 return None
-            logger.debug("CCASS msg for %s: %s", stock_code, err_block.get_text(strip=True)[:200])
+            logger.debug("HOLDINGS msg for %s: %s", stock_code, err_block.get_text(strip=True)[:200])
         # Detect anti-bot / access-denied pages
         page_title = soup.find("title")
         if page_title:
@@ -247,9 +247,9 @@ class CCASSScraper:
                 return None
 
         # 2. 攞 total shareholding
-        # HKEX 用 <div class="ccass-search-total"> 包總數
+        # HKEX 用 <div class="holdings-search-total"> 包總數
         total_section = soup.find("div", id="pnlResultSummary") or soup.find(
-            "div", class_="ccass-search-result"
+            "div", class_="holdings-search-result"
         )
 
         total_shares = self._extract_total_shares(soup)
@@ -286,7 +286,7 @@ class CCASSScraper:
             )
             total_pct = max(0.0, min(100.0, total_pct))
 
-        return CCASSSnapshot(
+        return HOLDINGSSnapshot(
             stock_code=stock_code,
             trade_date=query_date.strftime("%Y-%m-%d"),
             total_shares=total_shares,
@@ -297,18 +297,18 @@ class CCASSScraper:
 
     @staticmethod
     def _extract_total_shares(soup: BeautifulSoup) -> Optional[int]:
-        """多層次 strategy 搵 CCASS total shareholding count。
+        """多層次 strategy 搵 HOLDINGS total shareholding count。
 
-        Strategy 1: 搵 ccass-search-total row 嘅 shareholding value
+        Strategy 1: 搵 holdings-search-total row 嘅 shareholding value
         Strategy 2: 搵 "Total number of Issued Shares/Warrants/Units" summary value
         Strategy 3: sum Market Intermediaries + Investor Participants
         """
-        # Strategy 1: ccass-search-total row
-        total_row = soup.find("div", class_="ccass-search-total")
+        # Strategy 1: holdings-search-total row
+        total_row = soup.find("div", class_="holdings-search-total")
         if total_row:
             val = total_row.find("div", class_="value")
             if val:
-                num = CCASSScraper._parse_number(val.get_text(strip=True))
+                num = HOLDINGSScraper._parse_number(val.get_text(strip=True))
                 if num and num > 0:
                     return num
         # Strategy 2: Total number of Issued Shares/Warrants/Units
@@ -317,7 +317,7 @@ class CCASSScraper:
         if label:
             summary_val = label.find_next("div", class_="summary-value")
             if summary_val:
-                num = CCASSScraper._parse_number(
+                num = HOLDINGSScraper._parse_number(
                     summary_val.get_text(strip=True))
                 if num and num > 0:
                     return num
@@ -337,7 +337,7 @@ class CCASSScraper:
                         parent.find_next("div", class_="value") or
                         parent.find_next("td"))
                 if body:
-                    num = CCASSScraper._parse_number(
+                    num = HOLDINGSScraper._parse_number(
                         body.get_text(strip=True))
                     if num and num > 0:
                         total += num
@@ -366,7 +366,7 @@ class CCASSScraper:
     @staticmethod
     def _extract_total_pct(soup: BeautifulSoup) -> Optional[float]:
         # Try Total row first
-        total_row = soup.find("div", class_="ccass-search-total")
+        total_row = soup.find("div", class_="holdings-search-total")
         if total_row:
             pct_div = total_row.find("div", class_="percent-of-participants")
             if pct_div:
@@ -436,7 +436,7 @@ class CCASSScraper:
                 )
             else:
                 continue
-            shares = CCASSScraper._parse_number(shares_txt)
+            shares = HOLDINGSScraper._parse_number(shares_txt)
             try:
                 pct = float(pct_txt.rstrip("%").strip())
             except ValueError:
@@ -511,7 +511,7 @@ def _compute_concentration_metrics(holdings: list[dict]) -> dict:
     }
 
 
-def save_snapshot(snap: CCASSSnapshot) -> None:
+def save_snapshot(snap: HOLDINGSSnapshot) -> None:
     """Write snapshot to DB. Idempotent (UPSERT)."""
     now_iso = datetime.utcnow().isoformat()
     # Compute top5/top10 concentration (raw — all participants)
@@ -529,7 +529,7 @@ def save_snapshot(snap: CCASSSnapshot) -> None:
         conn.execute("BEGIN IMMEDIATE")
         try:
             conn.execute(
-                """INSERT INTO ccass_daily
+                """INSERT INTO holdings_daily
                      (stock_code, trade_date, total_shares, total_pct,
                       num_participants, top5_pct, top10_pct,
                       adj_hhi, broker_top5_pct, top_broker_id, top_broker_name,
@@ -562,11 +562,11 @@ def save_snapshot(snap: CCASSSnapshot) -> None:
                 ),
             )
             conn.execute(
-                "DELETE FROM ccass_holdings WHERE stock_code = ? AND trade_date = ?",
+                "DELETE FROM holdings_holdings WHERE stock_code = ? AND trade_date = ?",
                 (snap.stock_code, snap.trade_date),
             )
             conn.executemany(
-                """INSERT INTO ccass_holdings
+                """INSERT INTO holdings_holdings
                      (stock_code, trade_date, participant_id, participant_name,
                       shares, pct_of_issued)
                    VALUES (?, ?, ?, ?, ?, ?)""",

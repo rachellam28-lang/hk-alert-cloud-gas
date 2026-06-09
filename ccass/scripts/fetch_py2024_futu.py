@@ -3,9 +3,9 @@ import json, time
 from futu import *
 
 # Load existing prices
-PROJECT = 'C:/Users/Administrator/Desktop/automatic/ccass-debug'
+PROJECT = 'C:/Users/Administrator/Desktop/automatic/holdings-debug'
 prices = json.load(open(f'{PROJECT}/data/stock_prices.json'))
-ccass = json.load(open(f'{PROJECT}/ccass.json'))
+holdings = json.load(open(f'{PROJECT}/holdings.json'))
 codes = sorted(k for k,v in prices.items() if v.get('yo'))  # only stocks with 2026 data
 
 print(f'Fetching 2024 year-open for {len(codes)} stocks via Futu...')
@@ -45,8 +45,8 @@ q.close()
 json.dump(prices, open(f'{PROJECT}/data/stock_prices.json','w'), ensure_ascii=False, indent=2)
 print(f'Done: {updated} updated, {failed} failed')
 
-# Update ccass.json
-for s in ccass['stocks']:
+# Update holdings.json
+for s in holdings['stocks']:
     code = s['c']
     if code in prices:
         p = prices[code]
@@ -55,8 +55,8 @@ for s in ccass['stocks']:
         if p.get('py_pct') is not None:
             s['py_pct'] = p['py_pct']
 
-json.dump(ccass, open(f'{PROJECT}/ccass.json','w'), ensure_ascii=False)
-print('ccass.json updated')
+json.dump(holdings, open(f'{PROJECT}/holdings.json','w'), ensure_ascii=False)
+print('holdings.json updated')
 
 # Verify
 for code in ['00700','00005','01808','00001','09988']:

@@ -309,7 +309,7 @@ def compute_dopamine() -> dict:
 
 
 def save_dopamine(result: dict) -> Path:
-    """Save to JSON file AND ccass.db dopamine_history table."""
+    """Save to JSON file AND holdings.db dopamine_history table."""
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     out = DATA_DIR / "dopamine.json"
     with open(out, "w", encoding="utf-8") as f:
@@ -318,7 +318,7 @@ def save_dopamine(result: dict) -> Path:
     # Also write to DB
     try:
         import sqlite3
-        db_path = DATA_DIR.parent / "ccass.db"
+        db_path = DATA_DIR.parent / "holdings.db"
         db = sqlite3.connect(str(db_path))
         c = result.get("components", {})
         db.execute(

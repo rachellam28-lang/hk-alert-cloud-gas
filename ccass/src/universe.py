@@ -1,6 +1,6 @@
 """Stock universe management.
 
-CCASS 公開 stock list 喺 HKEX 網站。我哋每星期 refresh 一次。
+HOLDINGS 公開 stock list 喺 HKEX 網站。我哋每星期 refresh 一次。
 """
 from __future__ import annotations
 
@@ -26,13 +26,13 @@ HKEX_STOCK_LIST_CN_URL = (
 )
 
 
-def fetch_all_hk_stocks_from_ccass() -> list[tuple[str, str]]:
+def fetch_all_hk_stocks_from_holdings() -> list[tuple[str, str]]:
     """
-    Fallback: 從 CCASS query page 攞 dropdown stock list。
+    Fallback: 從 HOLDINGS query page 攞 dropdown stock list。
     回傳 [(stock_code_5digit, name), ...]
 
     我哋實際上唔需要逐隻 hardcode。每日 scrape 時，
-    HKEX CCASS 系統會接受任何 5 位 stock code，invalid 嘅返回空。
+    HKEX HOLDINGS 系統會接受任何 5 位 stock code，invalid 嘅返回空。
 
     呢個 function 用 HKEX 嘅 stock list xlsx 作為 source of truth。
     會攞埋中文版 xlsx 嚟顯示中文公司名。
@@ -134,7 +134,7 @@ def fetch_all_hk_stocks_from_ccass() -> list[tuple[str, str]]:
 
 def refresh_universe() -> int:
     """Refresh stock_universe table. 回傳新增 stock 數量。"""
-    stocks = fetch_all_hk_stocks_from_ccass()
+    stocks = fetch_all_hk_stocks_from_holdings()
     now_iso = datetime.utcnow().isoformat()
     added = 0
 

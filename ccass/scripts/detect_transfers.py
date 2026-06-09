@@ -1,22 +1,22 @@
 """
-Detect CCASS 轉倉 (warehouse transfers) between last 2 trading days.
+Detect HOLDINGS 轉倉 (warehouse transfers) between last 2 trading days.
 Output: data/transfers.json — list of significant position changes.
 """
 import sqlite3, json, os
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).parent.parent
-DB_PATH = PROJECT_ROOT / "ccass.db"
+DB_PATH = PROJECT_ROOT / "holdings.db"
 OUT_PATH = PROJECT_ROOT / "data" / "transfers.json"
 
 db = sqlite3.connect(str(DB_PATH))
 
 # Get last 2 dates with actual data
 dates = [r[0] for r in db.execute(
-    "SELECT DISTINCT trade_date FROM ccass_holdings ORDER BY trade_date DESC LIMIT 5"
+    "SELECT DISTINCT trade_date FROM holdings_holdings ORDER BY trade_date DESC LIMIT 5"
 ).fetchall()]
 if len(dates) < 2:
-    print("ERROR: Not enough dates in ccass_holdings")
+    print("ERROR: Not enough dates in holdings_holdings")
     db.close()
     exit(1)
 d1, d2 = dates[0], dates[1]
@@ -28,8 +28,8 @@ changes = db.execute("""
            h1.shares - h2.shares AS share_chg,
            ROUND(h1.pct_of_issued - h2.pct_of_issued, 4) AS pct_chg,
            h1.shares AS today_shares
-    FROM ccass_holdings h1
-    JOIN ccass_holdings h2 
+    FROM holdings_holdings h1
+    JOIN holdings_holdings h2 
       ON h1.stock_code = h2.stock_code 
      AND h1.participant_id = h2.participant_id
     WHERE h1.trade_date = ? AND h2.trade_date = ?
@@ -56,23 +56,23 @@ for code, items in stock_changes.items():
     ins = [i for i in items if i['chg'] > 0]
     outs = [i for i in items if i['chg'] < 0]
     if ins and outs:
-        # Get stock name and total CCASS shares
+        # Get stock name and total HOLDINGS shares
         name_row = db.execute(
             "SELECT stock_name FROM stock_universe WHERE stock_code=?", (code,)
         ).fetchone()
         name = name_row[0] if name_row else code
         
-        # Get total CCASS shares on latest date
+        # Get total HOLDINGS shares on latest date
         total_shares_row = db.execute(
-            "SELECT SUM(shares) FROM ccass_holdings WHERE stock_code=? AND trade_date=?",
+            "SELECT SUM(shares) FROM holdings_holdings WHERE stock_code=? AND trade_date=?",
             (code, d1)
         ).fetchone()
         total_shares = total_shares_row[0] if total_shares_row[0] else 0
 
-        # Compute outstanding/issued shares from ccass_daily (total_pct)
+        # Compute outstanding/issued shares from holdings_daily (total_pct)
         outstanding_shares = total_shares  # fallback
         daily_row = db.execute(
-            "SELECT total_shares, total_pct FROM ccass_daily WHERE stock_code=? AND trade_date=?",
+            "SELECT total_shares, total_pct FROM holdings_daily WHERE stock_code=? AND trade_date=?",
             (code, d1)
         ).fetchone()
         if daily_row and daily_row[1] and daily_row[1] > 0:
@@ -99,7 +99,7 @@ print(f"Found {len(transfers)} stocks with transfers (top 50)")
 for t in transfers[:20]:
     print(f"  {t['code']} {t['name']}: in={t['total_in']:,.0f} out={t['total_out']:,.0f} from {len(t['ins'])}/{len(t['outs'])} participants")
 
-# Save to both ccass/data/ (source) and repo data/ (dashboard)
+# Save to both holdings/data/ (source) and repo data/ (dashboard)
 os.makedirs(OUT_PATH.parent, exist_ok=True)
 with open(OUT_PATH, 'w') as f:
     json.dump({

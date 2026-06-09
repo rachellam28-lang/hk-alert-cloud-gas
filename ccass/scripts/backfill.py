@@ -1,4 +1,4 @@
-"""Backfill 歷史 CCASS 數據 — simplified sequential version.
+"""Backfill 歷史 HOLDINGS 數據 — simplified sequential version.
 
 用法:
     python -m scripts.backfill --start 2024-01-01 --end 2024-12-31
@@ -25,7 +25,7 @@ from src.runner import run_daily
 logger = setup_logger("backfill")
 
 # ── PID lock: prevent multiple backfills running at once ──────────────
-LOCK_FILE = os.path.join(tempfile.gettempdir(), "ccass_backfill.lock")
+LOCK_FILE = os.path.join(tempfile.gettempdir(), "holdings_backfill.lock")
 
 
 def _acquire_lock() -> bool:

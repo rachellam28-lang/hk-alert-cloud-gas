@@ -17,7 +17,7 @@ if CACHE_PATH.exists():
     except: pass
 
 # Get codes
-db = sqlite3.connect(str(PROJECT_ROOT / "ccass.db"))
+db = sqlite3.connect(str(PROJECT_ROOT / "holdings.db"))
 codes = [r[0] for r in db.execute("SELECT stock_code FROM stock_universe ORDER BY stock_code").fetchall()]
 db.close()
 

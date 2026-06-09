@@ -125,7 +125,7 @@ th.sort-active{color:var(--primary)}.sort-icon{margin-left:4px;font-size:9px}
     <a style="font-size:12px;color:#b45309;margin-left:4px;padding:3px 9px;border:1px solid #fcd34d;border-radius:6px;white-space:nowrap;font-weight:600" href="./watchlist.html">⭐ 自選 →</a>
     <a style="font-size:12px;color:#6d28d9;margin-left:4px;padding:3px 9px;border:1px solid #c4b5fd;border-radius:6px;white-space:nowrap;font-weight:600" href="./history.html">🕐 歷史 →</a>
     <a style="font-size:12px;color:#b45309;margin-left:4px;padding:3px 9px;border:1px solid #fcd34d;border-radius:6px;white-space:nowrap;font-weight:600" href="./gap_fvg.html">⤴ Gap/FVG →</a>
-    <a style="font-size:12px;color:#0284c7;margin-left:4px;padding:3px 9px;border:1px solid #86efac;border-radius:6px;white-space:nowrap;font-weight:600" href="./index.html">📦 CCASS →</a>
+    <a style="font-size:12px;color:#0284c7;margin-left:4px;padding:3px 9px;border:1px solid #86efac;border-radius:6px;white-space:nowrap;font-weight:600" href="./index.html">📦 Market →</a>
     <a style="font-size:12px;color:#64748b;margin-left:4px;padding:3px 9px;border:1px solid var(--line);border-radius:6px;white-space:nowrap;font-weight:600" href="./guide.html">📖 說明書</a>
     <a style="font-size:12px;color:#15803d;margin-left:4px;padding:3px 9px;border:1px solid #86efac;border-radius:6px;white-space:nowrap;font-weight:600" href="./fundflow.html">💰 資金 →</a>
     <a style="font-size:12px;color:#0891b2;margin-left:4px;padding:3px 9px;border:1px solid #67e8f9;border-radius:6px;white-space:nowrap;font-weight:600" href="./rights_analysis.html">📋 供配股</a>
@@ -298,7 +298,7 @@ function renderTable(groups){
     `<div style="overflow-x:auto;-webkit-overflow-scrolling:touch"><table><thead><tr>
 <th class="sortable" data-sort="code">代號 / 名稱<span class="sort-icon"></span></th>
 <th class="sortable" data-sort="price">價格<span class="sort-icon"></span></th>
-<th class="sortable" data-sort="signal">信號 / 公告<select id="sigFilter" class="th-filter" onclick="event.stopPropagation()" onchange="ftype=this.value;applyFilter()"><option value="all">全部</option><option value="ipo_high">🚀 IPO首日高突破</option><option value="ipo_open">🚀 IPO首日開突破</option><option value="poc3">半年+12月+3年POC</option><option value="poc_half">半年POC</option><option value="yearopen">年開突破</option><option value="fvg">FVG</option><option value="ccass_up">CCASS增持</option><option value="ccass_dn">CCASS減持</option><option value="placement">配股</option><option value="increase">增持</option><option value="rights">供股</option></select><span class="sort-icon"></span></th>
+<th class="sortable" data-sort="signal">信號 / 公告<select id="sigFilter" class="th-filter" onclick="event.stopPropagation()" onchange="ftype=this.value;applyFilter()"><option value="all">全部</option><option value="ipo_high">🚀 IPO首日高突破</option><option value="ipo_open">🚀 IPO首日開突破</option><option value="poc3">半年+12月+3年POC</option><option value="poc_half">半年POC</option><option value="yearopen">年開突破</option><option value="fvg">FVG</option><option value="hkdata_up">Market增持</option><option value="hkdata_dn">Market減持</option><option value="placement">配股</option><option value="increase">增持</option><option value="rights">供股</option></select><span class="sort-icon"></span></th>
 <th class="sortable sort-active sort-desc" data-sort="date">最後出現<span class="sort-icon">▼</span></th>
 <th>連結</th>
 </tr></thead><tbody id="urows">${html}</tbody></table></div>`;
@@ -388,8 +388,8 @@ function applyFilter(){
     else if(ftype==='poc_half')ftOK=hasSig('半年POC');
     else if(ftype==='yearopen')ftOK=hasSig('年開突破');
     else if(ftype==='fvg')ftOK=hasSig('FVG');
-    else if(ftype==='ccass_up')ftOK=hasSig('CCASS增持');
-    else if(ftype==='ccass_dn')ftOK=hasSig('CCASS減持');
+    else if(ftype==='hkdata_up')ftOK=hasSig('Market增持');
+    else if(ftype==='hkdata_dn')ftOK=hasSig('Market減持');
     else if(ftype==='ipo_high')ftOK=hasSig('IPO首日高突破');
     else if(ftype==='ipo_open')ftOK=hasSig('IPO首日開突破');
     else if(ftype==='placement')ftOK=hasP;

@@ -3,7 +3,7 @@ import subprocess, json, os
 
 def get_token():
     for p in [
-        os.path.expanduser("~/Desktop/automatic/ccass-debug/.env"),
+        os.path.expanduser("~/Desktop/automatic/holdings-debug/.env"),
         os.path.join(os.path.dirname(__file__), "..", "..", ".env"),
     ]:
         p = os.path.normpath(p)

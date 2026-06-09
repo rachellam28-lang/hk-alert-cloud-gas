@@ -6,13 +6,13 @@ import sys, subprocess, os
 from pathlib import Path
 
 PROJECT = Path(__file__).parent.parent
-CCASS_DIR = PROJECT / "ccass"
+HOLDINGS_DIR = PROJECT / "holdings"
 REPO = PROJECT
 PYTHON = sys.executable  # use same Python that launched this script
 
 def run(cmd, cwd=None):
     print(f"  RUN: {' '.join(cmd)}")
-    r = subprocess.run(cmd, cwd=cwd or CCASS_DIR, capture_output=True, text=True)
+    r = subprocess.run(cmd, cwd=cwd or HOLDINGS_DIR, capture_output=True, text=True)
     if r.returncode != 0:
         print(f"  FAIL (rc={r.returncode}): {r.stderr[-300:]}")
     else:
@@ -27,8 +27,8 @@ def main():
     
     print(f"=== Post-backfill for {date} ===\n")
     
-    # 1. Regenerate ccass.json
-    print("[1/4] Regenerate ccass.json...")
+    # 1. Regenerate holdings.json
+    print("[1/4] Regenerate holdings.json...")
     run([PYTHON, "scripts/regenerate_json.py", "--date", date])
     
     # 2. Detect transfers
@@ -42,8 +42,8 @@ def main():
     # 4. Git push all
     print("\n[4/4] Push to GitHub...")
     os.chdir(REPO)
-    subprocess.run(["git", "add", "ccass.json", "data/"], capture_output=True)
-    r = subprocess.run(["git", "commit", "-m", f"post-backfill {date}: ccass.json + alerts + transfers"], capture_output=True, text=True)
+    subprocess.run(["git", "add", "holdings.json", "data/"], capture_output=True)
+    r = subprocess.run(["git", "commit", "-m", f"post-backfill {date}: holdings.json + alerts + transfers"], capture_output=True, text=True)
     print(f"  commit: {r.stdout.strip()}")
     subprocess.run(["git", "push"], capture_output=True)
     print("  pushed")

@@ -138,9 +138,9 @@ def detect_alerts(
         spikes = conn.execute(
             """SELECT t.stock_code, t.delta_5d_pct, t.delta_20d_pct,
                       u.stock_name, d.total_pct
-               FROM ccass_trends t
+               FROM holdings_trends t
                LEFT JOIN stock_universe u ON u.stock_code = t.stock_code
-               LEFT JOIN ccass_daily d ON d.stock_code = t.stock_code AND d.trade_date = t.trade_date
+               LEFT JOIN holdings_daily d ON d.stock_code = t.stock_code AND d.trade_date = t.trade_date
                WHERE t.trade_date = ?
                  AND ABS(t.delta_5d_pct) >= ?""",
             (date_str, spike_threshold_pct),
@@ -149,9 +149,9 @@ def detect_alerts(
         consecutive = conn.execute(
             """SELECT t.stock_code, t.consecutive_increase_days, t.consecutive_decrease_days,
                       t.delta_5d_pct, u.stock_name, d.total_pct
-               FROM ccass_trends t
+               FROM holdings_trends t
                LEFT JOIN stock_universe u ON u.stock_code = t.stock_code
-               LEFT JOIN ccass_daily d ON d.stock_code = t.stock_code AND d.trade_date = t.trade_date
+               LEFT JOIN holdings_daily d ON d.stock_code = t.stock_code AND d.trade_date = t.trade_date
                WHERE t.trade_date = ?
                  AND (t.consecutive_increase_days >= ? OR t.consecutive_decrease_days >= ?)""",
             (date_str, consecutive_days, consecutive_days),
@@ -212,10 +212,10 @@ def format_alert(a: dict) -> str:
 
     if atype == "spike_up":
         emoji = "🟢⬆️"
-        head = f"CCASS Spike UP"
+        head = f"HOLDINGS Spike UP"
     elif atype == "spike_down":
         emoji = "🔴⬇️"
-        head = f"CCASS Spike DOWN"
+        head = f"HOLDINGS Spike DOWN"
     elif atype == "consecutive_buy":
         emoji = "🟢🔥"
         head = f"Consecutive Buy ({a.get('streak_days')}日)"
@@ -231,7 +231,7 @@ def format_alert(a: dict) -> str:
         f"{emoji} <b>{head}</b>\n"
         f"<b>{code}</b> {name}\n"
         f"5日Δ: {delta_5d:+.2f}%  |  20日Δ: {delta_20d:+.2f}%\n"
-        f"CCASS 總持倉: {total_pct:.2f}%"
+        f"HOLDINGS 總持倉: {total_pct:.2f}%"
     )
 
 
@@ -288,7 +288,7 @@ def _format_summary(alerts: list[dict], target_date: date) -> str:
     for a in alerts:
         by_type.setdefault(a["alert_type"], []).append(a)
 
-    lines = [f"📊 <b>CCASS 異動 Summary</b> ({target_date})"]
+    lines = [f"📊 <b>HOLDINGS 異動 Summary</b> ({target_date})"]
     lines.append(f"總共 <b>{len(alerts)}</b> 條 alert（超過閾值，淨係 send summary）\n")
     for atype, items in by_type.items():
         lines.append(f"<b>{atype}</b>: {len(items)} 隻")
@@ -337,7 +337,7 @@ def _log_summary_sent(alerts: list[dict], target_date: date) -> None:
 
 
 def send_event_alerts(events: list[dict], trade_date: date) -> int:
-    """Send CCASS event alerts (deposit/transfer) via Telegram.
+    """Send HOLDINGS event alerts (deposit/transfer) via Telegram.
     Returns number of alerts sent. Stub — implement if Telegram push is needed.
     """
     return 0
@@ -352,5 +352,5 @@ def scan_alerts_for_date(target_date: date) -> int:
 def send_admin_alert(message: str) -> None:
     """系統錯誤通知 admin。"""
     admin = os.getenv("TELEGRAM_ADMIN_CHAT_ID") or os.getenv("TELEGRAM_CHAT_ID")
-    send_telegram(f"🚨 <b>CCASS Tracker</b>\n{message}", chat_id=admin)
+    send_telegram(f"🚨 <b>HOLDINGS Tracker</b>\n{message}", chat_id=admin)
 

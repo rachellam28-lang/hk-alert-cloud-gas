@@ -1,7 +1,7 @@
 """Get Longbridge HK popularity leaderboard data."""
 import subprocess, json, os
 
-env_path = os.path.expanduser("~/Desktop/automatic/ccass-debug/.env")
+env_path = os.path.expanduser("~/Desktop/automatic/holdings-debug/.env")
 token = ""
 with open(env_path) as f:
     for l in f:

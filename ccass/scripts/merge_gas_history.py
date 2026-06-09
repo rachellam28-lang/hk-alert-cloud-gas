@@ -1,10 +1,10 @@
 import json, os
 from collections import defaultdict
 
-backup_dir = r'C:\Users\Administrator\ccass-backups'
+backup_dir = r'C:\Users\Administrator\holdings-backups'
 
 # Step 1: Load existing history (keep as-is for rich data)
-existing_path = r'C:\Users\Administrator\Desktop\automatic\ccass-debug\data\history.json'
+existing_path = r'C:\Users\Administrator\Desktop\automatic\holdings-debug\data\history.json'
 existing = json.load(open(existing_path, encoding='utf-8'))
 existing_dates = set(d['date'] for d in existing.get('days', []))
 
@@ -86,7 +86,7 @@ for date_str in sorted(all_alerts.keys(), reverse=True):
 total = sum(len(d['alerts']) for d in days)
 output = {'ok': True, 'total': total, 'days': days}
 
-out_path = r'C:\Users\Administrator\Desktop\automatic\ccass-debug\data\history.json'
+out_path = r'C:\Users\Administrator\Desktop\automatic\holdings-debug\data\history.json'
 with open(out_path, 'w', encoding='utf-8') as f:
     json.dump(output, f, ensure_ascii=False, default=str)
 

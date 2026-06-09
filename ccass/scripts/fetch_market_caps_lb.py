@@ -6,7 +6,7 @@ DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 
 def get_token():
     for p in [
-        Path.home() / "Desktop" / "automatic" / "ccass-debug" / ".env",
+        Path.home() / "Desktop" / "automatic" / "holdings-debug" / ".env",
         DATA_DIR.parent / ".env",
     ]:
         if p.exists():

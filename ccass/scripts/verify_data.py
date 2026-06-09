@@ -1,5 +1,5 @@
 """
-CCASS Data Accuracy Verification System
+HOLDINGS Data Accuracy Verification System
 ========================================
 Runs after every backfill to verify data integrity.
 Usage:
@@ -79,7 +79,7 @@ def run_all_checks(conn: sqlite3.Connection, result: VerificationResult,
     # ── Check 6: Zero/missing participant counts ─────────────────────────
     _check_participant_counts(conn, result, filter_stock, filter_date)
 
-    # ── Check 7: Holdings per stock vs daily row existence ──────────────
+    # ── Check 7: holdings per stock vs daily row existence ──────────────
     _check_orphan_rows(conn, result, filter_stock, filter_date)
 
     # ── Check 8: Concentration metrics sanity ───────────────────────────
@@ -110,7 +110,7 @@ def _check_range_validation(conn, result, stock, date_val):
     # total_pct out of range
     rows = conn.execute(f"""
         SELECT stock_code, trade_date, total_pct, total_shares
-        FROM ccass_daily d
+        FROM holdings_daily d
         {where}
         AND (total_pct < {MIN_TOTAL_PCT} OR total_pct > {MAX_TOTAL_PCT})
         ORDER BY trade_date, stock_code
@@ -128,7 +128,7 @@ def _check_range_validation(conn, result, stock, date_val):
     # total_shares negative or zero for stocks that should have data
     rows = conn.execute(f"""
         SELECT stock_code, trade_date, total_shares
-        FROM ccass_daily d
+        FROM holdings_daily d
         {where}
         AND total_shares <= 0
         ORDER BY trade_date, stock_code
@@ -157,10 +157,10 @@ def _check_pct_consistency(conn, result, stock, date_val):
                ROUND(COALESCE(h.sum_pct, 0), 2) as holdings_sum_pct,
                ROUND(COALESCE(d.total_pct - h.sum_pct, 999), 2) as diff,
                d.total_shares
-        FROM ccass_daily d
+        FROM holdings_daily d
         LEFT JOIN (
             SELECT stock_code, trade_date, SUM(pct_of_issued) as sum_pct
-            FROM ccass_holdings
+            FROM holdings_holdings
             WHERE 1=1 {stock_where}
             GROUP BY stock_code, trade_date
         ) h ON d.stock_code = h.stock_code AND d.trade_date = h.trade_date
@@ -176,10 +176,10 @@ def _check_pct_consistency(conn, result, stock, date_val):
                    ROUND(COALESCE(h.sum_pct, 0), 2) as holdings_sum_pct,
                    ROUND(COALESCE(d.total_pct - h.sum_pct, 999), 2) as diff,
                    d.total_shares
-            FROM ccass_daily d
+            FROM holdings_daily d
             LEFT JOIN (
                 SELECT stock_code, trade_date, SUM(pct_of_issued) as sum_pct
-                FROM ccass_holdings
+                FROM holdings_holdings
                 WHERE stock_code = ?
                 GROUP BY stock_code, trade_date
             ) h ON d.stock_code = h.stock_code AND d.trade_date = h.trade_date
@@ -193,10 +193,10 @@ def _check_pct_consistency(conn, result, stock, date_val):
                    ROUND(COALESCE(h.sum_pct, 0), 2) as holdings_sum_pct,
                    ROUND(COALESCE(d.total_pct - h.sum_pct, 999), 2) as diff,
                    d.total_shares
-            FROM ccass_daily d
+            FROM holdings_daily d
             LEFT JOIN (
                 SELECT stock_code, trade_date, SUM(pct_of_issued) as sum_pct
-                FROM ccass_holdings
+                FROM holdings_holdings
                 WHERE trade_date = ?
                 GROUP BY stock_code, trade_date
             ) h ON d.stock_code = h.stock_code AND d.trade_date = h.trade_date
@@ -210,10 +210,10 @@ def _check_pct_consistency(conn, result, stock, date_val):
                    ROUND(COALESCE(h.sum_pct, 0), 2) as holdings_sum_pct,
                    ROUND(COALESCE(d.total_pct - h.sum_pct, 999), 2) as diff,
                    d.total_shares
-            FROM ccass_daily d
+            FROM holdings_daily d
             LEFT JOIN (
                 SELECT stock_code, trade_date, SUM(pct_of_issued) as sum_pct
-                FROM ccass_holdings
+                FROM holdings_holdings
                 GROUP BY stock_code, trade_date
             ) h ON d.stock_code = h.stock_code AND d.trade_date = h.trade_date
             WHERE d.total_pct > 0 AND COALESCE(h.sum_pct, 0) > 0
@@ -262,10 +262,10 @@ def _check_shares_consistency(conn, result, stock, date_val):
         SELECT d.stock_code, d.trade_date, d.total_shares,
                COALESCE(h.sum_shares, 0) as holdings_sum,
                ROUND(ABS(d.total_shares - COALESCE(h.sum_shares, 0)) * 100.0 / d.total_shares, 2) as pct_diff
-        FROM ccass_daily d
+        FROM holdings_daily d
         LEFT JOIN (
             SELECT stock_code, trade_date, SUM(shares) as sum_shares
-            FROM ccass_holdings
+            FROM holdings_holdings
             GROUP BY stock_code, trade_date
         ) h ON d.stock_code = h.stock_code AND d.trade_date = h.trade_date
         WHERE d.total_shares > 0 {base_where}
@@ -312,7 +312,7 @@ def _check_daily_jumps(conn, result, stock, date_val):
                    LAG(total_pct) OVER w as prev_pct,
                    LAG(total_shares) OVER w as prev_shares,
                    LAG(trade_date) OVER w as prev_date
-            FROM ccass_daily
+            FROM holdings_daily
             {stock_where}
             WINDOW w AS (PARTITION BY stock_code ORDER BY trade_date)
         )
@@ -379,7 +379,7 @@ def _check_coverage_gaps(conn, result, stock, date_val):
     # Get stock count per date
     rows = conn.execute(f"""
         SELECT trade_date, COUNT(*) as n_stocks
-        FROM ccass_daily
+        FROM holdings_daily
         {stock_where}
         GROUP BY trade_date
         ORDER BY trade_date
@@ -414,7 +414,7 @@ def _check_participant_counts(conn, result, stock, date_val):
 
     rows = conn.execute(f"""
         SELECT stock_code, trade_date, total_shares, num_participants
-        FROM ccass_daily d
+        FROM holdings_daily d
         {where}
         AND total_shares > 0
         AND (num_participants IS NULL OR num_participants = 0)
@@ -433,7 +433,7 @@ def _check_participant_counts(conn, result, stock, date_val):
 
     # Count total
     count_row = conn.execute(f"""
-        SELECT COUNT(*) FROM ccass_daily d
+        SELECT COUNT(*) FROM holdings_daily d
         {where}
         AND total_shares > 0
         AND (num_participants IS NULL OR num_participants = 0)
@@ -458,8 +458,8 @@ def _check_orphan_rows(conn, result, stock, date_val):
 
     rows = conn.execute(f"""
         SELECT d.stock_code, d.trade_date, d.total_shares, d.total_pct
-        FROM ccass_daily d
-        LEFT JOIN ccass_holdings h ON d.stock_code = h.stock_code AND d.trade_date = h.trade_date
+        FROM holdings_daily d
+        LEFT JOIN holdings_holdings h ON d.stock_code = h.stock_code AND d.trade_date = h.trade_date
         WHERE h.stock_code IS NULL {where_d}
         ORDER BY d.trade_date, d.stock_code
         LIMIT 50
@@ -476,8 +476,8 @@ def _check_orphan_rows(conn, result, stock, date_val):
 
     # Count
     count_row = conn.execute(f"""
-        SELECT COUNT(*) FROM ccass_daily d
-        LEFT JOIN ccass_holdings h ON d.stock_code = h.stock_code AND d.trade_date = h.trade_date
+        SELECT COUNT(*) FROM holdings_daily d
+        LEFT JOIN holdings_holdings h ON d.stock_code = h.stock_code AND d.trade_date = h.trade_date
         WHERE h.stock_code IS NULL {where_d}
     """, params_d).fetchone()
     if count_row and count_row[0] > 0:
@@ -491,7 +491,7 @@ def _check_concentration_metrics(conn, result, stock, date_val):
     # top5_pct > total_pct
     rows = conn.execute(f"""
         SELECT stock_code, trade_date, total_pct, top5_pct, top10_pct
-        FROM ccass_daily d
+        FROM holdings_daily d
         {where}
         AND top5_pct IS NOT NULL AND total_pct IS NOT NULL
         AND top5_pct > total_pct + 1
@@ -511,7 +511,7 @@ def _check_concentration_metrics(conn, result, stock, date_val):
     # top5_pct > top10_pct
     rows = conn.execute(f"""
         SELECT stock_code, trade_date, top5_pct, top10_pct
-        FROM ccass_daily d
+        FROM holdings_daily d
         {where}
         AND top5_pct IS NOT NULL AND top10_pct IS NOT NULL
         AND top5_pct > top10_pct + 1
@@ -544,17 +544,17 @@ def deep_check_stock(conn, stock_code: str) -> dict:
     # All daily rows
     rows = conn.execute("""
         SELECT trade_date, total_shares, total_pct, num_participants, top5_pct, top10_pct
-        FROM ccass_daily WHERE stock_code = ?
+        FROM holdings_daily WHERE stock_code = ?
         ORDER BY trade_date
     """, [stock_code]).fetchall()
 
     result["dates_checked"] = len(rows)
 
-    # Holdings sum per date
+    # holdings sum per date
     holdings = conn.execute("""
         SELECT trade_date, SUM(shares) as sum_shares, SUM(pct_of_issued) as sum_pct,
                COUNT(*) as n_participants
-        FROM ccass_holdings WHERE stock_code = ?
+        FROM holdings_holdings WHERE stock_code = ?
         GROUP BY trade_date ORDER BY trade_date
     """, [stock_code]).fetchall()
     holdings_map = {h[0]: h for h in holdings}
@@ -638,7 +638,7 @@ def _compute_summary_stats(conn, result: VerificationResult, stock, date_val):
     # Total stocks and dates
     row = conn.execute(f"""
         SELECT COUNT(DISTINCT stock_code), COUNT(DISTINCT trade_date), COUNT(*)
-        FROM ccass_daily
+        FROM holdings_daily
         {base_where}
     """, base_params).fetchone()
     result.stats["unique_stocks"] = row[0]
@@ -647,14 +647,14 @@ def _compute_summary_stats(conn, result: VerificationResult, stock, date_val):
 
     # NULL pct count
     row = conn.execute(f"""
-        SELECT COUNT(*) FROM ccass_daily
+        SELECT COUNT(*) FROM holdings_daily
         {base_where}{_and("total_pct IS NULL")}
     """, base_params).fetchone()
     result.stats["null_total_pct"] = row[0]
 
     # total_pct = 0 count
     row = conn.execute(f"""
-        SELECT COUNT(*) FROM ccass_daily
+        SELECT COUNT(*) FROM holdings_daily
         {base_where}{_and("total_pct = 0")}
     """, base_params).fetchone()
     result.stats["zero_total_pct"] = row[0]
@@ -662,7 +662,7 @@ def _compute_summary_stats(conn, result: VerificationResult, stock, date_val):
     # total_pct = 0 by date (for full scan)
     if not date_val and not stock:
         rows = conn.execute("""
-            SELECT trade_date, COUNT(*) FROM ccass_daily
+            SELECT trade_date, COUNT(*) FROM holdings_daily
             WHERE total_pct = 0
             GROUP BY trade_date ORDER BY COUNT(*) DESC
         """).fetchall()
@@ -671,7 +671,7 @@ def _compute_summary_stats(conn, result: VerificationResult, stock, date_val):
 
 # ── Main ────────────────────────────────────────────────────────────────
 def main():
-    parser = argparse.ArgumentParser(description="CCASS Data Verification")
+    parser = argparse.ArgumentParser(description="HOLDINGS Data Verification")
     parser.add_argument("--stock", help="Check a single stock (e.g. 00328)")
     parser.add_argument("--date", help="Check a single date (e.g. 2026-05-28)")
     parser.add_argument("--json", action="store_true", help="Machine-readable JSON output")
@@ -717,7 +717,7 @@ def _print_report(result: VerificationResult, stock: str | None, date_val: str |
     """Human-readable report."""
     scope = f"stock={stock}" if stock else (f"date={date_val}" if date_val else "ALL")
     print(f"{'='*70}")
-    print(f"  CCASS Data Verification Report — {scope}")
+    print(f"  HOLDINGS Data Verification Report — {scope}")
     print(f"{'='*70}")
 
     # Stats
@@ -779,7 +779,7 @@ def _print_deep_report(stock_code: str, result: dict):
     print(f"  Dates: {result['dates_checked']}")
     print(f"{'='*70}")
 
-    print(f"\n── Holdings Consistency ──")
+    print(f"\n── holdings Consistency ──")
     print(f"  {'Date':<12} {'Shares':>12} {'Pct%':>8} {'ImpliedIssued':>14} {'H-Shares':>12} {'H-Pct%':>8}")
     print(f"  {'-'*12} {'-'*12} {'-'*8} {'-'*14} {'-'*12} {'-'*8}")
     for entry in result["holdings_consistency"]:

@@ -6,13 +6,13 @@ import json, time, math
 from pathlib import Path
 from futu import OpenQuoteContext, KLType, RET_OK
 
-ROOT = Path(__file__).parent.parent.parent  # ccass-debug/
-CCASS = ROOT / "ccass.json"
+ROOT = Path(__file__).parent.parent.parent  # holdings-debug/
+HOLDINGS = ROOT / "holdings.json"
 PRICES = ROOT / "data" / "stock_prices.json"
 
 # Load
 prices = json.loads(PRICES.read_text(encoding='utf-8'))
-ccass = json.loads(CCASS.read_text(encoding='utf-8'))
+holdings = json.loads(HOLDINGS.read_text(encoding='utf-8'))
 codes = sorted(k for k,v in prices.items() if v.get('yo'))  # only active stocks
 print(f"Total active stocks: {len(codes)}")
 
@@ -73,9 +73,9 @@ q.close()
 # Final save
 PRICES.write_text(json.dumps(prices, ensure_ascii=False, indent=2), encoding='utf-8')
 
-# === Update ccass.json ===
-print("\n--- Updating ccass.json ---")
-for s in ccass['stocks']:
+# === Update holdings.json ===
+print("\n--- Updating holdings.json ---")
+for s in holdings['stocks']:
     code = s['c']
     if code in prices:
         p = prices[code]
@@ -83,7 +83,7 @@ for s in ccass['stocks']:
             s['lp'] = p['lp']
         if p.get('yo') is not None:
             s['yo'] = p['yo']
-        # Recompute yo_pct (not stored in ccass.json, computed client-side)
+        # Recompute yo_pct (not stored in holdings.json, computed client-side)
         # Recompute p52 if hi52/lo52 available
         if s.get('p52') is None and s.get('lp') and s.get('hi52') and s.get('lo52'):
             hi, lo, lp = s['hi52'], s['lo52'], s['lp']
@@ -99,16 +99,16 @@ def sanitize(obj):
     if isinstance(obj, list): return [sanitize(v) for v in obj]
     if isinstance(obj, float) and (math.isnan(obj) or math.isinf(obj)): return None
     return obj
-ccass['stocks'] = sanitize(ccass['stocks'])
+holdings['stocks'] = sanitize(holdings['stocks'])
 
-tmp = CCASS.with_suffix('.tmp')
-tmp.write_text(json.dumps(ccass, ensure_ascii=False, indent=2), encoding='utf-8')
-tmp.replace(CCASS)
+tmp = HOLDINGS.with_suffix('.tmp')
+tmp.write_text(json.dumps(holdings, ensure_ascii=False, indent=2), encoding='utf-8')
+tmp.replace(HOLDINGS)
 
 # Verify
 for code in ['00700','00005','01808','09988','00001']:
     p = prices.get(code, {})
-    s = next((x for x in ccass['stocks'] if x['c']==code), {})
+    s = next((x for x in holdings['stocks'] if x['c']==code), {})
     print(f"  {code}: lp={p.get('lp')}, yo={p.get('yo')}, py={p.get('py')}, py_pct={p.get('py_pct')}%")
 
 print(f"\nDone! lp={updated_lp}, yo={updated_yo}, failed={failed}")

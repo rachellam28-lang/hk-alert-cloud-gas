@@ -1,15 +1,15 @@
 """Scrape single stock in subprocess — returns full snapshot as JSON.
 
-Supports CCASS_PROVIDER env var:
+Supports HOLDINGS_PROVIDER env var:
   - unset / "hkex" → original HKEX scraper
   - "longbridge"   → Longbridge MCP API
 """
 import sys, json, os
-# Add PROJECT ROOT (ccass/) to sys.path so BOTH 'src.scraper' and scraper's
+# Add PROJECT ROOT (holdings/) to sys.path so BOTH 'src.scraper' and scraper's
 # internal 'from src.db import ...' work correctly.
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-PROVIDER = os.environ.get("CCASS_PROVIDER", "hkex").lower()
+PROVIDER = os.environ.get("HOLDINGS_PROVIDER", "hkex").lower()
 
 def main():
     stock_code = sys.argv[1]
@@ -44,14 +44,14 @@ def _scrape_hkex(stock_code, query_date):
     logging.root.setLevel(logging.WARNING)
     # Also suppress the scraper module's own logger (has explicit INFO level)
     logging.getLogger("scraper").setLevel(logging.WARNING)
-    from src.scraper import CCASSScraper, _compute_concentration_metrics
+    from src.scraper import HOLDINGSScraper, _compute_concentration_metrics
     from datetime import date
 
     delay_min = float(sys.argv[4]) if len(sys.argv) > 4 else 4.0
     delay_max = float(sys.argv[5]) if len(sys.argv) > 5 else 10.0
     timeout = int(sys.argv[6]) if len(sys.argv) > 6 else 30
     max_retries = int(sys.argv[7]) if len(sys.argv) > 7 else 3
-    s = CCASSScraper(user_agent, delay_min=delay_min, delay_max=delay_max, timeout=timeout, max_retries=max_retries)
+    s = HOLDINGSScraper(user_agent, delay_min=delay_min, delay_max=delay_max, timeout=timeout, max_retries=max_retries)
     dt = date.fromisoformat(query_date)
     snap = s.scrape_stock(stock_code, dt)
 

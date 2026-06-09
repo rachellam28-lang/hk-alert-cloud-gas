@@ -1,7 +1,7 @@
 """Check static_info + calc_indexes response shape."""
 import subprocess, json, os
 
-env = os.path.expanduser("~/Desktop/automatic/ccass-debug/.env")
+env = os.path.expanduser("~/Desktop/automatic/holdings-debug/.env")
 token = ""
 with open(env) as f:
     for l in f:

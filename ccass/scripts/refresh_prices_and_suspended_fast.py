@@ -18,7 +18,7 @@ from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 PROJECT_ROOT = Path(__file__).parent.parent
-DB_PATH = PROJECT_ROOT / "ccass.db"
+DB_PATH = PROJECT_ROOT / "holdings.db"
 SUSPENDED_PATH = PROJECT_ROOT / "data" / "suspended_stocks.json"
 PRICES_PATH = PROJECT_ROOT / "data" / "stock_prices.json"
 
@@ -36,8 +36,8 @@ if PRICES_PATH.exists():
 # ── Get all active stocks ──
 db = sqlite3.connect(str(DB_PATH))
 rows = db.execute("""
-    SELECT DISTINCT stock_code FROM ccass_daily 
-    WHERE trade_date = (SELECT MAX(trade_date) FROM ccass_daily)
+    SELECT DISTINCT stock_code FROM holdings_daily 
+    WHERE trade_date = (SELECT MAX(trade_date) FROM holdings_daily)
     ORDER BY stock_code
 """).fetchall()
 db.close()

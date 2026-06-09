@@ -1,5 +1,5 @@
 """
-Generate data/prices.json from ccass/data/stock_prices.json + stock_universe names.
+Generate data/prices.json from holdings/data/stock_prices.json + stock_universe names.
 Output format matches GAS ?format=json response so dashboard can consume it directly.
 
 The stock_prices.json is maintained daily by refresh_prices_and_suspended.py
@@ -16,7 +16,7 @@ from pathlib import Path
 from datetime import datetime
 
 PROJECT = Path(__file__).parent.parent
-DB = PROJECT / "ccass.db"
+DB = PROJECT / "holdings.db"
 PRICES_JSON = PROJECT / "data" / "stock_prices.json"
 OUT = PROJECT.parent / "data" / "prices.json"
 

@@ -1,6 +1,6 @@
 """
 Compute BOTH concentration metrics + trend deltas for dates with missing data.
-Uses ccass_holdings raw data — NO re-scraping needed.
+Uses holdings_holdings raw data — NO re-scraping needed.
 """
 from __future__ import annotations
 import sys, os
@@ -14,7 +14,7 @@ import sqlite3
 logger = setup_logger("compute_metrics")
 
 def compute_concentration_for_date(trade_date: str) -> int:
-    """Recompute concentration metrics from ccass_holdings for given date."""
+    """Recompute concentration metrics from holdings_holdings for given date."""
     conn = sqlite3.connect(str(DB_PATH))
     conn.row_factory = sqlite3.Row
     updated = 0
@@ -22,8 +22,8 @@ def compute_concentration_for_date(trade_date: str) -> int:
     # Get stocks that have holdings but missing metrics
     stocks = conn.execute("""
         SELECT DISTINCT h.stock_code
-        FROM ccass_holdings h
-        LEFT JOIN ccass_daily d ON h.stock_code = d.stock_code AND h.trade_date = d.trade_date
+        FROM holdings_holdings h
+        LEFT JOIN holdings_daily d ON h.stock_code = d.stock_code AND h.trade_date = d.trade_date
         WHERE h.trade_date = ?
           AND (d.adj_hhi IS NULL OR d.stock_code IS NULL)
     """, (trade_date,)).fetchall()
@@ -35,7 +35,7 @@ def compute_concentration_for_date(trade_date: str) -> int:
     for (stock_code,) in stocks:
         holdings = conn.execute("""
             SELECT participant_id, participant_name, shares, pct_of_issued
-            FROM ccass_holdings
+            FROM holdings_holdings
             WHERE trade_date = ? AND stock_code = ?
         """, (trade_date, stock_code)).fetchall()
         
@@ -72,13 +72,13 @@ def compute_concentration_for_date(trade_date: str) -> int:
         
         # Update or insert
         existing = conn.execute(
-            "SELECT stock_code FROM ccass_daily WHERE trade_date = ? AND stock_code = ?",
+            "SELECT stock_code FROM holdings_daily WHERE trade_date = ? AND stock_code = ?",
             (trade_date, stock_code)
         ).fetchone()
         
         if existing:
             conn.execute("""
-                UPDATE ccass_daily
+                UPDATE holdings_daily
                 SET adj_hhi = ?, broker_top5_pct = ?, top_broker_id = ?,
                     top_broker_name = ?, top_broker_pct = ?,
                     futu_pct = ?, a00005_pct = ?, adjusted_float = ?
@@ -92,7 +92,7 @@ def compute_concentration_for_date(trade_date: str) -> int:
             ))
         else:
             conn.execute("""
-                INSERT INTO ccass_daily (stock_code, trade_date, adj_hhi, broker_top5_pct,
+                INSERT INTO holdings_daily (stock_code, trade_date, adj_hhi, broker_top5_pct,
                     top_broker_id, top_broker_name, top_broker_pct,
                     futu_pct, a00005_pct, adjusted_float, validation_failed)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)
@@ -119,7 +119,7 @@ def main():
     dates = conn.execute("""
         SELECT trade_date, COUNT(*) as total,
                SUM(CASE WHEN adj_hhi IS NOT NULL THEN 1 ELSE 0 END) as with_metrics
-        FROM ccass_daily
+        FROM holdings_daily
         GROUP BY trade_date
         HAVING total > 100 AND with_metrics < total * 0.99
         ORDER BY trade_date
@@ -152,7 +152,7 @@ def main():
     rows = conn.execute("""
         SELECT trade_date, COUNT(*) as total,
                SUM(CASE WHEN adj_hhi IS NOT NULL THEN 1 ELSE 0 END) as with_metrics
-        FROM ccass_daily
+        FROM holdings_daily
         GROUP BY trade_date
         HAVING total > 100
         ORDER BY trade_date DESC LIMIT 15

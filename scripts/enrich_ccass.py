@@ -1,7 +1,7 @@
 """
 enrich_ccass.py — API-only enrichment (NO scraping)
 Reads CCASS from DB, enriches with Futu prices + westock deltas + FCF.
-Generates ccass.json for the dashboard.
+Generates holdings.json for the dashboard.
 """
 import json, sys, os, argparse
 from datetime import datetime, date
@@ -125,7 +125,7 @@ def load_breakthroughs():
 
 
 def build_ccass_json():
-    """Build complete ccass.json from DB + APIs."""
+    """Build complete holdings.json from DB + APIs."""
     init_db()
     
     # 1. Load latest CCASS from DB
@@ -237,7 +237,7 @@ def build_ccass_json():
     
     logger.info("Enriched: %d/%d stocks", enriched, len(stocks))
     
-    # 3. Build final ccass.json
+    # 3. Build final holdings.json
     result = {
         "updated": latest_date,
         "stock_count": len(stocks),
@@ -246,24 +246,24 @@ def build_ccass_json():
     }
     
     # Write
-    out_path = PROJ / "ccass.json"
+    out_path = PROJ / "holdings.json"
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(result, f, ensure_ascii=False)
     
-    logger.info("Written ccass.json: %d stocks, %d bytes", len(stocks), out_path.stat().st_size)
+    logger.info("Written holdings.json: %d stocks, %d bytes", len(stocks), out_path.stat().st_size)
     
-    # Also write to data/ccass.json for dashboard
-    data_out = PROJ / "data" / "ccass.json"
+    # Also write to data/holdings.json for dashboard
+    data_out = PROJ / "data" / "holdings.json"
     with open(data_out, "w", encoding="utf-8") as f:
         json.dump(result, f, ensure_ascii=False)
     
-    logger.info("Written data/ccass.json")
+    logger.info("Written data/holdings.json")
     return result
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--json-only", action="store_true", help="Only generate ccass.json (skip DB load)")
+    parser.add_argument("--json-only", action="store_true", help="Only generate holdings.json (skip DB load)")
     args = parser.parse_args()
     
     build_ccass_json()

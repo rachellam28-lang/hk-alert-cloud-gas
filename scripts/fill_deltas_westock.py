@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Fill d5/d20/d60/d120/yo in ccass.json using westock-data kline.
+Fill d5/d20/d60/d120/yo in holdings.json using westock-data kline.
 Batch-fetches 200-day kline for all stocks, computes price deltas.
 """
 
@@ -11,7 +11,7 @@ import time
 import re
 from pathlib import Path
 
-CCASS_JSON = Path(r'C:\Users\Administrator\Desktop\automatic\ccass-debug\ccass.json')
+CCASS_JSON = Path(r'C:\Users\Administrator\Desktop\automatic\ccass-debug\holdings.json')
 BATCH_SIZE = 20  # stocks per npx call
 DELAY = 2  # seconds between batches
 KLINE_DAYS = 200
@@ -115,12 +115,12 @@ def compute_deltas(kline_rows):
     return deltas
 
 def main():
-    print('Loading ccass.json...')
+    print('Loading holdings.json...')
     data = load_ccass()
     stocks = data.get('stocks', [])
     
     if not stocks:
-        print('No stocks in ccass.json!')
+        print('No stocks in holdings.json!')
         return
     
     # Get all codes

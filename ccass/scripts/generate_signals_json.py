@@ -18,8 +18,8 @@ import json
 from pathlib import Path
 from datetime import datetime
 
-PROJECT = Path(__file__).parent.parent  # ccass/
-ROOT = PROJECT.parent                    # ccass-debug/
+PROJECT = Path(__file__).parent.parent  # holdings/
+ROOT = PROJECT.parent                    # holdings-debug/
 DATA = ROOT / "data"
 SCANNER = ROOT / "scanner"
 OUT = DATA / "signals.json"

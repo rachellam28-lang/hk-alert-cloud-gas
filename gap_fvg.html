@@ -182,7 +182,7 @@ async function main(){
 
   try {
     var r1 = await fetch('./data/alerts.json?_='+Date.now());
-    var r2 = await fetch('./ccass.json?_='+Date.now());
+    var r2 = await fetch('./holdings.json?_='+Date.now());
     var r3 = await fetch('./data/transfers.json?_='+Date.now());
 
     // ─── 1. Gap/FVG/POC alerts ───
@@ -280,7 +280,7 @@ async function main(){
     html += '</div>';
     html += '</main><aside class="side-rail">';
 
-    // ─── 2. 量比警報 (from ccass.json) ───
+    // ─── 2. 量比警報 (from holdings.json) ───
     if(r2.ok){
       html += '<div class="sec"><div class="sec-title">📊 量比警報</div>';
       html += '<div class="sec-sub">量比≥2 · '+ranked.length+'隻</div>';
@@ -446,11 +446,11 @@ function renderConfluence(data){
   // Sort each group by signal_count desc
   for(var k in patGroups){ patGroups[k].sort(function(a,b){ return (b.signal_count||0)-(a.signal_count||0); }); }
 
-  // Sort pattern sections by actual year gains from CCASS data
+  // Sort pattern sections by actual year gains from Market data
   var patLabels={'catalyst':'🚀 催化','dual':'💎 雙向','frontrun':'🦆 搶跑'};
   var patColors={'catalyst':'#15803d','dual':'#6d28d9','frontrun':'#991b1b'};
   var patBg={'catalyst':'#dcfce7','dual':'#ede9fe','frontrun':'#fef2f2'};
-  // Build price change map from global CCASS data
+  // Build price change map from global Market data
   var pyMap={}, chgMap={};
   (window._ccassStocks||[]).forEach(function(s){ pyMap[s.c]=s.py_pct||0; chgMap[s.c]=s.chg||0; });
   var patOrder=[];

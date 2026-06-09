@@ -1,6 +1,6 @@
 """
 Fetch ALL available market data from Futu gateway:
-mc, hi52, lo52, pe, vol → compute p52, and enrich ccass.json.
+mc, hi52, lo52, pe, vol → compute p52, and enrich holdings.json.
 """
 import json, time, sys
 from pathlib import Path
@@ -8,7 +8,7 @@ from futu import OpenQuoteContext, RET_OK
 
 ROOT = Path(__file__).parent.parent
 CACHE = ROOT / "ccass" / "cache" / "enrich_futu.json"
-CCASS_JSON = ROOT / "ccass.json"
+CCASS_JSON = ROOT / "holdings.json"
 
 # Load existing cache
 cache = {}
@@ -18,7 +18,7 @@ if CACHE.exists():
     except:
         pass
 
-# Load ccass.json
+# Load holdings.json
 with open(CCASS_JSON) as f:
     ccass = json.load(f)
 
@@ -121,7 +121,7 @@ quote_ctx.close()
 CACHE.parent.mkdir(parents=True, exist_ok=True)
 CACHE.write_text(json.dumps(cache, ensure_ascii=False))
 
-# Now enrich ccass.json
+# Now enrich holdings.json
 for s in ccass['stocks']:
     c = s['c']
     entry = cache.get(c, {})

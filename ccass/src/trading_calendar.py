@@ -1,6 +1,6 @@
 """Hong Kong trading calendar helpers.
 
-CCASS 喺非交易日唔更新。如果 cron 跑出空數據，pipeline 唔好當失敗。
+HOLDINGS 喺非交易日唔更新。如果 cron 跑出空數據，pipeline 唔好當失敗。
 """
 from __future__ import annotations
 

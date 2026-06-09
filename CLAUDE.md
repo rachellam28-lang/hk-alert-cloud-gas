@@ -1,4 +1,4 @@
-# CCASS Tracker — Hermes / Codex 常設合約
+# HOLDINGS Tracker — Hermes / Codex 常設合約
 
 > 限制愈清晰，自主性愈高。你寫清楚邊界，AI 喺邊界內就敢自主行動。
 > 每月第 1 個星期一 review + 更新此文件。
@@ -15,10 +15,10 @@
 - 唔理係咩情況、咩原因，FATAL-001 不可繞過
 
 ### FATAL-002：禁止破壞 production database
-- 根因：`ccass.db` 係唯一 source of truth，任何 DROP/DELETE/ALTER 可能導致數據永久丟失，backfill 成本極高（數日 runtime）
-- `ccass.db` 係 source of truth
+- 根因：`holdings.db` 係唯一 source of truth，任何 DROP/DELETE/ALTER 可能導致數據永久丟失，backfill 成本極高（數日 runtime）
+- `holdings.db` 係 source of truth
 - 只可以 INSERT / UPDATE / ADD COLUMN / SELECT
-- Migration 前必須先 backup：`cp ccass.db ccass.db.backup.$(date +%Y%m%d_%H%M%S)`
+- Migration 前必須先 backup：`cp holdings.db holdings.db.backup.$(date +%Y%m%d_%H%M%S)`
 - Never DROP TABLE, never DROP COLUMN, never DELETE without user explicit approval
 
 ### FATAL-003（2026-05-23 修訂）：Parallel scraping 限制
@@ -48,12 +48,12 @@
 - 例如：fix root cause in scraper vs adding try/except wrapper
 
 ### GUIDELINE-002：Codex review before merge
-- 所有 CCASS 代碼改動 → Codex review first（除非 Codex block 咗）
+- 所有 HOLDINGS 代碼改動 → Codex review first（除非 Codex block 咗）
 - 用戶 directive：「你問左 codex 先好 action」
 
 ### GUIDELINE-003：Ask Codex first, don't over-specify
 - 俾 Codex 自主決定 implementation detail
-- 用戶 directive：「所有叫 codex 攪」、「ccass 所有比 codex 決策」
+- 用戶 directive：「所有叫 codex 攪」、「holdings 所有比 codex 決策」
 
 ### GUIDELINE-004：Small-cap data = priority
 - 100% market cap coverage matters
@@ -90,10 +90,10 @@
 ### 代碼質量
 - 改完 `.py` → 即刻 clear `.pyc` cache + test run
 - Silent corruption（冇 error 但有錯 data）最危險 → 加 validation check
-- 每次 parse CCASS data 後 check 數字範圍係咪合理
+- 每次 parse HOLDINGS data 後 check 數字範圍係咪合理
 
-### CCASS 特定
-- 香港公眾假期 CCASS 冇更新 → cron 跑出空數據要 skip，唔好當 fail
+### HOLDINGS 特定
+- 香港公眾假期 HOLDINGS 冇更新 → cron 跑出空數據要 skip，唔好當 fail
 - HTML 結構會改 → 加 schema validation，唔好只 check format
 - 如果 scrape 失敗率突然升高 → 檢查係咪 HTML structure changed
 
@@ -104,7 +104,7 @@
 每日 cron job（Hermes `cronjob` tool）：
 - **時間**: 每日 HKEX update 後（約 7am HKT）
 - **任務**:
-  1. Scrape 當日 CCASS data（如有）
+  1. Scrape 當日 HOLDINGS data（如有）
   2. 計算 5d/20d 持倉變化趨勢
   3. 檢測異常變動（大手增減 ≥5%）
   4. Generate alert summary → Telegram
@@ -137,15 +137,15 @@
 
 ```
 # 1. Clear stale caches + lock
-rm -rf ccass/src/__pycache__ ccass/scripts/__pycache__
-rm -f /tmp/ccass_backfill.lock
+rm -rf holdings/src/__pycache__ holdings/scripts/__pycache__
+rm -f /tmp/holdings_backfill.lock
 
 # 2. Clear stale .pyc from ALL directories
-find ccass-debug -name "*.pyc" -delete
-find ccass-debug -name "__pycache__" -type d -exec rm -rf {} +
+find holdings-debug -name "*.pyc" -delete
+find holdings-debug -name "__pycache__" -type d -exec rm -rf {} +
 
 # 3. Run sequential backfill (NEVER parallel)
-cd ccass && python -m scripts.backfill --start 2026-05-26 --end 2026-05-27
+cd holdings && python -m scripts.backfill --start 2026-05-26 --end 2026-05-27
 
 # 4. After scrape, compute missing concentration metrics
 python -m scripts.compute_metrics
@@ -164,7 +164,7 @@ python -m scripts.compute_metrics
 |---|---|---|
 | `.pyc` cache stale | New metrics all NULL | Clear `__pycache__/` before backfill |
 | Codex Cloudflare block | 403 from HK IP | Wait for IP cool-down; use Hermes meanwhile |
-| CCASS HTML structure change | XPath matches wrong column | Schema validation: check value ranges |
+| HOLDINGS HTML structure change | XPath matches wrong column | Schema validation: check value ranges |
 | Windows curl + Chinese = GBK | Crash UTF-8 server | Use browser fetch() or Python urllib |
 | Parallel scrape → WAF ban | All scrapers dead | FATAL-003: subprocess shard only, staggered starts |
 | **cloudscraper JS engine hang** | Infinite hang, ~10s→∞ | **2026-05-27: REMOVED. Plain `requests` works — HKEX no Cloudflare.** |

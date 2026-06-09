@@ -7,7 +7,7 @@ with open('data/announcements.json') as f:
 
 targets = ['00476', '08120', '01153', '00020', '00524', '01380']
 
-print('=== Webb-site pnotes 24/4/2026 x CCASS Confluence ===')
+print('=== Webb-site pnotes 24/4/2026 x HOLDINGS Confluence ===')
 print()
 
 for code in targets:

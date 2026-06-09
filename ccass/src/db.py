@@ -8,7 +8,7 @@ from datetime import datetime
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).parent.parent
-DB_PATH = PROJECT_ROOT / "ccass.db"
+DB_PATH = PROJECT_ROOT / "holdings.db"
 SCHEMA_PATH = PROJECT_ROOT / "db" / "schema.sql"
 BACKUP_DIR = PROJECT_ROOT / "backups"
 
@@ -21,13 +21,13 @@ def init_db(db_path: Path = DB_PATH) -> None:
         # Migration: add top5_pct/top10_pct for existing DBs
         for col in ("top5_pct", "top10_pct"):
             try:
-                conn.execute(f"ALTER TABLE ccass_daily ADD COLUMN {col} REAL")
+                conn.execute(f"ALTER TABLE holdings_daily ADD COLUMN {col} REAL")
             except sqlite3.OperationalError:
                 pass
         # Migration: add delta_60d_pct/delta_120d_pct for existing DBs
         for col in ("delta_60d_pct", "delta_120d_pct", "delta_60d_shares", "delta_120d_shares"):
             try:
-                conn.execute(f"ALTER TABLE ccass_trends ADD COLUMN {col} REAL")
+                conn.execute(f"ALTER TABLE holdings_trends ADD COLUMN {col} REAL")
             except sqlite3.OperationalError:
                 pass
         # Migration: Sentinel Option A concentration metric columns
@@ -35,7 +35,7 @@ def init_db(db_path: Path = DB_PATH) -> None:
                     "top_broker_pct", "futu_pct", "a00005_pct", "adjusted_float"):
             col_type = "INTEGER" if col == "adjusted_float" else "TEXT" if col.endswith("_id") or col.endswith("_name") else "REAL"
             try:
-                conn.execute(f"ALTER TABLE ccass_daily ADD COLUMN {col} {col_type}")
+                conn.execute(f"ALTER TABLE holdings_daily ADD COLUMN {col} {col_type}")
             except sqlite3.OperationalError:
                 pass
 
@@ -46,7 +46,7 @@ def backup_db(db_path: Path = DB_PATH) -> Path:
         raise FileNotFoundError(f"No DB at {db_path}")
     BACKUP_DIR.mkdir(exist_ok=True)
     ts = datetime.now().strftime("%Y%m%d_%H%M%S")
-    dest = BACKUP_DIR / f"ccass.db.bak.{ts}"
+    dest = BACKUP_DIR / f"holdings.db.bak.{ts}"
     shutil.copy2(db_path, dest)
     return dest
 

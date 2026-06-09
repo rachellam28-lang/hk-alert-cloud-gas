@@ -7,7 +7,7 @@ from pathlib import Path
 # Load token from .env (the approach that works)
 ENV_PATH = Path(__file__).resolve().parent.parent.parent / '.env'
 if not ENV_PATH.exists():
-    ENV_PATH = Path.home() / 'Desktop' / 'automatic' / 'ccass-debug' / '.env'
+    ENV_PATH = Path.home() / 'Desktop' / 'automatic' / 'holdings-debug' / '.env'
 
 token = None
 with open(ENV_PATH) as f:
@@ -21,14 +21,14 @@ if not token:
     sys.exit(1)
 
 os.environ['LONGBRIDGE_ACCESS_TOKEN'] = token
-os.environ['CCASS_PROVIDER'] = 'longbridge'
+os.environ['HOLDINGS_PROVIDER'] = 'longbridge'
 
 # Now import
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from src.longbridge_provider import scrape_stock
 from src.scraper import save_snapshot
 
-DB_PATH = Path(__file__).resolve().parent / 'ccass.db'
+DB_PATH = Path(__file__).resolve().parent / 'holdings.db'
 CALL_DELAY = 1.0 / 8
 
 def log(msg):
@@ -83,7 +83,7 @@ def backfill_date(target_date):
     log(f"DONE {date_str}: scraped={scraped} empty={empty} failed={failed} in {elapsed_total:.0f}s")
 
     db = sqlite3.connect(str(DB_PATH))
-    row = db.execute("SELECT COUNT(*) FROM ccass_daily WHERE trade_date=?", (date_str,)).fetchone()
+    row = db.execute("SELECT COUNT(*) FROM holdings_daily WHERE trade_date=?", (date_str,)).fetchone()
     log(f"DB: {row[0]} stocks for {date_str}")
     db.close()
 

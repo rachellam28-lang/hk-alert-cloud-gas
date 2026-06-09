@@ -1,9 +1,9 @@
-"""Verify ccass.json data integrity — JSON, coverage, price sanity."""
+"""Verify holdings.json data integrity — JSON, coverage, price sanity."""
 import json, sys, math
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).parent.parent.parent
-CCASS_JSON = PROJECT_ROOT / "ccass.json"
+HOLDINGS_JSON = PROJECT_ROOT / "holdings.json"
 
 THRESHOLDS = {
     "py_pct_max": 1000,   # >1000% likely share consolidation
@@ -17,7 +17,7 @@ warnings = []
 
 # ── 1. Load & validate JSON ──
 try:
-    raw = CCASS_JSON.read_text(encoding="utf-8")
+    raw = HOLDINGS_JSON.read_text(encoding="utf-8")
     if "NaN" in raw:
         errors.append("NaN found in raw JSON")
     data = json.loads(raw)

@@ -1,4 +1,4 @@
-"""Fetch year-open (2024+2026) + latest price for all CCASS stocks via yfinance.
+"""Fetch year-open (2024+2026) + latest price for all HOLDINGS stocks via yfinance.
 Stores in data/stock_prices.json for dashboard.
 HK stock code "00001" → yfinance symbol "0001.HK" (drop leading zero).
 
@@ -13,7 +13,7 @@ from pathlib import Path
 from datetime import date
 
 PROJECT = Path(__file__).parent.parent
-DB = PROJECT / "ccass.db"
+DB = PROJECT / "holdings.db"
 OUT = PROJECT.parent / "data" / "stock_prices.json"
 
 def fetch_all():

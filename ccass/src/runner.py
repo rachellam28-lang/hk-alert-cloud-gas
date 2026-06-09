@@ -6,7 +6,7 @@ Workflow:
 3. Scrape 全部股票
 4. Compute trends
 5. Detect alerts → Telegram
-6. Detect CCASS events (deposit/transfer) → Telegram
+6. Detect HOLDINGS events (deposit/transfer) → Telegram
 7. Log run metadata
 """
 from __future__ import annotations
@@ -29,11 +29,11 @@ from src.db import init_db, get_conn
 from src.logger import setup_logger
 from src.trading_calendar import today_hk, is_trading_day, previous_trading_day
 from src.universe import refresh_universe, get_active_stocks
-from src.scraper import CCASSScraper, save_snapshot, HKEXBlockedError
+from src.scraper import HOLDINGSScraper, save_snapshot, HKEXBlockedError
 from src.trend import compute_trends_for_date
 from src.alerts import detect_alerts, send_alerts, send_admin_alert, send_event_alerts
 
-# scanner/events_detector.py lives at project root (not inside ccass/),
+# scanner/events_detector.py lives at project root (not inside holdings/),
 # so add project root to path for the import
 _PROJECT_ROOT = Path(__file__).parent.parent.parent
 if str(_PROJECT_ROOT) not in sys.path:
@@ -112,10 +112,10 @@ def _scrape_stock_worker(args: tuple) -> tuple[str, bool, str]:
     """
     stock_code, date_str, sc_cfg = args
     from datetime import date as dt_date
-    from src.scraper import CCASSScraper
+    from src.scraper import HOLDINGSScraper
 
     query_date = dt_date.fromisoformat(date_str)
-    scraper = CCASSScraper(
+    scraper = HOLDINGSScraper(
         user_agent=sc_cfg["user_agent"],
         delay_min=sc_cfg["delay_min_seconds"],
         delay_max=sc_cfg["delay_max_seconds"],
@@ -186,21 +186,21 @@ def _scrape_parallel(
 
 
 def _restore_db():
-    """Restore ccass.db from ccass.db.gz if DB missing or empty (first run / fresh checkout)."""
+    """Restore holdings.db from holdings.db.gz if DB missing or empty (first run / fresh checkout)."""
     import gzip, shutil
-    db_path = Path(__file__).parent.parent / "ccass.db"
-    db_gz_path = Path(__file__).parent.parent / "ccass.db.gz"
+    db_path = Path(__file__).parent.parent / "holdings.db"
+    db_gz_path = Path(__file__).parent.parent / "holdings.db.gz"
     if db_path.exists() and db_path.stat().st_size > 0:
         return  # Already have a valid DB
     if db_gz_path.exists():
-        logger.info("Restoring ccass.db from ccass.db.gz (%d bytes)", db_gz_path.stat().st_size)
+        logger.info("Restoring holdings.db from holdings.db.gz (%d bytes)", db_gz_path.stat().st_size)
         # ✅ P1-9: atomic restore via temp file (prevents race condition)
         tmp_path = db_path.with_suffix(".db.tmp")
         with gzip.open(db_gz_path, 'rb') as f_in:
             with open(tmp_path, 'wb') as f_out:
                 shutil.copyfileobj(f_in, f_out)
         tmp_path.replace(db_path)
-        logger.info("Restored ccass.db: %d bytes", db_path.stat().st_size)
+        logger.info("Restored holdings.db: %d bytes", db_path.stat().st_size)
 
 
 def run_daily(
@@ -228,12 +228,12 @@ def run_daily(
         atexit.register(_release_lock)  # auto-release on any exit
 
     init_db()
-    _restore_db()  # Decompress ccass.db.gz if DB is empty (fresh checkout)
+    _restore_db()  # Decompress holdings.db.gz if DB is empty (fresh checkout)
     config = load_config()
     target_date = target_date or today_hk()
 
     if not skip_scrape:
-        provider = os.environ.get("CCASS_PROVIDER", "hkex").lower()
+        provider = os.environ.get("HOLDINGS_PROVIDER", "hkex").lower()
         if provider == "hkex":
             cooldown_reason = _active_cooldown_reason()
             if cooldown_reason:
@@ -241,7 +241,7 @@ def run_daily(
                 return 2
 
     logger.info("=" * 60)
-    logger.info("CCASS daily run for %s", target_date)
+    logger.info("HOLDINGS daily run for %s", target_date)
     logger.info("=" * 60)
 
     if not is_trading_day(target_date):
@@ -250,13 +250,13 @@ def run_daily(
             logger.info("%s is not a trading day, skip", target_date)
             return 0
 
-    # CCASS 通常公布前一個 trading day 嘅 data
+    # HOLDINGS 通常公布前一個 trading day 嘅 data
     # 所以 query_date = 對上一次 trading day
     if query_date_override:
         query_date = query_date_override
     else:
         query_date = previous_trading_day(target_date)
-    logger.info("Querying CCASS data for %s", query_date)
+    logger.info("Querying HOLDINGS data for %s", query_date)
 
     # 1. Start run log
     now_iso = datetime.now(tz=pytz.timezone("Asia/Hong_Kong")).isoformat()
@@ -340,7 +340,7 @@ def run_daily(
                                 with get_conn() as conn:
                                     now_iso = datetime.utcnow().isoformat()
                                     conn.execute("""
-                                        INSERT OR REPLACE INTO ccass_daily
+                                        INSERT OR REPLACE INTO holdings_daily
                                         (stock_code, trade_date, total_shares, total_pct,
                                          num_participants, top5_pct, top10_pct,
                                          adj_hhi, broker_top5_pct, top_broker_id,
@@ -361,12 +361,12 @@ def run_daily(
                                     ))
                                     # P1-5: DELETE old holdings + INSERT new (atomic replace)
                                     conn.execute(
-                                        "DELETE FROM ccass_holdings WHERE stock_code = ? AND trade_date = ?",
+                                        "DELETE FROM holdings_holdings WHERE stock_code = ? AND trade_date = ?",
                                         (data["stock_code"], data["trade_date"]),
                                     )
                                     for h in data.get("holdings", []):
                                         conn.execute("""
-                                            INSERT OR REPLACE INTO ccass_holdings
+                                            INSERT OR REPLACE INTO holdings_holdings
                                             (stock_code, trade_date, participant_id,
                                              participant_name, shares, pct_of_issued)
                                             VALUES (?, ?, ?, ?, ?, ?)
@@ -399,7 +399,7 @@ def run_daily(
                         failed_stocks.append(code)
 
         # Shard output mode: write artifact JSON + early return.
-        # Trends / alerts / events / ccass.json are handled by the merge phase.
+        # Trends / alerts / events / holdings.json are handled by the merge phase.
         if out_path:
             _write_shard_output(
                 out_path, query_date, shard, shard_total,
@@ -450,17 +450,17 @@ def run_daily(
             )
             logger.info("Sent %d alert(s)", sent)
 
-        # 5.5. CCASS Events (Deposit / Transfer)
+        # 5.5. HOLDINGS Events (Deposit / Transfer)
         try:
             yesterday_date = previous_trading_day(query_date)
             events_logged = _detect_and_log_events(query_date, yesterday_date)
             if events_logged:
-                logger.info("Logged %d CCASS events (deposit/transfer)", len(events_logged))
+                logger.info("Logged %d HOLDINGS events (deposit/transfer)", len(events_logged))
                 if not skip_alerts:
                     ev_sent = send_event_alerts(events_logged, query_date)
                     logger.info("Sent %d event alert(s)", ev_sent)
             else:
-                logger.info("No CCASS events detected")
+                logger.info("No HOLDINGS events detected")
         except Exception as e:
             logger.exception("Event detection failed")
             send_admin_alert(f"Event detection 失敗: {e}")
@@ -530,7 +530,7 @@ def run_daily(
                    WHERE id = ?""",
                 (finished_iso, str(e)[:500], run_id),
             )
-        send_admin_alert(f"❌ CCASS daily run 失敗:\n{traceback.format_exc()[:1500]}")
+        send_admin_alert(f"❌ HOLDINGS daily run 失敗:\n{traceback.format_exc()[:1500]}")
         return 2
 
 
@@ -538,7 +538,7 @@ def _fetch_market_caps(codes: list[str]) -> dict[str, float]:
     """Fetch market caps for HK stock codes via yfinance with caching.
 
     Uses ThreadPoolExecutor for parallel fetches. Results (including None
-    for failed lookups) are cached in ccass/cache/market_caps.json to
+    for failed lookups) are cached in holdings/cache/market_caps.json to
     minimise re-fetches on subsequent runs.
     """
     cache_dir = Path(__file__).parent.parent / "cache"
@@ -590,15 +590,15 @@ def _fetch_market_caps(codes: list[str]) -> dict[str, float]:
 
 
 def _export_json(query_date: date, alerts_today: int) -> None:
-    """Export all stocks + top movers to ccass.json in repo root for dashboard."""
+    """Export all stocks + top movers to holdings.json in repo root for dashboard."""
     date_str = query_date.strftime("%Y-%m-%d")
     top_increase: list[dict] = []
     top_decrease: list[dict] = []
 
     try:
         with get_conn() as conn:
-            # P3: Query from ccass_daily first (not ccass_trends) so stocks without trends still appear.
-            # This matches the merge_shards.py update_ccass_json behavior.
+            # P3: Query from holdings_daily first (not holdings_trends) so stocks without trends still appear.
+            # This matches the merge_shards.py update_holdings_json behavior.
             rows = conn.execute(
                 """SELECT cd.stock_code, u.stock_name,
                           cd.total_pct, cd.top5_pct, cd.top10_pct, cd.num_participants,
@@ -607,9 +607,9 @@ def _export_json(query_date: date, alerts_today: int) -> None:
                           cd.futu_pct, cd.a00005_pct,
                           t.delta_5d_pct, t.delta_20d_pct, t.delta_60d_pct, t.delta_120d_pct,
                           t.consecutive_increase_days, t.consecutive_decrease_days
-                   FROM ccass_daily cd
+                   FROM holdings_daily cd
                    LEFT JOIN stock_universe u ON u.stock_code = cd.stock_code
-                   LEFT JOIN ccass_trends t ON t.stock_code = cd.stock_code AND t.trade_date = cd.trade_date
+                   LEFT JOIN holdings_trends t ON t.stock_code = cd.stock_code AND t.trade_date = cd.trade_date
                    WHERE cd.trade_date = ? AND cd.validation_failed = 0
                      AND cd.stock_code NOT LIKE '029%'
                      AND cd.stock_code NOT LIKE '04621'
@@ -686,7 +686,7 @@ def _export_json(query_date: date, alerts_today: int) -> None:
         total_participants = sum(s["np"] for s in stocks) if stocks else 0
         with get_conn() as conn:
             min_date_row = conn.execute(
-                "SELECT MIN(trade_date) AS md FROM ccass_daily"
+                "SELECT MIN(trade_date) AS md FROM holdings_daily"
             ).fetchone()
             first_date = min_date_row["md"] if min_date_row and min_date_row["md"] else date_str
 
@@ -711,24 +711,24 @@ def _export_json(query_date: date, alerts_today: int) -> None:
                 return None
             return obj
         payload = _sanitize(payload)
-        out_path = Path(__file__).parent.parent.parent / "ccass.json"
+        out_path = Path(__file__).parent.parent.parent / "holdings.json"
         # ✅ P1-6: atomic write via temp file
         tmp_path = out_path.with_suffix(".tmp")
         tmp_path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
         tmp_path.replace(out_path)
         verified = json.loads(out_path.read_text(encoding="utf-8"))
         if verified.get("updated") != date_str:
-            raise RuntimeError(f"ccass.json stale date: {verified.get('updated')} != {date_str}")
+            raise RuntimeError(f"holdings.json stale date: {verified.get('updated')} != {date_str}")
         if verified.get("stock_count") != len(stocks):
-            raise RuntimeError(f"ccass.json stock_count mismatch: {verified.get('stock_count')} != {len(stocks)}")
+            raise RuntimeError(f"holdings.json stock_count mismatch: {verified.get('stock_count')} != {len(stocks)}")
         logger.info(
-            "Exported ccass.json (%d stocks, %d up, %d down)",
+            "Exported holdings.json (%d stocks, %d up, %d down)",
             len(stocks), len(top_increase), len(top_decrease),
         )
         _post_movers_to_gas(top_increase, top_decrease, date_str)
         _stage_outputs(out_path)
     except Exception as e:
-        logger.warning("ccass.json export failed: %s", e)
+        logger.warning("holdings.json export failed: %s", e)
 
 
 def _post_movers_to_gas(
@@ -746,14 +746,14 @@ def _post_movers_to_gas(
         pct5 = entry.get("delta_5d", 0)
         pct20 = entry.get("delta_20d", 0)
         body: dict = {
-            "source":     "ccass",
+            "source":     "holdings",
             "category":   "tech",
             "code":       code,
             "name":       entry.get("name") or code,
             "signal":     signal,
             "created_at": created_at,
             "message":    f"5日持倉 {pct5:+.1f}%（20日 {pct20:+.1f}%）",
-            "tags":       "CCASS",
+            "tags":       "HOLDINGS",
         }
         try:
             store_alert(body)
@@ -761,49 +761,49 @@ def _post_movers_to_gas(
             logger.warning("store_alert failed %s: %s", code, exc)
 
     for e in top_increase:
-        _post(e, "CCASS增持")
+        _post(e, "HOLDINGS增持")
     for e in top_decrease:
-        _post(e, "CCASS減持")
-    logger.info("Stored %d CCASS signals locally", len(top_increase) + len(top_decrease))
+        _post(e, "HOLDINGS減持")
+    logger.info("Stored %d HOLDINGS signals locally", len(top_increase) + len(top_decrease))
 
 
 def _stage_outputs(json_path):
-    """Compress ccass.db → ccass.db.gz + stage both files for git commit.
+    """Compress holdings.db → holdings.db.gz + stage both files for git commit.
 
     IMPORTANT: This function does NOT commit or push. It only stages files.
-    The workflow YAML's "Commit ccass.json" step handles the actual
+    The workflow YAML's "Commit holdings.json" step handles the actual
     git commit + push. Having TWO places do git push causes a race
     condition where the Python push loses to the workflow step push,
-    and ccass.db.gz gets dropped. One pusher = no race.
+    and holdings.db.gz gets dropped. One pusher = no race.
     """
     import subprocess, gzip, shutil
     repo_root = json_path.parent
-    db_path = json_path.parent / "ccass" / "ccass.db"
-    db_gz_path = json_path.parent / "ccass" / "ccass.db.gz"
+    db_path = json_path.parent / "holdings" / "holdings.db"
+    db_gz_path = json_path.parent / "holdings" / "holdings.db.gz"
     try:
-        # Compress ccass.db
+        # Compress holdings.db
         if db_path.exists():
             with open(db_path, 'rb') as f_in:
                 with gzip.open(db_gz_path, 'wb') as f_out:
                     shutil.copyfileobj(f_in, f_out)
-            logger.info("Compressed ccass.db: %d → %d bytes",
+            logger.info("Compressed holdings.db: %d → %d bytes",
                         db_path.stat().st_size, db_gz_path.stat().st_size)
 
-        # Stage BOTH files. The workflow YAML step runs 'git add ccass.json'
-        # and then commits everything staged — so ccass.db.gz goes along.
-        subprocess.run(["git","add","ccass.json"], cwd=repo_root, capture_output=True)
+        # Stage BOTH files. The workflow YAML step runs 'git add holdings.json'
+        # and then commits everything staged — so holdings.db.gz goes along.
+        subprocess.run(["git","add","holdings.json"], cwd=repo_root, capture_output=True)
         if db_gz_path.exists():
-            subprocess.run(["git","add","ccass/ccass.db.gz"], cwd=repo_root, capture_output=True)
-        logger.info("Staged ccass.json + ccass.db.gz for workflow commit")
+            subprocess.run(["git","add","holdings/holdings.db.gz"], cwd=repo_root, capture_output=True)
+        logger.info("Staged holdings.json + holdings.db.gz for workflow commit")
     except Exception as e:
         logger.warning("Stage outputs failed: %s", e)
 
 
 def _detect_and_log_events(t_date: date, y_date: date) -> list[dict]:
-    """Compare per-broker CCASS holdings between T and T-1 for all stocks.
+    """Compare per-broker HOLDINGS holdings between T and T-1 for all stocks.
 
-    Queries ccass_holdings in bulk, groups by stock in Python, runs
-    detect_events(), logs new events to ccass_events, and returns
+    Queries holdings_holdings in bulk, groups by stock in Python, runs
+    detect_events(), logs new events to holdings_events, and returns
     the list of newly logged events (with DB ids) for alert dispatch.
     """
     t_str = t_date.strftime("%Y-%m-%d")
@@ -812,7 +812,7 @@ def _detect_and_log_events(t_date: date, y_date: date) -> list[dict]:
     # 1. Get total_shares for all stocks on T (for % calculation)
     with get_conn() as conn:
         shares_rows = conn.execute(
-            "SELECT stock_code, total_shares FROM ccass_daily WHERE trade_date = ?",
+            "SELECT stock_code, total_shares FROM holdings_daily WHERE trade_date = ?",
             (t_str,),
         ).fetchall()
     shares_map = {r["stock_code"]: r["total_shares"] for r in shares_rows if r["total_shares"]}
@@ -820,11 +820,11 @@ def _detect_and_log_events(t_date: date, y_date: date) -> list[dict]:
     # 2. Get ALL holdings for T and T-1 (bulk fetch)
     with get_conn() as conn:
         t_rows = conn.execute(
-            "SELECT stock_code, participant_id, shares FROM ccass_holdings WHERE trade_date = ?",
+            "SELECT stock_code, participant_id, shares FROM holdings_holdings WHERE trade_date = ?",
             (t_str,),
         ).fetchall()
         y_rows = conn.execute(
-            "SELECT stock_code, participant_id, shares FROM ccass_holdings WHERE trade_date = ?",
+            "SELECT stock_code, participant_id, shares FROM holdings_holdings WHERE trade_date = ?",
             (y_str,),
         ).fetchall()
 
@@ -858,7 +858,7 @@ def _detect_and_log_events(t_date: date, y_date: date) -> list[dict]:
 
             with get_conn() as conn:
                 cur = conn.execute(
-                    """INSERT INTO ccass_events
+                    """INSERT INTO holdings_events
                          (stock_code, trade_date, event_type, broker_from, broker_to,
                           pct, shares, detected_at, alerted)
                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0)""",
@@ -880,7 +880,7 @@ def _detect_and_log_events(t_date: date, y_date: date) -> list[dict]:
 
     if new_events:
         logger.info(
-            "Detected %d CCASS events (deposit/transfer) across %d stocks",
+            "Detected %d HOLDINGS events (deposit/transfer) across %d stocks",
             len(new_events), len(common_codes),
         )
     return new_events
@@ -936,7 +936,7 @@ def _write_shard_output(
 ) -> None:
     """Write shard artifact JSON from pre-built dicts (subprocess scrape results).
 
-    Accepts plain dicts (not CCASSSnapshot objects) so it can be called
+    Accepts plain dicts (not HOLDINGSSnapshot objects) so it can be called
     directly from the sequential subprocess scrape loop in run_daily.
     """
     payload = {
@@ -963,7 +963,7 @@ def main():
     parser.add_argument("--refresh-universe", action="store_true")
     parser.add_argument("--shard", type=int, help="Shard index (0-based)")
     parser.add_argument("--shard-total", type=int, help="Total number of shards")
-    parser.add_argument("--query-date", help="CCASS query date YYYY-MM-DD (overrides auto)")
+    parser.add_argument("--query-date", help="HOLDINGS query date YYYY-MM-DD (overrides auto)")
     parser.add_argument("--out", help="Output JSON path for shard results")
     args = parser.parse_args()
 

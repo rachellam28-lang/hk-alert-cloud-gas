@@ -1,11 +1,11 @@
-"""Bulk fill missing CCASS stocks for specific dates."""
+"""Bulk fill missing HOLDINGS stocks for specific dates."""
 import json, random, sqlite3, subprocess, sys, os, time
 from pathlib import Path
 from datetime import datetime
 import yaml
 
 PROJECT = Path(__file__).parent.parent
-DB = PROJECT / "ccass.db"
+DB = PROJECT / "holdings.db"
 SCRAPE_ONE = PROJECT / "src" / "scrape_one.py"
 CONFIG = PROJECT / "config.yaml"
 
@@ -35,7 +35,7 @@ def fill_missing(target_date: str, max_stocks: int = 3000):
     
     # Find the date with the most stocks (reference universe)
     ref_row = db.execute(
-        "SELECT trade_date, COUNT(*) AS n FROM ccass_daily "
+        "SELECT trade_date, COUNT(*) AS n FROM holdings_daily "
         "WHERE " + " AND ".join(["stock_code NOT LIKE ?" for _ in EXCLUDE_PATTERNS]) +
         " GROUP BY trade_date ORDER BY n DESC LIMIT 1",
         tuple(EXCLUDE_PATTERNS)
@@ -46,11 +46,11 @@ def fill_missing(target_date: str, max_stocks: int = 3000):
     ref_date = ref_row[0]
     
     full = set(r[0] for r in db.execute(
-        f"SELECT DISTINCT stock_code FROM ccass_daily WHERE trade_date=? AND {exclude_clauses}",
+        f"SELECT DISTINCT stock_code FROM holdings_daily WHERE trade_date=? AND {exclude_clauses}",
         (ref_date, *EXCLUDE_PATTERNS)
     ))
     have = set(r[0] for r in db.execute(
-        'SELECT DISTINCT stock_code FROM ccass_daily WHERE trade_date=?',
+        'SELECT DISTINCT stock_code FROM holdings_daily WHERE trade_date=?',
         (target_date,)
     ))
     missing = sorted(full - have)[:max_stocks]
@@ -95,7 +95,7 @@ def fill_missing(target_date: str, max_stocks: int = 3000):
             try:
                 db.execute("BEGIN IMMEDIATE")
                 db.execute("""
-                    INSERT OR REPLACE INTO ccass_daily
+                    INSERT OR REPLACE INTO holdings_daily
                     (stock_code, trade_date, total_shares, total_pct,
                      num_participants, top5_pct, top10_pct,
                      adj_hhi, broker_top5_pct, top_broker_id,
@@ -114,11 +114,11 @@ def fill_missing(target_date: str, max_stocks: int = 3000):
                     data.get("adjusted_float"), now,
                 ))
                 # ✅ P0-2 fix: DELETE old holdings before INSERT new (ghost data prevention)
-                db.execute("DELETE FROM ccass_holdings WHERE stock_code = ? AND trade_date = ?",
+                db.execute("DELETE FROM holdings_holdings WHERE stock_code = ? AND trade_date = ?",
                            (data["stock_code"], data["trade_date"]))
                 for h in data.get("holdings", []):
                     db.execute("""
-                        INSERT OR REPLACE INTO ccass_holdings
+                        INSERT OR REPLACE INTO holdings_holdings
                         (stock_code, trade_date, participant_id,
                          participant_name, shares, pct_of_issued)
                         VALUES (?, ?, ?, ?, ?, ?)

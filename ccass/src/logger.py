@@ -11,10 +11,10 @@ PROJECT_ROOT = Path(__file__).parent.parent
 LOG_DIR = PROJECT_ROOT / "logs"
 
 
-def setup_logger(name: str = "ccass", level: str = "INFO") -> logging.Logger:
+def setup_logger(name: str = "holdings", level: str = "INFO") -> logging.Logger:
     LOG_DIR.mkdir(exist_ok=True)
     today = datetime.now().strftime("%Y%m%d")
-    logfile = LOG_DIR / f"ccass_{today}.log"
+    logfile = LOG_DIR / f"holdings_{today}.log"
 
     logger = logging.getLogger(name)
     if logger.handlers:

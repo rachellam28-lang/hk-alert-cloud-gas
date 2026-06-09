@@ -54,7 +54,7 @@ a.stock-link:hover{color:var(--primary)}
 <div class="topbar-inner">
 <div class="brand"><span class="brand-title">💰 資金流向</span><span class="brand-sub" id="updated"></span></div>
 <div class="nav">
-<a href="index.html">📊 CCASS</a>
+<a href="index.html">📊 Market</a>
 <a href="fundflow.html" class="active">💰 資金</a>
 <a href="gap_fvg.html">📡 警報</a>
 <a href="signals.html">🔔 信號</a>
@@ -107,7 +107,7 @@ a.stock-link:hover{color:var(--primary)}
   // Load names
   let names = {};
   try {
-    let r = await fetch('ccass.json');
+    let r = await fetch('holdings.json');
     let d = await r.json();
     for (let s of d.stocks) names[s.c] = s.n;
   } catch(e) {}

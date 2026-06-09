@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="zh-HK"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=0.3,minimum-scale=0.2,maximum-scale=5,user-scalable=yes">
-<title>CCASS 使用說明書</title>
+<title>Market 使用說明書</title>
 <style>
 :root{--bg:#f5f7fa;--surface:#fff;--surface-soft:#f8fafc;--text:#0f172a;--text-soft:#334155;--mute:#64748b;--line:#e2e8f0;--primary:#0284c7;--up:#15803d;--down:#b91c1c;--amber:#b45309;--radius:10px}
 *{box-sizing:border-box}html,body{margin:0;padding:0}
@@ -35,24 +35,24 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 </head><body>
 
 <header class="topbar"><div class="topbar-inner">
-  <div style="font-weight:700;font-size:15px">📖 CCASS 使用說明書</div>
+  <div style="font-weight:700;font-size:15px">📖 Market 使用說明書</div>
   <a href="./index.html">← 返回主頁</a>
   <a href="./fundflow.html" style="color:#15803d;border-color:#86efac">💰 資金流向</a>
   <a href="./rights_analysis.html" style="color:#0891b2;border-color:#67e8f9">📋 供配股</a>
 </div></header>
 
 <main>
-<h1>📖 CCASS 使用說明書</h1>
-<div class="subtitle">港股 CCASS（中央結算系統）持倉追蹤 Dashboard · 最後更新：2026-06-08</div>
+<h1>📖 Market 使用說明書</h1>
+<div class="subtitle">港股 Market（中央結算系統）持倉追蹤 Dashboard · 最後更新：2026-06-08</div>
 
 <div class="card">
 <h2>🔍 呢個 Dashboard 係咩？</h2>
-<p>追蹤港股 CCASS 持倉數據 — 睇邊個大戶/券商正在收貨或散貨。</p>
+<p>追蹤港股 Market 持倉數據 — 睇邊個大戶/券商正在收貨或散貨。</p>
 
 <h3>📊 數據來源</h3>
 <table>
 <tr><th>來源</th><th>說明</th></tr>
-<tr><td><b>CCASS 持倉</b></td><td>HKEX 每日 CCASS 持股報告（持倉%、Top5/Top10 集中度、HHI）</td></tr>
+<tr><td><b>Market 持倉</b></td><td>HKEX 每日 Market 持股報告（持倉%、Top5/Top10 集中度、HHI）</td></tr>
 <tr><td><b>股價</b></td><td>Futu 實時報價（今日Δ%、52週高低、PE、市值）</td></tr>
 <tr><td><b>信號</b></td><td>技術分析信號（POC、FVG、年開突破、IPO首日突破）</td></tr>
 <tr><td><b>配股/供股</b></td><td>配股價、供股價突破監測</td></tr>
@@ -60,9 +60,9 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 
 <h3>🎯 點樣用嚟炒？</h3>
 <ol>
-<li><b>CCASS% ↑ + 股價 ↑</b> → 大戶收貨中，跟勢追入</li>
-<li><b>CCASS% ↑ + 股價 ↓</b> → 大戶壓價收貨，留意見底信號</li>
-<li><b>CCASS% ↓ + 股價 ↑</b> → 大戶散貨中，高位減持</li>
+<li><b>Market% ↑ + 股價 ↑</b> → 大戶收貨中，跟勢追入</li>
+<li><b>Market% ↑ + 股價 ↓</b> → 大戶壓價收貨，留意見底信號</li>
+<li><b>Market% ↓ + 股價 ↑</b> → 大戶散貨中，高位減持</li>
 <li><b>Top5% > 80%</b> → 高度集中，莊家股，大波動</li>
 <li><b>連續增持（🔥）</b> → 大戶持續買入，強勢信號</li>
 <li><b>連續減持（❄️）</b> → 大戶持續沽出，避開</li>
@@ -84,13 +84,13 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 <tr><td>現價</td><td>實時股價，sortable</td></tr>
 <tr><td>今年Δ%🔺</td><td>(現價-今年開)/今年開×100，🔺=現價>年開，sortable</td></tr>
 <tr><td>信號</td><td>IPO/POC/FVG/配股/供股 signal pills</td></tr>
-<tr><td>CCASS%</td><td>CCASS 總持倉%</td></tr>
+<tr><td>Market%</td><td>Market 總持倉%</td></tr>
 <tr><td>Top5%</td><td>Top5 集中度</td></tr>
 <tr><td>Top10%</td><td>Top10 集中度</td></tr>
-<tr><td>5日Δ</td><td>5日 CCASS% 變化，🟢增持 🔴減持</td></tr>
-<tr><td>20日Δ</td><td>20日 CCASS% 變化</td></tr>
-<tr><td>60日Δ</td><td>60日 CCASS% 變化</td></tr>
-<tr><td>120日Δ</td><td>120日 CCASS% 變化</td></tr>
+<tr><td>5日Δ</td><td>5日 Market% 變化，🟢增持 🔴減持</td></tr>
+<tr><td>20日Δ</td><td>20日 Market% 變化</td></tr>
+<tr><td>60日Δ</td><td>60日 Market% 變化</td></tr>
+<tr><td>120日Δ</td><td>120日 Market% 變化</td></tr>
 <tr><td>⭐評分</td><td>綜合趨勢+信號評分</td></tr>
 <tr><td>🔁連續</td><td>連續增持🔥/減持❄️日數</td></tr>
 <tr><td>市值(億)</td><td>市值（億港元）</td></tr>
@@ -126,7 +126,7 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 <li>📈 向上FVG — Fair Value Gap 向上</li>
 <li>🔺 年開突破 — 現價突破今年開盤價 ≥5%</li>
 <li>🆕 IPO首日突破 — 現價突破 IPO 首日高位</li>
-<li>📈 CCASS增持 / 📉 CCASS減持 — 5日持倉增減</li>
+<li>📈 Market增持 / 📉 Market減持 — 5日持倉增減</li>
 </ul>
 <p><b>市值按鈕：</b>小市值 (&lt;20億) · 中市值 (20-100億) · 大市值 (≥100億) — 三個分表獨立排序/分頁</p>
 <p><b>Confluence Pattern：</b>🚀催化 · 💎雙向 · 🦆搶跑 — 三種型態 filter</p>
@@ -148,7 +148,7 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 <h2>🔄 更新頻率</h2>
 <table>
 <tr><th>數據</th><th>頻率</th></tr>
-<tr><td>CCASS 數據</td><td>每日 HKEX update 後（約 7am HKT）</td></tr>
+<tr><td>Market 數據</td><td>每日 HKEX update 後（約 7am HKT）</td></tr>
 <tr><td>股價 + 市值</td><td>Futu 實時 + daily refresh</td></tr>
 <tr><td>信號</td><td>自動掃描推送</td></tr>
 </table>
@@ -158,7 +158,7 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 <h2>📋 相關頁面</h2>
 <table>
 <tr><th>頁面</th><th>功能</th></tr>
-<tr><td><a href="./index.html">主頁</a></td><td>CCASS 持倉主表 + 三大市值分區</td></tr>
+<tr><td><a href="./index.html">主頁</a></td><td>Market 持倉主表 + 三大市值分區</td></tr>
 <tr><td><a href="./signals.html">港股訊號</a></td><td>技術信號篩選 (POC/FVG/Gap)</td></tr>
 <tr><td><a href="./history.html">歷史</a></td><td>每日訊號 + 公告歷史</td></tr>
 <tr><td><a href="./watchlist.html">自選</a></td><td>⭐ 自選股監察</td></tr>
@@ -167,6 +167,6 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 </table>
 </div>
 
-<div class="foot">數據來源：HKEX CCASS · 僅供參考</div>
+<div class="foot">數據來源：HKEX Market · 僅供參考</div>
 </main>
 </body></html>

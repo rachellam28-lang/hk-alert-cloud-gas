@@ -3,9 +3,9 @@
 用法:
     python -m scripts.merge_shards --date 2026-05-23
 
-Expects ccass-shard-0.json through ccass-shard-{SHARD_TOTAL-1}.json in repo root.
+Expects holdings-shard-0.json through holdings-shard-{SHARD_TOTAL-1}.json in repo root.
 Validates all shards, merges into DB, computes trends, sends alerts,
-and updates ccass.json for the dashboard.
+and updates holdings.json for the dashboard.
 """
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ from datetime import datetime, date
 from pathlib import Path
 
 SHARD_TOTAL = 1  # single-shard mode (GHA disabled — local sequential only)
-SHARD_PREFIX = "ccass-shard"
+SHARD_PREFIX = "holdings-shard"
 PROJECT_ROOT = Path(__file__).parent.parent
 
 
@@ -105,14 +105,14 @@ def merge_into_db(all_payloads: list[dict]) -> int:
     import sys as _sys
     _sys.path.insert(0, str(PROJECT_ROOT))
     from src.db import DB_PATH, init_db
-    from src.scraper import save_snapshot, CCASSSnapshot
+    from src.scraper import save_snapshot, HOLDINGSSnapshot
 
     init_db()
 
     written = 0
     for p in all_payloads:
         for snap_dict in p["snapshots"]:
-            snap = CCASSSnapshot(
+            snap = HOLDINGSSnapshot(
                 stock_code=snap_dict["stock_code"],
                 trade_date=snap_dict["trade_date"],
                 total_shares=snap_dict["total_shares"],
@@ -129,8 +129,8 @@ def merge_into_db(all_payloads: list[dict]) -> int:
     return written
 
 
-def update_ccass_json(target_date: date) -> None:
-    """Update ccass.json with frontend-compatible fields from DB."""
+def update_holdings_json(target_date: date) -> None:
+    """Update holdings.json with frontend-compatible fields from DB."""
     import sqlite3
     from src.db import DB_PATH
     
@@ -159,7 +159,7 @@ def update_ccass_json(target_date: date) -> None:
                cd.adj_hhi, cd.broker_top5_pct, cd.top_broker_id,
                cd.top_broker_name, cd.top_broker_pct, cd.futu_pct,
                cd.a00005_pct
-        FROM ccass_daily cd
+        FROM holdings_daily cd
         WHERE cd.trade_date = ? AND {exclude_where}
     """, (target_date.strftime("%Y-%m-%d"),)).fetchall()
     
@@ -168,7 +168,7 @@ def update_ccass_json(target_date: date) -> None:
     for row in db.execute("""
         SELECT stock_code, delta_5d_pct, delta_20d_pct, delta_60d_pct, delta_120d_pct,
                consecutive_increase_days, consecutive_decrease_days
-        FROM ccass_trends
+        FROM holdings_trends
         WHERE trade_date = ?
     """, (target_date.strftime("%Y-%m-%d"),)).fetchall():
         trends[row[0]] = {
@@ -276,7 +276,7 @@ def update_ccass_json(target_date: date) -> None:
     top_decrease = [{'c': s['c'], 'n': s['n'], 'd5': s['d5']} for s in sorted_dn]
 
     # First date in DB
-    first_row = db.execute("SELECT MIN(trade_date) FROM ccass_daily").fetchone()
+    first_row = db.execute("SELECT MIN(trade_date) FROM holdings_daily").fetchone()
     first_date = first_row[0] if first_row and first_row[0] else target_date.strftime("%Y-%m-%d")
 
     # Load suspended stocks
@@ -313,16 +313,16 @@ def update_ccass_json(target_date: date) -> None:
         "first_date": first_date,
         "total_participants": total_participants,
     }
-    path = PROJECT_ROOT.parent / "ccass.json"
+    path = PROJECT_ROOT.parent / "holdings.json"
     tmp = path.with_suffix(".tmp")
     tmp.write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
     tmp.replace(path)  # ✅ P1-6: atomic rename
     verified = json.loads(path.read_text(encoding="utf-8"))
     if verified.get("updated") != target_date.strftime("%Y-%m-%d"):
-        raise RuntimeError(f"ccass.json stale date: {verified.get('updated')} != {target_date}")
+        raise RuntimeError(f"holdings.json stale date: {verified.get('updated')} != {target_date}")
     if verified.get("stock_count") != len(stocks):
-        raise RuntimeError(f"ccass.json stock_count mismatch: {verified.get('stock_count')} != {len(stocks)}")
-    print(f"  ccass.json updated: {len(stocks)} stocks")
+        raise RuntimeError(f"holdings.json stock_count mismatch: {verified.get('stock_count')} != {len(stocks)}")
+    print(f"  holdings.json updated: {len(stocks)} stocks")
     db.close()
 
 
@@ -334,21 +334,21 @@ def main():
     date_str = args.date
     print(f"Merge: query_date={date_str}")
 
-    # Restore DB from ccass.db.gz if missing (fresh GHA checkout)
-    db_path = PROJECT_ROOT / "ccass.db"
-    db_gz_path = PROJECT_ROOT / "ccass.db.gz"
+    # Restore DB from holdings.db.gz if missing (fresh GHA checkout)
+    db_path = PROJECT_ROOT / "holdings.db"
+    db_gz_path = PROJECT_ROOT / "holdings.db.gz"
     if not db_path.exists() or db_path.stat().st_size == 0:
         if db_gz_path.exists():
             import gzip, shutil
-            print(f"Restoring ccass.db from ccass.db.gz ({db_gz_path.stat().st_size} bytes)...")
+            print(f"Restoring holdings.db from holdings.db.gz ({db_gz_path.stat().st_size} bytes)...")
             tmp_path = db_path.with_suffix(".db.tmp")
             with gzip.open(db_gz_path, "rb") as f_in:
                 with open(tmp_path, "wb") as f_out:
                     shutil.copyfileobj(f_in, f_out)
             tmp_path.replace(db_path)
-            print(f"Restored ccass.db: {db_path.stat().st_size} bytes")
+            print(f"Restored holdings.db: {db_path.stat().st_size} bytes")
         else:
-            print("WARNING: ccass.db.gz not found — trends will be empty")
+            print("WARNING: holdings.db.gz not found — trends will be empty")
 
     # Validate
     print("Validating shards...")
@@ -374,9 +374,9 @@ def main():
     except Exception as e:
         print(f"WARN Trends failed: {e}")
 
-    # Update ccass.json (after trends so deltas are included)
-    print("Updating ccass.json...")
-    update_ccass_json(target_date)
+    # Update holdings.json (after trends so deltas are included)
+    print("Updating holdings.json...")
+    update_holdings_json(target_date)
 
     # Run alerts
     print("Running alerts...")

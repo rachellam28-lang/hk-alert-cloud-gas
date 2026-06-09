@@ -1,9 +1,9 @@
-"""Longbridge MCP provider for CCASS data — drop-in replacement for HKEX scraper.
+"""Longbridge MCP provider for HOLDINGS data — drop-in replacement for HKEX scraper.
 
-Provides scrape_stock() with the SAME return shape as CCASSScraper.scrape_stock()
-so scrape_one.py can switch between providers via CCASS_PROVIDER env var.
+Provides scrape_stock() with the SAME return shape as HOLDINGSScraper.scrape_stock()
+so scrape_one.py can switch between providers via HOLDINGS_PROVIDER env var.
 
-Maps Longbridge broker_holding_detail fields to CCASSSnapshot / holdings format:
+Maps Longbridge broker_holding_detail fields to HOLDINGSSnapshot / holdings format:
   parti_number -> participant_id
   name         -> participant_name
   shares.value -> shares (int)
@@ -34,7 +34,7 @@ def _load_token() -> str:
     env_paths = [
         os.path.join(os.path.dirname(__file__), "..", "..", ".env"),
         os.path.join(os.getcwd(), ".env"),
-        os.path.expanduser("~/Desktop/automatic/ccass-debug/.env"),
+        os.path.expanduser("~/Desktop/automatic/holdings-debug/.env"),
     ]
     for p in env_paths:
         p = os.path.normpath(p)
@@ -106,7 +106,7 @@ class LongbridgeMCPClient:
         self._call("initialize", {
             "protocolVersion": "2024-11-05",
             "capabilities": {},
-            "clientInfo": {"name": "ccass-scanner", "version": "1.0"},
+            "clientInfo": {"name": "holdings-scanner", "version": "1.0"},
         })
         # initialized notification
         body = {"jsonrpc": "2.0", "method": "notifications/initialized"}
@@ -156,7 +156,7 @@ def _stock_code_to_symbol(stock_code: str) -> str:
 
 
 def _parse_holding(item: dict) -> dict:
-    """Convert Longbridge holding item to CCASS format."""
+    """Convert Longbridge holding item to HOLDINGS format."""
     shares_val = item.get("shares", {})
     ratio_val = item.get("ratio", {})
 
@@ -181,12 +181,12 @@ def _parse_holding(item: dict) -> dict:
     }
 
 
-def scrape_stock(stock_code: str, query_date: date) -> Optional["CCASSSnapshot"]:
+def scrape_stock(stock_code: str, query_date: date) -> Optional["HOLDINGSSnapshot"]:
     """Scrape a single stock via Longbridge API.
 
-    Returns CCASSSnapshot (same shape as CCASSScraper.scrape_stock) or None.
+    Returns HOLDINGSSnapshot (same shape as HOLDINGSScraper.scrape_stock) or None.
     """
-    from src.scraper import CCASSSnapshot  # local import to avoid circular
+    from src.scraper import HOLDINGSSnapshot  # local import to avoid circular
 
     symbol = _stock_code_to_symbol(stock_code)
     date_str = query_date.strftime("%Y-%m-%d") if query_date else None
@@ -214,7 +214,7 @@ def scrape_stock(stock_code: str, query_date: date) -> Optional["CCASSSnapshot"]
     total_pct = sum(h["pct_of_issued"] for h in holdings)
     num_participants = len(holdings)
 
-    return CCASSSnapshot(
+    return HOLDINGSSnapshot(
         stock_code=stock_code,
         trade_date=date_str,
         total_shares=total_shares,

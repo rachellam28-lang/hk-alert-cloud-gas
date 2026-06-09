@@ -1,7 +1,7 @@
 """Check valuation + company for market cap."""
 import subprocess, json, os
 
-env = os.path.expanduser("~/Desktop/automatic/ccass-debug/.env")
+env = os.path.expanduser("~/Desktop/automatic/holdings-debug/.env")
 token = ""
 with open(env) as f:
     for l in f:
