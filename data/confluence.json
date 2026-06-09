@@ -114,6 +114,34 @@
     "pattern": "frontrun"
   },
   {
+    "code": "01334",
+    "name": "RUICHANG INTL",
+    "types": [
+      "股東增持"
+    ],
+    "title": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING BY CONTROLLING SHAREHOLDER…",
+    "date": "2026-06-09",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0609/2026060900003.pdf",
+    "type": "increase",
+    "typeLabel": "股東增持",
+    "direction": "up",
+    "signal_count": 2,
+    "pre_count": 2,
+    "post_count": 0,
+    "pre_types": [
+      "年開突破",
+      "披露易公告 - 股東增持"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "年開突破",
+      "披露易公告 - 股東增持"
+    ],
+    "first_pre_days": 1,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
     "code": "03958",
     "name": "DFZQ",
     "types": [
@@ -138,32 +166,6 @@
       "向上跳空缺口"
     ],
     "first_pre_days": 22,
-    "first_post_days": null,
-    "pattern": "frontrun"
-  },
-  {
-    "code": "01334",
-    "name": "RUICHANG INTL",
-    "types": [
-      "股東增持"
-    ],
-    "title": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING BY CONTROLLING SHAREHOLDER…",
-    "date": "2026-06-09",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0609/2026060900003.pdf",
-    "type": "increase",
-    "typeLabel": "股東增持",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 1,
-    "post_count": 0,
-    "pre_types": [
-      "年開突破"
-    ],
-    "post_types": [],
-    "signal_types_summary": [
-      "年開突破"
-    ],
-    "first_pre_days": 1,
     "first_post_days": null,
     "pattern": "frontrun"
   },
@@ -564,6 +566,62 @@
     ],
     "first_pre_days": null,
     "first_post_days": 19,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "00174",
+    "name": "GEMINI INV",
+    "types": [
+      "配股"
+    ],
+    "title": "PROPOSED 發行新股（一般授權）",
+    "date": "2026-06-07",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0607/2026060700003.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "半年POC + 3年POC",
+      "年開突破"
+    ],
+    "signal_types_summary": [
+      "半年POC + 3年POC",
+      "年開突破"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 2,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01305",
+    "name": "WAI CHI HOLD",
+    "types": [
+      "回購"
+    ],
+    "title": "VOLUNTARY ANNOUNCEMENT INTENTION TO CONDUCT SHARE BUY-BACKS IN THE MARKET",
+    "date": "2026-06-05",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060500457.pdf",
+    "type": "buyback",
+    "typeLabel": "回購",
+    "direction": "up",
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "12個月POC",
+      "年開突破"
+    ],
+    "signal_types_summary": [
+      "12個月POC",
+      "年開突破"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 4,
     "pattern": "catalyst"
   },
   {

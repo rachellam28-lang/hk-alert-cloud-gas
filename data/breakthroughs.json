@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-09T06:56:03.831790+08:00",
+  "updated": "2026-06-09T09:16:49.241587+08:00",
   "breakthroughs": [
     {
       "type": "ipo",
@@ -553,6 +553,16 @@
     },
     {
       "type": "ipo",
+      "offer_price": 17.35,
+      "current_price": 19.48,
+      "pct_above": 12.3,
+      "date": "",
+      "title": "CMOC Group Limited",
+      "breakthrough_date": "2026-06-09",
+      "stock_code": "03993"
+    },
+    {
+      "type": "ipo",
       "offer_price": 21.28,
       "current_price": 21.44,
       "pct_above": 0.8,
@@ -693,23 +703,23 @@
     },
     {
       "type": "ipo",
-      "offer_price": 112.5,
-      "current_price": 117.7,
-      "pct_above": 4.6,
+      "offer_price": 38.0,
+      "current_price": 41.5,
+      "pct_above": 9.2,
       "date": "",
-      "title": "Ubtech Robotics Corp Ltd",
+      "title": "New Oriental Education & Technology Group Inc.",
       "breakthrough_date": "2026-06-09",
-      "stock_code": "09880"
+      "stock_code": "09901"
     },
     {
       "type": "ipo",
-      "offer_price": 444.2,
-      "current_price": 462.0,
-      "pct_above": 4.0,
+      "offer_price": 374.8,
+      "current_price": 389.0,
+      "pct_above": 3.8,
       "date": "",
-      "title": "Shanghai Iluvatar Corex",
+      "title": "Trip.com Group Limited",
       "breakthrough_date": "2026-06-09",
-      "stock_code": "09903"
+      "stock_code": "09961"
     }
   ],
   "active_prices": {
