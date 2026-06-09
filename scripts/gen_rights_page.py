@@ -60,21 +60,33 @@ def trade_signal(p):
     elif cat == '配售':
         if market_price > 0 and price_num > 0:
             disc = (price_num / market_price - 1) * 100
-            if disc < -20:
-                score += 10
-                thesis_parts.append(f'折讓{abs(disc):.0f}%配售=接貨者要炒上先有錢賺')
-            elif disc > 10:
+            if disc < -30:
+                score += 15
+                thesis_parts.append(f'大折讓{abs(disc):.0f}%配售=接貨者要炒上先賺')
+            elif disc < -15:
+                score += 20
+                thesis_parts.append(f'折讓{abs(disc):.0f}%配售=新資金有信心')
+            elif disc <= 0:
+                # Narrow discount (0-15%): STRONG conviction signal for small caps
+                score += 30
+                thesis_parts.append(f'窄折讓只得{abs(disc):.0f}%=接貨者極度看好')
+                reasons.append('有人肯以接近市價接貨=強烈看好信號')
+            elif disc <= 10:
+                score += 5
+            else:
                 score -= 15
                 risks.append(f'溢價配售=冇人會接')
         else:
             score += 10
             thesis_parts.append('配售新股=有資金發展')
         
+        # Debt repayment: NEUTRAL (can be positive — cleans up balance sheet)
         if '償還債務' in purpose:
-            score -= 15
-            risks.append('配股還債=財困')
+            score += 3
+            thesis_parts.append('配股清債=移除財困炸彈')
         if '業務發展' in purpose:
             score += 5
+            thesis_parts.append('資金用於業務發展')
     
     elif cat == '代價發行':
         if '收購' in method:
@@ -99,9 +111,7 @@ def trade_signal(p):
     elif pct > 10:
         score -= 3
     
-    # === 3. 財困信號 ===
-    if '償還債務' in purpose:
-        score -= 10
+    # === 3. 貸款資本化信號 ===
     if '貸款資本化' in method:
         score -= 15
         risks.append('貸款變股票=債主走佬')
@@ -115,7 +125,7 @@ def trade_signal(p):
     # === FINAL VERDICT ===
     score = max(-50, min(100, score + 40))  # rebase
     
-    if score >= 55:
+    if score >= 58:
         signal = '🟢 炒'
         sig_class = 'trade-buy'
         action = '炒得過'
