@@ -1,5 +1,51 @@
 [
   {
+    "date": "08/06/2026",
+    "code": "01815",
+    "name": "EVEREST GOLD",
+    "shares": "--",
+    "price": "--",
+    "amount": "--",
+    "type": "普通股份",
+    "pct_shares": "--",
+    "method": "配售/發行 (一般授權)",
+    "amount_num": 0,
+    "price_num": 0,
+    "pct_num": 0,
+    "category": "配售",
+    "purpose": "Subscription Update",
+    "ratio": "",
+    "date_parsed": "2026-06-08",
+    "market_price": 0,
+    "discount_pct": null,
+    "placing_agent": null,
+    "current_return_pct": null,
+    "source": "announcement"
+  },
+  {
+    "date": "08/06/2026",
+    "code": "01912",
+    "name": "CONTEL",
+    "shares": "--",
+    "price": "--",
+    "amount": "--",
+    "type": "普通股份",
+    "pct_shares": "--",
+    "method": "配售/發行 (先舊後新)",
+    "amount_num": 0,
+    "price_num": 0,
+    "pct_num": 0,
+    "category": "先舊後新",
+    "purpose": "Subscription + Placing",
+    "ratio": "",
+    "date_parsed": "2026-06-08",
+    "market_price": 0,
+    "discount_pct": null,
+    "placing_agent": null,
+    "current_return_pct": null,
+    "source": "announcement"
+  },
+  {
     "date": "05/06/2026",
     "code": "01676",
     "name": "高地股份",
@@ -17,7 +63,12 @@
     "ratio": "二供一",
     "date_parsed": "2026-06-05",
     "market_price": 0.22,
-    "discount_pct": -13.6
+    "discount_pct": -13.6,
+    "latest_price": 0.21,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -4.5,
+    "placing_agent": "KGI Asia Limited",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060502024.pdf"
   },
   {
     "date": "05/06/2026",
@@ -37,7 +88,12 @@
     "ratio": "",
     "date_parsed": "2026-06-05",
     "market_price": 0.25,
-    "discount_pct": -16.0
+    "discount_pct": -16.0,
+    "latest_price": 0.25,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 0.0,
+    "placing_agent": "Patrons Securities",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060502278.pdf"
   },
   {
     "date": "05/06/2026",
@@ -57,7 +113,11 @@
     "ratio": "",
     "date_parsed": "2026-06-05",
     "market_price": 0.01,
-    "discount_pct": 40.0
+    "discount_pct": 40.0,
+    "latest_price": 0.01,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 0.0,
+    "placing_agent": null
   },
   {
     "date": "05/06/2026",
@@ -77,7 +137,11 @@
     "ratio": "",
     "date_parsed": "2026-06-05",
     "market_price": 0.19,
-    "discount_pct": -5.3
+    "discount_pct": -5.3,
+    "latest_price": 0.21,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 10.5,
+    "placing_agent": null
   },
   {
     "date": "04/06/2026",
@@ -97,7 +161,11 @@
     "ratio": "",
     "date_parsed": "2026-06-04",
     "market_price": 1.85,
-    "discount_pct": null
+    "discount_pct": null,
+    "latest_price": 1.82,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -1.6,
+    "placing_agent": null
   },
   {
     "date": "04/06/2026",
@@ -117,7 +185,12 @@
     "ratio": "",
     "date_parsed": "2026-06-04",
     "market_price": 0.5,
-    "discount_pct": 0.0
+    "discount_pct": 0.0,
+    "latest_price": 0.7,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 40.0,
+    "placing_agent": "Black Marble Securities",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0604/2026060402395.pdf"
   },
   {
     "date": "03/06/2026",
@@ -137,7 +210,12 @@
     "ratio": "",
     "date_parsed": "2026-06-03",
     "market_price": 2.12,
-    "discount_pct": -12.7
+    "discount_pct": -12.7,
+    "latest_price": 1.89,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -10.8,
+    "placing_agent": null,
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0603/2026060302950.pdf"
   },
   {
     "date": "03/06/2026",
@@ -157,7 +235,12 @@
     "ratio": "",
     "date_parsed": "2026-06-03",
     "market_price": 17.95,
-    "discount_pct": -10.3
+    "discount_pct": -10.3,
+    "latest_price": 16.4,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -8.6,
+    "placing_agent": "Macquarie Capital",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0603/2026060300037.pdf"
   },
   {
     "date": "03/06/2026",
@@ -177,7 +260,11 @@
     "ratio": "",
     "date_parsed": "2026-06-03",
     "market_price": 1.77,
-    "discount_pct": 1.9
+    "discount_pct": 1.9,
+    "latest_price": 1.77,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 0.0,
+    "placing_agent": null
   },
   {
     "date": "03/06/2026",
@@ -197,7 +284,11 @@
     "ratio": "",
     "date_parsed": "2026-06-03",
     "market_price": 1.77,
-    "discount_pct": 1.9
+    "discount_pct": 1.9,
+    "latest_price": 1.77,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 0.0,
+    "placing_agent": null
   },
   {
     "date": "03/06/2026",
@@ -217,7 +308,11 @@
     "ratio": "",
     "date_parsed": "2026-06-03",
     "market_price": 5.9,
-    "discount_pct": null
+    "discount_pct": null,
+    "latest_price": 5.91,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 0.2,
+    "placing_agent": null
   },
   {
     "date": "02/06/2026",
@@ -237,7 +332,12 @@
     "ratio": "",
     "date_parsed": "2026-06-02",
     "market_price": 2.0,
-    "discount_pct": -10.0
+    "discount_pct": -10.0,
+    "latest_price": 2.87,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 43.5,
+    "placing_agent": "Roofer Securities",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0602/2026060202538.pdf"
   },
   {
     "date": "01/06/2026",
@@ -257,7 +357,11 @@
     "ratio": "",
     "date_parsed": "2026-06-01",
     "market_price": 0.31,
-    "discount_pct": -3.9
+    "discount_pct": -3.9,
+    "latest_price": 0.49,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 58.1,
+    "placing_agent": null
   },
   {
     "date": "01/06/2026",
@@ -277,7 +381,11 @@
     "ratio": "",
     "date_parsed": "2026-06-01",
     "market_price": 0.2,
-    "discount_pct": -20.0
+    "discount_pct": -20.0,
+    "latest_price": 0.21,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 5.0,
+    "placing_agent": null
   },
   {
     "date": "01/06/2026",
@@ -297,7 +405,11 @@
     "ratio": "",
     "date_parsed": "2026-06-01",
     "market_price": 1466.0,
-    "discount_pct": null
+    "discount_pct": null,
+    "latest_price": 1206.0,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -17.7,
+    "placing_agent": null
   },
   {
     "date": "29/05/2026",
@@ -317,7 +429,12 @@
     "ratio": "",
     "date_parsed": "2026-05-29",
     "market_price": 0.7,
-    "discount_pct": -0.9
+    "discount_pct": -0.9,
+    "latest_price": 0.7,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 0.0,
+    "placing_agent": "Jakota Securities Group Limited",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0529/2026052902336.pdf"
   },
   {
     "date": "29/05/2026",
@@ -337,7 +454,12 @@
     "ratio": "二供一",
     "date_parsed": "2026-05-29",
     "market_price": 0.13,
-    "discount_pct": -23.1
+    "discount_pct": -23.1,
+    "latest_price": 0.11,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -15.4,
+    "placing_agent": "Gransing Securities",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0529/2026052903092.pdf"
   },
   {
     "date": "29/05/2026",
@@ -357,7 +479,11 @@
     "ratio": "",
     "date_parsed": "2026-05-29",
     "market_price": 9.89,
-    "discount_pct": -0.8
+    "discount_pct": -0.8,
+    "latest_price": 10.3,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 4.1,
+    "placing_agent": null
   },
   {
     "date": "29/05/2026",
@@ -377,7 +503,11 @@
     "ratio": "",
     "date_parsed": "2026-05-29",
     "market_price": 206.6,
-    "discount_pct": null
+    "discount_pct": null,
+    "latest_price": 200.2,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -3.1,
+    "placing_agent": null
   },
   {
     "date": "29/05/2026",
@@ -397,7 +527,11 @@
     "ratio": "",
     "date_parsed": "2026-05-29",
     "market_price": 0.3,
-    "discount_pct": 10.0
+    "discount_pct": 10.0,
+    "latest_price": 0.29,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -3.3,
+    "placing_agent": null
   },
   {
     "date": "28/05/2026",
@@ -421,7 +555,13 @@
     "price_5d_ago": 29.71,
     "price_20d_ago": 27.97,
     "price_post": 24.64,
-    "price_5d_post": 25.56
+    "price_5d_post": 25.56,
+    "auto_return_1d": -2.0,
+    "auto_return_5d": 1.7,
+    "latest_price": 24.9,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -1.0,
+    "placing_agent": null
   },
   {
     "date": "28/05/2026",
@@ -441,7 +581,12 @@
     "ratio": "",
     "date_parsed": "2026-05-28",
     "market_price": 154.8,
-    "discount_pct": -18.2
+    "discount_pct": -18.2,
+    "latest_price": 130.2,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -15.9,
+    "placing_agent": "Guotai Junan Securities",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0528/2026052800015.pdf"
   },
   {
     "date": "28/05/2026",
@@ -461,7 +606,11 @@
     "ratio": "二供一",
     "date_parsed": "2026-05-28",
     "market_price": 2.18,
-    "discount_pct": -33.5
+    "discount_pct": -33.5,
+    "latest_price": 1.46,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -33.0,
+    "placing_agent": null
   },
   {
     "date": "28/05/2026",
@@ -481,7 +630,12 @@
     "ratio": "",
     "date_parsed": "2026-05-28",
     "market_price": 261.2,
-    "discount_pct": -12.7
+    "discount_pct": -12.7,
+    "latest_price": 180.8,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -30.8,
+    "placing_agent": "BNP Paribas Securities",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0528/2026052800203.pdf"
   },
   {
     "date": "28/05/2026",
@@ -501,7 +655,12 @@
     "ratio": "",
     "date_parsed": "2026-05-28",
     "market_price": 0.25,
-    "discount_pct": -20.0
+    "discount_pct": -20.0,
+    "latest_price": 0.26,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 4.0,
+    "placing_agent": "SFGHK Limited",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0528/2026052800912.pdf"
   },
   {
     "date": "28/05/2026",
@@ -521,7 +680,11 @@
     "ratio": "",
     "date_parsed": "2026-05-28",
     "market_price": 0.86,
-    "discount_pct": -10.5
+    "discount_pct": -10.5,
+    "latest_price": 0.87,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 1.2,
+    "placing_agent": null
   },
   {
     "date": "28/05/2026",
@@ -541,7 +704,11 @@
     "ratio": "",
     "date_parsed": "2026-05-28",
     "market_price": 0.57,
-    "discount_pct": -19.8
+    "discount_pct": -19.8,
+    "latest_price": 0.65,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 14.0,
+    "placing_agent": null
   },
   {
     "date": "28/05/2026",
@@ -561,7 +728,11 @@
     "ratio": "",
     "date_parsed": "2026-05-28",
     "market_price": 1.17,
-    "discount_pct": -27.4
+    "discount_pct": -27.4,
+    "latest_price": 1.32,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 12.8,
+    "placing_agent": null
   },
   {
     "date": "27/05/2026",
@@ -581,7 +752,12 @@
     "ratio": "",
     "date_parsed": "2026-05-27",
     "market_price": 9.96,
-    "discount_pct": -8.6
+    "discount_pct": -8.6,
+    "latest_price": 8.75,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -12.1,
+    "placing_agent": "DBS Asia Capital",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0527/2026052700185.pdf"
   },
   {
     "date": "27/05/2026",
@@ -601,7 +777,12 @@
     "ratio": "",
     "date_parsed": "2026-05-27",
     "market_price": 0.52,
-    "discount_pct": -11.5
+    "discount_pct": -11.5,
+    "latest_price": 1.77,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 240.4,
+    "placing_agent": null,
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0527/2026052702032.pdf"
   },
   {
     "date": "27/05/2026",
@@ -621,7 +802,12 @@
     "ratio": "",
     "date_parsed": "2026-05-27",
     "market_price": 0.34,
-    "discount_pct": 5.9
+    "discount_pct": 5.9,
+    "latest_price": 0.34,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 0.0,
+    "placing_agent": "Theia Securities Limited",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0527/2026052701898.pdf"
   },
   {
     "date": "27/05/2026",
@@ -641,7 +827,12 @@
     "ratio": "",
     "date_parsed": "2026-05-27",
     "market_price": 0.52,
-    "discount_pct": -11.5
+    "discount_pct": -11.5,
+    "latest_price": 1.77,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 240.4,
+    "placing_agent": null,
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0527/2026052702032.pdf"
   },
   {
     "date": "27/05/2026",
@@ -661,7 +852,12 @@
     "ratio": "",
     "date_parsed": "2026-05-27",
     "market_price": 0.52,
-    "discount_pct": null
+    "discount_pct": null,
+    "latest_price": 1.77,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 240.4,
+    "placing_agent": null,
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0527/2026052702032.pdf"
   },
   {
     "date": "26/05/2026",
@@ -681,7 +877,12 @@
     "ratio": "",
     "date_parsed": "2026-05-26",
     "market_price": 0.25,
-    "discount_pct": -20.0
+    "discount_pct": -20.0,
+    "latest_price": 0.41,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 64.0,
+    "placing_agent": "Company and Guoyuan Securities",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0528/2026052800464.pdf"
   },
   {
     "date": "26/05/2026",
@@ -701,7 +902,12 @@
     "ratio": "",
     "date_parsed": "2026-05-26",
     "market_price": 0.13,
-    "discount_pct": -15.4
+    "discount_pct": -15.4,
+    "latest_price": 0.88,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 576.9,
+    "placing_agent": "Gransing Securities Co",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0526/2026052601806.pdf"
   },
   {
     "date": "26/05/2026",
@@ -721,7 +927,12 @@
     "ratio": "二供三",
     "date_parsed": "2026-05-26",
     "market_price": 0.17,
-    "discount_pct": -17.6
+    "discount_pct": -17.6,
+    "latest_price": 0.15,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -11.8,
+    "placing_agent": "Suncorp Securities",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0526/2026052602140.pdf"
   },
   {
     "date": "26/05/2026",
@@ -741,7 +952,11 @@
     "ratio": "",
     "date_parsed": "2026-05-26",
     "market_price": 0.48,
-    "discount_pct": -16.7
+    "discount_pct": -16.7,
+    "latest_price": 0.46,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -4.2,
+    "placing_agent": null
   },
   {
     "date": "26/05/2026",
@@ -761,7 +976,11 @@
     "ratio": "",
     "date_parsed": "2026-05-26",
     "market_price": 0.05,
-    "discount_pct": 100.0
+    "discount_pct": 100.0,
+    "latest_price": 0.06,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 20.0,
+    "placing_agent": null
   },
   {
     "date": "26/05/2026",
@@ -781,7 +1000,11 @@
     "ratio": "",
     "date_parsed": "2026-05-26",
     "market_price": 0.15,
-    "discount_pct": null
+    "discount_pct": null,
+    "latest_price": 0.14,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -6.7,
+    "placing_agent": null
   },
   {
     "date": "23/05/2026",
@@ -801,7 +1024,11 @@
     "ratio": "",
     "date_parsed": "2026-05-23",
     "market_price": 5.54,
-    "discount_pct": -15.3
+    "discount_pct": -15.3,
+    "latest_price": 4.82,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -13.0,
+    "placing_agent": null
   },
   {
     "date": "22/05/2026",
@@ -821,7 +1048,11 @@
     "ratio": "",
     "date_parsed": "2026-05-22",
     "market_price": 2.31,
-    "discount_pct": null
+    "discount_pct": null,
+    "latest_price": 1.65,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -28.6,
+    "placing_agent": null
   },
   {
     "date": "22/05/2026",
@@ -841,7 +1072,11 @@
     "ratio": "",
     "date_parsed": "2026-05-22",
     "market_price": 0.06,
-    "discount_pct": -18.3
+    "discount_pct": -18.3,
+    "latest_price": 0.06,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 0.0,
+    "placing_agent": null
   },
   {
     "date": "21/05/2026",
@@ -861,7 +1096,12 @@
     "ratio": "二供一",
     "date_parsed": "2026-05-21",
     "market_price": 0.14,
-    "discount_pct": -53.6
+    "discount_pct": -53.6,
+    "latest_price": 0.1,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -28.6,
+    "placing_agent": "Fortune (HK) Securities",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0521/2026052101596.pdf"
   },
   {
     "date": "21/05/2026",
@@ -881,7 +1121,12 @@
     "ratio": "",
     "date_parsed": "2026-05-21",
     "market_price": 52.3,
-    "discount_pct": -3.3
+    "discount_pct": -3.3,
+    "latest_price": 53.85,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 3.0,
+    "placing_agent": null,
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0528/2026052800893.pdf"
   },
   {
     "date": "21/05/2026",
@@ -901,7 +1146,12 @@
     "ratio": "",
     "date_parsed": "2026-05-21",
     "market_price": 1.2,
-    "discount_pct": -32.5
+    "discount_pct": -32.5,
+    "latest_price": 1.24,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 3.3,
+    "placing_agent": null,
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/gem/2026/0525/2026052500409.pdf"
   },
   {
     "date": "21/05/2026",
@@ -921,7 +1171,12 @@
     "ratio": "",
     "date_parsed": "2026-05-21",
     "market_price": 0.82,
-    "discount_pct": -14.6
+    "discount_pct": -14.6,
+    "latest_price": 0.97,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 18.3,
+    "placing_agent": "Uzen Securities Limited",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0522/2026052200003.pdf"
   },
   {
     "date": "21/05/2026",
@@ -941,7 +1196,11 @@
     "ratio": "",
     "date_parsed": "2026-05-21",
     "market_price": 36.4,
-    "discount_pct": -99.3
+    "discount_pct": -99.3,
+    "latest_price": 27.26,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -25.1,
+    "placing_agent": null
   },
   {
     "date": "21/05/2026",
@@ -961,7 +1220,12 @@
     "ratio": "",
     "date_parsed": "2026-05-21",
     "market_price": 1.2,
-    "discount_pct": -33.3
+    "discount_pct": -33.3,
+    "latest_price": 1.24,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 3.3,
+    "placing_agent": null,
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/gem/2026/0525/2026052500409.pdf"
   },
   {
     "date": "21/05/2026",
@@ -981,7 +1245,11 @@
     "ratio": "",
     "date_parsed": "2026-05-21",
     "market_price": 1.06,
-    "discount_pct": -19.8
+    "discount_pct": -19.8,
+    "latest_price": 1.3,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 22.6,
+    "placing_agent": null
   },
   {
     "date": "20/05/2026",
@@ -1001,7 +1269,11 @@
     "ratio": "",
     "date_parsed": "2026-05-20",
     "market_price": 0.06,
-    "discount_pct": -23.3
+    "discount_pct": -23.3,
+    "latest_price": 0.09,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 50.0,
+    "placing_agent": null
   },
   {
     "date": "20/05/2026",
@@ -1021,7 +1293,11 @@
     "ratio": "",
     "date_parsed": "2026-05-20",
     "market_price": 47.4,
-    "discount_pct": -2.3
+    "discount_pct": -2.3,
+    "latest_price": 50.65,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 6.9,
+    "placing_agent": null
   },
   {
     "date": "19/05/2026",
@@ -1041,7 +1317,12 @@
     "ratio": "",
     "date_parsed": "2026-05-19",
     "market_price": 46.6,
-    "discount_pct": -12.4
+    "discount_pct": -12.4,
+    "latest_price": 31.86,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -31.6,
+    "placing_agent": null,
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0527/2026052701478.pdf"
   },
   {
     "date": "19/05/2026",
@@ -1061,7 +1342,12 @@
     "ratio": "",
     "date_parsed": "2026-05-19",
     "market_price": 0.85,
-    "discount_pct": 0.0
+    "discount_pct": 0.0,
+    "latest_price": 0.88,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 3.5,
+    "placing_agent": "KGI Asia Limited",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/gem/2026/0519/2026051900616.pdf"
   },
   {
     "date": "19/05/2026",
@@ -1081,7 +1367,11 @@
     "ratio": "",
     "date_parsed": "2026-05-19",
     "market_price": 0.28,
-    "discount_pct": -1.8
+    "discount_pct": -1.8,
+    "latest_price": 0.21,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -25.0,
+    "placing_agent": null
   },
   {
     "date": "19/05/2026",
@@ -1101,7 +1391,11 @@
     "ratio": "",
     "date_parsed": "2026-05-19",
     "market_price": 0.52,
-    "discount_pct": -19.2
+    "discount_pct": -19.2,
+    "latest_price": 0.52,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 0.0,
+    "placing_agent": null
   },
   {
     "date": "18/05/2026",
@@ -1121,7 +1415,12 @@
     "ratio": "",
     "date_parsed": "2026-05-18",
     "market_price": 0.5,
-    "discount_pct": -14.4
+    "discount_pct": -14.4,
+    "latest_price": 0.29,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -42.0,
+    "placing_agent": "大唐黃金控股有限公司",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/gem/2026/0527/2026052701450.pdf"
   },
   {
     "date": "15/05/2026",
@@ -1141,7 +1440,11 @@
     "ratio": "",
     "date_parsed": "2026-05-15",
     "market_price": 127.9,
-    "discount_pct": null
+    "discount_pct": null,
+    "latest_price": 115.1,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -10.0,
+    "placing_agent": null
   },
   {
     "date": "15/05/2026",
@@ -1161,7 +1464,12 @@
     "ratio": "",
     "date_parsed": "2026-05-15",
     "market_price": 19.72,
-    "discount_pct": 0.6
+    "discount_pct": 0.6,
+    "latest_price": 15.25,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -22.7,
+    "placing_agent": "科濟藥業控股有限公司",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0526/2026052602244.pdf"
   },
   {
     "date": "15/05/2026",
@@ -1181,7 +1489,11 @@
     "ratio": "",
     "date_parsed": "2026-05-15",
     "market_price": 0.15,
-    "discount_pct": 3900.0
+    "discount_pct": 3900.0,
+    "latest_price": 0.08,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -46.7,
+    "placing_agent": null
   },
   {
     "date": "15/05/2026",
@@ -1201,7 +1513,11 @@
     "ratio": "",
     "date_parsed": "2026-05-15",
     "market_price": 40.54,
-    "discount_pct": 0.0
+    "discount_pct": 0.0,
+    "latest_price": 35.22,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -13.1,
+    "placing_agent": null
   },
   {
     "date": "14/05/2026",
@@ -1221,7 +1537,11 @@
     "ratio": "",
     "date_parsed": "2026-05-14",
     "market_price": 0.23,
-    "discount_pct": null
+    "discount_pct": null,
+    "latest_price": 0.23,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 0.0,
+    "placing_agent": null
   },
   {
     "date": "13/05/2026",
@@ -1241,7 +1561,11 @@
     "ratio": "",
     "date_parsed": "2026-05-13",
     "market_price": 0.79,
-    "discount_pct": -15.2
+    "discount_pct": -15.2,
+    "latest_price": 0.85,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 7.6,
+    "placing_agent": null
   },
   {
     "date": "13/05/2026",
@@ -1261,7 +1585,12 @@
     "ratio": "",
     "date_parsed": "2026-05-13",
     "market_price": 0.84,
-    "discount_pct": -2.4
+    "discount_pct": -2.4,
+    "latest_price": 0.62,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -26.2,
+    "placing_agent": null,
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0519/2026051900743.pdf"
   },
   {
     "date": "13/05/2026",
@@ -1281,7 +1610,11 @@
     "ratio": "",
     "date_parsed": "2026-05-13",
     "market_price": 0.95,
-    "discount_pct": -15.8
+    "discount_pct": -15.8,
+    "latest_price": 0.91,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -4.2,
+    "placing_agent": null
   },
   {
     "date": "13/05/2026",
@@ -1301,7 +1634,11 @@
     "ratio": "二供一",
     "date_parsed": "2026-05-13",
     "market_price": 0.45,
-    "discount_pct": 0.0
+    "discount_pct": 0.0,
+    "latest_price": 0.46,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 2.2,
+    "placing_agent": null
   },
   {
     "date": "12/05/2026",
@@ -1321,7 +1658,12 @@
     "ratio": "",
     "date_parsed": "2026-05-12",
     "market_price": 0.57,
-    "discount_pct": -19.8
+    "discount_pct": -19.8,
+    "latest_price": 1.35,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 136.8,
+    "placing_agent": null,
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0527/2026052701248.pdf"
   },
   {
     "date": "12/05/2026",
@@ -1345,7 +1687,14 @@
     "price_5d_ago": 11.26,
     "price_20d_ago": 14.42,
     "price_post": 16.88,
-    "price_5d_post": 18.47
+    "price_5d_post": 18.47,
+    "auto_return_1d": -22.8,
+    "auto_return_5d": -15.5,
+    "latest_price": 17.68,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -19.1,
+    "placing_agent": null,
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0519/2026051900827.pdf"
   },
   {
     "date": "12/05/2026",
@@ -1365,7 +1714,12 @@
     "ratio": "五供二",
     "date_parsed": "2026-05-12",
     "market_price": 0.77,
-    "discount_pct": -64.3
+    "discount_pct": -64.3,
+    "latest_price": 0.93,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 20.8,
+    "placing_agent": null,
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0512/2026051201308.pdf"
   },
   {
     "date": "12/05/2026",
@@ -1385,7 +1739,11 @@
     "ratio": "",
     "date_parsed": "2026-05-12",
     "market_price": 0.11,
-    "discount_pct": -33.6
+    "discount_pct": -33.6,
+    "latest_price": 0.07,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -36.4,
+    "placing_agent": null
   },
   {
     "date": "12/05/2026",
@@ -1409,7 +1767,13 @@
     "price_5d_ago": 93.47,
     "price_20d_ago": 97.22,
     "price_post": 140.8,
-    "price_5d_post": 146.3
+    "price_5d_post": 146.3,
+    "auto_return_1d": 2.2,
+    "auto_return_5d": 6.2,
+    "latest_price": 141.7,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 2.8,
+    "placing_agent": null
   },
   {
     "date": "11/05/2026",
@@ -1429,7 +1793,12 @@
     "ratio": "",
     "date_parsed": "2026-05-11",
     "market_price": 1.5,
-    "discount_pct": null
+    "discount_pct": null,
+    "latest_price": 0.86,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -42.7,
+    "placing_agent": null,
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0513/2026051301149.pdf"
   },
   {
     "date": "07/05/2026",
@@ -1454,7 +1823,14 @@
     "price_20d_ago": 85.5,
     "price_post": 88.2,
     "price_5d_post": 89.15,
-    "price_20d_post": 86.3
+    "price_20d_post": 86.3,
+    "auto_return_1d": 3.4,
+    "auto_return_5d": 4.5,
+    "auto_return_20d": 1.2,
+    "latest_price": 90.55,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 6.2,
+    "placing_agent": null
   },
   {
     "date": "07/05/2026",
@@ -1479,7 +1855,14 @@
     "price_20d_ago": 85.5,
     "price_post": 88.2,
     "price_5d_post": 89.15,
-    "price_20d_post": 86.3
+    "price_20d_post": 86.3,
+    "auto_return_1d": 3.4,
+    "auto_return_5d": 4.5,
+    "auto_return_20d": 1.2,
+    "latest_price": 90.55,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 6.2,
+    "placing_agent": null
   },
   {
     "date": "07/05/2026",
@@ -1499,7 +1882,11 @@
     "ratio": "",
     "date_parsed": "2026-05-07",
     "market_price": 4.5,
-    "discount_pct": -11.1
+    "discount_pct": -11.1,
+    "latest_price": 3.76,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -16.4,
+    "placing_agent": null
   },
   {
     "date": "06/05/2026",
@@ -1519,7 +1906,11 @@
     "ratio": "",
     "date_parsed": "2026-05-06",
     "market_price": 1.4,
-    "discount_pct": -14.3
+    "discount_pct": -14.3,
+    "latest_price": 1.11,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -20.7,
+    "placing_agent": null
   },
   {
     "date": "06/05/2026",
@@ -1539,7 +1930,11 @@
     "ratio": "",
     "date_parsed": "2026-05-06",
     "market_price": 0.03,
-    "discount_pct": 10.0
+    "discount_pct": 10.0,
+    "latest_price": 0.03,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 0.0,
+    "placing_agent": null
   },
   {
     "date": "05/05/2026",
@@ -1559,7 +1954,12 @@
     "ratio": "三供一",
     "date_parsed": "2026-05-05",
     "market_price": 0.08,
-    "discount_pct": 25.0
+    "discount_pct": 25.0,
+    "latest_price": 0.08,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 0.0,
+    "placing_agent": null,
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0511/2026051101130.pdf"
   },
   {
     "date": "05/05/2026",
@@ -1579,7 +1979,12 @@
     "ratio": "",
     "date_parsed": "2026-05-05",
     "market_price": 0.69,
-    "discount_pct": -4.3
+    "discount_pct": -4.3,
+    "latest_price": 0.66,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -4.3,
+    "placing_agent": null,
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0521/2026052100887.pdf"
   },
   {
     "date": "05/05/2026",
@@ -1599,7 +2004,12 @@
     "ratio": "",
     "date_parsed": "2026-05-05",
     "market_price": 0.02,
-    "discount_pct": 0.0
+    "discount_pct": 0.0,
+    "latest_price": 0.03,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 50.0,
+    "placing_agent": null,
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/gem/2026/0527/2026052701594.pdf"
   },
   {
     "date": "04/05/2026",
@@ -1619,7 +2029,11 @@
     "ratio": "",
     "date_parsed": "2026-05-04",
     "market_price": 0.12,
-    "discount_pct": 0.0
+    "discount_pct": 0.0,
+    "latest_price": 0.11,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -8.3,
+    "placing_agent": null
   },
   {
     "date": "04/05/2026",
@@ -1645,7 +2059,11 @@
     "manual_return_pct": 0,
     "manual_vendor": "-",
     "manual_note": "Done",
-    "manual_new_qty": "3830W"
+    "manual_new_qty": "3830W",
+    "latest_price": 0.5,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -12.3,
+    "placing_agent": null
   },
   {
     "date": "04/05/2026",
@@ -1665,7 +2083,11 @@
     "ratio": "",
     "date_parsed": "2026-05-04",
     "market_price": 0.42,
-    "discount_pct": -8.3
+    "discount_pct": -8.3,
+    "latest_price": 0.55,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 31.0,
+    "placing_agent": null
   },
   {
     "date": "30/04/2026",
@@ -1685,7 +2107,8 @@
     "ratio": "",
     "date_parsed": "2026-04-30",
     "market_price": 0,
-    "discount_pct": null
+    "discount_pct": null,
+    "placing_agent": null
   },
   {
     "date": "30/04/2026",
@@ -1705,7 +2128,8 @@
     "ratio": "",
     "date_parsed": "2026-04-30",
     "market_price": 0,
-    "discount_pct": null
+    "discount_pct": null,
+    "placing_agent": null
   },
   {
     "date": "29/04/2026",
@@ -1725,7 +2149,11 @@
     "ratio": "",
     "date_parsed": "2026-04-29",
     "market_price": 0.95,
-    "discount_pct": null
+    "discount_pct": null,
+    "latest_price": 0.71,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -25.3,
+    "placing_agent": null
   },
   {
     "date": "29/04/2026",
@@ -1745,7 +2173,12 @@
     "ratio": "二供一",
     "date_parsed": "2026-04-29",
     "market_price": 0.04,
-    "discount_pct": -5.0
+    "discount_pct": -5.0,
+    "latest_price": 0.04,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 0.0,
+    "placing_agent": "China Demeter Securities",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0429/2026042906230.pdf"
   },
   {
     "date": "29/04/2026",
@@ -1765,7 +2198,11 @@
     "ratio": "",
     "date_parsed": "2026-04-29",
     "market_price": 0.13,
-    "discount_pct": -17.7
+    "discount_pct": -17.7,
+    "latest_price": 0.12,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -7.7,
+    "placing_agent": null
   },
   {
     "date": "29/04/2026",
@@ -1790,7 +2227,14 @@
     "price_20d_ago": 3.78,
     "price_post": 3.41,
     "price_5d_post": 3.65,
-    "price_20d_post": 4.22
+    "price_20d_post": 4.22,
+    "auto_return_1d": -16.0,
+    "auto_return_5d": -10.1,
+    "auto_return_20d": 3.9,
+    "latest_price": 3.47,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -14.5,
+    "placing_agent": null
   },
   {
     "date": "28/04/2026",
@@ -1810,7 +2254,11 @@
     "ratio": "",
     "date_parsed": "2026-04-28",
     "market_price": 5.39,
-    "discount_pct": 14.7
+    "discount_pct": 14.7,
+    "latest_price": 4.81,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -10.8,
+    "placing_agent": null
   },
   {
     "date": "28/04/2026",
@@ -1830,7 +2278,11 @@
     "ratio": "",
     "date_parsed": "2026-04-28",
     "market_price": 5.3,
-    "discount_pct": -0.4
+    "discount_pct": -0.4,
+    "latest_price": 3.11,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -41.3,
+    "placing_agent": null
   },
   {
     "date": "28/04/2026",
@@ -1855,7 +2307,15 @@
     "price_20d_ago": 418.12,
     "price_post": 668.5,
     "price_5d_post": 766.0,
-    "price_20d_post": 643.0
+    "price_20d_post": 643.0,
+    "auto_return_1d": 6.3,
+    "auto_return_5d": 21.8,
+    "auto_return_20d": 2.2,
+    "latest_price": 688.0,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 9.4,
+    "placing_agent": null,
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0430/2026043003336.pdf"
   },
   {
     "date": "28/04/2026",
@@ -1880,7 +2340,14 @@
     "price_20d_ago": 22.05,
     "price_post": 25.94,
     "price_5d_post": 28.28,
-    "price_20d_post": 31.27
+    "price_20d_post": 31.27,
+    "auto_return_1d": -18.1,
+    "auto_return_5d": -10.8,
+    "auto_return_20d": -1.3,
+    "latest_price": 26.64,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -15.9,
+    "placing_agent": null
   },
   {
     "date": "28/04/2026",
@@ -1900,7 +2367,11 @@
     "ratio": "",
     "date_parsed": "2026-04-28",
     "market_price": 0.22,
-    "discount_pct": -2.3
+    "discount_pct": -2.3,
+    "latest_price": 0.28,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 27.3,
+    "placing_agent": null
   },
   {
     "date": "28/04/2026",
@@ -1920,7 +2391,11 @@
     "ratio": "",
     "date_parsed": "2026-04-28",
     "market_price": 0.98,
-    "discount_pct": -89.8
+    "discount_pct": -89.8,
+    "latest_price": 3.95,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 303.1,
+    "placing_agent": null
   },
   {
     "date": "27/04/2026",
@@ -1940,7 +2415,11 @@
     "ratio": "二供三",
     "date_parsed": "2026-04-27",
     "market_price": 0.12,
-    "discount_pct": -16.7
+    "discount_pct": -16.7,
+    "latest_price": 0.15,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 25.0,
+    "placing_agent": null
   },
   {
     "date": "27/04/2026",
@@ -1960,7 +2439,11 @@
     "ratio": "",
     "date_parsed": "2026-04-27",
     "market_price": 1.76,
-    "discount_pct": 13.6
+    "discount_pct": 13.6,
+    "latest_price": 1.73,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -1.7,
+    "placing_agent": null
   },
   {
     "date": "27/04/2026",
@@ -1980,7 +2463,8 @@
     "ratio": "",
     "date_parsed": "2026-04-27",
     "market_price": 0,
-    "discount_pct": null
+    "discount_pct": null,
+    "placing_agent": null
   },
   {
     "date": "27/04/2026",
@@ -2000,7 +2484,8 @@
     "ratio": "",
     "date_parsed": "2026-04-27",
     "market_price": 0,
-    "discount_pct": null
+    "discount_pct": null,
+    "placing_agent": null
   },
   {
     "date": "27/04/2026",
@@ -2020,7 +2505,11 @@
     "ratio": "",
     "date_parsed": "2026-04-27",
     "market_price": 141.5,
-    "discount_pct": -10.0
+    "discount_pct": -10.0,
+    "latest_price": 219.6,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 55.2,
+    "placing_agent": null
   },
   {
     "date": "27/04/2026",
@@ -2040,7 +2529,11 @@
     "ratio": "",
     "date_parsed": "2026-04-27",
     "market_price": 0.24,
-    "discount_pct": 5.8
+    "discount_pct": 5.8,
+    "latest_price": 0.41,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 70.8,
+    "placing_agent": null
   },
   {
     "date": "26/04/2026",
@@ -2060,7 +2553,11 @@
     "ratio": "",
     "date_parsed": "2026-04-26",
     "market_price": 7.91,
-    "discount_pct": -19.0
+    "discount_pct": -19.0,
+    "latest_price": 6.07,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -23.3,
+    "placing_agent": null
   },
   {
     "date": "24/04/2026",
@@ -2086,7 +2583,12 @@
     "manual_return_pct": 33.75,
     "manual_vendor": "一盈證券有限公司",
     "manual_note": "配股後爆1倍急回",
-    "manual_new_qty": "39385.5W"
+    "manual_new_qty": "39385.5W",
+    "latest_price": 2.26,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 310.9,
+    "placing_agent": "長城天下控股有限公司",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0430/2026043003064.pdf"
   },
   {
     "date": "24/04/2026",
@@ -2112,7 +2614,11 @@
     "manual_return_pct": 1.9,
     "manual_vendor": "?控證券",
     "manual_note": "配60%",
-    "manual_new_qty": "27104.46W"
+    "manual_new_qty": "27104.46W",
+    "latest_price": 2.18,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 220.6,
+    "placing_agent": null
   },
   {
     "date": "24/04/2026",
@@ -2138,7 +2644,11 @@
     "manual_return_pct": -3.45,
     "manual_vendor": "-",
     "manual_note": "",
-    "manual_new_qty": "15880.702W"
+    "manual_new_qty": "15880.702W",
+    "latest_price": 0.56,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -1.8,
+    "placing_agent": null
   },
   {
     "date": "23/04/2026",
@@ -2158,7 +2668,11 @@
     "ratio": "",
     "date_parsed": "2026-04-23",
     "market_price": 0.53,
-    "discount_pct": -19.8
+    "discount_pct": -19.8,
+    "latest_price": 0.59,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 11.3,
+    "placing_agent": null
   },
   {
     "date": "22/04/2026",
@@ -2178,7 +2692,12 @@
     "ratio": "",
     "date_parsed": "2026-04-22",
     "market_price": 39.6,
-    "discount_pct": 1.9
+    "discount_pct": 1.9,
+    "latest_price": 28.36,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -28.4,
+    "placing_agent": null,
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0429/2026042905708.pdf"
   },
   {
     "date": "22/04/2026",
@@ -2198,7 +2717,11 @@
     "ratio": "",
     "date_parsed": "2026-04-22",
     "market_price": 0.1,
-    "discount_pct": 0.0
+    "discount_pct": 0.0,
+    "latest_price": 0.09,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -10.0,
+    "placing_agent": null
   },
   {
     "date": "22/04/2026",
@@ -2218,7 +2741,11 @@
     "ratio": "",
     "date_parsed": "2026-04-22",
     "market_price": 0.9,
-    "discount_pct": -11.1
+    "discount_pct": -11.1,
+    "latest_price": 2.16,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 140.0,
+    "placing_agent": null
   },
   {
     "date": "22/04/2026",
@@ -2238,7 +2765,8 @@
     "ratio": "一供六",
     "date_parsed": "2026-04-22",
     "market_price": 0,
-    "discount_pct": null
+    "discount_pct": null,
+    "placing_agent": null
   },
   {
     "date": "22/04/2026",
@@ -2258,7 +2786,11 @@
     "ratio": "一供六",
     "date_parsed": "2026-04-22",
     "market_price": 5.1,
-    "discount_pct": -7.8
+    "discount_pct": -7.8,
+    "latest_price": 0.28,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -94.5,
+    "placing_agent": null
   },
   {
     "date": "21/04/2026",
@@ -2278,7 +2810,11 @@
     "ratio": "二供一",
     "date_parsed": "2026-04-21",
     "market_price": 0.22,
-    "discount_pct": -18.2
+    "discount_pct": -18.2,
+    "latest_price": 0.2,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -9.1,
+    "placing_agent": null
   },
   {
     "date": "21/04/2026",
@@ -2298,7 +2834,11 @@
     "ratio": "",
     "date_parsed": "2026-04-21",
     "market_price": 13.76,
-    "discount_pct": -11.5
+    "discount_pct": -11.5,
+    "latest_price": 8.71,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -36.7,
+    "placing_agent": null
   },
   {
     "date": "21/04/2026",
@@ -2318,7 +2858,11 @@
     "ratio": "",
     "date_parsed": "2026-04-21",
     "market_price": 29.82,
-    "discount_pct": 0.6
+    "discount_pct": 0.6,
+    "latest_price": 20.98,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -29.6,
+    "placing_agent": null
   },
   {
     "date": "20/04/2026",
@@ -2338,7 +2882,11 @@
     "ratio": "",
     "date_parsed": "2026-04-20",
     "market_price": 1.05,
-    "discount_pct": 0.0
+    "discount_pct": 0.0,
+    "latest_price": 0.86,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -18.1,
+    "placing_agent": null
   },
   {
     "date": "20/04/2026",
@@ -2358,7 +2906,12 @@
     "ratio": "",
     "date_parsed": "2026-04-20",
     "market_price": 0.6,
-    "discount_pct": -18.3
+    "discount_pct": -18.3,
+    "latest_price": 0.45,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -25.0,
+    "placing_agent": null,
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0429/2026042903669.pdf"
   },
   {
     "date": "20/04/2026",
@@ -2378,7 +2931,11 @@
     "ratio": "",
     "date_parsed": "2026-04-20",
     "market_price": 7.13,
-    "discount_pct": -98.6
+    "discount_pct": -98.6,
+    "latest_price": 5.47,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -23.3,
+    "placing_agent": null
   },
   {
     "date": "20/04/2026",
@@ -2398,7 +2955,11 @@
     "ratio": "",
     "date_parsed": "2026-04-20",
     "market_price": 0.26,
-    "discount_pct": -6.2
+    "discount_pct": -6.2,
+    "latest_price": 0.22,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -15.4,
+    "placing_agent": null
   },
   {
     "date": "17/04/2026",
@@ -2418,7 +2979,11 @@
     "ratio": "",
     "date_parsed": "2026-04-17",
     "market_price": 1.9,
-    "discount_pct": -21.1
+    "discount_pct": -21.1,
+    "latest_price": 1.94,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 2.1,
+    "placing_agent": null
   },
   {
     "date": "17/04/2026",
@@ -2449,7 +3014,14 @@
     "manual_return_pct": 2.01,
     "manual_vendor": "匯豐",
     "manual_note": "配56%",
-    "manual_new_qty": "1700000W"
+    "manual_new_qty": "1700000W",
+    "auto_return_1d": -23.9,
+    "auto_return_5d": -14.9,
+    "auto_return_20d": -2.0,
+    "latest_price": 1.55,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -22.9,
+    "placing_agent": null
   },
   {
     "date": "17/04/2026",
@@ -2474,7 +3046,14 @@
     "price_20d_ago": 1.83,
     "price_post": 1.33,
     "price_5d_post": 1.49,
-    "price_20d_post": 1.72
+    "price_20d_post": 1.72,
+    "auto_return_1d": -24.4,
+    "auto_return_5d": -15.3,
+    "auto_return_20d": -2.3,
+    "latest_price": 1.35,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -23.3,
+    "placing_agent": null
   },
   {
     "date": "17/04/2026",
@@ -2494,7 +3073,11 @@
     "ratio": "",
     "date_parsed": "2026-04-17",
     "market_price": 0.23,
-    "discount_pct": 4.3
+    "discount_pct": 4.3,
+    "latest_price": 0.23,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 0.0,
+    "placing_agent": null
   },
   {
     "date": "17/04/2026",
@@ -2514,7 +3097,11 @@
     "ratio": "一供四",
     "date_parsed": "2026-04-17",
     "market_price": 0.14,
-    "discount_pct": -7.1
+    "discount_pct": -7.1,
+    "latest_price": 0.15,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 7.1,
+    "placing_agent": null
   },
   {
     "date": "17/04/2026",
@@ -2534,7 +3121,11 @@
     "ratio": "",
     "date_parsed": "2026-04-17",
     "market_price": 0.17,
-    "discount_pct": -18.8
+    "discount_pct": -18.8,
+    "latest_price": 0.27,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 58.8,
+    "placing_agent": null
   },
   {
     "date": "17/04/2026",
@@ -2554,7 +3145,11 @@
     "ratio": "",
     "date_parsed": "2026-04-17",
     "market_price": 6.16,
-    "discount_pct": -2.3
+    "discount_pct": -2.3,
+    "latest_price": 5.82,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -5.5,
+    "placing_agent": null
   },
   {
     "date": "17/04/2026",
@@ -2574,7 +3169,11 @@
     "ratio": "",
     "date_parsed": "2026-04-17",
     "market_price": 0.77,
-    "discount_pct": -5.5
+    "discount_pct": -5.5,
+    "latest_price": 0.4,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -48.1,
+    "placing_agent": null
   },
   {
     "date": "16/04/2026",
@@ -2594,7 +3193,11 @@
     "ratio": "二供一",
     "date_parsed": "2026-04-16",
     "market_price": 0.04,
-    "discount_pct": -65.0
+    "discount_pct": -65.0,
+    "latest_price": 0.03,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -25.0,
+    "placing_agent": null
   },
   {
     "date": "16/04/2026",
@@ -2620,7 +3223,11 @@
     "manual_return_pct": 0,
     "manual_vendor": "-",
     "manual_note": "Done",
-    "manual_new_qty": "3830W"
+    "manual_new_qty": "3830W",
+    "latest_price": 0.5,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 0.0,
+    "placing_agent": null
   },
   {
     "date": "15/04/2026",
@@ -2640,7 +3247,11 @@
     "ratio": "",
     "date_parsed": "2026-04-15",
     "market_price": 9.9,
-    "discount_pct": -9.4
+    "discount_pct": -9.4,
+    "latest_price": 4.21,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -57.5,
+    "placing_agent": null
   },
   {
     "date": "15/04/2026",
@@ -2660,7 +3271,11 @@
     "ratio": "",
     "date_parsed": "2026-04-15",
     "market_price": 0.1,
-    "discount_pct": 0.0
+    "discount_pct": 0.0,
+    "latest_price": 0.09,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -10.0,
+    "placing_agent": null
   },
   {
     "date": "15/04/2026",
@@ -2680,7 +3295,11 @@
     "ratio": "",
     "date_parsed": "2026-04-15",
     "market_price": 70.3,
-    "discount_pct": -18.9
+    "discount_pct": -18.9,
+    "latest_price": 31.86,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -54.7,
+    "placing_agent": null
   },
   {
     "date": "15/04/2026",
@@ -2706,7 +3325,11 @@
     "manual_return_pct": 0,
     "manual_vendor": "寶時證券有限公司",
     "manual_note": "Done",
-    "manual_new_qty": "60500W"
+    "manual_new_qty": "60500W",
+    "latest_price": 0.33,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 22.2,
+    "placing_agent": null
   },
   {
     "date": "14/04/2026",
@@ -2726,7 +3349,11 @@
     "ratio": "",
     "date_parsed": "2026-04-14",
     "market_price": 26.52,
-    "discount_pct": -1.4
+    "discount_pct": -1.4,
+    "latest_price": 13.84,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -47.8,
+    "placing_agent": null
   },
   {
     "date": "13/04/2026",
@@ -2751,7 +3378,14 @@
     "price_20d_ago": 406.6,
     "price_post": 167.5,
     "price_5d_post": 199.6,
-    "price_20d_post": 256.0
+    "price_20d_post": 256.0,
+    "auto_return_1d": -41.5,
+    "auto_return_5d": -30.3,
+    "auto_return_20d": -10.6,
+    "latest_price": 170.9,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -40.3,
+    "placing_agent": null
   },
   {
     "date": "13/04/2026",
@@ -2771,7 +3405,11 @@
     "ratio": "",
     "date_parsed": "2026-04-13",
     "market_price": 1.16,
-    "discount_pct": -15.5
+    "discount_pct": -15.5,
+    "latest_price": 0.62,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -46.6,
+    "placing_agent": null
   },
   {
     "date": "13/04/2026",
@@ -2791,7 +3429,11 @@
     "ratio": "",
     "date_parsed": "2026-04-13",
     "market_price": 2.33,
-    "discount_pct": -20.6
+    "discount_pct": -20.6,
+    "latest_price": 8.22,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 252.8,
+    "placing_agent": null
   },
   {
     "date": "13/04/2026",
@@ -2816,7 +3458,14 @@
     "price_20d_ago": 0.1,
     "price_post": 0.05,
     "price_5d_post": 0.06,
-    "price_20d_post": 0.06
+    "price_20d_post": 0.06,
+    "auto_return_1d": -16.7,
+    "auto_return_5d": 0.0,
+    "auto_return_20d": 0.0,
+    "latest_price": 0.05,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -16.7,
+    "placing_agent": null
   },
   {
     "date": "13/04/2026",
@@ -2841,7 +3490,14 @@
     "price_20d_ago": 0.1,
     "price_post": 0.05,
     "price_5d_post": 0.06,
-    "price_20d_post": 0.06
+    "price_20d_post": 0.06,
+    "auto_return_1d": -16.7,
+    "auto_return_5d": 0.0,
+    "auto_return_20d": 0.0,
+    "latest_price": 0.05,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -16.7,
+    "placing_agent": null
   },
   {
     "date": "13/04/2026",
@@ -2861,7 +3517,8 @@
     "ratio": "",
     "date_parsed": "2026-04-13",
     "market_price": 0,
-    "discount_pct": null
+    "discount_pct": null,
+    "placing_agent": null
   },
   {
     "date": "13/04/2026",
@@ -2881,7 +3538,11 @@
     "ratio": "",
     "date_parsed": "2026-04-13",
     "market_price": 0.4,
-    "discount_pct": null
+    "discount_pct": null,
+    "latest_price": 0.05,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -87.5,
+    "placing_agent": null
   },
   {
     "date": "10/04/2026",
@@ -2901,7 +3562,11 @@
     "ratio": "",
     "date_parsed": "2026-04-10",
     "market_price": 0.14,
-    "discount_pct": -25.0
+    "discount_pct": -25.0,
+    "latest_price": 0.19,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 35.7,
+    "placing_agent": null
   },
   {
     "date": "10/04/2026",
@@ -2921,7 +3586,11 @@
     "ratio": "",
     "date_parsed": "2026-04-10",
     "market_price": 0.18,
-    "discount_pct": -13.3
+    "discount_pct": -13.3,
+    "latest_price": 0.14,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -22.2,
+    "placing_agent": null
   },
   {
     "date": "10/04/2026",
@@ -2941,7 +3610,12 @@
     "ratio": "",
     "date_parsed": "2026-04-10",
     "market_price": 2.98,
-    "discount_pct": -19.5
+    "discount_pct": -19.5,
+    "latest_price": 3.23,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 8.4,
+    "placing_agent": "Limited 天平道合控股有限公司",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/gem/2026/0430/2026043003678.pdf"
   },
   {
     "date": "08/04/2026",
@@ -2966,7 +3640,14 @@
     "price_20d_ago": 35.85,
     "price_post": 45.08,
     "price_5d_post": 45.3,
-    "price_20d_post": 44.68
+    "price_20d_post": 44.68,
+    "auto_return_1d": -1.2,
+    "auto_return_5d": -0.7,
+    "auto_return_20d": -2.1,
+    "latest_price": 45.9,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 0.6,
+    "placing_agent": null
   },
   {
     "date": "02/04/2026",
@@ -2986,7 +3667,11 @@
     "ratio": "",
     "date_parsed": "2026-04-02",
     "market_price": 0.27,
-    "discount_pct": -18.5
+    "discount_pct": -18.5,
+    "latest_price": 0.48,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 77.8,
+    "placing_agent": null
   },
   {
     "date": "02/04/2026",
@@ -3006,7 +3691,11 @@
     "ratio": "",
     "date_parsed": "2026-04-02",
     "market_price": 0.34,
-    "discount_pct": -20.6
+    "discount_pct": -20.6,
+    "latest_price": 0.1,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -70.6,
+    "placing_agent": null
   },
   {
     "date": "02/04/2026",
@@ -3026,7 +3715,11 @@
     "ratio": "",
     "date_parsed": "2026-04-02",
     "market_price": 0.83,
-    "discount_pct": 6.0
+    "discount_pct": 6.0,
+    "latest_price": 0.76,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -8.4,
+    "placing_agent": null
   },
   {
     "date": "02/04/2026",
@@ -3046,7 +3739,8 @@
     "ratio": "",
     "date_parsed": "2026-04-02",
     "market_price": 0,
-    "discount_pct": null
+    "discount_pct": null,
+    "placing_agent": null
   },
   {
     "date": "01/04/2026",
@@ -3066,7 +3760,11 @@
     "ratio": "",
     "date_parsed": "2026-04-01",
     "market_price": 4.86,
-    "discount_pct": -97.9
+    "discount_pct": -97.9,
+    "latest_price": 4.6,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -5.3,
+    "placing_agent": null
   },
   {
     "date": "01/04/2026",
@@ -3086,7 +3784,11 @@
     "ratio": "",
     "date_parsed": "2026-04-01",
     "market_price": 0.28,
-    "discount_pct": -17.9
+    "discount_pct": -17.9,
+    "latest_price": 0.41,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 46.4,
+    "placing_agent": null
   },
   {
     "date": "01/04/2026",
@@ -3106,7 +3808,11 @@
     "ratio": "",
     "date_parsed": "2026-04-01",
     "market_price": 0.51,
-    "discount_pct": -11.8
+    "discount_pct": -11.8,
+    "latest_price": 0.43,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -15.7,
+    "placing_agent": null
   },
   {
     "date": "01/04/2026",
@@ -3126,7 +3832,8 @@
     "ratio": "",
     "date_parsed": "2026-04-01",
     "market_price": 0,
-    "discount_pct": null
+    "discount_pct": null,
+    "placing_agent": null
   },
   {
     "date": "31/03/2026",
@@ -3146,7 +3853,11 @@
     "ratio": "",
     "date_parsed": "2026-03-31",
     "market_price": 0.32,
-    "discount_pct": 0.0
+    "discount_pct": 0.0,
+    "latest_price": 0.21,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -34.4,
+    "placing_agent": null
   },
   {
     "date": "31/03/2026",
@@ -3166,7 +3877,11 @@
     "ratio": "",
     "date_parsed": "2026-03-31",
     "market_price": 0.2,
-    "discount_pct": 30.0
+    "discount_pct": 30.0,
+    "latest_price": 0.41,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 105.0,
+    "placing_agent": null
   },
   {
     "date": "30/03/2026",
@@ -3186,7 +3901,12 @@
     "ratio": "",
     "date_parsed": "2026-03-30",
     "market_price": 2.0,
-    "discount_pct": -25.0
+    "discount_pct": -25.0,
+    "latest_price": 1.62,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -19.0,
+    "placing_agent": "Placing Agent Wanhai Securities",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0330/2026033001739.pdf"
   },
   {
     "date": "30/03/2026",
@@ -3206,7 +3926,11 @@
     "ratio": "",
     "date_parsed": "2026-03-30",
     "market_price": 0.41,
-    "discount_pct": -2.4
+    "discount_pct": -2.4,
+    "latest_price": 0.52,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 26.8,
+    "placing_agent": null
   },
   {
     "date": "30/03/2026",
@@ -3226,7 +3950,11 @@
     "ratio": "",
     "date_parsed": "2026-03-30",
     "market_price": 2.98,
-    "discount_pct": null
+    "discount_pct": null,
+    "latest_price": 1.89,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -36.6,
+    "placing_agent": null
   },
   {
     "date": "30/03/2026",
@@ -3246,7 +3974,11 @@
     "ratio": "",
     "date_parsed": "2026-03-30",
     "market_price": 0.51,
-    "discount_pct": -2.0
+    "discount_pct": -2.0,
+    "latest_price": 0.29,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -43.1,
+    "placing_agent": null
   },
   {
     "date": "30/03/2026",
@@ -3266,7 +3998,11 @@
     "ratio": "",
     "date_parsed": "2026-03-30",
     "market_price": 5.83,
-    "discount_pct": -19.4
+    "discount_pct": -19.4,
+    "latest_price": 4.6,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -21.1,
+    "placing_agent": null
   },
   {
     "date": "27/03/2026",
@@ -3286,7 +4022,12 @@
     "ratio": "一供二",
     "date_parsed": "2026-03-27",
     "market_price": 0.27,
-    "discount_pct": -7.4
+    "discount_pct": -7.4,
+    "latest_price": 0.3,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 11.1,
+    "placing_agent": "Tiger Faith Securities",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0327/2026032703516.pdf"
   },
   {
     "date": "26/03/2026",
@@ -3306,7 +4047,11 @@
     "ratio": "",
     "date_parsed": "2026-03-26",
     "market_price": 0.83,
-    "discount_pct": -15.7
+    "discount_pct": -15.7,
+    "latest_price": 0.83,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 0.0,
+    "placing_agent": null
   },
   {
     "date": "26/03/2026",
@@ -3326,7 +4071,11 @@
     "ratio": "",
     "date_parsed": "2026-03-26",
     "market_price": 0.81,
-    "discount_pct": -7.4
+    "discount_pct": -7.4,
+    "latest_price": 0.7,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -13.6,
+    "placing_agent": null
   },
   {
     "date": "26/03/2026",
@@ -3346,7 +4095,11 @@
     "ratio": "一供二",
     "date_parsed": "2026-03-26",
     "market_price": 0.17,
-    "discount_pct": -11.8
+    "discount_pct": -11.8,
+    "latest_price": 0.17,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 0.0,
+    "placing_agent": null
   },
   {
     "date": "26/03/2026",
@@ -3366,7 +4119,11 @@
     "ratio": "",
     "date_parsed": "2026-03-26",
     "market_price": 3.48,
-    "discount_pct": 14.9
+    "discount_pct": 14.9,
+    "latest_price": 2.38,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -31.6,
+    "placing_agent": null
   },
   {
     "date": "25/03/2026",
@@ -3386,7 +4143,11 @@
     "ratio": "",
     "date_parsed": "2026-03-25",
     "market_price": 0.4,
-    "discount_pct": -5.0
+    "discount_pct": -5.0,
+    "latest_price": 1.29,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 222.5,
+    "placing_agent": null
   },
   {
     "date": "25/03/2026",
@@ -3406,7 +4167,11 @@
     "ratio": "",
     "date_parsed": "2026-03-25",
     "market_price": 0.35,
-    "discount_pct": null
+    "discount_pct": null,
+    "latest_price": 0.43,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 22.9,
+    "placing_agent": null
   },
   {
     "date": "25/03/2026",
@@ -3426,7 +4191,11 @@
     "ratio": "",
     "date_parsed": "2026-03-25",
     "market_price": 0.19,
-    "discount_pct": 689.5
+    "discount_pct": 689.5,
+    "latest_price": 0.18,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -5.3,
+    "placing_agent": null
   },
   {
     "date": "24/03/2026",
@@ -3446,7 +4215,11 @@
     "ratio": "一供四",
     "date_parsed": "2026-03-24",
     "market_price": 0.58,
-    "discount_pct": -5.2
+    "discount_pct": -5.2,
+    "latest_price": 0.62,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 6.9,
+    "placing_agent": null
   },
   {
     "date": "24/03/2026",
@@ -3466,7 +4239,8 @@
     "ratio": "",
     "date_parsed": "2026-03-24",
     "market_price": 0,
-    "discount_pct": null
+    "discount_pct": null,
+    "placing_agent": null
   },
   {
     "date": "23/03/2026",
@@ -3486,7 +4260,11 @@
     "ratio": "",
     "date_parsed": "2026-03-23",
     "market_price": 0.81,
-    "discount_pct": -8.6
+    "discount_pct": -8.6,
+    "latest_price": 0.86,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 6.2,
+    "placing_agent": null
   },
   {
     "date": "22/03/2026",
@@ -3511,7 +4289,14 @@
     "price_20d_ago": 31.21,
     "price_post": 26.72,
     "price_5d_post": 30.42,
-    "price_20d_post": 41.13
+    "price_20d_post": 41.13,
+    "auto_return_1d": -36.5,
+    "auto_return_5d": -27.7,
+    "auto_return_20d": -2.3,
+    "latest_price": 27.18,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -35.4,
+    "placing_agent": null
   },
   {
     "date": "20/03/2026",
@@ -3531,7 +4316,11 @@
     "ratio": "一供二",
     "date_parsed": "2026-03-20",
     "market_price": 0.11,
-    "discount_pct": -9.1
+    "discount_pct": -9.1,
+    "latest_price": 0.17,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 54.5,
+    "placing_agent": null
   },
   {
     "date": "20/03/2026",
@@ -3551,7 +4340,11 @@
     "ratio": "",
     "date_parsed": "2026-03-20",
     "market_price": 0.1,
-    "discount_pct": -17.0
+    "discount_pct": -17.0,
+    "latest_price": 0.08,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -20.0,
+    "placing_agent": null
   },
   {
     "date": "20/03/2026",
@@ -3571,7 +4364,11 @@
     "ratio": "",
     "date_parsed": "2026-03-20",
     "market_price": 0.47,
-    "discount_pct": 6.4
+    "discount_pct": 6.4,
+    "latest_price": 0.47,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 0.0,
+    "placing_agent": null
   },
   {
     "date": "19/03/2026",
@@ -3591,7 +4388,11 @@
     "ratio": "一供一",
     "date_parsed": "2026-03-19",
     "market_price": 0.14,
-    "discount_pct": -28.6
+    "discount_pct": -28.6,
+    "latest_price": 0.65,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 364.3,
+    "placing_agent": null
   },
   {
     "date": "18/03/2026",
@@ -3616,7 +4417,14 @@
     "price_20d_ago": 97.22,
     "price_post": 140.8,
     "price_5d_post": 146.3,
-    "price_20d_post": 137.82
+    "price_20d_post": 137.82,
+    "auto_return_1d": 10.8,
+    "auto_return_5d": 15.1,
+    "auto_return_20d": 8.4,
+    "latest_price": 141.7,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 11.5,
+    "placing_agent": null
   },
   {
     "date": "18/03/2026",
@@ -3636,7 +4444,11 @@
     "ratio": "",
     "date_parsed": "2026-03-18",
     "market_price": 0.2,
-    "discount_pct": 4275.0
+    "discount_pct": 4275.0,
+    "latest_price": 0.07,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -65.0,
+    "placing_agent": null
   },
   {
     "date": "18/03/2026",
@@ -3661,7 +4473,14 @@
     "price_20d_ago": 97.22,
     "price_post": 140.8,
     "price_5d_post": 146.3,
-    "price_20d_post": 137.82
+    "price_20d_post": 137.82,
+    "auto_return_1d": 10.8,
+    "auto_return_5d": 15.1,
+    "auto_return_20d": 8.4,
+    "latest_price": 141.7,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 11.5,
+    "placing_agent": null
   },
   {
     "date": "17/03/2026",
@@ -3681,7 +4500,11 @@
     "ratio": "",
     "date_parsed": "2026-03-17",
     "market_price": 0.09,
-    "discount_pct": -22.2
+    "discount_pct": -22.2,
+    "latest_price": 0.03,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -66.7,
+    "placing_agent": null
   },
   {
     "date": "16/03/2026",
@@ -3701,7 +4524,11 @@
     "ratio": "",
     "date_parsed": "2026-03-16",
     "market_price": 0.07,
-    "discount_pct": 12.9
+    "discount_pct": 12.9,
+    "latest_price": 0.05,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -28.6,
+    "placing_agent": null
   },
   {
     "date": "15/03/2026",
@@ -3721,7 +4548,12 @@
     "ratio": "",
     "date_parsed": "2026-03-15",
     "market_price": 0.32,
-    "discount_pct": -18.8
+    "discount_pct": -18.8,
+    "latest_price": 0.2,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -37.5,
+    "placing_agent": null,
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0330/2026033000662.pdf"
   },
   {
     "date": "13/03/2026",
@@ -3741,7 +4573,11 @@
     "ratio": "",
     "date_parsed": "2026-03-13",
     "market_price": 0.73,
-    "discount_pct": -91.2
+    "discount_pct": -91.2,
+    "latest_price": 0.59,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -19.2,
+    "placing_agent": null
   },
   {
     "date": "13/03/2026",
@@ -3761,7 +4597,11 @@
     "ratio": "",
     "date_parsed": "2026-03-13",
     "market_price": 36.1,
-    "discount_pct": null
+    "discount_pct": null,
+    "latest_price": 29.48,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -18.3,
+    "placing_agent": null
   },
   {
     "date": "13/03/2026",
@@ -3781,7 +4621,11 @@
     "ratio": "",
     "date_parsed": "2026-03-13",
     "market_price": 0.14,
-    "discount_pct": -18.6
+    "discount_pct": -18.6,
+    "latest_price": 0.1,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -28.6,
+    "placing_agent": null
   },
   {
     "date": "13/03/2026",
@@ -3806,7 +4650,14 @@
     "price_20d_ago": 0.07,
     "price_post": 0.06,
     "price_5d_post": 0.05,
-    "price_20d_post": 0.06
+    "price_20d_post": 0.06,
+    "auto_return_1d": -25.0,
+    "auto_return_5d": -37.5,
+    "auto_return_20d": -25.0,
+    "latest_price": 0.06,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -25.0,
+    "placing_agent": null
   },
   {
     "date": "13/03/2026",
@@ -3831,7 +4682,14 @@
     "price_20d_ago": 0.07,
     "price_post": 0.06,
     "price_5d_post": 0.05,
-    "price_20d_post": 0.06
+    "price_20d_post": 0.06,
+    "auto_return_1d": -25.0,
+    "auto_return_5d": -37.5,
+    "auto_return_20d": -25.0,
+    "latest_price": 0.06,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -25.0,
+    "placing_agent": null
   },
   {
     "date": "13/03/2026",
@@ -3856,7 +4714,14 @@
     "price_20d_ago": 0.07,
     "price_post": 0.06,
     "price_5d_post": 0.05,
-    "price_20d_post": 0.06
+    "price_20d_post": 0.06,
+    "auto_return_1d": -25.0,
+    "auto_return_5d": -37.5,
+    "auto_return_20d": -25.0,
+    "latest_price": 0.06,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -25.0,
+    "placing_agent": null
   },
   {
     "date": "13/03/2026",
@@ -3881,7 +4746,14 @@
     "price_20d_ago": 0.07,
     "price_post": 0.06,
     "price_5d_post": 0.05,
-    "price_20d_post": 0.06
+    "price_20d_post": 0.06,
+    "auto_return_1d": -25.0,
+    "auto_return_5d": -37.5,
+    "auto_return_20d": -25.0,
+    "latest_price": 0.06,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -25.0,
+    "placing_agent": null
   },
   {
     "date": "12/03/2026",
@@ -3901,7 +4773,11 @@
     "ratio": "",
     "date_parsed": "2026-03-12",
     "market_price": 0.09,
-    "discount_pct": 11.1
+    "discount_pct": 11.1,
+    "latest_price": 0.14,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 55.6,
+    "placing_agent": null
   },
   {
     "date": "12/03/2026",
@@ -3921,7 +4797,8 @@
     "ratio": "",
     "date_parsed": "2026-03-12",
     "market_price": 0,
-    "discount_pct": null
+    "discount_pct": null,
+    "placing_agent": null
   },
   {
     "date": "11/03/2026",
@@ -3941,7 +4818,12 @@
     "ratio": "",
     "date_parsed": "2026-03-11",
     "market_price": 0.22,
-    "discount_pct": 4.5
+    "discount_pct": 4.5,
+    "latest_price": 0.21,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -4.5,
+    "placing_agent": "EXCHANGE RISK EXPOSURE The Group",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0331/2026033101429.pdf"
   },
   {
     "date": "11/03/2026",
@@ -3961,7 +4843,8 @@
     "ratio": "",
     "date_parsed": "2026-03-11",
     "market_price": 0,
-    "discount_pct": null
+    "discount_pct": null,
+    "placing_agent": null
   },
   {
     "date": "11/03/2026",
@@ -3981,7 +4864,11 @@
     "ratio": "",
     "date_parsed": "2026-03-11",
     "market_price": 0.28,
-    "discount_pct": -28.6
+    "discount_pct": -28.6,
+    "latest_price": 0.06,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -78.6,
+    "placing_agent": null
   },
   {
     "date": "11/03/2026",
@@ -4001,7 +4888,11 @@
     "ratio": "",
     "date_parsed": "2026-03-11",
     "market_price": 0.1,
-    "discount_pct": 40.0
+    "discount_pct": 40.0,
+    "latest_price": 0.1,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 0.0,
+    "placing_agent": null
   },
   {
     "date": "11/03/2026",
@@ -4021,7 +4912,8 @@
     "ratio": "",
     "date_parsed": "2026-03-11",
     "market_price": 0,
-    "discount_pct": null
+    "discount_pct": null,
+    "placing_agent": null
   },
   {
     "date": "11/03/2026",
@@ -4041,7 +4933,11 @@
     "ratio": "",
     "date_parsed": "2026-03-11",
     "market_price": 0.28,
-    "discount_pct": -91.1
+    "discount_pct": -91.1,
+    "latest_price": 0.06,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -78.6,
+    "placing_agent": null
   },
   {
     "date": "11/03/2026",
@@ -4061,7 +4957,11 @@
     "ratio": "",
     "date_parsed": "2026-03-11",
     "market_price": 2.03,
-    "discount_pct": -20.0
+    "discount_pct": -20.0,
+    "latest_price": 1.07,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -47.3,
+    "placing_agent": null
   },
   {
     "date": "11/03/2026",
@@ -4081,7 +4981,11 @@
     "ratio": "",
     "date_parsed": "2026-03-11",
     "market_price": 0.1,
-    "discount_pct": null
+    "discount_pct": null,
+    "latest_price": 0.1,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 0.0,
+    "placing_agent": null
   },
   {
     "date": "11/03/2026",
@@ -4101,7 +5005,11 @@
     "ratio": "",
     "date_parsed": "2026-03-11",
     "market_price": 0.1,
-    "discount_pct": 40.0
+    "discount_pct": 40.0,
+    "latest_price": 0.1,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 0.0,
+    "placing_agent": null
   },
   {
     "date": "10/03/2026",
@@ -4121,7 +5029,12 @@
     "ratio": "",
     "date_parsed": "2026-03-10",
     "market_price": 35.42,
-    "discount_pct": -12.3
+    "discount_pct": -12.3,
+    "latest_price": 17.44,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -50.8,
+    "placing_agent": "Company and Macquarie Capital",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0330/2026033004434.pdf"
   },
   {
     "date": "10/03/2026",
@@ -4141,7 +5054,12 @@
     "ratio": "",
     "date_parsed": "2026-03-10",
     "market_price": 0.24,
-    "discount_pct": -33.3
+    "discount_pct": -33.3,
+    "latest_price": 0.22,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -8.3,
+    "placing_agent": "Resources and Capital",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0330/2026033002960.pdf"
   },
   {
     "date": "10/03/2026",
@@ -4161,7 +5079,8 @@
     "ratio": "",
     "date_parsed": "2026-03-10",
     "market_price": 0,
-    "discount_pct": null
+    "discount_pct": null,
+    "placing_agent": null
   },
   {
     "date": "10/03/2026",
@@ -4181,7 +5100,11 @@
     "ratio": "",
     "date_parsed": "2026-03-10",
     "market_price": 5.6,
-    "discount_pct": -99.8
+    "discount_pct": -99.8,
+    "latest_price": 1.84,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -67.1,
+    "placing_agent": null
   },
   {
     "date": "10/03/2026",
@@ -4201,7 +5124,11 @@
     "ratio": "",
     "date_parsed": "2026-03-10",
     "market_price": 0.1,
-    "discount_pct": -14.0
+    "discount_pct": -14.0,
+    "latest_price": 0.07,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -30.0,
+    "placing_agent": null
   },
   {
     "date": "09/03/2026",
@@ -4221,7 +5148,11 @@
     "ratio": "一供一",
     "date_parsed": "2026-03-09",
     "market_price": 0.1,
-    "discount_pct": -15.0
+    "discount_pct": -15.0,
+    "latest_price": 0.21,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 110.0,
+    "placing_agent": null
   },
   {
     "date": "09/03/2026",
@@ -4241,7 +5172,12 @@
     "ratio": "",
     "date_parsed": "2026-03-09",
     "market_price": 0.09,
-    "discount_pct": 11.1
+    "discount_pct": 11.1,
+    "latest_price": 0.07,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -22.2,
+    "placing_agent": "Group Limited (Formerly known as Kingkey Securities",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0330/2026033002438.pdf"
   },
   {
     "date": "09/03/2026",
@@ -4261,7 +5197,11 @@
     "ratio": "",
     "date_parsed": "2026-03-09",
     "market_price": 0.55,
-    "discount_pct": -9.1
+    "discount_pct": -9.1,
+    "latest_price": 0.3,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -45.5,
+    "placing_agent": null
   },
   {
     "date": "09/03/2026",
@@ -4281,7 +5221,11 @@
     "ratio": "",
     "date_parsed": "2026-03-09",
     "market_price": 19.29,
-    "discount_pct": -2.1
+    "discount_pct": -2.1,
+    "latest_price": 14.16,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -26.6,
+    "placing_agent": null
   },
   {
     "date": "06/03/2026",
@@ -4301,7 +5245,11 @@
     "ratio": "三供一",
     "date_parsed": "2026-03-06",
     "market_price": 1.58,
-    "discount_pct": 0.0
+    "discount_pct": 0.0,
+    "latest_price": 1.03,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -34.8,
+    "placing_agent": null
   },
   {
     "date": "05/03/2026",
@@ -4321,7 +5269,12 @@
     "ratio": "",
     "date_parsed": "2026-03-05",
     "market_price": 3.88,
-    "discount_pct": -9.5
+    "discount_pct": -9.5,
+    "latest_price": 1.74,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -55.2,
+    "placing_agent": "Group and asset management companies contained default clauses which the Group",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0331/2026033104381.pdf"
   },
   {
     "date": "05/03/2026",
@@ -4341,7 +5294,8 @@
     "ratio": "二供三",
     "date_parsed": "2026-03-05",
     "market_price": 0,
-    "discount_pct": null
+    "discount_pct": null,
+    "placing_agent": null
   },
   {
     "date": "05/03/2026",
@@ -4361,7 +5315,11 @@
     "ratio": "二供三",
     "date_parsed": "2026-03-05",
     "market_price": 0.62,
-    "discount_pct": -21.6
+    "discount_pct": -21.6,
+    "latest_price": 1.03,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 66.1,
+    "placing_agent": null
   },
   {
     "date": "05/03/2026",
@@ -4381,7 +5339,11 @@
     "ratio": "",
     "date_parsed": "2026-03-05",
     "market_price": 0.14,
-    "discount_pct": -22.9
+    "discount_pct": -22.9,
+    "latest_price": 0.17,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 21.4,
+    "placing_agent": null
   },
   {
     "date": "05/03/2026",
@@ -4401,7 +5363,11 @@
     "ratio": "",
     "date_parsed": "2026-03-05",
     "market_price": 0.36,
-    "discount_pct": 0.0
+    "discount_pct": 0.0,
+    "latest_price": 0.33,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -8.3,
+    "placing_agent": null
   },
   {
     "date": "03/03/2026",
@@ -4421,7 +5387,12 @@
     "ratio": "",
     "date_parsed": "2026-03-03",
     "market_price": 0.46,
-    "discount_pct": -91.5
+    "discount_pct": -91.5,
+    "latest_price": 1.35,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 193.5,
+    "placing_agent": null,
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0331/2026033103211.pdf"
   },
   {
     "date": "03/03/2026",
@@ -4441,7 +5412,11 @@
     "ratio": "",
     "date_parsed": "2026-03-03",
     "market_price": 2.2,
-    "discount_pct": -18.2
+    "discount_pct": -18.2,
+    "latest_price": 2.86,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 30.0,
+    "placing_agent": null
   },
   {
     "date": "26/02/2026",
@@ -4461,7 +5436,11 @@
     "ratio": "",
     "date_parsed": "2026-02-26",
     "market_price": 0.34,
-    "discount_pct": null
+    "discount_pct": null,
+    "latest_price": 0.3,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -11.8,
+    "placing_agent": null
   },
   {
     "date": "25/02/2026",
@@ -4481,7 +5460,8 @@
     "ratio": "",
     "date_parsed": "2026-02-25",
     "market_price": 0,
-    "discount_pct": null
+    "discount_pct": null,
+    "placing_agent": null
   },
   {
     "date": "16/02/2026",
@@ -4501,7 +5481,12 @@
     "ratio": "一供一",
     "date_parsed": "2026-02-16",
     "market_price": 1.01,
-    "discount_pct": -40.6
+    "discount_pct": -40.6,
+    "latest_price": 0.78,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -22.8,
+    "placing_agent": "VBG Capital Limited",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/gem/2026/0216/2026021600597.pdf"
   },
   {
     "date": "16/02/2026",
@@ -4521,7 +5506,11 @@
     "ratio": "",
     "date_parsed": "2026-02-16",
     "market_price": 0.62,
-    "discount_pct": -17.7
+    "discount_pct": -17.7,
+    "latest_price": 0.3,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -51.6,
+    "placing_agent": null
   },
   {
     "date": "16/02/2026",
@@ -4541,7 +5530,11 @@
     "ratio": "",
     "date_parsed": "2026-02-16",
     "market_price": 3.02,
-    "discount_pct": -21.2
+    "discount_pct": -21.2,
+    "latest_price": 2.01,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -33.4,
+    "placing_agent": null
   },
   {
     "date": "16/02/2026",
@@ -4561,7 +5554,12 @@
     "ratio": "",
     "date_parsed": "2026-02-16",
     "market_price": 0.45,
-    "discount_pct": null
+    "discount_pct": null,
+    "latest_price": 0.19,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -57.8,
+    "placing_agent": "Step Wide Investment Limited",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0216/2026021600806.pdf"
   },
   {
     "date": "13/02/2026",
@@ -4581,7 +5579,12 @@
     "ratio": "",
     "date_parsed": "2026-02-13",
     "market_price": 0.34,
-    "discount_pct": -11.8
+    "discount_pct": -11.8,
+    "latest_price": 0.3,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -11.8,
+    "placing_agent": "意達利控股有限公司",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0226/2026022600628.pdf"
   },
   {
     "date": "13/02/2026",
@@ -4601,7 +5604,12 @@
     "ratio": "",
     "date_parsed": "2026-02-13",
     "market_price": 2.34,
-    "discount_pct": -19.7
+    "discount_pct": -19.7,
+    "latest_price": 7.01,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 199.6,
+    "placing_agent": "Ruibang Securities",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0213/2026021301303.pdf"
   },
   {
     "date": "13/02/2026",
@@ -4621,7 +5629,12 @@
     "ratio": "",
     "date_parsed": "2026-02-13",
     "market_price": 0.34,
-    "discount_pct": null
+    "discount_pct": null,
+    "latest_price": 0.3,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -11.8,
+    "placing_agent": "意達利控股有限公司",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0226/2026022600628.pdf"
   },
   {
     "date": "12/02/2026",
@@ -4641,7 +5654,12 @@
     "ratio": "",
     "date_parsed": "2026-02-12",
     "market_price": 0.11,
-    "discount_pct": -27.3
+    "discount_pct": -27.3,
+    "latest_price": 0.14,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 27.3,
+    "placing_agent": "Placing Agent Kingkey Securities",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0225/2026022500244.pdf"
   },
   {
     "date": "12/02/2026",
@@ -4661,7 +5679,11 @@
     "ratio": "",
     "date_parsed": "2026-02-12",
     "market_price": 0.33,
-    "discount_pct": -15.2
+    "discount_pct": -15.2,
+    "latest_price": 0.22,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -33.3,
+    "placing_agent": null
   },
   {
     "date": "11/02/2026",
@@ -4681,7 +5703,12 @@
     "ratio": "",
     "date_parsed": "2026-02-11",
     "market_price": 1.09,
-    "discount_pct": -19.3
+    "discount_pct": -19.3,
+    "latest_price": 1.46,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 33.9,
+    "placing_agent": "First Shanghai Securities",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0211/2026021101260.pdf"
   },
   {
     "date": "11/02/2026",
@@ -4701,7 +5728,12 @@
     "ratio": "一供二",
     "date_parsed": "2026-02-11",
     "market_price": 0.13,
-    "discount_pct": -17.7
+    "discount_pct": -17.7,
+    "latest_price": 0.12,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -7.7,
+    "placing_agent": "First Shanghai Securities",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/gem/2026/0211/2026021101256.pdf"
   },
   {
     "date": "11/02/2026",
@@ -4721,7 +5753,12 @@
     "ratio": "",
     "date_parsed": "2026-02-11",
     "market_price": 0.8,
-    "discount_pct": -15.0
+    "discount_pct": -15.0,
+    "latest_price": 1.3,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 62.5,
+    "placing_agent": null,
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0223/2026022300774.pdf"
   },
   {
     "date": "11/02/2026",
@@ -4741,7 +5778,11 @@
     "ratio": "",
     "date_parsed": "2026-02-11",
     "market_price": 0.31,
-    "discount_pct": 0.0
+    "discount_pct": 0.0,
+    "latest_price": 0.25,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -19.4,
+    "placing_agent": null
   },
   {
     "date": "10/02/2026",
@@ -4761,7 +5802,12 @@
     "ratio": "",
     "date_parsed": "2026-02-10",
     "market_price": 0.14,
-    "discount_pct": -14.3
+    "discount_pct": -14.3,
+    "latest_price": 0.15,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 7.1,
+    "placing_agent": "Astrum Capital",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0210/2026021001236.pdf"
   },
   {
     "date": "10/02/2026",
@@ -4786,7 +5832,15 @@
     "price_20d_ago": 14.42,
     "price_post": 16.88,
     "price_5d_post": 18.47,
-    "price_20d_post": 21.2
+    "price_20d_post": 21.2,
+    "auto_return_1d": -5.6,
+    "auto_return_5d": 3.3,
+    "auto_return_20d": 18.6,
+    "latest_price": 17.68,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -1.1,
+    "placing_agent": "Act. The Company has no intention to register under the U.S. Securities",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0220/2026022000686.pdf"
   },
   {
     "date": "10/02/2026",
@@ -4806,7 +5860,12 @@
     "ratio": "",
     "date_parsed": "2026-02-10",
     "market_price": 11.02,
-    "discount_pct": -19.4
+    "discount_pct": -19.4,
+    "latest_price": 21.5,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 95.1,
+    "placing_agent": null,
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0225/2026022500476.pdf"
   },
   {
     "date": "10/02/2026",
@@ -4826,7 +5885,11 @@
     "ratio": "",
     "date_parsed": "2026-02-10",
     "market_price": 0.07,
-    "discount_pct": null
+    "discount_pct": null,
+    "latest_price": 0.07,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 0.0,
+    "placing_agent": null
   },
   {
     "date": "09/02/2026",
@@ -4846,7 +5909,12 @@
     "ratio": "",
     "date_parsed": "2026-02-09",
     "market_price": 1.81,
-    "discount_pct": -16.0
+    "discount_pct": -16.0,
+    "latest_price": 3.08,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 70.2,
+    "placing_agent": "Placing as general working capital of the Zhong An Intelligent Group",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0227/2026022701318.pdf"
   },
   {
     "date": "06/02/2026",
@@ -4866,7 +5934,11 @@
     "ratio": "一供一",
     "date_parsed": "2026-02-06",
     "market_price": 0.4,
-    "discount_pct": -40.0
+    "discount_pct": -40.0,
+    "latest_price": 0.23,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -42.5,
+    "placing_agent": null
   },
   {
     "date": "06/02/2026",
@@ -4886,7 +5958,11 @@
     "ratio": "",
     "date_parsed": "2026-02-06",
     "market_price": 0.13,
-    "discount_pct": -19.2
+    "discount_pct": -19.2,
+    "latest_price": 0.03,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -76.9,
+    "placing_agent": null
   },
   {
     "date": "05/02/2026",
@@ -4906,7 +5982,12 @@
     "ratio": "",
     "date_parsed": "2026-02-05",
     "market_price": 2.44,
-    "discount_pct": -2.0
+    "discount_pct": -2.0,
+    "latest_price": 1.6,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -34.4,
+    "placing_agent": null,
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0211/2026021101028.pdf"
   },
   {
     "date": "05/02/2026",
@@ -4926,7 +6007,12 @@
     "ratio": "",
     "date_parsed": "2026-02-05",
     "market_price": 0.05,
-    "discount_pct": 0.0
+    "discount_pct": 0.0,
+    "latest_price": 0.04,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -20.0,
+    "placing_agent": null,
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0225/2026022500498.pdf"
   },
   {
     "date": "05/02/2026",
@@ -4946,7 +6032,12 @@
     "ratio": "",
     "date_parsed": "2026-02-05",
     "market_price": 0.49,
-    "discount_pct": -6.1
+    "discount_pct": -6.1,
+    "latest_price": 0.41,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -16.3,
+    "placing_agent": "Placing Agent DaoKou Securities",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0216/2026021600427.pdf"
   },
   {
     "date": "05/02/2026",
@@ -4966,7 +6057,11 @@
     "ratio": "",
     "date_parsed": "2026-02-05",
     "market_price": 4.62,
-    "discount_pct": null
+    "discount_pct": null,
+    "latest_price": 2.52,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -45.5,
+    "placing_agent": null
   },
   {
     "date": "05/02/2026",
@@ -4986,7 +6081,11 @@
     "ratio": "",
     "date_parsed": "2026-02-05",
     "market_price": 4.62,
-    "discount_pct": -13.9
+    "discount_pct": -13.9,
+    "latest_price": 2.52,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -45.5,
+    "placing_agent": null
   },
   {
     "date": "04/02/2026",
@@ -5006,7 +6105,12 @@
     "ratio": "",
     "date_parsed": "2026-02-04",
     "market_price": 0.3,
-    "discount_pct": -60.0
+    "discount_pct": -60.0,
+    "latest_price": 0.19,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -36.7,
+    "placing_agent": "Cheong Lee Securities",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0212/2026021200974.pdf"
   },
   {
     "date": "04/02/2026",
@@ -5026,7 +6130,11 @@
     "ratio": "",
     "date_parsed": "2026-02-04",
     "market_price": 176.04,
-    "discount_pct": null
+    "discount_pct": null,
+    "latest_price": 173.0,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -1.7,
+    "placing_agent": null
   },
   {
     "date": "04/02/2026",
@@ -5051,7 +6159,15 @@
     "price_20d_ago": 39.56,
     "price_post": 42.7,
     "price_5d_post": 46.62,
-    "price_20d_post": 60.35
+    "price_20d_post": 60.35,
+    "auto_return_1d": -13.7,
+    "auto_return_5d": -5.8,
+    "auto_return_20d": 21.9,
+    "latest_price": 42.78,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -13.6,
+    "placing_agent": "天齊鋰業股份有限公司",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0211/2026021100728.pdf"
   },
   {
     "date": "04/02/2026",
@@ -5076,7 +6192,15 @@
     "price_20d_ago": 39.56,
     "price_post": 42.7,
     "price_5d_post": 46.62,
-    "price_20d_post": 60.35
+    "price_20d_post": 60.35,
+    "auto_return_1d": -13.7,
+    "auto_return_5d": -5.8,
+    "auto_return_20d": 21.9,
+    "latest_price": 42.78,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -13.6,
+    "placing_agent": "天齊鋰業股份有限公司",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0211/2026021100728.pdf"
   },
   {
     "date": "04/02/2026",
@@ -5096,7 +6220,12 @@
     "ratio": "",
     "date_parsed": "2026-02-04",
     "market_price": 0.2,
-    "discount_pct": 50.0
+    "discount_pct": 50.0,
+    "latest_price": 0.18,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -10.0,
+    "placing_agent": null,
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0211/2026021100556.pdf"
   },
   {
     "date": "04/02/2026",
@@ -5116,7 +6245,12 @@
     "ratio": "",
     "date_parsed": "2026-02-04",
     "market_price": 1.29,
-    "discount_pct": -7.0
+    "discount_pct": -7.0,
+    "latest_price": 1.0,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -22.5,
+    "placing_agent": "Securities Limited",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0226/2026022600910.pdf"
   },
   {
     "date": "04/02/2026",
@@ -5136,7 +6270,11 @@
     "ratio": "一供二",
     "date_parsed": "2026-02-04",
     "market_price": 0.82,
-    "discount_pct": -2.4
+    "discount_pct": -2.4,
+    "latest_price": 0.64,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -22.0,
+    "placing_agent": null
   },
   {
     "date": "04/02/2026",
@@ -5156,7 +6294,11 @@
     "ratio": "",
     "date_parsed": "2026-02-04",
     "market_price": 0.47,
-    "discount_pct": null
+    "discount_pct": null,
+    "latest_price": 0.39,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -17.0,
+    "placing_agent": null
   },
   {
     "date": "03/02/2026",
@@ -5176,7 +6318,11 @@
     "ratio": "",
     "date_parsed": "2026-02-03",
     "market_price": 352.2,
-    "discount_pct": -12.0
+    "discount_pct": -12.0,
+    "latest_price": 180.8,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -48.7,
+    "placing_agent": null
   },
   {
     "date": "03/02/2026",
@@ -5196,7 +6342,11 @@
     "ratio": "",
     "date_parsed": "2026-02-03",
     "market_price": 13.08,
-    "discount_pct": -6.9
+    "discount_pct": -6.9,
+    "latest_price": 9.94,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -24.0,
+    "placing_agent": null
   },
   {
     "date": "03/02/2026",
@@ -5221,7 +6371,14 @@
     "price_20d_ago": 18.98,
     "price_post": 16.06,
     "price_5d_post": 16.2,
-    "price_20d_post": 16.72
+    "price_20d_post": 16.72,
+    "auto_return_1d": -5.1,
+    "auto_return_5d": -4.3,
+    "auto_return_20d": -1.2,
+    "latest_price": 16.3,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -3.7,
+    "placing_agent": null
   },
   {
     "date": "03/02/2026",
@@ -5241,7 +6398,12 @@
     "ratio": "",
     "date_parsed": "2026-02-03",
     "market_price": 0.28,
-    "discount_pct": -10.7
+    "discount_pct": -10.7,
+    "latest_price": 0.33,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 17.9,
+    "placing_agent": null,
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0227/2026022701105.pdf"
   },
   {
     "date": "03/02/2026",
@@ -5261,7 +6423,11 @@
     "ratio": "",
     "date_parsed": "2026-02-03",
     "market_price": 6.55,
-    "discount_pct": -8.4
+    "discount_pct": -8.4,
+    "latest_price": 12.29,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 87.6,
+    "placing_agent": null
   },
   {
     "date": "02/02/2026",
@@ -5281,7 +6447,11 @@
     "ratio": "",
     "date_parsed": "2026-02-02",
     "market_price": 4.96,
-    "discount_pct": null
+    "discount_pct": null,
+    "latest_price": 4.4,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -11.3,
+    "placing_agent": null
   },
   {
     "date": "02/02/2026",
@@ -5301,7 +6471,11 @@
     "ratio": "",
     "date_parsed": "2026-02-02",
     "market_price": 0.61,
-    "discount_pct": -13.1
+    "discount_pct": -13.1,
+    "latest_price": 0.5,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -18.0,
+    "placing_agent": null
   },
   {
     "date": "30/01/2026",
@@ -5321,7 +6495,11 @@
     "ratio": "",
     "date_parsed": "2026-01-30",
     "market_price": 41.9,
-    "discount_pct": null
+    "discount_pct": null,
+    "latest_price": 30.54,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -27.1,
+    "placing_agent": null
   },
   {
     "date": "30/01/2026",
@@ -5341,7 +6519,11 @@
     "ratio": "",
     "date_parsed": "2026-01-30",
     "market_price": 0.12,
-    "discount_pct": 0.0
+    "discount_pct": 0.0,
+    "latest_price": 0.11,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -8.3,
+    "placing_agent": null
   },
   {
     "date": "30/01/2026",
@@ -5361,7 +6543,11 @@
     "ratio": "",
     "date_parsed": "2026-01-30",
     "market_price": 1.08,
-    "discount_pct": -18.5
+    "discount_pct": -18.5,
+    "latest_price": 1.16,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 7.4,
+    "placing_agent": null
   },
   {
     "date": "30/01/2026",
@@ -5381,7 +6567,11 @@
     "ratio": "",
     "date_parsed": "2026-01-30",
     "market_price": 45.22,
-    "discount_pct": -85.0
+    "discount_pct": -85.0,
+    "latest_price": 34.08,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -24.6,
+    "placing_agent": null
   },
   {
     "date": "30/01/2026",
@@ -5401,7 +6591,8 @@
     "ratio": "",
     "date_parsed": "2026-01-30",
     "market_price": 0,
-    "discount_pct": null
+    "discount_pct": null,
+    "placing_agent": null
   },
   {
     "date": "29/01/2026",
@@ -5421,7 +6612,12 @@
     "ratio": "",
     "date_parsed": "2026-01-29",
     "market_price": 34.32,
-    "discount_pct": -5.3
+    "discount_pct": -5.3,
+    "latest_price": 12.41,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -63.8,
+    "placing_agent": "Capital Limited",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0129/2026012900147.pdf"
   },
   {
     "date": "29/01/2026",
@@ -5441,7 +6637,12 @@
     "ratio": "",
     "date_parsed": "2026-01-29",
     "market_price": 2.62,
-    "discount_pct": -9.5
+    "discount_pct": -9.5,
+    "latest_price": 3.13,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 19.5,
+    "placing_agent": "DBS Asia Capital",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0129/2026012900003.pdf"
   },
   {
     "date": "29/01/2026",
@@ -5461,7 +6662,11 @@
     "ratio": "二供一",
     "date_parsed": "2026-01-29",
     "market_price": 4.04,
-    "discount_pct": -28.7
+    "discount_pct": -28.7,
+    "latest_price": 4.6,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 13.9,
+    "placing_agent": null
   },
   {
     "date": "28/01/2026",
@@ -5481,7 +6686,11 @@
     "ratio": "",
     "date_parsed": "2026-01-28",
     "market_price": 0.51,
-    "discount_pct": -68.6
+    "discount_pct": -68.6,
+    "latest_price": 0.51,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 0.0,
+    "placing_agent": null
   },
   {
     "date": "28/01/2026",
@@ -5501,7 +6710,12 @@
     "ratio": "",
     "date_parsed": "2026-01-28",
     "market_price": 18.0,
-    "discount_pct": -17.2
+    "discount_pct": -17.2,
+    "latest_price": 10.21,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -43.3,
+    "placing_agent": "Morgan Stanley Asia Limited",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0129/2026012900145.pdf"
   },
   {
     "date": "28/01/2026",
@@ -5521,7 +6735,12 @@
     "ratio": "",
     "date_parsed": "2026-01-28",
     "market_price": 35.52,
-    "discount_pct": -8.6
+    "discount_pct": -8.6,
+    "latest_price": 31.68,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -10.8,
+    "placing_agent": "BNP Paribas Securities",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0128/2026012800023.pdf"
   },
   {
     "date": "28/01/2026",
@@ -5541,7 +6760,12 @@
     "ratio": "",
     "date_parsed": "2026-01-28",
     "market_price": 0.82,
-    "discount_pct": -9.8
+    "discount_pct": -9.8,
+    "latest_price": 0.48,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -41.5,
+    "placing_agent": "Grand China Securities",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0128/2026012801008.pdf"
   },
   {
     "date": "27/01/2026",
@@ -5566,7 +6790,15 @@
     "price_20d_ago": 2.79,
     "price_post": 1.38,
     "price_5d_post": 1.48,
-    "price_20d_post": 1.36
+    "price_20d_post": 1.36,
+    "auto_return_1d": -35.5,
+    "auto_return_5d": -30.8,
+    "auto_return_20d": -36.4,
+    "latest_price": 1.4,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -34.6,
+    "placing_agent": "Company and TFI Securities",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0127/2026012700051.pdf"
   },
   {
     "date": "27/01/2026",
@@ -5586,7 +6818,12 @@
     "ratio": "",
     "date_parsed": "2026-01-27",
     "market_price": 3.03,
-    "discount_pct": 9.6
+    "discount_pct": 9.6,
+    "latest_price": 0.93,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -69.3,
+    "placing_agent": "Guotai Junan Securities",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0127/2026012700071.pdf"
   },
   {
     "date": "27/01/2026",
@@ -5611,7 +6848,14 @@
     "price_20d_ago": 38.03,
     "price_post": 28.06,
     "price_5d_post": 29.84,
-    "price_20d_post": 35.92
+    "price_20d_post": 35.92,
+    "auto_return_1d": -27.1,
+    "auto_return_5d": -22.5,
+    "auto_return_20d": -6.7,
+    "latest_price": 28.66,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -25.5,
+    "placing_agent": null
   },
   {
     "date": "27/01/2026",
@@ -5631,7 +6875,12 @@
     "ratio": "",
     "date_parsed": "2026-01-27",
     "market_price": 60.95,
-    "discount_pct": -14.7
+    "discount_pct": -14.7,
+    "latest_price": 39.12,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -35.8,
+    "placing_agent": "Subject to the terms and conditions of the Placing Agreement, both Haitong International",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0127/2026012700003.pdf"
   },
   {
     "date": "27/01/2026",
@@ -5651,7 +6900,12 @@
     "ratio": "二供一",
     "date_parsed": "2026-01-27",
     "market_price": 0.08,
-    "discount_pct": 25.0
+    "discount_pct": 25.0,
+    "latest_price": 0.14,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 75.0,
+    "placing_agent": "Company Placing Agent Constance Capital",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/gem/2026/0127/2026012701591.pdf"
   },
   {
     "date": "26/01/2026",
@@ -5671,7 +6925,11 @@
     "ratio": "",
     "date_parsed": "2026-01-26",
     "market_price": 1.3,
-    "discount_pct": -19.2
+    "discount_pct": -19.2,
+    "latest_price": 1.38,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 6.2,
+    "placing_agent": null
   },
   {
     "date": "26/01/2026",
@@ -5691,7 +6949,11 @@
     "ratio": "",
     "date_parsed": "2026-01-26",
     "market_price": 0.8,
-    "discount_pct": -15.0
+    "discount_pct": -15.0,
+    "latest_price": 0.65,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -18.8,
+    "placing_agent": null
   },
   {
     "date": "26/01/2026",
@@ -5711,7 +6973,12 @@
     "ratio": "二供一",
     "date_parsed": "2026-01-26",
     "market_price": 0.08,
-    "discount_pct": -12.5
+    "discount_pct": -12.5,
+    "latest_price": 0.05,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -37.5,
+    "placing_agent": "Having taken into account the intention to repay the Group",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0126/2026012601348.pdf"
   },
   {
     "date": "26/01/2026",
@@ -5731,7 +6998,11 @@
     "ratio": "",
     "date_parsed": "2026-01-26",
     "market_price": 30.9,
-    "discount_pct": null
+    "discount_pct": null,
+    "latest_price": 27.0,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -12.6,
+    "placing_agent": null
   },
   {
     "date": "25/01/2026",
@@ -5751,7 +7022,8 @@
     "ratio": "",
     "date_parsed": "2026-01-25",
     "market_price": 0,
-    "discount_pct": null
+    "discount_pct": null,
+    "placing_agent": null
   },
   {
     "date": "25/01/2026",
@@ -5771,7 +7043,12 @@
     "ratio": "",
     "date_parsed": "2026-01-25",
     "market_price": 1.01,
-    "discount_pct": -91.8
+    "discount_pct": -91.8,
+    "latest_price": 0.7,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -30.7,
+    "placing_agent": "Securities Limited",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0126/2026012600005.pdf"
   },
   {
     "date": "25/01/2026",
@@ -5791,7 +7068,12 @@
     "ratio": "",
     "date_parsed": "2026-01-25",
     "market_price": 0.91,
-    "discount_pct": -14.0
+    "discount_pct": -14.0,
+    "latest_price": 2.21,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 142.9,
+    "placing_agent": "Theia Securities Limited",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0125/2026012500253.pdf"
   },
   {
     "date": "23/01/2026",
@@ -5811,7 +7093,12 @@
     "ratio": "",
     "date_parsed": "2026-01-23",
     "market_price": 5.79,
-    "discount_pct": -3.3
+    "discount_pct": -3.3,
+    "latest_price": 2.43,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -58.0,
+    "placing_agent": "Placing Agent, has or may have an material adverse effect of the Group",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0123/2026012300003.pdf"
   },
   {
     "date": "23/01/2026",
@@ -5831,7 +7118,12 @@
     "ratio": "",
     "date_parsed": "2026-01-23",
     "market_price": 18.84,
-    "discount_pct": -0.3
+    "discount_pct": -0.3,
+    "latest_price": 19.45,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 3.2,
+    "placing_agent": null,
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0130/2026013000580.pdf"
   },
   {
     "date": "23/01/2026",
@@ -5856,7 +7148,14 @@
     "price_20d_ago": 9.7,
     "price_post": 8.6,
     "price_5d_post": 8.82,
-    "price_20d_post": 9.42
+    "price_20d_post": 9.42,
+    "auto_return_1d": -20.1,
+    "auto_return_5d": -18.0,
+    "auto_return_20d": -12.5,
+    "latest_price": 8.6,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -20.1,
+    "placing_agent": null
   },
   {
     "date": "23/01/2026",
@@ -5876,7 +7175,12 @@
     "ratio": "",
     "date_parsed": "2026-01-23",
     "market_price": 0.17,
-    "discount_pct": -15.9
+    "discount_pct": -15.9,
+    "latest_price": 0.21,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 23.5,
+    "placing_agent": "Aristo Securities",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0123/2026012301110.pdf"
   },
   {
     "date": "23/01/2026",
@@ -5896,7 +7200,11 @@
     "ratio": "",
     "date_parsed": "2026-01-23",
     "market_price": 1.79,
-    "discount_pct": null
+    "discount_pct": null,
+    "latest_price": 2.3,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 28.5,
+    "placing_agent": null
   },
   {
     "date": "23/01/2026",
@@ -5916,7 +7224,11 @@
     "ratio": "",
     "date_parsed": "2026-01-23",
     "market_price": 1.79,
-    "discount_pct": null
+    "discount_pct": null,
+    "latest_price": 2.3,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 28.5,
+    "placing_agent": null
   },
   {
     "date": "23/01/2026",
@@ -5936,7 +7248,11 @@
     "ratio": "",
     "date_parsed": "2026-01-23",
     "market_price": 0.75,
-    "discount_pct": -18.7
+    "discount_pct": -18.7,
+    "latest_price": 2.19,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 192.0,
+    "placing_agent": null
   },
   {
     "date": "22/01/2026",
@@ -5961,7 +7277,14 @@
     "price_20d_ago": 1.8,
     "price_post": 2.35,
     "price_5d_post": 2.34,
-    "price_20d_post": 2.26
+    "price_20d_post": 2.26,
+    "auto_return_1d": 13.0,
+    "auto_return_5d": 12.5,
+    "auto_return_20d": 8.7,
+    "latest_price": 2.38,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 14.4,
+    "placing_agent": null
   },
   {
     "date": "22/01/2026",
@@ -5981,7 +7304,12 @@
     "ratio": "",
     "date_parsed": "2026-01-22",
     "market_price": 5.05,
-    "discount_pct": -24.8
+    "discount_pct": -24.8,
+    "latest_price": 2.38,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -52.9,
+    "placing_agent": "United States. CHINA HANKING HOLDINGS LIMITED",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0129/2026012900870.pdf"
   },
   {
     "date": "22/01/2026",
@@ -6001,7 +7329,12 @@
     "ratio": "",
     "date_parsed": "2026-01-22",
     "market_price": 64.15,
-    "discount_pct": 0.5
+    "discount_pct": 0.5,
+    "latest_price": 31.28,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -51.2,
+    "placing_agent": "南山鋁業國際控股有限公司",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0130/2026013001363.pdf"
   },
   {
     "date": "22/01/2026",
@@ -6021,7 +7354,12 @@
     "ratio": "",
     "date_parsed": "2026-01-22",
     "market_price": 0.17,
-    "discount_pct": -5.9
+    "discount_pct": -5.9,
+    "latest_price": 0.13,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -23.5,
+    "placing_agent": "Central Wealth Securities",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0122/2026012200948.pdf"
   },
   {
     "date": "22/01/2026",
@@ -6041,7 +7379,12 @@
     "ratio": "",
     "date_parsed": "2026-01-22",
     "market_price": 5.05,
-    "discount_pct": -24.8
+    "discount_pct": -24.8,
+    "latest_price": 2.38,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -52.9,
+    "placing_agent": "United States. CHINA HANKING HOLDINGS LIMITED",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0129/2026012900870.pdf"
   },
   {
     "date": "21/01/2026",
@@ -6061,7 +7404,12 @@
     "ratio": "",
     "date_parsed": "2026-01-21",
     "market_price": 22.24,
-    "discount_pct": -1.1
+    "discount_pct": -1.1,
+    "latest_price": 27.66,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 24.4,
+    "placing_agent": "GET NICE SECURITIES LIMITED",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0121/2026012100953.pdf"
   },
   {
     "date": "21/01/2026",
@@ -6086,7 +7434,14 @@
     "price_20d_ago": 0.29,
     "price_post": 0.18,
     "price_5d_post": 0.15,
-    "price_20d_post": 0.18
+    "price_20d_post": 0.18,
+    "auto_return_1d": -52.6,
+    "auto_return_5d": -60.5,
+    "auto_return_20d": -52.6,
+    "latest_price": 0.18,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -52.6,
+    "placing_agent": null
   },
   {
     "date": "21/01/2026",
@@ -6106,7 +7461,11 @@
     "ratio": "",
     "date_parsed": "2026-01-21",
     "market_price": 0.18,
-    "discount_pct": -16.7
+    "discount_pct": -16.7,
+    "latest_price": 0.25,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 38.9,
+    "placing_agent": null
   },
   {
     "date": "20/01/2026",
@@ -6126,7 +7485,12 @@
     "ratio": "",
     "date_parsed": "2026-01-20",
     "market_price": 9.99,
-    "discount_pct": -2.0
+    "discount_pct": -2.0,
+    "latest_price": 8.23,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -17.6,
+    "placing_agent": "中集安瑞科控股有限公司",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0127/2026012701479.pdf"
   },
   {
     "date": "20/01/2026",
@@ -6146,7 +7510,11 @@
     "ratio": "",
     "date_parsed": "2026-01-20",
     "market_price": 21.23,
-    "discount_pct": null
+    "discount_pct": null,
+    "latest_price": 16.52,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -22.2,
+    "placing_agent": null
   },
   {
     "date": "20/01/2026",
@@ -6166,7 +7534,12 @@
     "ratio": "",
     "date_parsed": "2026-01-20",
     "market_price": 0.93,
-    "discount_pct": -8.6
+    "discount_pct": -8.6,
+    "latest_price": 0.62,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -33.3,
+    "placing_agent": "Wanhai Securities",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0121/2026012100035.pdf"
   },
   {
     "date": "20/01/2026",
@@ -6186,7 +7559,12 @@
     "ratio": "",
     "date_parsed": "2026-01-20",
     "market_price": 0.21,
-    "discount_pct": -4.8
+    "discount_pct": -4.8,
+    "latest_price": 0.15,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -28.6,
+    "placing_agent": "Advent Securities",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/gem/2026/0128/2026012800321.pdf"
   },
   {
     "date": "20/01/2026",
@@ -6206,7 +7584,11 @@
     "ratio": "",
     "date_parsed": "2026-01-20",
     "market_price": 90.65,
-    "discount_pct": -14.8
+    "discount_pct": -14.8,
+    "latest_price": 53.9,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -40.5,
+    "placing_agent": null
   },
   {
     "date": "20/01/2026",
@@ -6226,7 +7608,11 @@
     "ratio": "",
     "date_parsed": "2026-01-20",
     "market_price": 2.76,
-    "discount_pct": null
+    "discount_pct": null,
+    "latest_price": 0.61,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -77.9,
+    "placing_agent": null
   },
   {
     "date": "20/01/2026",
@@ -6246,7 +7632,12 @@
     "ratio": "",
     "date_parsed": "2026-01-20",
     "market_price": 0.93,
-    "discount_pct": -8.6
+    "discount_pct": -8.6,
+    "latest_price": 0.62,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -33.3,
+    "placing_agent": "Wanhai Securities",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0121/2026012100035.pdf"
   },
   {
     "date": "20/01/2026",
@@ -6266,7 +7657,11 @@
     "ratio": "",
     "date_parsed": "2026-01-20",
     "market_price": 1.42,
-    "discount_pct": -19.7
+    "discount_pct": -19.7,
+    "latest_price": 2.16,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 52.1,
+    "placing_agent": null
   },
   {
     "date": "19/01/2026",
@@ -6286,7 +7681,12 @@
     "ratio": "",
     "date_parsed": "2026-01-19",
     "market_price": 0.96,
-    "discount_pct": -1.0
+    "discount_pct": -1.0,
+    "latest_price": 1.13,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 17.7,
+    "placing_agent": "Grand China Securities",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0119/2026011901559.pdf"
   },
   {
     "date": "18/01/2026",
@@ -6306,7 +7706,12 @@
     "ratio": "",
     "date_parsed": "2026-01-18",
     "market_price": 71.2,
-    "discount_pct": -18.0
+    "discount_pct": -18.0,
+    "latest_price": 27.26,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -61.7,
+    "placing_agent": null,
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0126/2026012600662.pdf"
   },
   {
     "date": "18/01/2026",
@@ -6326,7 +7731,11 @@
     "ratio": "",
     "date_parsed": "2026-01-18",
     "market_price": 0.3,
-    "discount_pct": -43.3
+    "discount_pct": -43.3,
+    "latest_price": 0.25,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -16.7,
+    "placing_agent": null
   },
   {
     "date": "16/01/2026",
@@ -6346,7 +7755,12 @@
     "ratio": "",
     "date_parsed": "2026-01-16",
     "market_price": 280.2,
-    "discount_pct": -10.1
+    "discount_pct": -10.1,
+    "latest_price": 180.8,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -35.5,
+    "placing_agent": "雲知聲智能科技股份有限公司",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0122/2026012201363.pdf"
   },
   {
     "date": "16/01/2026",
@@ -6371,7 +7785,15 @@
     "price_20d_ago": 3.4,
     "price_post": 2.95,
     "price_5d_post": 2.95,
-    "price_20d_post": 3.19
+    "price_20d_post": 3.19,
+    "auto_return_1d": -32.6,
+    "auto_return_5d": -32.6,
+    "auto_return_20d": -27.2,
+    "latest_price": 3.02,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -31.1,
+    "placing_agent": "中國優然牧業集團有限公司",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0126/2026012601552.pdf"
   },
   {
     "date": "16/01/2026",
@@ -6391,7 +7813,11 @@
     "ratio": "",
     "date_parsed": "2026-01-16",
     "market_price": 0.15,
-    "discount_pct": -20.0
+    "discount_pct": -20.0,
+    "latest_price": 0.12,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -20.0,
+    "placing_agent": null
   },
   {
     "date": "16/01/2026",
@@ -6411,7 +7837,12 @@
     "ratio": "",
     "date_parsed": "2026-01-16",
     "market_price": 0.64,
-    "discount_pct": -15.6
+    "discount_pct": -15.6,
+    "latest_price": 0.54,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -15.6,
+    "placing_agent": "Shares of the Company under the General Mandate. Capital",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0130/2026013001381.pdf"
   },
   {
     "date": "16/01/2026",
@@ -6431,7 +7862,12 @@
     "ratio": "",
     "date_parsed": "2026-01-16",
     "market_price": 0.47,
-    "discount_pct": -17.0
+    "discount_pct": -17.0,
+    "latest_price": 0.46,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -2.1,
+    "placing_agent": "Adviser Placing Agent References are made to the announcements of Yufengchang Holdings",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/gem/2026/0129/2026012900259.pdf"
   },
   {
     "date": "16/01/2026",
@@ -6451,7 +7887,11 @@
     "ratio": "",
     "date_parsed": "2026-01-16",
     "market_price": 0.3,
-    "discount_pct": 6.7
+    "discount_pct": 6.7,
+    "latest_price": 0.16,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -46.7,
+    "placing_agent": null
   },
   {
     "date": "16/01/2026",
@@ -6471,7 +7911,11 @@
     "ratio": "",
     "date_parsed": "2026-01-16",
     "market_price": 0.44,
-    "discount_pct": -13.6
+    "discount_pct": -13.6,
+    "latest_price": 0.36,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -18.2,
+    "placing_agent": null
   },
   {
     "date": "16/01/2026",
@@ -6496,7 +7940,15 @@
     "price_20d_ago": 3.4,
     "price_post": 2.95,
     "price_5d_post": 2.95,
-    "price_20d_post": 3.19
+    "price_20d_post": 3.19,
+    "auto_return_1d": -32.6,
+    "auto_return_5d": -32.6,
+    "auto_return_20d": -27.2,
+    "latest_price": 3.02,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -31.1,
+    "placing_agent": "中國優然牧業集團有限公司",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0126/2026012601552.pdf"
   },
   {
     "date": "16/01/2026",
@@ -6516,7 +7968,11 @@
     "ratio": "",
     "date_parsed": "2026-01-16",
     "market_price": 0.01,
-    "discount_pct": 50.0
+    "discount_pct": 50.0,
+    "latest_price": 0.01,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 0.0,
+    "placing_agent": null
   },
   {
     "date": "15/01/2026",
@@ -6536,7 +7992,11 @@
     "ratio": "八供三",
     "date_parsed": "2026-01-15",
     "market_price": 0.25,
-    "discount_pct": -52.0
+    "discount_pct": -52.0,
+    "latest_price": 0.19,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -24.0,
+    "placing_agent": null
   },
   {
     "date": "15/01/2026",
@@ -6556,7 +8016,12 @@
     "ratio": "",
     "date_parsed": "2026-01-15",
     "market_price": 23.84,
-    "discount_pct": -4.3
+    "discount_pct": -4.3,
+    "latest_price": 15.03,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -37.0,
+    "placing_agent": "技術股份有限公司",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0122/2026012200516.pdf"
   },
   {
     "date": "15/01/2026",
@@ -6581,7 +8046,14 @@
     "price_20d_ago": 38.25,
     "price_post": 30.94,
     "price_5d_post": 31.56,
-    "price_20d_post": 34.7
+    "price_20d_post": 34.7,
+    "auto_return_1d": -13.4,
+    "auto_return_5d": -11.6,
+    "auto_return_20d": -2.8,
+    "latest_price": 31.08,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -13.0,
+    "placing_agent": null
   },
   {
     "date": "15/01/2026",
@@ -6606,7 +8078,14 @@
     "price_20d_ago": 18.13,
     "price_post": 14.35,
     "price_5d_post": 15.1,
-    "price_20d_post": 15.99
+    "price_20d_post": 15.99,
+    "auto_return_1d": -28.6,
+    "auto_return_5d": -24.8,
+    "auto_return_20d": -20.4,
+    "latest_price": 14.35,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -28.6,
+    "placing_agent": null
   },
   {
     "date": "15/01/2026",
@@ -6631,7 +8110,14 @@
     "price_20d_ago": 9.7,
     "price_post": 8.6,
     "price_5d_post": 8.82,
-    "price_20d_post": 9.42
+    "price_20d_post": 9.42,
+    "auto_return_1d": -27.3,
+    "auto_return_5d": -25.4,
+    "auto_return_20d": -20.4,
+    "latest_price": 8.6,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -27.3,
+    "placing_agent": null
   },
   {
     "date": "14/01/2026",
@@ -6651,7 +8137,12 @@
     "ratio": "",
     "date_parsed": "2026-01-14",
     "market_price": 100.1,
-    "discount_pct": -7.2
+    "discount_pct": -7.2,
+    "latest_price": 31.86,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -68.2,
+    "placing_agent": null,
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0120/2026012000504.pdf"
   },
   {
     "date": "14/01/2026",
@@ -6671,7 +8162,11 @@
     "ratio": "六供一",
     "date_parsed": "2026-01-14",
     "market_price": 0.47,
-    "discount_pct": -66.0
+    "discount_pct": -66.0,
+    "latest_price": 0.51,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 8.5,
+    "placing_agent": null
   },
   {
     "date": "14/01/2026",
@@ -6691,7 +8186,11 @@
     "ratio": "一供四",
     "date_parsed": "2026-01-14",
     "market_price": 0.11,
-    "discount_pct": -4.5
+    "discount_pct": -4.5,
+    "latest_price": 0.19,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 72.7,
+    "placing_agent": null
   },
   {
     "date": "14/01/2026",
@@ -6711,7 +8210,11 @@
     "ratio": "",
     "date_parsed": "2026-01-14",
     "market_price": 0.2,
-    "discount_pct": 0.0
+    "discount_pct": 0.0,
+    "latest_price": 0.14,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -30.0,
+    "placing_agent": null
   },
   {
     "date": "14/01/2026",
@@ -6731,7 +8234,12 @@
     "ratio": "",
     "date_parsed": "2026-01-14",
     "market_price": 30.74,
-    "discount_pct": -15.4
+    "discount_pct": -15.4,
+    "latest_price": 30.0,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -2.4,
+    "placing_agent": null,
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0122/2026012200321.pdf"
   },
   {
     "date": "13/01/2026",
@@ -6751,7 +8259,11 @@
     "ratio": "一供二",
     "date_parsed": "2026-01-13",
     "market_price": 0.17,
-    "discount_pct": -5.9
+    "discount_pct": -5.9,
+    "latest_price": 0.22,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 29.4,
+    "placing_agent": null
   },
   {
     "date": "13/01/2026",
@@ -6771,7 +8283,11 @@
     "ratio": "",
     "date_parsed": "2026-01-13",
     "market_price": 6.91,
-    "discount_pct": -3.6
+    "discount_pct": -3.6,
+    "latest_price": 4.55,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -34.2,
+    "placing_agent": null
   },
   {
     "date": "12/01/2026",
@@ -6791,7 +8307,11 @@
     "ratio": "",
     "date_parsed": "2026-01-12",
     "market_price": 0.22,
-    "discount_pct": -19.5
+    "discount_pct": -19.5,
+    "latest_price": 0.19,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -13.6,
+    "placing_agent": null
   },
   {
     "date": "12/01/2026",
@@ -6811,7 +8331,12 @@
     "ratio": "",
     "date_parsed": "2026-01-12",
     "market_price": 0.19,
-    "discount_pct": -19.5
+    "discount_pct": -19.5,
+    "latest_price": 0.11,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -42.1,
+    "placing_agent": "Shares. By order of the Board FDB Holdings",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0123/2026012300766.pdf"
   },
   {
     "date": "12/01/2026",
@@ -6831,7 +8356,12 @@
     "ratio": "",
     "date_parsed": "2026-01-12",
     "market_price": 2.25,
-    "discount_pct": -2.2
+    "discount_pct": -2.2,
+    "latest_price": 7.93,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 252.4,
+    "placing_agent": null,
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0126/2026012601098.pdf"
   },
   {
     "date": "12/01/2026",
@@ -6851,7 +8381,11 @@
     "ratio": "",
     "date_parsed": "2026-01-12",
     "market_price": 6.52,
-    "discount_pct": -17.8
+    "discount_pct": -17.8,
+    "latest_price": 4.4,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -32.5,
+    "placing_agent": null
   },
   {
     "date": "12/01/2026",
@@ -6871,7 +8405,11 @@
     "ratio": "",
     "date_parsed": "2026-01-12",
     "market_price": 57.8,
-    "discount_pct": -19.9
+    "discount_pct": -19.9,
+    "latest_price": 50.65,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -12.4,
+    "placing_agent": null
   },
   {
     "date": "09/01/2026",
@@ -6891,7 +8429,11 @@
     "ratio": "",
     "date_parsed": "2026-01-09",
     "market_price": 0.12,
-    "discount_pct": -15.0
+    "discount_pct": -15.0,
+    "latest_price": 0.11,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -8.3,
+    "placing_agent": null
   },
   {
     "date": "09/01/2026",
@@ -6911,7 +8453,12 @@
     "ratio": "",
     "date_parsed": "2026-01-09",
     "market_price": 0.11,
-    "discount_pct": -9.1
+    "discount_pct": -9.1,
+    "latest_price": 0.1,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -9.1,
+    "placing_agent": "Advent Securities",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/gem/2026/0121/2026011900821.pdf"
   },
   {
     "date": "09/01/2026",
@@ -6931,7 +8478,8 @@
     "ratio": "",
     "date_parsed": "2026-01-09",
     "market_price": 0,
-    "discount_pct": null
+    "discount_pct": null,
+    "placing_agent": null
   },
   {
     "date": "09/01/2026",
@@ -6951,7 +8499,11 @@
     "ratio": "",
     "date_parsed": "2026-01-09",
     "market_price": 185.66,
-    "discount_pct": null
+    "discount_pct": null,
+    "latest_price": 200.2,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 7.8,
+    "placing_agent": null
   },
   {
     "date": "08/01/2026",
@@ -6976,7 +8528,14 @@
     "price_20d_ago": 10.0,
     "price_post": 6.74,
     "price_5d_post": 7.7,
-    "price_20d_post": 8.89
+    "price_20d_post": 8.89,
+    "auto_return_1d": -40.6,
+    "auto_return_5d": -32.2,
+    "auto_return_20d": -21.7,
+    "latest_price": 6.86,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -39.6,
+    "placing_agent": null
   },
   {
     "date": "08/01/2026",
@@ -6996,7 +8555,11 @@
     "ratio": "",
     "date_parsed": "2026-01-08",
     "market_price": 1.3,
-    "discount_pct": -19.2
+    "discount_pct": -19.2,
+    "latest_price": 0.86,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -33.8,
+    "placing_agent": null
   },
   {
     "date": "08/01/2026",
@@ -7016,7 +8579,11 @@
     "ratio": "",
     "date_parsed": "2026-01-08",
     "market_price": 1.57,
-    "discount_pct": -4.5
+    "discount_pct": -4.5,
+    "latest_price": 0.91,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -42.0,
+    "placing_agent": null
   },
   {
     "date": "08/01/2026",
@@ -7036,7 +8603,11 @@
     "ratio": "",
     "date_parsed": "2026-01-08",
     "market_price": 21.76,
-    "discount_pct": -13.2
+    "discount_pct": -13.2,
+    "latest_price": 14.16,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -34.9,
+    "placing_agent": null
   },
   {
     "date": "07/01/2026",
@@ -7061,7 +8632,14 @@
     "price_20d_ago": 18.47,
     "price_post": 15.6,
     "price_5d_post": 16.3,
-    "price_20d_post": 17.47
+    "price_20d_post": 17.47,
+    "auto_return_1d": -17.9,
+    "auto_return_5d": -14.2,
+    "auto_return_20d": -8.1,
+    "latest_price": 15.95,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -16.1,
+    "placing_agent": null
   },
   {
     "date": "07/01/2026",
@@ -7086,7 +8664,14 @@
     "price_20d_ago": 18.47,
     "price_post": 15.6,
     "price_5d_post": 16.3,
-    "price_20d_post": 17.47
+    "price_20d_post": 17.47,
+    "auto_return_1d": -17.9,
+    "auto_return_5d": -14.2,
+    "auto_return_20d": -8.1,
+    "latest_price": 15.95,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -16.1,
+    "placing_agent": null
   },
   {
     "date": "06/01/2026",
@@ -7106,7 +8691,11 @@
     "ratio": "",
     "date_parsed": "2026-01-06",
     "market_price": 2.54,
-    "discount_pct": -15.0
+    "discount_pct": -15.0,
+    "latest_price": 2.16,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -15.0,
+    "placing_agent": null
   },
   {
     "date": "06/01/2026",
@@ -7126,7 +8715,11 @@
     "ratio": "",
     "date_parsed": "2026-01-06",
     "market_price": 0.26,
-    "discount_pct": -23.1
+    "discount_pct": -23.1,
+    "latest_price": 0.24,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -7.7,
+    "placing_agent": null
   },
   {
     "date": "06/01/2026",
@@ -7146,7 +8739,12 @@
     "ratio": "",
     "date_parsed": "2026-01-06",
     "market_price": 0.42,
-    "discount_pct": -19.0
+    "discount_pct": -19.0,
+    "latest_price": 0.44,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 4.8,
+    "placing_agent": "Shareholders upon Completion. By Order of the Board Prosperity Group",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0128/2026012800254.pdf"
   },
   {
     "date": "06/01/2026",
@@ -7166,7 +8764,12 @@
     "ratio": "",
     "date_parsed": "2026-01-06",
     "market_price": 2.05,
-    "discount_pct": 14.6
+    "discount_pct": 14.6,
+    "latest_price": 7.93,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 286.8,
+    "placing_agent": null,
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0126/2026012601098.pdf"
   },
   {
     "date": "06/01/2026",
@@ -7191,7 +8794,14 @@
     "price_20d_ago": 62.6,
     "price_post": 39.02,
     "price_5d_post": 40.82,
-    "price_20d_post": 46.0
+    "price_20d_post": 46.0,
+    "auto_return_1d": -22.7,
+    "auto_return_5d": -19.2,
+    "auto_return_20d": -8.9,
+    "latest_price": 39.22,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -22.3,
+    "placing_agent": null
   },
   {
     "date": "06/01/2026",
@@ -7211,7 +8821,11 @@
     "ratio": "",
     "date_parsed": "2026-01-06",
     "market_price": 3.37,
-    "discount_pct": -15.7
+    "discount_pct": -15.7,
+    "latest_price": 1.69,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -49.9,
+    "placing_agent": null
   },
   {
     "date": "02/01/2026",
@@ -7231,7 +8845,11 @@
     "ratio": "",
     "date_parsed": "2026-01-02",
     "market_price": 0.2,
-    "discount_pct": -8.5
+    "discount_pct": -8.5,
+    "latest_price": 0.17,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -15.0,
+    "placing_agent": null
   },
   {
     "date": "02/01/2026",
@@ -7251,7 +8869,11 @@
     "ratio": "二供一",
     "date_parsed": "2026-01-02",
     "market_price": 0.34,
-    "discount_pct": -17.6
+    "discount_pct": -17.6,
+    "latest_price": 0.26,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -23.5,
+    "placing_agent": null
   },
   {
     "date": "31/12/2025",
@@ -7276,7 +8898,14 @@
     "price_20d_ago": 46.96,
     "price_post": 135.6,
     "price_5d_post": 147.5,
-    "price_20d_post": 126.8
+    "price_20d_post": 126.8,
+    "auto_return_1d": 82.5,
+    "auto_return_5d": 98.5,
+    "auto_return_20d": 70.7,
+    "latest_price": 141.5,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 90.4,
+    "placing_agent": null
   },
   {
     "date": "30/12/2025",
@@ -7296,7 +8925,12 @@
     "ratio": "",
     "date_parsed": "2025-12-30",
     "market_price": 0.86,
-    "discount_pct": -7.0
+    "discount_pct": -7.0,
+    "latest_price": 0.53,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -38.4,
+    "placing_agent": "CNI Securities Group",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2025/1230/2025123002224.pdf"
   },
   {
     "date": "30/12/2025",
@@ -7316,7 +8950,12 @@
     "ratio": "",
     "date_parsed": "2025-12-30",
     "market_price": 0.33,
-    "discount_pct": 13.0
+    "discount_pct": 13.0,
+    "latest_price": 0.23,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -30.3,
+    "placing_agent": "Pinestone Securities",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/gem/2025/1230/2025123002076.pdf"
   },
   {
     "date": "30/12/2025",
@@ -7336,7 +8975,12 @@
     "ratio": "一供一",
     "date_parsed": "2025-12-30",
     "market_price": 0.1,
-    "discount_pct": -20.0
+    "discount_pct": -20.0,
+    "latest_price": 0.14,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 40.0,
+    "placing_agent": "Placing Agent Kingkey Securities",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2025/1230/2025123002090.pdf"
   },
   {
     "date": "30/12/2025",
@@ -7356,7 +9000,11 @@
     "ratio": "",
     "date_parsed": "2025-12-30",
     "market_price": 0.05,
-    "discount_pct": 140.0
+    "discount_pct": 140.0,
+    "latest_price": 0.08,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 60.0,
+    "placing_agent": null
   },
   {
     "date": "29/12/2025",
@@ -7376,7 +9024,12 @@
     "ratio": "",
     "date_parsed": "2025-12-29",
     "market_price": 1.23,
-    "discount_pct": -19.5
+    "discount_pct": -19.5,
+    "latest_price": 1.47,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 19.5,
+    "placing_agent": "Aristo Securities",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/gem/2025/1229/2025122901917.pdf"
   },
   {
     "date": "29/12/2025",
@@ -7396,7 +9049,12 @@
     "ratio": "",
     "date_parsed": "2025-12-29",
     "market_price": 0.93,
-    "discount_pct": -89.2
+    "discount_pct": -89.2,
+    "latest_price": 0.83,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -10.8,
+    "placing_agent": "Zijing Capital",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2025/1229/2025122901051.pdf"
   },
   {
     "date": "29/12/2025",
@@ -7416,7 +9074,11 @@
     "ratio": "",
     "date_parsed": "2025-12-29",
     "market_price": 0.5,
-    "discount_pct": -13.4
+    "discount_pct": -13.4,
+    "latest_price": 0.42,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -16.0,
+    "placing_agent": null
   },
   {
     "date": "29/12/2025",
@@ -7436,7 +9098,11 @@
     "ratio": "",
     "date_parsed": "2025-12-29",
     "market_price": 0.14,
-    "discount_pct": -8.6
+    "discount_pct": -8.6,
+    "latest_price": 0.15,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 7.1,
+    "placing_agent": null
   },
   {
     "date": "29/12/2025",
@@ -7461,7 +9127,14 @@
     "price_20d_ago": 58.7,
     "price_post": 71.6,
     "price_5d_post": 81.9,
-    "price_20d_post": 73.4
+    "price_20d_post": 73.4,
+    "auto_return_1d": 2.9,
+    "auto_return_5d": 17.8,
+    "auto_return_20d": 5.5,
+    "latest_price": 75.5,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 8.6,
+    "placing_agent": null
   },
   {
     "date": "29/12/2025",
@@ -7481,7 +9154,11 @@
     "ratio": "",
     "date_parsed": "2025-12-29",
     "market_price": 0.79,
-    "discount_pct": null
+    "discount_pct": null,
+    "latest_price": 0.5,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -36.7,
+    "placing_agent": null
   },
   {
     "date": "28/12/2025",
@@ -7506,7 +9183,14 @@
     "price_20d_ago": 62.6,
     "price_post": 39.02,
     "price_5d_post": 40.82,
-    "price_20d_post": 46.0
+    "price_20d_post": 46.0,
+    "auto_return_1d": -21.9,
+    "auto_return_5d": -18.3,
+    "auto_return_20d": -7.9,
+    "latest_price": 39.22,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -21.5,
+    "placing_agent": null
   },
   {
     "date": "24/12/2025",
@@ -7526,7 +9210,12 @@
     "ratio": "",
     "date_parsed": "2025-12-24",
     "market_price": 0.19,
-    "discount_pct": -3.7
+    "discount_pct": -3.7,
+    "latest_price": 0.2,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 5.3,
+    "placing_agent": "Cheong Lee Securities",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2025/1224/2025122401644.pdf"
   },
   {
     "date": "24/12/2025",
@@ -7546,7 +9235,11 @@
     "ratio": "",
     "date_parsed": "2025-12-24",
     "market_price": 0.3,
-    "discount_pct": -18.3
+    "discount_pct": -18.3,
+    "latest_price": 0.4,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 33.3,
+    "placing_agent": null
   },
   {
     "date": "24/12/2025",
@@ -7566,7 +9259,11 @@
     "ratio": "",
     "date_parsed": "2025-12-24",
     "market_price": 0.15,
-    "discount_pct": -20.0
+    "discount_pct": -20.0,
+    "latest_price": 0.12,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -20.0,
+    "placing_agent": null
   },
   {
     "date": "23/12/2025",
@@ -7586,7 +9283,12 @@
     "ratio": "",
     "date_parsed": "2025-12-23",
     "market_price": 0.54,
-    "discount_pct": -19.4
+    "discount_pct": -19.4,
+    "latest_price": 1.85,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 242.6,
+    "placing_agent": "( 潤歌互動有限公司",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2025/1231/2025123102467.pdf"
   },
   {
     "date": "23/12/2025",
@@ -7606,7 +9308,11 @@
     "ratio": "",
     "date_parsed": "2025-12-23",
     "market_price": 0.94,
-    "discount_pct": 6.4
+    "discount_pct": 6.4,
+    "latest_price": 0.72,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -23.4,
+    "placing_agent": null
   },
   {
     "date": "22/12/2025",
@@ -7626,7 +9332,11 @@
     "ratio": "",
     "date_parsed": "2025-12-22",
     "market_price": 0.24,
-    "discount_pct": -12.5
+    "discount_pct": -12.5,
+    "latest_price": 1.29,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 437.5,
+    "placing_agent": null
   },
   {
     "date": "22/12/2025",
@@ -7646,7 +9356,11 @@
     "ratio": "",
     "date_parsed": "2025-12-22",
     "market_price": 0.41,
-    "discount_pct": -14.6
+    "discount_pct": -14.6,
+    "latest_price": 0.26,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -36.6,
+    "placing_agent": null
   },
   {
     "date": "22/12/2025",
@@ -7666,7 +9380,11 @@
     "ratio": "",
     "date_parsed": "2025-12-22",
     "market_price": 0.44,
-    "discount_pct": -9.1
+    "discount_pct": -9.1,
+    "latest_price": 0.21,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -52.3,
+    "placing_agent": null
   },
   {
     "date": "21/12/2025",
@@ -7686,7 +9404,11 @@
     "ratio": "",
     "date_parsed": "2025-12-21",
     "market_price": 3.06,
-    "discount_pct": 7.5
+    "discount_pct": 7.5,
+    "latest_price": 2.84,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -7.2,
+    "placing_agent": null
   },
   {
     "date": "21/12/2025",
@@ -7706,7 +9428,12 @@
     "ratio": "",
     "date_parsed": "2025-12-21",
     "market_price": 0.4,
-    "discount_pct": -10.0
+    "discount_pct": -10.0,
+    "latest_price": 0.29,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -27.5,
+    "placing_agent": null,
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2025/1221/2025122100185.pdf"
   },
   {
     "date": "19/12/2025",
@@ -7726,7 +9453,12 @@
     "ratio": "二供五",
     "date_parsed": "2025-12-19",
     "market_price": 0.11,
-    "discount_pct": -7.3
+    "discount_pct": -7.3,
+    "latest_price": 0.11,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 0.0,
+    "placing_agent": "Kingston Securities",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2025/1219/2025121902499.pdf"
   },
   {
     "date": "19/12/2025",
@@ -7746,7 +9478,11 @@
     "ratio": "",
     "date_parsed": "2025-12-19",
     "market_price": 2.75,
-    "discount_pct": -5.5
+    "discount_pct": -5.5,
+    "latest_price": 1.85,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -32.7,
+    "placing_agent": null
   },
   {
     "date": "19/12/2025",
@@ -7771,7 +9507,14 @@
     "price_20d_ago": 35.85,
     "price_post": 45.08,
     "price_5d_post": 45.3,
-    "price_20d_post": 44.68
+    "price_20d_post": 44.68,
+    "auto_return_1d": 13.6,
+    "auto_return_5d": 14.2,
+    "auto_return_20d": 12.6,
+    "latest_price": 45.9,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 15.7,
+    "placing_agent": null
   },
   {
     "date": "19/12/2025",
@@ -7791,7 +9534,11 @@
     "ratio": "",
     "date_parsed": "2025-12-19",
     "market_price": 1.19,
-    "discount_pct": 10.9
+    "discount_pct": 10.9,
+    "latest_price": 0.91,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -23.5,
+    "placing_agent": null
   },
   {
     "date": "18/12/2025",
@@ -7811,7 +9558,11 @@
     "ratio": "",
     "date_parsed": "2025-12-18",
     "market_price": 17.12,
-    "discount_pct": null
+    "discount_pct": null,
+    "latest_price": 13.15,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -23.2,
+    "placing_agent": null
   },
   {
     "date": "18/12/2025",
@@ -7836,7 +9587,14 @@
     "price_20d_ago": 1.83,
     "price_post": 1.33,
     "price_5d_post": 1.49,
-    "price_20d_post": 1.72
+    "price_20d_post": 1.72,
+    "auto_return_1d": -22.2,
+    "auto_return_5d": -12.9,
+    "auto_return_20d": 0.6,
+    "latest_price": 1.35,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -21.1,
+    "placing_agent": null
   },
   {
     "date": "18/12/2025",
@@ -7867,7 +9625,15 @@
     "manual_return_pct": 2.01,
     "manual_vendor": "匯豐",
     "manual_note": "配56%",
-    "manual_new_qty": "1700000W"
+    "manual_new_qty": "1700000W",
+    "auto_return_1d": -19.0,
+    "auto_return_5d": -9.5,
+    "auto_return_20d": 4.2,
+    "latest_price": 1.55,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -18.0,
+    "placing_agent": null,
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2025/1229/2025122901353.pdf"
   },
   {
     "date": "18/12/2025",
@@ -7887,7 +9653,11 @@
     "ratio": "",
     "date_parsed": "2025-12-18",
     "market_price": 0.7,
-    "discount_pct": -1.4
+    "discount_pct": -1.4,
+    "latest_price": 0.74,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 5.7,
+    "placing_agent": null
   },
   {
     "date": "17/12/2025",
@@ -7907,7 +9677,11 @@
     "ratio": "",
     "date_parsed": "2025-12-17",
     "market_price": 0.54,
-    "discount_pct": -11.9
+    "discount_pct": -11.9,
+    "latest_price": 8.22,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 1422.2,
+    "placing_agent": null
   },
   {
     "date": "17/12/2025",
@@ -7927,7 +9701,11 @@
     "ratio": "",
     "date_parsed": "2025-12-17",
     "market_price": 1.0,
-    "discount_pct": 0.0
+    "discount_pct": 0.0,
+    "latest_price": 0.36,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -64.0,
+    "placing_agent": null
   },
   {
     "date": "17/12/2025",
@@ -7947,7 +9725,11 @@
     "ratio": "",
     "date_parsed": "2025-12-17",
     "market_price": 1.3,
-    "discount_pct": 196.2
+    "discount_pct": 196.2,
+    "latest_price": 0.85,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -34.6,
+    "placing_agent": null
   },
   {
     "date": "17/12/2025",
@@ -7967,7 +9749,11 @@
     "ratio": "",
     "date_parsed": "2025-12-17",
     "market_price": 0.38,
-    "discount_pct": -5.3
+    "discount_pct": -5.3,
+    "latest_price": 0.29,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -23.7,
+    "placing_agent": null
   },
   {
     "date": "16/12/2025",
@@ -7987,7 +9773,12 @@
     "ratio": "",
     "date_parsed": "2025-12-16",
     "market_price": 24.92,
-    "discount_pct": -9.0
+    "discount_pct": -9.0,
+    "latest_price": 15.06,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -39.6,
+    "placing_agent": "Placing Agent We refer to the announcement of Beijing SinoHytec Co., Ltd",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2025/1223/2025122300937.pdf"
   },
   {
     "date": "16/12/2025",
@@ -8007,7 +9798,11 @@
     "ratio": "",
     "date_parsed": "2025-12-16",
     "market_price": 0.34,
-    "discount_pct": -11.8
+    "discount_pct": -11.8,
+    "latest_price": 0.16,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -52.9,
+    "placing_agent": null
   },
   {
     "date": "15/12/2025",
@@ -8027,7 +9822,11 @@
     "ratio": "",
     "date_parsed": "2025-12-15",
     "market_price": 9.48,
-    "discount_pct": null
+    "discount_pct": null,
+    "latest_price": 7.03,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -25.8,
+    "placing_agent": null
   },
   {
     "date": "12/12/2025",
@@ -8047,7 +9846,11 @@
     "ratio": "",
     "date_parsed": "2025-12-12",
     "market_price": 1.78,
-    "discount_pct": -16.8
+    "discount_pct": -16.8,
+    "latest_price": 1.03,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -42.1,
+    "placing_agent": null
   },
   {
     "date": "12/12/2025",
@@ -8067,7 +9870,12 @@
     "ratio": "",
     "date_parsed": "2025-12-12",
     "market_price": 64.9,
-    "discount_pct": -10.0
+    "discount_pct": -10.0,
+    "latest_price": 7.73,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -88.1,
+    "placing_agent": "派格生物醫藥（杭州）股份有限公司",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2025/1222/2025122201506.pdf"
   },
   {
     "date": "12/12/2025",
@@ -8087,7 +9895,11 @@
     "ratio": "",
     "date_parsed": "2025-12-12",
     "market_price": 0.68,
-    "discount_pct": -19.1
+    "discount_pct": -19.1,
+    "latest_price": 0.34,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -50.0,
+    "placing_agent": null
   },
   {
     "date": "12/12/2025",
@@ -8107,7 +9919,11 @@
     "ratio": "",
     "date_parsed": "2025-12-12",
     "market_price": 48.98,
-    "discount_pct": -8.1
+    "discount_pct": -8.1,
+    "latest_price": 44.4,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -9.4,
+    "placing_agent": null
   },
   {
     "date": "12/12/2025",
@@ -8127,7 +9943,11 @@
     "ratio": "三供一",
     "date_parsed": "2025-12-12",
     "market_price": 0.15,
-    "discount_pct": -6.7
+    "discount_pct": -6.7,
+    "latest_price": 0.16,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 6.7,
+    "placing_agent": null
   },
   {
     "date": "11/12/2025",
@@ -8147,7 +9967,11 @@
     "ratio": "一供四",
     "date_parsed": "2025-12-11",
     "market_price": 0.5,
-    "discount_pct": -8.0
+    "discount_pct": -8.0,
+    "latest_price": 0.41,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -18.0,
+    "placing_agent": null
   },
   {
     "date": "10/12/2025",
@@ -8172,7 +9996,14 @@
     "price_20d_ago": 45.8,
     "price_post": 237.8,
     "price_5d_post": 241.2,
-    "price_20d_post": 265.4
+    "price_20d_post": 265.4,
+    "auto_return_1d": 465.1,
+    "auto_return_5d": 473.2,
+    "auto_return_20d": 530.7,
+    "latest_price": 249.0,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 491.7,
+    "placing_agent": null
   },
   {
     "date": "10/12/2025",
@@ -8192,7 +10023,12 @@
     "ratio": "",
     "date_parsed": "2025-12-10",
     "market_price": 0.66,
-    "discount_pct": -9.1
+    "discount_pct": -9.1,
+    "latest_price": 0.88,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 33.3,
+    "placing_agent": "Direct Profit Enterprises Limited",
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/gem/2025/1231/2025123100628.pdf"
   },
   {
     "date": "10/12/2025",
@@ -8212,7 +10048,11 @@
     "ratio": "",
     "date_parsed": "2025-12-10",
     "market_price": 0.12,
-    "discount_pct": -1.7
+    "discount_pct": -1.7,
+    "latest_price": 0.14,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 16.7,
+    "placing_agent": null
   },
   {
     "date": "10/12/2025",
@@ -8232,7 +10072,11 @@
     "ratio": "",
     "date_parsed": "2025-12-10",
     "market_price": 0.32,
-    "discount_pct": 6.6
+    "discount_pct": 6.6,
+    "latest_price": 0.47,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 46.9,
+    "placing_agent": null
   },
   {
     "date": "09/12/2025",
@@ -8252,7 +10096,12 @@
     "ratio": "",
     "date_parsed": "2025-12-09",
     "market_price": 0.54,
-    "discount_pct": -19.1
+    "discount_pct": -19.1,
+    "latest_price": 1.18,
+    "latest_date": "2026-06-09",
+    "current_return_pct": 118.5,
+    "placing_agent": null,
+    "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/gem/2025/1230/2025123001758.pdf"
   },
   {
     "date": "09/12/2025",
@@ -8272,6 +10121,10 @@
     "ratio": "",
     "date_parsed": "2025-12-09",
     "market_price": 0.55,
-    "discount_pct": 0.0
+    "discount_pct": 0.0,
+    "latest_price": 0.43,
+    "latest_date": "2026-06-09",
+    "current_return_pct": -21.8,
+    "placing_agent": null
   }
 ]
