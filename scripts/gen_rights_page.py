@@ -231,7 +231,7 @@ body {{ background: #0d1117; color: #c9d1d9; font-family: -apple-system, 'Micros
 .search-box input {{ background: #161b22; color: #c9d1d9; border: 1px solid #30363d; border-radius: 4px; padding: 5px 10px; font-size: 11px; width: 200px; outline: none; }}
 .search-box input:focus {{ border-color: #58a6ff; }}
 .table-wrap {{ overflow-x: auto; padding: 0 12px; }}
-table {{ width: 100%; border-collapse: collapse; font-size: 11px; min-width: 950px; }}
+table {{ width: 100%; border-collapse: collapse; font-size: 11px; min-width: 1150px; }}
 th {{ background: #161b22; padding: 6px 8px; text-align: left; border-bottom: 2px solid #30363d; color: #8b949e; font-weight: 600; white-space: nowrap; cursor: pointer; }}
 th:hover {{ color: #58a6ff; }}
 td {{ padding: 4px 8px; border-bottom: 1px solid #21262d; white-space: nowrap; }}
@@ -307,6 +307,9 @@ tr:hover td {{ background: #161b22; }}
   <th onclick="sortTable(7)">攤薄</th>
   <th onclick="sortTable(8)">信心度</th>
   <th onclick="sortTable(9)">訊號</th>
+  <th onclick="sortTable(10)">配售代理</th>
+  <th onclick="sortTable(11)">完成</th>
+  <th onclick="sortTable(12)">事後%</th>
   <th>邏輯</th>
 </tr>
 </thead>
@@ -362,6 +365,9 @@ function render(rows) {{
       <td>${{d.pct_num > 0 ? d.pct_num.toFixed(1)+'%' : '-'}}</td>
       <td><span class="conviction">${{stars}}</span></td>
       <td><span class="signal ${{t.sig_class||''}}">${{t.signal||'➖'}}</span></td>
+      <td>${{d.manual_vendor || '-'}}</td>
+      <td>${{d.manual_finished_date || (d.manual_note || '-')}}</td>
+      <td style="color:${{(d.manual_return_pct||0) >= 0 ? '#3fb950' : '#f85149'}}">${{d.manual_return_pct != null ? (d.manual_return_pct >= 0 ? '+' : '') + d.manual_return_pct.toFixed(1) + '%' : '-'}}</td>
       <td>
         <div class="thesis">${{t.thesis||''}}</div>
         ${{risks}}

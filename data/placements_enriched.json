@@ -1639,7 +1639,13 @@
     "ratio": "",
     "date_parsed": "2026-05-04",
     "market_price": 0.57,
-    "discount_pct": -8.8
+    "discount_pct": -8.8,
+    "manual_finished_date": "2026-04-24",
+    "manual_last_price": 0.54,
+    "manual_return_pct": 0,
+    "manual_vendor": "-",
+    "manual_note": "Done",
+    "manual_new_qty": "3830W"
   },
   {
     "date": "04/05/2026",
@@ -2074,7 +2080,13 @@
     "ratio": "",
     "date_parsed": "2026-04-24",
     "market_price": 0.55,
-    "discount_pct": -14.5
+    "discount_pct": -14.5,
+    "manual_finished_date": "",
+    "manual_last_price": 1.07,
+    "manual_return_pct": 33.75,
+    "manual_vendor": "一盈證券有限公司",
+    "manual_note": "配股後爆1倍急回",
+    "manual_new_qty": "39385.5W"
   },
   {
     "date": "24/04/2026",
@@ -2094,7 +2106,13 @@
     "ratio": "",
     "date_parsed": "2026-04-24",
     "market_price": 0.68,
-    "discount_pct": -11.8
+    "discount_pct": -11.8,
+    "manual_finished_date": "",
+    "manual_last_price": 1.07,
+    "manual_return_pct": 1.9,
+    "manual_vendor": "?控證券",
+    "manual_note": "配60%",
+    "manual_new_qty": "27104.46W"
   },
   {
     "date": "24/04/2026",
@@ -2114,7 +2132,13 @@
     "ratio": "",
     "date_parsed": "2026-04-24",
     "market_price": 0.57,
-    "discount_pct": 0.0
+    "discount_pct": 0.0,
+    "manual_finished_date": "",
+    "manual_last_price": 0.56,
+    "manual_return_pct": -3.45,
+    "manual_vendor": "-",
+    "manual_note": "",
+    "manual_new_qty": "15880.702W"
   },
   {
     "date": "23/04/2026",
@@ -2419,7 +2443,13 @@
     "price_20d_ago": 1.98,
     "price_post": 1.53,
     "price_5d_post": 1.71,
-    "price_20d_post": 1.97
+    "price_20d_post": 1.97,
+    "manual_finished_date": "2026-04-24",
+    "manual_last_price": 2.03,
+    "manual_return_pct": 2.01,
+    "manual_vendor": "匯豐",
+    "manual_note": "配56%",
+    "manual_new_qty": "1700000W"
   },
   {
     "date": "17/04/2026",
@@ -2584,7 +2614,13 @@
     "ratio": "",
     "date_parsed": "2026-04-16",
     "market_price": 0.5,
-    "discount_pct": 2.4
+    "discount_pct": 2.4,
+    "manual_finished_date": "2026-04-24",
+    "manual_last_price": 0.54,
+    "manual_return_pct": 0,
+    "manual_vendor": "-",
+    "manual_note": "Done",
+    "manual_new_qty": "3830W"
   },
   {
     "date": "15/04/2026",
@@ -2664,7 +2700,13 @@
     "ratio": "",
     "date_parsed": "2026-04-15",
     "market_price": 0.27,
-    "discount_pct": -7.4
+    "discount_pct": -7.4,
+    "manual_finished_date": "2026-04-24",
+    "manual_last_price": 0.35,
+    "manual_return_pct": 0,
+    "manual_vendor": "寶時證券有限公司",
+    "manual_note": "Done",
+    "manual_new_qty": "60500W"
   },
   {
     "date": "14/04/2026",
@@ -7819,7 +7861,13 @@
     "price_20d_ago": 1.98,
     "price_post": 1.53,
     "price_5d_post": 1.71,
-    "price_20d_post": 1.97
+    "price_20d_post": 1.97,
+    "manual_finished_date": "2026-04-24",
+    "manual_last_price": 2.03,
+    "manual_return_pct": 2.01,
+    "manual_vendor": "匯豐",
+    "manual_note": "配56%",
+    "manual_new_qty": "1700000W"
   },
   {
     "date": "18/12/2025",
