@@ -1,0 +1,78 @@
+name: CCASS Daily Pipeline
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 7:30 AM HKT = 23:30 UTC (Mon-Fri)
+    - cron: "30 23 * * 0-4"
+
+jobs:
+  daily:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          pip install longbridge pandas requests
+
+      - name: Setup Node (for westock-data)
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: CCASS Backfill (Longbridge API)
+        env:
+          LONGBRIDGE_ACCESS_TOKEN: ${{ secrets.LONGBRIDGE_ACCESS_TOKEN }}
+          LONGBRIDGE_REFRESH_TOKEN: ${{ secrets.LONGBRIDGE_REFRESH_TOKEN }}
+          LONGBRIDGE_ACCOUNT: ${{ secrets.LONGBRIDGE_ACCOUNT }}
+        run: |
+          cd ccass
+          python -m scripts.backfill --days 2
+        timeout-minutes: 90
+
+      - name: Fetch prices via Longbridge
+        env:
+          LONGBRIDGE_ACCESS_TOKEN: ${{ secrets.LONGBRIDGE_ACCESS_TOKEN }}
+        run: |
+          python .github/scripts/fetch_prices_longbridge.py
+        timeout-minutes: 30
+
+      - name: Enrich & Build ccass.json
+        run: |
+          python scripts/enrich_ccass.py
+
+      - name: Fetch placements (westock-data)
+        run: |
+          npx westock-data placements --output data/placements_enriched.json --compact
+
+      - name: Calculate returns
+        run: |
+          python scripts/add_returns.py
+
+      - name: Commit & Push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add ccass.json data/ccass.json data/placements_enriched.json ccass/ccass.db
+          git diff --cached --quiet && { echo "No changes, skipping commit"; exit 0; }
+          git commit -m "chore: daily CCASS update [skip ci]"
+          for i in 1 2 3; do
+            git fetch origin main
+            git rebase origin/main && git push origin HEAD:main && break || {
+              echo "attempt $i failed, retrying in 10s..."
+              git rebase --abort 2>/dev/null || true
+              sleep 10
+            }
+          done
