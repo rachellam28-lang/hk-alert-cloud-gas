@@ -25,12 +25,38 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install longbridge pandas requests
+          pip install longbridge pandas requests beautifulsoup4 lxml
 
       - name: Setup Node (for westock-data)
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+
+      - name: Init DB & Stock Universe
+        run: |
+          python -c "
+          import sqlite3, json
+          # Create minimal DB schema for backfill
+          db = sqlite3.connect('ccass/ccass.db')
+          db.execute('''CREATE TABLE IF NOT EXISTS stock_universe
+            (stock_code TEXT PRIMARY KEY, stock_name TEXT, is_active INTEGER,
+             added_at TEXT, last_seen_at TEXT, first_seen_date TEXT)''')
+          db.execute('''CREATE TABLE IF NOT EXISTS ccass_daily
+            (stock_code TEXT, trade_date TEXT, total_shares INTEGER, total_pct REAL,
+             num_participants INTEGER, top5_pct REAL, top10_pct REAL, adj_hhi REAL,
+             broker_top5_pct REAL, top_broker_id TEXT, top_broker_name TEXT,
+             top_broker_pct REAL, futu_pct REAL, a00005_pct REAL,
+             adjusted_float REAL, scraped_at TEXT, validation_failed INTEGER,
+             PRIMARY KEY(stock_code, trade_date))''')
+          # Load stock codes from JSON
+          with open('data/stock_universe.json') as f:
+              universe = json.load(f)
+          for code in universe['codes']:
+              db.execute('INSERT OR IGNORE INTO stock_universe(stock_code,is_active,added_at) VALUES(?,1,datetime(\"now\"))', (code,))
+          db.commit()
+          print(f'DB init: {len(universe[\"codes\"])} stocks')
+          db.close()
+          "
 
       - name: CCASS Backfill (Longbridge API)
         env:

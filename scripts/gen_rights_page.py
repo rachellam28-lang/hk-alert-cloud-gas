@@ -352,6 +352,9 @@ function render(rows) {{
     else if (c >= -1) stars = '⚠';
     else stars = '💀';
     
+    // Return: use manual if available, else auto-calculated
+    let ret = d.manual_return_pct != null ? d.manual_return_pct : (d.current_return_pct != null ? d.current_return_pct : null);
+    
     let risks = (t.risks||[]).map(r => '<div class="risk">'+r+'</div>').join('');
     
     return `<tr>
@@ -367,7 +370,7 @@ function render(rows) {{
       <td><span class="signal ${{t.sig_class||''}}">${{t.signal||'➖'}}</span></td>
       <td>${{d.manual_vendor || '-'}}</td>
       <td>${{d.manual_finished_date || (d.manual_note || '-')}}</td>
-      <td style="color:${{(d.manual_return_pct||0) >= 0 ? '#3fb950' : '#f85149'}}">${{d.manual_return_pct != null ? (d.manual_return_pct >= 0 ? '+' : '') + d.manual_return_pct.toFixed(1) + '%' : '-'}}</td>
+      <td style="color:${{(ret||0) >= 0 ? '#3fb950' : '#f85149'}};font-weight:${{Math.abs(ret||0) > 20 ? 'bold' : 'normal'}}">${{ret != null ? (ret >= 0 ? '+' : '') + ret.toFixed(1) + '%' : '-'}}</td>
       <td>
         <div class="thesis">${{t.thesis||''}}</div>
         ${{risks}}
