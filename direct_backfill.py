@@ -8,7 +8,7 @@ sys.stderr.reconfigure(line_buffering=True)
 
 # Path setup
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "ccass"))
-os.environ["CCASS_PROVIDER"] = "longbridge"
+os.environ["HOLDINGS_PROVIDER"] = "longbridge"
 
 from src.longbridge_provider import scrape_stock
 from src.scraper import _compute_concentration_metrics
@@ -22,7 +22,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("direct_backfill")
 
-DATES = ["2026-06-09", "2026-06-10"]  # patched by GHA workflow at runtime  # patched by GHA workflow at runtime
+DATES = ["2026-06-09", "2026-06-10"]  # patched by GHA workflow at runtime
 
 def get_conn():
     return sqlite3.connect(DB_PATH)

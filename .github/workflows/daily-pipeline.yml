@@ -34,6 +34,7 @@ jobs:
 
       - name: Init DB & Stock Universe
         run: |
+          mkdir -p ccass
           python -c "
           import sqlite3, json
           # Create minimal DB schema for backfill
@@ -48,6 +49,10 @@ jobs:
              top_broker_pct REAL, futu_pct REAL, a00005_pct REAL,
              adjusted_float REAL, scraped_at TEXT, validation_failed INTEGER,
              PRIMARY KEY(stock_code, trade_date))''')
+          db.execute('''CREATE TABLE IF NOT EXISTS ccass_holdings
+            (stock_code TEXT, trade_date TEXT, participant_id TEXT, participant_name TEXT,
+             shares INTEGER, pct_of_issued REAL,
+             PRIMARY KEY(stock_code, trade_date, participant_id))''')
           # Load stock codes from JSON
           with open('data/stock_universe.json') as f:
               universe = json.load(f)
@@ -58,7 +63,7 @@ jobs:
           db.close()
           "
 
-      - name: CCASS Backfill (Longbridge API)
+      - name: Backfill (Longbridge API)
         env:
           LONGBRIDGE_ACCESS_TOKEN: ${{ secrets.LONGBRIDGE_ACCESS_TOKEN }}
           LONGBRIDGE_REFRESH_TOKEN: ${{ secrets.LONGBRIDGE_REFRESH_TOKEN }}
@@ -79,7 +84,7 @@ jobs:
               code = f.read()
           new_line = f'DATES = {days}'
           import re
-          code = re.sub(r'DATES = \[.*?\]', new_line, code)
+          code = re.sub(r'DATES = \[[^\]]*\]', new_line, code)
           with open('direct_backfill.py', 'w') as f:
               f.write(code)
           print(f'Backfilling: {days}')
