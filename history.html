@@ -144,8 +144,8 @@ function matchSigType(a, sigType) {
   if (sigType === 'poc_half') return blob.includes('半年poc');
   if (sigType === 'yearopen') return blob.includes('年開突破');
   if (sigType === 'fvg')      return blob.includes('fvg');
-  if (sigType === 'hkdata_up') return blob.includes('ccass增持');
-  if (sigType === 'hkdata_dn') return blob.includes('ccass減持');
+  if (sigType === 'hkdata_up') return blob.includes('hkdata增持');
+  if (sigType === 'hkdata_dn') return blob.includes('hkdata減持');
   if (sigType === 'placement') return cat === 'corp_action' && (blob.includes('配股') || blob.includes('配售'));
   if (sigType === 'rights')    return cat === 'corp_action' && blob.includes('供股');
   return true;
