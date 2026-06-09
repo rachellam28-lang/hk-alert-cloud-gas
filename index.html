@@ -1965,7 +1965,7 @@ async function loadData(){
   dot.className='dot loading';
   upd.textContent='載入中…';
   try{
-    const res=await fetch('./ccass.json?_='+Date.now());
+    const res=await fetch('./ccass.json?_='+Date.now()+'&v=2');
     if(!res.ok) throw new Error('HTTP '+res.status);
     const data=await res.json();
     setBaseStocks(data.stocks);
