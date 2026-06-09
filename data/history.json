@@ -1,10 +1,239 @@
 {
   "ok": true,
-  "total": 251,
+  "total": 256,
   "days": [
     {
       "date": "2026-06-08",
       "alerts": [
+        {
+          "source": "hkexnews",
+          "category": "corp_action",
+          "code": "01334",
+          "symbol": "1334.HK",
+          "name": "RUICHANG INTL",
+          "signal": "披露易公告 - 股東增持",
+          "timeframe": "公告",
+          "message": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING BY CONTROLLING SHAREHOLDER…",
+          "title_original": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING BY CONTROLLING SHAREHOLDER…",
+          "strategy": "HKEXnews Corp Action",
+          "chart_url": "",
+          "source_url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0609/2026060900003.pdf",
+          "announcement_date": "2026-06-09",
+          "release_time": "09/06/2026 06:04",
+          "tags": [
+            "公告",
+            "股東增持"
+          ],
+          "priority": 3,
+          "raw": "{\"code\": \"01334\", \"name\": \"RUICHANG INTL\", \"types\": [\"股東增持\"], \"title\": \"公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING BY CONTROLLING SHAREHOLDER…\", \"title_en\": \"VOLUNTARY ANNOUNCEMENT\\nINCREASE IN SHAREHOLDING BY CONTROLLING SHAREHOLDER,\\nEXECUTIVE DIRECTOR, CHIEF EXECUTIVE OFFICER\\nAND CHAIRMAN OF THE BOARD\", \"release_time\": \"09/06/2026 06:04\", \"release_date\": \"2026-06-09\", \"url\": \"https://www.hkexnews.hk/listedco/listconews/sehk/2026/0609/2026060900003.pdf\"}",
+          "created_at": "2026-06-09T06:39:36"
+        },
+        {
+          "code": "01378",
+          "name": "CHINAHONGQIAO",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 1.86,
+            "gap_low": 34.663,
+            "gap_high": 35.307,
+            "current": 35.364,
+            "date": "2026-04-08"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01378",
+          "name": "CHINAHONGQIAO",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 4.93,
+            "gap_low": 30.726,
+            "gap_high": 32.24,
+            "current": 33.035,
+            "date": "2026-03-25"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01378",
+          "name": "CHINAHONGQIAO",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 1.5,
+            "gap_low": 36.708,
+            "gap_high": 37.257,
+            "current": 37.408,
+            "date": "2026-03-13"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01378",
+          "name": "CHINAHONGQIAO",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 2.75,
+            "gap_low": 35.761,
+            "gap_high": 36.746,
+            "current": 37.901,
+            "date": "2026-03-12"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01378",
+          "name": "CHINAHONGQIAO",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 1.83,
+            "open": 30.631,
+            "prev_high": 30.082,
+            "date": "2026-05-21",
+            "close": 29.23
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01378",
+          "name": "CHINAHONGQIAO",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 1.88,
+            "open": 32.751,
+            "prev_high": 32.145,
+            "date": "2026-05-14",
+            "close": 31.653
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01378",
+          "name": "CHINAHONGQIAO",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 1.26,
+            "open": 36.575,
+            "prev_high": 36.121,
+            "date": "2026-04-14",
+            "close": 36.954
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01378",
+          "name": "CHINAHONGQIAO",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 5.15,
+            "open": 34.777,
+            "prev_high": 33.073,
+            "date": "2026-03-30",
+            "close": 33.868
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01378",
+          "name": "CHINAHONGQIAO",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 2.93,
+            "open": 33.225,
+            "prev_high": 32.278,
+            "date": "2026-03-25",
+            "close": 33.035
+          },
+          "corp_type": ""
+        },
+        {
+          "source": "hkexnews",
+          "category": "corp_action",
+          "code": "01815",
+          "symbol": "1815.HK",
+          "name": "EVEREST GOLD",
+          "signal": "觀察·配股",
+          "timeframe": "公告",
+          "message": "公司公告：SUPPLEMENTAL ANNOUNCEMENT IN RELATION TO UPDATE ON CERTAIN SUBSCRIPTIONS O…",
+          "strategy": "HKEXnews Corp Action (觀察)",
+          "chart_url": "",
+          "source_url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0608/2026060801808.pdf",
+          "announcement_date": "2026-06-08",
+          "release_time": "08/06/2026 21:37",
+          "tags": [
+            "公告",
+            "觀察",
+            "配股"
+          ],
+          "priority": 0,
+          "raw": "{\"code\": \"01815\", \"name\": \"EVEREST GOLD\", \"types\": [\"配股\"], \"title\": \"公司公告：SUPPLEMENTAL ANNOUNCEMENT IN RELATION TO UPDATE ON CERTAIN SUBSCRIPTIONS O…\", \"title_en\": \"SUPPLEMENTAL ANNOUNCEMENT IN RELATION TO\\nUPDATE ON CERTAIN SUBSCRIPTIONS OF NEW SHARES\\nUNDER GENERAL MANDATE\", \"release_time\": \"08/06/2026 21:37\", \"release_date\": \"2026-06-08\", \"url\": \"https://www.hkexnews.hk/listedco/listconews/sehk/2026/0608/2026060801808.pdf\"}"
+        },
+        {
+          "source": "hkexnews",
+          "category": "corp_action",
+          "code": "09936",
+          "symbol": "9936.HK",
+          "name": "XIMEI RESOURCES",
+          "signal": "觀察·配股",
+          "timeframe": "公告",
+          "message": "補充公告：配股 OF EXISTING SHARES AND TOP-UP 認購新股（一般授權）",
+          "strategy": "HKEXnews Corp Action (觀察)",
+          "chart_url": "",
+          "source_url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0608/2026060802076.pdf",
+          "announcement_date": "2026-06-08",
+          "release_time": "08/06/2026 22:22",
+          "tags": [
+            "公告",
+            "觀察",
+            "配股"
+          ],
+          "priority": 0,
+          "raw": "{\"code\": \"09936\", \"name\": \"XIMEI RESOURCES\", \"types\": [\"配股\"], \"title\": \"補充公告：配股 OF EXISTING SHARES AND TOP-UP 認購新股（一般授權）\", \"title_en\": \"SUPPLEMENTAL ANNOUNCEMENT IN RELATION TO\\nPLACING OF EXISTING SHARES AND TOP-UP SUBSCRIPTION\\nOF NEW SHARES UNDER GENERAL MANDATE\", \"release_time\": \"08/06/2026 22:22\", \"release_date\": \"2026-06-08\", \"url\": \"https://www.hkexnews.hk/listedco/listconews/sehk/2026/0608/2026060802076.pdf\"}"
+        },
+        {
+          "source": "hkexnews",
+          "category": "corp_action",
+          "code": "00354",
+          "symbol": "0354.HK",
+          "name": "CHINASOFT INT'L",
+          "signal": "披露易公告 - 股東增持",
+          "timeframe": "公告",
+          "message": "公司公告：VOLUNTARY ANNOUNCEMENT - Major Shareholder's Shareholding Increase",
+          "title_original": "公司公告：VOLUNTARY ANNOUNCEMENT - Major Shareholder's Shareholding Increase",
+          "strategy": "HKEXnews Corp Action",
+          "chart_url": "",
+          "source_url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0608/2026060802080.pdf",
+          "announcement_date": "2026-06-08",
+          "release_time": "08/06/2026 22:23",
+          "tags": [
+            "公告",
+            "股東增持"
+          ],
+          "priority": 3,
+          "raw": "{\"code\": \"00354\", \"name\": \"CHINASOFT INT'L\", \"types\": [\"股東增持\"], \"title\": \"公司公告：VOLUNTARY ANNOUNCEMENT - Major Shareholder's Shareholding Increase\", \"title_en\": \"VOLUNTARY ANNOUNCEMENT - Major Shareholder's Shareholding Increase\", \"release_time\": \"08/06/2026 22:23\", \"release_date\": \"2026-06-08\", \"url\": \"https://www.hkexnews.hk/listedco/listconews/sehk/2026/0608/2026060802080.pdf\"}",
+          "created_at": "2026-06-08T23:08:32"
+        },
+        {
+          "source": "hkexnews",
+          "category": "corp_action",
+          "code": "01912",
+          "symbol": "1912.HK",
+          "name": "CONTEL",
+          "signal": "觀察·配股",
+          "timeframe": "公告",
+          "message": "公司公告：JOINT ANNOUNCEMENT(1)SUBSCRIPTION OF NEW SHARES AND PLACING OF NEW SHARES …",
+          "strategy": "HKEXnews Corp Action (觀察)",
+          "chart_url": "",
+          "source_url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0608/2026060802324.pdf",
+          "announcement_date": "2026-06-08",
+          "release_time": "08/06/2026 22:55",
+          "tags": [
+            "公告",
+            "觀察",
+            "配股"
+          ],
+          "priority": 0,
+          "raw": "{\"code\": \"01912\", \"name\": \"CONTEL\", \"types\": [\"配股\"], \"title\": \"公司公告：JOINT ANNOUNCEMENT(1)SUBSCRIPTION OF NEW SHARES AND PLACING OF NEW SHARES …\", \"title_en\": \"JOINT ANNOUNCEMENT(1)SUBSCRIPTION OF NEW SHARES AND PLACING OF NEW SHARES UNDER SPECIFIC MANDATE;(2)PROPOSED INCREASE IN AUTHORISED SHARE CAPITAL;(3)POSSIBLE UNCONDITIONAL MANDATORY CASH OFFER BY DL SECURITIES FOR AND ON BEHALF OF ZHUANGYAN INVESTMENT INTERNATIONAL LIMITED TO ACQUIRE ALL THE ISSUED SHARES OF CONTEL TECHNOLOGY COMPANY LIMITED (OTHER THAN THOSE ALREADY OWNED OR AGREED TO BE ACQUIRED BY THE OFFEROR AND PARTIES ACTING IN CONCERT WITH IT); AND(4)RESUMPTION OF TRADING IN SHARES\", \"release_time\": \"08/06/2026 22:55\", \"release_date\": \"2026-06-08\", \"url\": \"https://www.hkexnews.hk/listedco/listconews/sehk/2026/0608/2026060802324.pdf\"}"
+        },
         {
           "source": "hkexnews",
           "category": "corp_action",
@@ -140,123 +369,6 @@
           "priority": 3,
           "raw": "{\"code\": \"01333\", \"name\": \"BRETON\", \"types\": [\"股東增持\"], \"title\": \"公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING BY THE DIRECTOR AND CONTRO…\", \"title_en\": \"VOLUNTARY ANNOUNCEMENT\\nINCREASE IN SHAREHOLDING BY THE DIRECTOR AND CONTROLLING\\nSHAREHOLDER\", \"release_time\": \"08/06/2026 20:31\", \"release_date\": \"2026-06-08\", \"url\": \"https://www.hkexnews.hk/listedco/listconews/sehk/2026/0608/2026060801604.pdf\"}",
           "created_at": "2026-06-08T21:06:20"
-        },
-        {
-          "code": "01378",
-          "name": "CHINAHONGQIAO",
-          "signal": {
-            "type": "向上FVG",
-            "fvg_pct": 1.86,
-            "gap_low": 34.663,
-            "gap_high": 35.307,
-            "current": 35.364,
-            "date": "2026-04-08"
-          },
-          "corp_type": ""
-        },
-        {
-          "code": "01378",
-          "name": "CHINAHONGQIAO",
-          "signal": {
-            "type": "向上FVG",
-            "fvg_pct": 4.93,
-            "gap_low": 30.726,
-            "gap_high": 32.24,
-            "current": 33.035,
-            "date": "2026-03-25"
-          },
-          "corp_type": ""
-        },
-        {
-          "code": "01378",
-          "name": "CHINAHONGQIAO",
-          "signal": {
-            "type": "向上FVG",
-            "fvg_pct": 1.5,
-            "gap_low": 36.708,
-            "gap_high": 37.257,
-            "current": 37.408,
-            "date": "2026-03-13"
-          },
-          "corp_type": ""
-        },
-        {
-          "code": "01378",
-          "name": "CHINAHONGQIAO",
-          "signal": {
-            "type": "向上FVG",
-            "fvg_pct": 2.75,
-            "gap_low": 35.761,
-            "gap_high": 36.746,
-            "current": 37.901,
-            "date": "2026-03-12"
-          },
-          "corp_type": ""
-        },
-        {
-          "code": "01378",
-          "name": "CHINAHONGQIAO",
-          "signal": {
-            "type": "向上跳空缺口",
-            "gap_pct": 1.83,
-            "open": 30.631,
-            "prev_high": 30.082,
-            "date": "2026-05-21",
-            "close": 29.23
-          },
-          "corp_type": ""
-        },
-        {
-          "code": "01378",
-          "name": "CHINAHONGQIAO",
-          "signal": {
-            "type": "向上跳空缺口",
-            "gap_pct": 1.88,
-            "open": 32.751,
-            "prev_high": 32.145,
-            "date": "2026-05-14",
-            "close": 31.653
-          },
-          "corp_type": ""
-        },
-        {
-          "code": "01378",
-          "name": "CHINAHONGQIAO",
-          "signal": {
-            "type": "向上跳空缺口",
-            "gap_pct": 1.26,
-            "open": 36.575,
-            "prev_high": 36.121,
-            "date": "2026-04-14",
-            "close": 36.954
-          },
-          "corp_type": ""
-        },
-        {
-          "code": "01378",
-          "name": "CHINAHONGQIAO",
-          "signal": {
-            "type": "向上跳空缺口",
-            "gap_pct": 5.15,
-            "open": 34.777,
-            "prev_high": 33.073,
-            "date": "2026-03-30",
-            "close": 33.868
-          },
-          "corp_type": ""
-        },
-        {
-          "code": "01378",
-          "name": "CHINAHONGQIAO",
-          "signal": {
-            "type": "向上跳空缺口",
-            "gap_pct": 2.93,
-            "open": 33.225,
-            "prev_high": 32.278,
-            "date": "2026-03-25",
-            "close": 33.035
-          },
-          "corp_type": ""
         },
         {
           "code": "01860",

@@ -1,14 +1,14 @@
 {
-  "updated": "2026-06-08 13:16 UTC",
-  "count": 7,
+  "updated": "2026-06-08 22:56 UTC",
+  "count": 12,
   "watchlist": [
     {
-      "code": "01378",
-      "name": "CHINAHONGQIAO",
+      "code": "01334",
+      "name": "RUICHANG INTL",
       "types": [
         "股東增持"
       ],
-      "ann_date": "2026-06-08"
+      "ann_date": "2026-06-09"
     },
     {
       "code": "00254",
@@ -19,16 +19,16 @@
       "ann_date": "2026-06-08"
     },
     {
-      "code": "00953",
-      "name": "SHAW BROTHERS",
+      "code": "01378",
+      "name": "CHINAHONGQIAO",
       "types": [
-        "配股"
+        "股東增持"
       ],
       "ann_date": "2026-06-08"
     },
     {
-      "code": "02186",
-      "name": "LUYE PHARMA",
+      "code": "00953",
+      "name": "SHAW BROTHERS",
       "types": [
         "配股"
       ],
@@ -43,10 +43,50 @@
       "ann_date": "2026-06-08"
     },
     {
+      "code": "02186",
+      "name": "LUYE PHARMA",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-06-08"
+    },
+    {
       "code": "01333",
       "name": "BRETON",
       "types": [
         "股東增持"
+      ],
+      "ann_date": "2026-06-08"
+    },
+    {
+      "code": "01815",
+      "name": "EVEREST GOLD",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-06-08"
+    },
+    {
+      "code": "09936",
+      "name": "XIMEI RESOURCES",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-06-08"
+    },
+    {
+      "code": "00354",
+      "name": "CHINASOFT INT'L",
+      "types": [
+        "股東增持"
+      ],
+      "ann_date": "2026-06-08"
+    },
+    {
+      "code": "01912",
+      "name": "CONTEL",
+      "types": [
+        "配股"
       ],
       "ann_date": "2026-06-08"
     },

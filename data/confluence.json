@@ -142,6 +142,32 @@
     "pattern": "frontrun"
   },
   {
+    "code": "01334",
+    "name": "RUICHANG INTL",
+    "types": [
+      "股東增持"
+    ],
+    "title": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING BY CONTROLLING SHAREHOLDER…",
+    "date": "2026-06-09",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0609/2026060900003.pdf",
+    "type": "increase",
+    "typeLabel": "股東增持",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "年開突破"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "年開突破"
+    ],
+    "first_pre_days": 1,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
     "code": "03958",
     "name": "DFZQ",
     "types": [
@@ -454,6 +480,35 @@
     "pattern": "catalyst"
   },
   {
+    "code": "09936",
+    "name": "XIMEI RESOURCES",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF EXISTING SHARES AND TOP-UP SUBSCRIPTION OF NEW SHARES UNDER GENERAL MANDATE",
+    "date": "2026-06-03",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0603/2026060300037.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 20.0,
+    "discount_pct": 19.5,
+    "price_level": "low",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "觀察·配股"
+    ],
+    "signal_types_summary": [
+      "觀察·配股"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 5,
+    "pattern": "catalyst"
+  },
+  {
     "code": "01087",
     "name": "INVESTECH HLDGS",
     "types": [
@@ -653,6 +708,110 @@
     "title": "公司公告：SUPPLEMENTAL ANNOUNCEMENT IN RELATION TO (I) SUBSCRIPTION OF NEW SHARES UN…",
     "date": "2026-06-08",
     "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0608/2026060801438.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "觀察·配股"
+    ],
+    "signal_types_summary": [
+      "觀察·配股"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01912",
+    "name": "CONTEL",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：JOINT ANNOUNCEMENT(1)SUBSCRIPTION OF NEW SHARES AND PLACING OF NEW SHARES …",
+    "date": "2026-06-08",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0608/2026060802324.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "觀察·配股"
+    ],
+    "signal_types_summary": [
+      "觀察·配股"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "00354",
+    "name": "CHINASOFT INT'L",
+    "types": [
+      "股東增持"
+    ],
+    "title": "公司公告：VOLUNTARY ANNOUNCEMENT - Major Shareholder's Shareholding Increase",
+    "date": "2026-06-08",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0608/2026060802080.pdf",
+    "type": "increase",
+    "typeLabel": "股東增持",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "披露易公告 - 股東增持"
+    ],
+    "signal_types_summary": [
+      "披露易公告 - 股東增持"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "09936",
+    "name": "XIMEI RESOURCES",
+    "types": [
+      "配股"
+    ],
+    "title": "補充公告：配股 OF EXISTING SHARES AND TOP-UP 認購新股（一般授權）",
+    "date": "2026-06-08",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0608/2026060802076.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "觀察·配股"
+    ],
+    "signal_types_summary": [
+      "觀察·配股"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01815",
+    "name": "EVEREST GOLD",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：SUPPLEMENTAL ANNOUNCEMENT IN RELATION TO UPDATE ON CERTAIN SUBSCRIPTIONS O…",
+    "date": "2026-06-08",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0608/2026060801808.pdf",
     "type": "placement",
     "typeLabel": "配股",
     "direction": "up",
@@ -927,6 +1086,32 @@
     ],
     "signal_types_summary": [
       "12個月POC"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 7,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01815",
+    "name": "EVEREST GOLD",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：UPDATE ON CERTAIN SUBSCRIPTIONS OF NEW SHARES UNDER GENERAL MANDATE",
+    "date": "2026-06-01",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0601/2026060100041.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "觀察·配股"
+    ],
+    "signal_types_summary": [
+      "觀察·配股"
     ],
     "first_pre_days": null,
     "first_post_days": 7,
