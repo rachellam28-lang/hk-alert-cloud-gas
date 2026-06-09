@@ -1,36 +1,36 @@
 {
   "alerted": [
     {
-      "code": "01378",
-      "name": "CHINAHONGQIAO",
+      "code": "01334",
+      "name": "RUICHANG INTL",
       "types": "股東增持",
       "types_list": [
         "股東增持"
       ],
-      "title_cn": "公司公告：VOLUNTARY ANNOUNCEMENT - INCREASE IN SHAREHOLDING BY THE CONTROLLING SHARE…",
-      "volume_ratio": 2.01,
-      "cur_price": 26.780000686645508,
-      "prev_week_low": 26.42,
-      "year_open": 32.9,
+      "title_cn": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING BY CONTROLLING SHAREHOLDER…",
+      "volume_ratio": 0.34,
+      "cur_price": 1.1200000047683716,
+      "prev_week_low": 0.91,
+      "year_open": 1.17,
       "year_open_rel": "🔻低於年開",
       "gap": {
-        "pct": -3.24,
-        "direction": "🔽"
+        "pct": 2.61,
+        "direction": "🔼"
       },
       "fvg": null,
-      "release_time": "08/06/2026 18:27",
-      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0608/2026060801209.pdf",
-      "tv_url": "https://www.tradingview.com/chart/?symbol=HKEX%3A1378",
+      "release_time": "09/06/2026 06:04",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0609/2026060900003.pdf",
+      "tv_url": "https://www.tradingview.com/chart/?symbol=HKEX%3A1334",
       "priority": 3,
       "immediate": true
     }
   ],
   "watchlisted": [],
   "summary": {
-    "date": "2026/06/08",
-    "date_iso": "2026-06-08",
-    "weekday": "星期一",
-    "total_raw": 66,
+    "date": "2026/06/09",
+    "date_iso": "2026-06-09",
+    "weekday": "星期二",
+    "total_raw": 63,
     "today_count": 1,
     "volume_multiplier": 1.5,
     "alerted_count": 1,
