@@ -5,8 +5,16 @@ import json, re
 with open('data/placements_enriched.json', 'r', encoding='utf-8') as f:
     data = json.load(f)
 
-# ====== V3: 跟聰明錢 (Follow the Smart Money) ======
-def trade_signal(p):
+# Pre-compute per-stock stats for pattern detection
+stock_events = {}
+for p in data:
+    code = p['code']
+    if code not in stock_events:
+        stock_events[code] = []
+    stock_events[code].append(p)
+
+# ====== V3: 跟聰明錢 + 財技模式 ======
+def trade_signal(p, all_data=data, stocks=stock_events):
     """
     核心理念: 有人用真金白銀接貨 → 跟佢
     折讓愈窄 = 信心愈強
@@ -99,6 +107,40 @@ def trade_signal(p):
     if '換股' in p['type'] or '債券' in p['type']:
         thesis.append('🔮 CB=日後換股有托價誘因')
         risks.append('CB換股時有新貨源')
+    
+    # ===== 財技模式檢測 =====
+    code = p['code']
+    events = stocks.get(code, [])
+    event_count = len(events)
+    
+    # Pattern A: 多輪發股洗名冊 (≥3 events in dataset = active issuer)
+    if event_count >= 3:
+        conviction += 1
+        thesis.append(f'🔄 模式A: {event_count}輪發股洗名冊')
+        # Check time span
+        dates = sorted([e['date_parsed'] for e in events])
+        if len(dates) >= 2:
+            from datetime import datetime
+            d1 = datetime.strptime(dates[0], '%Y-%m-%d')
+            d2 = datetime.strptime(dates[-1], '%Y-%m-%d')
+            months = (d2.year - d1.year) * 12 + (d2.month - d1.month)
+            if months <= 6:
+                conviction += 1
+                thesis.append(f'{months}個月內密集發股=準備炒上')
+    
+    # Pattern B: 供股+配股組合拳 (same stock has both types)
+    has_rights = any(e['category'] == '供股' for e in events)
+    has_placing = any(e['category'] == '配售' for e in events)
+    if has_rights and has_placing and event_count >= 2:
+        # Check if 供股 has deep discount
+        rights_events = [e for e in events if e['category'] == '供股']
+        for re_ev in rights_events:
+            rd = re_ev.get('discount_pct')
+            if rd is not None and rd < -20:
+                conviction += 2
+                thesis.append('🎯 模式B: 大折讓供股+配股組合拳')
+                risks.append('組合拳=莊家佈局信號')
+                break
     
     # ===== FINAL VERDICT =====
     if conviction >= 3:
