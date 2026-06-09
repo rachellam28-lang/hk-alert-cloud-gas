@@ -72,12 +72,12 @@ jobs:
           python -c "
           import datetime
           today = datetime.date.today()
-          # Get last 2 trading days (skip weekends)
-          days = []
+          # Get last trading day (skip weekends)
           d = today
-          while len(days) < 2:
+          while True:
               if d.weekday() < 5:
-                  days.append(d.isoformat())
+                  days = [d.isoformat()]
+                  break
               d -= datetime.timedelta(days=1)
           # Update direct_backfill.py DATES
           with open('direct_backfill.py') as f:
@@ -90,7 +90,7 @@ jobs:
           print(f'Backfilling: {days}')
           "
           python direct_backfill.py
-        timeout-minutes: 90
+        timeout-minutes: 120
 
       - name: Fetch prices via Longbridge
         env:

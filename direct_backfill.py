@@ -127,7 +127,7 @@ def backfill_date(target_date: str):
                 logger.warning("%s: %s", code, e)
 
         # Throttle: ~0.3 calls/sec to stay completely under rate limit
-        time.sleep(0.8)
+        time.sleep(0.5)
 
         if i % 200 == 0:
             elapsed = time.time() - t0
