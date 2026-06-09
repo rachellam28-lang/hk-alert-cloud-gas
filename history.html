@@ -137,7 +137,7 @@ function safeSig(a) {
 function matchSigType(a, sigType) {
   if (!sigType || sigType === 'all') return true;
   const sig  = safeSig(a).toLowerCase();
-  const tags = (a.tags     || '').toLowerCase();
+  const tags = (Array.isArray(a.tags) ? a.tags.join(',') : (typeof a.tags === 'string' ? a.tags : '')).toLowerCase();
   const cat  = (a.category || '');
   const blob = sig + ' ' + tags;
   if (sigType === 'poc3')     return blob.includes('3年');
@@ -173,7 +173,7 @@ function weekday(dateStr) {
 function pillHtml(a) {
   const sig  = safeSig(a).trim();
   const cat  = (a.category || '').trim();
-  const tags = (a.tags || '').toLowerCase();
+  const tags = (Array.isArray(a.tags) ? a.tags.join(',') : (typeof a.tags === 'string' ? a.tags : '')).toLowerCase();
   const blob = sig + ' ' + tags;
   let cls = 'spill';
   if (cat === 'corp_action') {
