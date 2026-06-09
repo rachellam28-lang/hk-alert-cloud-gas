@@ -192,7 +192,7 @@ def build_ccass_json():
         for code, fp in futu_prices.items():
             if code not in price_data:
                 price_data[code] = {}
-            for k in ["lp", "mc", "chg", "yo", "py", "pypct", "yo_pct", "vr"]:
+            for k in ["lp", "mc", "chg", "yo", "py", "py_pct", "yo_pct", "vr", "vol", "hi52", "lo52", "p52", "avg_vol", "beta", "pe"]:
                 if k in fp and fp[k] is not None:
                     price_data[code][k] = fp[k]
     fcf_data = load_fcf()
@@ -203,8 +203,8 @@ def build_ccass_json():
         # Price & delta data
         if code in price_data:
             pd = price_data[code]
-            for key in ["d5", "d20", "d60", "d120", "lp", "mc", "chg", "yo", "py", "pypct", "yo_pct", "vr"]:
-                if pd.get(key) is not None:
+            for key in list(pd.keys()):
+                if key not in ['code', 'name'] and pd.get(key) is not None:
                     s[key] = pd[key]
         
         # FCF data
