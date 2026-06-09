@@ -22,7 +22,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("direct_backfill")
 
-DATES = ["2026-06-04", "2026-06-03", "2026-06-02", "2026-06-01"]
+DATES = ["2026-06-09", "2026-06-10"]  # patched by GHA workflow at runtime  # patched by GHA workflow at runtime
 
 def get_conn():
     return sqlite3.connect(DB_PATH)
@@ -127,7 +127,7 @@ def backfill_date(target_date: str):
                 logger.warning("%s: %s", code, e)
 
         # Throttle: ~0.3 calls/sec to stay completely under rate limit
-        time.sleep(5.0)
+        time.sleep(0.8)
 
         if i % 200 == 0:
             elapsed = time.time() - t0
