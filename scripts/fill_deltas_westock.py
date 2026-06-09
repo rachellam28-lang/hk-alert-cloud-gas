@@ -29,10 +29,9 @@ def save_ccass(data):
 def fetch_batch_kline(codes):
     """Fetch kline for a batch of stock codes. Returns raw stdout text."""
     code_str = ','.join(f'hk{code}' for code in codes)
-    cmd = ['npx', '-y', 'westock-data-clawhub@1.0.4', 'kline', code_str,
-           '--period', 'day', '--limit', str(KLINE_DAYS)]
+    cmd = f'npx -y westock-data-clawhub@1.0.4 kline {code_str} --period day --limit {KLINE_DAYS}'
     try:
-        r = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
+        r = subprocess.run(cmd, capture_output=True, text=True, timeout=120, shell=True)
         return r.stdout
     except subprocess.TimeoutExpired:
         print(f'  TIMEOUT batch: {len(codes)} codes')
