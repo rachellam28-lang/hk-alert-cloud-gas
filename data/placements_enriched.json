@@ -416,8 +416,12 @@
     "purpose": "業務發展 所得款項總額相等於160億元人民幣",
     "ratio": "",
     "date_parsed": "2026-05-28",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 28.23,
+    "discount_pct": -18.1,
+    "price_5d_ago": 29.71,
+    "price_20d_ago": 27.97,
+    "price_post": 24.64,
+    "price_5d_post": 25.56
   },
   {
     "date": "28/05/2026",
@@ -1336,8 +1340,12 @@
     "purpose": "擴大資本基礎;業務發展;償還債務",
     "ratio": "",
     "date_parsed": "2026-05-12",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 11.88,
+    "discount_pct": 76.8,
+    "price_5d_ago": 11.26,
+    "price_20d_ago": 14.42,
+    "price_post": 16.88,
+    "price_5d_post": 18.47
   },
   {
     "date": "12/05/2026",
@@ -1396,8 +1404,12 @@
     "purpose": "擴大資本基礎 發行永久後償或有可轉換證券;2033年5月18日前六個月至證券重設日止期間贖回",
     "ratio": "",
     "date_parsed": "2026-05-12",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 94.72,
+    "discount_pct": null,
+    "price_5d_ago": 93.47,
+    "price_20d_ago": 97.22,
+    "price_post": 140.8,
+    "price_5d_post": 146.3
   },
   {
     "date": "11/05/2026",
@@ -1436,8 +1448,13 @@
     "purpose": "擴大資本基礎;業務發展",
     "ratio": "",
     "date_parsed": "2026-05-07",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 79.45,
+    "discount_pct": null,
+    "price_5d_ago": 80.0,
+    "price_20d_ago": 85.5,
+    "price_post": 88.2,
+    "price_5d_post": 89.15,
+    "price_20d_post": 86.3
   },
   {
     "date": "07/05/2026",
@@ -1456,8 +1473,13 @@
     "purpose": "擴大資本基礎;業務發展",
     "ratio": "",
     "date_parsed": "2026-05-07",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 79.45,
+    "discount_pct": null,
+    "price_5d_ago": 80.0,
+    "price_20d_ago": 85.5,
+    "price_post": 88.2,
+    "price_5d_post": 89.15,
+    "price_20d_post": 86.3
   },
   {
     "date": "07/05/2026",
@@ -1756,8 +1778,13 @@
     "purpose": "擴大資本基礎;業務發展",
     "ratio": "",
     "date_parsed": "2026-04-29",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 3.79,
+    "discount_pct": null,
+    "price_5d_ago": 3.87,
+    "price_20d_ago": 3.78,
+    "price_post": 3.41,
+    "price_5d_post": 3.65,
+    "price_20d_post": 4.22
   },
   {
     "date": "28/04/2026",
@@ -1816,8 +1843,13 @@
     "purpose": "擴大資本基礎;業務發展",
     "ratio": "",
     "date_parsed": "2026-04-28",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 407.12,
+    "discount_pct": 54.3,
+    "price_5d_ago": 393.12,
+    "price_20d_ago": 418.12,
+    "price_post": 668.5,
+    "price_5d_post": 766.0,
+    "price_20d_post": 643.0
   },
   {
     "date": "28/04/2026",
@@ -1836,8 +1868,13 @@
     "purpose": "擴大資本基礎;業務發展;償還債務 所得款項淨額相等於約14.69億美元",
     "ratio": "",
     "date_parsed": "2026-04-28",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 20.65,
+    "discount_pct": null,
+    "price_5d_ago": 21.57,
+    "price_20d_ago": 22.05,
+    "price_post": 25.94,
+    "price_5d_post": 28.28,
+    "price_20d_post": 31.27
   },
   {
     "date": "28/04/2026",
@@ -2376,8 +2413,13 @@
     "purpose": "擴大資本基礎;業務發展",
     "ratio": "",
     "date_parsed": "2026-04-17",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 1.67,
+    "discount_pct": 14.4,
+    "price_5d_ago": 1.71,
+    "price_20d_ago": 1.98,
+    "price_post": 1.53,
+    "price_5d_post": 1.71,
+    "price_20d_post": 1.97
   },
   {
     "date": "17/04/2026",
@@ -2396,8 +2438,13 @@
     "purpose": "擴大資本基礎;業務發展",
     "ratio": "",
     "date_parsed": "2026-04-17",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 1.55,
+    "discount_pct": 23.2,
+    "price_5d_ago": 1.58,
+    "price_20d_ago": 1.83,
+    "price_post": 1.33,
+    "price_5d_post": 1.49,
+    "price_20d_post": 1.72
   },
   {
     "date": "17/04/2026",
@@ -2656,8 +2703,13 @@
     "purpose": "擴大資本基礎;業務發展 於上海證交所科創板上市",
     "ratio": "",
     "date_parsed": "2026-04-13",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 350.4,
+    "discount_pct": null,
+    "price_5d_ago": 312.2,
+    "price_20d_ago": 406.6,
+    "price_post": 167.5,
+    "price_5d_post": 199.6,
+    "price_20d_post": 256.0
   },
   {
     "date": "13/04/2026",
@@ -2716,8 +2768,13 @@
     "purpose": "償還債務 債務重組; 發行強制可轉換債券",
     "ratio": "",
     "date_parsed": "2026-04-13",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 0.1,
+    "discount_pct": null,
+    "price_5d_ago": 0.1,
+    "price_20d_ago": 0.1,
+    "price_post": 0.05,
+    "price_5d_post": 0.06,
+    "price_20d_post": 0.06
   },
   {
     "date": "13/04/2026",
@@ -2736,8 +2793,13 @@
     "purpose": "償還債務 債務重組; 代價相等於3.49億美元",
     "ratio": "",
     "date_parsed": "2026-04-13",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 0.1,
+    "discount_pct": 1500.0,
+    "price_5d_ago": 0.1,
+    "price_20d_ago": 0.1,
+    "price_post": 0.05,
+    "price_5d_post": 0.06,
+    "price_20d_post": 0.06
   },
   {
     "date": "13/04/2026",
@@ -2856,8 +2918,13 @@
     "purpose": "擴大資本基礎 發行價相等於約49.65港元",
     "ratio": "",
     "date_parsed": "2026-04-08",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 36.25,
+    "discount_pct": 20.6,
+    "price_5d_ago": 34.49,
+    "price_20d_ago": 35.85,
+    "price_post": 45.08,
+    "price_5d_post": 45.3,
+    "price_20d_post": 44.68
   },
   {
     "date": "02/04/2026",
@@ -3396,8 +3463,13 @@
     "purpose": "擴大資本基礎;業務發展 配予紫金礦業(02899",
     "ratio": "",
     "date_parsed": "2026-03-22",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 25.13,
+    "discount_pct": 18.7,
+    "price_5d_ago": 23.33,
+    "price_20d_ago": 31.21,
+    "price_post": 26.72,
+    "price_5d_post": 30.42,
+    "price_20d_post": 41.13
   },
   {
     "date": "20/03/2026",
@@ -3496,8 +3568,13 @@
     "purpose": "擴大資本基礎 發行永久後償或有可轉換證券;2031年9月24日前六個月至證券重設日止期間贖回",
     "ratio": "",
     "date_parsed": "2026-03-18",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 94.72,
+    "discount_pct": null,
+    "price_5d_ago": 93.47,
+    "price_20d_ago": 97.22,
+    "price_post": 140.8,
+    "price_5d_post": 146.3,
+    "price_20d_post": 137.82
   },
   {
     "date": "18/03/2026",
@@ -3536,8 +3613,13 @@
     "purpose": "擴大資本基礎 發行永久後償或有可轉換證券;2036年3月24日前六個月至證券重設日止期間贖回",
     "ratio": "",
     "date_parsed": "2026-03-18",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 94.72,
+    "discount_pct": null,
+    "price_5d_ago": 93.47,
+    "price_20d_ago": 97.22,
+    "price_post": 140.8,
+    "price_5d_post": 146.3,
+    "price_20d_post": 137.82
   },
   {
     "date": "17/03/2026",
@@ -3676,8 +3758,13 @@
     "purpose": "償還債務 債務重組;發行強制可轉換債券",
     "ratio": "",
     "date_parsed": "2026-03-13",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 0.07,
+    "discount_pct": null,
+    "price_5d_ago": 0.07,
+    "price_20d_ago": 0.07,
+    "price_post": 0.06,
+    "price_5d_post": 0.05,
+    "price_20d_post": 0.06
   },
   {
     "date": "13/03/2026",
@@ -3696,8 +3783,13 @@
     "purpose": "償還債務 貸款資本化; 代價相等於12.12億元人民幣",
     "ratio": "",
     "date_parsed": "2026-03-13",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 0.07,
+    "discount_pct": 328.6,
+    "price_5d_ago": 0.07,
+    "price_20d_ago": 0.07,
+    "price_post": 0.06,
+    "price_5d_post": 0.05,
+    "price_20d_post": 0.06
   },
   {
     "date": "13/03/2026",
@@ -3716,8 +3808,13 @@
     "purpose": "支付費用 債務重組",
     "ratio": "",
     "date_parsed": "2026-03-13",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 0.07,
+    "discount_pct": 42.9,
+    "price_5d_ago": 0.07,
+    "price_20d_ago": 0.07,
+    "price_post": 0.06,
+    "price_5d_post": 0.05,
+    "price_20d_post": 0.06
   },
   {
     "date": "13/03/2026",
@@ -3736,8 +3833,13 @@
     "purpose": "償還債務 債務重組",
     "ratio": "",
     "date_parsed": "2026-03-13",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 0.07,
+    "discount_pct": 2071.4,
+    "price_5d_ago": 0.07,
+    "price_20d_ago": 0.07,
+    "price_post": 0.06,
+    "price_5d_post": 0.05,
+    "price_20d_post": 0.06
   },
   {
     "date": "12/03/2026",
@@ -4636,8 +4738,13 @@
     "purpose": "擴大資本基礎;業務發展",
     "ratio": "",
     "date_parsed": "2026-02-10",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 11.88,
+    "discount_pct": 28.1,
+    "price_5d_ago": 11.26,
+    "price_20d_ago": 14.42,
+    "price_post": 16.88,
+    "price_5d_post": 18.47,
+    "price_20d_post": 21.2
   },
   {
     "date": "10/02/2026",
@@ -4896,8 +5003,13 @@
     "purpose": "擴大資本基礎;業務發展",
     "ratio": "",
     "date_parsed": "2026-02-04",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 43.42,
+    "discount_pct": null,
+    "price_5d_ago": 41.0,
+    "price_20d_ago": 39.56,
+    "price_post": 42.7,
+    "price_5d_post": 46.62,
+    "price_20d_post": 60.35
   },
   {
     "date": "04/02/2026",
@@ -4916,8 +5028,13 @@
     "purpose": "擴大資本基礎;業務發展",
     "ratio": "",
     "date_parsed": "2026-02-04",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 43.42,
+    "discount_pct": 3.8,
+    "price_5d_ago": 41.0,
+    "price_20d_ago": 39.56,
+    "price_post": 42.7,
+    "price_5d_post": 46.62,
+    "price_20d_post": 60.35
   },
   {
     "date": "04/02/2026",
@@ -5056,8 +5173,13 @@
     "purpose": "擴大資本基礎;業務發展",
     "ratio": "",
     "date_parsed": "2026-02-03",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 19.53,
+    "discount_pct": null,
+    "price_5d_ago": 19.88,
+    "price_20d_ago": 18.98,
+    "price_post": 16.06,
+    "price_5d_post": 16.2,
+    "price_20d_post": 16.72
   },
   {
     "date": "03/02/2026",
@@ -5396,8 +5518,13 @@
     "purpose": "收購項目;業務發展;償還債務",
     "ratio": "",
     "date_parsed": "2026-01-27",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 2.89,
+    "discount_pct": null,
+    "price_5d_ago": 2.75,
+    "price_20d_ago": 2.79,
+    "price_post": 1.38,
+    "price_5d_post": 1.48,
+    "price_20d_post": 1.36
   },
   {
     "date": "27/01/2026",
@@ -5436,8 +5563,13 @@
     "purpose": "擴大資本基礎;業務發展",
     "ratio": "",
     "date_parsed": "2026-01-27",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 37.13,
+    "discount_pct": null,
+    "price_5d_ago": 35.23,
+    "price_20d_ago": 38.03,
+    "price_post": 28.06,
+    "price_5d_post": 29.84,
+    "price_20d_post": 35.92
   },
   {
     "date": "27/01/2026",
@@ -5676,8 +5808,13 @@
     "purpose": "擴大資本基礎;業務發展 可轉換為B類普通股股份",
     "ratio": "",
     "date_parsed": "2026-01-23",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 10.42,
+    "discount_pct": null,
+    "price_5d_ago": 10.68,
+    "price_20d_ago": 9.7,
+    "price_post": 8.6,
+    "price_5d_post": 8.82,
+    "price_20d_post": 9.42
   },
   {
     "date": "23/01/2026",
@@ -5776,8 +5913,13 @@
     "purpose": "擴大資本基礎;償還債務",
     "ratio": "",
     "date_parsed": "2026-01-22",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 2.08,
+    "discount_pct": null,
+    "price_5d_ago": 1.91,
+    "price_20d_ago": 1.8,
+    "price_post": 2.35,
+    "price_5d_post": 2.34,
+    "price_20d_post": 2.26
   },
   {
     "date": "22/01/2026",
@@ -5896,8 +6038,13 @@
     "purpose": "收購項目 購電影、劇集及非劇集製作及發行,以及影院經營業務;代價相等於45.77億元人民幣",
     "ratio": "",
     "date_parsed": "2026-01-21",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 0.26,
+    "discount_pct": 23.1,
+    "price_5d_ago": 0.29,
+    "price_20d_ago": 0.29,
+    "price_post": 0.18,
+    "price_5d_post": 0.15,
+    "price_20d_post": 0.18
   },
   {
     "date": "21/01/2026",
@@ -6176,8 +6323,13 @@
     "purpose": "擴大資本基礎;業務發展;償還債務",
     "ratio": "",
     "date_parsed": "2026-01-16",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 4.25,
+    "discount_pct": -7.8,
+    "price_5d_ago": 4.18,
+    "price_20d_ago": 3.4,
+    "price_post": 2.95,
+    "price_5d_post": 2.95,
+    "price_20d_post": 3.19
   },
   {
     "date": "16/01/2026",
@@ -6296,8 +6448,13 @@
     "purpose": "擴大資本基礎;業務發展;償還債務",
     "ratio": "",
     "date_parsed": "2026-01-16",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 4.25,
+    "discount_pct": -7.8,
+    "price_5d_ago": 4.18,
+    "price_20d_ago": 3.4,
+    "price_post": 2.95,
+    "price_5d_post": 2.95,
+    "price_20d_post": 3.19
   },
   {
     "date": "16/01/2026",
@@ -6376,8 +6533,13 @@
     "purpose": "收購項目 配予極兔速遞-W(01519",
     "ratio": "",
     "date_parsed": "2026-01-15",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 43.92,
+    "discount_pct": -16.3,
+    "price_5d_ago": 43.52,
+    "price_20d_ago": 38.25,
+    "price_post": 30.94,
+    "price_5d_post": 31.56,
+    "price_20d_post": 34.7
   },
   {
     "date": "15/01/2026",
@@ -6396,8 +6558,13 @@
     "purpose": "擴大資本基礎;業務發展 發行可轉換為新A股之債券",
     "ratio": "",
     "date_parsed": "2026-01-15",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 14.71,
+    "discount_pct": null,
+    "price_5d_ago": 14.19,
+    "price_20d_ago": 18.13,
+    "price_post": 14.35,
+    "price_5d_post": 15.1,
+    "price_20d_post": 15.99
   },
   {
     "date": "15/01/2026",
@@ -6416,8 +6583,13 @@
     "purpose": "收購項目 配予順豐控股(06936",
     "ratio": "",
     "date_parsed": "2026-01-15",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 10.42,
+    "discount_pct": -3.1,
+    "price_5d_ago": 10.68,
+    "price_20d_ago": 9.7,
+    "price_post": 8.6,
+    "price_5d_post": 8.82,
+    "price_20d_post": 9.42
   },
   {
     "date": "14/01/2026",
@@ -6756,8 +6928,13 @@
     "purpose": "擴大資本基礎;業務發展",
     "ratio": "",
     "date_parsed": "2026-01-08",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 8.13,
+    "discount_pct": null,
+    "price_5d_ago": 8.43,
+    "price_20d_ago": 10.0,
+    "price_post": 6.74,
+    "price_5d_post": 7.7,
+    "price_20d_post": 8.89
   },
   {
     "date": "08/01/2026",
@@ -6836,8 +7013,13 @@
     "purpose": "業務發展 發行價為可換股債券本金額的101%",
     "ratio": "",
     "date_parsed": "2026-01-07",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 18.37,
+    "discount_pct": null,
+    "price_5d_ago": 18.17,
+    "price_20d_ago": 18.47,
+    "price_post": 15.6,
+    "price_5d_post": 16.3,
+    "price_20d_post": 17.47
   },
   {
     "date": "07/01/2026",
@@ -6856,8 +7038,13 @@
     "purpose": "業務發展",
     "ratio": "",
     "date_parsed": "2026-01-07",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 18.37,
+    "discount_pct": -1.2,
+    "price_5d_ago": 18.17,
+    "price_20d_ago": 18.47,
+    "price_post": 15.6,
+    "price_5d_post": 16.3,
+    "price_20d_post": 17.47
   },
   {
     "date": "06/01/2026",
@@ -6956,8 +7143,13 @@
     "purpose": "擴大資本基礎;業務發展 配售價相當於約港幣55.29元",
     "ratio": "",
     "date_parsed": "2026-01-06",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 63.25,
+    "discount_pct": -20.9,
+    "price_5d_ago": 71.15,
+    "price_20d_ago": 62.6,
+    "price_post": 39.02,
+    "price_5d_post": 40.82,
+    "price_20d_post": 46.0
   },
   {
     "date": "06/01/2026",
@@ -7036,8 +7228,13 @@
     "purpose": "收購項目 增持中國集成電路晶圓代工服務業務",
     "ratio": "",
     "date_parsed": "2025-12-31",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 47.14,
+    "discount_pct": -8.1,
+    "price_5d_ago": 46.3,
+    "price_20d_ago": 46.96,
+    "price_post": 135.6,
+    "price_5d_post": 147.5,
+    "price_20d_post": 126.8
   },
   {
     "date": "30/12/2025",
@@ -7216,8 +7413,13 @@
     "purpose": "收購項目 增持集成電路晶圓代工及配套服務業務",
     "ratio": "",
     "date_parsed": "2025-12-29",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 51.85,
+    "discount_pct": 43.1,
+    "price_5d_ago": 49.4,
+    "price_20d_ago": 58.7,
+    "price_post": 71.6,
+    "price_5d_post": 81.9,
+    "price_20d_post": 73.4
   },
   {
     "date": "29/12/2025",
@@ -7256,8 +7458,13 @@
     "purpose": "擴大資本基礎;業務發展 配售價相當於約港幣55.29元;所得款項總額相當於約港幣41.38億元",
     "ratio": "",
     "date_parsed": "2025-12-28",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 63.25,
+    "discount_pct": -20.9,
+    "price_5d_ago": 71.15,
+    "price_20d_ago": 62.6,
+    "price_post": 39.02,
+    "price_5d_post": 40.82,
+    "price_20d_post": 46.0
   },
   {
     "date": "24/12/2025",
@@ -7516,8 +7723,13 @@
     "purpose": "收購項目 購煤炭開採、洗選及銷售；煤化工產品；公路及水路運輸等相關業務",
     "ratio": "",
     "date_parsed": "2025-12-19",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 36.25,
+    "discount_pct": -18.9,
+    "price_5d_ago": 34.49,
+    "price_20d_ago": 35.85,
+    "price_post": 45.08,
+    "price_5d_post": 45.3,
+    "price_20d_post": 44.68
   },
   {
     "date": "19/12/2025",
@@ -7576,8 +7788,13 @@
     "purpose": "擴大資本基礎;業務發展",
     "ratio": "",
     "date_parsed": "2025-12-18",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 1.55,
+    "discount_pct": 16.1,
+    "price_5d_ago": 1.58,
+    "price_20d_ago": 1.83,
+    "price_post": 1.33,
+    "price_5d_post": 1.49,
+    "price_20d_post": 1.72
   },
   {
     "date": "18/12/2025",
@@ -7596,8 +7813,13 @@
     "purpose": "擴大資本基礎;業務發展",
     "ratio": "",
     "date_parsed": "2025-12-18",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 1.67,
+    "discount_pct": 7.8,
+    "price_5d_ago": 1.71,
+    "price_20d_ago": 1.98,
+    "price_post": 1.53,
+    "price_5d_post": 1.71,
+    "price_20d_post": 1.97
   },
   {
     "date": "18/12/2025",
@@ -7896,8 +8118,13 @@
     "purpose": "擴大資本基礎;業務發展;償還債務",
     "ratio": "",
     "date_parsed": "2025-12-10",
-    "market_price": 0,
-    "discount_pct": null
+    "market_price": 34.06,
+    "discount_pct": -5.3,
+    "price_5d_ago": 39.0,
+    "price_20d_ago": 45.8,
+    "price_post": 237.8,
+    "price_5d_post": 241.2,
+    "price_20d_post": 265.4
   },
   {
     "date": "10/12/2025",
