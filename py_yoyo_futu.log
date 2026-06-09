@@ -1,5 +1,3 @@
-00068: FAIL ret=0
-00100: FAIL ret=0
 00116: FAIL ret=-1
 00117: FAIL ret=-1
 00118: FAIL ret=-1
@@ -277,7 +275,6 @@
 00465: FAIL ret=-1
 00467: FAIL ret=-1
 00468: FAIL ret=-1
-00470: FAIL ret=-1
 00471: FAIL ret=-1
 00472: FAIL ret=-1
 00474: FAIL ret=-1
@@ -299,7 +296,6 @@
 00498: FAIL ret=-1
 00499: FAIL ret=-1
 00500: FAIL ret=-1
-00501: FAIL ret=-1
 00505: FAIL ret=-1
 00506: FAIL ret=-1
 00508: FAIL ret=-1
@@ -370,7 +366,6 @@
 00596: FAIL ret=-1
 00598: FAIL ret=-1
 00599: FAIL ret=-1
-00600: FAIL ret=-1
 00601: FAIL ret=-1
 00602: FAIL ret=-1
 00603: FAIL ret=-1
@@ -402,7 +397,6 @@
 00635: FAIL ret=-1
 00636: FAIL ret=-1
 00637: FAIL ret=-1
-00638: FAIL ret=-1
 00639: FAIL ret=-1
 00640: FAIL ret=-1
 00641: FAIL ret=-1
@@ -420,7 +414,6 @@
 00660: FAIL ret=-1
 00661: FAIL ret=-1
 00662: FAIL ret=-1
-00664: FAIL ret=-1
 00666: FAIL ret=-1
 00667: FAIL ret=-1
 00669: FAIL ret=-1
@@ -449,7 +442,6 @@
 00696: FAIL ret=-1
 00697: FAIL ret=-1
 00698: FAIL ret=-1
-00699: FAIL ret=-1
 00701: FAIL ret=-1
 00702: FAIL ret=-1
 00703: FAIL ret=-1
@@ -598,7 +590,6 @@
 00898: FAIL ret=-1
 00899: FAIL ret=-1
 00900: FAIL ret=-1
-00901: FAIL ret=-1
 00902: FAIL ret=-1
 00905: FAIL ret=-1
 00907: FAIL ret=-1
@@ -679,7 +670,6 @@
 01011: FAIL ret=-1
 01013: FAIL ret=-1
 01020: FAIL ret=-1
-01021: FAIL ret=-1
 01022: FAIL ret=-1
 01023: FAIL ret=-1
 01024: FAIL ret=-1
@@ -807,7 +797,6 @@
 01183: FAIL ret=-1
 01184: FAIL ret=-1
 01186: FAIL ret=-1
-01187: FAIL ret=-1
 01188: FAIL ret=-1
 01193: FAIL ret=-1
 01195: FAIL ret=-1
@@ -843,7 +832,6 @@
 01233: FAIL ret=-1
 01234: FAIL ret=-1
 01235: FAIL ret=-1
-01236: FAIL ret=-1
 01237: FAIL ret=-1
 01238: FAIL ret=-1
 01239: FAIL ret=-1
@@ -1024,7 +1012,6 @@
 01502: FAIL ret=-1
 01503: FAIL ret=-1
 01508: FAIL ret=-1
-01511: FAIL ret=-1
 01513: FAIL ret=-1
 01515: FAIL ret=-1
 01516: FAIL ret=-1
@@ -1094,7 +1081,6 @@
 01601: FAIL ret=-1
 01606: FAIL ret=-1
 01608: FAIL ret=-1
-01609: FAIL ret=-1
 01610: FAIL ret=-1
 01611: FAIL ret=-1
 01612: FAIL ret=-1
@@ -1120,7 +1106,6 @@
 01637: FAIL ret=-1
 01638: FAIL ret=-1
 01640: FAIL ret=-1
-01641: FAIL ret=-1
 01643: FAIL ret=-1
 01645: FAIL ret=-1
 01647: FAIL ret=-1
@@ -1217,7 +1202,6 @@
 01765: FAIL ret=-1
 01766: FAIL ret=-1
 01767: FAIL ret=-1
-01768: FAIL ret=-1
 01769: FAIL ret=-1
 01771: FAIL ret=-1
 01772: FAIL ret=-1
@@ -1303,7 +1287,6 @@
 01876: FAIL ret=-1
 01877: FAIL ret=-1
 01878: FAIL ret=-1
-01879: FAIL ret=-1
 01880: FAIL ret=-1
 01881: FAIL ret=-1
 01882: FAIL ret=-1
@@ -1392,7 +1375,6 @@
 01986: FAIL ret=-1
 01987: FAIL ret=-1
 01988: FAIL ret=-1
-01989: FAIL ret=-1
 01991: FAIL ret=-1
 01993: FAIL ret=-1
 01995: FAIL ret=-1
@@ -1687,7 +1669,6 @@
 02465: FAIL ret=-1
 02469: FAIL ret=-1
 02473: FAIL ret=-1
-02476: FAIL ret=-1
 02477: FAIL ret=-1
 02479: FAIL ret=-1
 02480: FAIL ret=-1
@@ -1699,7 +1680,6 @@
 02488: FAIL ret=-1
 02489: FAIL ret=-1
 02490: FAIL ret=-1
-02493: FAIL ret=-1
 02495: FAIL ret=-1
 02496: FAIL ret=-1
 02497: FAIL ret=-1
@@ -1717,7 +1697,6 @@
 02510: FAIL ret=-1
 02511: FAIL ret=-1
 02512: FAIL ret=-1
-02513: FAIL ret=-1
 02515: FAIL ret=-1
 02516: FAIL ret=-1
 02517: FAIL ret=-1
@@ -1727,7 +1706,6 @@
 02521: FAIL ret=-1
 02522: FAIL ret=-1
 02525: FAIL ret=-1
-02526: FAIL ret=-1
 02528: FAIL ret=-1
 02529: FAIL ret=-1
 02530: FAIL ret=-1
@@ -1803,14 +1781,12 @@
 02629: FAIL ret=-1
 02630: FAIL ret=-1
 02631: FAIL ret=-1
-02632: FAIL ret=-1
 02633: FAIL ret=-1
 02635: FAIL ret=-1
 02637: FAIL ret=-1
 02638: FAIL ret=-1
 02643: FAIL ret=-1
 02648: FAIL ret=-1
-02649: FAIL ret=-1
 02650: FAIL ret=-1
 02651: FAIL ret=-1
 02652: FAIL ret=-1
@@ -1828,9 +1804,7 @@
 02669: FAIL ret=-1
 02670: FAIL ret=-1
 02671: FAIL ret=-1
-02675: FAIL ret=-1
 02676: FAIL ret=-1
-02677: FAIL ret=-1
 02678: FAIL ret=-1
 02680: FAIL ret=-1
 02682: FAIL ret=-1
@@ -1840,27 +1814,17 @@
 02688: FAIL ret=-1
 02689: FAIL ret=-1
 02691: FAIL ret=-1
-02692: FAIL ret=-1
 02693: FAIL ret=-1
 02695: FAIL ret=-1
 02696: FAIL ret=-1
 02698: FAIL ret=-1
 02699: FAIL ret=-1
 02700: FAIL ret=-1
-02701: FAIL ret=-1
-02706: FAIL ret=-1
-02714: FAIL ret=-1
-02715: FAIL ret=-1
 02718: FAIL ret=-1
-02720: FAIL ret=-1
 02722: FAIL ret=-1
-02723: FAIL ret=-1
-02726: FAIL ret=-1
 02727: FAIL ret=-1
 02728: FAIL ret=-1
-02729: FAIL ret=-1
 02738: FAIL ret=-1
-02768: FAIL ret=-1
 02772: FAIL ret=-1
 02777: FAIL ret=-1
 02778: FAIL ret=-1
@@ -1887,27 +1851,13 @@
 02892: FAIL ret=-1
 02898: FAIL ret=-1
 02899: FAIL ret=-1
-02940: FAIL ret=-1
-02944: FAIL ret=-1
-02946: FAIL ret=-1
-02950: FAIL ret=-1
-02951: FAIL ret=-1
-02952: FAIL ret=-1
-02956: FAIL ret=-1
-02958: FAIL ret=-1
-02959: FAIL ret=-1
-03200: FAIL ret=-1
-03268: FAIL ret=-1
-03277: FAIL ret=-1
 03288: FAIL ret=-1
-03296: FAIL ret=-1
 03300: FAIL ret=-1
 03301: FAIL ret=-1
 03302: FAIL ret=-1
 03303: FAIL ret=-1
 03306: FAIL ret=-1
 03309: FAIL ret=-1
-03310: FAIL ret=-1
 03311: FAIL ret=-1
 03313: FAIL ret=-1
 03315: FAIL ret=-1
@@ -1928,7 +1878,6 @@
 03339: FAIL ret=-1
 03347: FAIL ret=-1
 03348: FAIL ret=-1
-03355: FAIL ret=-1
 03360: FAIL ret=-1
 03363: FAIL ret=-1
 03366: FAIL ret=-1
@@ -1939,7 +1888,6 @@
 03380: FAIL ret=-1
 03382: FAIL ret=-1
 03383: FAIL ret=-1
-03388: FAIL ret=-1
 03389: FAIL ret=-1
 03390: FAIL ret=-1
 03393: FAIL ret=-1
@@ -1955,11 +1903,9 @@
 03616: FAIL ret=-1
 03618: FAIL ret=-1
 03623: FAIL ret=-1
-03625: FAIL ret=-1
 03626: FAIL ret=-1
 03628: FAIL ret=-1
 03633: FAIL ret=-1
-03636: FAIL ret=-1
 03638: FAIL ret=-1
 03639: FAIL ret=-1
 03650: FAIL ret=-1
@@ -2046,7 +1992,6 @@
 03969: FAIL ret=-1
 03978: FAIL ret=-1
 03983: FAIL ret=-1
-03986: FAIL ret=-1
 03988: FAIL ret=-1
 03989: FAIL ret=-1
 03990: FAIL ret=-1
@@ -2134,11 +2079,9 @@
 06626: FAIL ret=-1
 06628: FAIL ret=-1
 06633: FAIL ret=-1
-06636: FAIL ret=-1
 06639: FAIL ret=-1
 06651: FAIL ret=-1
 06655: FAIL ret=-1
-06656: FAIL ret=-1
 06657: FAIL ret=-1
 06660: FAIL ret=-1
 06661: FAIL ret=-1
@@ -2163,8 +2106,6 @@
 06805: FAIL ret=-1
 06806: FAIL ret=-1
 06808: FAIL ret=-1
-06809: FAIL ret=-1
-06810: FAIL ret=-1
 06811: FAIL ret=-1
 06812: FAIL ret=-1
 06816: FAIL ret=-1
@@ -2189,8 +2130,6 @@
 06866: FAIL ret=-1
 06868: FAIL ret=-1
 06869: FAIL ret=-1
-06871: FAIL ret=-1
-06872: FAIL ret=-1
 06877: FAIL ret=-1
 06878: FAIL ret=-1
 06881: FAIL ret=-1
@@ -2217,7 +2156,6 @@
 06929: FAIL ret=-1
 06933: FAIL ret=-1
 06936: FAIL ret=-1
-06938: FAIL ret=-1
 06939: FAIL ret=-1
 06955: FAIL ret=-1
 06958: FAIL ret=-1
@@ -2237,11 +2175,7 @@
 06996: FAIL ret=-1
 06998: FAIL ret=-1
 06999: FAIL ret=-1
-07489: FAIL ret=-1
 07618: FAIL ret=-1
-07630: FAIL ret=-1
-07666: FAIL ret=-1
-07688: FAIL ret=-1
 08003: FAIL ret=-1
 08005: FAIL ret=-1
 08006: FAIL ret=-1
@@ -2526,15 +2460,9 @@
 08545: FAIL ret=-1
 08547: FAIL ret=-1
 08549: FAIL ret=-1
-08552: FAIL ret=-1
-08553: FAIL ret=-1
-08556: FAIL ret=-1
-08557: FAIL ret=-1
-08558: FAIL ret=-1
 08601: FAIL ret=-1
 08603: FAIL ret=-1
 08606: FAIL ret=-1
-08610: FAIL ret=-1
 08611: FAIL ret=-1
 08612: FAIL ret=-1
 08613: FAIL ret=-1
@@ -2558,7 +2486,6 @@
 09606: FAIL ret=-1
 09608: FAIL ret=-1
 09609: FAIL ret=-1
-09611: FAIL ret=-1
 09616: FAIL ret=-1
 09618: FAIL ret=-1
 09626: FAIL ret=-1
@@ -2608,7 +2535,6 @@
 09899: FAIL ret=-1
 09900: FAIL ret=-1
 09901: FAIL ret=-1
-09903: FAIL ret=-1
 09906: FAIL ret=-1
 09908: FAIL ret=-1
 09909: FAIL ret=-1
@@ -2640,8 +2566,6 @@
 09973: FAIL ret=-1
 09978: FAIL ret=-1
 09979: FAIL ret=-1
-09980: FAIL ret=-1
-09981: FAIL ret=-1
 09982: FAIL ret=-1
 09983: FAIL ret=-1
 09985: FAIL ret=-1
@@ -2659,7 +2583,6 @@
 09999: FAIL ret=-1
 80016: FAIL ret=-1
 80020: FAIL ret=-1
-80175: FAIL ret=-1
 80291: FAIL ret=-1
 80388: FAIL ret=-1
 80700: FAIL ret=-1
@@ -2668,7 +2591,6 @@
 80941: FAIL ret=-1
 80992: FAIL ret=-1
 81024: FAIL ret=-1
-81211: FAIL ret=-1
 81299: FAIL ret=-1
 81810: FAIL ret=-1
 82020: FAIL ret=-1
