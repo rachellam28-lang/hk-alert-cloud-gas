@@ -1,12 +1,12 @@
 {
-  "dopamine": 34.8,
+  "dopamine": 34.7,
   "regime": 48.1,
   "momentum": 0.0,
-  "volatility": 59.4,
-  "hsi": 24583.47,
-  "ma20": 25542.33,
-  "ma50": 25710.97,
-  "updated": "2026-06-09T11:45:06.480032",
+  "volatility": 58.8,
+  "hsi": 24565.9,
+  "ma20": 25541.45,
+  "ma50": 25710.62,
+  "updated": "2026-06-09T23:45:16.173408",
   "label": "❄️ 謹慎",
   "thresholds": {
     "poc_min_pct": 3.3,
