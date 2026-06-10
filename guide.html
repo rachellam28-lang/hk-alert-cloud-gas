@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="zh-HK"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=0.3,minimum-scale=0.2,maximum-scale=5,user-scalable=yes">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=0.5,maximum-scale=5,user-scalable=yes">
 <title>Market 使用說明書</title>
 <style>
 :root{--bg:#f5f7fa;--surface:#fff;--surface-soft:#f8fafc;--text:#0f172a;--text-soft:#334155;--mute:#64748b;--line:#e2e8f0;--primary:#0284c7;--up:#15803d;--down:#b91c1c;--amber:#b45309;--radius:10px}
@@ -31,8 +31,28 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .foot{margin-top:40px;padding:20px;text-align:center;font-size:12px;color:var(--mute)}
 @media(max-width:720px){main{padding:12px 10px}h1{font-size:20px}h2{font-size:16px}table{font-size:11px}th,td{padding:4px 6px}}
 @media(prefers-color-scheme:dark){:root{--bg:#0f172a;--surface:#1e293b;--surface-soft:#162032;--text:#f1f5f9;--text-soft:#cbd5e1;--mute:#64748b;--line:#334155;--primary:#38bdf8}.tag-up{background:#052e16;color:#4ade80}.tag-dn{background:#2d0a0a;color:#f87171}.topbar{background:rgba(15,23,42,.92)}}
+.site-nav{display:flex;flex-wrap:wrap;gap:6px 12px;padding:8px 12px;background:#0f172a;border-bottom:1px solid #1e293b;font-size:13px}
+.site-nav a{color:#94a3b8;text-decoration:none;white-space:nowrap}
+.site-nav a:hover{color:#e2e8f0}
+.site-nav a.active{color:#38bdf8;font-weight:600}
+.status-loading,.status-error,.status-empty{padding:24px;text-align:center;border-radius:8px;font-size:14px;color:#94a3b8}
+.status-error{background:#1e0a0a;border:1px solid #7f1d1d;color:#fca5a5}
+.status-loading{background:#0f172a}
+.status-empty{background:#0f1a2e}
 </style>
 </head><body>
+  <nav class="site-nav">
+    <a href="./index.html">📦 Market</a>
+    <a href="./signals.html">🔔 訊號</a>
+    <a href="./watchlist.html">⭐ 自選</a>
+    <a href="./history.html">🕐 歷史</a>
+    <a href="./gap_fvg.html">⤴ Gap/FVG</a>
+    <a href="./fundflow.html">💰 資金</a>
+    <a href="./rights_analysis.html">📋 供配股</a>
+    <a href="./us.html">🇺🇸 美股</a>
+    <a href="./guide.html">📖 說明</a>
+  </nav>
+
 
 <header class="topbar"><div class="topbar-inner">
   <div style="font-weight:700;font-size:15px">📖 Market 使用說明書</div>
@@ -165,6 +185,31 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 <tr><td><a href="./gap_fvg.html">Gap/FVG</a></td><td>跳空缺口 + FVG 警報中心</td></tr>
 <tr><td><a href="./us.html">美股</a></td><td>美股掃描</td></tr>
 </table>
+
+<h2>⤴ Gap/FVG 說明</h2>
+<table>
+<tr><th>類型</th><th>說明</th></tr>
+<tr><td>Bullish FVG</td><td>向上公平值缺口，股價回測後可能繼續上升</td></tr>
+<tr><td>量比異常</td><td>今日成交 / 平均量 ≥ 2，異常放量</td></tr>
+<tr><td>轉倉信號</td><td>Market 結算日前後大戶換倉跡象</td></tr>
+<tr><td>🎯 Confluence</td><td>公告＋技術訊號同時出現，信號疊加強化</td></tr>
+</table>
+
+<h2>💰 資金流向說明</h2>
+<table>
+<tr><th>欄位</th><th>數據來源</th><th>更新頻率</th></tr>
+<tr><td>主力淨買/賣</td><td>etnet 大戶交易數據</td><td>每日收市後</td></tr>
+<tr><td>沽空比率</td><td>HKEX 沽空數據</td><td>每日</td></tr>
+<tr><td>港股通（北水）</td><td>HKEX 滬深港通持倉</td><td>每日</td></tr>
+</table>
+
+<h2>⭐ 自選功能說明</h2>
+<ul>
+<li>數據儲存於本機瀏覽器 localStorage</li>
+<li>清除瀏覽器緩存會刪除所有記錄</li>
+<li>建議定期「匯出」備份 JSON</li>
+<li>換設備時使用「匯入」還原</li>
+</ul>
 </div>
 
 <div class="foot">數據來源：HKEX Market · 僅供參考</div>

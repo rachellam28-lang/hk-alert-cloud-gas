@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="zh-HK"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=0.3,minimum-scale=0.2,maximum-scale=5,user-scalable=yes">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=0.5,maximum-scale=5,user-scalable=yes">
 <title>警報中心 — Gap/FVG · 量比 · 轉倉</title>
 <style>
 :root{--bg:#f5f7fa;--surface:#fff;--surface-soft:#f8fafc;--text:#0f172a;--text-soft:#1e293b;--mute:#475569;--mute-2:#64748b;--line:#dbe3ee;--line-soft:#edf2f7;--primary:#0369a1;--primary-soft:#e0f2fe;--up:#15803d;--up-soft:#dcfce7;--down:#b91c1c;--down-soft:#fee2e2;--violet:#6d28d9;--violet-soft:#ede9fe;--amber:#b45309;--amber-soft:#fef3c7;--radius:8px;--shadow:0 1px 2px rgba(15,23,42,.05)}
@@ -124,8 +124,28 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .spill-fvg{background:var(--up-soft);color:var(--up);border-color:var(--up-border)}
 .spill-yearopen{background:var(--amber-soft);color:var(--amber);border-color:var(--amber-border)}
 @media(max-width:520px){.confluence-grid{grid-template-columns:1fr;gap:3px;padding:4px 5px}.confluence-item{padding:3px 5px;font-size:9.5px}.confluence-item .cf-code{font-size:10px}.confluence-item .cf-name{font-size:9px}}
+.site-nav{display:flex;flex-wrap:wrap;gap:6px 12px;padding:8px 12px;background:#0f172a;border-bottom:1px solid #1e293b;font-size:13px}
+.site-nav a{color:#94a3b8;text-decoration:none;white-space:nowrap}
+.site-nav a:hover{color:#e2e8f0}
+.site-nav a.active{color:#38bdf8;font-weight:600}
+.status-loading,.status-error,.status-empty{padding:24px;text-align:center;border-radius:8px;font-size:14px;color:#94a3b8}
+.status-error{background:#1e0a0a;border:1px solid #7f1d1d;color:#fca5a5}
+.status-loading{background:#0f172a}
+.status-empty{background:#0f1a2e}
 </style>
 </head><body>
+  <nav class="site-nav">
+    <a href="./index.html">📦 Market</a>
+    <a href="./signals.html">🔔 訊號</a>
+    <a href="./watchlist.html">⭐ 自選</a>
+    <a href="./history.html">🕐 歷史</a>
+    <a href="./gap_fvg.html">⤴ Gap/FVG</a>
+    <a href="./fundflow.html">💰 資金</a>
+    <a href="./rights_analysis.html">📋 供配股</a>
+    <a href="./us.html">🇺🇸 美股</a>
+    <a href="./guide.html">📖 說明</a>
+  </nav>
+
 
 <div class="topbar">
   <div class="topbar-inner">
@@ -154,6 +174,22 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 </div>
 
 <script>
+function showLoading(el,msg){
+  if(!el)return;
+  el.innerHTML='<div class="status-loading">⏳ '+(msg||'載入中…')+'</div>';
+}
+function showError(el,err,retryFn){
+  if(!el)return;
+  const retryBtn = retryFn
+    ? '<button onclick="('+retryFn.toString()+')()" style="margin-top:8px;padding:4px 12px;cursor:pointer">🔄 重試</button>'
+    : '';
+  el.innerHTML='<div class="status-error">❌ 載入失敗：'+String(err)+'<br>'+retryBtn+'</div>';
+}
+function showEmpty(el,msg){
+  if(!el)return;
+  el.innerHTML='<div class="status-empty">'+(msg||'暫無數據')+'</div>';
+}
+
 var E = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 function fmtMoney(v) {
   if (v == null || isNaN(v)) return '';
@@ -486,4 +522,11 @@ fetch('./data/confluence.json?_='+Date.now())
 
 main();
 </script>
+
+document.querySelectorAll('.site-nav a').forEach(a => {
+  if(location.pathname.endsWith(a.getAttribute('href').replace('./',''))) {
+    a.classList.add('active');
+  }
+});
+
 </body></html>

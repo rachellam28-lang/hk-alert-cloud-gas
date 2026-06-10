@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="zh-HK"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=0.3,minimum-scale=0.2,maximum-scale=5,user-scalable=yes">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=0.5,maximum-scale=5,user-scalable=yes">
 <link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#0284c7">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -379,8 +379,28 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
 .adv-filter-bar .rf-group+.rf-group{margin-left:4px;padding-left:6px;border-left:1px solid var(--line)}
 .adv-filter-bar .preset-group{margin-left:auto}
 
+.site-nav{display:flex;flex-wrap:wrap;gap:6px 12px;padding:8px 12px;background:#0f172a;border-bottom:1px solid #1e293b;font-size:13px}
+.site-nav a{color:#94a3b8;text-decoration:none;white-space:nowrap}
+.site-nav a:hover{color:#e2e8f0}
+.site-nav a.active{color:#38bdf8;font-weight:600}
+.status-loading,.status-error,.status-empty{padding:24px;text-align:center;border-radius:8px;font-size:14px;color:#94a3b8}
+.status-error{background:#1e0a0a;border:1px solid #7f1d1d;color:#fca5a5}
+.status-loading{background:#0f172a}
+.status-empty{background:#0f1a2e}
 </style>
 </head><body>
+  <nav class="site-nav">
+    <a href="./index.html">📦 Market</a>
+    <a href="./signals.html">🔔 訊號</a>
+    <a href="./watchlist.html">⭐ 自選</a>
+    <a href="./history.html">🕐 歷史</a>
+    <a href="./gap_fvg.html">⤴ Gap/FVG</a>
+    <a href="./fundflow.html">💰 資金</a>
+    <a href="./rights_analysis.html">📋 供配股</a>
+    <a href="./us.html">🇺🇸 美股</a>
+    <a href="./guide.html">📖 說明</a>
+  </nav>
+
 <header class="topbar"><div class="topbar-inner">
   <div class="brand">
     <div class="logo"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
@@ -407,15 +427,15 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
   <div class="bt-cards" id="btCards" style="display:none;gap:10px;flex-wrap:wrap;margin-bottom:10px">
     <div id="btIpo" class="ipo-card" style="display:none;flex:1;min-width:260px">
       <div class="ipo-head"><span>🚀上破IPO開</span><span class="ipo-count" id="btIpoCount"></span></div>
-      <table class="ipo-tbl"><thead><tr><th>代碼(名稱)</th><th>價格</th></tr></thead><tbody id="btIpoBody"></tbody></table>
+      <table class="ipo-tbl"><thead><tr><th>代碼(名稱)</th><th>價格</th></tr></thead><tbody id="btIpoBody"><tr class="placeholder-row"><td colspan="20" style="text-align:center;padding:32px;color:#475569">⏳ 載入數據中…</td></tr></tbody></table>
     </div>
     <div id="btPlacement" class="ipo-card" style="display:none;flex:1;min-width:260px">
       <div class="ipo-head"><span>🚀上破配股價</span><span class="ipo-count" id="btPlacementCount"></span></div>
-      <table class="ipo-tbl"><thead><tr><th>代碼(名稱)</th><th>價格</th></tr></thead><tbody id="btPlacementBody"></tbody></table>
+      <table class="ipo-tbl"><thead><tr><th>代碼(名稱)</th><th>價格</th></tr></thead><tbody id="btPlacementBody"><tr class="placeholder-row"><td colspan="20" style="text-align:center;padding:32px;color:#475569">⏳ 載入數據中…</td></tr></tbody></table>
     </div>
     <div id="btRights" class="ipo-card" style="display:none;flex:1;min-width:260px">
       <div class="ipo-head"><span>🚀上破供股價</span><span class="ipo-count" id="btRightsCount"></span></div>
-      <table class="ipo-tbl"><thead><tr><th>代碼(名稱)</th><th>價格</th></tr></thead><tbody id="btRightsBody"></tbody></table>
+      <table class="ipo-tbl"><thead><tr><th>代碼(名稱)</th><th>價格</th></tr></thead><tbody id="btRightsBody"><tr class="placeholder-row"><td colspan="20" style="text-align:center;padding:32px;color:#475569">⏳ 載入數據中…</td></tr></tbody></table>
     </div>
   </div>
 
@@ -550,7 +570,7 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
           <th class="sortable th-fcfy" data-sort="fcfy" onclick="sortBy('fcfy',event)"><span>5Y趨勢</span><span class="sort-icon"></span></th>
           <th class="sortable th-link"><span>連結</span></th>
         </tr></thead>
-        <tbody id="mcSmallTbody"></tbody>
+        <tbody id="mcSmallTbody"><tr class="placeholder-row"><td colspan="20" style="text-align:center;padding:32px;color:#475569">⏳ 載入數據中…</td></tr></tbody>
       </table></div>
       <div class="mc-pagination" id="mcPagSmall"></div>
     </div>
@@ -584,7 +604,7 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
           <th class="sortable th-fcfy" data-sort="fcfy" onclick="sortBy('fcfy',event)"><span>5Y趨勢</span><span class="sort-icon"></span></th>
           <th class="sortable th-link"><span>連結</span></th>
         </tr></thead>
-        <tbody id="mcMidTbody"></tbody>
+        <tbody id="mcMidTbody"><tr class="placeholder-row"><td colspan="20" style="text-align:center;padding:32px;color:#475569">⏳ 載入數據中…</td></tr></tbody>
       </table></div>
       <div class="mc-pagination" id="mcPagMid"></div>
     </div>
@@ -618,7 +638,7 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
           <th class="sortable th-fcfy" data-sort="fcfy" onclick="sortBy('fcfy',event)"><span>5Y趨勢</span><span class="sort-icon"></span></th>
           <th class="sortable th-link"><span>連結</span></th>
         </tr></thead>
-        <tbody id="mcLargeTbody"></tbody>
+        <tbody id="mcLargeTbody"><tr class="placeholder-row"><td colspan="20" style="text-align:center;padding:32px;color:#475569">⏳ 載入數據中…</td></tr></tbody>
       </table></div>
       <div class="mc-pagination" id="mcPagLarge"></div>
     </div>
@@ -667,6 +687,22 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
   </main>
 
   <script>
+function showLoading(el,msg){
+  if(!el)return;
+  el.innerHTML='<div class="status-loading">⏳ '+(msg||'載入中…')+'</div>';
+}
+function showError(el,err,retryFn){
+  if(!el)return;
+  const retryBtn = retryFn
+    ? '<button onclick="('+retryFn.toString()+')()" style="margin-top:8px;padding:4px 12px;cursor:pointer">🔄 重試</button>'
+    : '';
+  el.innerHTML='<div class="status-error">❌ 載入失敗：'+String(err)+'<br>'+retryBtn+'</div>';
+}
+function showEmpty(el,msg){
+  if(!el)return;
+  el.innerHTML='<div class="status-empty">'+(msg||'暫無數據')+'</div>';
+}
+
   if('serviceWorker' in navigator){
     navigator.serviceWorker.register('./service-worker.js')
       .then(() => console.log('SW registered'))
@@ -687,6 +723,22 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
 </div>
 
 <script>
+function showLoading(el,msg){
+  if(!el)return;
+  el.innerHTML='<div class="status-loading">⏳ '+(msg||'載入中…')+'</div>';
+}
+function showError(el,err,retryFn){
+  if(!el)return;
+  const retryBtn = retryFn
+    ? '<button onclick="('+retryFn.toString()+')()" style="margin-top:8px;padding:4px 12px;cursor:pointer">🔄 重試</button>'
+    : '';
+  el.innerHTML='<div class="status-error">❌ 載入失敗：'+String(err)+'<br>'+retryBtn+'</div>';
+}
+function showEmpty(el,msg){
+  if(!el)return;
+  el.innerHTML='<div class="status-empty">'+(msg||'暫無數據')+'</div>';
+}
+
 // --- helpers ---
 function esc(s){const d=document.createElement('div');d.appendChild(document.createTextNode(s));return d.innerHTML;}
 
@@ -2127,15 +2179,11 @@ async function loadData(){
     dot.className='dot';
     upd.textContent='更新於 '+data.updated;
   }catch(err){
-    dot.className='dot error';
-    upd.textContent='載入失敗';
-    var errHtml='<tr><td colspan="20" style="color:#ef4444;text-align:center;padding:20px">載入失敗：'+esc(err.message)+'<br><small>請稍後重試</small></td></tr>';
-    var smallTb=document.getElementById('mcSmallTbody');
-    var midTb=document.getElementById('mcMidTbody');
-    var largeTb=document.getElementById('mcLargeTbody');
-    if(smallTb)smallTb.innerHTML=errHtml;
-    if(midTb)midTb.innerHTML=errHtml;
-    if(largeTb)largeTb.innerHTML=errHtml;
+    showError(document.getElementById('mcSmallTbody'), err.message, loadData);
+    const dot=document.getElementById('statusDot');
+    if(dot)dot.className='dot error';
+    const upd=document.getElementById('updatedAt');
+    if(upd)upd.textContent='載入失敗 '+new Date().toLocaleTimeString('zh-HK');
   }
 }
 loadData();
@@ -2150,4 +2198,11 @@ document.addEventListener('click',function(e){var p=document.getElementById('col
 // Auto-refresh every 10 minutes
 setTimeout(()=>{if(document.querySelector('.drawer-open'))return;sessionStorage.setItem('hkdataScroll',String(window.scrollY));location.reload();},600000);
 </script>
+
+document.querySelectorAll('.site-nav a').forEach(a => {
+  if(location.pathname.endsWith(a.getAttribute('href').replace('./',''))) {
+    a.classList.add('active');
+  }
+});
+
 </body></html>

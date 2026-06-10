@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="zh-HK"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=0.3,minimum-scale=0.2,maximum-scale=5,user-scalable=yes">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=0.5,maximum-scale=5,user-scalable=yes">
 <title>自選代號</title>
 <style>
 :root{--bg:#f5f7fa;--surface:#fff;--surface-soft:#f8fafc;--text:#0f172a;--text-soft:#334155;--mute:#64748b;--mute-2:#94a3b8;--line:#e2e8f0;--line-soft:#eef1f6;--primary:#0284c7;--primary-soft:#e0f2fe;--primary-border:#bae6fd;--up:#15803d;--up-soft:#dcfce7;--up-border:#86efac;--down:#b91c1c;--down-soft:#fee2e2;--down-border:#fca5a5;--amber:#b45309;--amber-soft:#fef3c7;--amber-border:#fcd34d;--radius:10px;--shadow:0 1px 2px rgba(15,23,42,.04)}
@@ -59,8 +59,28 @@ tbody tr:hover{background:var(--surface-soft)}
   :root{--bg:#0f172a;--surface:#1e293b;--surface-soft:#162032;--text:#f1f5f9;--text-soft:#cbd5e1;--mute:#64748b;--mute-2:#475569;--line:#334155;--line-soft:#1e293b;--primary:#38bdf8;--primary-soft:#0c2d44;--primary-border:#0369a1;--up:#4ade80;--up-soft:#052e16;--up-border:#166534;--down:#f87171;--down-soft:#2d0a0a;--down-border:#991b1b;--amber:#fbbf24;--amber-soft:#1c0f00;--amber-border:#92400e}
   .topbar{background:rgba(15,23,42,.92)}
 }
+.site-nav{display:flex;flex-wrap:wrap;gap:6px 12px;padding:8px 12px;background:#0f172a;border-bottom:1px solid #1e293b;font-size:13px}
+.site-nav a{color:#94a3b8;text-decoration:none;white-space:nowrap}
+.site-nav a:hover{color:#e2e8f0}
+.site-nav a.active{color:#38bdf8;font-weight:600}
+.status-loading,.status-error,.status-empty{padding:24px;text-align:center;border-radius:8px;font-size:14px;color:#94a3b8}
+.status-error{background:#1e0a0a;border:1px solid #7f1d1d;color:#fca5a5}
+.status-loading{background:#0f172a}
+.status-empty{background:#0f1a2e}
 </style>
 </head><body>
+  <nav class="site-nav">
+    <a href="./index.html">📦 Market</a>
+    <a href="./signals.html">🔔 訊號</a>
+    <a href="./watchlist.html">⭐ 自選</a>
+    <a href="./history.html">🕐 歷史</a>
+    <a href="./gap_fvg.html">⤴ Gap/FVG</a>
+    <a href="./fundflow.html">💰 資金</a>
+    <a href="./rights_analysis.html">📋 供配股</a>
+    <a href="./us.html">🇺🇸 美股</a>
+    <a href="./guide.html">📖 說明</a>
+  </nav>
+
 
 <header class="topbar"><div class="topbar-inner">
   <div class="brand">
@@ -103,6 +123,8 @@ tbody tr:hover{background:var(--surface-soft)}
       <input id="wq" class="input search-in" type="search" placeholder="搜尋代號 / 名稱…" autocomplete="off">
       <button class="btn-ghost" onclick="clearAll()">全部清除</button>
       <button class="btn-ghost" onclick="exportJSON()">匯出</button>
+      <button id="importBtn" class="btn-ghost" onclick="document.getElementById("importFile").click()">📂 匯入</button>
+      <input type="file" id="importFile" accept=".json,.csv" style="display:none" onchange="handleImport(event)">
     </div>
     <div style="overflow-x:auto;-webkit-overflow-scrolling:touch">
     <table>
@@ -115,15 +137,34 @@ tbody tr:hover{background:var(--surface-soft)}
         <th>連結</th>
         <th></th>
       </tr></thead>
-      <tbody id="wlist"></tbody>
+      <tbody id="wlist"><tr class="placeholder-row"><td colspan="20" style="text-align:center;padding:32px;color:#475569">⏳ 載入數據中…</td></tr></tbody>
     </table>
     </div>
   </div>
 
-  <div class="foot">儲存於本機瀏覽器 (localStorage) · 清除瀏覽器數據會刪除記錄 · 港股訊號雲</div>
+  <div class="wl-notice">
+  ⚠️ <strong>數據儲存於本機瀏覽器</strong>：清除瀏覽器緩存或換設備會永久刪除所有自選記錄。<br>
+  建議定期使用匯出按鈕備份，換設備時使用「匯入」還原。
+</div>
 </main>
 
 <script>
+function showLoading(el,msg){
+  if(!el)return;
+  el.innerHTML='<div class="status-loading">⏳ '+(msg||'載入中…')+'</div>';
+}
+function showError(el,err,retryFn){
+  if(!el)return;
+  const retryBtn = retryFn
+    ? '<button onclick="('+retryFn.toString()+')()" style="margin-top:8px;padding:4px 12px;cursor:pointer">🔄 重試</button>'
+    : '';
+  el.innerHTML='<div class="status-error">❌ 載入失敗：'+String(err)+'<br>'+retryBtn+'</div>';
+}
+function showEmpty(el,msg){
+  if(!el)return;
+  el.innerHTML='<div class="status-empty">'+(msg||'暫無數據')+'</div>';
+}
+
 const KEY = 'hk_watchlist_v1';
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);}
 function load(){try{return JSON.parse(localStorage.getItem(KEY)||'[]');}catch{return[];}}
@@ -203,6 +244,39 @@ function clearAll(){
   persist([]);render();
 }
 
+function handleImport(evt){
+  const file = evt.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try{
+      let imported;
+      if(file.name.endsWith('.json')){
+        imported = JSON.parse(e.target.result);
+      }else{
+        const lines = e.target.result.trim().split('
+').slice(1);
+        imported = lines.filter(l=>l.trim()).map(l=>{
+          const [code,name,signal,date,note] = l.split(',').map(x=>(x||'').trim().replace(/^"|"$/g,''));
+          return {code,name,signal,date,note};
+        });
+      }
+      if(!Array.isArray(imported)||!imported.length) throw new Error('格式錯誤');
+      const existing = JSON.parse(localStorage.getItem('hk_watchlist_v1')||'[]');
+      const existCodes = new Set(existing.map(x=>x.code));
+      const newItems = imported.filter(x=>x.code&&!existCodes.has(x.code));
+      const merged = [...existing, ...newItems];
+      localStorage.setItem('hk_watchlist_v1', JSON.stringify(merged));
+      alert('✅ 匯入成功：新增 '+newItems.length+' 隻，重複略過 '+(imported.length-newItems.length)+' 隻');
+      location.reload();
+    }catch(err){
+      alert('❌ 匯入失敗：'+err.message);
+    }
+  };
+  reader.readAsText(file);
+  evt.target.value = '';
+}
+
 function exportJSON(){
   const blob=new Blob([JSON.stringify(load(),null,2)],{type:'application/json'});
   const a=document.createElement('a');
@@ -243,4 +317,11 @@ window.addEventListener('storage',e=>{if(e.key===KEY)render();});
 
 render();
 </script>
+
+document.querySelectorAll('.site-nav a').forEach(a => {
+  if(location.pathname.endsWith(a.getAttribute('href').replace('./',''))) {
+    a.classList.add('active');
+  }
+});
+
 </body></html>
