@@ -28,6 +28,39 @@
     "pattern": "frontrun"
   },
   {
+    "code": "01334",
+    "name": "RUICHANG INTL",
+    "types": [
+      "股東增持"
+    ],
+    "title": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING BY CONTROLLING SHAREHOLDER…",
+    "date": "2026-06-09",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0609/2026060900003.pdf",
+    "type": "increase",
+    "typeLabel": "股東增持",
+    "direction": "up",
+    "signal_count": 4,
+    "pre_count": 3,
+    "post_count": 1,
+    "pre_types": [
+      "向上FVG",
+      "年開突破",
+      "披露易公告 - 股東增持"
+    ],
+    "post_types": [
+      "上破POC 12M"
+    ],
+    "signal_types_summary": [
+      "上破POC 12M",
+      "向上FVG",
+      "年開突破",
+      "披露易公告 - 股東增持"
+    ],
+    "first_pre_days": 1,
+    "first_post_days": 0,
+    "pattern": "frontrun"
+  },
+  {
     "code": "01378",
     "name": "CHINAHONGQIAO",
     "types": [
@@ -111,34 +144,6 @@
     ],
     "first_pre_days": 12,
     "first_post_days": 6,
-    "pattern": "frontrun"
-  },
-  {
-    "code": "01334",
-    "name": "RUICHANG INTL",
-    "types": [
-      "股東增持"
-    ],
-    "title": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING BY CONTROLLING SHAREHOLDER…",
-    "date": "2026-06-09",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0609/2026060900003.pdf",
-    "type": "increase",
-    "typeLabel": "股東增持",
-    "direction": "up",
-    "signal_count": 2,
-    "pre_count": 2,
-    "post_count": 0,
-    "pre_types": [
-      "年開突破",
-      "披露易公告 - 股東增持"
-    ],
-    "post_types": [],
-    "signal_types_summary": [
-      "年開突破",
-      "披露易公告 - 股東增持"
-    ],
-    "first_pre_days": 1,
-    "first_post_days": null,
     "pattern": "frontrun"
   },
   {

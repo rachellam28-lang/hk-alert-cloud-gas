@@ -1,7 +1,15 @@
 {
-  "updated": "2026-06-09 22:39 UTC",
-  "count": 12,
+  "updated": "2026-06-10 04:22 UTC",
+  "count": 13,
   "watchlist": [
+    {
+      "code": "01952",
+      "name": "EVEREST MED",
+      "types": [
+        "股東增持"
+      ],
+      "ann_date": "2026-06-10"
+    },
     {
       "code": "01334",
       "name": "RUICHANG INTL",
