@@ -197,6 +197,9 @@ def build_ccass_json():
                 price_data[code] = {}
             for k in ["lp", "mc", "chg", "yo", "py", "py_pct", "yo_pct", "vr", "vol", "hi52", "lo52", "p52", "avg_vol", "beta", "pe"]:
                 if k in fp and fp[k] is not None:
+                    # FIX 2: Cap anomalous PE values (>500) at null to prevent sorting/filter pollution
+                    if k == "pe" and fp[k] > 500:
+                        continue
                     price_data[code][k] = fp[k]
     fcf_data = load_fcf()
     signals = load_signals()
@@ -237,6 +240,19 @@ def build_ccass_json():
             except: pass
         
         enriched += 1
+    
+    # FIX 3: Detect suspended/dead stocks — if hi52==lo52 AND vol==0, mark as suspended
+    suspended_count = 0
+    for code, s in stocks.items():
+        if not s.get("suspended"):
+            hi = s.get("hi52")
+            lo = s.get("lo52")
+            vol = s.get("vol")
+            if (hi is not None and lo is not None and hi == lo) and (vol is not None and vol == 0):
+                s["suspended"] = True
+                suspended_count += 1
+    if suspended_count:
+        logger.info("Marked %d stocks as suspended (hi52==lo52, vol==0)", suspended_count)
     
     logger.info("Enriched: %d/%d stocks", enriched, len(stocks))
     

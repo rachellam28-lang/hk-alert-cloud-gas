@@ -2136,7 +2136,10 @@ async function loadData(){
                   var p=typeof a.payload==='string'?JSON.parse(a.payload):(a.payload||{});
                   var code=String(p.code||a.code||'').padStart(5,'0');
                   if(!stockByCode.has(code))return;
-                  var sig=p.signal||{};
+                  // Normalize both schemas: Schema A (FVG/POC) = a.signal object; Schema B (cloud_scanner) = a.signal is raw string
+                  var sig=typeof a.signal==='string'
+                    ? {type:a.signal,date:(a.created_at||'').slice(0,10)}
+                    :(p.signal||a.signal||{});
                   var existing=techSignalMap.get(code)||[];
                   existing.push({label:sig.type||'',date:sig.date||(a.created_at||'').slice(0,10),gap_pct:sig.gap_pct,fvg_pct:sig.fvg_pct,breakout_pct:sig.breakout_pct,poc:sig.poc});
                   techSignalMap.set(code,existing);
