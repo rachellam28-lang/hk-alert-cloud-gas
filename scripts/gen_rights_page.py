@@ -58,7 +58,17 @@ def compute_jump(code, ann_date_str):
     if not fwd:
         return None, 'waiting'
     best = max(pxs[d] / base - 1 for d in fwd)
+    best_px = max(pxs[d] for d in fwd)
     pct = round(best * 100, 1)
+    
+    # Price floor: sub-$0.05 stocks need ≥3 tick move (not just % noise)
+    if best >= 0.08 and base < 0.05:
+        abs_move = best_px - base
+        min_tick = 0.001 if base < 0.25 else 0.005  # HKEX tick rules
+        if abs_move < min_tick * 3:
+            # <3 ticks = noise, not a real jump. Downgrade to no_jump if window passed.
+            return (pct, 'no_jump') if len(fwd) >= 5 else (pct, 'waiting')
+    
     if best >= 0.08:
         return pct, 'jumped'
     return (pct, 'no_jump') if len(fwd) >= 5 else (pct, 'waiting')
