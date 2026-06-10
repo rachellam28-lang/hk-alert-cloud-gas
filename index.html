@@ -2201,11 +2201,11 @@ document.addEventListener('click',function(e){var p=document.getElementById('col
 // Auto-refresh every 10 minutes
 setTimeout(()=>{if(document.querySelector('.drawer-open'))return;sessionStorage.setItem('hkdataScroll',String(window.scrollY));location.reload();},600000);
 </script>
-
+<script>
 document.querySelectorAll('.site-nav a').forEach(a => {
   if(location.pathname.endsWith(a.getAttribute('href').replace('./',''))) {
     a.classList.add('active');
   }
 });
-
+</script>
 </body></html>

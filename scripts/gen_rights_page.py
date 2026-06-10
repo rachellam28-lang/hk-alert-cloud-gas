@@ -318,7 +318,7 @@ tr:hover td {{ background: #161b22; }}
   <a href="guide.html">📖 說明書</a>
 </div>
 
-<div class="summary">
+<div class="summary" id="rightsSummary">
   <div class="card buy"><div class="label">🟢 跟!</div><div class="value">{g_count}</div></div>
   <div class="card wait"><div class="label">🟡 等</div><div class="value">{y_count}</div></div>
   <div class="card avoid"><div class="label">🔴 避</div><div class="value">{r_count}</div></div>
@@ -375,6 +375,38 @@ function fmtAmt(n) {{
   return n ? String(n) : '-';
 }}
 
+const AGENT_KEYWORDS = ['Guotai','KGI','Haitong','CLSA','UBS','Citi',
+  'Goldman','Morgan','Macquarie','Futu','Tiger','CMBI','CCB','BOC',
+  'Huatai','Essence','Ping An','CITIC','Shenwan','Hongyuan','Deutsche',
+  'Nomura','DBS','OCBC','Soochow','Guosen','國泰','海通','中銀','建銀','華泰','平安',
+  '中信','申萬','宏源','興證','招銀','光大'];
+
+function extractAgentFromName(text) {{
+  if (!text) return null;
+  for (const kw of AGENT_KEYWORDS) {{
+    if (text.toLowerCase().includes(kw.toLowerCase())) return kw;
+  }}
+  return null;
+}}
+
+function updateRightsSummary(rows) {{
+  let follow = 0, wait = 0, avoid = 0;
+  rows.forEach(r => {{
+    const sig = ((r.trade||{{}}).signal || '').toString();
+    if (sig.includes('跟')) follow++;
+    else if (sig.includes('避') || sig.includes('💀')) avoid++;
+    else wait++;
+  }});
+  const el = document.getElementById('rightsSummary');
+  if (el) {{
+    el.innerHTML =
+      '<span class=\"tag green\">🟢 跟 ' + follow + '</span>' +
+      '<span class=\"tag yellow\">🟡 等 ' + wait + '</span>' +
+      '<span class=\"tag red\">🔴 避 ' + avoid + '</span>' +
+      '<span class=\"tag gray\">全部 ' + rows.length + '</span>';
+  }}
+}}
+
 function render(rows) {{
   document.getElementById('tableBody').innerHTML = rows.map(d => {{
     let t = d.trade || {{}};
@@ -413,7 +445,7 @@ function render(rows) {{
       <td>${{d.pct_num > 0 ? d.pct_num.toFixed(1)+'%' : '-'}}</td>
       <td><span class="conviction">${{stars}}</span></td>
       <td><span class="signal ${{t.sig_class||''}}">${{t.signal||'➖'}}</span></td>
-      <td>${{d.placing_agent || d.manual_vendor || '-'}}</td>
+      <td>${{d.placing_agent || d.manual_vendor || extractAgentFromName(d.name) || '<span style=\"color:#475569\">—</span>'}}</td>
       <td>${{d.manual_finished_date || (d.manual_note || '-')}}</td>
       <td style="color:${{(ret||0) >= 0 ? '#3fb950' : '#f85149'}};font-weight:${{Math.abs(ret||0) > 20 ? 'bold' : 'normal'}}">${{ret != null ? (ret >= 0 ? '+' : '') + ret.toFixed(1) + '%' : '-'}}</td>
       <td>
@@ -422,6 +454,7 @@ function render(rows) {{
       </td>
     </tr>`;
   }}).join('');
+  updateRightsSummary(rows);
 }}
 
 let searchTerm = '';
