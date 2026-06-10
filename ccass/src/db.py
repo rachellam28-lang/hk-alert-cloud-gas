@@ -8,7 +8,7 @@ from datetime import datetime
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).parent.parent
-DB_PATH = PROJECT_ROOT / "holdings.db"
+DB_PATH = PROJECT_ROOT / "ccass.db"
 SCHEMA_PATH = PROJECT_ROOT / "db" / "schema.sql"
 BACKUP_DIR = PROJECT_ROOT / "backups"
 

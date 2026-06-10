@@ -61,6 +61,35 @@
     "pattern": "frontrun"
   },
   {
+    "code": "01952",
+    "name": "EVEREST MED",
+    "types": [
+      "股東增持"
+    ],
+    "title": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING BY SUBSTANTIAL SHAREHOLDER…",
+    "date": "2026-06-10",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0610/2026061000037.pdf",
+    "type": "increase",
+    "typeLabel": "股東增持",
+    "direction": "up",
+    "signal_count": 3,
+    "pre_count": 2,
+    "post_count": 1,
+    "pre_types": [
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "披露易公告 - 股東增持"
+    ],
+    "signal_types_summary": [
+      "向上跳空缺口",
+      "披露易公告 - 股東增持"
+    ],
+    "first_pre_days": 5,
+    "first_post_days": 0,
+    "pattern": "frontrun"
+  },
+  {
     "code": "01378",
     "name": "CHINAHONGQIAO",
     "types": [
@@ -397,6 +426,65 @@
     "pattern": "dual"
   },
   {
+    "code": "02728",
+    "name": "JINTAI ENERGY H",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：FOURTH SUPPLEMENTAL DEED AMENDMENTS TO THE TERMS AND CONDITIONS OF THE CON…",
+    "date": "2026-05-19",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0519/2026051901513.pdf",
+    "typeLabel": "配股",
+    "type": "placement",
+    "direction": "up",
+    "offer_price": 0.03,
+    "discount_pct": -25.0,
+    "price_level": "high",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "年開突破"
+    ],
+    "signal_types_summary": [
+      "年開突破"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 22,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01676",
+    "name": "GAODI HOLDINGS",
+    "types": [
+      "配股",
+      "供股"
+    ],
+    "title": "(1) PROPOSED CHANGE IN BOARD LOT SIZE; AND (2) PROPOSED RIGHTS ISSUE OF RIGHTS SHARES ON THE BASIS OF ONE (1) RIGHTS SHARE FOR EVERY TWO (2) EXISTING SHARES AT HK$0.19 PER RIGHTS SHARE ON A NON-UNDERWRITTEN BASIS",
+    "date": "2026-06-05",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060502024.pdf",
+    "type": "rights",
+    "typeLabel": "供股 / 配股",
+    "direction": "up",
+    "offer_price": 0.19,
+    "discount_pct": 12.4,
+    "price_level": "neutral",
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "3年POC"
+    ],
+    "signal_types_summary": [
+      "3年POC"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 3,
+    "pattern": "catalyst"
+  },
+  {
     "code": "01327",
     "name": "LUXXU GROUP",
     "types": [
@@ -428,36 +516,6 @@
     "pattern": "catalyst"
   },
   {
-    "code": "01676",
-    "name": "GAODI HOLDINGS",
-    "types": [
-      "配股",
-      "供股"
-    ],
-    "title": "(1) PROPOSED CHANGE IN BOARD LOT SIZE; AND (2) PROPOSED RIGHTS ISSUE OF RIGHTS SHARES ON THE BASIS OF ONE (1) RIGHTS SHARE FOR EVERY TWO (2) EXISTING SHARES AT HK$0.19 PER RIGHTS SHARE ON A NON-UNDERWRITTEN BASIS",
-    "date": "2026-06-05",
-    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060502024.pdf",
-    "type": "rights",
-    "typeLabel": "供股 / 配股",
-    "direction": "up",
-    "offer_price": 0.19,
-    "discount_pct": 12.4,
-    "price_level": "neutral",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "3年POC"
-    ],
-    "signal_types_summary": [
-      "3年POC"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 3,
-    "pattern": "catalyst"
-  },
-  {
     "code": "06166",
     "name": "CIG",
     "types": [
@@ -484,6 +542,35 @@
     ],
     "first_pre_days": null,
     "first_post_days": 4,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "00648",
+    "name": "SOFTMEDX",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：INSIDE INFORMATION COMPLETION OF PLACING OF EXISTING SHARES BY CONTROLLING…",
+    "date": "2026-05-15",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0515/2026051501367.pdf",
+    "typeLabel": "配股",
+    "type": "placement",
+    "direction": "up",
+    "offer_price": 0.0,
+    "discount_pct": null,
+    "price_level": "neutral",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "年開突破"
+    ],
+    "signal_types_summary": [
+      "年開突破"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 26,
     "pattern": "catalyst"
   },
   {
@@ -585,20 +672,80 @@
     "type": "placement",
     "typeLabel": "配股",
     "direction": "up",
-    "signal_count": 2,
+    "signal_count": 3,
     "pre_count": 0,
-    "post_count": 2,
+    "post_count": 3,
     "pre_types": [],
     "post_types": [
+      "半年POC + 12個月POC + 3年POC",
       "半年POC + 3年POC",
       "年開突破"
     ],
     "signal_types_summary": [
+      "半年POC + 12個月POC + 3年POC",
       "半年POC + 3年POC",
       "年開突破"
     ],
     "first_pre_days": null,
     "first_post_days": 2,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01952",
+    "name": "EVEREST MED",
+    "types": [
+      "股東增持"
+    ],
+    "title": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING BY SUBSTANTIAL SHAREHOLDER…",
+    "date": "2026-06-04",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0604/2026060400115.pdf",
+    "type": "increase",
+    "typeLabel": "股東增持",
+    "direction": "up",
+    "signal_count": 3,
+    "pre_count": 1,
+    "post_count": 2,
+    "pre_types": [
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "向上跳空缺口",
+      "披露易公告 - 股東增持"
+    ],
+    "signal_types_summary": [
+      "向上跳空缺口",
+      "披露易公告 - 股東增持"
+    ],
+    "first_pre_days": 1,
+    "first_post_days": 1,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01952",
+    "name": "EVEREST MED",
+    "types": [
+      "股東增持"
+    ],
+    "title": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING BY SUBSTANTIAL SHAREHOLDER…",
+    "date": "2026-05-22",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0522/2026052200015.pdf",
+    "typeLabel": "股東增持",
+    "type": "increase",
+    "direction": "up",
+    "signal_count": 3,
+    "pre_count": 0,
+    "post_count": 3,
+    "pre_types": [],
+    "post_types": [
+      "向上跳空缺口",
+      "披露易公告 - 股東增持"
+    ],
+    "signal_types_summary": [
+      "向上跳空缺口",
+      "披露易公告 - 股東增持"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 12,
     "pattern": "catalyst"
   },
   {
@@ -627,6 +774,33 @@
     ],
     "first_pre_days": null,
     "first_post_days": 4,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01676",
+    "name": "GAODI HOLDINGS",
+    "types": [
+      "供股",
+      "配股"
+    ],
+    "title": "公司公告：(1) PROPOSED CHANGE IN BOARD LOT SIZE; AND (2) PROPOSED RIGHTS ISSUE OF RI…",
+    "date": "2026-06-05",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060502024.pdf",
+    "type": "rights",
+    "typeLabel": "供股 / 配股",
+    "direction": "up",
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "3年POC"
+    ],
+    "signal_types_summary": [
+      "3年POC"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 3,
     "pattern": "catalyst"
   },
   {
@@ -893,6 +1067,32 @@
     "pattern": "catalyst"
   },
   {
+    "code": "01765",
+    "name": "XJ INTL HLDGS",
+    "types": [
+      "配股"
+    ],
+    "title": "補充公告 關連交易S 有關 PROPOSED 認購新股",
+    "date": "2026-06-05",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060502514.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "半年POC"
+    ],
+    "signal_types_summary": [
+      "半年POC"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 5,
+    "pattern": "catalyst"
+  },
+  {
     "code": "01333",
     "name": "BRETON",
     "types": [
@@ -913,33 +1113,6 @@
     ],
     "signal_types_summary": [
       "披露易公告 - 股東增持"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 3,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "01676",
-    "name": "GAODI HOLDINGS",
-    "types": [
-      "供股",
-      "配股"
-    ],
-    "title": "公司公告：(1) PROPOSED CHANGE IN BOARD LOT SIZE; AND (2) PROPOSED RIGHTS ISSUE OF RI…",
-    "date": "2026-06-05",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060502024.pdf",
-    "type": "rights",
-    "typeLabel": "供股 / 配股",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "3年POC"
-    ],
-    "signal_types_summary": [
-      "3年POC"
     ],
     "first_pre_days": null,
     "first_post_days": 3,
@@ -1099,6 +1272,33 @@
     ],
     "first_pre_days": null,
     "first_post_days": 5,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "08370",
+    "name": "智昇集團",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-06-03",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 7.6,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "半年POC + 12個月POC"
+    ],
+    "signal_types_summary": [
+      "半年POC + 12個月POC"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 7,
     "pattern": "catalyst"
   },
   {

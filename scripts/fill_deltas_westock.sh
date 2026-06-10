@@ -2,7 +2,7 @@
 # Batch fill d60/d120/yo using westock-data kline
 # Usage: bash fill_deltas_westock.sh
 
-CCASS_JSON="C:/Users/Administrator/Desktop/automatic/ccass-debug/ccass.json"
+CCASS_JSON="C:/Users/Administrator/Desktop/automatic/ccass-debug/holdings.json"
 TEMP_DIR="C:/Users/Administrator/AppData/Local/Temp/westock_fill"
 BATCH_SIZE=50
 DELAY=2

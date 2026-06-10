@@ -13,7 +13,7 @@ mkdir -p "$TEMP_DIR"
 echo "=== Step 1: Get top $TOP_N stocks by market cap ==="
 python -c "
 import json
-with open(r'$PROJECT_DIR/ccass.json') as f:
+with open(r'$PROJECT_DIR/holdings.json') as f:
     data = json.load(f)
 
 # Sort by market cap (mc) descending, take top N

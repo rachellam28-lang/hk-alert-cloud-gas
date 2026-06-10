@@ -12,7 +12,7 @@ mkdir -p "$TEMP_DIR"
 echo "=== Step 1: Get all stock codes ==="
 python -c "
 import json
-with open(r'$PROJECT_DIR/ccass.json') as f:
+with open(r'$PROJECT_DIR/holdings.json') as f:
     data = json.load(f)
 codes = [s['c'] for s in data['stocks']]
 with open(r'$TEMP_DIR/codes.txt', 'w') as f:
@@ -58,7 +58,7 @@ import json, re, os, glob
 project_dir = r'$PROJECT_DIR'
 temp_dir = r'$TEMP_DIR'
 
-with open(os.path.join(project_dir, 'ccass.json')) as f:
+with open(os.path.join(project_dir, 'holdings.json')) as f:
     data = json.load(f)
 stock_map = {s['c']: s for s in data['stocks']}
 
@@ -162,10 +162,10 @@ for code, years in annual_data.items():
     updated += 1
 
 # Save
-tmp = os.path.join(project_dir, 'ccass.json') + '.tmp'
+tmp = os.path.join(project_dir, 'holdings.json') + '.tmp'
 with open(tmp, 'w') as f:
     json.dump(data, f, ensure_ascii=False)
-os.replace(tmp, os.path.join(project_dir, 'ccass.json'))
+os.replace(tmp, os.path.join(project_dir, 'holdings.json'))
 
 print(f'Updated {updated} stocks with 5-year FCF trend')
 

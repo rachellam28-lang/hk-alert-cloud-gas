@@ -35,17 +35,23 @@ print(f"Loaded raw/ prices for {len(PRICE_HIST)} stocks")
 
 def compute_jump(code, ann_date_str):
     """(jump_pct, status): jumped|waiting|no_jump|no_data"""
+    from datetime import datetime
     pxs = PRICE_HIST.get(str(code).zfill(5))
     if not pxs:
         return None, 'no_data'
     dates = sorted(pxs.keys())
-    # Find base day: first trading day >= announcement date
     base_day = None
     for d in dates:
         if d >= ann_date_str:
             base_day = d
             break
     if base_day is None:
+        return None, 'no_data'
+    # GUARD: base_day must be within 4 calendar days of announcement
+    # Otherwise raw/ doesn't cover this placement (old → random window)
+    gap = (datetime.strptime(base_day, '%Y-%m-%d') -
+           datetime.strptime(ann_date_str, '%Y-%m-%d')).days
+    if gap > 2:
         return None, 'no_data'
     base = pxs[base_day]
     fwd = [d for d in dates if d > base_day][:5]
@@ -89,12 +95,12 @@ def trade_signal(p):
         verdict_text = '冇跳升'
         thesis.append(f'✗ 5日最高+{jump_pct}% (<8%門檻)=避')
     else:
-        # no_data: old placements before raw/ history
-        conviction = 1
-        signal = '🟡 等'
+        # no_data: old placements before raw/ history — honest gap
+        conviction = 0
+        signal = '—'
         sig_class = 'trade-wait'
         verdict_text = '數據不足'
-        thesis.append('📊 歷史記錄 (早過價格史)')
+        thesis.append('📜 歷史記錄 (raw/未覆蓋)')
     
     # Risk factors (still valid regardless of jump)
     if pct > 50:

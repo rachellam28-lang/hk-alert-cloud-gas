@@ -1,17 +1,17 @@
 {
-  "dopamine": 34.7,
-  "regime": 48.1,
+  "dopamine": 34.2,
+  "regime": 47.6,
   "momentum": 0.0,
-  "volatility": 58.8,
-  "hsi": 24565.9,
-  "ma20": 25541.45,
-  "ma50": 25710.62,
-  "updated": "2026-06-09T23:45:16.173408",
+  "volatility": 56.9,
+  "hsi": 24276.98,
+  "ma20": 25527.01,
+  "ma50": 25704.84,
+  "updated": "2026-06-10T13:45:29.755595",
   "label": "❄️ 謹慎",
   "thresholds": {
     "poc_min_pct": 3.3,
-    "gap_min_pct": 1.37,
-    "fvg_min_pct": 1.37,
+    "gap_min_pct": 1.38,
+    "fvg_min_pct": 1.38,
     "alert_cap": 47
   }
 }

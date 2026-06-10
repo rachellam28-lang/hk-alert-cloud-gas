@@ -1,10 +1,90 @@
 {
   "ok": true,
-  "total": 468,
+  "total": 472,
   "days": [
     {
       "date": "2026-06-10",
       "alerts": [
+        {
+          "source": "cloud_scanner",
+          "category": "year_open",
+          "code": "09609",
+          "symbol": "9609.HK",
+          "name": "海偉股份",
+          "signal": "年開突破",
+          "timeframe": "1D",
+          "price": 8.65,
+          "message": "2026年首日開：9.2（2026-01-02）；突破幅度：3.15%",
+          "strategy": "Year Open Breakout",
+          "chart_url": "",
+          "source_url": "",
+          "tags": [
+            "年開突破"
+          ],
+          "priority": 1,
+          "raw": "{\"Code\": \"09609\", \"Name\": \"海偉股份\", \"Year\": 2026, \"Year Open Date\": \"2026-01-02\", \"Year Open\": 9.2, \"Break Field\": \"high\", \"Break Value\": 9.49, \"Today High\": 9.49, \"Today Close\": 8.65, \"Break %\": 3.15, \"Data Date\": \"2026-06-10\"}",
+          "created_at": "2026-06-10T12:22:17"
+        },
+        {
+          "source": "cloud_scanner",
+          "category": "year_open",
+          "code": "08526",
+          "symbol": "8526.HK",
+          "name": "榮豐集團亞洲",
+          "signal": "年開突破",
+          "timeframe": "1D",
+          "price": 0.23,
+          "message": "2026年首日開：0.163（2026-01-02）；突破幅度：53.37%",
+          "strategy": "Year Open Breakout",
+          "chart_url": "",
+          "source_url": "",
+          "tags": [
+            "年開突破"
+          ],
+          "priority": 1,
+          "raw": "{\"Code\": \"08526\", \"Name\": \"榮豐集團亞洲\", \"Year\": 2026, \"Year Open Date\": \"2026-01-02\", \"Year Open\": 0.163, \"Break Field\": \"high\", \"Break Value\": 0.25, \"Today High\": 0.25, \"Today Close\": 0.23, \"Break %\": 53.37, \"Data Date\": \"2026-06-10\"}",
+          "created_at": "2026-06-10T12:22:13"
+        },
+        {
+          "source": "cloud_scanner",
+          "category": "year_open",
+          "code": "08161",
+          "symbol": "8161.HK",
+          "name": "醫匯集團",
+          "signal": "年開突破",
+          "timeframe": "1D",
+          "price": 0.67,
+          "message": "2026年首日開：0.6（2026-01-02）；突破幅度：11.67%",
+          "strategy": "Year Open Breakout",
+          "chart_url": "",
+          "source_url": "",
+          "tags": [
+            "年開突破"
+          ],
+          "priority": 1,
+          "raw": "{\"Code\": \"08161\", \"Name\": \"醫匯集團\", \"Year\": 2026, \"Year Open Date\": \"2026-01-02\", \"Year Open\": 0.6, \"Break Field\": \"high\", \"Break Value\": 0.67, \"Today High\": 0.67, \"Today Close\": 0.67, \"Break %\": 11.67, \"Data Date\": \"2026-06-10\"}",
+          "created_at": "2026-06-10T12:22:07"
+        },
+        {
+          "source": "cloud_scanner",
+          "category": "year_open",
+          "code": "08098",
+          "symbol": "8098.HK",
+          "name": "昌利控股",
+          "signal": "年開突破",
+          "timeframe": "1D",
+          "price": 0.05,
+          "message": "2026年首日開：0.047（2026-01-02）；突破幅度：8.51%",
+          "strategy": "Year Open Breakout",
+          "chart_url": "",
+          "source_url": "",
+          "tags": [
+            "年開突破"
+          ],
+          "priority": 1,
+          "raw": "{\"Code\": \"08098\", \"Name\": \"昌利控股\", \"Year\": 2026, \"Year Open Date\": \"2026-01-02\", \"Year Open\": 0.047, \"Break Field\": \"high\", \"Break Value\": 0.051, \"Today High\": 0.051, \"Today Close\": 0.05, \"Break %\": 8.51, \"Data Date\": \"2026-06-09\"}",
+          "created_at": "2026-06-10T12:22:03"
+        },
         {
           "source": "cloud_scanner",
           "category": "year_open",
