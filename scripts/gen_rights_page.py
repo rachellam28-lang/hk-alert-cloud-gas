@@ -368,7 +368,7 @@ function render(rows) {{
       <td>${{d.pct_num > 0 ? d.pct_num.toFixed(1)+'%' : '-'}}</td>
       <td><span class="conviction">${{stars}}</span></td>
       <td><span class="signal ${{t.sig_class||''}}">${{t.signal||'➖'}}</span></td>
-      <td>${{d.manual_vendor || '-'}}</td>
+      <td>${{d.placing_agent || d.manual_vendor || '-'}}</td>
       <td>${{d.manual_finished_date || (d.manual_note || '-')}}</td>
       <td style="color:${{(ret||0) >= 0 ? '#3fb950' : '#f85149'}};font-weight:${{Math.abs(ret||0) > 20 ? 'bold' : 'normal'}}">${{ret != null ? (ret >= 0 ? '+' : '') + ret.toFixed(1) + '%' : '-'}}</td>
       <td>
