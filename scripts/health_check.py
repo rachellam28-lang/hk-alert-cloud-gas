@@ -1,0 +1,214 @@
+# -*- coding: utf-8 -*-
+"""
+health_check.py — 每日系統健康檢查
+====================================
+每日自動 check + push Telegram。
+
+Checks:
+  1. 數據新鮮度 — 各核心 file 嘅 mtime
+  2. 公告量異常 — vs 過去 20 日中位數
+  3. DeepSeek balance — < $5 就警告
+  4. 結構完整性 — corpTypes 全 false / events 零增長
+
+用法:
+    python scripts/health_check.py
+    python scripts/health_check.py --telegram
+"""
+
+import argparse
+import json
+import os
+import statistics
+import sys
+import urllib.request
+from datetime import datetime, timedelta
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from schema import parse_announcement_date
+
+BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+WATCH_FILES = {
+    "holdings.json":        {"path": os.path.join(BASE, "holdings.json"),              "max_age_h": 26},
+    "signals.json":         {"path": os.path.join(BASE, "data", "signals.json"),       "max_age_h": 26},
+    "alerts.json":          {"path": os.path.join(BASE, "data", "alerts.json"),        "max_age_h": 26},
+    "announcements.json":   {"path": os.path.join(BASE, "data", "announcements.json"), "max_age_h": 26},
+    "events.json":          {"path": os.path.join(BASE, "events.json"),                "max_age_h": 26},
+    "price_snapshot":       {"path": os.path.join(BASE, "raw"),                        "max_age_h": 26},
+}
+
+DEEPSEEK_BALANCE_WARN = 5.0
+ANN_DEVIATION_WARN = 0.7
+HEALTH_OUT = os.path.join(BASE, "health.json")
+
+
+def load_json(path, default=None):
+    if not os.path.exists(path):
+        return default
+    try:
+        with open(path, encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return default
+
+
+def check_freshness():
+    rows = []
+    now = datetime.now()
+    for name, cfg in WATCH_FILES.items():
+        if not os.path.exists(cfg["path"]):
+            rows.append({"name": name, "status": "⚪", "detail": "file missing"})
+            continue
+        age_h = (now - datetime.fromtimestamp(os.path.getmtime(cfg["path"]))).total_seconds() / 3600
+        status = "🔴" if age_h > cfg["max_age_h"] else "🟢"
+        rows.append({"name": name, "status": status, "detail": f"{age_h:.1f}h old"})
+    return rows
+
+
+def check_announcement_volume():
+    anns = load_json(WATCH_FILES["announcements.json"]["path"], default=[])
+    if not anns:
+        return {"status": "⚪", "detail": "announcements.json empty"}
+
+    today = datetime.now().strftime("%Y-%m-%d")
+    by_date = {}
+    for a in anns:
+        d = parse_announcement_date(a.get("date") or a.get("release_time"))
+        if d:
+            by_date[d] = by_date.get(d, 0) + 1
+
+    today_n = by_date.get(today, 0)
+    past = sorted(by_date.items(), reverse=True)
+    past_counts = [n for d, n in past if d != today][:20]
+
+    if len(past_counts) < 5:
+        return {"status": "⚪", "detail": f"today={today_n}, baseline too small ({len(past_counts)}d)"}
+
+    med = statistics.median(past_counts)
+    if med == 0:
+        return {"status": "⚪", "detail": "baseline median=0"}
+
+    dev = abs(today_n - med) / med
+    is_weekday = datetime.now().weekday() < 5
+    if today_n == 0 and is_weekday:
+        return {"status": "⚠️", "detail": f"today 0 vs median {med:.0f} — check scraper"}
+    elif dev > ANN_DEVIATION_WARN:
+        return {"status": "⚠️", "detail": f"today {today_n} vs median {med:.0f} ({dev*100:.0f}% dev)"}
+    return {"status": "🟢", "detail": f"today {today_n} vs median {med:.0f}"}
+
+
+def check_deepseek_balance():
+    key = os.environ.get("DEEPSEEK_API_KEY", "")
+    if not key:
+        return {"status": "⚪", "detail": "DEEPSEEK_API_KEY not set"}
+    try:
+        req = urllib.request.Request(
+            "https://api.deepseek.com/user/balance",
+            headers={"Authorization": f"Bearer {key}"},
+        )
+        with urllib.request.urlopen(req, timeout=15) as r:
+            data = json.loads(r.read().decode())
+        bal = float(data["balance_infos"][0]["total_balance"])
+        cur = data["balance_infos"][0].get("currency", "USD")
+        if bal < DEEPSEEK_BALANCE_WARN:
+            return {"status": "⚠️", "detail": f"${bal:.2f} {cur} — top up needed"}
+        return {"status": "🟢", "detail": f"${bal:.2f} {cur}"}
+    except Exception as exc:
+        return {"status": "🔴", "detail": f"balance API error: {exc}"}
+
+
+def check_integrity():
+    rows = []
+
+    sig = load_json(WATCH_FILES["signals.json"]["path"], default={})
+    groups = sig.get("groups", [])
+    if groups:
+        with_corp = sum(
+            1 for g in groups
+            if any(g.get("corpTypes", {}).get(t) for t in ("placement", "rights", "increase"))
+        )
+        if with_corp == 0:
+            rows.append({"name": "corpTypes", "status": "🔴",
+                         "detail": f"{len(groups)} stocks, 0 corp — pipeline broken!"})
+        else:
+            rows.append({"name": "corpTypes", "status": "🟢",
+                         "detail": f"{with_corp}/{len(groups)} stocks have corp actions"})
+
+    events = load_json(WATCH_FILES["events.json"]["path"], default=[])
+    if isinstance(events, dict):
+        events = events.get("events", [])
+    if events:
+        today = datetime.now().strftime("%Y-%m-%d")
+        yesterday = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
+        recent = sum(1 for e in events if e.get("alert_date") in (today, yesterday))
+        filled = sum(1 for e in events if e.get("outcome", {}).get("fwd_20d") is not None)
+        rows.append({"name": "events", "status": "🟢" if recent or filled else "⚠️",
+                     "detail": f"{len(events)} total, {recent} recent, {filled} filled"})
+    return rows
+
+
+def format_report(freshness, ann_vol, balance, integrity):
+    lines = [f"🏥 System Health — {datetime.now().strftime('%Y-%m-%d %H:%M')} HKT", ""]
+    lines.append("📁 Freshness")
+    for r in freshness:
+        lines.append(f"  {r['status']} {r['name']}: {r['detail']}")
+    lines.append(f"📰 Announcements: {ann_vol['status']} {ann_vol['detail']}")
+    lines.append(f"💰 DeepSeek: {balance['status']} {balance['detail']}")
+    if integrity:
+        lines.append("🔧 Integrity")
+        for r in integrity:
+            lines.append(f"  {r['status']} {r['name']}: {r['detail']}")
+    bad = [x for x in freshness + integrity if x["status"] == "🔴"]
+    warn = [x for x in [ann_vol, balance] if x["status"] in ("⚠️", "🔴")]
+    lines.append("")
+    lines.append("❌ ISSUES" if bad else ("⚠️ WARNINGS" if warn else "✅ ALL OK"))
+    return "\n".join(lines)
+
+
+def push_telegram(text):
+    token = os.environ.get("TELEGRAM_BOT_TOKEN", "")
+    chat = os.environ.get("TELEGRAM_CHAT_ID", "")
+    if not (token and chat):
+        print("⚪ no Telegram config, skip push")
+        return
+    data = json.dumps({"chat_id": chat, "text": text}).encode()
+    req = urllib.request.Request(
+        f"https://api.telegram.org/bot{token}/sendMessage",
+        data=data, headers={"Content-Type": "application/json"},
+    )
+    try:
+        urllib.request.urlopen(req, timeout=15)
+        print("✅ pushed to Telegram")
+    except Exception as exc:
+        print(f"🔴 Telegram push failed: {exc}")
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--telegram", action="store_true")
+    args = ap.parse_args()
+
+    freshness = check_freshness()
+    ann_vol = check_announcement_volume()
+    balance = check_deepseek_balance()
+    integrity = check_integrity()
+
+    report_text = format_report(freshness, ann_vol, balance, integrity)
+    print(report_text)
+
+    with open(HEALTH_OUT, "w", encoding="utf-8") as f:
+        json.dump({
+            "at": datetime.now().isoformat(),
+            "freshness": freshness, "ann_volume": ann_vol,
+            "deepseek": balance, "integrity": integrity,
+        }, f, ensure_ascii=False, indent=1)
+
+    if args.telegram:
+        push_telegram(report_text)
+
+    has_red = any(r["status"] == "🔴" for r in freshness + integrity) or balance["status"] == "🔴"
+    return 1 if has_red else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
