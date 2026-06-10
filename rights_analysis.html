@@ -74,7 +74,7 @@ tr:hover td { background: #161b22; }
   <div class="card buy"><div class="label">🟢 跟!</div><div class="value">150</div></div>
   <div class="card wait"><div class="label">🟡 等</div><div class="value">187</div></div>
   <div class="card avoid"><div class="label">🔴 避</div><div class="value">65</div></div>
-  <div class="card"><div class="label">💡 核心理念</div><div class="value" style="font-size:11px;color:#58a6ff">折讓窄=信心強=跟!</div></div>
+  <div class="card"><div class="label">💡 核心理念</div><div class="value" style="font-size:11px;color:#58a6ff">配售後跳升確認先跟!</div></div>
 </div>
 
 <div class="tabs">
@@ -101,12 +101,13 @@ tr:hover td { background: #161b22; }
   <th onclick="sortTable(4)">配售價</th>
   <th onclick="sortTable(5)">市價</th>
   <th onclick="sortTable(6)">折讓</th>
-  <th onclick="sortTable(7)">攤薄</th>
-  <th onclick="sortTable(8)">信心度</th>
-  <th onclick="sortTable(9)">訊號</th>
-  <th onclick="sortTable(10)">配售代理</th>
-  <th onclick="sortTable(11)">完成</th>
-  <th onclick="sortTable(12)">事後%</th>
+  <th onclick="sortTable(7)">跳升</th>
+  <th onclick="sortTable(8)">攤薄</th>
+  <th onclick="sortTable(9)">信心度</th>
+  <th onclick="sortTable(10)">訊號</th>
+  <th onclick="sortTable(11)">配售代理</th>
+  <th onclick="sortTable(12)">完成</th>
+  <th onclick="sortTable(13)">事後%</th>
   <th>邏輯</th>
 </tr>
 </thead>
@@ -115,7 +116,7 @@ tr:hover td { background: #161b22; }
 </div>
 
 <div class="footer">
-  💡 折讓愈窄=接貨者愈有信心=愈值得跟 | 08120 案例: 折讓12%配售後一個月爆升318% | 數據: etnet + westock-data
+  📊 402條記錄統計: 62%輸錢, median -11.8%, 6.5%爆升>100% | 8120 pattern: 配售後5日內跳升8%→60日16%機會翻倍 | 數據: HKEX公告 + 自家價格史
 </div>
 
 <script>
@@ -194,6 +195,7 @@ function render(rows) {
       <td>${d.price}</td>
       <td>${mp}</td>
       <td style="${discStyle}">${disc}</td>
+      <td>${d.jump_8d_pct != null ? (d.jump_8d_pct >= 0 ? '<span style="color:#3fb950;font-weight:bold">+' + d.jump_8d_pct.toFixed(1) + '% ⬆</span>' : '<span style="color:#8b949e">' + d.jump_8d_pct.toFixed(1) + '%</span>') : '<span style="color:#484f58">—</span>'}</td>
       <td>${d.pct_num > 0 ? d.pct_num.toFixed(1)+'%' : '-'}</td>
       <td><span class="conviction">${stars}</span></td>
       <td><span class="signal ${t.sig_class||''}">${t.signal||'➖'}</span></td>
