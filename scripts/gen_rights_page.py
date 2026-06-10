@@ -1,168 +1,111 @@
 #!/usr/bin/env python3
-"""Generate rights_analysis.html — v3: 跟聰明錢邏輯"""
-import json, re
+"""Generate rights_analysis.html — v4: 8120 pattern. Rating = jump status, not discount."""
+import json, re, os, glob
 
-with open('data/placements_enriched.json', 'r', encoding='utf-8') as f:
+DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data')
+RAW_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'raw')
+
+with open(os.path.join(DATA_DIR, 'placements_enriched.json'), 'r', encoding='utf-8') as f:
     data = json.load(f)
 
-# Pre-compute per-stock stats for pattern detection
-stock_events = {}
-for p in data:
-    code = p['code']
-    if code not in stock_events:
-        stock_events[code] = []
-    stock_events[code].append(p)
+# ====== Load raw/ price history ======
+def load_raw_prices():
+    hist = {}
+    raw_path = RAW_DIR
+    if not os.path.isdir(raw_path):
+        return hist
+    for fp in sorted(glob.glob(os.path.join(raw_path, 'prices_*.json'))):
+        m = re.search(r'prices_(\d{4})(\d{2})(\d{2})', os.path.basename(fp))
+        if not m:
+            continue
+        d = f"{m.group(1)}-{m.group(2)}-{m.group(3)}"
+        try:
+            day = json.load(open(fp))
+            for code, val in day.items():
+                code5 = str(code).zfill(5)
+                px = val.get('close', val) if isinstance(val, dict) else val
+                if px and float(px) > 0.0001:
+                    hist.setdefault(code5, {})[d] = float(px)
+        except Exception:
+            continue
+    return hist
 
-# ====== V3: 跟聰明錢 + 財技模式 ======
-def trade_signal(p, all_data=data, stocks=stock_events):
-    """
-    核心理念: 有人用真金白銀接貨 → 跟佢
-    折讓愈窄 = 信心愈強
-    08120 教訓: 窄折讓配售 = 爆升前兆
-    """
-    cat = p['category']
-    purpose = p['purpose']
+PRICE_HIST = load_raw_prices()
+print(f"Loaded raw/ prices for {len(PRICE_HIST)} stocks")
+
+def compute_jump(code, ann_date_str):
+    """(jump_pct, status): jumped|waiting|no_jump|no_data"""
+    pxs = PRICE_HIST.get(str(code).zfill(5))
+    if not pxs:
+        return None, 'no_data'
+    dates = sorted(pxs.keys())
+    # Find base day: first trading day >= announcement date
+    base_day = None
+    for d in dates:
+        if d >= ann_date_str:
+            base_day = d
+            break
+    if base_day is None:
+        return None, 'no_data'
+    base = pxs[base_day]
+    fwd = [d for d in dates if d > base_day][:5]
+    if not fwd:
+        return None, 'waiting'
+    best = max(pxs[d] / base - 1 for d in fwd)
+    pct = round(best * 100, 1)
+    if best >= 0.08:
+        return pct, 'jumped'
+    return (pct, 'no_jump') if len(fwd) >= 5 else (pct, 'waiting')
+
+# ====== V4: 8120 pattern rating ======
+def trade_signal(p):
+    """Rating = jump status. Discount is NOT used for rating (no evidence)."""
+    jump_pct, jump_status = compute_jump(p.get('code', ''), p.get('date_parsed', ''))
+    
     pct = p['pct_num']
-    price_num = p['price_num']
-    market_price = p.get('market_price', 0)
-    method = p['method']
-    
-    discount = None
-    if market_price > 0 and price_num > 0:
-        discount = (price_num / market_price - 1) * 100
-    
-    conviction = 0  # 0-3 stars
     thesis = []
     risks = []
     
-    # ===== STEP 1: 折讓 → 信心度 =====
-    if discount is not None:
-        if discount <= -50:
-            conviction = -1
-            thesis.append(f'超大折讓{abs(discount):.0f}%=可能財困')
-            risks.append('折讓太大=散貨格')
-        elif discount <= -25:
-            conviction = 0
-            thesis.append(f'大折讓{abs(discount):.0f}%')
-        elif discount <= -15:
-            conviction = 1
-            thesis.append(f'折讓{abs(discount):.0f}%')
-        elif discount <= -5:
-            conviction = 2
-            thesis.append(f'窄折讓{abs(discount):.0f}%=高信心接貨')
-        elif discount <= 0:
-            conviction = 3
-            thesis.append(f'極窄折讓{abs(discount):.0f}%❗=超高信心')
-        elif discount <= 10:
-            conviction = 0
-            thesis.append(f'輕微溢價+{discount:.0f}%')
-        else:
-            conviction = -2
-            thesis.append(f'大幅溢價+{discount:.0f}%=假大空')
-            risks.append('溢價發行=冇人會接')
-    else:
-        conviction = 1  # default neutral
-    
-    # ===== STEP 2: 交易類別加成 =====
-    if cat == '先舊後新':
-        conviction += 1
-        thesis.insert(0, '🔄 先舊後新套利格局')
-    elif cat == '供股':
-        if discount and discount < -30:
-            conviction += 2
-            thesis.insert(0, '📋 大折讓供股=大股東供完要炒上')
-            risks.append('供股價極低=散戶被迫供')
-        elif '非包銷' in method:
-            conviction -= 1
-            risks.append('冇包銷商=供股隨時失敗')
-        else:
-            conviction += 1
-            thesis.insert(0, '📋 供股=大股東會托價')
-    elif cat == '配售':
-        # 配售 is neutral — conviction already captured by discount
-        if '償還債務' in purpose:
-            thesis.append('💰 清債=拆彈')
-        if '業務發展' in purpose:
-            thesis.append('📈 資金擴張')
-    elif cat == '代價發行':
-        if '收購' in method:
-            conviction += 1
-            thesis.insert(0, '🤝 發股收購')
-        else:
-            conviction -= 1
-            thesis.insert(0, '📄 代價發行')
-    
-    # ===== STEP 3: 風險扣分 =====
-    if pct > 50:
-        conviction -= 2
-        risks.append(f'攤薄>{pct}%=貨源太多')
-    elif pct > 30:
-        conviction -= 1
-        risks.append(f'攤薄{pct}%')
-    
-    if '貸款資本化' in method:
-        conviction -= 2
-        risks.append('💀 債轉股=債主準備走佬')
-    
-    if '換股' in p['type'] or '債券' in p['type']:
-        thesis.append('🔮 CB=日後換股有托價誘因')
-        risks.append('CB換股時有新貨源')
-    
-    # ===== 財技模式檢測 =====
-    code = p['code']
-    events = stocks.get(code, [])
-    event_count = len(events)
-    
-    # Pattern A: 多輪發股洗名冊 (≥3 events in dataset = active issuer)
-    if event_count >= 3:
-        conviction += 1
-        thesis.append(f'🔄 模式A: {event_count}輪發股洗名冊')
-        # Check time span
-        dates = sorted([e['date_parsed'] for e in events])
-        if len(dates) >= 2:
-            from datetime import datetime
-            d1 = datetime.strptime(dates[0], '%Y-%m-%d')
-            d2 = datetime.strptime(dates[-1], '%Y-%m-%d')
-            months = (d2.year - d1.year) * 12 + (d2.month - d1.month)
-            if months <= 6:
-                conviction += 1
-                thesis.append(f'{months}個月內密集發股=準備炒上')
-    
-    # Pattern B: 供股+配股組合拳 (same stock has both types)
-    has_rights = any(e['category'] == '供股' for e in events)
-    has_placing = any(e['category'] == '配售' for e in events)
-    if has_rights and has_placing and event_count >= 2:
-        # Check if 供股 has deep discount
-        rights_events = [e for e in events if e['category'] == '供股']
-        for re_ev in rights_events:
-            rd = re_ev.get('discount_pct')
-            if rd is not None and rd < -20:
-                conviction += 2
-                thesis.append('🎯 模式B: 大折讓供股+配股組合拳')
-                risks.append('組合拳=莊家佈局信號')
-                break
-    
-    # ===== FINAL VERDICT =====
-    if conviction >= 3:
+    # Jump-based rating
+    if jump_status == 'jumped':
+        conviction = 3
         signal = '🟢 跟!'
         sig_class = 'trade-buy'
-        verdict_text = '強烈跟進'
-    elif conviction >= 2:
-        signal = '🟢 跟'
-        sig_class = 'trade-buy'
-        verdict_text = '可以跟'
-    elif conviction >= 0:
+        verdict_text = '跳升確認'
+        thesis.append(f'🚀 T+5內跳升+{jump_pct}%→跟!')
+    elif jump_status == 'waiting':
+        conviction = 1
         signal = '🟡 等'
         sig_class = 'trade-wait'
-        verdict_text = '睇定D'
-    elif conviction >= -1:
+        verdict_text = '等跳升'
+        if jump_pct is not None:
+            thesis.append(f'⏳ T+5窗口: best +{jump_pct}% (<8%)')
+        else:
+            thesis.append('⏳ 等緊T+5數據')
+    elif jump_status == 'no_jump':
+        conviction = -1
         signal = '🔴 避'
         sig_class = 'trade-avoid'
-        verdict_text = '避開'
+        verdict_text = '冇跳升'
+        thesis.append(f'✗ 5日最高+{jump_pct}% (<8%門檻)=避')
     else:
-        signal = '💀 走'
-        sig_class = 'trade-avoid'
-        verdict_text = '快走'
+        # no_data: old placements before raw/ history
+        conviction = 1
+        signal = '🟡 等'
+        sig_class = 'trade-wait'
+        verdict_text = '數據不足'
+        thesis.append('📊 歷史記錄 (早過價格史)')
+    
+    # Risk factors (still valid regardless of jump)
+    if pct > 50:
+        conviction -= 1
+        risks.append(f'攤薄{pct}%')
+    elif pct > 30:
+        risks.append(f'攤薄{pct}%')
+    
+    if '貸款資本化' in p.get('method', ''):
+        conviction -= 1
+        risks.append('債轉股')
     
     return {
         'conviction': conviction,
@@ -171,21 +114,24 @@ def trade_signal(p, all_data=data, stocks=stock_events):
         'verdict_text': verdict_text,
         'thesis': ' | '.join(thesis),
         'risks': risks[:3],
+        'jump_8d_pct': jump_pct,
+        'jump_status': jump_status,
     }
 
 for p in data:
     p['trade'] = trade_signal(p)
+    p['jump_8d_pct'] = p['trade'].get('jump_8d_pct')
 
 signals = {}
 for p in data:
     s = p['trade']['signal']
     signals[s] = signals.get(s, 0) + 1
 
-print("V3 Signals:")
+print("V4 Signals:")
 for s, c in sorted(signals.items()):
     print(f"  {s}: {c}")
 
-# ====== Step: Resolve missing agents from text/method ======
+# ====== Agent resolve (unchanged) ======
 KNOWN_AGENTS = [
     'Guotai Junan', 'KGI Asia', 'Haitong', 'CLSA', 'UBS', 'Citigroup',
     'Goldman Sachs', 'Morgan Stanley', 'Macquarie', 'Futu', 'Tiger Brokers',
@@ -203,7 +149,6 @@ def parse_agent_from_text(text):
     for agent in KNOWN_AGENTS:
         if agent.lower() in text.lower():
             return agent
-    # regex: "XXX Limited as placing agent"
     m = re.search(
         r'([A-Z][A-Za-z\s&]+(?:Limited|Ltd|Inc|Securities|Capital|International|Asia|Hong\s*Kong))'
         r'\s+(?:as\s+)?(?:placing\s+agent|sole\s+agent|bookrunner|underwriter)',
@@ -232,26 +177,25 @@ print(f"Agent resolve: filled {filled} previously null agents")
 
 # ====== GENERATE HTML ======
 data_json = json.dumps(data, ensure_ascii=False)
-total_amount = sum(d['amount_num'] for d in data)
 
 cats = {}
 for d in data:
     c = d['category']
-    if c not in cats: cats[c] = {'count': 0, 'amount': 0}
+    if c not in cats: cats[c] = {'count': 0}
     cats[c]['count'] += 1
-    cats[c]['amount'] += d['amount_num']
 
-# Count signals for display
 g_count = signals.get('🟢 跟!', 0) + signals.get('🟢 跟', 0)
 y_count = signals.get('🟡 等', 0)
 r_count = signals.get('🔴 避', 0) + signals.get('💀 走', 0)
+rights_count = cats.get('供股', {}).get('count', 0)
+topup_count = cats.get('先舊後新', {}).get('count', 0)
 
 html = f'''<!DOCTYPE html>
 <html lang="zh-HK">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=0.3, maximum-scale=1.0, user-scalable=yes">
-<title>供配股跟蹤器 — 跟聰明錢</title>
+<title>供配股跟蹤器 — 8120 Pattern</title>
 <style>
 * {{ margin: 0; padding: 0; box-sizing: border-box; }}
 body {{ background: #0d1117; color: #c9d1d9; font-family: -apple-system, 'Microsoft YaHei', sans-serif; font-size: 12px; }}
@@ -276,7 +220,7 @@ body {{ background: #0d1117; color: #c9d1d9; font-family: -apple-system, 'Micros
 .search-box input {{ background: #161b22; color: #c9d1d9; border: 1px solid #30363d; border-radius: 4px; padding: 5px 10px; font-size: 11px; width: 200px; outline: none; }}
 .search-box input:focus {{ border-color: #58a6ff; }}
 .table-wrap {{ overflow-x: auto; padding: 0 12px; }}
-table {{ width: 100%; border-collapse: collapse; font-size: 11px; min-width: 1150px; }}
+table {{ width: 100%; border-collapse: collapse; font-size: 11px; min-width: 1200px; }}
 th {{ background: #161b22; padding: 6px 8px; text-align: left; border-bottom: 2px solid #30363d; color: #8b949e; font-weight: 600; white-space: nowrap; cursor: pointer; }}
 th:hover {{ color: #58a6ff; }}
 td {{ padding: 4px 8px; border-bottom: 1px solid #21262d; white-space: nowrap; }}
@@ -294,8 +238,10 @@ tr:hover td {{ background: #161b22; }}
 .conviction span {{ font-size: 14px; }}
 .thesis {{ max-width: 280px; overflow: hidden; text-overflow: ellipsis; color: #8b949e; font-size: 10px; white-space: normal; }}
 .risk {{ color: #f85149; font-size: 10px; }}
-.money {{ color: #d2991d; }}
-.footer {{ padding: 12px; text-align: center; color: #484f58; font-size: 10px; border-top: 1px solid #21262d; margin-top: 10px; }}
+.jump-green {{ color: #3fb950; font-weight: bold; }}
+.jump-gray {{ color: #484f58; }}
+.jump-wait {{ color: #d2991d; }}
+.footer {{ padding: 12px; text-align: center; color: #484f58; font-size: 10px; border-top: 1px solid #21262d; margin-top: 10px; line-height: 1.6; }}
 @media (max-width: 720px) {{
   body {{ font-size: 10px; }}
   .summary {{ gap: 6px; padding: 6px; }}
@@ -319,10 +265,10 @@ tr:hover td {{ background: #161b22; }}
 </div>
 
 <div class="summary" id="rightsSummary">
-  <div class="card buy"><div class="label">🟢 跟!</div><div class="value">{g_count}</div></div>
+  <div class="card buy"><div class="label">🟢 跟</div><div class="value">{g_count}</div></div>
   <div class="card wait"><div class="label">🟡 等</div><div class="value">{y_count}</div></div>
   <div class="card avoid"><div class="label">🔴 避</div><div class="value">{r_count}</div></div>
-  <div class="card"><div class="label">💡 核心理念</div><div class="value" style="font-size:11px;color:#58a6ff">折讓窄=信心強=跟!</div></div>
+  <div class="card"><div class="label">💡 核心理念</div><div class="value" style="font-size:10px;color:#58a6ff;line-height:1.5">配售本體 -EV (median -11.8%, 62%輸錢)<br>唯一實證: 配售後5日內收市升穿+8%=跳升確認<br>跳升組 16% 60日內翻倍, 係冇跳組 2.4x</div></div>
 </div>
 
 <div class="tabs">
@@ -330,8 +276,8 @@ tr:hover td {{ background: #161b22; }}
   <div class="tab" onclick="filter('🟢')">🟢 跟<span class="count">{g_count}</span></div>
   <div class="tab" onclick="filter('🟡')">🟡 等<span class="count">{y_count}</span></div>
   <div class="tab" onclick="filter('🔴')">🔴 避<span class="count">{r_count}</span></div>
-  <div class="tab" onclick="filter('供股')">供股<span class="count">{cats.get('供股',{}).get('count',0)}</span></div>
-  <div class="tab" onclick="filter('先舊後新')">先舊後新<span class="count">{cats.get('先舊後新',{}).get('count',0)}</span></div>
+  <div class="tab" onclick="filter('供股')">供股<span class="count">{rights_count}</span></div>
+  <div class="tab" onclick="filter('先舊後新')">先舊後新<span class="count">{topup_count}</span></div>
 </div>
 
 <div class="search-box">
@@ -349,12 +295,11 @@ tr:hover td {{ background: #161b22; }}
   <th onclick="sortTable(4)">配售價</th>
   <th onclick="sortTable(5)">市價</th>
   <th onclick="sortTable(6)">折讓</th>
-  <th onclick="sortTable(7)">攤薄</th>
-  <th onclick="sortTable(8)">信心度</th>
+  <th onclick="sortTable(7)">🚀跳升</th>
+  <th onclick="sortTable(8)">攤薄</th>
   <th onclick="sortTable(9)">訊號</th>
   <th onclick="sortTable(10)">配售代理</th>
-  <th onclick="sortTable(11)">完成</th>
-  <th onclick="sortTable(12)">事後%</th>
+  <th onclick="sortTable(11)">事後%</th>
   <th>邏輯</th>
 </tr>
 </thead>
@@ -363,7 +308,7 @@ tr:hover td {{ background: #161b22; }}
 </div>
 
 <div class="footer">
-  💡 折讓愈窄=接貨者愈有信心=愈值得跟 | 08120 案例: 折讓12%配售後一個月爆升318% | 數據: etnet + westock-data
+  📊 402條配售真實統計: median 事後% -11.8% · 62% 輸錢 · 6.5% 升超過100%<br>跳升確認後: &gt;100% 比率 16%（vs 冇跳升 7%）｜ 數據: 自家 track_outcomes 每日回填<br>⚠️ 08120 (+318%) 係 6.5% 嘅倖存者，唔係常態
 </div>
 
 <script>
@@ -400,10 +345,10 @@ function updateRightsSummary(rows) {{
   const el = document.getElementById('rightsSummary');
   if (el) {{
     el.innerHTML =
-      '<span class=\"tag green\">🟢 跟 ' + follow + '</span>' +
-      '<span class=\"tag yellow\">🟡 等 ' + wait + '</span>' +
-      '<span class=\"tag red\">🔴 避 ' + avoid + '</span>' +
-      '<span class=\"tag gray\">全部 ' + rows.length + '</span>';
+      '<span class="tag green">🟢 跟 ' + follow + '</span>' +
+      '<span class="tag yellow">🟡 等 ' + wait + '</span>' +
+      '<span class="tag red">🔴 避 ' + avoid + '</span>' +
+      '<span class="tag gray">全部 ' + rows.length + '</span>';
   }}
 }}
 
@@ -414,22 +359,21 @@ function render(rows) {{
     let disc = d.discount_pct != null ? (d.discount_pct <= 0 ? d.discount_pct+'%' : '+'+d.discount_pct+'%') : '-';
     let discStyle = '';
     if (d.discount_pct != null) {{
-      if (d.discount_pct <= -15) discStyle = 'color:#3fb950;font-weight:bold';  // tight = green
-      else if (d.discount_pct <= 0) discStyle = 'color:#3fb950';
+      if (d.discount_pct <= -15) discStyle = 'color:#d2991d';
+      else if (d.discount_pct <= 0) discStyle = 'color:#8b949e';
       else discStyle = 'color:#f85149';
     }}
     
-    // Conviction stars
-    let c = t.conviction || 0;
-    let stars = '';
-    if (c >= 3) stars = '⭐⭐⭐';
-    else if (c >= 2) stars = '⭐⭐';
-    else if (c >= 1) stars = '⭐';
-    else if (c >= 0) stars = '—';
-    else if (c >= -1) stars = '⚠';
-    else stars = '💀';
+    // Jump column
+    let jumpHtml = '';
+    let jp = d.jump_8d_pct;
+    let js = t.jump_status || 'no_data';
+    if (js === 'jumped') jumpHtml = '<span class="jump-green">🚀 +' + jp.toFixed(1) + '%</span>';
+    else if (js === 'waiting') jumpHtml = '<span class="jump-wait">⏳ ' + (jp != null ? '+' + jp.toFixed(1) + '%' : '—') + '</span>';
+    else if (js === 'no_jump') jumpHtml = '<span class="jump-gray">✗ +' + (jp != null ? jp.toFixed(1) : '0') + '%</span>';
+    else jumpHtml = '<span class="jump-gray">—</span>';
     
-    // Return: use manual if available, else auto-calculated
+    // Return
     let ret = d.manual_return_pct != null ? d.manual_return_pct : (d.current_return_pct != null ? d.current_return_pct : null);
     
     let risks = (t.risks||[]).map(r => '<div class="risk">'+r+'</div>').join('');
@@ -442,11 +386,10 @@ function render(rows) {{
       <td>${{d.price}}</td>
       <td>${{mp}}</td>
       <td style="${{discStyle}}">${{disc}}</td>
+      <td>${{jumpHtml}}</td>
       <td>${{d.pct_num > 0 ? d.pct_num.toFixed(1)+'%' : '-'}}</td>
-      <td><span class="conviction">${{stars}}</span></td>
       <td><span class="signal ${{t.sig_class||''}}">${{t.signal||'➖'}}</span></td>
-      <td>${{d.placing_agent || d.manual_vendor || extractAgentFromName(d.name) || '<span style=\"color:#475569\">—</span>'}}</td>
-      <td>${{d.manual_finished_date || (d.manual_note || '-')}}</td>
+      <td>${{d.placing_agent || d.manual_vendor || extractAgentFromName(d.name) || '<span style="color:#475569">—</span>'}}</td>
       <td style="color:${{(ret||0) >= 0 ? '#3fb950' : '#f85149'}};font-weight:${{Math.abs(ret||0) > 20 ? 'bold' : 'normal'}}">${{ret != null ? (ret >= 0 ? '+' : '') + ret.toFixed(1) + '%' : '-'}}</td>
       <td>
         <div class="thesis">${{t.thesis||''}}</div>
@@ -488,15 +431,15 @@ function filter(cat) {{
   render(getFilteredRows());
 }}
 
-let sortCol = 8; let sortAsc = false;
+let sortCol = 7; let sortAsc = false;
 function sortTable(col) {{
-  sortAsc = sortCol === col ? !sortAsc : (col === 8 ? false : false);
+  sortAsc = sortCol === col ? !sortAsc : false;
   sortCol = col;
   let rows = getFilteredRows();
-  const keys = ['date_parsed','code','name','category','price_num','market_price','discount_pct','pct_num'];
+  const keys = ['date_parsed','code','name','category','price_num','market_price','discount_pct','jump_8d_pct','pct_num'];
   rows.sort((a,b) => {{
     let va, vb;
-    if (col === 8) {{ va = (a.trade||{{}}).conviction||0; vb = (b.trade||{{}}).conviction||0; }}
+    if (col === 7) {{ va = a.jump_8d_pct != null ? a.jump_8d_pct : (a.trade||{{}}).jump_status==='waiting' ? 999 : -999; vb = b.jump_8d_pct != null ? b.jump_8d_pct : (b.trade||{{}}).jump_status==='waiting' ? 999 : -999; }}
     else if (col === 6) {{ va = a.discount_pct != null ? a.discount_pct : 999; vb = b.discount_pct != null ? b.discount_pct : 999; }}
     else if (col === 5) {{ va = a.market_price||0; vb = b.market_price||0; }}
     else {{ va = a[keys[col]]||''; vb = b[keys[col]]||''; }}
@@ -511,7 +454,6 @@ render(DATA);
 </body>
 </html>'''
 
-with open('rights_analysis.html', 'w', encoding='utf-8') as f:
+with open(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'rights_analysis.html'), 'w', encoding='utf-8') as f:
     f.write(html)
-
-print(f"\nGenerated rights_analysis.html ({len(html)} bytes)")
+print(f"Generated rights_analysis.html ({len(html)} bytes)")
