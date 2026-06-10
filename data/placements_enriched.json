@@ -1487,7 +1487,7 @@
     "latest_price": 15.25,
     "latest_date": "2026-06-09",
     "current_return_pct": -22.7,
-    "placing_agent": "瑞銀、麥格理",
+    "placing_agent": null,
     "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0526/2026052602244.pdf"
   },
   {
@@ -2625,7 +2625,7 @@
     "latest_price": 2.26,
     "latest_date": "2026-06-09",
     "current_return_pct": 310.9,
-    "placing_agent": null,
+    "placing_agent": "一盈證券有限公司",
     "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0430/2026043003064.pdf"
   },
   {
@@ -2737,7 +2737,7 @@
     "latest_price": 28.36,
     "latest_date": "2026-06-09",
     "current_return_pct": -28.4,
-    "placing_agent": "中金公司、華泰國際",
+    "placing_agent": null,
     "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0429/2026042905708.pdf"
   },
   {
@@ -5312,7 +5312,7 @@
     "latest_price": 14.16,
     "latest_date": "2026-06-09",
     "current_return_pct": -26.6,
-    "placing_agent": "中金公司、中信?券"
+    "placing_agent": null
   },
   {
     "date": "06/03/2026",
@@ -5361,7 +5361,7 @@
     "latest_price": 1.74,
     "latest_date": "2026-06-09",
     "current_return_pct": -55.2,
-    "placing_agent": null,
+    "placing_agent": "國泰君安證券 (香港) 有限公司",
     "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0331/2026033104381.pdf"
   },
   {
@@ -5677,7 +5677,7 @@
     "latest_price": 0.3,
     "latest_date": "2026-06-09",
     "current_return_pct": -11.8,
-    "placing_agent": null,
+    "placing_agent": "國泰君安證券 (香港) 有限公司",
     "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0226/2026022600628.pdf"
   },
   {
@@ -8738,7 +8738,7 @@
     "latest_price": 14.16,
     "latest_date": "2026-06-09",
     "current_return_pct": -34.9,
-    "placing_agent": "中金公司、中信?券"
+    "placing_agent": null
   },
   {
     "date": "07/01/2026",
@@ -8828,7 +8828,7 @@
     "latest_price": 2.16,
     "latest_date": "2026-06-09",
     "current_return_pct": -15.0,
-    "placing_agent": null,
+    "placing_agent": "?盈證券有限公司",
     "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0106/2026010601858.pdf"
   },
   {
@@ -9776,7 +9776,7 @@
     "latest_price": 1.55,
     "latest_date": "2026-06-09",
     "current_return_pct": -18.0,
-    "placing_agent": null,
+    "placing_agent": "國泰君安國際",
     "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2025/1229/2025122901353.pdf"
   },
   {
@@ -9851,7 +9851,7 @@
     "latest_price": 0.36,
     "latest_date": "2026-06-09",
     "current_return_pct": -64.0,
-    "placing_agent": null,
+    "placing_agent": "大灣區深港證券有限公司",
     "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2025/1217/2025121701348.pdf"
   },
   {
