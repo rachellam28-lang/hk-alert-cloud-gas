@@ -1,10 +1,178 @@
 {
   "ok": true,
-  "total": 334,
+  "total": 340,
   "days": [
     {
       "date": "2026-06-09",
       "alerts": [
+        {
+          "code": "01334",
+          "name": "RUICHANG INTL",
+          "signal": {
+            "type": "上破POC 12M",
+            "poc": 1.091,
+            "current": 1.13,
+            "breakout_pct": 3.55,
+            "date": "2026-06-09"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01334",
+          "name": "RUICHANG INTL",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 4.76,
+            "gap_low": 1.89,
+            "gap_high": 1.98,
+            "current": 2.22,
+            "date": "2026-05-15"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01334",
+          "name": "RUICHANG INTL",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 5.88,
+            "gap_low": 1.53,
+            "gap_high": 1.62,
+            "current": 1.75,
+            "date": "2026-04-02"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01334",
+          "name": "RUICHANG INTL",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 5.67,
+            "gap_low": 1.41,
+            "gap_high": 1.49,
+            "current": 1.61,
+            "date": "2026-04-01"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01334",
+          "name": "RUICHANG INTL",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 3.73,
+            "gap_low": 1.34,
+            "gap_high": 1.39,
+            "current": 1.39,
+            "date": "2026-03-30"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "06936",
+          "name": "SF HOLDING",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 3.64,
+            "gap_low": 33.589,
+            "gap_high": 34.812,
+            "current": 35.187,
+            "date": "2026-04-01"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01378",
+          "name": "CHINAHONGQIAO",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 1.86,
+            "gap_low": 34.663,
+            "gap_high": 35.307,
+            "current": 35.364,
+            "date": "2026-04-08"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01378",
+          "name": "CHINAHONGQIAO",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 4.93,
+            "gap_low": 30.726,
+            "gap_high": 32.24,
+            "current": 33.035,
+            "date": "2026-03-25"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01378",
+          "name": "CHINAHONGQIAO",
+          "signal": {
+            "type": "向上FVG",
+            "fvg_pct": 1.5,
+            "gap_low": 36.708,
+            "gap_high": 37.257,
+            "current": 37.408,
+            "date": "2026-03-13"
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01378",
+          "name": "CHINAHONGQIAO",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 1.83,
+            "open": 30.631,
+            "prev_high": 30.082,
+            "date": "2026-05-21",
+            "close": 29.23
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01378",
+          "name": "CHINAHONGQIAO",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 1.88,
+            "open": 32.751,
+            "prev_high": 32.145,
+            "date": "2026-05-14",
+            "close": 31.653
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01378",
+          "name": "CHINAHONGQIAO",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 5.15,
+            "open": 34.777,
+            "prev_high": 33.073,
+            "date": "2026-03-30",
+            "close": 33.868
+          },
+          "corp_type": ""
+        },
+        {
+          "code": "01378",
+          "name": "CHINAHONGQIAO",
+          "signal": {
+            "type": "向上跳空缺口",
+            "gap_pct": 2.93,
+            "open": 33.225,
+            "prev_high": 32.278,
+            "date": "2026-03-25",
+            "close": 33.035
+          },
+          "corp_type": ""
+        },
         {
           "source": "cloud_scanner",
           "category": "ipo",
@@ -1903,45 +2071,6 @@
           "name": "CHINAHONGQIAO",
           "signal": {
             "type": "向上FVG",
-            "fvg_pct": 1.86,
-            "gap_low": 34.663,
-            "gap_high": 35.307,
-            "current": 35.364,
-            "date": "2026-04-08"
-          },
-          "corp_type": ""
-        },
-        {
-          "code": "01378",
-          "name": "CHINAHONGQIAO",
-          "signal": {
-            "type": "向上FVG",
-            "fvg_pct": 4.93,
-            "gap_low": 30.726,
-            "gap_high": 32.24,
-            "current": 33.035,
-            "date": "2026-03-25"
-          },
-          "corp_type": ""
-        },
-        {
-          "code": "01378",
-          "name": "CHINAHONGQIAO",
-          "signal": {
-            "type": "向上FVG",
-            "fvg_pct": 1.5,
-            "gap_low": 36.708,
-            "gap_high": 37.257,
-            "current": 37.408,
-            "date": "2026-03-13"
-          },
-          "corp_type": ""
-        },
-        {
-          "code": "01378",
-          "name": "CHINAHONGQIAO",
-          "signal": {
-            "type": "向上FVG",
             "fvg_pct": 2.75,
             "gap_low": 35.761,
             "gap_high": 36.746,
@@ -1955,63 +2084,11 @@
           "name": "CHINAHONGQIAO",
           "signal": {
             "type": "向上跳空缺口",
-            "gap_pct": 1.83,
-            "open": 30.631,
-            "prev_high": 30.082,
-            "date": "2026-05-21",
-            "close": 29.23
-          },
-          "corp_type": ""
-        },
-        {
-          "code": "01378",
-          "name": "CHINAHONGQIAO",
-          "signal": {
-            "type": "向上跳空缺口",
-            "gap_pct": 1.88,
-            "open": 32.751,
-            "prev_high": 32.145,
-            "date": "2026-05-14",
-            "close": 31.653
-          },
-          "corp_type": ""
-        },
-        {
-          "code": "01378",
-          "name": "CHINAHONGQIAO",
-          "signal": {
-            "type": "向上跳空缺口",
             "gap_pct": 1.26,
             "open": 36.575,
             "prev_high": 36.121,
             "date": "2026-04-14",
             "close": 36.954
-          },
-          "corp_type": ""
-        },
-        {
-          "code": "01378",
-          "name": "CHINAHONGQIAO",
-          "signal": {
-            "type": "向上跳空缺口",
-            "gap_pct": 5.15,
-            "open": 34.777,
-            "prev_high": 33.073,
-            "date": "2026-03-30",
-            "close": 33.868
-          },
-          "corp_type": ""
-        },
-        {
-          "code": "01378",
-          "name": "CHINAHONGQIAO",
-          "signal": {
-            "type": "向上跳空缺口",
-            "gap_pct": 2.93,
-            "open": 33.225,
-            "prev_high": 32.278,
-            "date": "2026-03-25",
-            "close": 33.035
           },
           "corp_type": ""
         },
