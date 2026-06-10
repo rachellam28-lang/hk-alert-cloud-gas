@@ -185,6 +185,51 @@ print("V3 Signals:")
 for s, c in sorted(signals.items()):
     print(f"  {s}: {c}")
 
+# ====== Step: Resolve missing agents from text/method ======
+KNOWN_AGENTS = [
+    'Guotai Junan', 'KGI Asia', 'Haitong', 'CLSA', 'UBS', 'Citigroup',
+    'Goldman Sachs', 'Morgan Stanley', 'Macquarie', 'Futu', 'Tiger Brokers',
+    'Zhongtai', 'CMBI', 'CCB International', 'BOC International',
+    'Huatai', 'Essence', 'China Merchants', 'Soochow', 'Guosen',
+    'Orient Securities', 'Ping An', 'Southwest Securities',
+    'CITIC Securities', 'Shenwan Hongyuan', 'Deutsche Bank', 'Nomura',
+    'DBS', 'OCBC', 'CGS International', 'Phillip Securities',
+    '國泰君安', '海通', '中泰', '建銀', '中銀', '華泰', '國信', '平安',
+    '中信証券', '中信里昂', '申萬宏源', '招銀', '光大',
+]
+
+def parse_agent_from_text(text):
+    if not text: return None
+    for agent in KNOWN_AGENTS:
+        if agent.lower() in text.lower():
+            return agent
+    # regex: "XXX Limited as placing agent"
+    m = re.search(
+        r'([A-Z][A-Za-z\s&]+(?:Limited|Ltd|Inc|Securities|Capital|International|Asia|Hong\s*Kong))'
+        r'\s+(?:as\s+)?(?:placing\s+agent|sole\s+agent|bookrunner|underwriter)',
+        text, re.IGNORECASE
+    )
+    if m: return m.group(1).strip()
+    return None
+
+def resolve_agent(row):
+    return (
+        row.get('placing_agent')
+        or row.get('agent')
+        or row.get('vendor')
+        or parse_agent_from_text(row.get('method', ''))
+        or parse_agent_from_text(row.get('purpose', ''))
+    )
+
+filled = 0
+for d in data:
+    if not d.get('placing_agent'):
+        agent = resolve_agent(d)
+        if agent:
+            d['placing_agent'] = agent
+            filled += 1
+print(f"Agent resolve: filled {filled} previously null agents")
+
 # ====== GENERATE HTML ======
 data_json = json.dumps(data, ensure_ascii=False)
 total_amount = sum(d['amount_num'] for d in data)
