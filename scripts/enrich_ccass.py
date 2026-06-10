@@ -179,7 +179,10 @@ def build_ccass_json():
             
             for code in stocks:
                 if code in prev_map and prev_map[code] and stocks[code]["t5"]:
-                    stocks[code]["su"] = round(stocks[code]["t5"] - prev_map[code], 2)
+                    # NOTE: Do NOT overwrite su/sd here. su/sd are set by runner.py
+                    # as consecutive_increase_days / consecutive_decrease_days.
+                    # Previously this was incorrectly overwriting su with t5 delta.
+                    pass
             
             logger.info("Trend computed against %s", prev)
     
