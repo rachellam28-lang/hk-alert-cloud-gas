@@ -1716,7 +1716,7 @@
     "latest_price": 17.68,
     "latest_date": "2026-06-09",
     "current_return_pct": -19.1,
-    "placing_agent": "and Sole Capital",
+    "placing_agent": null,
     "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0519/2026051900827.pdf"
   },
   {
@@ -2712,7 +2712,7 @@
     "latest_price": 0.59,
     "latest_date": "2026-06-09",
     "current_return_pct": 11.3,
-    "placing_agent": "Advent Securities",
+    "placing_agent": "宏智證券 (香港) 有限公司",
     "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/gem/2026/0423/2026042303262.pdf"
   },
   {
@@ -3445,7 +3445,7 @@
     "latest_price": 170.9,
     "latest_date": "2026-06-09",
     "current_return_pct": -40.3,
-    "placing_agent": "CITIC Securities Company",
+    "placing_agent": null,
     "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0413/2026041301448.pdf"
   },
   {
@@ -5312,7 +5312,7 @@
     "latest_price": 14.16,
     "latest_date": "2026-06-09",
     "current_return_pct": -26.6,
-    "placing_agent": "中金公司、?泰??"
+    "placing_agent": "中金公司、中信?券"
   },
   {
     "date": "06/03/2026",
@@ -5407,7 +5407,7 @@
     "latest_price": 1.03,
     "latest_date": "2026-06-09",
     "current_return_pct": 66.1,
-    "placing_agent": "Advent Securities",
+    "placing_agent": null,
     "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/gem/2026/0305/2026030502124.pdf"
   },
   {
@@ -5934,7 +5934,7 @@
     "latest_price": 17.68,
     "latest_date": "2026-06-09",
     "current_return_pct": -1.1,
-    "placing_agent": "and Sole Capital",
+    "placing_agent": "麥格理資本股份有限公司",
     "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0220/2026022000686.pdf"
   },
   {
@@ -5959,7 +5959,7 @@
     "latest_price": 21.5,
     "latest_date": "2026-06-09",
     "current_return_pct": 95.1,
-    "placing_agent": "邁時資產管理有限公司",
+    "placing_agent": "Ever Realm Capital Limited",
     "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0225/2026022500476.pdf"
   },
   {
@@ -6346,7 +6346,7 @@
     "latest_price": 1.0,
     "latest_date": "2026-06-09",
     "current_return_pct": -22.5,
-    "placing_agent": "大聖證券有限公司",
+    "placing_agent": "Monmonkey Group Securities Limited",
     "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0226/2026022600910.pdf"
   },
   {
@@ -6395,7 +6395,7 @@
     "latest_price": 0.39,
     "latest_date": "2026-06-09",
     "current_return_pct": -17.0,
-    "placing_agent": null,
+    "placing_agent": "Independent Shareholders Gram Capital Limited",
     "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/gem/2026/0204/2026020400051.pdf"
   },
   {
@@ -6478,7 +6478,7 @@
     "latest_price": 16.3,
     "latest_date": "2026-06-09",
     "current_return_pct": -3.7,
-    "placing_agent": null,
+    "placing_agent": "Huatai Financial Holdings (Hong Kong) Limited",
     "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0203/2026020300079.pdf"
   },
   {
@@ -6602,7 +6602,7 @@
     "latest_price": 30.54,
     "latest_date": "2026-06-09",
     "current_return_pct": -27.1,
-    "placing_agent": "UBS AG 香港分行",
+    "placing_agent": "Bank of China (Hong Kong) Limited",
     "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0130/2026013000055.pdf"
   },
   {
@@ -6986,7 +6986,7 @@
     "latest_price": 39.12,
     "latest_date": "2026-06-09",
     "current_return_pct": -35.8,
-    "placing_agent": "海通國際證券有限公司",
+    "placing_agent": "Haitong International Securities Company Limited",
     "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0127/2026012700003.pdf"
   },
   {
@@ -7157,7 +7157,7 @@
     "latest_price": 0.7,
     "latest_date": "2026-06-09",
     "current_return_pct": -30.7,
-    "placing_agent": null,
+    "placing_agent": "Yuet Sheung International Securities Limited",
     "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0126/2026012600005.pdf"
   },
   {
@@ -7207,7 +7207,7 @@
     "latest_price": 2.43,
     "latest_date": "2026-06-09",
     "current_return_pct": -58.0,
-    "placing_agent": "國泰君安國際",
+    "placing_agent": "Guotai Junan Securities (Hong Kong) Limited",
     "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0123/2026012300003.pdf"
   },
   {
@@ -7314,7 +7314,7 @@
     "latest_price": 2.3,
     "latest_date": "2026-06-09",
     "current_return_pct": 28.5,
-    "placing_agent": null,
+    "placing_agent": "The Bank has appointed Gram Capital Limited",
     "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0123/2026012301312.pdf"
   },
   {
@@ -7339,7 +7339,7 @@
     "latest_price": 2.3,
     "latest_date": "2026-06-09",
     "current_return_pct": 28.5,
-    "placing_agent": null,
+    "placing_agent": "The Bank has appointed Gram Capital Limited",
     "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0123/2026012301312.pdf"
   },
   {
@@ -7364,7 +7364,7 @@
     "latest_price": 2.19,
     "latest_date": "2026-06-09",
     "current_return_pct": 192.0,
-    "placing_agent": null,
+    "placing_agent": "ICBC International Capital Limited",
     "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0123/2026012301370.pdf"
   },
   {
@@ -7397,7 +7397,7 @@
     "latest_price": 2.38,
     "latest_date": "2026-06-09",
     "current_return_pct": 14.4,
-    "placing_agent": null,
+    "placing_agent": "CLSA Limited",
     "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0122/2026012200083.pdf"
   },
   {
@@ -7629,7 +7629,7 @@
     "latest_price": 16.52,
     "latest_date": "2026-06-09",
     "current_return_pct": -22.2,
-    "placing_agent": null,
+    "placing_agent": "Merrill Lynch (Asia Pacific) Limited",
     "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0120/2026012000033.pdf"
   },
   {
@@ -7959,7 +7959,7 @@
     "latest_price": 0.54,
     "latest_date": "2026-06-09",
     "current_return_pct": -15.6,
-    "placing_agent": null,
+    "placing_agent": "DL Securities (HK) Limited",
     "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0130/2026013001381.pdf"
   },
   {
@@ -8288,7 +8288,7 @@
     "latest_price": 0.51,
     "latest_date": "2026-06-09",
     "current_return_pct": 8.5,
-    "placing_agent": null,
+    "placing_agent": "CAPITAL Diligent Capital Limited",
     "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0114/2026011401240.pdf"
   },
   {
@@ -8388,7 +8388,7 @@
     "latest_price": 0.22,
     "latest_date": "2026-06-09",
     "current_return_pct": 29.4,
-    "placing_agent": null,
+    "placing_agent": "Jun Hui International Finance Limited",
     "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0113/2026011300933.pdf"
   },
   {
@@ -8770,7 +8770,7 @@
     "latest_price": 15.95,
     "latest_date": "2026-06-09",
     "current_return_pct": -16.1,
-    "placing_agent": null,
+    "placing_agent": "GF Securities (Hong Kong) Brokerage Limited",
     "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0107/2026010700059.pdf"
   },
   {
@@ -8803,7 +8803,7 @@
     "latest_price": 15.95,
     "latest_date": "2026-06-09",
     "current_return_pct": -16.1,
-    "placing_agent": null,
+    "placing_agent": "GF Securities (Hong Kong) Brokerage Limited",
     "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0107/2026010700059.pdf"
   },
   {
@@ -8902,7 +8902,7 @@
     "latest_price": 7.93,
     "latest_date": "2026-06-09",
     "current_return_pct": 286.8,
-    "placing_agent": null,
+    "placing_agent": "Aristo Securities Limited",
     "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0126/2026012601098.pdf"
   },
   {
@@ -9008,7 +9008,7 @@
     "latest_price": 0.26,
     "latest_date": "2026-06-09",
     "current_return_pct": -23.5,
-    "placing_agent": null,
+    "placing_agent": "Company Lego Corporate Finance Limited",
     "pdf_url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0102/2026010203006.pdf"
   },
   {
