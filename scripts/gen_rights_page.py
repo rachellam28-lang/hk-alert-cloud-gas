@@ -51,7 +51,7 @@ def compute_jump(code, ann_date_str):
     # Otherwise raw/ doesn't cover this placement (old → random window)
     gap = (datetime.strptime(base_day, '%Y-%m-%d') -
            datetime.strptime(ann_date_str, '%Y-%m-%d')).days
-    if gap > 2:
+    if gap > 1:
         return None, 'no_data'
     base = pxs[base_day]
     fwd = [d for d in dates if d > base_day][:5]
