@@ -1980,7 +1980,7 @@ function renderVrAlert(){
     return '<div class="vr-card" onclick="showDetail(\''+esc(s.c)+'\')">'
       +'<div class="tf-head">'
         +'<div><span class="code">'+esc(s.c)+'</span> <span class="name">'+esc(s.n)+'</span></div>'
-        +'<span class="tf-total" style="color:'+(s.vr>=5?'var(--up)':'var(--amber)')+'">量比 '+s.vr.toFixed(1)+'x</span>'
+        +'<span class="tf-total" style="color:'+(s.vr>=5?'var(--up)':'var(--amber)')+'">量比 '+(s.vr!=null?s.vr.toFixed(1)+'x':'—')+'</span>'
       +'</div>'
       +'<div class="tf-flows">'
         +'<div class="tf-side tf-in"><span class="tf-side-label">📊 成交</span>'
