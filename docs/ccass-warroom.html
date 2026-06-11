@@ -2,8 +2,9 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CCASS 戰情室 · 配股供股啟動雷達</title>
+<title>Market 戰情室 · 配股供股啟動雷達</title>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -177,7 +178,7 @@ footer{padding:8px 20px 16px; font-size:10px; color:var(--dim); letter-spacing:.
 
 <header>
   <div class="logo">
-    <span class="t1">CCASS WAR ROOM</span>
+    <span class="t1">MARKET WAR ROOM</span>
     <span class="t2">配股供股 · 三重突破啟動雷達</span>
   </div>
   <div class="hstat">
@@ -230,7 +231,7 @@ footer{padding:8px 20px 16px; font-size:10px; color:var(--dim); letter-spacing:.
             <div class="scoreval"><span id="sval">0</span> / 100</div>
             <canvas id="radar" width="240" height="200"></canvas>
           </div>
-          <div class="ptitle" style="border-top:1px solid var(--line); margin:8px -14px 10px; padding-left:14px">⬢ CCASS 集中度</div>
+          <div class="ptitle" style="border-top:1px solid var(--line); margin:8px -14px 10px; padding-left:14px">⬢ Market 集中度</div>
           <div id="ccass"></div>
         </div>
       </div>
@@ -410,7 +411,7 @@ function select(i){
   $('sbar').style.width = r.score+'%';
   $('sval').textContent = r.score;
 
-  // CCASS
+  // Market
   $('ccass').innerHTML = s.ccass.top.map(([n,p,d])=>`
     <div class="bro">
       <div class="brohead"><b>${n}</b><span class="d ${d>=0?'up':'dn'} mono">${p.toFixed(1)}% (${d>=0?'+':''}${d.toFixed(1)})</span></div>
@@ -529,7 +530,7 @@ function renderFeed(){
     if(r.sig.poc) items.push(['crit', s.code+' '+s.name, `跳空 +${fmt(g,1)}% 升破長期POC ${fmt(s.levels.ltPOC,s.levels.ltPOC<1?3:2)}`]);
     if(r.sig.ipo && !r.sig.poc) items.push(['warn', s.code+' '+s.name, '升破IPO首日開市價 '+fmt(s.levels.ipoOpen,2)]);
     if(r.sig.yo && r.hits===1) items.push(['warn', s.code+' '+s.name, '升破年開市價 '+fmt(s.levels.yearOpen,2)]);
-    if(s.ccass.trend>=4) items.push(['info', s.code+' '+s.name, `CCASS 5大集中度 30日 +${s.ccass.trend.toFixed(1)}pp — 疑似吸籌`]);
+    if(s.ccass.trend>=4) items.push(['info', s.code+' '+s.name, `Market 5大集中度 30日 +${s.ccass.trend.toFixed(1)}pp — 疑似吸籌`]);
     if(r.dEv>=0 && r.dEv<=3) items.push(['info', s.code+' '+s.name, s.event.type+'完成 T+'+r.dEv+',進入啟動觀察窗口']);
   });
   const now = new Date();
