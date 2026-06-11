@@ -1727,7 +1727,7 @@ function renderMarket(snap){
     chip('DXY', d.value, d.changePct, d.stale, 2),
     chip('VIX', v.value, v.changePct, v.stale, 2, v.eval),
     chip('港股P/E', hp.value, null, hp.stale, 2, hp.eval, hp.avg5y_mid),
-    chip('HSI/M2', hm.value, null, hm.stale, 1, null, null),
+    chip('HSI/M2', hm.value, null, hm.stale, 1, hm.eval, null),
     chip('美股P/E', sp.value, null, sp.stale, 2, sp.eval, sp.avg5y_mid),
     chip('SPX/M2', sm.value, null, sm.stale, 0, sm.eval),
     chip('恐懼貪婪', fg.value, fg.changePct, fg.stale, 0, fg.eval),
