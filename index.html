@@ -1239,8 +1239,8 @@ function renderTable(){
         +'<td class="hide-chg">'+(s.chg!=null?'<span class="num '+deltaClass(s.chg)+'">'+fmtPct(s.chg)+'</span>':'<span class="num delta-null">—</span>')+'</td>'
         +'<td class="hide-yo_pct"><span class="num '+deltaClass(yoPct)+'">'+(aboveYO?'🔺':'')+(yoPct!=null?fmtPct(yoPct):'—')+'</span>'+(s.yo!=null?'<span class="yo-price">'+esc(s.yo<1?s.yo.toFixed(3):s.yo.toFixed(2))+'</span>':'')+'</td>'
         +'<td class="hide-sig cell-pills">'+sigDisplay+'</td>'
-        +'<td><span class="num">'+s.tp.toFixed(2)+'%</span></td>'
-        +'<td class="hide-t5"><span class="num">'+s.t5.toFixed(2)+'%</span></td>'
+        +'<td><span class="num">'+(s.tp!=null?s.tp.toFixed(2)+'%':'—')+'</span></td>'
+        +'<td class="hide-t5"><span class="num">'+(s.t5!=null?s.t5.toFixed(2)+'%':'—')+'</span></td>'
         +'<td class="hide-t10"><span class="num">'+(s.t10!=null?s.t10.toFixed(2)+'%':'—')+'</span></td>'
         +'<td class="hide-score"><span class="num" style="font-weight:700;color:'+scoreColor(calcScore(s))+'">'+calcScore(s)+'</span></td>'
         +'<td class="th-streak">'+streak+'</td>'
@@ -1479,10 +1479,10 @@ async function showDetail(code){
 
   document.getElementById('drawerBody').innerHTML=
     '<div class="drawer-meta">'
-    +'<div class="dmeta"><span class="dmeta-label">Market%</span><span class="dmeta-val">'+s.tp.toFixed(2)+'%</span><span class="dmeta-sub"><span class="conc-badge conc-"+cc(s.tp)+"">● "+cl(s.tp)+"集中</span></span></div>'
+    +'<div class="dmeta"><span class="dmeta-label">Market%</span><span class="dmeta-val">'+(s.tp!=null?s.tp.toFixed(2)+'%':'—')+'</span><span class="dmeta-sub"><span class="conc-badge conc-'+cc(s.tp||0)+'">● '+cl(s.tp||0)+'集中</span></span></div>'
     +'<div class="dmeta"><span class="dmeta-label">市值</span><span class="dmeta-val">'+fmtMC(s.mc)+'</span></div>'
     +'<div class="dmeta"><span class="dmeta-label">現價</span><span class="dmeta-val" style="font-size:16px">'+priceHtml+'</span></div>'
-    +'<div class="dmeta"><span class="dmeta-label">Top5%</span><span class="dmeta-val">'+s.t5.toFixed(2)+'%</span></div>'
+    +'<div class="dmeta"><span class="dmeta-label">Top5%</span><span class="dmeta-val">'+(s.t5!=null?s.t5.toFixed(2)+'%':'—')+'</span></div>'
     +'<div class="dmeta"><span class="dmeta-label">Top10%</span><span class="dmeta-val">'+(s.t10!=null?s.t10.toFixed(2)+'%':'—')+'</span></div>'
     +'<div class="dmeta"><span class="dmeta-label">參與者</span><span class="dmeta-val">'+s.np+'</span></div>'
     +'</div>'
