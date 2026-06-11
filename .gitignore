@@ -41,3 +41,4 @@ CCASS使用說明書.md
 .netlify
 ccass.db*
 ccass.db.backup.*
+holdings/holdings.db
