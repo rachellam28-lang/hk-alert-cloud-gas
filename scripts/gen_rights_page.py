@@ -209,6 +209,7 @@ topup_count = cats.get('先舊後新', {}).get('count', 0)
 html = f'''<!DOCTYPE html>
 <html lang="zh-HK">
 <head>
+<meta name="robots" content="noindex, nofollow">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=0.3, maximum-scale=1.0, user-scalable=yes">
 <title>供配股跟蹤器 — 8120 Pattern</title>
