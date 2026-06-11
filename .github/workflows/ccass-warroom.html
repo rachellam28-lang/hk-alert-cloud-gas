@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CCASS 戰情室 · 配股供股啟動雷達</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#070B14; --panel:#0C1322; --panel2:#101A30; --line:rgba(0,229,255,.14);
+  --cy:#00E5FF; --up:#FF4757; --dn:#00D98B; --amb:#FFB300; --mag:#FF2EC4;
+  --txt:#D8E6F5; --dim:#6B7E99; --s:#FF4757; --a:#FFB300; --b:#00E5FF; --c:#6B7E99;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background:var(--bg); color:var(--txt);
+  font-family:'Noto Sans TC',sans-serif; overflow-x:hidden; min-height:100vh;
+}
+body::before{ /* scanlines */
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:99;
+  background:repeating-linear-gradient(0deg, rgba(0,229,255,.018) 0 1px, transparent 1px 3px);
+}
+body::after{ /* vignette */
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:98;
+  background:radial-gradient(ellipse at 50% 0%, rgba(0,229,255,.05), transparent 55%);
+}
+.mono{font-family:'JetBrains Mono',monospace}
+.hud{font-family:'Rajdhani',sans-serif; letter-spacing:.08em}
+
+/* ── HEADER ───────────────────────── */
+header{
+  display:flex; align-items:center; gap:16px; padding:14px 20px;
+  border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg, rgba(0,229,255,.06), transparent);
+}
+.logo{display:flex; flex-direction:column}
+.logo .t1{font-family:'Rajdhani'; font-weight:700; font-size:22px; letter-spacing:.18em; color:var(--cy); text-shadow:0 0 12px rgba(0,229,255,.6)}
+.logo .t2{font-size:11px; color:var(--dim); letter-spacing:.3em}
+.hstat{margin-left:auto; display:flex; gap:22px; align-items:center}
+.hitem{text-align:right}
+.hitem .k{font-size:10px; color:var(--dim); letter-spacing:.15em}
+.hitem .v{font-family:'JetBrains Mono'; font-size:15px; font-weight:600; color:var(--cy)}
+.live{display:flex; align-items:center; gap:6px; font-size:11px; color:var(--dn); letter-spacing:.15em}
+.live .dot{width:7px;height:7px;border-radius:50%;background:var(--dn);box-shadow:0 0 8px var(--dn);animation:blink 1.2s infinite}
+@keyframes blink{50%{opacity:.25}}
+
+/* ── STAT BAR ─────────────────────── */
+.statbar{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; padding:12px 20px}
+.scard{
+  background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:10px 14px;
+  position:relative; overflow:hidden;
+}
+.scard::before{content:''; position:absolute; top:0; left:0; width:3px; height:100%; background:var(--cy); opacity:.7}
+.scard .k{font-size:11px; color:var(--dim); letter-spacing:.12em}
+.scard .v{font-family:'JetBrains Mono'; font-size:24px; font-weight:700; margin-top:2px}
+.scard .v small{font-size:12px; color:var(--dim); font-weight:400}
+
+/* ── LAYOUT ───────────────────────── */
+.main{display:grid; grid-template-columns:390px 1fr; gap:12px; padding:0 20px 20px}
+.panel{background:var(--panel); border:1px solid var(--line); border-radius:10px; overflow:hidden}
+.ptitle{
+  display:flex; align-items:center; gap:8px; padding:10px 14px;
+  border-bottom:1px solid var(--line); font-family:'Rajdhani'; font-weight:600;
+  font-size:14px; letter-spacing:.2em; color:var(--cy);
+}
+.ptitle .tag{margin-left:auto; font-size:10px; color:var(--dim); letter-spacing:.1em; font-family:'Noto Sans TC'}
+
+/* ── EVENT LIST ───────────────────── */
+.elist{max-height:calc(100vh - 220px); overflow-y:auto}
+.elist::-webkit-scrollbar{width:4px}
+.elist::-webkit-scrollbar-thumb{background:rgba(0,229,255,.3)}
+.ecard{
+  padding:12px 14px; border-bottom:1px solid rgba(255,255,255,.04); cursor:pointer;
+  transition:background .15s; position:relative;
+}
+.ecard:hover{background:var(--panel2)}
+.ecard.sel{background:var(--panel2); box-shadow:inset 3px 0 0 var(--cy)}
+.erow1{display:flex; align-items:center; gap:8px}
+.ecode{font-family:'JetBrains Mono'; font-weight:700; font-size:15px}
+.ename{font-size:13px; color:var(--txt)}
+.etype{
+  font-size:10px; padding:2px 7px; border-radius:3px; letter-spacing:.1em; font-weight:700;
+}
+.etype.pg{background:rgba(255,46,196,.15); color:var(--mag); border:1px solid rgba(255,46,196,.4)}
+.etype.rs{background:rgba(255,179,0,.13); color:var(--amb); border:1px solid rgba(255,179,0,.4)}
+.grade{
+  margin-left:auto; font-family:'Rajdhani'; font-weight:700; font-size:20px; width:30px; height:30px;
+  display:flex; align-items:center; justify-content:center; border-radius:6px;
+}
+.grade.S{color:var(--s); border:1px solid var(--s); box-shadow:0 0 10px rgba(255,71,87,.5); animation:pulseS 1.6s infinite}
+.grade.A{color:var(--a); border:1px solid var(--a)}
+.grade.B{color:var(--b); border:1px solid var(--b)}
+.grade.C{color:var(--c); border:1px solid var(--c)}
+@keyframes pulseS{50%{box-shadow:0 0 18px rgba(255,71,87,.9)}}
+.erow2{display:flex; gap:10px; margin-top:6px; font-size:11px; color:var(--dim)}
+.erow2 b{color:var(--txt); font-family:'JetBrains Mono'}
+.sigchips{display:flex; gap:5px; margin-top:7px; flex-wrap:wrap}
+.chip{
+  font-size:10px; padding:2px 7px; border-radius:3px; letter-spacing:.05em;
+  border:1px solid rgba(107,126,153,.35); color:var(--dim);
+}
+.chip.on{border-color:var(--up); color:var(--up); background:rgba(255,71,87,.1); text-shadow:0 0 6px rgba(255,71,87,.6)}
+.chip.gap.on{border-color:var(--mag); color:var(--mag); background:rgba(255,46,196,.1); text-shadow:0 0 6px rgba(255,46,196,.6)}
+
+/* ── RIGHT COLUMN ─────────────────── */
+.rcol{display:flex; flex-direction:column; gap:12px}
+.detail-grid{display:grid; grid-template-columns:1fr 280px; gap:0}
+.dleft{padding:14px; border-right:1px solid var(--line)}
+.dright{padding:14px}
+.dhead{display:flex; align-items:baseline; gap:10px; margin-bottom:4px}
+.dcode{font-family:'JetBrains Mono'; font-size:24px; font-weight:700; color:var(--cy)}
+.dname{font-size:16px; font-weight:500}
+.dpx{margin-left:auto; font-family:'JetBrains Mono'; font-size:24px; font-weight:700}
+.dchg{font-family:'JetBrains Mono'; font-size:13px}
+.up{color:var(--up)} .dn{color:var(--dn)}
+.evinfo{display:flex; gap:14px; font-size:12px; color:var(--dim); margin-bottom:10px; flex-wrap:wrap}
+.evinfo b{color:var(--txt); font-family:'JetBrains Mono'}
+canvas{display:block; width:100%}
+.legend{display:flex; gap:14px; font-size:10px; color:var(--dim); margin-top:6px; flex-wrap:wrap}
+.legend i{display:inline-block; width:14px; height:2px; margin-right:4px; vertical-align:middle}
+
+/* signal checklist */
+.sigbox{margin-top:12px}
+.sigline{
+  display:flex; align-items:center; gap:10px; padding:8px 10px; margin-bottom:6px;
+  background:var(--panel2); border:1px solid rgba(255,255,255,.05); border-radius:6px; font-size:13px;
+}
+.sigline .st{font-family:'JetBrains Mono'; font-size:14px; width:20px; text-align:center}
+.sigline.hit{border-color:rgba(255,71,87,.45)}
+.sigline.hit .st{color:var(--up); text-shadow:0 0 8px rgba(255,71,87,.8)}
+.sigline.miss .st{color:var(--c)}
+.sigline .lv{margin-left:auto; font-family:'JetBrains Mono'; font-size:12px; color:var(--dim)}
+.sigline .pct{font-family:'JetBrains Mono'; font-size:12px; width:64px; text-align:right}
+
+/* radar */
+.radarwrap{text-align:center}
+.gradebig{font-family:'Rajdhani'; font-weight:700; font-size:48px; line-height:1}
+.gradelabel{font-size:11px; color:var(--dim); letter-spacing:.25em; margin-bottom:6px}
+.scorebar{height:6px; background:rgba(255,255,255,.06); border-radius:3px; overflow:hidden; margin:10px 0 4px}
+.scorebar i{display:block; height:100%; background:linear-gradient(90deg,var(--cy),var(--up)); box-shadow:0 0 10px rgba(255,71,87,.6); transition:width .8s cubic-bezier(.2,.9,.2,1)}
+.scoreval{font-family:'JetBrains Mono'; font-size:13px; color:var(--txt)}
+
+/* ccass bars */
+.bro{margin-bottom:8px}
+.brohead{display:flex; font-size:11px; color:var(--dim); justify-content:space-between}
+.brohead b{color:var(--txt); font-weight:500}
+.brobar{height:8px; background:rgba(255,255,255,.05); border-radius:2px; margin-top:3px; overflow:hidden; position:relative}
+.brobar i{display:block; height:100%; border-radius:2px; transition:width 1s cubic-bezier(.2,.9,.2,1)}
+.brobar .d{font-family:'JetBrains Mono'; font-size:10px}
+
+/* alert feed */
+.feed{max-height:200px; overflow-y:auto; padding:8px 14px}
+.feed::-webkit-scrollbar{width:4px}
+.feed::-webkit-scrollbar-thumb{background:rgba(0,229,255,.3)}
+.fitem{display:flex; gap:10px; padding:6px 0; font-size:12px; border-bottom:1px solid rgba(255,255,255,.04); align-items:baseline}
+.fitem .t{font-family:'JetBrains Mono'; font-size:10px; color:var(--dim); white-space:nowrap}
+.fitem .lvl{font-size:10px; padding:1px 6px; border-radius:3px; white-space:nowrap}
+.lvl.crit{background:rgba(255,71,87,.15); color:var(--up); border:1px solid rgba(255,71,87,.4)}
+.lvl.warn{background:rgba(255,179,0,.12); color:var(--amb); border:1px solid rgba(255,179,0,.4)}
+.lvl.info{background:rgba(0,229,255,.1); color:var(--cy); border:1px solid rgba(0,229,255,.3)}
+
+footer{padding:8px 20px 16px; font-size:10px; color:var(--dim); letter-spacing:.08em}
+
+@media(max-width:980px){
+  .main{grid-template-columns:1fr}
+  .statbar{grid-template-columns:repeat(2,1fr)}
+  .detail-grid{grid-template-columns:1fr}
+  .dleft{border-right:none; border-bottom:1px solid var(--line)}
+  .elist{max-height:380px}
+}
+@media (prefers-reduced-motion: reduce){
+  *{animation:none!important; transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <span class="t1">CCASS WAR ROOM</span>
+    <span class="t2">配股供股 · 三重突破啟動雷達</span>
+  </div>
+  <div class="hstat">
+    <div class="live"><span class="dot"></span><span id="dsrc">DEMO DATA</span></div>
+    <div class="hitem"><div class="k">HKT</div><div class="v" id="clock">--:--:--</div></div>
+  </div>
+</header>
+
+<div class="statbar">
+  <div class="scard"><div class="k">監察事件</div><div class="v" id="st-total">0</div></div>
+  <div class="scard"><div class="k">S 級啟動</div><div class="v up" id="st-s">0</div></div>
+  <div class="scard"><div class="k">今日突破觸發</div><div class="v" id="st-brk">0</div></div>
+  <div class="scard"><div class="k">平均折讓</div><div class="v" id="st-disc">--<small> %</small></div></div>
+</div>
+
+<div class="main">
+  <!-- LEFT: event radar list -->
+  <div class="panel">
+    <div class="ptitle">⬢ 事件雷達 <span class="tag">↑↓ 切換</span></div>
+    <div class="elist" id="elist"></div>
+  </div>
+
+  <!-- RIGHT: detail + feed -->
+  <div class="rcol">
+    <div class="panel">
+      <div class="ptitle">⬢ 啟動分析 <span class="tag" id="dtag"></span></div>
+      <div class="detail-grid">
+        <div class="dleft">
+          <div class="dhead">
+            <span class="dcode" id="dcode">----</span>
+            <span class="dname" id="dname">--</span>
+            <span class="dpx" id="dpx">--</span>
+            <span class="dchg" id="dchg"></span>
+          </div>
+          <div class="evinfo" id="evinfo"></div>
+          <canvas id="chart" height="240"></canvas>
+          <div class="legend">
+            <span><i style="background:#00E5FF"></i>年開市價</span>
+            <span><i style="background:#FFB300"></i>IPO首日開市價</span>
+            <span><i style="background:#FF2EC4"></i>長期 POC</span>
+            <span><i style="background:rgba(255,255,255,.5)"></i>事件日</span>
+          </div>
+          <div class="sigbox" id="sigbox"></div>
+        </div>
+        <div class="dright">
+          <div class="radarwrap">
+            <div class="gradelabel">啟動評級</div>
+            <div class="gradebig" id="gbig">-</div>
+            <div class="scorebar"><i id="sbar" style="width:0%"></i></div>
+            <div class="scoreval"><span id="sval">0</span> / 100</div>
+            <canvas id="radar" width="240" height="200"></canvas>
+          </div>
+          <div class="ptitle" style="border-top:1px solid var(--line); margin:8px -14px 10px; padding-left:14px">⬢ CCASS 集中度</div>
+          <div id="ccass"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="ptitle">⬢ 警報訊號</div>
+      <div class="feed" id="feed"></div>
+    </div>
+  </div>
+</div>
+
+<footer>SIGNAL ENGINE v2 · 破年開 + 破IPO開價 + 跳空破長期POC · 數據接口:window.DATA_URL(GitHub Pages JSON)· 僅供研究,不構成投資建議</footer>
+
+<script>
+/* ════════════════════════════════════════════
+   數據接口:將 DATA_URL 指向你 GitHub Pages 的 JSON
+   Schema 見 DEMO 數據;fetch 失敗自動 fallback DEMO
+   ════════════════════════════════════════════ */
+window.DATA_URL = "https://rachellam28-lang.github.io/hk-alert-cloud-gas/ccass_events.json";
+
+/* ── 三重突破訊號引擎 ──────────────────
+   S1 破年開   : last > yearOpen
+   S2 破IPO開價: last > ipoOpen
+   S3 跳空破POC: open > prevClose*1.02 且 last > ltPOC
+   時序加權    : 事件後60日內觸發 → 莊家完成集資後拉升,加分
+   ──────────────────────────────────── */
+function gapPct(s){ return (s.px.open/s.px.prevClose - 1)*100 }
+function evalSignals(s){
+  const last = s.px.last;
+  const sig = {
+    yo:  last > s.levels.yearOpen,
+    ipo: last > s.levels.ipoOpen,
+    poc: (gapPct(s) >= 2.0) && (last > s.levels.ltPOC),
+  };
+  // 分數
+  let score = 0;
+  if(sig.yo)  score += 20;
+  if(sig.ipo) score += 25;
+  if(sig.poc) score += 30;                       // 跳空破POC最重
+  const dEv = daysSince(s.event.date);
+  const postEvent = dEv >= 0 && dEv <= 60;
+  const hits = sig.yo + sig.ipo + sig.poc;
+  if(postEvent && hits >= 1) score += 10;        // 事件後啟動時序
+  if(s.ccass.trend > 0) score += Math.min(10, s.ccass.trend*2); // 集中度上升
+  if(s.event.discount <= -15) score += 5;        // 深折讓配售
+  score = Math.min(100, Math.round(score));
+  const grade = (sig.yo&&sig.ipo&&sig.poc) ? 'S' : hits===2 ? 'A' : hits===1 ? 'B' : 'C';
+  return {sig, score, grade, hits, postEvent, dEv};
+}
+function daysSince(d){ return Math.floor((Date.now() - new Date(d).getTime())/86400000) }
+
+/* ── DEMO 數據(schema 範本)──────────── */
+const DEMO = [
+ {code:"1888", name:"建滔積層板*", event:{type:"配股", date:"2026-05-12", discount:-18.2, dilution:9.8, agent:"配售代理A"},
+  levels:{yearOpen:8.20, ipoOpen:6.50, ltPOC:8.85},
+  px:{last:9.62, open:9.30, prevClose:8.98},
+  ccass:{trend:4.2, top:[["B01161 中銀",18.4,2.1],["B01451 富途",12.2,3.8],["B01130 國泰君安",9.7,1.4],["B01274 輝立",7.1,-0.6],["B01955 耀才",5.3,0.9]]},
+  series:[7.9,8.0,7.8,8.1,8.0,8.2,8.3,8.1,8.4,8.5,8.3,8.6,8.5,8.7,8.9,8.8,9.0,8.98,9.3,9.62], evIdx:10},
+ {code:"2331", name:"科陽智能*", event:{type:"供股", date:"2026-04-28", discount:-25.0, dilution:33.3, agent:"包銷商B"},
+  levels:{yearOpen:3.10, ipoOpen:3.88, ltPOC:3.42},
+  px:{last:3.55, open:3.52, prevClose:3.49},
+  ccass:{trend:2.8, top:[["B01161 中銀",15.2,1.8],["B01691 海通",11.0,2.2],["B01451 富途",8.8,1.1],["B01130 國泰君安",6.9,0.3],["B01274 輝立",5.0,-1.2]]},
+  series:[2.8,2.85,2.9,2.82,2.95,3.0,2.98,3.05,3.12,3.2,3.18,3.25,3.3,3.28,3.35,3.4,3.45,3.49,3.52,3.55], evIdx:8},
+ {code:"8456", name:"雲訊控股*", event:{type:"配股", date:"2026-06-02", discount:-12.5, dilution:7.4, agent:"配售代理C"},
+  levels:{yearOpen:0.42, ipoOpen:0.55, ltPOC:0.47},
+  px:{last:0.485, open:0.45, prevClose:0.44},
+  ccass:{trend:6.1, top:[["B01955 耀才",14.0,4.4],["B01451 富途",10.5,3.0],["B01161 中銀",8.2,0.8],["B01274 輝立",6.6,1.5],["B01691 海通",4.9,0.6]]},
+  series:[0.40,0.41,0.40,0.42,0.41,0.43,0.42,0.44,0.43,0.44,0.45,0.44,0.46,0.45,0.44,0.43,0.44,0.44,0.45,0.485], evIdx:14},
+ {code:"1599", name:"城建設計*", event:{type:"供股", date:"2026-03-15", discount:-30.1, dilution:50.0, agent:"包銷商D"},
+  levels:{yearOpen:2.45, ipoOpen:2.20, ltPOC:2.05},
+  px:{last:2.62, open:2.18, prevClose:2.10},
+  ccass:{trend:1.2, top:[["B01130 國泰君安",13.3,0.9],["B01161 中銀",10.8,0.4],["B01691 海通",7.7,1.6],["B01451 富途",6.2,0.2],["B01274 輝立",4.4,-0.3]]},
+  series:[1.9,1.95,1.92,2.0,1.98,2.05,2.02,2.08,2.05,2.1,2.08,2.12,2.1,2.15,2.12,2.1,2.08,2.10,2.18,2.62], evIdx:5},
+ {code:"3633", name:"中裕燃氣*", event:{type:"配股", date:"2026-05-30", discount:-8.0, dilution:5.2, agent:"配售代理E"},
+  levels:{yearOpen:6.80, ipoOpen:7.20, ltPOC:6.55},
+  px:{last:6.30, open:6.28, prevClose:6.32},
+  ccass:{trend:-1.5, top:[["B01161 中銀",16.6,-0.8],["B01451 富途",9.9,-1.1],["B01130 國泰君安",8.4,0.2],["B01955 耀才",5.8,-0.5],["B01274 輝立",4.1,0.1]]},
+  series:[6.9,6.85,6.8,6.75,6.7,6.65,6.6,6.55,6.5,6.45,6.4,6.42,6.38,6.35,6.4,6.36,6.33,6.32,6.28,6.30], evIdx:12},
+];
+
+/* ── STATE ─────────────────────────── */
+let DATA = [], SEL = 0;
+
+async function boot(){
+  if(window.DATA_URL){
+    try{
+      const r = await fetch(window.DATA_URL, {cache:"no-store"});
+      DATA = await r.json();
+      document.getElementById('dsrc').textContent = "LIVE FEED";
+    }catch(e){ DATA = DEMO; }
+  } else DATA = DEMO;
+  DATA.forEach(s => s._r = evalSignals(s));
+  DATA.sort((a,b)=> b._r.score - a._r.score);
+  renderAll();
+}
+
+/* ── RENDER ────────────────────────── */
+const $ = id => document.getElementById(id);
+const fmt = (n,d=2) => n.toLocaleString('en',{minimumFractionDigits:d,maximumFractionDigits:d});
+
+function renderAll(){
+  renderStats(); renderList(); select(0); renderFeed();
+}
+
+function renderStats(){
+  $('st-total').textContent = DATA.length;
+  $('st-s').textContent = DATA.filter(s=>s._r.grade==='S').length;
+  $('st-brk').textContent = DATA.reduce((a,s)=>a+s._r.hits,0);
+  const avg = DATA.reduce((a,s)=>a+s.event.discount,0)/DATA.length;
+  $('st-disc').innerHTML = fmt(avg,1)+'<small> %</small>';
+}
+
+function renderList(){
+  $('elist').innerHTML = DATA.map((s,i)=>{
+    const r = s._r, chg = (s.px.last/s.px.prevClose-1)*100;
+    return `<div class="ecard ${i===SEL?'sel':''}" onclick="select(${i})">
+      <div class="erow1">
+        <span class="ecode">${s.code}</span><span class="ename">${s.name}</span>
+        <span class="etype ${s.event.type==='配股'?'pg':'rs'}">${s.event.type}</span>
+        <span class="grade ${r.grade}">${r.grade}</span>
+      </div>
+      <div class="erow2">
+        <span>折讓 <b>${fmt(s.event.discount,1)}%</b></span>
+        <span>攤薄 <b>${fmt(s.event.dilution,1)}%</b></span>
+        <span class="${chg>=0?'up':'dn'}"><b>${chg>=0?'▲':'▼'}${fmt(Math.abs(chg),1)}%</b></span>
+      </div>
+      <div class="sigchips">
+        <span class="chip ${r.sig.yo?'on':''}">破年開</span>
+        <span class="chip ${r.sig.ipo?'on':''}">破IPO價</span>
+        <span class="chip gap ${r.sig.poc?'on':''}">跳空破POC</span>
+        <span class="chip">${r.dEv>=0?'事件後 '+r.dEv+'日':'事件前 '+(-r.dEv)+'日'}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function select(i){
+  SEL = i;
+  document.querySelectorAll('.ecard').forEach((el,j)=>el.classList.toggle('sel',j===i));
+  const s = DATA[i], r = s._r;
+  const chg = (s.px.last/s.px.prevClose-1)*100, gp = gapPct(s);
+
+  $('dcode').textContent = s.code;
+  $('dname').textContent = s.name;
+  $('dpx').textContent = fmt(s.px.last, s.px.last<1?3:2);
+  $('dpx').className = 'dpx '+(chg>=0?'up':'dn');
+  $('dchg').textContent = `${chg>=0?'▲':'▼'}${fmt(Math.abs(chg),2)}%  跳空 ${gp>=0?'+':''}${fmt(gp,1)}%`;
+  $('dchg').className = 'dchg '+(chg>=0?'up':'dn');
+  $('dtag').textContent = s.event.type+' '+s.event.date;
+  $('evinfo').innerHTML = `
+    <span>${s.event.type}日 <b>${s.event.date}</b></span>
+    <span>折讓 <b>${fmt(s.event.discount,1)}%</b></span>
+    <span>攤薄 <b>${fmt(s.event.dilution,1)}%</b></span>
+    <span>${s.event.agent}</span>
+    <span>${r.postEvent?'⚡ 事件後60日窗口內':''}</span>`;
+
+  // 訊號清單
+  const pctTo = lv => fmt((s.px.last/lv-1)*100,1)+'%';
+  const lines = [
+    {k:'S1 升破年開市價', hit:r.sig.yo,  lv:s.levels.yearOpen, w:'+20'},
+    {k:'S2 升破IPO首日開市價', hit:r.sig.ipo, lv:s.levels.ipoOpen, w:'+25'},
+    {k:'S3 跳空≥2% 升破長期POC', hit:r.sig.poc, lv:s.levels.ltPOC, w:'+30'},
+  ];
+  $('sigbox').innerHTML = lines.map(l=>`
+    <div class="sigline ${l.hit?'hit':'miss'}">
+      <span class="st">${l.hit?'✓':'✗'}</span>
+      <span>${l.k}</span>
+      <span class="lv">@ ${fmt(l.lv, l.lv<1?3:2)}</span>
+      <span class="pct ${s.px.last>=l.lv?'up':'dn'}">${pctTo(l.lv)}</span>
+      <span class="lv">${l.w}</span>
+    </div>`).join('');
+
+  // 評級
+  $('gbig').textContent = r.grade;
+  $('gbig').style.color = getComputedStyle(document.documentElement).getPropertyValue('--'+r.grade.toLowerCase());
+  $('sbar').style.width = r.score+'%';
+  $('sval').textContent = r.score;
+
+  // CCASS
+  $('ccass').innerHTML = s.ccass.top.map(([n,p,d])=>`
+    <div class="bro">
+      <div class="brohead"><b>${n}</b><span class="d ${d>=0?'up':'dn'} mono">${p.toFixed(1)}% (${d>=0?'+':''}${d.toFixed(1)})</span></div>
+      <div class="brobar"><i style="width:${Math.min(100,p*4)}%; background:${d>=0?'linear-gradient(90deg,#FF4757aa,#FF4757)':'linear-gradient(90deg,#00D98Baa,#00D98B)'}"></i></div>
+    </div>`).join('') +
+    `<div class="brohead" style="margin-top:8px"><b>5大集中度變化</b><span class="d ${s.ccass.trend>=0?'up':'dn'} mono">${s.ccass.trend>=0?'+':''}${s.ccass.trend.toFixed(1)} pp /30日</span></div>`;
+
+  drawChart(s);
+  drawRadar(s);
+}
+
+/* ── 價格 vs 三重關卡圖 ─────────────── */
+function drawChart(s){
+  const cv = $('chart'), dpr = devicePixelRatio||1;
+  const W = cv.clientWidth, H = 240;
+  cv.width = W*dpr; cv.height = H*dpr;
+  const c = cv.getContext('2d'); c.scale(dpr,dpr);
+  c.clearRect(0,0,W,H);
+
+  const pad = {l:8, r:54, t:12, b:18};
+  const xs = s.series;
+  const all = [...xs, s.levels.yearOpen, s.levels.ipoOpen, s.levels.ltPOC];
+  let mn = Math.min(...all), mx = Math.max(...all);
+  const m = (mx-mn)*0.08; mn-=m; mx+=m;
+  const X = i => pad.l + i*(W-pad.l-pad.r)/(xs.length-1);
+  const Y = v => pad.t + (mx-v)/(mx-mn)*(H-pad.t-pad.b);
+
+  // grid
+  c.strokeStyle='rgba(0,229,255,.07)'; c.lineWidth=1;
+  for(let g=0; g<=4; g++){ const y=pad.t+g*(H-pad.t-pad.b)/4; c.beginPath(); c.moveTo(pad.l,y); c.lineTo(W-pad.r,y); c.stroke(); }
+
+  // level lines
+  const lv = [
+    [s.levels.yearOpen,'#00E5FF','年開'],
+    [s.levels.ipoOpen,'#FFB300','IPO開'],
+    [s.levels.ltPOC,'#FF2EC4','POC'],
+  ];
+  lv.forEach(([v,col,lab])=>{
+    c.strokeStyle=col; c.setLineDash([5,4]); c.lineWidth=1; c.globalAlpha=.85;
+    c.beginPath(); c.moveTo(pad.l,Y(v)); c.lineTo(W-pad.r,Y(v)); c.stroke();
+    c.setLineDash([]); c.globalAlpha=1;
+    c.fillStyle=col; c.font='10px JetBrains Mono';
+    c.fillText(lab+' '+fmt(v, v<1?3:2), W-pad.r+4, Y(v)+3);
+  });
+
+  // event marker
+  if(s.evIdx!=null){
+    const x = X(s.evIdx);
+    c.strokeStyle='rgba(255,255,255,.4)'; c.setLineDash([3,3]);
+    c.beginPath(); c.moveTo(x,pad.t); c.lineTo(x,H-pad.b); c.stroke(); c.setLineDash([]);
+    c.fillStyle='rgba(255,255,255,.6)'; c.font='10px Noto Sans TC';
+    c.fillText(s.event.type, x-10, H-5);
+  }
+
+  // price glow line
+  const up = xs[xs.length-1] >= xs[0];
+  const col = up ? '#FF4757' : '#00D98B';
+  c.shadowColor = col; c.shadowBlur = 8;
+  c.strokeStyle = col; c.lineWidth = 2;
+  c.beginPath();
+  xs.forEach((v,i)=> i? c.lineTo(X(i),Y(v)) : c.moveTo(X(i),Y(v)));
+  c.stroke(); c.shadowBlur=0;
+
+  // gap-up flash on last bar
+  const g = gapPct(s);
+  if(g>=2){
+    const x=X(xs.length-1), y=Y(xs[xs.length-1]);
+    c.fillStyle='#FF2EC4'; c.beginPath(); c.arc(x,y,4,0,7); c.fill();
+    c.shadowColor='#FF2EC4'; c.shadowBlur=12; c.beginPath(); c.arc(x,y,4,0,7); c.fill(); c.shadowBlur=0;
+  }
+}
+
+/* ── 五維雷達(電玩 stat 圖)─────────── */
+function drawRadar(s){
+  const r = s._r;
+  const cv = $('radar'), dpr = devicePixelRatio||1;
+  cv.width = 240*dpr; cv.height = 200*dpr;
+  const c = cv.getContext('2d'); c.scale(dpr,dpr);
+  const cx=120, cy=100, R=70;
+  const axes = [
+    ['破年開', r.sig.yo?1:Math.min(1,Math.max(0,s.px.last/s.levels.yearOpen))*0.6],
+    ['破IPO', r.sig.ipo?1:Math.min(1,Math.max(0,s.px.last/s.levels.ipoOpen))*0.6],
+    ['跳空POC', r.sig.poc?1:0.25],
+    ['集中度', Math.min(1, Math.max(0, s.ccass.trend/6 + .4))],
+    ['折讓深度', Math.min(1, Math.abs(s.event.discount)/30)],
+  ];
+  const pt = (i,f)=>{ const a=-Math.PI/2 + i*2*Math.PI/axes.length; return [cx+Math.cos(a)*R*f, cy+Math.sin(a)*R*f]; };
+  // rings
+  c.strokeStyle='rgba(0,229,255,.15)';
+  [0.33,0.66,1].forEach(f=>{
+    c.beginPath();
+    axes.forEach((_,i)=>{ const [x,y]=pt(i,f); i?c.lineTo(x,y):c.moveTo(x,y); });
+    c.closePath(); c.stroke();
+  });
+  // spokes + labels
+  c.fillStyle='#6B7E99'; c.font='10px Noto Sans TC'; c.textAlign='center';
+  axes.forEach((a,i)=>{
+    const [x,y]=pt(i,1); c.strokeStyle='rgba(0,229,255,.12)';
+    c.beginPath(); c.moveTo(cx,cy); c.lineTo(x,y); c.stroke();
+    const [lx,ly]=pt(i,1.24); c.fillText(a[0], lx, ly+3);
+  });
+  // shape
+  c.beginPath();
+  axes.forEach((a,i)=>{ const [x,y]=pt(i,Math.max(.08,a[1])); i?c.lineTo(x,y):c.moveTo(x,y); });
+  c.closePath();
+  c.fillStyle='rgba(255,71,87,.18)'; c.fill();
+  c.strokeStyle='#FF4757'; c.lineWidth=2; c.shadowColor='#FF4757'; c.shadowBlur=10; c.stroke(); c.shadowBlur=0;
+}
+
+/* ── 警報 FEED ─────────────────────── */
+function renderFeed(){
+  const items = [];
+  DATA.forEach(s=>{
+    const r = s._r, g = gapPct(s);
+    if(r.grade==='S') items.push(['crit', s.code+' '+s.name, '三重突破全中 — 莊家啟動形態確認 (S級, '+r.score+'分)']);
+    if(r.sig.poc) items.push(['crit', s.code+' '+s.name, `跳空 +${fmt(g,1)}% 升破長期POC ${fmt(s.levels.ltPOC,s.levels.ltPOC<1?3:2)}`]);
+    if(r.sig.ipo && !r.sig.poc) items.push(['warn', s.code+' '+s.name, '升破IPO首日開市價 '+fmt(s.levels.ipoOpen,2)]);
+    if(r.sig.yo && r.hits===1) items.push(['warn', s.code+' '+s.name, '升破年開市價 '+fmt(s.levels.yearOpen,2)]);
+    if(s.ccass.trend>=4) items.push(['info', s.code+' '+s.name, `CCASS 5大集中度 30日 +${s.ccass.trend.toFixed(1)}pp — 疑似吸籌`]);
+    if(r.dEv>=0 && r.dEv<=3) items.push(['info', s.code+' '+s.name, s.event.type+'完成 T+'+r.dEv+',進入啟動觀察窗口']);
+  });
+  const now = new Date();
+  $('feed').innerHTML = items.map((it,i)=>{
+    const t = new Date(now - i*420000);
+    return `<div class="fitem">
+      <span class="t">${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}</span>
+      <span class="lvl ${it[0]}">${it[0]==='crit'?'啟動':it[0]==='warn'?'突破':'監察'}</span>
+      <span><b class="mono">${it[1]}</b> — ${it[2]}</span>
+    </div>`;
+  }).join('') || '<div class="fitem">暫無訊號</div>';
+}
+
+/* ── 時鐘 / 鍵盤 ───────────────────── */
+setInterval(()=>{
+  const d = new Date(Date.now() + (8*60 - new Date().getTimezoneOffset())*60000);
+  $('clock').textContent = d.toISOString().substr(11,8);
+},1000);
+addEventListener('keydown',e=>{
+  if(e.key==='ArrowDown'){ e.preventDefault(); select(Math.min(DATA.length-1,SEL+1)); }
+  if(e.key==='ArrowUp'){ e.preventDefault(); select(Math.max(0,SEL-1)); }
+});
+addEventListener('resize',()=> DATA.length && (drawChart(DATA[SEL]), drawRadar(DATA[SEL])));
+
+boot();
+</script>
+</body>
+</html>

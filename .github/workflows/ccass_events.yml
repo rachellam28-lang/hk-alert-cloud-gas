@@ -1,0 +1,55 @@
+name: ccass-events
+on:
+  schedule:
+    - cron: "30 9 * * 1-5"   # UTC 09:30 = HKT 17:30 收市後
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install yfinance pandas requests
+      - run: pip install git+https://github.com/rongardF/tvdatafeed.git
+
+      - name: 掃描披露易事件
+        run: python hkex_event_scanner.py
+        continue-on-error: true   # HKEX 介面壞咗都唔好阻住計價
+
+      - name: 計算三重關卡 + 出 JSON
+        run: python build_events_v2.py
+        env:
+          TV_USER: ${{ secrets.TV_USER }}
+          TV_PASS: ${{ secrets.TV_PASS }}
+
+      - name: Commit 去 Pages
+        run: |
+          git config user.name "ccass-bot"
+          git config user.email "bot@noreply"
+          git add docs/ccass_events.json events_watchlist.json
+          git diff --cached --quiet || git commit -m "events $(date +%F)"
+          git push
+
+      - name: Telegram 通知 (Hermes)
+        if: always()
+        env:
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          TG_CHAT:  ${{ secrets.TG_CHAT }}
+        run: |
+          N=$(python -c "import json;print(len(json.load(open('docs/ccass_events.json'))))" 2>/dev/null || echo "ERR")
+          S=$(python - <<'EOF' 2>/dev/null || echo ""
+          import json
+          d=json.load(open('docs/ccass_events.json'))
+          hits=[x['code'] for x in d if x['px']['last']>x['levels']['yearOpen'] and x['px']['last']>x['levels']['ipoOpen'] and x['px']['last']>x['levels']['ltPOC']]
+          print("🚨 S級: "+",".join(hits) if hits else "")
+          EOF
+          )
+          curl -s "https://api.telegram.org/bot${TG_TOKEN}/sendMessage" \
+            -d chat_id="${TG_CHAT}" \
+            -d text="⬢ CCASS事件管線完成 | ${N}隻 | ${{ job.status }} ${S}"
