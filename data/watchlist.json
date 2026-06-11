@@ -1,7 +1,15 @@
 {
-  "updated": "2026-06-10 04:29 UTC",
+  "updated": "2026-06-11 01:18 UTC",
   "count": 13,
   "watchlist": [
+    {
+      "code": "02186",
+      "name": "LUYE PHARMA",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-06-08"
+    },
     {
       "code": "01952",
       "name": "EVEREST MED",
@@ -45,14 +53,6 @@
     {
       "code": "00994",
       "name": "CT VISION",
-      "types": [
-        "配股"
-      ],
-      "ann_date": "2026-06-08"
-    },
-    {
-      "code": "02186",
-      "name": "LUYE PHARMA",
       "types": [
         "配股"
       ],
