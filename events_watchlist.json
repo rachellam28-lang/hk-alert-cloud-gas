@@ -1,0 +1,21 @@
+[
+ {
+  "code": "1888",
+  "name": "示例股份A",
+  "type": "配股",
+  "date": "2026-05-12",
+  "discount": -18.2,
+  "dilution": 9.8,
+  "agent": "配售代理名稱"
+ },
+ {
+  "code": "2331",
+  "name": "示例股份B",
+  "type": "供股",
+  "date": "2026-04-28",
+  "discount": -25.0,
+  "dilution": 33.3,
+  "agent": "包銷商名稱",
+  "ipo_open_override": 3.88
+ }
+]
