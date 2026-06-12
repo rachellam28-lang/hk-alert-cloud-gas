@@ -1,7 +1,15 @@
 {
-  "updated": "2026-06-11 01:18 UTC",
-  "count": 13,
+  "updated": "2026-06-12 03:26 UTC",
+  "count": 14,
   "watchlist": [
+    {
+      "code": "02490",
+      "name": "LC LOGISTICS",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-06-12"
+    },
     {
       "code": "02186",
       "name": "LUYE PHARMA",
