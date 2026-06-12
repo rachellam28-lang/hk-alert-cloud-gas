@@ -1,1 +1,129 @@
-{"hsi": {"value": 24566.0, "change": -91.0, "changePct": -0.37, "stale": false}, "dow": {"value": 50786.01, "change": -80.77, "changePct": -0.16, "stale": false}, "spx": {"value": 7405.73, "change": 21.99, "changePct": 0.3, "stale": false}, "dxy": {"value": 99.7, "change": -0.27, "changePct": -0.28, "stale": false}, "vix": {"value": 18.05, "change": -0.87, "changePct": -4.6, "stale": false, "eval": {"label": "正常", "color": "neutral"}}, "hsi_pe": {"value": 17.95, "change": null, "changePct": null, "avg5y_mid": 15.47, "avg5y_range": [14.3, 16.64], "eval": {"label": "貴", "color": "red"}, "stale": false}, "spx_pe": {"value": 26.14, "change": null, "changePct": null, "avg5y_mid": 22.82, "avg5y_range": [20.22, 25.43], "eval": {"label": "偏貴", "color": "orange"}, "stale": false}, "spx_m2": {"value": 346.1, "m2": 21400.0, "eval": {"label": "昂貴", "color": "red"}, "stale": false}, "fear_greed": {"value": 39.4, "eval": {"label": "恐懼", "color": "green"}, "changePct": -1.85, "stale": false}, "breadth": {"hk": {"high": 18, "mid": 39, "low": 42, "high_n": 13, "mid_n": 28, "low_n": 30, "count": 71}, "us": {"high": 39, "mid": 35, "low": 26, "high_n": 42, "mid_n": 38, "low_n": 28, "count": 108}}, "updated_at": "2026-06-09T12:47:49.068884+00:00", "hsi_m2": {"value": 1163.6, "m2": 21112.0, "stale": false, "eval": {"label": "合理", "color": "gray"}}}
+{
+  "hsi": {
+    "value": 24407.96,
+    "stale": false,
+    "change": -158.04,
+    "changePct": -0.64
+  },
+  "dow": {
+    "value": 50786.01,
+    "change": -80.77,
+    "changePct": -0.16,
+    "stale": false
+  },
+  "spx": {
+    "value": 7405.73,
+    "change": 21.99,
+    "changePct": 0.3,
+    "stale": false
+  },
+  "dxy": {
+    "value": 99.7,
+    "change": -0.27,
+    "changePct": -0.28,
+    "stale": false
+  },
+  "vix": {
+    "value": 18.05,
+    "change": -0.87,
+    "changePct": -4.6,
+    "stale": false,
+    "eval": {
+      "label": "正常",
+      "color": "neutral"
+    }
+  },
+  "hsi_pe": {
+    "value": 17.95,
+    "change": null,
+    "changePct": null,
+    "avg5y_mid": 15.47,
+    "avg5y_range": [
+      14.3,
+      16.64
+    ],
+    "eval": {
+      "label": "貴",
+      "color": "red"
+    },
+    "stale": false
+  },
+  "spx_pe": {
+    "value": 26.14,
+    "change": null,
+    "changePct": null,
+    "avg5y_mid": 22.82,
+    "avg5y_range": [
+      20.22,
+      25.43
+    ],
+    "eval": {
+      "label": "偏貴",
+      "color": "orange"
+    },
+    "stale": false
+  },
+  "spx_m2": {
+    "value": 346.1,
+    "m2": 21400.0,
+    "eval": {
+      "label": "昂貴",
+      "color": "red"
+    },
+    "stale": false
+  },
+  "fear_greed": {
+    "value": 39.4,
+    "eval": {
+      "label": "恐懼",
+      "color": "green"
+    },
+    "changePct": -1.85,
+    "stale": false
+  },
+  "breadth": {
+    "hk": {
+      "high": 18,
+      "mid": 39,
+      "low": 42,
+      "high_n": 13,
+      "mid_n": 28,
+      "low_n": 30,
+      "count": 71
+    },
+    "us": {
+      "high": 39,
+      "mid": 35,
+      "low": 26,
+      "high_n": 42,
+      "mid_n": 38,
+      "low_n": 28,
+      "count": 108
+    }
+  },
+  "updated_at": "2026-06-12T01:13:26.245848+00:00",
+  "hsi_m2": {
+    "value": 1163.6,
+    "m2": 21112.0,
+    "stale": false,
+    "eval": {
+      "label": "合理",
+      "color": "gray"
+    }
+  },
+  "dopamine": {
+    "score": 35.2,
+    "level": "normal",
+    "level_emoji": "⚖️",
+    "level_desc": "謹慎",
+    "version": 1,
+    "source": "yfinance",
+    "hsi": 24407.96,
+    "ma20": 25444.46,
+    "ma50": 25692.06,
+    "regime": 48.0,
+    "momentum": 2.2,
+    "volatility": 57.7,
+    "updated": "2026-06-12T01:13:26.245848+00:00"
+  }
+}

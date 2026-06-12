@@ -1,17 +1,12 @@
 {
-  "dopamine": 34.2,
-  "regime": 47.6,
-  "momentum": 0.0,
-  "volatility": 56.9,
-  "hsi": 24276.98,
-  "ma20": 25527.01,
-  "ma50": 25704.84,
-  "updated": "2026-06-10T13:45:29.755595",
-  "label": "❄️ 謹慎",
-  "thresholds": {
-    "poc_min_pct": 3.3,
-    "gap_min_pct": 1.38,
-    "fvg_min_pct": 1.38,
-    "alert_cap": 47
-  }
+  "dopamine": 35.2,
+  "regime": 48.0,
+  "momentum": 2.2,
+  "volatility": 57.7,
+  "hsi": 24407.96,
+  "ma20": 25444.46,
+  "ma50": 25692.06,
+  "updated": "2026-06-12T09:13:26.245848",
+  "label": "謹慎",
+  "source": "yfinance_v1"
 }
