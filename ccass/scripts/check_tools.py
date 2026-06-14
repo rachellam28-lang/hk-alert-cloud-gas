@@ -2,15 +2,17 @@
 import subprocess, json, os
 
 def get_token():
-    for p in [os.path.expanduser("~/Desktop/automatic/holdings-debug/.env")]:
+    for p in [os.path.join(os.path.dirname(__file__), "..", "..", ".env")]:
         p = os.path.normpath(p)
         if os.path.exists(p):
             with open(p) as f:
                 for line in f:
-                    if line.startswith("LONGBRIDGE_ACCESS_TOKEN=***                        return line.strip().split("=", 1)[1]
-    return ""
+                    if line.startswith("LONGBRIDGE_ACCESS_TOKEN="):
+                        return line.strip().split("=", 1)[1]
+    return os.environ.get("LONGBRIDGE_ACCESS_TOKEN", "")
 
-TOKEN=*** not TOKEN:
+TOKEN = get_token()
+if not TOKEN:
     print("No token")
     exit(1)
 
@@ -19,14 +21,15 @@ r = subprocess.run([
     "curl", "-s", "-X", "POST", "https://mcp.longbridge.com",
     "-H", "Content-Type: application/json",
     "-H", "Accept: application/json, text/event-stream",
-    "-H", "Authorization: Bearer *** + TOKEN,
+    "-H", "Authorization: Bearer " + TOKEN,
     "-d", json.dumps(body),
 ], capture_output=True, text=True, timeout=15)
 
 raw = r.stdout.strip()
 if raw.startswith("data: "):
     raw = raw[6:]
-tools = json.loads(raw)["result"]["tools"]
+payload = json.loads(raw)
+tools = payload["result"]["tools"]
 
 for t in tools:
     if t["name"] in ["rank_list", "market_temperature", "rank_categories"]:

@@ -2,11 +2,11 @@
 # Fetch 5-year Free Cash Flow trend using westock finance
 # Saves to ccass.json as fcf5y array + latest fcf
 
-PROJECT_DIR="C:/Users/Administrator/Desktop/automatic/ccass-debug"
-TEMP_DIR="C:/Users/Administrator/AppData/Local/Temp/fcf5y"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+TEMP_DIR="$(mktemp -d)"
 BATCH_SIZE=20
 
-rm -rf "$TEMP_DIR"
 mkdir -p "$TEMP_DIR"
 
 echo "=== Step 1: Get all stock codes ==="

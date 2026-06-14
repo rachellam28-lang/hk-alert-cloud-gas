@@ -1146,11 +1146,14 @@ function renderSummaryBar(data){
   const bar=document.getElementById('summaryBar');
   const up=data.top_increase?.length||0;
   const dn=data.top_decrease?.length||0;
+  const cov = data.coverage_pct != null ? data.coverage_pct : null;
+  const covLabel = cov == null ? '' : (cov >= 100 ? '完整' : cov.toFixed(1) + '%');
   let pCnt=0, rCnt=0;
   allStocks.forEach(s=>{const m=signalMap.get(s.c);if(m&&m.pl)pCnt++;if(m&&m.ri)rCnt++;});
   let totalMc=0, mcCnt=0;
   allStocks.forEach(s=>{if(hasMC(s)){totalMc+=s.mc; mcCnt++;}});
   bar.innerHTML='<span class="scnt">📅 <b>'+esc(data.updated)+'</b></span>'
+    +(covLabel?'<span class="scnt">🧩 <b>'+covLabel+'</b> 覆蓋</span>':'')
     +'<span class="scnt">📦 <b>'+allStocks.length+'</b> 隻股票</span>'
     +(mcCnt?'<span class="scnt">💰 <b>'+(totalMc!=null?totalMc.toFixed(0):'0')+'億</b> 總市值</span>':'')
     +'<span class="scnt">📊 <b>'+data.first_date+'</b> 至 <b>'+esc(data.updated)+'</b></span>'+(pCnt?'<span class="scnt" style="border-color:var(--down-border);background:var(--down-soft);color:var(--down)">配股 <b>'+pCnt+'</b></span>':'')+(rCnt?'<span class="scnt" style="border-color:var(--violet-border);background:var(--violet-soft);color:var(--violet)">供股 <b>'+rCnt+'</b></span>':'')

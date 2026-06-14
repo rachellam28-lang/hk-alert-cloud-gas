@@ -1,7 +1,7 @@
 """
 Local alert store — replaces GAS for alert + watchlist persistence.
 
-SQLite (ccass/ccass.db) + JSON dashboard files.
+SQLite (ccass/holdings.db) + JSON dashboard files.
 Drop-in replacement for post_gas_alert / fetch_watchlist_from_gas / post_watchlist_to_gas.
 """
 
@@ -15,7 +15,7 @@ from typing import Any
 HKT = timezone(timedelta(hours=8))
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-DB_PATH = PROJECT_ROOT / "ccass" / "ccass.db"
+DB_PATH = PROJECT_ROOT / "ccass" / "holdings.db"
 DATA_DIR = PROJECT_ROOT / "data"
 DATA_DIR.mkdir(exist_ok=True)
 

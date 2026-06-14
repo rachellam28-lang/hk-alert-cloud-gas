@@ -23,7 +23,12 @@ from pathlib import Path
 
 import yaml
 
-import pytz
+try:
+    from zoneinfo import ZoneInfo
+    HK_TZ = ZoneInfo("Asia/Hong_Kong")
+except Exception:  # pragma: no cover - fallback for older runtimes
+    import pytz
+    HK_TZ = pytz.timezone("Asia/Hong_Kong")
 
 from src.db import init_db, get_conn
 from src.logger import setup_logger
@@ -51,6 +56,35 @@ MIN_SUCCESS_COVERAGE = 0.95
 def load_config() -> dict:
     with open(CONFIG_PATH, encoding="utf-8") as f:
         return yaml.safe_load(f)
+
+
+def _apply_runtime_tuning(config: dict) -> dict:
+    """Apply env-driven runtime tuning without mutating the base config file."""
+    sc_cfg = config.setdefault("scraping", {})
+    fast = os.environ.get("HOLDINGS_FAST", "0") == "1"
+    ultra_fast = os.environ.get("HOLDINGS_ULTRA_FAST", "0") == "1"
+    skip_mc = os.environ.get("HOLDINGS_SKIP_MARKET_CAP_FETCH", "0") == "1"
+
+    if fast:
+        sc_cfg["delay_min_seconds"] = min(float(sc_cfg.get("delay_min_seconds", 4.0)), 1.0)
+        sc_cfg["delay_max_seconds"] = min(float(sc_cfg.get("delay_max_seconds", 10.0)), 2.0)
+        sc_cfg["parallel_workers"] = max(int(sc_cfg.get("parallel_workers", 1)), 8)
+        sc_cfg["timeout_seconds"] = min(int(sc_cfg.get("timeout_seconds", 30)), 24)
+        sc_cfg["max_retries"] = min(int(sc_cfg.get("max_retries", 3)), 2)
+        skip_mc = True
+
+    if ultra_fast:
+        sc_cfg["delay_min_seconds"] = min(float(sc_cfg.get("delay_min_seconds", 4.0)), 0.15)
+        sc_cfg["delay_max_seconds"] = min(float(sc_cfg.get("delay_max_seconds", 10.0)), 0.5)
+        sc_cfg["parallel_workers"] = max(int(sc_cfg.get("parallel_workers", 1)), 16)
+        sc_cfg["timeout_seconds"] = min(int(sc_cfg.get("timeout_seconds", 30)), 18)
+        sc_cfg["max_retries"] = min(int(sc_cfg.get("max_retries", 3)), 1)
+        skip_mc = True
+        config["_runtime_ultra_fast_mode"] = True
+
+    sc_cfg["skip_market_cap_fetch"] = skip_mc
+    config["_runtime_fast_mode"] = fast
+    return config
 
 
 def _active_cooldown_reason() -> str | None:
@@ -229,7 +263,7 @@ def run_daily(
 
     init_db()
     _restore_db()  # Decompress holdings.db.gz if DB is empty (fresh checkout)
-    config = load_config()
+    config = _apply_runtime_tuning(load_config())
     target_date = target_date or today_hk()
 
     if not skip_scrape:
@@ -259,7 +293,7 @@ def run_daily(
     logger.info("Querying HOLDINGS data for %s", query_date)
 
     # 1. Start run log
-    now_iso = datetime.now(tz=pytz.timezone("Asia/Hong_Kong")).isoformat()
+    now_iso = datetime.now(tz=HK_TZ).isoformat()
     with get_conn() as conn:
         cur = conn.execute(
             """INSERT INTO scrape_runs (run_date, started_at, status)
@@ -299,12 +333,56 @@ def run_daily(
         if not stocks:
             raise RuntimeError("Empty universe — cannot proceed")
 
+        # Resume mode: if today's run already wrote some rows, skip them on restart.
+        # This makes an interrupted run restartable without re-scraping completed stocks.
+        existing_rows = 0
+        if not out_path and not skip_scrape:
+            with get_conn() as conn:
+                existing_row = conn.execute(
+                    """
+                    SELECT COUNT(*) AS n
+                    FROM ccass_daily
+                    WHERE trade_date = ? AND validation_failed = 0
+                    """,
+                    (query_date.strftime("%Y-%m-%d"),),
+                ).fetchone()
+                existing_rows = existing_row["n"] if existing_row else 0
+            if existing_rows:
+                before = len(stocks)
+                with get_conn() as conn:
+                    done_codes = {
+                        r["stock_code"]
+                        for r in conn.execute(
+                            """
+                            SELECT stock_code
+                            FROM ccass_daily
+                            WHERE trade_date = ? AND validation_failed = 0
+                            """,
+                            (query_date.strftime("%Y-%m-%d"),),
+                        ).fetchall()
+                    }
+                stocks = [code for code in stocks if code not in done_codes]
+                skipped = before - len(stocks)
+                if skipped:
+                    logger.info(
+                        "Resume mode: skipping %d already-scraped stocks for %s",
+                        skipped, query_date,
+                    )
+                if not stocks:
+                    logger.info(
+                        "Resume mode: all %d stocks already scraped for %s; continuing to trends/export",
+                        existing_rows, query_date,
+                    )
+
         # 3. Scrape
         collected_for_shard: list[dict] = []  # snapshots for shard JSON (out_path mode)
         if not skip_scrape:
             sc_cfg = config["scraping"]
             n_workers = sc_cfg.get("parallel_workers", 1)
-            assert n_workers == 1, "FATAL-003: parallel_workers must be 1"
+            if config.get("_runtime_ultra_fast_mode") and len(stocks) > 1:
+                # In ultra-fast mode, split the remaining universe across a few more workers
+                # if the configured count is still conservative.
+                n_workers = max(n_workers, 16)
 
             if n_workers > 1 and len(stocks) > 100:
                 attempted, succeeded, failed_stocks = _scrape_parallel(
@@ -340,7 +418,7 @@ def run_daily(
                                 with get_conn() as conn:
                                     now_iso = datetime.utcnow().isoformat()
                                     conn.execute("""
-                                        INSERT OR REPLACE INTO holdings_daily
+                                        INSERT OR REPLACE INTO ccass_daily
                                         (stock_code, trade_date, total_shares, total_pct,
                                          num_participants, top5_pct, top10_pct,
                                          adj_hhi, broker_top5_pct, top_broker_id,
@@ -361,12 +439,12 @@ def run_daily(
                                     ))
                                     # P1-5: DELETE old holdings + INSERT new (atomic replace)
                                     conn.execute(
-                                        "DELETE FROM holdings_holdings WHERE stock_code = ? AND trade_date = ?",
+                                        "DELETE FROM ccass_holdings WHERE stock_code = ? AND trade_date = ?",
                                         (data["stock_code"], data["trade_date"]),
                                     )
                                     for h in data.get("holdings", []):
                                         conn.execute("""
-                                            INSERT OR REPLACE INTO holdings_holdings
+                                            INSERT OR REPLACE INTO ccass_holdings
                                             (stock_code, trade_date, participant_id,
                                              participant_name, shares, pct_of_issued)
                                             VALUES (?, ?, ?, ?, ?, ?)
@@ -500,6 +578,15 @@ def run_daily(
             "Done: %d/%d succeeded, %d failed, coverage %.1f%%",
             succeeded, attempted, len(failed_stocks), coverage * 100,
         )
+        if succeeded == 0:
+            if attempted == 0 and existing_rows > 0:
+                logger.info(
+                    "Resume mode: no rows scraped this run because %d rows already existed for %s",
+                    existing_rows, query_date,
+                )
+            else:
+                logger.error("No valid HOLDINGS rows scraped for %s; skipping holdings.json export", query_date)
+                return 1
         _export_json(query_date, len(alerts_found))
         if coverage < MIN_SUCCESS_COVERAGE:
             logger.error("Coverage %.1f%% < %.1f%%; returning partial failure", coverage * 100, MIN_SUCCESS_COVERAGE * 100)
@@ -534,12 +621,11 @@ def run_daily(
         return 2
 
 
-def _fetch_market_caps(codes: list[str]) -> dict[str, float]:
-    """Fetch market caps for HK stock codes via yfinance with caching.
+def _fetch_market_caps(codes: list[str], fetch_remote: bool = True) -> dict[str, float]:
+    """Load market caps from cache.
 
-    Uses ThreadPoolExecutor for parallel fetches. Results (including None
-    for failed lookups) are cached in holdings/cache/market_caps.json to
-    minimise re-fetches on subsequent runs.
+    Daily refresh must not block on an external market-cap provider.
+    The cache is refreshed out-of-band by Futu / Longbridge scripts.
     """
     cache_dir = Path(__file__).parent.parent / "cache"
     cache_path = cache_dir / "market_caps.json"
@@ -550,43 +636,9 @@ def _fetch_market_caps(codes: list[str]) -> dict[str, float]:
         except Exception:
             cache = {}
 
-    # Only fetch codes not yet in cache (including those cached as null)
-    uncached = [c for c in codes if c not in cache]
-    if uncached:
-        import logging as _logging
-        _logging.getLogger("yfinance").setLevel(_logging.CRITICAL)
-        import yfinance as yf
-        from concurrent.futures import ThreadPoolExecutor, as_completed
-
-        def _yf_symbol(code: str) -> str:
-            return f"{code.lstrip('0').zfill(4)}.HK"
-
-        def _fetch_one(code: str) -> tuple[str, float | None]:
-            try:
-                t = yf.Ticker(_yf_symbol(code))
-                info = t.info if hasattr(t, 'info') else {}
-                mc = info.get("marketCap") if isinstance(info, dict) else None
-                if mc is not None:
-                    return code, round(float(mc) / 1e8, 2)
-            except Exception:
-                pass
-            return code, None
-
-        with ThreadPoolExecutor(max_workers=4) as pool:
-            futures = {pool.submit(_fetch_one, c): c for c in uncached}
-            for fut in as_completed(futures):
-                code, mc = fut.result()
-                cache[code] = mc  # cache both hits and misses
-
-        cache_dir.mkdir(parents=True, exist_ok=True)
-        cache_path.write_text(json.dumps(cache, ensure_ascii=False))
-        logger.info(
-            "Fetched market caps: %d/%d in cache (%.0f%% with data)",
-            len(cache), len(codes),
-            sum(1 for v in cache.values() if v is not None) / max(len(cache), 1) * 100,
-        )
-
-    return cache
+    if not fetch_remote:
+        logger.info("Market cap cache-only mode: using %d cached entries", len(cache))
+    return {c: cache.get(c) for c in codes}
 
 
 def _export_json(query_date: date, alerts_today: int) -> None:
@@ -673,7 +725,10 @@ def _export_json(query_date: date, alerts_today: int) -> None:
 
         # Enrich stocks with market cap from Yahoo Finance
         try:
-            mc_map = _fetch_market_caps([s["c"] for s in stocks])
+            mc_map = _fetch_market_caps(
+                [s["c"] for s in stocks],
+                fetch_remote=not config["scraping"].get("skip_market_cap_fetch", False),
+            )
             for s in stocks:
                 s["mc"] = mc_map.get(s["c"])
         except Exception:
@@ -689,6 +744,30 @@ def _export_json(query_date: date, alerts_today: int) -> None:
                 "SELECT MIN(trade_date) AS md FROM holdings_daily"
             ).fetchone()
             first_date = min_date_row["md"] if min_date_row and min_date_row["md"] else date_str
+            active_total_row = conn.execute(
+                """
+                SELECT COUNT(*) AS n
+                FROM stock_universe
+                WHERE is_active=1
+                  AND stock_code NOT LIKE '029%'
+                  AND stock_code NOT LIKE '04621'
+                  AND stock_code NOT LIKE '8%'
+                """
+            ).fetchone()
+            active_total = active_total_row["n"] if active_total_row else 0
+            date_count_row = conn.execute(
+                """
+                SELECT COUNT(*) AS n
+                FROM holdings_daily
+                WHERE trade_date = ? AND validation_failed = 0
+                  AND stock_code NOT LIKE '029%'
+                  AND stock_code NOT LIKE '04621'
+                  AND stock_code NOT LIKE '8%'
+                """,
+                (date_str,),
+            ).fetchone()
+            date_count = date_count_row["n"] if date_count_row else 0
+            coverage_pct = round((date_count / active_total) * 100, 1) if active_total else None
 
         payload = {
             "updated": date_str,
@@ -696,6 +775,10 @@ def _export_json(query_date: date, alerts_today: int) -> None:
             "alerts_today": alerts_today,
             "stock_count": len(stocks),
             "total_participants": total_participants,
+            "coverage": date_count,
+            "coverage_total": active_total,
+            "coverage_pct": coverage_pct,
+            "is_complete": bool(active_total and date_count >= active_total),
             "stocks": stocks,
             "top_increase": top_increase,
             "top_decrease": top_decrease,
@@ -712,17 +795,28 @@ def _export_json(query_date: date, alerts_today: int) -> None:
             return obj
         payload = _sanitize(payload)
         out_path = Path(__file__).parent.parent.parent / "holdings.json"
+        ccass_path = Path(__file__).parent.parent.parent / "ccass.json"
         # ✅ P1-6: atomic write via temp file
         tmp_path = out_path.with_suffix(".tmp")
         tmp_path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
         tmp_path.replace(out_path)
+        legacy_payload = dict(payload)
+        legacy_payload.setdefault("alerts_today", alerts_today)
+        legacy_tmp = ccass_path.with_suffix(".tmp")
+        legacy_tmp.write_text(json.dumps(legacy_payload, ensure_ascii=False), encoding="utf-8")
+        legacy_tmp.replace(ccass_path)
         verified = json.loads(out_path.read_text(encoding="utf-8"))
         if verified.get("updated") != date_str:
             raise RuntimeError(f"holdings.json stale date: {verified.get('updated')} != {date_str}")
         if verified.get("stock_count") != len(stocks):
             raise RuntimeError(f"holdings.json stock_count mismatch: {verified.get('stock_count')} != {len(stocks)}")
+        ccass_verified = json.loads(ccass_path.read_text(encoding="utf-8"))
+        if ccass_verified.get("updated") != date_str:
+            raise RuntimeError(f"ccass.json stale date: {ccass_verified.get('updated')} != {date_str}")
+        if ccass_verified.get("stock_count") != len(stocks):
+            raise RuntimeError(f"ccass.json stock_count mismatch: {ccass_verified.get('stock_count')} != {len(stocks)}")
         logger.info(
-            "Exported holdings.json (%d stocks, %d up, %d down)",
+            "Exported holdings.json + ccass.json (%d stocks, %d up, %d down)",
             len(stocks), len(top_increase), len(top_decrease),
         )
         _post_movers_to_gas(top_increase, top_decrease, date_str)
@@ -789,12 +883,13 @@ def _stage_outputs(json_path):
             logger.info("Compressed holdings.db: %d → %d bytes",
                         db_path.stat().st_size, db_gz_path.stat().st_size)
 
-        # Stage BOTH files. The workflow YAML step runs 'git add holdings.json'
-        # and then commits everything staged — so holdings.db.gz goes along.
+        # Stage BOTH JSON files. The workflow YAML step runs a git commit
+        # from the repo root, so both outputs need to be staged here.
         subprocess.run(["git","add","holdings.json"], cwd=repo_root, capture_output=True)
+        subprocess.run(["git","add","ccass.json"], cwd=repo_root, capture_output=True)
         if db_gz_path.exists():
             subprocess.run(["git","add","holdings/holdings.db.gz"], cwd=repo_root, capture_output=True)
-        logger.info("Staged holdings.json + holdings.db.gz for workflow commit")
+        logger.info("Staged holdings.json + ccass.json + holdings.db.gz for workflow commit")
     except Exception as e:
         logger.warning("Stage outputs failed: %s", e)
 

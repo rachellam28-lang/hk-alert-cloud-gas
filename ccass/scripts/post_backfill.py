@@ -2,17 +2,16 @@
 Post-backfill script: after backfill completes for a date, rebuild all outputs.
 Usage: python scripts/post_backfill.py 2026-06-05
 """
-import sys, subprocess, os
+import sys, subprocess
 from pathlib import Path
 
-PROJECT = Path(__file__).parent.parent
-HOLDINGS_DIR = PROJECT / "holdings"
-REPO = PROJECT
+CCASS_DIR = Path(__file__).resolve().parent.parent
+REPO_ROOT = CCASS_DIR.parent
 PYTHON = sys.executable  # use same Python that launched this script
 
-def run(cmd, cwd=None):
+def run(cmd, cwd):
     print(f"  RUN: {' '.join(cmd)}")
-    r = subprocess.run(cmd, cwd=cwd or HOLDINGS_DIR, capture_output=True, text=True)
+    r = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True)
     if r.returncode != 0:
         print(f"  FAIL (rc={r.returncode}): {r.stderr[-300:]}")
     else:
@@ -29,23 +28,41 @@ def main():
     
     # 1. Regenerate holdings.json
     print("[1/4] Regenerate holdings.json...")
-    run([PYTHON, "scripts/regenerate_json.py", "--date", date])
+    if not run([PYTHON, "scripts/regenerate_json.py", "--date", date], cwd=CCASS_DIR):
+        sys.exit(1)
     
     # 2. Detect transfers
     print("\n[2/4] Detect transfers...")
-    run([PYTHON, "scripts/detect_transfers.py", "--date", date])
+    if not run([PYTHON, "scripts/detect_transfers.py", "--date", date], cwd=CCASS_DIR):
+        sys.exit(1)
     
     # 3. Run gap/FVG scanner
     print("\n[3/4] Run gap/FVG scanner...")
-    run([PYTHON, "scanner/gap_fvg_alert.py"], cwd=PROJECT)
+    if not run([PYTHON, "scanner/gap_fvg_alert.py"], cwd=REPO_ROOT):
+        sys.exit(1)
     
     # 4. Git push all
     print("\n[4/4] Push to GitHub...")
-    os.chdir(REPO)
-    subprocess.run(["git", "add", "holdings.json", "data/"], capture_output=True)
-    r = subprocess.run(["git", "commit", "-m", f"post-backfill {date}: holdings.json + alerts + transfers"], capture_output=True, text=True)
-    print(f"  commit: {r.stdout.strip()}")
-    subprocess.run(["git", "push"], capture_output=True)
+    subprocess.run(["git", "add", "holdings.json", "data/"], cwd=REPO_ROOT, check=True, capture_output=True)
+    r = subprocess.run(
+        ["git", "commit", "-m", f"post-backfill {date}: holdings.json + alerts + transfers"],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+    )
+    if r.returncode != 0:
+        if "nothing to commit" in (r.stdout + r.stderr).lower():
+            print("  commit: nothing to commit")
+        else:
+            print(f"  commit failed: {r.stderr.strip()[-300:]}")
+            sys.exit(r.returncode)
+    else:
+        print(f"  commit: {r.stdout.strip()}")
+
+    push = subprocess.run(["git", "push"], cwd=REPO_ROOT, capture_output=True, text=True)
+    if push.returncode != 0:
+        print(f"  push failed: {push.stderr.strip()[-300:]}")
+        sys.exit(push.returncode)
     print("  pushed")
     
     print(f"\n=== Done: {date} ===")

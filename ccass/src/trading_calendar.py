@@ -6,11 +6,18 @@ from __future__ import annotations
 
 from datetime import date, datetime, timedelta
 
-import holidays
-import pytz
+try:
+    from zoneinfo import ZoneInfo
+    HK_TZ = ZoneInfo("Asia/Hong_Kong")
+except Exception:  # pragma: no cover - fallback for older runtimes
+    import pytz
+    HK_TZ = pytz.timezone("Asia/Hong_Kong")
 
-HK_TZ = pytz.timezone("Asia/Hong_Kong")
-HK_HOLIDAYS = holidays.HongKong()
+try:
+    import holidays
+    HK_HOLIDAYS = holidays.HongKong()
+except Exception:  # pragma: no cover - optional dependency missing
+    HK_HOLIDAYS = set()
 
 
 def now_hk() -> datetime:

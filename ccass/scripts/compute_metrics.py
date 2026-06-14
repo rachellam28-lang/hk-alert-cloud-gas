@@ -23,7 +23,7 @@ def compute_concentration_for_date(trade_date: str) -> int:
     stocks = conn.execute("""
         SELECT DISTINCT h.stock_code
         FROM holdings_holdings h
-        LEFT JOIN holdings_daily d ON h.stock_code = d.stock_code AND h.trade_date = d.trade_date
+        LEFT JOIN ccass_daily d ON h.stock_code = d.stock_code AND h.trade_date = d.trade_date
         WHERE h.trade_date = ?
           AND (d.adj_hhi IS NULL OR d.stock_code IS NULL)
     """, (trade_date,)).fetchall()
@@ -35,7 +35,7 @@ def compute_concentration_for_date(trade_date: str) -> int:
     for (stock_code,) in stocks:
         holdings = conn.execute("""
             SELECT participant_id, participant_name, shares, pct_of_issued
-            FROM holdings_holdings
+            FROM ccass_holdings
             WHERE trade_date = ? AND stock_code = ?
         """, (trade_date, stock_code)).fetchall()
         
@@ -72,13 +72,13 @@ def compute_concentration_for_date(trade_date: str) -> int:
         
         # Update or insert
         existing = conn.execute(
-            "SELECT stock_code FROM holdings_daily WHERE trade_date = ? AND stock_code = ?",
+            "SELECT stock_code FROM ccass_daily WHERE trade_date = ? AND stock_code = ?",
             (trade_date, stock_code)
         ).fetchone()
         
         if existing:
             conn.execute("""
-                UPDATE holdings_daily
+                UPDATE ccass_daily
                 SET adj_hhi = ?, broker_top5_pct = ?, top_broker_id = ?,
                     top_broker_name = ?, top_broker_pct = ?,
                     futu_pct = ?, a00005_pct = ?, adjusted_float = ?
@@ -92,7 +92,7 @@ def compute_concentration_for_date(trade_date: str) -> int:
             ))
         else:
             conn.execute("""
-                INSERT INTO holdings_daily (stock_code, trade_date, adj_hhi, broker_top5_pct,
+                INSERT INTO ccass_daily (stock_code, trade_date, adj_hhi, broker_top5_pct,
                     top_broker_id, top_broker_name, top_broker_pct,
                     futu_pct, a00005_pct, adjusted_float, validation_failed)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)
@@ -119,7 +119,7 @@ def main():
     dates = conn.execute("""
         SELECT trade_date, COUNT(*) as total,
                SUM(CASE WHEN adj_hhi IS NOT NULL THEN 1 ELSE 0 END) as with_metrics
-        FROM holdings_daily
+        FROM ccass_daily
         GROUP BY trade_date
         HAVING total > 100 AND with_metrics < total * 0.99
         ORDER BY trade_date
@@ -152,7 +152,7 @@ def main():
     rows = conn.execute("""
         SELECT trade_date, COUNT(*) as total,
                SUM(CASE WHEN adj_hhi IS NOT NULL THEN 1 ELSE 0 END) as with_metrics
-        FROM holdings_daily
+        FROM ccass_daily
         GROUP BY trade_date
         HAVING total > 100
         ORDER BY trade_date DESC LIMIT 15

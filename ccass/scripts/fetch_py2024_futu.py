@@ -1,11 +1,15 @@
-"""Fetch 2024 year-open prices via Futu OpenD (real data, not yfinance)."""
+"""Fetch 2024 year-open prices via Futu OpenD."""
 import json, time
+from pathlib import Path
 from futu import *
 
+ROOT = Path(__file__).resolve().parent.parent.parent
+PRICES_PATH = ROOT / "data" / "stock_prices.json"
+HOLDINGS_PATH = ROOT / "holdings.json"
+
 # Load existing prices
-PROJECT = 'C:/Users/Administrator/Desktop/automatic/holdings-debug'
-prices = json.load(open(f'{PROJECT}/data/stock_prices.json'))
-holdings = json.load(open(f'{PROJECT}/holdings.json'))
+prices = json.loads(PRICES_PATH.read_text(encoding="utf-8"))
+holdings = json.loads(HOLDINGS_PATH.read_text(encoding="utf-8"))
 codes = sorted(k for k,v in prices.items() if v.get('yo'))  # only stocks with 2026 data
 
 print(f'Fetching 2024 year-open for {len(codes)} stocks via Futu...')
@@ -35,14 +39,18 @@ with open('py2024_futu.log', 'w') as log:
         if (i+1) % 200 == 0:
             print(f'  {i+1}/{len(codes)} updated={updated} failed={failed}')
             # Save checkpoint
-            json.dump(prices, open(f'{PROJECT}/data/stock_prices.json','w'), ensure_ascii=False, indent=2)
+            tmp_prices = PRICES_PATH.with_suffix('.tmp')
+            tmp_prices.write_text(json.dumps(prices, ensure_ascii=False, indent=2), encoding="utf-8")
+            tmp_prices.replace(PRICES_PATH)
         
         time.sleep(0.3)  # ~3 calls/sec to avoid rate limit
 
 q.close()
 
 # Final save
-json.dump(prices, open(f'{PROJECT}/data/stock_prices.json','w'), ensure_ascii=False, indent=2)
+tmp_prices = PRICES_PATH.with_suffix('.tmp')
+tmp_prices.write_text(json.dumps(prices, ensure_ascii=False, indent=2), encoding="utf-8")
+tmp_prices.replace(PRICES_PATH)
 print(f'Done: {updated} updated, {failed} failed')
 
 # Update holdings.json
@@ -55,7 +63,9 @@ for s in holdings['stocks']:
         if p.get('py_pct') is not None:
             s['py_pct'] = p['py_pct']
 
-json.dump(holdings, open(f'{PROJECT}/holdings.json','w'), ensure_ascii=False)
+tmp_holdings = HOLDINGS_PATH.with_suffix('.tmp')
+tmp_holdings.write_text(json.dumps(holdings, ensure_ascii=False, indent=2), encoding="utf-8")
+tmp_holdings.replace(HOLDINGS_PATH)
 print('holdings.json updated')
 
 # Verify

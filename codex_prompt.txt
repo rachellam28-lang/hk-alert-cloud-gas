@@ -1,6 +1,6 @@
-POC scan currently uses yfinance to download 126/252/756 days of OHLCV for 2600+ HK stocks. This is slow and yfinance is unreliable.
+POC scan currently uses a slow legacy price source to download 126/252/756 days of OHLCV for 2600+ HK stocks.
 
-Question: Can Longbridge API replace yfinance for POC price data?
+Question: Can Longbridge API replace the legacy source for POC price data?
 
 Existing infrastructure:
 - Longbridge SDK installed, token in .env (LONGBRIDGE_ACCESS_TOKEN)

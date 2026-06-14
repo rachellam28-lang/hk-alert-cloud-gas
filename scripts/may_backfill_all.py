@@ -63,7 +63,7 @@ sys.exit(rc)
 def check_stock_count(target_date):
     """Return number of stocks scraped for this date."""
     import sqlite3
-    db = sqlite3.connect(str(CCASS_DIR / "ccass.db"))
+    db = sqlite3.connect(str(CCASS_DIR / "holdings.db"))
     count = db.execute(
         "SELECT COUNT(DISTINCT stock_code) FROM ccass_daily WHERE trade_date=?",
         (target_date,)

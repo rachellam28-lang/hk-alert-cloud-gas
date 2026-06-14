@@ -3,6 +3,7 @@ import subprocess, json, os, sys
 from pathlib import Path
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
+CACHE_PATH = Path(__file__).resolve().parent.parent / "cache" / "market_caps.json"
 
 def get_token():
     for p in [
@@ -135,7 +136,20 @@ if __name__ == "__main__":
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(caps, f, ensure_ascii=False, indent=2)
 
+    # Also update the cache format used by the daily runner:
+    # [{"stock_code": "00001", "market_cap": 123.45}, ...]
+    cache_rows = []
+    for sym, info in caps.items():
+        stock_code = sym.replace(".HK", "").zfill(5)
+        cache_rows.append({
+            "stock_code": stock_code,
+            "market_cap": round(float(info.get("market_cap_hkd") or 0) / 1e8, 2) if info.get("market_cap_hkd") else None,
+        })
+    CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    CACHE_PATH.write_text(json.dumps(cache_rows, ensure_ascii=False, indent=2), encoding="utf-8")
+
     print("\nSaved {} stocks to {}".format(len(caps), out_path))
+    print("Saved cache to {}".format(CACHE_PATH))
 
     # Show top 10 by market cap
     ranked = sorted(caps.items(), key=lambda x: x[1].get("market_cap_hkd", 0), reverse=True)

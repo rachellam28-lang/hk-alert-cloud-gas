@@ -28,7 +28,7 @@ from typing import Optional
 # ── Paths ─────────────────────────────────────────────────────
 PROJECT_DIR = Path(__file__).resolve().parent.parent  # ccass-debug/
 DATA_DIR = PROJECT_DIR / "data"
-DB_PATH = PROJECT_DIR / "ccass.db"
+DB_PATH = PROJECT_DIR / "holdings.db"
 OUTPUT_DIR = PROJECT_DIR / "data" / "ai_team_output"
 TRADINGAGENTS_DIR = PROJECT_DIR.parent / "TradingAgents"
 
@@ -94,7 +94,7 @@ def load_stock_prices() -> dict:
 
 
 def load_db_trends(lookback_days: int = 30) -> list[dict]:
-    """Load recent alerts/trends from ccass.db if populated."""
+    """Load recent alerts/trends from holdings.db if populated."""
     try:
         conn = sqlite3.connect(DB_PATH)
         conn.row_factory = sqlite3.Row
@@ -115,8 +115,8 @@ def load_db_trends(lookback_days: int = 30) -> list[dict]:
 # Ticker Conversion
 # ═══════════════════════════════════════════════════════════════
 
-def hk_to_yfinance(code: str) -> str:
-    """Convert CCASS 5-digit code to yfinance ticker.
+def hk_code_to_ticker(code: str) -> str:
+    """Convert CCASS 5-digit code to a ticker string.
     
     00700 → 0700.HK
     00005 → 0005.HK
@@ -124,13 +124,11 @@ def hk_to_yfinance(code: str) -> str:
     code = code.strip().zfill(5)
     # Strip leading zeros but keep at least 1 digit
     stripped = code.lstrip("0") or "0"
-    # Some stocks like 00001 are just "1.HK" but yfinance needs 4 digits
-    # Actually yfinance accepts "0001.HK", "0700.HK" etc — use simple strip
     return f"{int(code):04d}.HK"
 
 
-def ccass_code_to_yfinance(code: str) -> str:
-    """Convert any HK stock code format to yfinance ticker."""
+def ccass_code_to_ticker(code: str) -> str:
+    """Convert any HK stock code format to a ticker string."""
     code = code.strip()
     if code.endswith(".HK"):
         return code.upper()
@@ -153,7 +151,7 @@ def extract_top_signals(
 ) -> list[dict]:
     """Extract top signals for AI analysis.
 
-    Returns list of {'code', 'name', 'reason', 'yf_ticker', 'context'}
+    Returns list of {'code', 'name', 'reason', 'ticker', 'context'}
     """
     signals = []
 
@@ -181,7 +179,7 @@ def extract_top_signals(
                     "reason": f"Breakthrough: {b.get('type','?')} | "
                               f"Offer: {b.get('offer_price')} → Now: {b.get('current_price')} "
                               f"(+{b.get('pct_above',0):.1f}%)",
-                    "yf_ticker": ccass_code_to_yfinance(code),
+                    "ticker": ccass_code_to_ticker(code),
                     "context": json.dumps(b, ensure_ascii=False),
                 })
         return signals
@@ -211,7 +209,7 @@ def extract_top_signals(
                               f"({top_in.get('pct_chg',0):+.1f}%) | "
                               f"OUT: {top_out.get('pname','?')[:30]} "
                               f"({top_out.get('pct_chg',0):+.1f}%)",
-                    "yf_ticker": ccass_code_to_yfinance(code),
+                    "ticker": ccass_code_to_ticker(code),
                     "context": json.dumps(t, ensure_ascii=False, default=str),
                 })
         return signals
@@ -277,7 +275,7 @@ def _make_signal_dashboard(s: dict) -> dict:
         "code": code,
         "name": name,
         "reason": reason,
-        "yf_ticker": ccass_code_to_yfinance(code),
+        "ticker": ccass_code_to_ticker(code),
         "context": context,
     }
 
@@ -309,7 +307,7 @@ def run_ai_analysis(
             print(f"{'='*60}")
             for i, s in enumerate(signals, 1):
                 print(f"\n#{i}  {s['code']} {s['name']}")
-                print(f"   Ticker: {s['yf_ticker']}")
+                print(f"   Ticker: {s['ticker']}")
                 print(f"   信號: {s['reason']}")
         return signals
 
@@ -351,10 +349,10 @@ def run_ai_analysis(
     config["output_language"] = "Chinese"
     config["benchmark_ticker"] = "^HSI"
     config["data_vendors"] = {
-        "core_stock_apis": "yfinance",
-        "technical_indicators": "yfinance",
-        "fundamental_data": "yfinance",
-        "news_data": "yfinance",
+        "core_stock_apis": "futu",
+        "technical_indicators": "futu",
+        "fundamental_data": "futu",
+        "news_data": "futu",
     }
     # Keep debate rounds low for speed; CCASS signals are screening, not deep dives
     config["max_debate_rounds"] = 1
@@ -369,7 +367,7 @@ def run_ai_analysis(
         print(f"📊 Analyzing {len(signals)} signals...\n")
 
     for i, sig in enumerate(signals):
-        ticker = sig["yf_ticker"]
+        ticker = sig["ticker"]
         code = sig["code"]
         name = sig["name"]
 

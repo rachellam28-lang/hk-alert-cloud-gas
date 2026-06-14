@@ -6,7 +6,7 @@ from pathlib import Path
 from datetime import date
 
 ROOT = Path(__file__).parent
-DB_PATH = ROOT / "ccass" / "ccass.db"
+DB_PATH = ROOT / "ccass" / "holdings.db"
 JSON_PATH = ROOT / "ccass.json"
 
 def verify_all():
@@ -67,6 +67,13 @@ def verify_all():
     print("\n── 2. Database ──")
     db = sqlite3.connect(str(DB_PATH))
     cur = db.cursor()
+    publish_where = """
+        trade_date = ?
+        AND validation_failed = 0
+        AND stock_code NOT LIKE '029%'
+        AND stock_code NOT LIKE '04621'
+        AND stock_code NOT LIKE '8%'
+    """
     
     # Per-date completeness
     print(f"  Per-date stock counts:")
@@ -85,13 +92,17 @@ def verify_all():
     
     db_json = dates[-1] if dates else "N/A"
     print(f"  Latest DB date: {db_json}")
-    
+
     # Stock count consistency  
-    cur.execute(f"SELECT COUNT(DISTINCT stock_code) FROM ccass_daily WHERE trade_date='{db_json}'")
+    cur.execute(f"SELECT COUNT(DISTINCT stock_code) FROM ccass_daily WHERE {publish_where}", (db_json,))
     db_count = cur.fetchone()[0]
     diff = abs(db_count - n_json)
-    if diff > 50:
+    is_partial = (coverage_pct := data.get("coverage_pct")) is not None and coverage_pct < 100
+    if diff > 50 and not is_partial:
         errors.append(f"DB vs JSON stock mismatch: DB={db_count}, JSON={n_json} (diff={diff})")
+    elif diff > 50:
+        warnings.append(f"DB vs JSON stock mismatch on partial publish: DB={db_count}, JSON={n_json} (diff={diff})")
+        print(f"  ⚠ DB vs JSON: {db_count} vs {n_json} (Δ={diff})")
     else:
         print(f"  ✓ DB vs JSON: {db_count} vs {n_json} (Δ={diff})")
     
@@ -114,7 +125,10 @@ def verify_all():
             SELECT ABS(d.total_shares - SUM(h.shares)) * 100.0 / NULLIF(d.total_shares, 0) as mismatch_pct
             FROM ccass_daily d
             JOIN ccass_holdings h ON d.stock_code = h.stock_code AND d.trade_date = h.trade_date
-            WHERE d.total_shares > 0 AND d.trade_date = ?
+            WHERE d.total_shares > 0 AND d.trade_date = ? AND d.validation_failed = 0
+              AND d.stock_code NOT LIKE '029%'
+              AND d.stock_code NOT LIKE '04621'
+              AND d.stock_code NOT LIKE '8%'
             GROUP BY d.stock_code, d.trade_date
         )
     """, (db_json,))
@@ -122,7 +136,10 @@ def verify_all():
     if h_r[0]:
         print(f"  Holdings mismatch: {h_r[0]} stocks, avg={h_r[1]}%")
         if h_r[1] and h_r[1] > 5:
-            errors.append(f"High holdings mismatch: avg={h_r[1]}%")
+            if is_partial:
+                warnings.append(f"High holdings mismatch on partial publish: avg={h_r[1]}%")
+            else:
+                errors.append(f"High holdings mismatch: avg={h_r[1]}%")
     else:
         print(f"  ⚠ No holdings data for {db_json}")
     

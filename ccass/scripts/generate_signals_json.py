@@ -33,6 +33,12 @@ ANNOUNCEMENTS_JSON = DATA / "announcements.json"
 # How far back to consider corp actions "active" for corpTypes
 CORP_WINDOW_DAYS = 90
 
+
+def atomic_write_json(path, obj):
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp.write_text(json.dumps(obj, ensure_ascii=False), encoding="utf-8")
+    tmp.replace(path)
+
 TYPE_MAP = {
     'placement': 'placement', '配售': 'placement', 'placing': 'placement',
     'rights': 'rights', '供股': 'rights', 'rights issue': 'rights',
@@ -285,7 +291,7 @@ def generate():
     }
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(json.dumps(output, ensure_ascii=False), encoding="utf-8")
+    atomic_write_json(OUT, output)
 
     print(f"Generated {OUT}")
     print(f"  {len(groups)} stocks total")

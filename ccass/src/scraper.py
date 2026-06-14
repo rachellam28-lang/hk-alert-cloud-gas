@@ -17,6 +17,7 @@ from __future__ import annotations
 import random
 import re
 import time
+import os
 from dataclasses import dataclass
 from datetime import date, datetime
 from pathlib import Path
@@ -104,6 +105,8 @@ class HOLDINGSScraper:
         self._last_token_refresh = now
 
     def _polite_sleep(self) -> None:
+        if os.environ.get("HOLDINGS_ULTRA_FAST", "0") == "1":
+            return
         time.sleep(random.uniform(self.delay_min, self.delay_max))
 
     def _record_outcome(self, bad: bool, stock_code: str) -> None:
@@ -529,7 +532,7 @@ def save_snapshot(snap: HOLDINGSSnapshot) -> None:
         conn.execute("BEGIN IMMEDIATE")
         try:
             conn.execute(
-                """INSERT INTO holdings_daily
+                """INSERT INTO ccass_daily
                      (stock_code, trade_date, total_shares, total_pct,
                       num_participants, top5_pct, top10_pct,
                       adj_hhi, broker_top5_pct, top_broker_id, top_broker_name,
@@ -562,11 +565,11 @@ def save_snapshot(snap: HOLDINGSSnapshot) -> None:
                 ),
             )
             conn.execute(
-                "DELETE FROM holdings_holdings WHERE stock_code = ? AND trade_date = ?",
+                "DELETE FROM ccass_holdings WHERE stock_code = ? AND trade_date = ?",
                 (snap.stock_code, snap.trade_date),
             )
             conn.executemany(
-                """INSERT INTO holdings_holdings
+                """INSERT INTO ccass_holdings
                      (stock_code, trade_date, participant_id, participant_name,
                       shares, pct_of_issued)
                    VALUES (?, ?, ?, ?, ?, ?)""",

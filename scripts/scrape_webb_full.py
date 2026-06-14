@@ -11,7 +11,7 @@ F = 'data/placements_enriched.json'
 p = json.load(open(F, encoding='utf-8'))
 
 # Also check CCASS events DB
-db = sqlite3.connect('ccass/ccass.db')
+db = sqlite3.connect('ccass/holdings.db')
 db.row_factory = sqlite3.Row
 
 print("=== Step 1: Scrape Webb-site for ALL available dates ===")

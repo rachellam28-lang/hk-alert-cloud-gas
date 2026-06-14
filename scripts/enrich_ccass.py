@@ -15,6 +15,49 @@ from src.db import get_conn, init_db
 from src.logger import setup_logger
 
 logger = setup_logger("enrich_ccass")
+EXCLUDE_PATTERNS = ["029%", "04621", "8%"]
+
+
+def atomic_write_json(path, obj):
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp.parent.mkdir(parents=True, exist_ok=True)
+    tmp.write_text(json.dumps(obj, ensure_ascii=False, indent=2), encoding="utf-8")
+    tmp.replace(path)
+
+
+def get_latest_trade_date(conn):
+    """Return the newest trade date that has at least one valid row."""
+    row = conn.execute(
+        """
+        SELECT trade_date
+        FROM ccass_daily
+        WHERE validation_failed = 0
+        GROUP BY trade_date
+        ORDER BY trade_date DESC
+        LIMIT 1
+        """
+    ).fetchone()
+    return row["trade_date"] if row and row["trade_date"] else None
+
+
+def get_date_coverage(conn, trade_date):
+    """Return row coverage for a given trade date."""
+    exclude_clause = " AND ".join([f"stock_code NOT LIKE '{p}'" for p in EXCLUDE_PATTERNS])
+    total = conn.execute(
+        f"SELECT COUNT(*) FROM stock_universe WHERE is_active=1 AND {exclude_clause}"
+    ).fetchone()[0] or 0
+    have = conn.execute(
+        """
+        SELECT COUNT(*)
+        FROM ccass_daily
+        WHERE trade_date = ? AND validation_failed = 0
+          AND stock_code NOT LIKE '029%'
+          AND stock_code NOT LIKE '04621'
+          AND stock_code NOT LIKE '8%'
+        """,
+        (trade_date,),
+    ).fetchone()[0] or 0
+    return have, total, round((have / total) * 100, 1) if total else None
 
 
 def load_futu_prices():
@@ -130,22 +173,23 @@ def build_ccass_json():
     
     # 1. Load latest CCASS from DB
     with get_conn() as conn:
-        # Get latest trade date
-        row = conn.execute(
-            "SELECT trade_date FROM ccass_daily ORDER BY trade_date DESC LIMIT 1"
-        ).fetchone()
-        if not row:
+        # Get latest trade date, even if it is still partially complete.
+        latest_date = get_latest_trade_date(conn)
+        if not latest_date:
             logger.error("No CCASS data in DB!")
             return None
-        latest_date = row["trade_date"]
-        logger.info("Latest CCASS date: %s", latest_date)
+        have, total, coverage_pct = get_date_coverage(conn, latest_date)
+        logger.info("Latest CCASS date: %s (%d/%d rows, %.1f%%)", latest_date, have, total, coverage_pct or 0.0)
         
         # Get all stocks for latest date
         rows = conn.execute("""
             SELECT stock_code, total_pct, num_participants, top5_pct, top10_pct,
                    adj_hhi, broker_top5_pct, top_broker_id, top_broker_name, top_broker_pct
             FROM ccass_daily
-            WHERE trade_date = ?
+            WHERE trade_date = ? AND validation_failed = 0
+              AND stock_code NOT LIKE '029%'
+              AND stock_code NOT LIKE '04621'
+              AND stock_code NOT LIKE '8%'
         """, (latest_date,)).fetchall()
         
         # Get trends (5d delta from previous dates)
@@ -262,19 +306,21 @@ def build_ccass_json():
         "stock_count": len(stocks),
         "stocks": list(stocks.values()),
         "first_date": "2026-04-30",
+        "coverage": have,
+        "coverage_total": total,
+        "coverage_pct": coverage_pct,
+        "is_complete": bool(total and have >= total),
     }
-    
+
     # Write
     out_path = PROJ / "holdings.json"
-    with open(out_path, "w", encoding="utf-8") as f:
-        json.dump(result, f, ensure_ascii=False)
+    atomic_write_json(out_path, result)
     
     logger.info("Written holdings.json: %d stocks, %d bytes", len(stocks), out_path.stat().st_size)
     
     # Also write to data/holdings.json for dashboard
     data_out = PROJ / "data" / "holdings.json"
-    with open(data_out, "w", encoding="utf-8") as f:
-        json.dump(result, f, ensure_ascii=False)
+    atomic_write_json(data_out, result)
     
     logger.info("Written data/holdings.json")
     return result

@@ -1,57 +1,77 @@
-"""Fetch HK market caps — slow & steady, resumable."""
-import json, time, sys, sqlite3
+"""Merge market-cap caches from Futu / Longbridge.
+
+This script is intentionally cache-only. The daily runner must never block
+on market-cap fetches, and we rely on Futu / Longbridge caches for this field.
+
+Inputs:
+  - ccass/cache/market_caps.json              (Futu cache format)
+  - ccass/data/market_caps.json               (Longbridge output format)
+
+Output:
+  - ccass/cache/market_caps.json              (Futu-style cache format)
+"""
+from __future__ import annotations
+
+import json
 from pathlib import Path
-import yfinance as yf
 
-PROJECT_ROOT = Path(__file__).parent.parent
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
 CACHE_PATH = PROJECT_ROOT / "cache" / "market_caps.json"
-CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
+LB_PATH = PROJECT_ROOT / "data" / "market_caps.json"
 
-# Load cache
-cache = {}
-if CACHE_PATH.exists():
+
+def _load_cache_map() -> dict[str, float | None]:
+    cache: dict[str, float | None] = {}
+    if CACHE_PATH.exists():
+        try:
+            raw = json.loads(CACHE_PATH.read_text(encoding="utf-8"))
+            if isinstance(raw, list):
+                for item in raw:
+                    code = str(item.get("stock_code", "")).zfill(5)
+                    cache[code] = item.get("market_cap")
+            elif isinstance(raw, dict):
+                for k, v in raw.items():
+                    cache[str(k).zfill(5)] = v
+        except Exception:
+            pass
+    return cache
+
+
+def _merge_longbridge(cache: dict[str, float | None]) -> int:
+    if not LB_PATH.exists():
+        return 0
     try:
-        for item in json.loads(CACHE_PATH.read_text(encoding='utf-8')):
-            v = item['market_cap']
-            cache[item['stock_code']] = v
-    except: pass
+        raw = json.loads(LB_PATH.read_text(encoding="utf-8"))
+    except Exception:
+        return 0
 
-# Get codes
-db = sqlite3.connect(str(PROJECT_ROOT / "holdings.db"))
-codes = [r[0] for r in db.execute("SELECT stock_code FROM stock_universe ORDER BY stock_code").fetchall()]
-db.close()
+    updated = 0
+    if isinstance(raw, dict):
+        for sym, info in raw.items():
+            code = str(sym).replace(".HK", "").zfill(5)
+            mc_hkd = info.get("market_cap_hkd") if isinstance(info, dict) else None
+            mc = round(float(mc_hkd) / 1e8, 2) if mc_hkd else None
+            if cache.get(code) != mc:
+                cache[code] = mc
+                updated += 1
+    return updated
 
-# Only fetch missing/null
-missing = [c for c in codes if c not in cache or cache[c] is None]
-done = sum(1 for v in cache.values() if v is not None)
-print(f"Total: {len(codes)}, have mc: {done}, to fetch: {len(missing)}", flush=True)
 
-if not missing:
-    print("All done!", flush=True)
-    sys.exit(0)
+def main() -> int:
+    cache = _load_cache_map()
+    merged = _merge_longbridge(cache)
 
-errors = 0
-for idx, c in enumerate(missing):
-    n = int(c)
-    sym = f"{n:04d}.HK" if n < 10000 else f"{c}.HK"
-    try:
-        t = yf.Ticker(sym)
-        info = t.get_info()
-        mc = info.get('marketCap')
-        cache[c] = round(mc / 1e8, 2) if (mc is not None and mc > 0) else None
-    except Exception as e:
-        cache[c] = None
-        errors += 1
-    
-    # Save every 50 stocks
-    if (idx + 1) % 50 == 0 or idx == len(missing) - 1:
-        output = [{"stock_code": k, "market_cap": v} for k, v in cache.items()]
-        CACHE_PATH.write_text(json.dumps(output, ensure_ascii=False), encoding='utf-8')
-        mc_count = sum(1 for v in cache.values() if v is not None)
-        pct = (idx + 1) / len(missing) * 100
-        print(f"  {idx+1}/{len(missing)} ({pct:.0f}%) — {mc_count} with mc, {errors} err", flush=True)
-    
-    time.sleep(0.5)  # Slow to avoid rate limits
+    rows = [{"stock_code": k, "market_cap": v} for k, v in sorted(cache.items())]
+    CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    CACHE_PATH.write_text(json.dumps(rows, ensure_ascii=False, indent=2), encoding="utf-8")
 
-mc_final = sum(1 for v in cache.values() if v is not None)
-print(f"\nDone! {mc_final} stocks with market cap ({errors} errors)", flush=True)
+    non_null = sum(1 for v in cache.values() if v is not None)
+    print(f"Saved {len(rows)} cache rows to {CACHE_PATH}")
+    print(f"Non-null market caps: {non_null}")
+    print(f"Updated from Longbridge: {merged}")
+    print("Note: daily runner uses cache-only market caps; refresh via Futu/Longbridge scripts.")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

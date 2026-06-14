@@ -1,13 +1,21 @@
 """Check valuation + company for market cap."""
 import subprocess, json, os
 
-env = os.path.expanduser("~/Desktop/automatic/holdings-debug/.env")
-token = ""
-with open(env) as f:
-    for l in f:
-        if "LONGBRIDGE_ACCESS_TOKEN" in l:
-            token = l.strip().split("=", 1)[1]
-            break
+def get_token():
+    for p in [
+        os.path.join(os.path.dirname(__file__), "..", "..", ".env"),
+    ]:
+        p = os.path.normpath(p)
+        if os.path.exists(p):
+            with open(p) as f:
+                for l in f:
+                    if "LONGBRIDGE_ACCESS_TOKEN=" in l:
+                        return l.strip().split("=", 1)[1]
+    return os.environ.get("LONGBRIDGE_ACCESS_TOKEN", "")
+
+token = get_token()
+if not token:
+    raise SystemExit("ERROR: Longbridge token not found")
 
 auth = "Bearer " + token
 

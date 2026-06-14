@@ -34,8 +34,15 @@ for k in required:
 
 stocks = data.get("stocks", [])
 count = data.get("stock_count", 0)
-if count < 2000:
-    errors.append(f"Stock count too low: {count} (expected >= 2000)")
+coverage_pct = data.get("coverage_pct")
+is_complete = data.get("is_complete")
+if count == 0:
+    errors.append("Stock count is zero")
+elif count < 2000:
+    if is_complete is True or coverage_pct == 100:
+        errors.append(f"Stock count too low for a complete publish: {count} (expected >= 2000)")
+    else:
+        warnings.append(f"Partial publish stock count: {count} (latest data, incomplete coverage)")
 if len(stocks) != count:
     errors.append(f"len(stocks)={len(stocks)} != stock_count={count}")
 

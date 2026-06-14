@@ -38,7 +38,7 @@
 - 頂部 KPI cards：HSI、HSI PE、DXY、VIX，全部用 Yahoo Finance 即時資料（HSI PE 用 worldperatio.com）
 - 分類 tabs：全部 / 技術信號 / 披露易 / 配股 / 增持 / 供股
 - 搜尋框：按代號或名稱即時 filter
-- Table 按股票 code grouping。**走勢圖**欄顯示同 Telegram 一模一樣嘅真實 OHLC chart 縮圖（matplotlib + yfinance），如果未有圖則 fallback 用 20 日 close sparkline
+- Table 按股票 code grouping。**走勢圖**欄顯示同 Telegram 一模一樣嘅真實 OHLC chart 縮圖（matplotlib + 本地快取資料），如果未有圖則 fallback 用 20 日 close sparkline
 - 每 120 秒自動 refresh，所有資料來自 `Alerts` sheet（由 GitHub Actions scanner 寫入），絕無 demo / fake data
 
 ## 速度優化（手機 Chrome 開得到）

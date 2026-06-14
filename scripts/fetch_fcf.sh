@@ -2,12 +2,12 @@
 # Fetch Free Cash Flow for top stocks using westock finance (xjll = cash flow statement)
 # Saves to ccass.json as 'fcf' field
 
-PROJECT_DIR="C:/Users/Administrator/Desktop/automatic/ccass-debug"
-TEMP_DIR="C:/Users/Administrator/AppData/Local/Temp/fcf_fill"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+TEMP_DIR="$(mktemp -d)"
 BATCH_SIZE=30
 TOP_N=9999  # all stocks
 
-rm -rf "$TEMP_DIR"
 mkdir -p "$TEMP_DIR"
 
 echo "=== Step 1: Get top $TOP_N stocks by market cap ==="

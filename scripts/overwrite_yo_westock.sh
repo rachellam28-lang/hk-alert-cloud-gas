@@ -1,10 +1,12 @@
 #!/bin/bash
-# Overwrite ALL yo with westock real data (kill yfinance yo)
+# Overwrite ALL yo with westock real data
 # Also retry missing d60/d120 stocks
 set -e
 
-CCASS_JSON="C:/Users/Administrator/Desktop/automatic/ccass-debug/ccass.json"
-TEMP_DIR="C:/Users/Administrator/AppData/Local/Temp/westock_fill"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+CCASS_JSON="$PROJECT_DIR/ccass.json"
+TEMP_DIR="$(mktemp -d)"
 
 echo "=== Parsing existing batch files to extract yo for ALL stocks ==="
 python -c "
@@ -71,7 +73,7 @@ for bf in batch_files:
                 s['yo'] = yo_open
                 yo_updates += 1
                 if old_yo and old_yo != yo_open:
-                    pass  # replaced yfinance value
+                    pass  # replaced legacy value
         
         # Fill missing d60/d120
         for n, key in [(60, 'd60'), (120, 'd120')]:

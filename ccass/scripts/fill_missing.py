@@ -95,7 +95,7 @@ def fill_missing(target_date: str, max_stocks: int = 3000):
             try:
                 db.execute("BEGIN IMMEDIATE")
                 db.execute("""
-                    INSERT OR REPLACE INTO holdings_daily
+                    INSERT OR REPLACE INTO ccass_daily
                     (stock_code, trade_date, total_shares, total_pct,
                      num_participants, top5_pct, top10_pct,
                      adj_hhi, broker_top5_pct, top_broker_id,
@@ -114,11 +114,11 @@ def fill_missing(target_date: str, max_stocks: int = 3000):
                     data.get("adjusted_float"), now,
                 ))
                 # ✅ P0-2 fix: DELETE old holdings before INSERT new (ghost data prevention)
-                db.execute("DELETE FROM holdings_holdings WHERE stock_code = ? AND trade_date = ?",
+                db.execute("DELETE FROM ccass_holdings WHERE stock_code = ? AND trade_date = ?",
                            (data["stock_code"], data["trade_date"]))
                 for h in data.get("holdings", []):
                     db.execute("""
-                        INSERT OR REPLACE INTO holdings_holdings
+                        INSERT OR REPLACE INTO ccass_holdings
                         (stock_code, trade_date, participant_id,
                          participant_name, shares, pct_of_issued)
                         VALUES (?, ?, ?, ?, ?, ?)

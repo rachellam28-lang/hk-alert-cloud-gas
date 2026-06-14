@@ -279,6 +279,31 @@ def update_holdings_json(target_date: date) -> None:
     first_row = db.execute("SELECT MIN(trade_date) FROM holdings_daily").fetchone()
     first_date = first_row[0] if first_row and first_row[0] else target_date.strftime("%Y-%m-%d")
 
+    active_row = db.execute(
+        """
+        SELECT COUNT(*)
+        FROM stock_universe
+        WHERE is_active=1
+          AND stock_code NOT LIKE '029%'
+          AND stock_code NOT LIKE '04621'
+          AND stock_code NOT LIKE '8%'
+        """
+    ).fetchone()
+    active_total = active_row[0] if active_row else 0
+    date_row = db.execute(
+        """
+        SELECT COUNT(*)
+        FROM holdings_daily
+        WHERE trade_date = ? AND validation_failed = 0
+          AND stock_code NOT LIKE '029%'
+          AND stock_code NOT LIKE '04621'
+          AND stock_code NOT LIKE '8%'
+        """,
+        (target_date.strftime("%Y-%m-%d"),),
+    ).fetchone()
+    date_count = date_row[0] if date_row else 0
+    coverage_pct = round((date_count / active_total) * 100, 1) if active_total else None
+
     # Load suspended stocks
     suspended_map = {}
     try:
@@ -312,17 +337,35 @@ def update_holdings_json(target_date: date) -> None:
         "top_decrease": top_decrease,
         "first_date": first_date,
         "total_participants": total_participants,
+        "coverage": date_count,
+        "coverage_total": active_total,
+        "coverage_pct": coverage_pct,
+        "is_complete": bool(active_total and date_count >= active_total),
     }
-    path = PROJECT_ROOT.parent / "holdings.json"
-    tmp = path.with_suffix(".tmp")
-    tmp.write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
-    tmp.replace(path)  # ✅ P1-6: atomic rename
-    verified = json.loads(path.read_text(encoding="utf-8"))
+    legacy_out = dict(out)
+    legacy_out["alerts_today"] = 0
+
+    def _atomic_write(path: Path, payload: dict) -> None:
+        tmp = path.with_suffix(".tmp")
+        tmp.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+        tmp.replace(path)
+
+    holdings_path = PROJECT_ROOT.parent / "holdings.json"
+    ccass_path = PROJECT_ROOT.parent / "ccass.json"
+    _atomic_write(holdings_path, out)
+    _atomic_write(ccass_path, legacy_out)
+
+    verified = json.loads(holdings_path.read_text(encoding="utf-8"))
     if verified.get("updated") != target_date.strftime("%Y-%m-%d"):
         raise RuntimeError(f"holdings.json stale date: {verified.get('updated')} != {target_date}")
     if verified.get("stock_count") != len(stocks):
         raise RuntimeError(f"holdings.json stock_count mismatch: {verified.get('stock_count')} != {len(stocks)}")
-    print(f"  holdings.json updated: {len(stocks)} stocks")
+    ccass_verified = json.loads(ccass_path.read_text(encoding="utf-8"))
+    if ccass_verified.get("updated") != target_date.strftime("%Y-%m-%d"):
+        raise RuntimeError(f"ccass.json stale date: {ccass_verified.get('updated')} != {target_date}")
+    if ccass_verified.get("stock_count") != len(stocks):
+        raise RuntimeError(f"ccass.json stock_count mismatch: {ccass_verified.get('stock_count')} != {len(stocks)}")
+    print(f"  holdings.json + ccass.json updated: {len(stocks)} stocks")
     db.close()
 
 

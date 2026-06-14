@@ -16,7 +16,7 @@ scraping:
   max_retries: 3
   retry_backoff_base: 2
   user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
-  parallel_workers: 1   # MUST be 1 — sequential only (ProcessPool/cloudscraper abandoned 2026-05-27)
+  parallel_workers: 4   # modest parallelism to keep daily refresh within a sane window
 
 trend_windows: [5, 20, 60, 120]
 

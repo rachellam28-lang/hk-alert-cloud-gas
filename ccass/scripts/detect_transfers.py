@@ -9,6 +9,13 @@ PROJECT_ROOT = Path(__file__).parent.parent
 DB_PATH = PROJECT_ROOT / "holdings.db"
 OUT_PATH = PROJECT_ROOT / "data" / "transfers.json"
 
+
+def atomic_write_json(path, obj):
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp.parent.mkdir(parents=True, exist_ok=True)
+    tmp.write_text(json.dumps(obj, ensure_ascii=False), encoding="utf-8")
+    tmp.replace(path)
+
 db = sqlite3.connect(str(DB_PATH))
 
 # Get last 2 dates with actual data
@@ -101,12 +108,11 @@ for t in transfers[:20]:
 
 # Save to both holdings/data/ (source) and repo data/ (dashboard)
 os.makedirs(OUT_PATH.parent, exist_ok=True)
-with open(OUT_PATH, 'w') as f:
-    json.dump({
-        'updated': f'{d1} vs {d2}',
-        'count': len(transfers),
-        'transfers': transfers[:50]  # Top 50
-    }, f, ensure_ascii=False)
+atomic_write_json(OUT_PATH, {
+    'updated': f'{d1} vs {d2}',
+    'count': len(transfers),
+    'transfers': transfers[:50]  # Top 50
+})
 
 print(f"\nSaved {min(len(transfers), 50)} transfers to {OUT_PATH}")
 

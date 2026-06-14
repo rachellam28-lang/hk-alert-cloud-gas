@@ -2,12 +2,12 @@
 # Fetch HK fund flow for top stocks by market cap
 # Usage: bash fetch_fundflow.sh
 
-PROJECT_DIR="C:/Users/Administrator/Desktop/automatic/ccass-debug"
-TEMP_DIR="C:/Users/Administrator/AppData/Local/Temp/fundflow"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+TEMP_DIR="$(mktemp -d)"
 BATCH_SIZE=30
 TOP_N=500
 
-rm -rf "$TEMP_DIR"
 mkdir -p "$TEMP_DIR"
 
 echo "=== Step 1: Get top $TOP_N stocks by market cap ==="

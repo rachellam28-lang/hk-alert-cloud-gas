@@ -1,5 +1,4 @@
 """Fetch REAL data from Futu: lp (latest price) + yo (2026 year-open).
-Replaces yfinance garbage with accurate Futu data.
 Prerequisite: Futu OpenD running on 127.0.0.1:11111.
 """
 import json, time, math

@@ -8,6 +8,7 @@ from futu import OpenQuoteContext, RET_OK
 ROOT = Path(__file__).parent.parent.parent  # holdings-debug/
 PRICES = ROOT / "data" / "stock_prices.json"
 HOLDINGS = ROOT / "holdings.json"
+SUSPENDED = ROOT / "data" / "suspended_stocks.json"
 
 prices = json.loads(PRICES.read_text(encoding='utf-8'))
 codes = sorted(k for k,v in prices.items() if v.get('yo'))
@@ -16,6 +17,17 @@ print(f"Daily Futu update for {len(codes)} stocks...")
 q = OpenQuoteContext('127.0.0.1', 11111)
 BATCH = 200
 counts = {'lp':0,'mc':0,'hi52':0,'lo52':0,'pe':0,'vol':0,'chg':0,'vr':0}
+suspended: dict[str, str] = {}
+COUNT_KEY = {
+    'last_price': 'lp',
+    'total_market_val': 'mc',
+    'highest52weeks_price': 'hi52',
+    'lowest52weeks_price': 'lo52',
+    'pe_ratio': 'pe',
+    'volume': 'vol',
+    'prev_close_price': 'chg',
+    'volume_ratio': 'vr',
+}
 
 for i in range(0, len(codes), BATCH):
     batch = codes[i:i+BATCH]
@@ -23,10 +35,13 @@ for i in range(0, len(codes), BATCH):
     try:
         ret, data = q.get_market_snapshot(syms)
         if ret == RET_OK and data is not None and len(data) > 0:
+            seen: set[str] = set()
             for _, row in data.iterrows():
                 code = row.get('code','').replace('HK.','')
+                seen.add(code)
                 e = prices.get(code, {})
                 changed = False
+                lp_seen = False
 
                 for futu_key, our_key, scale in [
                     ('last_price','lp',1), ('total_market_val','mc',1e8),
@@ -40,8 +55,10 @@ for i in range(0, len(codes), BATCH):
                         else: val = round(float(val), 3) if futu_key != 'pe_ratio' else round(float(val), 2)
                         if e.get(our_key) != val:
                             e[our_key] = val
-                            counts[our_key[:2] if our_key != 'prev_close' else 'chg'] += 1
+                            counts[COUNT_KEY[futu_key]] += 1
                             changed = True
+                        if our_key == 'lp':
+                            lp_seen = True
 
                 # chg = (lp - prev_close) / prev_close * 100
                 if e.get('lp') and e.get('prev_close') and e['prev_close'] > 0:
@@ -52,8 +69,16 @@ for i in range(0, len(codes), BATCH):
 
                 if changed:
                     prices[code] = e
+                if not lp_seen or not e.get('lp') or (e.get('vol') is not None and e.get('vol') == 0):
+                    suspended.setdefault(code, 'no_price_or_zero_volume')
+
+            for code in batch:
+                if code not in seen:
+                    suspended.setdefault(code, 'missing_snapshot')
     except Exception as ex:
         print(f"  Batch {i} error: {ex}")
+        for code in batch:
+            suspended.setdefault(code, 'batch_error')
 
     if (i // BATCH) % 10 == 0:
         print(f"  {min(i+BATCH, len(codes))}/{len(codes)} lp={counts['lp']} mc={counts['mc']}")
@@ -76,6 +101,7 @@ def sanitize(obj):
 
 prices = sanitize(prices)
 PRICES.write_text(json.dumps(prices, ensure_ascii=False, indent=2), encoding='utf-8')
+SUSPENDED.write_text(json.dumps(suspended, ensure_ascii=False, indent=2), encoding='utf-8')
 
 # Update holdings.json
 holdings = json.loads(HOLDINGS.read_text(encoding='utf-8'))
@@ -92,3 +118,4 @@ tmp.write_text(json.dumps(holdings, ensure_ascii=False, indent=2), encoding='utf
 tmp.replace(HOLDINGS)
 
 print(f"Done: {counts}")
+print(f"Suspended: {len(suspended)}")

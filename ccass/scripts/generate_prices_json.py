@@ -2,7 +2,7 @@
 Generate data/prices.json from holdings/data/stock_prices.json + stock_universe names.
 Output format matches GAS ?format=json response so dashboard can consume it directly.
 
-The stock_prices.json is maintained daily by refresh_prices_and_suspended.py
+The stock_prices.json is maintained daily by the Futu-based refresh script
 (the daily pipeline cron c1a18c6a5786). Fallback to stock_prices DB table if JSON missing.
 
 Fields per group:
@@ -19,6 +19,12 @@ PROJECT = Path(__file__).parent.parent
 DB = PROJECT / "holdings.db"
 PRICES_JSON = PROJECT / "data" / "stock_prices.json"
 OUT = PROJECT.parent / "data" / "prices.json"
+
+
+def atomic_write_json(path, obj):
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp.write_text(json.dumps(obj, ensure_ascii=False), encoding="utf-8")
+    tmp.replace(path)
 
 
 def get_names():
@@ -82,12 +88,12 @@ def generate():
         "groups": groups,
         "recentCorps": [],
         "updatedAt": datetime.now().isoformat(),
-        "source": "yfinance (static, via stock_prices.json)",
+        "source": "Futu/Longbridge cache (via stock_prices.json)",
         "totalStocks": len(groups),
     }
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(json.dumps(output, ensure_ascii=False), encoding="utf-8")
+    atomic_write_json(OUT, output)
 
     print(f"Generated {OUT}")
     print(f"  {len(groups)} stocks with prices")

@@ -100,7 +100,7 @@ def compute_trends_for_date(target_date: date, windows: list[int] | None = None)
     )
 
     insert_sql = (
-        "INSERT INTO holdings_trends\n"
+        "INSERT INTO ccass_trends\n"
         "    (stock_code, trade_date, {delta_cols}{extra_null_cols},\n"
         "     consecutive_increase_days, consecutive_decrease_days, computed_at)\n"
         "VALUES (?, ?, {placeholders}{extra_null_vals}, ?, ?, ?)\n"

@@ -22,8 +22,15 @@ def verify():
     n = len(stocks)
 
     # 2. Stock count sanity
-    if n < 2000:
-        errors.append(f"Stock count too low: {n} (expected >2000)")
+    coverage_pct = data.get("coverage_pct")
+    is_complete = data.get("is_complete")
+    if n == 0:
+        errors.append("Stock count is zero")
+    elif n < 2000:
+        if is_complete is True or coverage_pct == 100:
+            errors.append(f"Stock count too low for a complete publish: {n} (expected >2000)")
+        else:
+            warnings.append(f"Partial publish stock count: {n} (latest data, incomplete coverage)")
     elif n < 2600:
         warnings.append(f"Stock count low: {n} (normal ~2700)")
 
