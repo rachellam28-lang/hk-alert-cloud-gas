@@ -210,11 +210,11 @@ function showEmpty(el,msg){
     [v => v ? v.toFixed(1) + '%' : '--', fmtB]);
 })();
 </script>
-
+<script>
 document.querySelectorAll('.site-nav a').forEach(a => {
   if(location.pathname.endsWith(a.getAttribute('href').replace('./',''))) {
     a.classList.add('active');
   }
 });
-
+</script>
 </body></html>

@@ -8,26 +8,9 @@
 <title>Market 持股儀表板</title>
 </head>
 <body>
-  <nav class="site-nav">
-    <a href="./index.html">📦 Market</a>
-    <a href="./signals.html">🔔 訊號</a>
-    <a href="./watchlist.html">⭐ 自選</a>
-    <a href="./history.html">🕐 歷史</a>
-    <a href="./gap_fvg.html">⤴ Gap/FVG</a>
-    <a href="./fundflow.html">💰 資金</a>
-    <a href="./rights_analysis.html">📋 供配股</a>
-    <a href="./docs/ccass-warroom.html">⚡ 戰情室</a>
-    <a href="./us.html">🇺🇸 美股</a>
-    <a href="./guide.html">📖 說明</a>
-  </nav>
-
-<p>Redirecting to <a href="index.html">Market 持股儀表板</a>...</p>
-
-document.querySelectorAll('.site-nav a').forEach(a => {
-  if(location.pathname.endsWith(a.getAttribute('href').replace('./',''))) {
-    a.classList.add('active');
-  }
-});
-
+  <p>Redirecting to <a href="index.html">Market 持股儀表板</a>...</p>
+  <script>
+    location.replace('index.html');
+  </script>
 </body>
 </html>

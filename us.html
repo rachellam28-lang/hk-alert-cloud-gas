@@ -194,7 +194,7 @@ th.sort-active{color:var(--primary)}.sort-icon{margin-left:4px;font-size:9px}
   </section>
   </div>
 
-  <div class="foot">美股訊號雲 · GitHub Pages · 真實數據</div>
+  <div class="foot">美股訊號雲 · Cloudflare Pages · 真實數據</div>
 </main>
 
 <script>
@@ -545,11 +545,11 @@ if(saved)window.scrollTo(0,parseInt(saved,10));
 loadData();
 setTimeout(()=>{sessionStorage.setItem('usDashScroll',String(window.scrollY));location.reload();},REFRESH_MS);
 </script>
-
+<script>
 document.querySelectorAll('.site-nav a').forEach(a => {
   if(location.pathname.endsWith(a.getAttribute('href').replace('./',''))) {
     a.classList.add('active');
   }
 });
-
+</script>
 </body></html>

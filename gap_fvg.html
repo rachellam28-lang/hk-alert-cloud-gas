@@ -524,11 +524,11 @@ fetch('./data/confluence.json?_='+Date.now())
 
 main();
 </script>
-
+<script>
 document.querySelectorAll('.site-nav a').forEach(a => {
   if(location.pathname.endsWith(a.getAttribute('href').replace('./',''))) {
     a.classList.add('active');
   }
 });
-
+</script>
 </body></html>
