@@ -220,6 +220,21 @@ tbody tr{cursor:pointer}
 @media(max-width:640px){.hide-link,.th-link{display:none}}
 @media(max-width:640px){.brand>a{font-size:11px!important;padding:2px 6px!important;margin-left:3px!important}.input.search-in{min-width:120px}.btn-ghost,.btn-csv,.preset-btn,.col-toggle-btn{padding:2px 5px!important;font-size:9px!important;border-radius:4px!important}.toolbar{padding:4px 6px!important;gap:4px!important;flex-wrap:nowrap!important;overflow-x:auto!important}.toolbar-sect{gap:3px!important}}
 @media(max-width:640px){
+  .toolbar-sect{
+    flex:0 0 auto!important;
+  }
+  .preset-group{
+    flex-wrap:nowrap!important;
+    overflow-x:auto!important;
+    -webkit-overflow-scrolling:touch;
+    max-width:100%;
+  }
+  .preset-group .preset-btn,
+  .preset-group .preset-save{
+    flex:0 0 auto;
+  }
+}
+@media(max-width:640px){
   .adv-filter-bar{
     flex-wrap:nowrap!important;
     overflow-x:auto!important;
