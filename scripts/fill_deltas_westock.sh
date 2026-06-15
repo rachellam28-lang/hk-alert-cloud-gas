@@ -4,8 +4,8 @@
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
-CCASS_JSON="$PROJECT_DIR/holdings.json"
-TEMP_DIR="$(mktemp -d)"
+CCASS_JSON="$(cygpath -w "$PROJECT_DIR/holdings.json")"
+TEMP_DIR="$(cygpath -w "$(mktemp -d)")"
 BATCH_SIZE=50
 DELAY=2
 

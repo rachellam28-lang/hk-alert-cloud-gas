@@ -4,7 +4,9 @@
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
-TEMP_DIR="$(mktemp -d)"
+HOLDINGS_JSON="$(cygpath -w "$PROJECT_DIR/holdings.json")"
+PROJECT_DIR_WIN="$(cygpath -w "$PROJECT_DIR")"
+TEMP_DIR="$(cygpath -w "$(mktemp -d)")"
 BATCH_SIZE=30
 TOP_N=500
 
@@ -13,7 +15,7 @@ mkdir -p "$TEMP_DIR"
 echo "=== Step 1: Get top $TOP_N stocks by market cap ==="
 python -c "
 import json
-with open(r'$PROJECT_DIR/holdings.json') as f:
+with open(r'$HOLDINGS_JSON') as f:
     data = json.load(f)
 
 # Sort by market cap (mc) descending, take top N
@@ -73,7 +75,7 @@ echo "=== Step 3: Parse and save fundflow.json ==="
 python -c "
 import json, re, os, glob
 
-project_dir = r'$PROJECT_DIR'
+project_dir = r'$PROJECT_DIR_WIN'
 temp_dir = r'$TEMP_DIR'
 
 # Parse all batch files
@@ -92,7 +94,7 @@ for bf in batch_files:
             continue
         
         cols = [c.strip() for c in line.split('|')]
-        if len(cols) < 18:
+        if len(cols) < 17:
             continue
         
         sym_match = re.match(r'hk(\d{5})', cols[1]) if len(cols) > 1 else None
@@ -108,6 +110,8 @@ for bf in batch_files:
                 lgt = json.loads(lgt_raw)
             except:
                 pass
+            if not isinstance(lgt, dict):
+                lgt = {}
             
             entry = {
                 'date': cols[5] if cols[5] != '-' else '',
@@ -117,13 +121,13 @@ for bf in batch_files:
                 'retail_in': float(cols[12]) if cols[12] and cols[12] != '-' else 0,
                 'retail_out': float(cols[14]) if cols[14] and cols[14] != '-' else 0,
                 'retail_net': float(cols[13]) if cols[13] and cols[13] != '-' else 0,
-                'total_net': float(cols[19]) if cols[19] and cols[19] != '-' else 0,
-                'short_amount': float(cols[16]) if cols[16] and cols[16] != '-' else 0,
-                'short_ratio': float(cols[17]) if cols[17] and cols[17] != '-' else 0,
-                'short_shares': float(cols[18]) if cols[18] and cols[18] != '-' else 0,
-                'lgt_hold_ratio': float(lgt.get('LgtHoldRatio', 0)) if lgt else 0,
-                'lgt_cap_chg_daily': float(lgt.get('LgtCapChgDaily', 0)) if lgt else 0,
-                'lgt_share_chg_daily': float(lgt.get('LgtShareChgDaily', 0)) if lgt else 0,
+                'total_net': float(cols[16]) if cols[16] and cols[16] != '-' else 0,
+                'short_amount': 0,  # not available in current API
+                'short_ratio': 0,
+                'short_shares': 0,
+                'lgt_hold_ratio': float(lgt.get('LgtHoldRatio', 0)) if isinstance(lgt, dict) else 0,
+                'lgt_cap_chg_daily': float(lgt.get('LgtCapChgDaily', 0)) if isinstance(lgt, dict) else 0,
+                'lgt_share_chg_daily': float(lgt.get('LgtShareChgDaily', 0)) if isinstance(lgt, dict) else 0,
             }
             fundflow[code] = entry
         except (ValueError, IndexError) as e:

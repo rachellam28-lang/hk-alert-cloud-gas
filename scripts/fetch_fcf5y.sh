@@ -4,7 +4,9 @@
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
-TEMP_DIR="$(mktemp -d)"
+HOLDINGS_JSON="$(cygpath -w "$PROJECT_DIR/holdings.json")"
+PROJECT_DIR_WIN="$(cygpath -w "$PROJECT_DIR")"
+TEMP_DIR="$(cygpath -w "$(mktemp -d)")"
 BATCH_SIZE=20
 
 mkdir -p "$TEMP_DIR"
@@ -12,7 +14,7 @@ mkdir -p "$TEMP_DIR"
 echo "=== Step 1: Get all stock codes ==="
 python -c "
 import json
-with open(r'$PROJECT_DIR/holdings.json') as f:
+with open(r'$HOLDINGS_JSON') as f:
     data = json.load(f)
 codes = [s['c'] for s in data['stocks']]
 with open(r'$TEMP_DIR/codes.txt', 'w') as f:
@@ -55,7 +57,7 @@ echo "=== Step 3: Parse 5-year FCF trend ==="
 python -c "
 import json, re, os, glob
 
-project_dir = r'$PROJECT_DIR'
+project_dir = r'$PROJECT_DIR_WIN'
 temp_dir = r'$TEMP_DIR'
 
 with open(os.path.join(project_dir, 'holdings.json')) as f:
