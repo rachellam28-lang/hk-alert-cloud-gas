@@ -1335,7 +1335,7 @@ function renderTable(){
     var yoPct = s.lp!=null && s.yo ? (s.lp/s.yo*100-100) : null;
     var aboveYO = s.lp && s.yo && s.lp > s.yo;
     var d5class=s.d5!==null?(s.d5>0?'up':(s.d5<0?'dn':'muted')):'muted';
-    var valBadge=null; /* FCF replaces PE */ //'<span class="sc-val-expensive">昂貴</span>':(s.pe>0&&s.pe<5?'<span class="sc-val-cheap">便宜</span>':'')):'';
+    var valBadge=''; /* FCF replaces PE */ //'<span class="sc-val-expensive">昂貴</span>':(s.pe>0&&s.pe<5?'<span class="sc-val-cheap">便宜</span>':'')):'';
     var d20class=s.d20!==null?(s.d20>0?'up':(s.d20<0?'dn':'muted')):'muted';
     var valClass=""; /* FCF replaces PE */ //' pe-expensive':(s.pe>0&&s.pe<5?' pe-cheap':'')):'';
     var ipoClass=hasIPO?' ipo-highlight':'';
