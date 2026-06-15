@@ -300,21 +300,21 @@ tbody tr{cursor:pointer}
 .sc-badge{display:inline-flex;align-items:center;font-size:10px;background:var(--primary-soft);color:var(--primary);padding:1px 6px;border-radius:999px;font-weight:700;flex-shrink:0}
 .sc-val-expensive{display:inline-flex;align-items:center;font-size:10px;background:#fee2e2;color:#dc2626;padding:1px 6px;border-radius:999px;font-weight:700;flex-shrink:0}
 .sc-val-cheap{display:inline-flex;align-items:center;font-size:10px;background:#dcfce7;color:#16a34a;padding:1px 6px;border-radius:999px;font-weight:700;flex-shrink:0}
-.sc-metrics{display:flex;gap:2px;padding:3px 8px;background:var(--surface)}
+.sc-metrics{display:flex;gap:2px;padding:2px 6px;background:var(--surface)}
 .sc-metric{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:1px;padding:2px 1px}
 .sc-metric-label{font-size:8px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.04em;line-height:1.3}
 .sc-metric-val{font:600 12px "JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;line-height:1.4}
 .sc-metric-val.up{color:var(--up)}.sc-metric-val.dn{color:var(--down)}.sc-metric-val.muted{color:var(--mute-2)}
-.sc-metrics-more{display:flex;flex-wrap:wrap;gap:2px;padding:0 8px 5px;background:var(--surface)}
-.sc-mini{flex:1 1 30%;min-width:0;display:flex;flex-direction:column;align-items:center;gap:1px;padding:0 1px}
-.sc-mini .sc-metric-label{font-size:7px}
-.sc-mini .sc-metric-val{font-size:10px;line-height:1.2}
+.sc-metrics-more{display:flex;flex-wrap:wrap;gap:2px;padding:0 6px 4px;background:var(--surface)}
+.sc-mini{flex:1 1 25%;min-width:0;display:flex;flex-direction:column;align-items:center;gap:1px;padding:0 1px}
+.sc-mini .sc-metric-label{font-size:6px}
+.sc-mini .sc-metric-val{font-size:9px;line-height:1.15}
 .sc-pills{padding:3px 8px 4px;display:flex;flex-wrap:wrap;gap:2px;border-top:1px solid var(--line-soft);background:var(--surface)}
 .sc-pills .cpill{font-size:10px;padding:1px 6px}
 .sc-pills .spill{font-size:10px;padding:1px 6px}
 @media(max-width:720px){table{display:none}.stock-cards{display:flex;padding:0 8px}}
 @media(max-width:720px){.drawer{width:100vw;max-width:100vw;right:-100vw}.drawer.open{right:0}}
-@media(max-width:520px){.stock-cards{gap:1px;padding:0 1px}.stock-card{border-radius:3px}.sc-header{padding:1px 2px 0;gap:1px;flex-wrap:wrap}.sc-header .code{font-size:8px}.sc-header .name{font-size:7px;white-space:normal;overflow:visible;text-overflow:unset;line-height:1.2}.sc-metrics{padding:1px 1px;gap:0}.sc-metric{padding:0}.sc-metric-val{font-size:8px}.sc-metric-label{font-size:6px}.sc-metrics-more{padding:0 4px 4px}.sc-mini{flex:1 1 28%}.sc-mini .sc-metric-label{font-size:6px}.sc-mini .sc-metric-val{font-size:8px}.sc-pills{padding:1px 1px 1px;gap:1px}.sc-pills .cpill{font-size:7px;padding:0 2px}.sc-pills .spill{font-size:7px;padding:0 2px}.sc-badge{font-size:7px;padding:0 2px}.mc-section{width:100%;max-width:none;margin:8px 0 10px}.mc-section-head{padding:6px 8px;font-size:10px;gap:6px}.mc-pagination{padding:4px 6px;font-size:10px}.stock-card-section{width:100%;max-width:none;margin:6px 0 10px}.stock-card-section-head{padding:0 6px 3px;font-size:9px;letter-spacing:.08em}}
+@media(max-width:520px){.stock-cards{gap:1px;padding:0 1px}.stock-card{border-radius:3px}.sc-header{padding:1px 2px 0;gap:1px;flex-wrap:wrap}.sc-header .code{font-size:8px}.sc-header .name{font-size:7px;white-space:normal;overflow:visible;text-overflow:unset;line-height:1.2}.sc-metrics{padding:1px 0;gap:0}.sc-metric{padding:0}.sc-metric-val{font-size:7px}.sc-metric-label{font-size:5px}.sc-metrics-more{padding:0 2px 3px}.sc-mini{flex:1 1 24%}.sc-mini .sc-metric-label{font-size:5px}.sc-mini .sc-metric-val{font-size:7px}.sc-pills{padding:1px 1px 1px;gap:1px}.sc-pills .cpill{font-size:7px;padding:0 2px}.sc-pills .spill{font-size:7px;padding:0 2px}.sc-badge{font-size:7px;padding:0 2px}.mc-section{width:100%;max-width:none;margin:8px 0 10px}.mc-section-head{padding:6px 8px;font-size:10px;gap:6px}.mc-pagination{padding:4px 6px;font-size:10px}.stock-card-section{width:100%;max-width:none;margin:6px 0 10px}.stock-card-section-head{padding:0 6px 3px;font-size:9px;letter-spacing:.08em}}
 @media(max-width:520px){.bt-cards{flex-direction:column!important}.ipo-card{min-width:100%!important;flex:none!important}.ipo-tbl td{padding:3px 8px}.ipo-tbl .code{font-size:11px}.ipo-tbl .name{font-size:11px}}
 /* IPO highlight for table rows */
 tbody tr.ipo-highlight{background:linear-gradient(90deg,var(--amber-soft),transparent 50%)!important;border-left:3px solid var(--amber)}
@@ -1369,6 +1369,12 @@ function renderTable(){
         +'<div class="sc-mini"><span class="sc-metric-label">今日Δ</span><span class="sc-metric-val '+(s.chg!=null?(s.chg>=0?'up':'dn'):'muted')+'">'+(s.chg!=null?fmtPct(s.chg):'—')+'</span></div>'
         +'<div class="sc-mini"><span class="sc-metric-label">今年Δ%</span><span class="sc-metric-val '+(yoPct!=null?(yoPct>=0?'up':'dn'):'muted')+'">'+(yoPct!=null?fmtPct(yoPct):'—')+'</span></div>'
         +'<div class="sc-mini"><span class="sc-metric-label">參與者</span><span class="sc-metric-val">'+(s.np!=null?s.np:'—')+'</span></div>'
+        +'<div class="sc-mini"><span class="sc-metric-label">60日</span><span class="sc-metric-val '+(s.d60!=null?(s.d60>=0?'up':'dn'):'muted')+'">'+(s.d60!=null?fmtPct(s.d60):'—')+'</span></div>'
+        +'<div class="sc-mini"><span class="sc-metric-label">120日</span><span class="sc-metric-val '+(s.d120!=null?(s.d120>=0?'up':'dn'):'muted')+'">'+(s.d120!=null?fmtPct(s.d120):'—')+'</span></div>'
+        +'<div class="sc-mini"><span class="sc-metric-label">⭐評分</span><span class="sc-metric-val" style="color:'+scoreColor(calcScore(s))+'">'+calcScore(s)+'</span></div>'
+        +'<div class="sc-mini"><span class="sc-metric-label">量比</span><span class="sc-metric-val">'+(s.vr!=null?s.vr.toFixed(1):'—')+'</span></div>'
+        +'<div class="sc-mini"><span class="sc-metric-label">FCF</span><span class="sc-metric-val">'+(s.fcf!=null?s.fcf.toFixed(0)+'億':'—')+'</span></div>'
+        +'<div class="sc-mini"><span class="sc-metric-label">5Y FCF</span><span class="sc-metric-val">'+(s.fcf_trend==1?'↗':s.fcf_trend==-1?'↘':s.fcf_trend===0?'→':'—')+'</span></div>'
       +'</div>'
       +(sigPills?'<div class="sc-sigs">'+sigPills+'</div>':'')
       +'</div>';
