@@ -293,6 +293,8 @@ tbody tr{cursor:pointer}
 .mc-overview{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:8px 0 10px}
 .mc-overview-card{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);box-shadow:none;cursor:pointer;text-decoration:none;color:var(--text);min-width:0}
 .mc-overview-card:hover{border-color:var(--primary-border);background:var(--surface-soft);text-decoration:none}
+.mc-overview-card.small{background:#fef2f2;border-color:#fca5a5;border-left:8px solid #dc2626}
+.mc-overview-card.small:hover{background:#fee2e2;border-color:#f87171}
 .mc-overview-label{font-size:9px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.1em;white-space:nowrap}
 .mc-overview-count{font-size:14px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.05}
 .mc-overview-sub{font-size:9px;color:var(--text-soft);white-space:nowrap}
@@ -1203,9 +1205,9 @@ function renderMcOverview(groups){
     {key:'large', label:'🐋 大市值', sub:'≥ 100億', count:groups.large.length, href:'#mcSectionLarge', color:'var(--up)'},
   ];
   el.innerHTML=items.map(function(it){
-    return '<a class="mc-overview-card" href="'+it.href+'">'
+    return '<a class="mc-overview-card '+it.key+'" href="'+it.href+'">'
       +'<span class="mc-overview-label">'+it.label+'</span>'
-      +'<span class="mc-overview-count" style="color:'+it.color+'">'+it.count+'</span>'
+      +'<span class="mc-overview-count" style="color:'+(it.key==='small'?'#b91c1c':it.color)+'">'+it.count+'</span>'
       +'<span class="mc-overview-sub">'+it.sub+'</span>'
       +'</a>';
   }).join('');
