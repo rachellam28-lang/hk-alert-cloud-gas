@@ -167,9 +167,15 @@ let allDays = [];
 function safeSig(a) {
   var s = a.signal;
   if (!s) return '';
-  if (Array.isArray(s)) return s.map(function(x){return typeof x==='object'?(x.label||x.type||''):String(x);}).join(' ');
+  if (Array.isArray(s)) return s.map(function(x){
+    if (x == null) return '';
+    if (typeof x==='object') return x.label || x.type || '';
+    var v = String(x).trim();
+    return (v === 'null' || v === 'undefined' || v === 'NaN') ? '' : v;
+  }).filter(Boolean).join(' ');
   if (typeof s === 'object') return s.label || s.type || s.name || '';
-  return String(s);
+  var v = String(s).trim();
+  return (v === 'null' || v === 'undefined' || v === 'NaN') ? '' : v;
 }
 
 function matchSigType(a, sigType) {
@@ -192,13 +198,15 @@ function matchSigType(a, sigType) {
 const WEEKDAY = ['日','一','二','三','四','五','六'];
 
 function fmtTime(s) {
-  if (!s) return '';
+  if (s == null) return '';
+  const v = String(s).trim();
+  if (!v || v === 'null' || v === 'undefined' || v === 'NaN') return '';
   try {
-    const d = new Date(s);
-    if (isNaN(d.getTime())) return s;
+    const d = new Date(v);
+    if (isNaN(d.getTime())) return v;
     const p = n => n < 10 ? '0'+n : n;
     return p(d.getHours()) + ':' + p(d.getMinutes());
-  } catch(e) { return s; }
+  } catch(e) { return v; }
 }
 
 function weekday(dateStr) {
@@ -224,8 +232,13 @@ function pillHtml(a) {
   return '<span class="' + cls + '">' + esc(label) + '</span>';
 }
 
+function cleanText(s) {
+  if (s == null) return '';
+  const v = String(s).trim();
+  return (v === 'null' || v === 'undefined' || v === 'NaN') ? '' : v;
+}
 function esc(s) {
-  return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+  return cleanText(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
 }
 
 function renderDay(day, filter, sigType) {

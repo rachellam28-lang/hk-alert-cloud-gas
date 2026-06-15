@@ -168,9 +168,14 @@ function showEmpty(el,msg){
 }
 
 const KEY = 'hk_watchlist_v1';
-// Normalize nullish values before HTML escaping.
+// Normalize nullish/sentinel values before HTML escaping.
+function cleanText(s){
+  if(s==null) return '';
+  const v=String(s).trim();
+  return (v==='null'||v==='undefined'||v==='NaN') ? '' : v;
+}
 function esc(s){
-  return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+  return cleanText(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
 }
 function load(){try{return JSON.parse(localStorage.getItem(KEY)||'[]');}catch{return[];}}
 function persist(a){localStorage.setItem(KEY,JSON.stringify(a));}

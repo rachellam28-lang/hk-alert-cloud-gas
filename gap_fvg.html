@@ -192,7 +192,12 @@ function showEmpty(el,msg){
   el.innerHTML='<div class="status-empty">'+(msg||'暫無數據')+'</div>';
 }
 
-var E = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+var E = s => {
+  if (s == null) return '';
+  var v = String(s).trim();
+  if (v === 'null' || v === 'undefined' || v === 'NaN') return '';
+  return v.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+};
 function fmtMoney(v) {
   if (v == null || isNaN(v)) return '';
   var abs = Math.abs(v);

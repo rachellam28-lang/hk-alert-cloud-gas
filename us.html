@@ -238,12 +238,17 @@ function toggleSection(id, btn) {
   });
 })();
 
-// Normalize nullish values before HTML escaping.
-function esc(s){
-  return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+// Normalize nullish/sentinel values before HTML escaping.
+function cleanText(s){
+  if(s==null) return '';
+  const v=String(s).trim();
+  return (v==='null'||v==='undefined'||v==='NaN') ? '' : v;
 }
-function fmtTime(s){ if(!s)return'—'; try{ const d=new Date(s);if(isNaN(d))return String(s);const p=n=>n<10?'0'+n:''+n;return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes()); }catch(e){return String(s);} }
-function fmtDate(s){ if(!s)return'—'; try{ const d=new Date(s);if(isNaN(d))return String(s);const p=n=>n<10?'0'+n:''+n;return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate()); }catch(e){return String(s);} }
+function esc(s){
+  return cleanText(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+}
+function fmtTime(s){ const v=cleanText(s); if(!v)return'—'; try{ const d=new Date(v);if(isNaN(d))return v;const p=n=>n<10?'0'+n:''+n;return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes()); }catch(e){return v;} }
+function fmtDate(s){ const v=cleanText(s); if(!v)return'—'; try{ const d=new Date(v);if(isNaN(d))return v;const p=n=>n<10?'0'+n:''+n;return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate()); }catch(e){return v;} }
 
 function renderRow(g, wl){
   const codeStr = g.code||g.symbol||'';
