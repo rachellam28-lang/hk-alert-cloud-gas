@@ -1,9 +1,9 @@
 {
   "hsi": {
-    "value": 24407.96,
-    "stale": false,
-    "change": -158.04,
-    "changePct": -0.64
+    "value": 24621.55,
+    "change": 213.59,
+    "changePct": 0.88,
+    "stale": false
   },
   "dow": {
     "value": 50786.01,
@@ -101,7 +101,7 @@
       "count": 108
     }
   },
-  "updated_at": "2026-06-12T01:13:26.245848+00:00",
+  "updated_at": "2026-06-15T01:25:26.580394+00:00",
   "hsi_m2": {
     "value": 1163.6,
     "m2": 21112.0,
@@ -112,18 +112,14 @@
     }
   },
   "dopamine": {
-    "score": 35.2,
-    "level": "normal",
-    "level_emoji": "⚖️",
-    "level_desc": "謹慎",
-    "version": 1,
-    "source": "yfinance",
-    "hsi": 24407.96,
-    "ma20": 25444.46,
-    "ma50": 25692.06,
-    "regime": 48.0,
-    "momentum": 2.2,
-    "volatility": 57.7,
-    "updated": "2026-06-12T01:13:26.245848+00:00"
+    "score": 79.6,
+    "level": "high",
+    "level_emoji": "🔥",
+    "level_desc": "熱市+散戶活躍 — 門檻放鬆",
+    "version": 5,
+    "source": "futu",
+    "updated": "2026-06-15T01:25:26.580394+00:00",
+    "breadth_pct": 87.8,
+    "stocks_sampled": 641
   }
 }
