@@ -168,6 +168,7 @@ function showEmpty(el,msg){
 }
 
 const KEY = 'hk_watchlist_v1';
+// Normalize nullish values before HTML escaping.
 function esc(s){
   return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
 }
