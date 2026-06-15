@@ -42,3 +42,4 @@ CCASS使用說明書.md
 ccass.db*
 ccass.db.backup.*
 holdings/holdings.db
+ccass/holdings.db
