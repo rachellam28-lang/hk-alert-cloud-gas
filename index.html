@@ -291,7 +291,7 @@ tbody tr{cursor:pointer}
 .mc-section{margin-top:12px;scroll-margin-top:78px}
 .mc-section:first-of-type{margin-top:0}
 .mc-overview{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:8px 0 10px}
-.mc-overview-card{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);box-shadow:none;cursor:pointer;text-decoration:none;color:var(--text);min-width:0}
+.mc-overview-card{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);box-shadow:none;cursor:pointer;text-decoration:none;color:var(--text);min-width:0}
 .mc-overview-card:hover{border-color:var(--primary-border);background:var(--surface-soft);text-decoration:none}
 .mc-overview-card.small{background:#fef2f2;border-color:#fca5a5;border-left:8px solid #dc2626}
 .mc-overview-card.small:hover{background:#fee2e2;border-color:#f87171}
@@ -299,10 +299,12 @@ tbody tr{cursor:pointer}
 .mc-overview-card.mid:hover{background:#ffedd5;border-color:#fb923c}
 .mc-overview-card.large{background:#fefce8;border-color:#fde047;border-left:8px solid #eab308}
 .mc-overview-card.large:hover{background:#fef9c3;border-color:#facc15}
+.mc-overview-main{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-width:0}
 .mc-overview-label{font-size:9px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.1em;white-space:nowrap}
 .mc-overview-count{font-size:14px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.05}
+.mc-overview-meta{display:flex;align-items:center;justify-content:flex-end;gap:6px;flex:0 0 auto;min-width:0}
 .mc-overview-sub{font-size:9px;color:var(--text-soft);white-space:nowrap}
-.mc-overview-key{display:inline-flex;align-items:center;justify-content:center;min-width:58px;margin-top:2px;padding:1px 7px;border-radius:999px;font-size:9px;font-weight:700;line-height:1.5;border:1px solid transparent}
+.mc-overview-key{display:inline-flex;align-items:center;justify-content:center;min-width:58px;padding:1px 7px;border-radius:999px;font-size:9px;font-weight:700;line-height:1.5;border:1px solid transparent}
 .mc-overview-card.small .mc-overview-key{background:#fee2e2;color:#b91c1c;border-color:#fca5a5}
 .mc-overview-card.mid .mc-overview-key{background:#ffedd5;color:#c2410c;border-color:#fdba74}
 .mc-overview-card.large .mc-overview-key{background:#fef3c7;color:#a16207;border-color:#fde047}
@@ -331,8 +333,8 @@ tbody tr{cursor:pointer}
 .sc-pills .cpill{font-size:10px;padding:1px 6px}
 .sc-pills .spill{font-size:10px;padding:1px 6px}
 @media(max-width:720px){table{display:none}.stock-cards{display:flex;padding:0 8px}}
-@media(max-width:720px){.mc-overview{gap:4px}.mc-overview-card{padding:5px 6px}.mc-overview-count{font-size:12px}}
-@media(max-width:520px){.mc-overview{grid-template-columns:1fr}.mc-overview-card{padding:7px 8px}}
+@media(max-width:720px){.mc-overview{gap:4px}.mc-overview-card{padding:5px 6px}.mc-overview-count{font-size:12px}.mc-overview-key{min-width:52px}}
+@media(max-width:520px){.mc-overview{grid-template-columns:1fr}.mc-overview-card{padding:7px 8px;gap:6px}.mc-overview-sub{font-size:8px}.mc-overview-key{min-width:48px;padding:1px 6px}}
 @media(max-width:520px){.stock-cards{gap:1px;padding:0 1px}.stock-card{border-radius:3px}.sc-header{padding:1px 2px 0;gap:1px;flex-wrap:wrap}.sc-header .code{font-size:8px}.sc-header .name{font-size:7px;white-space:normal;overflow:visible;text-overflow:unset;line-height:1.2}.sc-metrics{padding:1px 1px;gap:0}.sc-metric{padding:0}.sc-metric-val{font-size:8px}.sc-metric-label{font-size:6px}.sc-pills{padding:1px 1px 1px;gap:1px}.sc-pills .cpill{font-size:7px;padding:0 2px}.sc-pills .spill{font-size:7px;padding:0 2px}.sc-badge{font-size:7px;padding:0 2px}}
 @media(max-width:520px){.bt-cards{flex-direction:column!important}.ipo-card{min-width:100%!important;flex:none!important}.ipo-tbl td{padding:3px 8px}.ipo-tbl .code{font-size:11px}.ipo-tbl .name{font-size:11px}}
 /* IPO highlight for table rows */
@@ -1214,10 +1216,14 @@ function renderMcOverview(groups){
   ];
   el.innerHTML=items.map(function(it){
     return '<a class="mc-overview-card '+it.key+'" href="'+it.href+'">'
-      +'<span class="mc-overview-label">'+it.label+'</span>'
-      +'<span class="mc-overview-count" style="color:'+(it.key==='small'?'#b91c1c':it.color)+'">'+it.count+'</span>'
-      +'<span class="mc-overview-sub">'+it.sub+'</span>'
-      +'<span class="mc-overview-key">'+(it.key==='small'?'紅框選項':(it.key==='mid'?'橙框選項':'黃框選項'))+'</span>'
+      +'<span class="mc-overview-main">'
+        +'<span class="mc-overview-label">'+it.label+'</span>'
+        +'<span class="mc-overview-count" style="color:'+(it.key==='small'?'#b91c1c':it.color)+'">'+it.count+'</span>'
+      +'</span>'
+      +'<span class="mc-overview-meta">'
+        +'<span class="mc-overview-sub">'+it.sub+'</span>'
+        +'<span class="mc-overview-key">'+(it.key==='small'?'紅框選項':(it.key==='mid'?'橙框選項':'黃框選項'))+'</span>'
+      +'</span>'
       +'</a>';
   }).join('');
 }
