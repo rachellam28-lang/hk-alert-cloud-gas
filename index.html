@@ -193,8 +193,7 @@ tbody tr{cursor:pointer}
 .ra-link{flex:0 0 auto;display:inline-flex;padding:2px 5px;border-radius:4px;border:1px solid var(--violet-border);background:var(--violet-soft);color:var(--violet);font:600 8px inherit;text-decoration:none}
 /* MC split sections */
 .mc-section{margin:12px 0 12px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);box-shadow:var(--shadow);overflow:hidden}
-.mc-section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 12px;background:var(--surface-soft);font-size:12px;font-weight:700;color:var(--text);border-bottom:1px solid var(--line-soft);position:sticky;top:45px;z-index:2}
-.mc-count{font-weight:400;font-size:10px;color:var(--mute);white-space:nowrap}
+.mc-section-head{display:flex;align-items:center;justify-content:flex-start;gap:8px;padding:8px 12px;background:var(--surface-soft);font-size:12px;font-weight:700;color:var(--text);border-bottom:1px solid var(--line-soft)}
 .mc-pagination{display:flex;align-items:center;justify-content:center;gap:6px;padding:6px 8px;font-size:11px;border-top:1px solid var(--line-soft);background:var(--surface-soft)}
 .mc-pagination:empty{display:none}
 /* Section toggle */
@@ -304,7 +303,7 @@ tbody tr{cursor:pointer}
 .sc-pills .cpill{font-size:10px;padding:1px 6px}
 .sc-pills .spill{font-size:10px;padding:1px 6px}
 @media(max-width:720px){table{display:none}.stock-cards{display:flex;padding:0 8px}}
-@media(max-width:520px){.stock-cards{gap:1px;padding:0 1px}.stock-card{border-radius:3px}.sc-header{padding:1px 2px 0;gap:1px;flex-wrap:wrap}.sc-header .code{font-size:8px}.sc-header .name{font-size:7px;white-space:normal;overflow:visible;text-overflow:unset;line-height:1.2}.sc-metrics{padding:1px 1px;gap:0}.sc-metric{padding:0}.sc-metric-val{font-size:8px}.sc-metric-label{font-size:6px}.sc-pills{padding:1px 1px 1px;gap:1px}.sc-pills .cpill{font-size:7px;padding:0 2px}.sc-pills .spill{font-size:7px;padding:0 2px}.sc-badge{font-size:7px;padding:0 2px}.mc-section{margin:10px 0 10px}.mc-section-head{padding:7px 8px;font-size:11px;gap:6px}.mc-count{font-size:9px}.mc-pagination{padding:5px 6px}}
+@media(max-width:520px){.stock-cards{gap:1px;padding:0 1px}.stock-card{border-radius:3px}.sc-header{padding:1px 2px 0;gap:1px;flex-wrap:wrap}.sc-header .code{font-size:8px}.sc-header .name{font-size:7px;white-space:normal;overflow:visible;text-overflow:unset;line-height:1.2}.sc-metrics{padding:1px 1px;gap:0}.sc-metric{padding:0}.sc-metric-val{font-size:8px}.sc-metric-label{font-size:6px}.sc-pills{padding:1px 1px 1px;gap:1px}.sc-pills .cpill{font-size:7px;padding:0 2px}.sc-pills .spill{font-size:7px;padding:0 2px}.sc-badge{font-size:7px;padding:0 2px}.mc-section{margin:10px 0 10px}.mc-section-head{padding:7px 8px;font-size:11px;gap:6px}.mc-pagination{padding:5px 6px}}
 @media(max-width:520px){.bt-cards{flex-direction:column!important}.ipo-card{min-width:100%!important;flex:none!important}.ipo-tbl td{padding:3px 8px}.ipo-tbl .code{font-size:11px}.ipo-tbl .name{font-size:11px}}
 /* IPO highlight for table rows */
 tbody tr.ipo-highlight{background:linear-gradient(90deg,var(--amber-soft),transparent 50%)!important;border-left:3px solid var(--amber)}
@@ -540,7 +539,7 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
 
     <!-- MC split: 小市值 -->
     <div class="mc-section" id="mcSectionSmall">
-      <div class="mc-section-head">🐟 小市值 (&lt;20億) <span class="mc-count" id="mcCountSmall"></span></div>
+      <div class="mc-section-head">🐟 小市值 (&lt;20億)</div>
       <div style="overflow-x:auto"><table>
         <thead><tr>
           <th class="sortable th-vr sort-active sort-desc" data-sort="vr" onclick="sortBy('vr',event)"><span>量比</span><span class="sort-icon">▼</span></th>
@@ -574,7 +573,7 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
 
     <!-- MC split: 中市值 -->
     <div class="mc-section" id="mcSectionMid">
-      <div class="mc-section-head">🐬 中市值 (20-100億) <span class="mc-count" id="mcCountMid"></span></div>
+      <div class="mc-section-head">🐬 中市值 (20-100億)</div>
       <div style="overflow-x:auto"><table>
         <thead><tr>
           <th class="sortable th-vr sort-active sort-desc" data-sort="vr" onclick="sortBy('vr',event)"><span>量比</span><span class="sort-icon">▼</span></th>
@@ -608,7 +607,7 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
 
     <!-- MC split: 大市值 -->
     <div class="mc-section" id="mcSectionLarge">
-      <div class="mc-section-head">🐋 大市值 (≥100億) <span class="mc-count" id="mcCountLarge"></span></div>
+      <div class="mc-section-head">🐋 大市值 (≥100億)</div>
       <div style="overflow-x:auto"><table>
         <thead><tr>
           <th class="sortable th-vr sort-active sort-desc" data-sort="vr" onclick="sortBy('vr',event)"><span>量比</span><span class="sort-icon">▼</span></th>
@@ -1193,9 +1192,7 @@ function renderTable(){
   function renderOne(section, stocks){
     var cap=(section==='small'?'Small':section==='mid'?'Mid':'Large');
     var tbody=document.getElementById('mc'+cap+'Tbody');
-    var countEl=document.getElementById('mcCount'+cap);
     var pagEl=document.getElementById('mcPag'+cap);
-    if(countEl) countEl.textContent=stocks.length+'隻';
     var totalPages=Math.ceil(stocks.length/PAGE);
     var p=(section==='small'?pageSmall:section==='mid'?pageMid:pageLarge)||0;
     if(p>=totalPages) p=0;
