@@ -290,12 +290,12 @@ tbody tr{cursor:pointer}
 /* Market-cap sections */
 .mc-section{margin-top:12px;scroll-margin-top:78px}
 .mc-section:first-of-type{margin-top:0}
-.mc-overview{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:10px 0 12px}
-.mc-overview-card{display:flex;flex-direction:column;gap:4px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);box-shadow:var(--shadow);cursor:pointer;text-decoration:none;color:var(--text)}
+.mc-overview{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:8px 0 10px}
+.mc-overview-card{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);box-shadow:var(--shadow);cursor:pointer;text-decoration:none;color:var(--text)}
 .mc-overview-card:hover{border-color:var(--primary-border);background:var(--surface-soft);text-decoration:none}
-.mc-overview-label{font-size:11px;font-weight:700;color:var(--mute);text-transform:uppercase;letter-spacing:.12em}
-.mc-overview-count{font-size:18px;font-weight:800;line-height:1.1}
-.mc-overview-sub{font-size:11px;color:var(--text-soft)}
+.mc-overview-label{font-size:10px;font-weight:700;color:var(--mute);text-transform:uppercase;letter-spacing:.12em;white-space:nowrap}
+.mc-overview-count{font-size:14px;font-weight:800;line-height:1.1}
+.mc-overview-sub{font-size:10px;color:var(--text-soft);white-space:nowrap}
 /* Mobile card layout */
 .stock-cards{display:none;flex-direction:column;gap:5px;padding:0}
 .stock-card-section{display:flex;flex-direction:column;gap:4px;margin:8px 0 12px}
@@ -321,7 +321,7 @@ tbody tr{cursor:pointer}
 .sc-pills .cpill{font-size:10px;padding:1px 6px}
 .sc-pills .spill{font-size:10px;padding:1px 6px}
 @media(max-width:720px){table{display:none}.stock-cards{display:flex;padding:0 8px}}
-@media(max-width:720px){.mc-overview{gap:6px}.mc-overview-card{padding:8px 10px}.mc-overview-count{font-size:15px}}
+@media(max-width:720px){.mc-overview{gap:4px}.mc-overview-card{padding:6px 8px}.mc-overview-count{font-size:13px}}
 @media(max-width:520px){.mc-overview{grid-template-columns:1fr}.mc-overview-card{padding:8px 10px}}
 @media(max-width:520px){.stock-cards{gap:1px;padding:0 1px}.stock-card{border-radius:3px}.sc-header{padding:1px 2px 0;gap:1px;flex-wrap:wrap}.sc-header .code{font-size:8px}.sc-header .name{font-size:7px;white-space:normal;overflow:visible;text-overflow:unset;line-height:1.2}.sc-metrics{padding:1px 1px;gap:0}.sc-metric{padding:0}.sc-metric-val{font-size:8px}.sc-metric-label{font-size:6px}.sc-pills{padding:1px 1px 1px;gap:1px}.sc-pills .cpill{font-size:7px;padding:0 2px}.sc-pills .spill{font-size:7px;padding:0 2px}.sc-badge{font-size:7px;padding:0 2px}}
 @media(max-width:520px){.bt-cards{flex-direction:column!important}.ipo-card{min-width:100%!important;flex:none!important}.ipo-tbl td{padding:3px 8px}.ipo-tbl .code{font-size:11px}.ipo-tbl .name{font-size:11px}}
