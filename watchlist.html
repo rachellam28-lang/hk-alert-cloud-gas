@@ -18,7 +18,8 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .nav-link:hover{background:var(--surface-soft);text-decoration:none;color:var(--text)}
 .nav-link.active{background:var(--amber-soft);border-color:var(--amber-border);color:var(--amber)}
 .wrap{max-width:1440px;margin:0 auto;padding:18px 20px 36px}
-.section-head{display:flex;align-items:center;gap:8px;margin:20px 0 10px;font-size:11px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.16em}
+.section-head{display:flex;align-items:center;gap:8px;margin:20px 0 10px;font-size:11px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.16em;white-space:nowrap}
+.section-head-title{white-space:nowrap}
 .ico{display:inline-flex;width:18px;height:18px;border-radius:6px;background:var(--amber-soft);color:var(--amber);align-items:center;justify-content:center}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;margin-bottom:14px}
 .add-form{padding:14px 16px;display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;border-bottom:1px solid var(--line-soft)}
@@ -54,7 +55,7 @@ tbody tr:hover{background:var(--surface-soft)}
 .lnk:hover{border-color:var(--primary-border);background:var(--primary-soft);color:var(--primary);text-decoration:none}
 .empty{text-align:center;color:var(--mute);padding:40px 16px;font-size:13px}
 .foot{margin-top:24px;padding-top:14px;border-top:1px solid var(--line);text-align:center;color:var(--mute-2);font-size:11px}
-@media(max-width:720px){.fg:nth-child(n+3){min-width:0}.name-col{max-width:90px}.note-in{width:90px}}
+@media(max-width:720px){.fg:nth-child(n+3){min-width:0}.name-col{max-width:90px}.note-in{width:90px}.section-head{font-size:10px;gap:6px}}
 @media(max-width:520px){thead th:nth-child(2),tbody td:nth-child(2){display:none}}
 @media(prefers-color-scheme:dark){
   :root{--bg:#0f172a;--surface:#1e293b;--surface-soft:#162032;--text:#f1f5f9;--text-soft:#cbd5e1;--mute:#64748b;--mute-2:#475569;--line:#334155;--line-soft:#1e293b;--primary:#38bdf8;--primary-soft:#0c2d44;--primary-border:#0369a1;--up:#4ade80;--up-soft:#052e16;--up-border:#166534;--down:#f87171;--down-soft:#2d0a0a;--down-border:#991b1b;--amber:#fbbf24;--amber-soft:#1c0f00;--amber-border:#92400e}
@@ -104,7 +105,7 @@ tbody tr:hover{background:var(--surface-soft)}
 <main class="wrap">
   <div class="section-head">
     <span class="ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>
-    自選代號
+    <span class="section-head-title">自選代號</span>
   </div>
 
   <div class="card">
