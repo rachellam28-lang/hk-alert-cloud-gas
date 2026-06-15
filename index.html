@@ -196,6 +196,12 @@ tbody tr{cursor:pointer}
 .mc-section-head{display:flex;align-items:center;justify-content:flex-start;gap:8px;padding:8px 12px;background:var(--surface-soft);font-size:12px;font-weight:700;color:var(--text);border-bottom:1px solid var(--line-soft)}
 .mc-pagination{display:flex;align-items:center;justify-content:center;gap:6px;padding:6px 8px;font-size:11px;border-top:1px solid var(--line-soft);background:var(--surface-soft)}
 .mc-pagination:empty{display:none}
+.mc-small,.stock-card-section-small{border-top:3px solid #ef4444}
+.mc-mid,.stock-card-section-mid{border-top:3px solid #f97316}
+.mc-large,.stock-card-section-large{border-top:3px solid #eab308}
+.mc-small .mc-section-head,.stock-card-section-small .stock-card-section-head{background:linear-gradient(90deg,rgba(239,68,68,.12),var(--surface-soft));color:#b91c1c}
+.mc-mid .mc-section-head,.stock-card-section-mid .stock-card-section-head{background:linear-gradient(90deg,rgba(249,115,22,.12),var(--surface-soft));color:#c2410c}
+.mc-large .mc-section-head,.stock-card-section-large .stock-card-section-head{background:linear-gradient(90deg,rgba(234,179,8,.12),var(--surface-soft));color:#a16207}
 /* Section toggle */
 .section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:20px 0 10px}
 .section-head h2{margin:0;display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.16em}
@@ -303,7 +309,7 @@ tbody tr{cursor:pointer}
 .sc-pills .cpill{font-size:10px;padding:1px 6px}
 .sc-pills .spill{font-size:10px;padding:1px 6px}
 @media(max-width:720px){table{display:none}.stock-cards{display:flex;padding:0 8px}}
-@media(max-width:520px){.stock-cards{gap:1px;padding:0 1px}.stock-card{border-radius:3px}.sc-header{padding:1px 2px 0;gap:1px;flex-wrap:wrap}.sc-header .code{font-size:8px}.sc-header .name{font-size:7px;white-space:normal;overflow:visible;text-overflow:unset;line-height:1.2}.sc-metrics{padding:1px 1px;gap:0}.sc-metric{padding:0}.sc-metric-val{font-size:8px}.sc-metric-label{font-size:6px}.sc-pills{padding:1px 1px 1px;gap:1px}.sc-pills .cpill{font-size:7px;padding:0 2px}.sc-pills .spill{font-size:7px;padding:0 2px}.sc-badge{font-size:7px;padding:0 2px}.mc-section{margin:10px 0 10px}.mc-section-head{padding:7px 8px;font-size:11px;gap:6px}.mc-pagination{padding:5px 6px}}
+@media(max-width:520px){.stock-cards{gap:1px;padding:0 1px}.stock-card{border-radius:3px}.sc-header{padding:1px 2px 0;gap:1px;flex-wrap:wrap}.sc-header .code{font-size:8px}.sc-header .name{font-size:7px;white-space:normal;overflow:visible;text-overflow:unset;line-height:1.2}.sc-metrics{padding:1px 1px;gap:0}.sc-metric{padding:0}.sc-metric-val{font-size:8px}.sc-metric-label{font-size:6px}.sc-pills{padding:1px 1px 1px;gap:1px}.sc-pills .cpill{font-size:7px;padding:0 2px}.sc-pills .spill{font-size:7px;padding:0 2px}.sc-badge{font-size:7px;padding:0 2px}.mc-section{margin:8px 0 10px}.mc-section-head{padding:7px 8px;font-size:11px;gap:6px}.mc-pagination{padding:5px 6px}.stock-card-section{margin:6px 0 10px}.stock-card-section-head{padding:0 6px 3px;font-size:10px;letter-spacing:.08em}}
 @media(max-width:520px){.bt-cards{flex-direction:column!important}.ipo-card{min-width:100%!important;flex:none!important}.ipo-tbl td{padding:3px 8px}.ipo-tbl .code{font-size:11px}.ipo-tbl .name{font-size:11px}}
 /* IPO highlight for table rows */
 tbody tr.ipo-highlight{background:linear-gradient(90deg,var(--amber-soft),transparent 50%)!important;border-left:3px solid var(--amber)}
@@ -538,7 +544,7 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
     </div>
 
     <!-- MC split: 小市值 -->
-    <div class="mc-section" id="mcSectionSmall">
+    <div class="mc-section mc-small" id="mcSectionSmall">
       <div class="mc-section-head">🐟 小市值 (&lt;20億)</div>
       <div style="overflow-x:auto"><table>
         <thead><tr>
@@ -572,7 +578,7 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
     </div>
 
     <!-- MC split: 中市值 -->
-    <div class="mc-section" id="mcSectionMid">
+    <div class="mc-section mc-mid" id="mcSectionMid">
       <div class="mc-section-head">🐬 中市值 (20-100億)</div>
       <div style="overflow-x:auto"><table>
         <thead><tr>
@@ -606,7 +612,7 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
     </div>
 
     <!-- MC split: 大市值 -->
-    <div class="mc-section" id="mcSectionLarge">
+    <div class="mc-section mc-large" id="mcSectionLarge">
       <div class="mc-section-head">🐋 大市值 (≥100億)</div>
       <div style="overflow-x:auto"><table>
         <thead><tr>
