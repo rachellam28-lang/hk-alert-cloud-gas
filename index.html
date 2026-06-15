@@ -1188,11 +1188,11 @@ function renderTable(){
     else if(mc<100) groups.mid.push(s);
     else groups.large.push(s);
     });
-  var PAGE=100;
   function renderOne(section, stocks){
     var cap=(section==='small'?'Small':section==='mid'?'Mid':'Large');
     var tbody=document.getElementById('mc'+cap+'Tbody');
     var pagEl=document.getElementById('mcPag'+cap);
+    var PAGE=Math.max(stocks.length, 1);
     var totalPages=Math.ceil(stocks.length/PAGE);
     var p=(section==='small'?pageSmall:section==='mid'?pageMid:pageLarge)||0;
     if(p>=totalPages) p=0;
