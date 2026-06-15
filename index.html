@@ -705,10 +705,23 @@ function showEmpty(el,msg){
   el.innerHTML='<div class="status-empty">'+(msg||'暫無數據')+'</div>';
 }
 
+  // Disable legacy PWA caching to avoid stale UI / button issues after deploys.
+  // The app loads fresh HTML + data each visit, so keeping a service worker
+  // does more harm than good here.
   if('serviceWorker' in navigator){
-    navigator.serviceWorker.register('./service-worker.js')
-      .then(() => console.log('SW registered'))
-      .catch(e => console.log('SW failed:', e));
+    window.addEventListener('load', async () => {
+      try{
+        const regs = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(regs.map(r => r.unregister()));
+        if('caches' in window){
+          const keys = await caches.keys();
+          await Promise.all(keys.map(k => caches.delete(k)));
+        }
+        console.log('Legacy PWA caches cleared');
+      }catch(e){
+        console.log('PWA cleanup skipped:', e);
+      }
+    }, {once:true});
   }
   </script>
 
