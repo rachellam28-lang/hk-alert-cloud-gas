@@ -1,0 +1,463 @@
+{
+  "scan_date": "2026-06-12",
+  "red_alerts": [],
+  "watchlist": [
+    {
+      "code": "02490",
+      "name": "LC LOGISTICS",
+      "ctype": "placement",
+      "ann_date": "2026-06-12",
+      "ann_close": 4.17,
+      "vol_ratio": 1.88,
+      "skip_reason": "T+ pending — announced today",
+      "is_red": false,
+      "title_cn": "配售新股（一般授權）"
+    },
+    {
+      "code": "01323",
+      "name": "HUASHENG INTL",
+      "ctype": "placement",
+      "ann_date": "2026-06-11",
+      "actual_ann_date": "2026-06-11",
+      "ann_close": 0.135,
+      "vol_ratio": 0,
+      "vol_source": "unavailable",
+      "max_jump": 0.0,
+      "max_jump_t": 1,
+      "is_red": false,
+      "skip_reason": "vol=0.0x<1.5x",
+      "is_penny": true,
+      "title_cn": "配售新股（一般授權）"
+    },
+    {
+      "code": "02186",
+      "name": "LUYE PHARMA",
+      "ctype": "placement",
+      "ann_date": "2026-06-08",
+      "actual_ann_date": "2026-06-08",
+      "ann_close": 1.86,
+      "vol_ratio": 0,
+      "vol_source": "unavailable",
+      "max_jump": -3.8,
+      "max_jump_t": 1,
+      "is_red": false,
+      "skip_reason": "vol=0.0x<1.5x",
+      "is_penny": false,
+      "title_cn": "公司公告：OVERSEAS REGULATORY ANNOUNCEMENT"
+    },
+    {
+      "code": "01912",
+      "name": "CONTEL",
+      "ctype": "placement",
+      "ann_date": "2026-06-08",
+      "actual_ann_date": "2026-06-08",
+      "ann_close": 0.56,
+      "vol_ratio": 0,
+      "vol_source": "unavailable",
+      "max_jump": 114.3,
+      "max_jump_t": 1,
+      "is_red": false,
+      "skip_reason": "vol=0.0x<1.5x",
+      "is_penny": false,
+      "title_cn": "公司公告：JOINT ANNOUNCEMENT(1)SUBSCRIPTION OF NEW SHARES AND PLACING OF NEW SHARES …"
+    },
+    {
+      "code": "00174",
+      "name": "GEMINI INV",
+      "ctype": "placement",
+      "ann_date": "2026-06-07",
+      "actual_ann_date": "2026-06-07",
+      "ann_close": 0.186,
+      "vol_ratio": 0,
+      "vol_source": "unavailable",
+      "max_jump": 32.3,
+      "max_jump_t": 2,
+      "is_red": false,
+      "skip_reason": "vol=0.0x<1.5x",
+      "is_penny": true,
+      "title_cn": "PROPOSED 發行新股（一般授權）"
+    },
+    {
+      "code": "00632",
+      "name": "CHK OIL",
+      "ctype": "placement",
+      "ann_date": "2026-06-05",
+      "actual_ann_date": "2026-06-06",
+      "ann_close": 0.26,
+      "vol_ratio": 0,
+      "vol_source": "unavailable",
+      "max_jump": 0.0,
+      "max_jump_t": 3,
+      "is_red": false,
+      "skip_reason": "vol=0.0x<1.5x",
+      "is_penny": true,
+      "title_cn": "PLACING OF NEW SHARES UNDER GENERAL MANDATE"
+    },
+    {
+      "code": "00493",
+      "name": "GOME RETAIL",
+      "ctype": "placement",
+      "ann_date": "2026-06-05",
+      "ann_close": 0.012,
+      "vol_ratio": 0,
+      "skip_reason": "price<0.05",
+      "is_red": false,
+      "title_cn": "公司公告：1. DISCLOSEABLE TRANSACTION INVOLVING ISSUE OF CONSIDERATION SHARES UNDER …"
+    }
+  ],
+  "fp_skipped": [
+    {
+      "code": "02186",
+      "name": "LUYE PHARMA",
+      "types": [
+        "配股"
+      ],
+      "title": "公司公告：COMPLETION OF ISSUE OF US$180,000,000 5.25 PER CENT. CONVERTIBLE BONDS DUE…",
+      "date": "2026-06-11",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0611/2026061100045.pdf",
+      "type": "placement",
+      "typeLabel": "配股",
+      "direction": "up",
+      "fp_reason": "CONVERTIBLE BONDS"
+    },
+    {
+      "code": "01803",
+      "name": "BJ SPORTS & ENT",
+      "types": [
+        "配股"
+      ],
+      "title": "認購完成 OF NEW SHARES（一般授權）",
+      "date": "2026-06-11",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0611/2026061100737.pdf",
+      "type": "placement",
+      "typeLabel": "配股",
+      "direction": "up",
+      "fp_reason": "認購完成"
+    },
+    {
+      "code": "01277",
+      "name": "KINETIC DEV",
+      "types": [
+        "配股"
+      ],
+      "title": "公司公告：COMPLETION OF PLACING OF NEW SHARES UNDER THE GENERAL MANDATE",
+      "date": "2026-06-10",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0610/2026061001329.pdf",
+      "type": "placement",
+      "typeLabel": "配股",
+      "direction": "up",
+      "fp_reason": "COMPLETION OF"
+    },
+    {
+      "code": "09936",
+      "name": "XIMEI RESOURCES",
+      "types": [
+        "配股"
+      ],
+      "title": "配股完成 OF EXISTING SHARES AND TOP-UP 認購新股（一般授權）",
+      "date": "2026-06-10",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0610/2026061001298.pdf",
+      "type": "placement",
+      "typeLabel": "配股",
+      "direction": "up",
+      "fp_reason": "配股完成"
+    },
+    {
+      "code": "09689",
+      "name": "JTF INTL",
+      "types": [
+        "配股"
+      ],
+      "title": "EXTENSION OF 配股 PERIOD 有關 配售新股（一般授權）",
+      "date": "2026-06-10",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0610/2026061001179.pdf",
+      "type": "placement",
+      "typeLabel": "配股",
+      "direction": "up",
+      "fp_reason": "EXTENSION OF"
+    },
+    {
+      "code": "06682",
+      "name": "PHANCY",
+      "types": [
+        "配股"
+      ],
+      "title": "公司公告：(1) PROPOSED INITIAL PUBLIC OFFERING OF RENMINBI ORDINARY SHARES (A SHARES…",
+      "date": "2026-06-09",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0609/2026060901762.pdf",
+      "type": "placement",
+      "typeLabel": "配股",
+      "direction": "up",
+      "fp_reason": "PROPOSED INITIAL PUBLIC OFFERING"
+    },
+    {
+      "code": "00753",
+      "name": "AIR CHINA",
+      "types": [
+        "配股"
+      ],
+      "title": "公司公告：COMPLETION OF ISSUANCE OF A SHARES TO SPECIFIC INVESTORS",
+      "date": "2026-06-09",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0609/2026060901656.pdf",
+      "type": "placement",
+      "typeLabel": "配股",
+      "direction": "up",
+      "fp_reason": "COMPLETION OF"
+    },
+    {
+      "code": "00959",
+      "name": "CENTURY ENT INT",
+      "types": [
+        "大手轉倉"
+      ],
+      "title": "公司公告：FURTHER SUPPLEMENTAL ANNOUNCEMENT IN RELATION TO TRANSFER OF SHARES BY SUB…",
+      "date": "2026-06-09",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0609/2026060901231.pdf",
+      "type": "block_trade",
+      "typeLabel": "大手轉倉",
+      "direction": "neutral",
+      "fp_reason": "SUPPLEMENTAL ANNOUNCEMENT"
+    },
+    {
+      "code": "00428",
+      "name": "COCOON HOLDINGS",
+      "types": [
+        "配股"
+      ],
+      "title": "配股完成 OF NEW SHARES（一般授權）",
+      "date": "2026-06-09",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0609/2026060901212.pdf",
+      "type": "placement",
+      "typeLabel": "配股",
+      "direction": "up",
+      "fp_reason": "配股完成"
+    },
+    {
+      "code": "01372",
+      "name": "C CARBONNEUTRAL",
+      "types": [
+        "配股"
+      ],
+      "title": "公司公告：SUPPLEMENTAL ANNOUNCEMENT SUBSCRIPTION FOR NEW SHARES UNDER GENERAL MANDATE",
+      "date": "2026-06-09",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0609/2026060901053.pdf",
+      "type": "placement",
+      "typeLabel": "配股",
+      "direction": "up",
+      "fp_reason": "SUPPLEMENTAL ANNOUNCEMENT"
+    },
+    {
+      "code": "01519",
+      "name": "J&T EXPRESS-W",
+      "types": [
+        "配股"
+      ],
+      "title": "公司公告：COMPLETION OF ISSUANCE OF CLASS B SHARES TO S.F. HOLDING UNDER GENERAL MAN…",
+      "date": "2026-06-09",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0609/2026060900951.pdf",
+      "type": "placement",
+      "typeLabel": "配股",
+      "direction": "up",
+      "fp_reason": "COMPLETION OF"
+    },
+    {
+      "code": "00632",
+      "name": "CHK OIL",
+      "types": [
+        "配股"
+      ],
+      "title": "公司公告：REVISION OF LATEST TIME OF FULFILMENT OF THE CONDITIONS IN RELATION TO PLA…",
+      "date": "2026-06-09",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0609/2026060900945.pdf",
+      "type": "placement",
+      "typeLabel": "配股",
+      "direction": "up",
+      "fp_reason": "REVISION OF"
+    },
+    {
+      "code": "06936",
+      "name": "SF HOLDING",
+      "types": [
+        "配股"
+      ],
+      "title": "公司公告：COMPLETION OF SUBSCRIPTION OF J&T CLASS B SHARES AND ISSUE OF H SHARES TO …",
+      "date": "2026-06-09",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0609/2026060900458.pdf",
+      "type": "placement",
+      "typeLabel": "配股",
+      "direction": "up",
+      "fp_reason": "COMPLETION OF"
+    },
+    {
+      "code": "00994",
+      "name": "CT VISION",
+      "types": [
+        "配股"
+      ],
+      "title": "補充公告 TO (1) 發行新股（一般授權）; AND (2) 配售新股（一般授權）",
+      "date": "2026-06-08",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0608/2026060801574.pdf",
+      "type": "placement",
+      "typeLabel": "配股",
+      "direction": "up",
+      "fp_reason": "補充公告"
+    },
+    {
+      "code": "00953",
+      "name": "SHAW BROTHERS",
+      "types": [
+        "配股"
+      ],
+      "title": "公司公告：MONTHLY UPDATE IN RELATION TO (1) POTENTIAL EXTREME AND CONNECTED TRANSACT…",
+      "date": "2026-06-08",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0608/2026060801462.pdf",
+      "type": "placement",
+      "typeLabel": "配股",
+      "direction": "up",
+      "fp_reason": "MONTHLY UPDATE IN RELATION TO"
+    },
+    {
+      "code": "00254",
+      "name": "NUR HOLDINGS",
+      "types": [
+        "配股"
+      ],
+      "title": "公司公告：SUPPLEMENTAL ANNOUNCEMENT IN RELATION TO (I) SUBSCRIPTION OF NEW SHARES UN…",
+      "date": "2026-06-08",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0608/2026060801438.pdf",
+      "type": "placement",
+      "typeLabel": "配股",
+      "direction": "up",
+      "fp_reason": "SUPPLEMENTAL ANNOUNCEMENT"
+    },
+    {
+      "code": "09936",
+      "name": "XIMEI RESOURCES",
+      "types": [
+        "配股"
+      ],
+      "title": "補充公告：配股 OF EXISTING SHARES AND TOP-UP 認購新股（一般授權）",
+      "date": "2026-06-08",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0608/2026060802076.pdf",
+      "type": "placement",
+      "typeLabel": "配股",
+      "direction": "up",
+      "fp_reason": "補充公告"
+    },
+    {
+      "code": "01815",
+      "name": "EVEREST GOLD",
+      "types": [
+        "配股"
+      ],
+      "title": "公司公告：SUPPLEMENTAL ANNOUNCEMENT IN RELATION TO UPDATE ON CERTAIN SUBSCRIPTIONS O…",
+      "date": "2026-06-08",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0608/2026060801808.pdf",
+      "type": "placement",
+      "typeLabel": "配股",
+      "direction": "up",
+      "fp_reason": "SUPPLEMENTAL ANNOUNCEMENT"
+    },
+    {
+      "code": "01808",
+      "name": "ENTERPRISE DEV",
+      "types": [
+        "配股"
+      ],
+      "title": "LAPSE OF PLACING OF NEW SHARES UNDER GENERAL MANDATE",
+      "date": "2026-06-05",
+      "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060500684.pdf",
+      "type": "placement",
+      "typeLabel": "配股",
+      "direction": "up",
+      "offer_price": null,
+      "discount_pct": null,
+      "price_level": "unknown",
+      "fp_reason": "LAPSE OF"
+    },
+    {
+      "code": "01765",
+      "name": "XJ INTL HLDGS",
+      "types": [
+        "配股"
+      ],
+      "title": "補充公告 關連交易S 有關 PROPOSED 認購新股",
+      "date": "2026-06-05",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060502514.pdf",
+      "type": "placement",
+      "typeLabel": "配股",
+      "direction": "up",
+      "fp_reason": "補充公告"
+    },
+    {
+      "code": "03958",
+      "name": "DFZQ",
+      "types": [
+        "配股"
+      ],
+      "title": "公司公告：MONTHLY UPDATE IN RELATION TO (1) POTENTIAL NOTIFIABLE TRANSACTION - THE P…",
+      "date": "2026-06-05",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060501754.pdf",
+      "type": "placement",
+      "typeLabel": "配股",
+      "direction": "up",
+      "fp_reason": "MONTHLY UPDATE IN RELATION TO"
+    },
+    {
+      "code": "01128",
+      "name": "WYNN MACAU",
+      "types": [
+        "配股"
+      ],
+      "title": "公司公告：Adjustment to Conversion Price of the Convertible Bonds",
+      "date": "2026-06-05",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060501722.pdf",
+      "type": "placement",
+      "typeLabel": "配股",
+      "direction": "up",
+      "fp_reason": "CONVERTIBLE BONDS"
+    },
+    {
+      "code": "03360",
+      "name": "FE HORIZON",
+      "types": [
+        "配股"
+      ],
+      "title": "公司公告：UNIVERSE TREK LIMITED - FULL CONVERSION AND CANCELLATION OF U.S.$250,000,0…",
+      "date": "2026-06-05",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060501602.pdf",
+      "type": "placement",
+      "typeLabel": "配股",
+      "direction": "up",
+      "fp_reason": "CONVERSION AND CANCELLATION OF"
+    },
+    {
+      "code": "01860",
+      "name": "MOBVISTA",
+      "types": [
+        "配股"
+      ],
+      "title": "公司公告：VOLUNTARY ANNOUNCEMENT - COMPLETION OF CONVERSION OF CONVERTIBLE BONDS",
+      "date": "2026-06-05",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060500511.pdf",
+      "type": "placement",
+      "typeLabel": "配股",
+      "direction": "up",
+      "fp_reason": "CONVERTIBLE BONDS"
+    },
+    {
+      "code": "00110",
+      "name": "CHINA FORTUNE",
+      "types": [
+        "配股"
+      ],
+      "title": "認購完成 OF NEW SHARES（一般授權）",
+      "date": "2026-06-05",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060500473.pdf",
+      "type": "placement",
+      "typeLabel": "配股",
+      "direction": "up",
+      "fp_reason": "認購完成"
+    }
+  ]
+}

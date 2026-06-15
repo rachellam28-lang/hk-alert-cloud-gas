@@ -22,7 +22,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("direct_backfill")
 
-DATES = ["2026-06-05", "2026-06-08"]  # yesterday Mon + preceding Fri
+DATES = ["2026-06-12"]  # Friday last trading day
 
 def get_conn():
     return sqlite3.connect(DB_PATH)

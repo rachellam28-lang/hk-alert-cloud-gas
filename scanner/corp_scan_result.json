@@ -1,39 +1,14 @@
 {
-  "alerted": [
-    {
-      "code": "01952",
-      "name": "EVEREST MED",
-      "types": "股東增持",
-      "types_list": [
-        "股東增持"
-      ],
-      "title_cn": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING BY SUBSTANTIAL SHAREHOLDER…",
-      "volume_ratio": 0.48,
-      "cur_price": 27.600000381469727,
-      "prev_week_low": 28.1,
-      "year_open": 37.28,
-      "year_open_rel": "🔻低於年開",
-      "gap": {
-        "pct": 1.74,
-        "direction": "🔼"
-      },
-      "fvg": null,
-      "release_time": "10/06/2026 07:00",
-      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0610/2026061000037.pdf",
-      "tv_url": "https://www.tradingview.com/chart/?symbol=HKEX%3A1952",
-      "priority": 3,
-      "immediate": true
-    }
-  ],
+  "alerted": [],
   "watchlisted": [],
   "summary": {
-    "date": "2026/06/10",
-    "date_iso": "2026-06-10",
-    "weekday": "星期三",
-    "total_raw": 62,
-    "today_count": 1,
+    "date": "2026/06/15",
+    "date_iso": "2026-06-15",
+    "weekday": "星期一",
+    "total_raw": 57,
+    "today_count": 0,
     "volume_multiplier": 1.5,
-    "alerted_count": 1,
+    "alerted_count": 0,
     "watchlisted_count": 0
   }
 }

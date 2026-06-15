@@ -1,0 +1,318 @@
+[
+  {
+    "code": "00700",
+    "name": "騰訊",
+    "ctype": "配售",
+    "ann_date": "2026-06-05",
+    "actual_ann_date": "2026-06-06",
+    "ann_close": 430.4,
+    "ann_vol_ratio": 0,
+    "vol_source": "unavailable",
+    "max_jump": 5.3,
+    "max_jump_t": 1,
+    "tplus_data": [
+      [
+        1,
+        "2026-06-07",
+        453.2,
+        5.3
+      ],
+      [
+        2,
+        "2026-06-08",
+        453.2,
+        5.3
+      ],
+      [
+        3,
+        "2026-06-09",
+        445.0,
+        3.4
+      ],
+      [
+        4,
+        "2026-06-10",
+        445.0,
+        3.4
+      ],
+      [
+        5,
+        "2026-06-11",
+        445.0,
+        3.4
+      ]
+    ],
+    "is_red": false,
+    "skip_reason": "vol=0.0x<1.5x",
+    "is_penny": false
+  },
+  {
+    "code": "01912",
+    "name": "CONTEL",
+    "ctype": "配股",
+    "ann_date": "2026-06-08",
+    "actual_ann_date": "2026-06-08",
+    "ann_close": 0.56,
+    "ann_vol_ratio": 0,
+    "vol_source": "unavailable",
+    "max_jump": 114.3,
+    "max_jump_t": 1,
+    "tplus_data": [
+      [
+        1,
+        "2026-06-09",
+        1.2,
+        114.3
+      ],
+      [
+        2,
+        "2026-06-10",
+        1.2,
+        114.3
+      ],
+      [
+        3,
+        "2026-06-11",
+        1.2,
+        114.3
+      ],
+      [
+        4,
+        "2026-06-12",
+        1.2,
+        114.3
+      ]
+    ],
+    "is_red": false,
+    "skip_reason": "vol=0.0x<1.5x",
+    "is_penny": false
+  },
+  {
+    "code": "00953",
+    "name": "SHAW BROTHERS",
+    "ctype": "配股",
+    "ann_date": "2026-06-08",
+    "actual_ann_date": "2026-06-08",
+    "ann_close": 0.19,
+    "ann_vol_ratio": 0,
+    "vol_source": "unavailable",
+    "max_jump": -5.3,
+    "max_jump_t": 1,
+    "tplus_data": [
+      [
+        1,
+        "2026-06-09",
+        0.18,
+        -5.3
+      ],
+      [
+        2,
+        "2026-06-10",
+        0.18,
+        -5.3
+      ],
+      [
+        3,
+        "2026-06-11",
+        0.18,
+        -5.3
+      ],
+      [
+        4,
+        "2026-06-12",
+        0.18,
+        -5.3
+      ]
+    ],
+    "is_red": false,
+    "skip_reason": "vol=0.0x<1.5x",
+    "is_penny": true
+  },
+  {
+    "code": "09936",
+    "name": "XIMEI RESOURCES",
+    "ctype": "配股",
+    "ann_date": "2026-06-08",
+    "actual_ann_date": "2026-06-08",
+    "ann_close": 17.44,
+    "ann_vol_ratio": 0,
+    "vol_source": "unavailable",
+    "max_jump": -6.5,
+    "max_jump_t": 1,
+    "tplus_data": [
+      [
+        1,
+        "2026-06-09",
+        16.3,
+        -6.5
+      ],
+      [
+        2,
+        "2026-06-10",
+        16.3,
+        -6.5
+      ],
+      [
+        3,
+        "2026-06-11",
+        16.3,
+        -6.5
+      ],
+      [
+        4,
+        "2026-06-12",
+        16.3,
+        -6.5
+      ]
+    ],
+    "is_red": false,
+    "skip_reason": "vol=0.0x<1.5x",
+    "is_penny": false
+  },
+  {
+    "code": "01815",
+    "name": "EVEREST GOLD",
+    "ctype": "配股",
+    "ann_date": "2026-06-08",
+    "actual_ann_date": "2026-06-08",
+    "ann_close": 0.86,
+    "ann_vol_ratio": 0,
+    "vol_source": "unavailable",
+    "max_jump": -7.0,
+    "max_jump_t": 1,
+    "tplus_data": [
+      [
+        1,
+        "2026-06-09",
+        0.8,
+        -7.0
+      ],
+      [
+        2,
+        "2026-06-10",
+        0.8,
+        -7.0
+      ],
+      [
+        3,
+        "2026-06-11",
+        0.8,
+        -7.0
+      ],
+      [
+        4,
+        "2026-06-12",
+        0.8,
+        -7.0
+      ]
+    ],
+    "is_red": false,
+    "skip_reason": "vol=0.0x<1.5x",
+    "is_penny": false
+  },
+  {
+    "code": "00994",
+    "name": "CT VISION",
+    "ctype": "配股",
+    "ann_date": "2026-06-08",
+    "actual_ann_date": "2026-06-08",
+    "ann_close": 0.35,
+    "ann_vol_ratio": 0,
+    "vol_source": "unavailable",
+    "max_jump": 0.0,
+    "max_jump_t": 1,
+    "tplus_data": [
+      [
+        1,
+        "2026-06-09",
+        0.35,
+        0.0
+      ],
+      [
+        2,
+        "2026-06-10",
+        0.35,
+        0.0
+      ],
+      [
+        3,
+        "2026-06-11",
+        0.35,
+        0.0
+      ],
+      [
+        4,
+        "2026-06-12",
+        0.35,
+        0.0
+      ]
+    ],
+    "is_red": false,
+    "skip_reason": "vol=0.0x<1.5x",
+    "is_penny": true
+  },
+  {
+    "code": "00254",
+    "name": "NUR HOLDINGS",
+    "ctype": "配股",
+    "ann_date": "2026-06-08",
+    "actual_ann_date": "2026-06-08",
+    "ann_close": 0.91,
+    "ann_vol_ratio": 0,
+    "vol_source": "unavailable",
+    "max_jump": -3.3,
+    "max_jump_t": 1,
+    "tplus_data": [
+      [
+        1,
+        "2026-06-09",
+        0.88,
+        -3.3
+      ],
+      [
+        2,
+        "2026-06-10",
+        0.88,
+        -3.3
+      ],
+      [
+        3,
+        "2026-06-11",
+        0.88,
+        -3.3
+      ],
+      [
+        4,
+        "2026-06-12",
+        0.88,
+        -3.3
+      ]
+    ],
+    "is_red": false,
+    "skip_reason": "vol=0.0x<1.5x",
+    "is_penny": false
+  },
+  {
+    "code": "02186",
+    "name": "LUYE PHARMA",
+    "ctype": "配股",
+    "ann_date": "2026-06-11",
+    "actual_ann_date": "2026-06-11",
+    "ann_close": 1.79,
+    "ann_vol_ratio": 0.4,
+    "vol_source": "scanner",
+    "max_jump": 0.0,
+    "max_jump_t": 1,
+    "tplus_data": [
+      [
+        1,
+        "2026-06-12",
+        1.79,
+        0.0
+      ]
+    ],
+    "is_red": false,
+    "skip_reason": "vol=0.4x<1.5x",
+    "is_penny": false
+  }
+]

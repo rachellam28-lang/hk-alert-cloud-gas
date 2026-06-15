@@ -1,6 +1,3 @@
-00116: FAIL ret=-1
-00117: FAIL ret=-1
-00118: FAIL ret=-1
 00119: FAIL ret=-1
 00120: FAIL ret=-1
 00122: FAIL ret=-1
@@ -442,6 +439,7 @@
 00696: FAIL ret=-1
 00697: FAIL ret=-1
 00698: FAIL ret=-1
+00700: FAIL ret=-1
 00701: FAIL ret=-1
 00702: FAIL ret=-1
 00703: FAIL ret=-1

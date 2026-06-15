@@ -1,50 +1,55 @@
 {
- "at": "2026-06-10T14:04:43.282453",
+ "at": "2026-06-12T12:02:06.689182",
  "freshness": [
   {
    "name": "holdings.json",
    "status": "🟢",
-   "detail": "4.3h old"
+   "detail": "0.1h old"
   },
   {
    "name": "signals.json",
    "status": "🟢",
-   "detail": "0.0h old"
+   "detail": "0.6h old"
   },
   {
    "name": "alerts.json",
    "status": "🟢",
-   "detail": "0.3h old"
+   "detail": "0.6h old"
   },
   {
    "name": "announcements.json",
    "status": "🟢",
-   "detail": "1.6h old"
+   "detail": "0.6h old"
   },
   {
    "name": "events.json",
    "status": "🟢",
-   "detail": "0.0h old"
+   "detail": "0.6h old"
+  },
+  {
+   "name": "price_snapshot",
+   "status": "🟢",
+   "detail": "0.6h old"
   }
  ],
  "ann_volume": {
   "status": "⚠️",
-  "detail": "today 1 vs median 10 (89% dev)"
+  "detail": "today 1 vs median 8 (88% dev)"
  },
  "deepseek": {
-  "status": "⚪",
-  "detail": "DEEPSEEK_API_KEY not set"
+  "status": "🟢",
+  "detail": "$67.19 CNY"
  },
  "integrity": [
   {
    "name": "corpTypes",
    "status": "🟢",
-   "detail": "193/2746 stocks have corp actions"
+   "detail": "197/2743 stocks have corp actions"
   },
   {
    "name": "events",
    "status": "🟢",
-   "detail": "15 total, 7 recent, 0 filled"
+   "detail": "672 total, 352 recent, 0 filled"
   }
  ]
 }
