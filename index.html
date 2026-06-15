@@ -287,8 +287,14 @@ tbody tr{cursor:pointer}
 .vr-card .tf-side{font-size:7px;display:flex;align-items:center;gap:1px}
 .vr-card .tf-side-label{font-size:6px;margin-right:1px}
 .vr-card .tf-shares{font-size:7px}}
+/* Market-cap sections */
+.mc-section{margin-top:12px}
+.mc-section:first-of-type{margin-top:0}
 /* Mobile card layout */
 .stock-cards{display:none;flex-direction:column;gap:5px;padding:0}
+.stock-card-section{display:flex;flex-direction:column;gap:4px;margin:8px 0 12px}
+.stock-card-section-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 6px 2px;font-size:11px;font-weight:700;color:var(--mute);text-transform:uppercase;letter-spacing:.12em}
+.stock-card-section-count{font-size:10px;font-weight:600;color:var(--mute-2);text-transform:none;letter-spacing:0}
 .stock-card{background:var(--surface);border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow);overflow:hidden;cursor:pointer}
 .stock-card:hover{border-color:var(--primary-border);background:var(--surface-soft)}
 .stock-card.ipo-highlight{border-left:3px solid var(--amber);background:linear-gradient(90deg,var(--amber-soft),transparent 50%)}
@@ -1291,8 +1297,9 @@ function renderTable(){
 
   // Mobile cards
   var cardsContainer=document.getElementById('stockCards');
-  var cardSlice=filtered.slice(0, 100);
-  cardsContainer.innerHTML=cardSlice.map(function(s){
+  var CARD_PAGE=30;
+  function renderCardList(stocks){
+    return stocks.slice(0, CARD_PAGE).map(function(s){
     var sig=signalMap.get(s.c);
     var corpHtml='';
     if(sig){
@@ -1350,6 +1357,18 @@ function renderTable(){
       +'</div>'
       +(sigPills?'<div class="sc-sigs">'+sigPills+'</div>':'')
       +'</div>';
+    }).join('');
+  }
+  cardsContainer.innerHTML=[
+    {key:'small', label:'🐟 小市值 (<20億)', count:groups.small.length, items:groups.small},
+    {key:'mid', label:'🐬 中市值 (20-100億)', count:groups.mid.length, items:groups.mid},
+    {key:'large', label:'🐋 大市值 (≥100億)', count:groups.large.length, items:groups.large},
+  ].map(function(sec){
+    var cards=renderCardList(sec.items);
+    return '<section class="stock-card-section stock-card-section-'+sec.key+'">'
+      +'<div class="stock-card-section-head"><span>'+sec.label+'</span><span class="stock-card-section-count">'+sec.count+'隻</span></div>'
+      +(cards||'<div class="status-empty" style="padding:10px">暫無數據</div>')
+      +'</section>';
   }).join('');
 
   bindDynamicTapFixes();
