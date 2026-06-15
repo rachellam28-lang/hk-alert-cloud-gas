@@ -309,6 +309,7 @@ tbody tr{cursor:pointer}
 .sc-pills .cpill{font-size:10px;padding:1px 6px}
 .sc-pills .spill{font-size:10px;padding:1px 6px}
 @media(max-width:720px){table{display:none}.stock-cards{display:flex;padding:0 8px}}
+@media(max-width:720px){.drawer{width:100vw;max-width:100vw;right:-100vw}.drawer.open{right:0}}
 @media(max-width:520px){.stock-cards{gap:1px;padding:0 1px}.stock-card{border-radius:3px}.sc-header{padding:1px 2px 0;gap:1px;flex-wrap:wrap}.sc-header .code{font-size:8px}.sc-header .name{font-size:7px;white-space:normal;overflow:visible;text-overflow:unset;line-height:1.2}.sc-metrics{padding:1px 1px;gap:0}.sc-metric{padding:0}.sc-metric-val{font-size:8px}.sc-metric-label{font-size:6px}.sc-pills{padding:1px 1px 1px;gap:1px}.sc-pills .cpill{font-size:7px;padding:0 2px}.sc-pills .spill{font-size:7px;padding:0 2px}.sc-badge{font-size:7px;padding:0 2px}.mc-section{width:100%;max-width:none;margin:8px 0 10px}.mc-section-head{padding:6px 8px;font-size:10px;gap:6px}.mc-pagination{padding:4px 6px;font-size:10px}.stock-card-section{width:100%;max-width:none;margin:6px 0 10px}.stock-card-section-head{padding:0 6px 3px;font-size:9px;letter-spacing:.08em}}
 @media(max-width:520px){.bt-cards{flex-direction:column!important}.ipo-card{min-width:100%!important;flex:none!important}.ipo-tbl td{padding:3px 8px}.ipo-tbl .code{font-size:11px}.ipo-tbl .name{font-size:11px}}
 /* IPO highlight for table rows */
@@ -1584,6 +1585,7 @@ function closeDrawer(){
 document.getElementById('drawerClose').addEventListener('click', closeDrawer);
 document.getElementById('drawerOverlay').addEventListener('click', closeDrawer);
 document.addEventListener('keydown', e=>{if(e.key==='Escape')closeDrawer();});
+closeDrawer();
 
 // --- sorting ---
 function sortBy(col,ev){
