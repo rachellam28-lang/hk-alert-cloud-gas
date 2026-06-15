@@ -761,7 +761,12 @@ function showEmpty(el,msg){
 }
 
 // --- helpers ---
-function esc(s){const d=document.createElement('div');d.appendChild(document.createTextNode(s));return d.innerHTML;}
+function esc(s){
+  const d=document.createElement('div');
+  const v=s==null?'':String(s);
+  d.appendChild(document.createTextNode(v));
+  return d.innerHTML;
+}
 
 function fcfBars(data){
   if(!data||data.length<2)return'';
