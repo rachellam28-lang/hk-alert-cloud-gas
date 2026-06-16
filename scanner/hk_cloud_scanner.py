@@ -27,11 +27,24 @@ import time
 import warnings
 from datetime import datetime, timedelta, timezone
 from typing import Any
+from pathlib import Path
+
+_THIS_DIR = Path(__file__).resolve().parent
+_PROJECT_ROOT = _THIS_DIR.parent
+for _p in (_PROJECT_ROOT, _THIS_DIR):
+    _ps = str(_p)
+    if _ps not in sys.path:
+        sys.path.insert(0, _ps)
 
 import pandas as pd
 import requests
-import yfinance as yf
 from bs4 import BeautifulSoup
+
+try:
+    import yfinance as yf
+except Exception as _yf_exc:  # pragma: no cover
+    yf = None  # type: ignore[assignment]
+    print(f"[yfinance] unavailable: {_yf_exc}")
 
 warnings.filterwarnings("ignore")
 
@@ -1464,6 +1477,8 @@ def get_daily_history(code: str, period: str) -> pd.DataFrame:
         df = get_daily_history_futu(code, _period_to_years(period))
         if not df.empty:
             return df
+    if yf is None:
+        return pd.DataFrame()
     ticker = hk_code_to_yahoo(code)
     for attempt in range(1, RETRY_COUNT + 1):
         try:
@@ -1488,6 +1503,8 @@ def get_daily_history(code: str, period: str) -> pd.DataFrame:
 
 def get_weekly_history(code: str, period: str = "2y") -> pd.DataFrame:
     """Download weekly OHLC (interval=1wk) for chart rendering."""
+    if yf is None:
+        return pd.DataFrame()
     ticker = hk_code_to_yahoo(code)
     for attempt in range(1, RETRY_COUNT + 1):
         try:
@@ -1523,6 +1540,8 @@ def get_daily_history_batch(codes: list[str], period: str) -> dict[str, pd.DataF
         if result:
             return result
         # If Futu returned nothing (OpenD down?), fall through to yfinance.
+    if yf is None:
+        return {}
     ticker_map = {hk_code_to_yahoo(c): c for c in codes}
     tickers = list(ticker_map.keys())
     out: dict[str, pd.DataFrame] = {}
