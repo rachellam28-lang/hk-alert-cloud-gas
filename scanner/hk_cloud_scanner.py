@@ -490,6 +490,7 @@ def check_monthly_volume_open_breakout(
     prev = monthly.iloc[-2]
     today_close = float(today["close"])
     prev_close = float(prev["close"])
+    prev_day_change_pct = round((today_close / prev_close - 1) * 100, 2) if prev_close > 0 else None
     if today_close > ref_open and prev_close <= ref_open:
         return {
             "Code": code,
@@ -499,6 +500,7 @@ def check_monthly_volume_open_breakout(
             "Ref Volume": int(float(ref["volume"])) if pd.notna(ref["volume"]) else None,
             "Break Value": round(today_close, 3),
             "Break %": round((today_close / ref_open - 1) * 100, 2),
+            "Prev Day Change %": prev_day_change_pct,
             "Data Month": pd.to_datetime(today["date"]).strftime("%Y-%m"),
             "Data Date": pd.to_datetime(today["date"]).strftime("%Y-%m-%d"),
         }
@@ -2388,10 +2390,10 @@ def run_watchlist_year_open_breakout() -> None:
         send_telegram_message(f"⭐ 觀察名單年開突破：{hits} 隻（掃描 {total} 隻，{elapsed:.0f}s）")
 
 
-def run_monthly_volume_open_breakout() -> None:
-    """Scan all HK stocks for current-month breakout above the open of the highest-volume recent month."""
+def run_vqc_turn_date() -> None:
+    """Scan all HK stocks for a VQC-style turn date."""
     send_telegram_message(
-        f"<b>月K量價突破掃描開始</b> · {datetime.now():%Y-%m-%d %H:%M}\n"
+        f"<b>VQC 轉勢日掃描開始</b> · {datetime.now():%Y-%m-%d %H:%M}\n"
         f"條件：現月收市向上穿越最近 {MONTH_VOL_LOOKBACK_MONTHS} 個完成月中，成交量最大那個月的開市價"
     )
     stocks = get_hk_stock_list()
@@ -2428,32 +2430,38 @@ def run_monthly_volume_open_breakout() -> None:
             tv_url = tradingview_url(code)
             payload = {
                 "source": "cloud_scanner",
-                "category": "month_volume_open",
+                "category": "vqc_turn_date",
                 "code": code,
                 "symbol": hk_code_to_yahoo(code),
                 "name": result["Name"],
-                "signal": "月K量價突破",
+                "signal": "VQC 轉勢日",
                 "timeframe": "1M",
                 "price": result["Break Value"],
                 "message": (
                     f"最近 {MONTH_VOL_LOOKBACK_MONTHS} 個完成月中，成交量最高月份為 {result['Ref Month']}；"
-                    f"開市價 {result['Ref Open']} 已被現月收市升穿"
+                    f"開市價 {result['Ref Open']} 已被現月收市升穿；"
+                    f"前一日變化 {result.get('Prev Day Change %')}"
                 ),
-                "strategy": "Monthly Volume Open Breakout",
+                "strategy": "VQC Turn Date",
                 "chart_url": "",
                 "source_url": "",
-                "tags": ["月K", "量價突破", "高成交月開市價"],
+                "tags": ["VQC", "轉勢日", "月K", "高成交月開市價"],
                 "priority": 2,
                 "raw": json.dumps(result, ensure_ascii=False),
             }
             caption = (
-                f"📅月K量價突破\n"
+                f"📅VQC 轉勢日\n"
                 f"{code} {result['Name']}\n"
                 f"量最大月：{result['Ref Month']} 開 {result['Ref Open']}\n"
                 f"現月收：<b>{result['Break Value']}</b>　突破：<b>{result['Break %']}%</b>"
+                + (
+                    f"\n前一日變化：{result['Prev Day Change %']}%"
+                    if result.get("Prev Day Change %") is not None
+                    else ""
+                )
             )
             chart_path = render_chart(
-                df, code, result["Name"], "月K量價突破",
+                df, code, result["Name"], "VQC 轉勢日",
                 levels=[(f"{result['Ref Month']} 開", result["Ref Open"], "#f59e0b")],
                 lookback_days=CHART_LOOKBACK_DAYS,
             )
@@ -2469,11 +2477,16 @@ def run_monthly_volume_open_breakout() -> None:
         elapsed = time.monotonic() - started
         rate = processed / elapsed if elapsed > 0 else 0
         if batch_start % (YF_BATCH_SIZE * 5) == 0:
-            print(f"月K量價突破 {processed}/{total} hits={hits} rate={rate:.1f}/s", flush=True)
+            print(f"VQC 轉勢日 {processed}/{total} hits={hits} rate={rate:.1f}/s", flush=True)
         if SLEEP_SEC > 0:
             time.sleep(SLEEP_SEC)
 
-    send_telegram_message(f"月K量價突破掃描完成，共 {hits} 隻（掃描 {processed}/{total}）。")
+    send_telegram_message(f"VQC 轉勢日掃描完成，共 {hits} 隻（掃描 {processed}/{total}）。")
+
+
+def run_monthly_volume_open_breakout() -> None:
+    """Backward-compatible alias."""
+    run_vqc_turn_date()
 
 
 def main() -> None:
@@ -2490,6 +2503,8 @@ def main() -> None:
         run_watchlist_year_open_breakout()
     elif mode == "month_vol_open":
         run_monthly_volume_open_breakout()
+    elif mode == "vqc_turn_date":
+        run_vqc_turn_date()
     elif mode == "us":
         from us_scanner import run_us_corp_actions
         run_us_corp_actions()
@@ -2509,7 +2524,7 @@ def main() -> None:
             print(f"[main] confluence build failed: {exc}")
     else:
         raise SystemExit(
-            "Usage: python scanner/hk_cloud_scanner.py [corp|ipo|poc|year_open|month_vol_open|us|all]"
+            "Usage: python scanner/hk_cloud_scanner.py [corp|ipo|poc|year_open|month_vol_open|vqc_turn_date|us|all]"
         )
 
 
