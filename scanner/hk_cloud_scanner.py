@@ -12,6 +12,7 @@ Signals:
 1. IPO first-day high breakout
 2. POC breakout (6M / 12M / 3Y)
 3. HKEXnews corporate action: rights issue / placing / shareholder increase
+4. Monthly breakout above the open of the highest-volume recent month
 """
 
 from __future__ import annotations
@@ -76,6 +77,7 @@ POC_LOOKBACK_DAYS_12M = int(os.getenv("POC_LOOKBACK_DAYS_12M", "252"))
 POC_LOOKBACK_DAYS_3Y = int(os.getenv("POC_LOOKBACK_DAYS_3Y", "756"))
 POC_BINS = int(os.getenv("POC_BINS", "80"))
 BREAKOUT_FIELD = os.getenv("BREAKOUT_FIELD", "high").lower().strip()
+MONTH_VOL_LOOKBACK_MONTHS = max(int(os.getenv("MONTH_VOL_LOOKBACK_MONTHS", "24")), 3)
 ANNOUNCEMENT_RANGE_DAYS = int(os.getenv("ANNOUNCEMENT_RANGE_DAYS", "7"))
 SLEEP_SEC = float(os.getenv("SLEEP_SEC", "0.0"))
 RETRY_COUNT = int(os.getenv("RETRY_COUNT", "1"))
@@ -371,7 +373,14 @@ def _is_above_year_open(df: pd.DataFrame) -> bool | None:
     return today_close > year_open
 
 
-def emit_alert(payload: dict[str, Any], caption_html: str, chart_path: str | None, reply_markup: dict | None = None, df: pd.DataFrame | None = None) -> None:
+def emit_alert(
+    payload: dict[str, Any],
+    caption_html: str,
+    chart_path: str | None,
+    reply_markup: dict | None = None,
+    df: pd.DataFrame | None = None,
+    apply_year_open_filter: bool = True,
+) -> None:
     payload.setdefault("created_at", datetime.now().isoformat(timespec="seconds"))
 
     # Local store — replaces GAS (non-fatal)
@@ -381,7 +390,7 @@ def emit_alert(payload: dict[str, Any], caption_html: str, chart_path: str | Non
         print(f"[local] emit_alert store error (non-fatal): {_store_exc}")
 
     # -- year-open filter: skip Telegram for stocks below current-year first-day open --
-    if df is not None:
+    if apply_year_open_filter and df is not None:
         above = _is_above_year_open(df)
         if above is False:
             code = payload.get("code", "?")
@@ -424,6 +433,73 @@ def format_volume_ratio(ratio: float | None) -> str:
     if ratio >= VOLUME_MULTIPLIER:
         return f"量比：⬆️ {ratio:.1f}x"
     return f"量比：⬇️ {ratio:.1f}x"
+
+
+def resample_monthly(df: pd.DataFrame) -> pd.DataFrame:
+    """Resample daily OHLCV into month-end candles."""
+    if df is None or df.empty or "date" not in df.columns:
+        return pd.DataFrame()
+    try:
+        tmp = df.copy()
+        tmp["date"] = pd.to_datetime(tmp["date"])
+        tmp = tmp.sort_values("date")
+        tmp["month"] = tmp["date"].dt.to_period("M")
+        monthly = tmp.groupby("month", sort=True).agg(
+            open=("open", "first"),
+            high=("high", "max"),
+            low=("low", "min"),
+            close=("close", "last"),
+            volume=("volume", "sum"),
+        ).reset_index()
+        monthly["date"] = monthly["month"].dt.to_timestamp(how="end")
+        return monthly[["date", "open", "high", "low", "close", "volume"]]
+    except Exception as exc:
+        print(f"[monthly] resample failed: {exc}")
+        return pd.DataFrame()
+
+
+def check_monthly_volume_open_breakout(
+    code: str,
+    name: str,
+    df: pd.DataFrame,
+) -> dict[str, Any] | None:
+    """Check if current month close breaks above the open of the highest-volume recent month."""
+    monthly = resample_monthly(df)
+    if monthly.empty or len(monthly) < 3:
+        return None
+
+    completed = monthly.iloc[:-1].copy()
+    if completed.empty:
+        return None
+    lookback = completed.tail(MONTH_VOL_LOOKBACK_MONTHS)
+    if lookback.empty:
+        return None
+
+    ref_idx = lookback["volume"].astype(float).idxmax()
+    if pd.isna(ref_idx):
+        return None
+    ref = lookback.loc[ref_idx]
+    ref_open = float(ref["open"])
+    if ref_open <= 0:
+        return None
+
+    today = monthly.iloc[-1]
+    prev = monthly.iloc[-2]
+    today_close = float(today["close"])
+    prev_close = float(prev["close"])
+    if today_close > ref_open and prev_close <= ref_open:
+        return {
+            "Code": code,
+            "Name": name,
+            "Ref Month": pd.to_datetime(ref["date"]).strftime("%Y-%m"),
+            "Ref Open": round(ref_open, 3),
+            "Ref Volume": int(float(ref["volume"])) if pd.notna(ref["volume"]) else None,
+            "Break Value": round(today_close, 3),
+            "Break %": round((today_close / ref_open - 1) * 100, 2),
+            "Data Month": pd.to_datetime(today["date"]).strftime("%Y-%m"),
+            "Data Date": pd.to_datetime(today["date"]).strftime("%Y-%m-%d"),
+        }
+    return None
 
 
 def fetch_watchlist_from_gas() -> dict[str, dict]:
@@ -2229,6 +2305,94 @@ def run_watchlist_year_open_breakout() -> None:
         send_telegram_message(f"⭐ 觀察名單年開突破：{hits} 隻（掃描 {total} 隻，{elapsed:.0f}s）")
 
 
+def run_monthly_volume_open_breakout() -> None:
+    """Scan all HK stocks for current-month breakout above the open of the highest-volume recent month."""
+    send_telegram_message(
+        f"<b>月K量價突破掃描開始</b> · {datetime.now():%Y-%m-%d %H:%M}\n"
+        f"條件：現月收市向上穿越最近 {MONTH_VOL_LOOKBACK_MONTHS} 個完成月中，成交量最大那個月的開市價"
+    )
+    stocks = get_hk_stock_list()
+    records = stocks.to_dict("records")
+    total = len(records)
+    hits = 0
+    processed = 0
+    started = time.monotonic()
+
+    for batch_start in range(0, total, YF_BATCH_SIZE):
+        chunk = records[batch_start: batch_start + YF_BATCH_SIZE]
+        chunk_codes = [r["code"] for r in chunk]
+        try:
+            data = get_daily_history_batch(chunk_codes, "2y")
+        except Exception as exc:
+            print(f"[month_vol_open] batch failed: {exc}")
+            data = {}
+
+        for row in chunk:
+            processed += 1
+            code = row["code"]
+            df = data.get(code)
+            if df is None or df.empty:
+                continue
+            try:
+                result = check_monthly_volume_open_breakout(code, row["name"], df)
+            except Exception as exc:
+                print(f"[month_vol_open] {code} check failed: {exc}")
+                continue
+            if not result:
+                continue
+
+            hits += 1
+            tv_url = tradingview_url(code)
+            payload = {
+                "source": "cloud_scanner",
+                "category": "month_volume_open",
+                "code": code,
+                "symbol": hk_code_to_yahoo(code),
+                "name": result["Name"],
+                "signal": "月K量價突破",
+                "timeframe": "1M",
+                "price": result["Break Value"],
+                "message": (
+                    f"最近 {MONTH_VOL_LOOKBACK_MONTHS} 個完成月中，成交量最高月份為 {result['Ref Month']}；"
+                    f"開市價 {result['Ref Open']} 已被現月收市升穿"
+                ),
+                "strategy": "Monthly Volume Open Breakout",
+                "chart_url": "",
+                "source_url": "",
+                "tags": ["月K", "量價突破", "高成交月開市價"],
+                "priority": 2,
+                "raw": json.dumps(result, ensure_ascii=False),
+            }
+            caption = (
+                f"📅月K量價突破\n"
+                f"{code} {result['Name']}\n"
+                f"量最大月：{result['Ref Month']} 開 {result['Ref Open']}\n"
+                f"現月收：<b>{result['Break Value']}</b>　突破：<b>{result['Break %']}%</b>"
+            )
+            chart_path = render_chart(
+                df, code, result["Name"], "月K量價突破",
+                levels=[(f"{result['Ref Month']} 開", result["Ref Open"], "#f59e0b")],
+                lookback_days=CHART_LOOKBACK_DAYS,
+            )
+            emit_alert(
+                payload,
+                caption,
+                chart_path,
+                reply_markup=build_inline_keyboard_([("📊 走勢圖", tv_url)]),
+                df=None,
+                apply_year_open_filter=False,
+            )
+
+        elapsed = time.monotonic() - started
+        rate = processed / elapsed if elapsed > 0 else 0
+        if batch_start % (YF_BATCH_SIZE * 5) == 0:
+            print(f"月K量價突破 {processed}/{total} hits={hits} rate={rate:.1f}/s", flush=True)
+        if SLEEP_SEC > 0:
+            time.sleep(SLEEP_SEC)
+
+    send_telegram_message(f"月K量價突破掃描完成，共 {hits} 隻（掃描 {processed}/{total}）。")
+
+
 def main() -> None:
     mode = sys.argv[1] if len(sys.argv) > 1 else "all"
     if mode == "corp":
@@ -2241,6 +2405,8 @@ def main() -> None:
         run_year_open_breakout()
     elif mode == "year_open_watchlist":
         run_watchlist_year_open_breakout()
+    elif mode == "month_vol_open":
+        run_monthly_volume_open_breakout()
     elif mode == "us":
         from us_scanner import run_us_corp_actions
         run_us_corp_actions()
@@ -2252,6 +2418,7 @@ def main() -> None:
         run_ipo()
         run_poc()
         run_year_open_breakout()
+        run_monthly_volume_open_breakout()
         # Rebuild confluence with fresh signal data
         try:
             _build_confluence_and_alert()
@@ -2259,10 +2426,9 @@ def main() -> None:
             print(f"[main] confluence build failed: {exc}")
     else:
         raise SystemExit(
-            "Usage: python scanner/hk_cloud_scanner.py [corp|ipo|poc|year_open|us|all]"
+            "Usage: python scanner/hk_cloud_scanner.py [corp|ipo|poc|year_open|month_vol_open|us|all]"
         )
 
 
 if __name__ == "__main__":
     main()
-
