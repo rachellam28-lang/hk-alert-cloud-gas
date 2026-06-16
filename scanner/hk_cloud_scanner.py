@@ -133,13 +133,16 @@ except ImportError:
 _TG_CAPTION_LIMIT = 1024
 
 # Corp action types that always trigger an immediate alert regardless of volume.
-_IMMEDIATE_ALERT_TYPES: frozenset[str] = frozenset({"股東增持"})
+_IMMEDIATE_ALERT_TYPES: frozenset[str] = frozenset({"股東增持", "收購/要約", "復牌"})
 
 # Alert priority by corp action type (higher = more urgent).
 _CORP_TYPE_PRIORITY: dict[str, int] = {
     "股東增持": 3,
+    "收購/要約": 3,
     "大手轉倉": 2,
     "供股": 2,
+    "復牌": 2,
+    "聯合公告": 2,
     "配股": 1,
 }
 
@@ -631,6 +634,38 @@ CORP_ACTION_KEYWORDS = {
         "股權增加",
         "董事權利",
     ],
+    "收購/要約": [
+        "takeover",
+        "general offer",
+        "mandatory offer",
+        "mandatory unconditional cash offer",
+        "offer for shares",
+        "收購",
+        "要約",
+        "全面要約",
+        "強制要約",
+        "強制性無條件現金要約",
+    ],
+    "復牌": [
+        "resumption of trading",
+        "resume trading",
+        "restore trading",
+        "恢复股份买卖",
+        "恢復股份買賣",
+        "復牌",
+    ],
+    "聯合公告": [
+        "joint announcement",
+        "联合公告",
+        "聯合公告",
+        "disposal and acquisition",
+        "completed disposal",
+        "completed acquisition",
+        "completion of disposal",
+        "completion of acquisition",
+        "完成出售",
+        "完成購買",
+    ],
     "大手轉倉": [
         "block trade",
         "off-market transfer",
@@ -688,12 +723,30 @@ def should_skip_announcement_title(title: str) -> bool:
         "issue of shares",
         "increase in shareholding",
         "acquire shares",
+        "takeover",
+        "general offer",
+        "mandatory offer",
+        "mandatory unconditional cash offer",
+        "resumption of trading",
+        "joint announcement",
+        "disposal and acquisition",
+        "completed disposal",
+        "completed acquisition",
         "block trade",
         "off-market transfer",
         "off-exchange transfer",
         "供股",
         "配售",
         "增持",
+        "收購",
+        "要約",
+        "復牌",
+        "恢复股份买卖",
+        "恢復股份買賣",
+        "聯合公告",
+        "联合公告",
+        "完成出售",
+        "完成購買",
         "大手轉倉",
         "大宗交易",
         "場外轉讓",
@@ -714,6 +767,16 @@ TITLE_PHRASE_MAP: list[tuple[str, str]] = [
     ("major transaction", "主要交易"),
     ("discloseable transaction", "須予披露交易"),
     ("connected transaction", "關連交易"),
+    ("resumption of trading", "復牌"),
+    ("resume trading", "復牌"),
+    ("joint announcement", "聯合公告"),
+    ("mandatory unconditional cash offer", "強制性無條件現金要約"),
+    ("mandatory offer", "強制要約"),
+    ("general offer", "全面要約"),
+    ("takeover", "收購要約"),
+    ("disposal and acquisition", "出售及收購"),
+    ("completion of disposal", "完成出售"),
+    ("completion of acquisition", "完成購買"),
     ("supplemental announcement in relation to", "補充公告："),
     ("supplemental announcement", "補充公告"),
     ("clarification announcement", "澄清公告"),
@@ -758,6 +821,7 @@ TITLE_PHRASE_MAP: list[tuple[str, str]] = [
     ("increase in shareholding", "股東增持"),
     ("rights to acquire shares", "認購股份權利"),
     ("acquire shares", "收購股份"),
+    ("offer for shares", "股份要約"),
     # Block trade / off-market
     ("block trade", "大手轉倉"),
     ("off-market transfer", "場外轉讓"),
@@ -936,9 +1000,28 @@ def fetch_corp_action_announcements() -> list[dict[str, Any]]:
     print(f"HKEXnews hits: {len(announcements)}")
     return announcements
 
-_TYPE_MAP = {'配股':'placement','供股':'rights','合股':'consolidation','拆細':'split','增持':'increase','減持':'decrease','回購':'buyback','私有化':'privatisation','特別息':'special_div','收購':'acquisition','轉倉':'transfer','大手上板':'block_trade','股東增持':'increase','大手轉倉':'block_trade','清殼':'shell_clear'}
+_TYPE_MAP = {
+    '配股':'placement',
+    '供股':'rights',
+    '合股':'consolidation',
+    '拆細':'split',
+    '增持':'increase',
+    '減持':'decrease',
+    '回購':'buyback',
+    '私有化':'privatisation',
+    '特別息':'special_div',
+    '收購':'acquisition',
+    '收購/要約':'acquisition',
+    '復牌':'resume',
+    '聯合公告':'announcement',
+    '轉倉':'transfer',
+    '大手上板':'block_trade',
+    '股東增持':'increase',
+    '大手轉倉':'block_trade',
+    '清殼':'shell_clear',
+}
 
-_UP_TYPES = {'配股','供股','增持','股東增持','回購','收購','私有化','清殼','特別息'}
+_UP_TYPES = {'配股','供股','增持','股東增持','回購','收購','收購/要約','私有化','清殼','特別息','復牌'}
 _DOWN_TYPES = {'減持','合股'}
 
 def _get_direction(types_list):
@@ -1001,7 +1084,7 @@ def run_corp_actions() -> None:
     today_hkt = hkt_today_str()
     send_telegram_message(
         f"<b>披露易掃描開始</b> · {datetime.now(HKT_TZ):%Y-%m-%d %H:%M} HKT\n"
-        f"類型：配股 / 供股 / 增持 / 大手轉倉（只發送當日 {today_hkt} 公告）\n"
+        f"類型：配股 / 供股 / 增持 / 收購要約 / 復牌 / 聯合公告（只發送當日 {today_hkt} 公告）\n"
         f"量比確認：{VOLUME_MULTIPLIER}x · 觀察期：{WATCHLIST_EXPIRY_DAYS} 日"
     )
     raw_anns = fetch_corp_action_announcements()
