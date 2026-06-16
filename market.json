@@ -1,8 +1,8 @@
 {
   "hsi": {
-    "value": 24621.55,
-    "change": 213.59,
-    "changePct": 0.88,
+    "value": 24842.67,
+    "change": 221.12,
+    "changePct": 0.9,
     "stale": false
   },
   "dow": {
@@ -101,7 +101,7 @@
       "count": 108
     }
   },
-  "updated_at": "2026-06-15T01:25:26.580394+00:00",
+  "updated_at": "2026-06-16T01:06:03.538575+00:00",
   "hsi_m2": {
     "value": 1163.6,
     "m2": 21112.0,
@@ -118,8 +118,10 @@
     "level_desc": "熱市+散戶活躍 — 門檻放鬆",
     "version": 5,
     "source": "futu",
-    "updated": "2026-06-15T01:25:26.580394+00:00",
+    "updated": "2026-06-16T01:06:03.538575+00:00",
     "breadth_pct": 87.8,
-    "stocks_sampled": 641
+    "stocks_sampled": 641,
+    "stale": true,
+    "stale_reason": "FutuOpenD not running"
   }
 }
