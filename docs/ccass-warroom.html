@@ -149,6 +149,7 @@ footer a{color:var(--cy)}
   <a href="../gap_fvg.html">⤴ Gap/FVG</a>
   <a href="../fundflow.html">💰 資金</a>
   <a href="../rights_analysis.html">📋 供配股</a>
+  <a href="../distribution_day.html">📉 分佈日</a>
   <a class="here" href="#">⚡ 戰情室</a>
   <a href="../us.html">🇺🇸 美股</a>
   <a href="../guide.html">📖 說明</a>
@@ -220,7 +221,7 @@ footer a{color:var(--cy)}
   </div>
 </div>
 
-<footer>數據:你現有系統 holdings / signals / announcements / breakthroughs · 每10分鐘自動更新 · <a href="../rights_analysis.html">📋 供配股詳細分析</a> · 僅供研究,不構成投資建議</footer>
+<footer>數據:你現有系統 holdings / signals / announcements / breakthroughs · 每10分鐘自動更新 · <a href="../rights_analysis.html">📋 供配股詳細分析</a> · <a href="../distribution_day.html">📉 分佈日</a> · 僅供研究,不構成投資建議</footer>
 
 <script>
 /* ════════════════════════════════════════════════════
@@ -418,6 +419,7 @@ function select(i){
     r.ann?`<span style="max-width:380px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${(r.ann.title||'')}</span>`:'',
     r.hkex?`<a href="${r.hkex}" target="_blank">公告 ↗</a>`:'',
     `<a href="${BASE===SITE?SITE:'..'}/rights_analysis.html" target="_blank">供配股分析 ↗</a>`,
+    `<a href="${BASE===SITE?SITE:'..'}/distribution_day.html" target="_blank">分佈日分析 ↗</a>`,
   ].filter(Boolean).join('');
 
   const lvDefs = [

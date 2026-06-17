@@ -1,0 +1,329 @@
+#!/usr/bin/env python3
+"""Generate Distribution Day analysis page from data/distribution_day_backtest.json."""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+BASE = Path(__file__).resolve().parent.parent
+DATA_PATH = BASE / "data" / "distribution_day_backtest.json"
+OUT_PATH = BASE / "distribution_day.html"
+
+
+def load_data() -> dict:
+    if DATA_PATH.exists():
+        return json.load(open(DATA_PATH, encoding="utf-8"))
+    return {
+        "updated": "",
+        "signals_total": 0,
+        "benchmarks_with_data": 0,
+        "benchmarks": [],
+        "window_days": 25,
+        "drop_pct": 0.2,
+    }
+
+
+DATA = load_data()
+DATA_JSON = json.dumps(DATA, ensure_ascii=False)
+
+html = """<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+<meta name="robots" content="noindex,nofollow">
+<title>Distribution Day 分佈日</title>
+<style>
+:root {
+  --bg:#0b1220; --panel:#111a2c; --line:#27314a; --text:#e5edf8; --muted:#8ea0bf;
+  --green:#2ec27e; --red:#ef5350; --amber:#d8a327; --blue:#57a6ff; --violet:#b18cff;
+}
+* { box-sizing:border-box; }
+body { margin:0; background:radial-gradient(circle at top,#101a30 0%,#0b1220 44%,#09101b 100%); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif; }
+a { color:inherit; text-decoration:none; }
+.site-nav { display:flex; gap:6px 12px; flex-wrap:wrap; padding:8px 12px; background:#0f172a; border-bottom:1px solid #1e293b; font-size:13px; position:sticky; top:0; z-index:40; }
+.site-nav a { color:#94a3b8; white-space:nowrap; }
+.site-nav a.active { color:#38bdf8; font-weight:600; }
+.wrap { width:min(1280px, calc(100vw - 24px)); margin:0 auto; padding:14px 0 28px; }
+.hero { display:flex; justify-content:space-between; gap:14px; align-items:flex-end; padding:18px 16px; background:linear-gradient(180deg, rgba(17,26,44,.95), rgba(11,18,32,.95)); border:1px solid var(--line); border-radius:18px; box-shadow:0 20px 55px rgba(0,0,0,.24); }
+.eyebrow { color:var(--blue); font-size:12px; letter-spacing:.18em; text-transform:uppercase; font-weight:800; }
+.title { font-size:32px; font-weight:900; margin-top:4px; line-height:1.08; }
+.subtitle { color:var(--muted); margin-top:8px; line-height:1.5; max-width:920px; font-size:13px; }
+.hero-meta { text-align:right; color:var(--muted); font-size:12px; min-width:180px; }
+.cards { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:10px; margin-top:12px; }
+.card { background:linear-gradient(180deg, rgba(17,26,44,.97), rgba(12,19,33,.97)); border:1px solid var(--line); border-radius:16px; padding:12px 14px; box-shadow:0 14px 32px rgba(0,0,0,.14); min-height:84px; }
+.card .k { color:var(--muted); font-size:11px; letter-spacing:.04em; }
+.card .v { font-size:28px; font-weight:900; margin-top:4px; line-height:1.0; }
+.card .s { color:var(--muted); font-size:11px; margin-top:6px; line-height:1.35; }
+.panel { background:rgba(15,23,42,.85); border:1px solid var(--line); border-radius:18px; padding:14px 16px; box-shadow:0 18px 35px rgba(0,0,0,.14); margin-top:12px; }
+.panel-title { font-size:14px; font-weight:800; margin-bottom:10px; }
+.bench-grid { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:10px; }
+.bench-card { background:#10192b; border:1px solid #24304a; border-radius:14px; padding:12px; }
+.bench-head { display:flex; justify-content:space-between; gap:8px; margin-bottom:8px; }
+.bench-name { font-size:13px; font-weight:900; }
+.bench-state { font-size:11px; font-weight:800; padding:2px 8px; border-radius:999px; }
+.state-healthy { background:rgba(46,194,126,.12); color:#6fe3a4; }
+.state-caution { background:rgba(216,163,39,.12); color:#edcb63; }
+.state-pressure { background:rgba(239,83,80,.12); color:#ff9a98; }
+.mini-grid { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:8px; }
+.mini { background:#0f1727; border:1px solid #24304a; border-radius:12px; padding:10px; }
+.mini .lab { color:var(--muted); font-size:10px; }
+.mini .val { font-size:20px; font-weight:900; margin-top:4px; }
+.bar-wrap { display:grid; gap:8px; margin-top:10px; }
+.bar-row { display:grid; grid-template-columns:96px 1fr 72px; gap:10px; align-items:center; }
+.bar-label { font-weight:700; }
+.bar-track { height:14px; background:#18233a; border-radius:999px; overflow:hidden; border:1px solid #24304a; display:flex; }
+.bar-fill-green { background:linear-gradient(90deg,#26a269,#3bd17f); }
+.bar-fill-amber { background:linear-gradient(90deg,#a77e14,#e4b83a); }
+.bar-fill-red { background:linear-gradient(90deg,#c63a36,#ff706d); }
+.bar-fill-blue { background:linear-gradient(90deg,#2563eb,#60a5fa); }
+.bar-num { text-align:right; color:var(--muted); font-size:12px; }
+.table-wrap { overflow-x:auto; margin-top:8px; }
+table { width:100%; border-collapse:collapse; min-width:1050px; }
+th, td { text-align:left; padding:8px 10px; border-bottom:1px solid #1f2a40; font-size:12px; white-space:nowrap; }
+th { color:var(--muted); font-weight:700; position:sticky; top:0; background:rgba(15,23,42,.96); }
+tr:hover td { background:rgba(39,49,74,.22); }
+.pill { display:inline-block; padding:3px 8px; border-radius:999px; font-size:11px; font-weight:800; }
+.pill.dd { background:rgba(239,83,80,.12); color:#ff9a98; }
+.pill.state { background:rgba(87,166,255,.12); color:#8ec1ff; }
+.search-row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+.search-row input { background:#0e1627; color:var(--text); border:1px solid #24304a; border-radius:12px; padding:10px 12px; min-width:220px; }
+.btn { border:1px solid #24304a; background:#10192b; color:var(--text); border-radius:999px; padding:8px 12px; font-size:12px; cursor:pointer; }
+.btn.active { background:#17315a; border-color:#3d6fb2; color:#dcecff; }
+.foot { color:var(--muted); font-size:11px; margin-top:12px; line-height:1.5; }
+@media (max-width: 900px) {
+  .wrap { width:auto; padding:12px; }
+  .hero { flex-direction:column; align-items:flex-start; }
+  .hero-meta { text-align:left; min-width:0; }
+  .cards, .bench-grid { grid-template-columns:1fr; }
+  .mini-grid { grid-template-columns:1fr; }
+  .bar-row { grid-template-columns:88px 1fr 60px; }
+}
+</style>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="index.html">🇭🇰 港股版</a>
+  <a href="watchlist.html">⭐ 自選</a>
+  <a href="history.html">🕐 歷史</a>
+  <a href="gap_fvg.html">⤴ Gap/FVG</a>
+  <a href="fundflow.html">💰 資金</a>
+  <a href="rights_analysis.html">📋 供配股</a>
+  <a class="active" href="distribution_day.html">📉 Distribution Day</a>
+  <a href="vqc_analysis.html">📈 成交轉勢日</a>
+  <a href="docs/ccass-warroom.html">⚡ 戰情室</a>
+  <a href="guide.html">📖 說明書</a>
+</nav>
+
+<div class="wrap">
+  <section class="hero">
+    <div>
+      <div class="eyebrow">MARK MINERVINI</div>
+      <div class="title">Distribution Day 分佈日</div>
+      <div class="subtitle">
+        分佈日係市場壓力訊號：benchmark / index / ETF 收低，而且成交量高過上一日。呢頁用 HSI1! 同 QQQ 做 proxy，
+        以 25 個交易日 rolling count 去睇市場係 healthy、caution、under pressure 定 correction。
+      </div>
+    </div>
+    <div class="hero-meta">
+      更新：<b id="updatedAt">__UPDATED__</b><br>
+      25日窗口：<b>__WINDOW_DAYS__</b><br>
+      跌幅門檻：<b>__DROP_PCT__%</b>
+    </div>
+  </section>
+
+  <section class="cards" id="summaryCards"></section>
+
+  <section class="panel">
+    <div class="panel-title">Benchmark 狀態</div>
+    <div class="bench-grid" id="benchGrid"></div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-title">Rolling 壓力分布</div>
+    <div class="bar-wrap" id="stateBars"></div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-title">分佈日訊號表</div>
+    <div class="search-row">
+      <input id="search" type="text" placeholder="搜尋 benchmark / 日期…" oninput="renderTable()" />
+      <button class="btn active" data-filter="all" onclick="setFilter('all')">全部</button>
+      <button class="btn" data-filter="hk" onclick="setFilter('hk')">HK</button>
+      <button class="btn" data-filter="us" onclick="setFilter('us')">US</button>
+      <button class="btn" data-filter="pressure" onclick="setFilter('pressure')">壓力日</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>日期</th>
+            <th>Benchmark</th>
+            <th>收市</th>
+            <th>前收</th>
+            <th>跌幅</th>
+            <th>量比</th>
+            <th>25D Count</th>
+            <th>State</th>
+            <th>5D</th>
+            <th>20D</th>
+            <th>60D</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="foot">
+    定義：收市低過前一日，兼成交量高過前一日，且跌幅至少 __DROP_PCT__%。
+    這裡用 benchmark proxy 做市場層面回測，不當成個股訊號。
+  </div>
+</div>
+
+<script>
+const DATA = __DATA_JSON__;
+let currentFilter = 'all';
+
+function fmtPct(v) {
+  if (v == null || Number.isNaN(v)) return '—';
+  return (v >= 0 ? '+' : '') + v.toFixed(2) + '%';
+}
+function fmtNum(v, digits=2) {
+  if (v == null || Number.isNaN(v)) return '—';
+  return Number(v).toFixed(digits);
+}
+function setFilter(next) {
+  currentFilter = next;
+  document.querySelectorAll('.btn[data-filter]').forEach(btn => btn.classList.toggle('active', btn.dataset.filter === next));
+  renderTable();
+}
+function stateLabel(s) {
+  if (s === 'correction') return 'correction';
+  if (s === 'under_pressure') return 'under pressure';
+  if (s === 'caution') return 'caution';
+  return 'healthy';
+}
+
+function renderCards() {
+  const benchmarks = DATA.benchmarks || [];
+  const cards = [
+    ['Benchmark 數', benchmarks.length, `有數據：${DATA.benchmarks_with_data ?? 0}`],
+    ['分佈日總數', DATA.signals_total ?? 0, `window ${DATA.window_days ?? 25}`],
+    ['HK 現況', (benchmarks[0]?.summary?.current_dd_count_25d ?? 0) + 'D', stateLabel(benchmarks[0]?.summary?.current_market_state)],
+    ['US 現況', (benchmarks[1]?.summary?.current_dd_count_25d ?? 0) + 'D', stateLabel(benchmarks[1]?.summary?.current_market_state)],
+  ];
+  document.getElementById('summaryCards').innerHTML = cards.map(([k,v,s]) => `
+    <div class="card">
+      <div class="k">${k}</div>
+      <div class="v">${v}</div>
+      <div class="s">${s}</div>
+    </div>`).join('');
+}
+
+function renderBench() {
+  const bms = DATA.benchmarks || [];
+  document.getElementById('benchGrid').innerHTML = bms.map(b => {
+    const s = b.summary || {};
+    const state = s.current_market_state || 'healthy';
+    const cls = state === 'caution' ? 'state-caution' : state === 'under_pressure' || state === 'correction' ? 'state-pressure' : 'state-healthy';
+    const err = b.error ? `<div class="foot" style="margin-top:8px;color:#ff9a98">❗ ${b.error}</div>` : '';
+    return `<div class="bench-card">
+      <div class="bench-head">
+        <div class="bench-name">${b.code} ${b.name} <span class="pill state">${b.label}</span></div>
+        <div class="bench-state ${cls}">${stateLabel(state)}</div>
+      </div>
+      <div class="mini-grid">
+        <div class="mini"><div class="lab">現時 25D Count</div><div class="val">${s.current_dd_count_25d ?? '—'}</div></div>
+        <div class="mini"><div class="lab">Signal 數</div><div class="val">${s.signal_count ?? 0}</div></div>
+        <div class="mini"><div class="lab">Pressure 日</div><div class="val">${s.pressure_days ?? 0}</div></div>
+      </div>
+      <div class="mini-grid" style="margin-top:8px">
+        <div class="mini"><div class="lab">Signal 20D 下跌率</div><div class="val">${s.signal_negative_20d == null ? '—' : s.signal_negative_20d.toFixed(1)+'%'}</div></div>
+        <div class="mini"><div class="lab">Baseline 20D 下跌率</div><div class="val">${s.baseline_negative_20d == null ? '—' : s.baseline_negative_20d.toFixed(1)+'%'}</div></div>
+        <div class="mini"><div class="lab">Pressure 20D 下跌率</div><div class="val">${s.pressure_negative_20d == null ? '—' : s.pressure_negative_20d.toFixed(1)+'%'}</div></div>
+      </div>
+      ${err}
+      <div class="foot">最新：${s.current_date || '—'} · rolling 25D</div>
+    </div>`;
+  }).join('');
+}
+
+function renderBars() {
+  const totals = {healthy:0, caution:0, under_pressure:0, correction:0};
+  for (const b of (DATA.benchmarks || [])) {
+    const sc = (b.summary && b.summary.state_counts) || {};
+    for (const k in totals) totals[k] += sc[k] || 0;
+  }
+  const total = Object.values(totals).reduce((a,b)=>a+b,0) || 1;
+  const rows = [
+    ['healthy', totals.healthy, 'bar-fill-green'],
+    ['caution', totals.caution, 'bar-fill-amber'],
+    ['under pressure', totals.under_pressure, 'bar-fill-red'],
+    ['correction', totals.correction, 'bar-fill-blue'],
+  ];
+  document.getElementById('stateBars').innerHTML = rows.map(([label,count,cls]) => `
+    <div class="bar-row">
+      <div class="bar-label">${label} <span class="pill state">${count}</span></div>
+      <div class="bar-track"><div class="${cls}" style="width:${Math.max(3, count/total*100)}%"></div></div>
+      <div class="bar-num">${(count/total*100).toFixed(1)}%</div>
+    </div>`).join('');
+}
+
+function matchesFilter(row) {
+  if (currentFilter === 'all') return true;
+  if (currentFilter === 'hk') return row.benchmark === 'HK';
+  if (currentFilter === 'us') return row.benchmark === 'US';
+  if (currentFilter === 'pressure') return row.dd_count_25d >= 4;
+  return true;
+}
+
+function renderTable() {
+  const q = (document.getElementById('search').value || '').trim().toLowerCase();
+  const rows = [];
+  for (const b of (DATA.benchmarks || [])) {
+    const bench = b.label === 'HK proxy' ? 'HK' : 'US';
+    for (const r of (b.signals || [])) {
+      rows.push({...r, benchmark: bench, bench_name: b.code + ' ' + b.name});
+    }
+  }
+  const filtered = rows.filter(r => {
+    if (!matchesFilter(r)) return false;
+    if (!q) return true;
+    return String(r.date || '').includes(q) || String(r.benchmark || '').toLowerCase().includes(q) || String(r.bench_name || '').toLowerCase().includes(q);
+  });
+  filtered.sort((a,b) => b.date.localeCompare(a.date));
+  document.getElementById('tableBody').innerHTML = filtered.map(r => `
+    <tr>
+      <td>${r.date}</td>
+      <td>${r.bench_name}</td>
+      <td>${fmtNum(r.close, 2)}</td>
+      <td>${fmtNum(r.prev_close, 2)}</td>
+      <td style="color:${r.pct_change <= -DATA.drop_pct ? '#ff9a98' : '#6fe3a4'}">${fmtPct(r.pct_change)}</td>
+      <td>${r.volume_ratio == null ? '—' : r.volume_ratio.toFixed(2)+'x'}</td>
+      <td><span class="pill dd">${r.dd_count_25d}</span></td>
+      <td><span class="pill state">${r.market_state.replace('_', ' ')}</span></td>
+      <td style="color:${(r.fwd_5d ?? 0) < 0 ? '#ff9a98' : '#6fe3a4'}">${fmtPct(r.fwd_5d == null ? null : r.fwd_5d*100)}</td>
+      <td style="color:${(r.fwd_20d ?? 0) < 0 ? '#ff9a98' : '#6fe3a4'}">${fmtPct(r.fwd_20d == null ? null : r.fwd_20d*100)}</td>
+      <td style="color:${(r.fwd_60d ?? 0) < 0 ? '#ff9a98' : '#6fe3a4'}">${fmtPct(r.fwd_60d == null ? null : r.fwd_60d*100)}</td>
+    </tr>`).join('');
+}
+
+renderCards();
+renderBench();
+renderBars();
+renderTable();
+</script>
+</body>
+</html>"""
+
+html = (
+    html.replace("__DATA_JSON__", DATA_JSON)
+    .replace("__UPDATED__", str(DATA.get("updated", "")))
+    .replace("__WINDOW_DAYS__", str(DATA.get("window_days", 25)))
+    .replace("__DROP_PCT__", f'{DATA.get("drop_pct", 0.2):.1f}')
+)
+
+OUT_PATH.write_text(html, encoding="utf-8")
+print(f"Generated {OUT_PATH} ({len(html)} bytes)")
