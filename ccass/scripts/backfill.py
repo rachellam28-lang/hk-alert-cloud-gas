@@ -101,8 +101,6 @@ def backfill_range(start: date, end: date) -> None:
             from datetime import timedelta
             cur += timedelta(days=1)
 
-        if os.environ.get("HOLDINGS_NEWEST_FIRST", "0") == "1":
-            trading_days = list(reversed(trading_days))
         total = len(trading_days)
         logger.info(
             "Backfill plan: %d trading days",
