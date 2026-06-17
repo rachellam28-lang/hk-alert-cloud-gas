@@ -135,7 +135,7 @@ tbody tr:hover{background:var(--surface-soft)}
       <input id="wq" class="input search-in" type="search" placeholder="搜尋代號 / 名稱…" autocomplete="off">
       <button class="btn-ghost" onclick="clearAll()">全部清除</button>
       <button class="btn-ghost" onclick="exportJSON()">匯出</button>
-      <button id="importBtn" class="btn-ghost" onclick="document.getElementById("importFile").click()">📂 匯入</button>
+      <button id="importBtn" class="btn-ghost" onclick="document.getElementById('importFile').click()">📂 匯入</button>
       <input type="file" id="importFile" accept=".json,.csv" style="display:none" onchange="handleImport(event)">
     </div>
     <div style="overflow-x:auto;-webkit-overflow-scrolling:touch">
@@ -274,8 +274,7 @@ function handleImport(evt){
       if(file.name.endsWith('.json')){
         imported = JSON.parse(e.target.result);
       }else{
-        const lines = e.target.result.trim().split('
-').slice(1);
+        const lines = e.target.result.trim().split(/\r?\n/).slice(1);
         imported = lines.filter(l=>l.trim()).map(l=>{
           const [code,name,signal,date,note] = l.split(',').map(x=>(x||'').trim().replace(/^"|"$/g,''));
           return {code,name,signal,date,note};
