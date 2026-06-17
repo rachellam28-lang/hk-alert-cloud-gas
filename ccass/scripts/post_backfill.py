@@ -27,22 +27,17 @@ def main():
     print(f"=== Post-backfill for {date} ===\n")
     
     # 1. Regenerate holdings.json
-    print("[1/4] Regenerate holdings.json...")
+    print("[1/3] Regenerate holdings.json...")
     if not run([PYTHON, "scripts/regenerate_json.py", "--date", date], cwd=CCASS_DIR):
         sys.exit(1)
     
     # 2. Detect transfers
-    print("\n[2/4] Detect transfers...")
+    print("\n[2/3] Detect transfers...")
     if not run([PYTHON, "scripts/detect_transfers.py", "--date", date], cwd=CCASS_DIR):
         sys.exit(1)
     
-    # 3. Run gap/FVG scanner
-    print("\n[3/4] Run gap/FVG scanner...")
-    if not run([PYTHON, "scanner/gap_fvg_alert.py"], cwd=REPO_ROOT):
-        sys.exit(1)
-    
-    # 4. Git push all
-    print("\n[4/4] Push to GitHub...")
+    # 3. Git push all
+    print("\n[3/3] Push to GitHub...")
     subprocess.run(["git", "add", "holdings.json", "data/"], cwd=REPO_ROOT, check=True, capture_output=True)
     r = subprocess.run(
         ["git", "commit", "-m", f"post-backfill {date}: holdings.json + alerts + transfers"],

@@ -36,19 +36,7 @@ except Exception as e:
     if dopa_result is None:
         dopa_result = {"dopamine": 50.0, "level": "normal", "error": str(e)}
 
-# ── Step 2: Try to get current HSI price via yfinance (quick fallback) ──
-hsi_value = None
-try:
-    import yfinance as yf
-    ticker = yf.Ticker("^HSI")
-    info = ticker.info or {}
-    hsi_value = info.get("regularMarketPrice") or info.get("previousClose")
-    if hsi_value:
-        print(f"[dopamine_refresh] HSI from yfinance: {hsi_value}", file=sys.stderr)
-except Exception as e:
-    print(f"[dopamine_refresh] yfinance HSI failed: {e}", file=sys.stderr)
-
-# ── Step 3: Load existing market.json ──
+# ── Step 2: Load existing market.json ──
 market_path = PROJECT / "market.json"
 if market_path.exists():
     with open(market_path, encoding="utf-8") as f:
@@ -58,17 +46,7 @@ else:
     market = {}
     print("[dopamine_refresh] No existing market.json, creating new", file=sys.stderr)
 
-# ── Step 4: Update market.json ──
-# Update HSI if we got a fresh value
-if hsi_value:
-    old_hsi = market.get("hsi", {}).get("value", 0)
-    market["hsi"] = {
-        "value": round(float(hsi_value), 2),
-        "change": round(float(hsi_value) - old_hsi, 2) if old_hsi else None,
-        "changePct": round((float(hsi_value) - old_hsi) / old_hsi * 100, 2) if old_hsi else None,
-        "stale": False,
-    }
-
+# ── Step 3: Update market.json ──
 # Inject dopamine data
 market["dopamine"] = {
     "score": dopa_result.get("dopamine", 50.0),
@@ -87,7 +65,7 @@ if "components" in dopa_result:
 # Update timestamp
 market["updated_at"] = datetime.now(timezone.utc).isoformat()
 
-# ── Step 5: Save market.json ──
+# ── Step 4: Save market.json ──
 with open(market_path, "w", encoding="utf-8") as f:
     json.dump(market, f, ensure_ascii=False, indent=2)
 

@@ -8,5 +8,6 @@
   "ma50": 25692.06,
   "updated": "2026-06-12T09:13:26.245848",
   "label": "謹慎",
-  "source": "yfinance_v1"
+  "source": "legacy_cache_yfinance_disabled",
+  "stale": true
 }

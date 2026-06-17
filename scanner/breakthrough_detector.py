@@ -13,12 +13,10 @@ from datetime import datetime, date, timezone
 from pathlib import Path
 from typing import Any
 
-import pandas as pd
-import yfinance as yf
-
 HKT_TZ = timezone(__import__("datetime").timedelta(hours=8))
 DATA_DIR = Path(__file__).parent.parent / "data"
 PRICE_CACHE = DATA_DIR / "breakthrough_prices.json"
+ALLOW_YFINANCE = os.getenv("ALLOW_YFINANCE", "").lower() in {"1", "true", "yes"}
 
 # Regex patterns for extracting offer prices from HKEX announcement titles
 PRICE_PATTERNS = [
@@ -134,8 +132,16 @@ def check_breakthrough(stock_code: str) -> dict[str, Any] | None:
     if today.weekday() >= 5:
         return None
 
-    # Get current price from Yahoo Finance
+    # Legacy Yahoo/yfinance path is disabled by default. The dashboard price
+    # source of truth is Futu/Longbridge cache; callers that still need this
+    # legacy check must explicitly opt in with ALLOW_YFINANCE=1.
+    if not ALLOW_YFINANCE:
+        return None
+
+    # Get current price from Yahoo Finance.
     try:
+        import yfinance as yf
+
         n = int(stock_code)
         symbol = f"{n:04d}.HK" if n < 10000 else f"{stock_code}.HK"
         ticker = yf.Ticker(symbol)

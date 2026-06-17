@@ -4,7 +4,7 @@ HK Alert Cloud Scanner
 Cloud version for GitHub Actions:
 - No AKShare
 - HK stock list from HKEX official ListOfSecurities.xlsx
-- Price history from Yahoo Finance / yfinance
+- Price history from Futu/Longbridge-backed caches where available.
 - Alerts to Telegram (single message per alert, with chart image when feasible)
   and Google Apps Script webhook (chart PNG sent base64 so GAS can host it on Drive)
 
@@ -40,11 +40,16 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 
+ALLOW_YFINANCE = os.getenv("ALLOW_YFINANCE", "").lower() in {"1", "true", "yes"}
+
 try:
+    if not ALLOW_YFINANCE:
+        raise ImportError("disabled by ALLOW_YFINANCE default")
     import yfinance as yf
 except Exception as _yf_exc:  # pragma: no cover
     yf = None  # type: ignore[assignment]
-    print(f"[yfinance] unavailable: {_yf_exc}")
+    if ALLOW_YFINANCE:
+        print(f"[yfinance] unavailable: {_yf_exc}")
 
 warnings.filterwarnings("ignore")
 
@@ -99,8 +104,7 @@ RETRY_SLEEP = int(os.getenv("RETRY_SLEEP", "2"))
 YF_HTTP_TIMEOUT = float(os.getenv("YF_HTTP_TIMEOUT", "10"))
 YF_IPO_PERIOD = os.getenv("YF_IPO_PERIOD", "max")
 YF_POC_PERIOD = os.getenv("YF_POC_PERIOD", "4y")
-# Batch size for yfinance multi-ticker downloads (POC scan). Yahoo accepts large batches
-# but very large ones increase per-request cost and reduce parallelism benefits.
+# Legacy yfinance batch knobs. Ignored unless ALLOW_YFINANCE=1.
 YF_BATCH_SIZE = int(os.getenv("YF_BATCH_SIZE", "60"))
 YF_BATCH_THREADS = int(os.getenv("YF_BATCH_THREADS", "8"))
 # Hard wall-clock budget for the POC scan (seconds). 0 = no budget.
@@ -127,8 +131,8 @@ VOLUME_MULTIPLIER = float(os.getenv("VOLUME_MULTIPLIER", "1.5"))
 VOLUME_AVG_DAYS = int(os.getenv("VOLUME_AVG_DAYS", "20"))
 
 # ── Futu OpenD settings ────────────────────────────────────────────────────────
-# Set USE_FUTU=true to use FutuOpenD as primary data source (falls back to
-# yfinance if OpenD is unavailable or a fetch fails).
+# Set USE_FUTU=true to use FutuOpenD as primary data source. yfinance fallback
+# is disabled by default; opt in only with ALLOW_YFINANCE=1.
 # FutuOpenD must be running at FUTU_HOST:FUTU_PORT.  Default: localhost:11111.
 USE_FUTU = os.getenv("USE_FUTU", "false").lower() in ("1", "true", "yes")
 FUTU_HOST = os.getenv("FUTU_HOST", "127.0.0.1")
@@ -140,7 +144,7 @@ try:
 except ImportError:
     _FUTU_AVAILABLE = False
     if USE_FUTU:
-        print("[futu] futu-api not installed; falling back to yfinance. pip install futu-api")
+        print("[futu] futu-api not installed; price-history scans will fail closed")
 
 # Telegram caption max length is 1024 chars for photos, 4096 for text messages.
 _TG_CAPTION_LIMIT = 1024
@@ -1472,7 +1476,8 @@ def _get_daily_history_batch_futu(codes: list[str], years: int) -> dict[str, pd.
 
 
 def get_daily_history(code: str, period: str) -> pd.DataFrame:
-    # Futu first (if enabled), fall back to yfinance.
+    # Futu first (if enabled). Legacy yfinance fallback requires
+    # ALLOW_YFINANCE=1 and is disabled in production by default.
     if USE_FUTU and _FUTU_AVAILABLE:
         df = get_daily_history_futu(code, _period_to_years(period))
         if not df.empty:
@@ -1530,7 +1535,8 @@ def get_weekly_history(code: str, period: str = "2y") -> pd.DataFrame:
 def get_daily_history_batch(codes: list[str], period: str) -> dict[str, pd.DataFrame]:
     """Download daily OHLC for many tickers.
 
-    Uses Futu OpenD parallel batch if USE_FUTU=true; otherwise yfinance bulk download.
+    Uses Futu OpenD parallel batch if USE_FUTU=true. Legacy yfinance bulk
+    download is disabled unless ALLOW_YFINANCE=1.
     Tickers with no data are omitted from the result map.
     """
     if not codes:
@@ -1539,7 +1545,8 @@ def get_daily_history_batch(codes: list[str], period: str) -> dict[str, pd.DataF
         result = _get_daily_history_batch_futu(codes, _period_to_years(period))
         if result:
             return result
-        # If Futu returned nothing (OpenD down?), fall through to yfinance.
+        # If Futu returned nothing, fail closed unless legacy yfinance was
+        # explicitly enabled.
     if yf is None:
         return {}
     ticker_map = {hk_code_to_yahoo(c): c for c in codes}
