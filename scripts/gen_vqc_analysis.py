@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate vqc_analysis.html from data/vqc_backtest.json."""
+"""Generate 成交轉勢日 analysis page from data/vqc_backtest.json."""
 
 from __future__ import annotations
 
@@ -43,7 +43,7 @@ html = f"""<!DOCTYPE html>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
 <meta name="robots" content="noindex,nofollow">
-<title>VQC 轉勢日回測</title>
+<title>成交轉勢日回測</title>
 <style>
 :root {{
   --bg: #0b1220;
@@ -146,7 +146,7 @@ tr:hover td {{ background: rgba(39,49,74,.22); }}
   <a href="gap_fvg.html">⤴ Gap/FVG</a>
   <a href="fundflow.html">💰 資金</a>
   <a href="rights_analysis.html">📋 供配股</a>
-  <a class="active" href="vqc_analysis.html">📈 VQC</a>
+  <a class="active" href="vqc_analysis.html">📈 成交轉勢日</a>
   <a href="docs/ccass-warroom.html">⚡ 戰情室</a>
   <a href="guide.html">📖 說明書</a>
 </nav>
@@ -154,11 +154,11 @@ tr:hover td {{ background: rgba(39,49,74,.22); }}
 <div class="wrap">
   <section class="hero">
     <div>
-      <div class="eyebrow">VQC TURN DATE</div>
-      <div class="title">VQC 轉勢日回測</div>
+      <div class="eyebrow">VOLUME TURN DATE</div>
+      <div class="title">成交轉勢日回測</div>
       <div class="subtitle">
-        VQC 唔係估升跌，而係搵高機率轉勢時間窗口。先看時間，再看價格反應，最後才部署策略。
-        回測會分開統計：VQC 前一個交易日下跌後，之後 2 個交易日內有否反彈；前一日上升後，之後 2 個交易日內有否回落。
+        成交轉勢日唔係估升跌，而係搵高成交參考位被重新升穿後的時間窗口。先看成交線，再看價格反應，最後才部署策略。
+        回測會分開統計：成交轉勢日前一個交易日下跌後，之後 2 個交易日內有否反彈；前一日上升後，之後 2 個交易日內有否回落。
       </div>
     </div>
     <div class="hero-meta">
@@ -187,13 +187,13 @@ tr:hover td {{ background: rgba(39,49,74,.22); }}
         1. 用日線重組月K。<br>
         2. 喺每個完成月，搵最近 <b>{DATA.get("lookback_months", 24)}</b> 個完成月中成交量最大嗰個月。<br>
         3. 用嗰個月嘅 <b>Open</b> 做轉勢線。<br>
-        4. 當現月收市 <b>升穿</b> 轉勢線，視作 VQC 轉勢日。<br>
-        5. 再看 VQC 前一個交易日方向，統計之後 2 個交易日內有否出現反向機會。
+        4. 當現月收市 <b>升穿</b> 成交轉勢線，視作成交轉勢日。<br>
+        5. 再看成交轉勢日前一個交易日方向，統計之後 2 個交易日內有否出現反向機會。
       </div>
       <div class="rule-list">
         - 參考樣本：<b id="universeInfo"></b><br>
         - 2D baseline：所有月收市的同一套前日升跌 / 後兩日反向統計<br>
-        - Edge：VQC 2D 反向窗口命中率 vs baseline<br>
+        - Edge：成交轉勢日 2D 反向窗口命中率 vs baseline<br>
         - 強度分層：以高成交月 volume ratio 分 high / mid / low
       </div>
     </div>
@@ -216,7 +216,7 @@ tr:hover td {{ background: rgba(39,49,74,.22); }}
   </section>
 
   <section class="panel">
-    <div class="panel-title">VQC 訊號表</div>
+    <div class="panel-title">成交轉勢日訊號表</div>
     <div class="search-row">
       <input id="search" type="text" placeholder="搜尋代號 / 名稱…" oninput="renderTable()" />
       <button class="btn active" data-filter="all" onclick="setFilter('all')">全部</button>
@@ -251,7 +251,7 @@ tr:hover td {{ background: rgba(39,49,74,.22); }}
   </section>
 
   <div class="foot">
-    資料源：TradingView 日線 · 回測邏輯：月K + 高成交月 Open 觸發 VQC 時間窗口 · 此頁會跟 `data/vqc_backtest.json` 同步更新。<br>
+    資料源：TradingView 日線 · 回測邏輯：月K + 高成交月 Open 觸發成交轉勢日時間窗口 · 此頁會跟 `data/vqc_backtest.json` 同步更新。<br>
     若你想將 universe 擴展到全市場，只需要重跑 `scripts/build_vqc_backtest.py --bucket-limit 0`。
   </div>
 </div>
@@ -351,7 +351,7 @@ function renderEdge() {{
   const s = DATA.summary || {{}};
   const edge = DATA.edge || {{}};
   const vals = [
-    ['VQC 2D 整體', s.overall_rate_2d == null ? null : s.overall_rate_2d.toFixed(1)+'%'],
+    ['成交轉勢日2D', s.overall_rate_2d == null ? null : s.overall_rate_2d.toFixed(1)+'%'],
     ['Baseline 2D 整體', s.baseline_overall_rate_2d == null ? null : s.baseline_overall_rate_2d.toFixed(1)+'%'],
     ['Edge 2D', edge.edge_turn_2d == null ? null : (edge.edge_turn_2d >= 0 ? '+' : '') + edge.edge_turn_2d.toFixed(1)+'pt'],
     ['前日跌反彈', s.down_rebound_rate_2d == null ? null : s.down_rebound_rate_2d.toFixed(1)+'%'],

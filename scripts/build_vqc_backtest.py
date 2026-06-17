@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Build VQC turn-date backtest data from TradingView historical OHLCV.
+"""Build 成交轉勢日 backtest data from TradingView historical OHLCV.
 
-VQC is treated as a timing window, not a directional prediction. The trigger
-uses daily bars to resample monthly candles, then marks a VQC turn date when
+成交轉勢日 is treated as a timing window, not a directional prediction. The trigger
+uses daily bars to resample monthly candles, then marks a signal date when
 the current month close crosses above the open of the highest-volume completed
 month within the recent lookback window.
 
-For each VQC date the backtest checks the previous trading day's direction:
+For each 成交轉勢日 the backtest checks the previous trading day's direction:
 if the previous day fell, did the next 2 trading days offer a rebound; if the
 previous day rose, did the next 2 trading days offer a pullback.
 
@@ -476,6 +476,8 @@ def main() -> int:
 
     out = {
         "schema_v": 2,
+        "signal_label": "成交轉勢日",
+        "legacy_label": "VQC",
         "updated": datetime.now().isoformat(timespec="seconds"),
         "lookback_months": LOOKBACK_MONTHS,
         "bars": args.bars,
