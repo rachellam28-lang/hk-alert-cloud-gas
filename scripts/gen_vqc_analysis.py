@@ -103,6 +103,14 @@ a {{ color: inherit; text-decoration: none; }}
 .ref-stats {{ display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:8px; }}
 .ref-stat .lab {{ color:var(--muted); font-size:10px; }}
 .ref-stat .val {{ font-size:20px; font-weight:900; margin-top:3px; }}
+.compare-grid {{ display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:10px; }}
+.compare-card {{ background:#10192b; border:1px solid #24304a; border-radius:14px; padding:12px; }}
+.compare-card .name {{ font-size:13px; font-weight:900; margin-bottom:9px; }}
+.compare-row {{ display:flex; justify-content:space-between; gap:10px; padding:5px 0; border-top:1px solid #1f2a40; font-size:12px; }}
+.compare-row:first-of-type {{ border-top:0; }}
+.compare-k {{ color:var(--muted); }}
+.compare-v {{ font-weight:900; }}
+.delta {{ font-size:11px; color:var(--muted); margin-left:4px; }}
 .table-wrap {{ overflow-x:auto; margin-top: 8px; }}
 table {{ width: 100%; border-collapse: collapse; min-width: 1100px; }}
 th, td {{ text-align:left; padding: 8px 10px; border-bottom: 1px solid #1f2a40; font-size: 12px; white-space: nowrap; }}
@@ -125,7 +133,7 @@ tr:hover td {{ background: rgba(39,49,74,.22); }}
   .hero {{ flex-direction: column; align-items:flex-start; }}
   .hero-meta {{ text-align:left; min-width: 0; }}
   .cards {{ grid-template-columns: repeat(2, minmax(0,1fr)); }}
-  .grid-2, .rule-grid, .mini-grid, .ref-grid {{ grid-template-columns: 1fr; }}
+  .grid-2, .rule-grid, .mini-grid, .ref-grid, .compare-grid {{ grid-template-columns: 1fr; }}
   .bar-row {{ grid-template-columns: 92px 1fr 58px; }}
 }}
 </style>
@@ -161,6 +169,11 @@ tr:hover td {{ background: rgba(39,49,74,.22); }}
   </section>
 
   <section class="cards" id="summaryCards"></section>
+
+  <section class="panel">
+    <div class="panel-title">圖片例子 vs 全港股抽樣</div>
+    <div class="compare-grid" id="imageComparison"></div>
+  </section>
 
   <section class="panel">
     <div class="panel-title">指定標的示例</div>
@@ -245,6 +258,10 @@ tr:hover td {{ background: rgba(39,49,74,.22); }}
 
 <script>
 const DATA = {DATA_JSON};
+const IMAGE_EXAMPLES = [
+  {{ name: '2800.HK 圖片例子', overall: null, down: 90.9, up: 80.6, note: '你提供的兩年回測數字' }},
+  {{ name: 'QQQ 圖片例子', overall: 72.5, down: null, up: null, note: '你提供的整體數字' }},
+];
 let currentFilter = 'all';
 let searchTerm = '';
 
@@ -298,6 +315,36 @@ function renderReferences() {{
       <div class="foot">events=${{r.events_total ?? 0}} · n=${{r.overall_n ?? 0}}</div>
     </div>`;
   }}).join('');
+}}
+
+function renderImageComparison() {{
+  const s = DATA.summary || {{}};
+  const hk = {{
+    name: '全港股抽樣',
+    overall: s.overall_rate_2d,
+    down: s.down_rebound_rate_2d,
+    up: s.up_pullback_rate_2d,
+    note: `events=${{DATA.events_total ?? 0}} · n=${{s.overall_n ?? 0}}`
+  }};
+  const rows = [hk, ...IMAGE_EXAMPLES];
+
+  function pct(v) {{
+    return v == null ? '—' : v.toFixed(1) + '%';
+  }}
+  function delta(v, base) {{
+    if (v == null || base == null) return '';
+    const d = v - base;
+    return `<span class="delta">${{d >= 0 ? '+' : ''}}${{d.toFixed(1)}}pt</span>`;
+  }}
+
+  document.getElementById('imageComparison').innerHTML = rows.map((r, idx) => `
+    <div class="compare-card">
+      <div class="name">${{r.name}}</div>
+      <div class="compare-row"><span class="compare-k">整體2D窗口</span><span class="compare-v">${{pct(r.overall)}}${{idx ? delta(r.overall, hk.overall) : ''}}</span></div>
+      <div class="compare-row"><span class="compare-k">前日跌反彈</span><span class="compare-v green">${{pct(r.down)}}${{idx ? delta(r.down, hk.down) : ''}}</span></div>
+      <div class="compare-row"><span class="compare-k">前日升回落</span><span class="compare-v red">${{pct(r.up)}}${{idx ? delta(r.up, hk.up) : ''}}</span></div>
+      <div class="foot">${{r.note}}</div>
+    </div>`).join('');
 }}
 
 function renderEdge() {{
@@ -384,6 +431,7 @@ function setFilter(next) {{
 }}
 
 renderCards();
+renderImageComparison();
 renderReferences();
 renderEdge();
 renderBars('strengthBars', DATA.strength_stats || {{}}, ['high','mid','low'], {{
