@@ -74,6 +74,8 @@ def backfill_range(start: date, end: date) -> None:
     if not _acquire_lock():
         sys.exit(1)
     try:
+        prev_backfill_fast = os.environ.get("HOLDINGS_BACKFILL_FAST")
+        os.environ["HOLDINGS_BACKFILL_FAST"] = "1"
         init_db()
 
         # Skip universe refresh if DB already has stocks (avoids HKEX requests.get() hang)
@@ -116,6 +118,10 @@ def backfill_range(start: date, end: date) -> None:
 
         logger.info("Backfill complete: %d/%d days succeeded", success, total)
     finally:
+        if prev_backfill_fast is None:
+            os.environ.pop("HOLDINGS_BACKFILL_FAST", None)
+        else:
+            os.environ["HOLDINGS_BACKFILL_FAST"] = prev_backfill_fast
         _release_lock()
 
 

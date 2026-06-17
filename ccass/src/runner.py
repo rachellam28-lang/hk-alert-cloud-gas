@@ -63,6 +63,7 @@ def _apply_runtime_tuning(config: dict) -> dict:
     sc_cfg = config.setdefault("scraping", {})
     fast = os.environ.get("HOLDINGS_FAST", "0") == "1"
     ultra_fast = os.environ.get("HOLDINGS_ULTRA_FAST", "0") == "1"
+    backfill_fast = os.environ.get("HOLDINGS_BACKFILL_FAST", "0") == "1"
     skip_mc = os.environ.get("HOLDINGS_SKIP_MARKET_CAP_FETCH", "0") == "1"
 
     if fast:
@@ -81,6 +82,17 @@ def _apply_runtime_tuning(config: dict) -> dict:
         sc_cfg["max_retries"] = min(int(sc_cfg.get("max_retries", 3)), 1)
         skip_mc = True
         config["_runtime_ultra_fast_mode"] = True
+
+    if backfill_fast:
+        # Sequential backfill only. Keep FATAL-003 intact, but cap dead-stock wait time
+        # so one or two hanging codes do not stall an entire trading day.
+        sc_cfg["delay_min_seconds"] = min(float(sc_cfg.get("delay_min_seconds", 4.0)), 2.0)
+        sc_cfg["delay_max_seconds"] = min(float(sc_cfg.get("delay_max_seconds", 10.0)), 4.0)
+        sc_cfg["parallel_workers"] = 1
+        sc_cfg["timeout_seconds"] = min(int(sc_cfg.get("timeout_seconds", 30)), 20)
+        sc_cfg["max_retries"] = min(int(sc_cfg.get("max_retries", 3)), 1)
+        skip_mc = True
+        config["_runtime_backfill_fast_mode"] = True
 
     sc_cfg["skip_market_cap_fetch"] = skip_mc
     config["_runtime_fast_mode"] = fast
