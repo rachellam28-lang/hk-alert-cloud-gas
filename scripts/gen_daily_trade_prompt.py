@@ -9,6 +9,9 @@ from pathlib import Path
 BASE = Path(__file__).resolve().parent.parent
 VQC_PATH = BASE / "data" / "vqc_backtest.json"
 DD_PATH = BASE / "data" / "distribution_day_backtest.json"
+HOLDINGS_PATH = BASE / "data" / "holdings.json"
+SIGNALS_PATH = BASE / "data" / "signals.json"
+TRADEABLE_PATH = BASE / "data" / "tradeable.json"
 OUT_PATH = BASE / "daily_trade_prompt.html"
 
 
@@ -43,10 +46,77 @@ DD = load_json(
     },
 )
 
+HOLDINGS = load_json(HOLDINGS_PATH, {"stocks": []})
+SIGNALS = load_json(SIGNALS_PATH, {"groups": []})
+TRADEABLE = load_json(TRADEABLE_PATH, [])
+
+holdings_map = {}
+for s in HOLDINGS.get("stocks", []):
+    code = str(s.get("c", "")).zfill(5)
+    holdings_map[code] = {
+        "code": code,
+        "name": s.get("n"),
+        "tp": s.get("tp"),
+        "t5": s.get("t5"),
+        "t10": s.get("t10"),
+        "hhi": s.get("hhi"),
+        "lp": s.get("lp"),
+        "mc": s.get("mc"),
+        "chg": s.get("chg"),
+        "yo": s.get("yo"),
+        "py_pct": s.get("py_pct"),
+        "vol": s.get("vol"),
+        "avg_vol": s.get("avg_vol"),
+    }
+
+signals_map = {}
+for g in SIGNALS.get("groups", []):
+    code = str(g.get("code", "")).zfill(5)
+    sigs = g.get("signals") or []
+    sig_labels = []
+    for s in sigs:
+        if isinstance(s, dict):
+            label = s.get("label") or s.get("category") or s.get("type") or ''
+            date = s.get("date") or ''
+            sig_labels.append(f"{label}{(' '+date) if date else ''}".strip())
+        else:
+            sig_labels.append(str(s))
+    signals_map[code] = {
+        "code": code,
+        "name": g.get("name"),
+        "latestPrice": g.get("latestPrice"),
+        "signal_count": len(sigs),
+        "signals": sig_labels[:5],
+        "corpTypes": g.get("corpTypes") or {},
+        "hkexLink": g.get("hkexLink") or "",
+    }
+
+tradeable_map = {}
+for item in TRADEABLE:
+    code = str(item.get("code", "")).zfill(5)
+    prev = tradeable_map.get(code)
+    if prev is None or (item.get("score") or 0) > (prev.get("score") or 0):
+        tradeable_map[code] = {
+            "code": code,
+            "name": item.get("name"),
+            "date": item.get("date"),
+            "typeLabel": item.get("typeLabel"),
+            "direction": item.get("direction"),
+            "score": item.get("score"),
+            "label": item.get("label"),
+            "label_class": item.get("label_class"),
+            "reasons": item.get("reasons") or [],
+            "signal_count": item.get("signal_count"),
+            "pattern": item.get("pattern"),
+        }
+
 VQC_JSON = json.dumps(VQC, ensure_ascii=False)
 DD_JSON = json.dumps(DD, ensure_ascii=False)
+HOLDINGS_JSON = json.dumps(holdings_map, ensure_ascii=False)
+SIGNALS_JSON = json.dumps(signals_map, ensure_ascii=False)
+TRADEABLE_JSON = json.dumps(tradeable_map, ensure_ascii=False)
 
-html = """<!DOCTYPE html>
+html = r"""<!DOCTYPE html>
 <html lang="zh-HK">
 <head>
 <meta charset="UTF-8">
@@ -157,6 +227,33 @@ a { color:inherit; text-decoration:none; }
     </div>
   </section>
 
+  <section class="panel">
+    <div class="panel-title">自選股版每日提示</div>
+    <div class="mini-grid" id="watchlistCards"></div>
+    <div class="note" id="watchlistNote"></div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-title">今日留意股票清單</div>
+    <div class="table-wrap" style="overflow-x:auto">
+      <table style="width:100%;border-collapse:collapse;min-width:1050px">
+        <thead>
+          <tr style="text-align:left;color:var(--muted);font-size:11px">
+            <th style="padding:8px 10px">代號</th>
+            <th style="padding:8px 10px">名稱</th>
+            <th style="padding:8px 10px">現價</th>
+            <th style="padding:8px 10px">Market%</th>
+            <th style="padding:8px 10px">5D</th>
+            <th style="padding:8px 10px">20D</th>
+            <th style="padding:8px 10px">訊號 / 可炒</th>
+            <th style="padding:8px 10px">今日原因</th>
+          </tr>
+        </thead>
+        <tbody id="watchlistTable"></tbody>
+      </table>
+    </div>
+  </section>
+
   <div class="grid-2">
     <section class="panel">
       <div class="panel-title">市場濾網</div>
@@ -183,6 +280,9 @@ a { color:inherit; text-decoration:none; }
 <script>
 const VQC = __VQC_JSON__;
 const DD = __DD_JSON__;
+const HOLDINGS = __HOLDINGS_JSON__;
+const SIGNALS = __SIGNALS_JSON__;
+const TRADEABLE = __TRADEABLE_JSON__;
 
 function fmtPct(v) {
   if (v == null || Number.isNaN(v)) return '—';
@@ -211,6 +311,55 @@ function verdict(score) {
 
 function getBench(name) {
   return (DD.benchmarks || []).find(b => b.key === name) || {};
+}
+
+function loadWatchlist() {
+  try {
+    return JSON.parse(localStorage.getItem('hk_watchlist_v1') || '[]');
+  } catch {
+    return [];
+  }
+}
+
+function normCode(code) {
+  const s = String(code || '').trim().toUpperCase();
+  if (!s) return '';
+  return /^\d+$/.test(s) ? s.padStart(5, '0') : s;
+}
+
+function pickWatchData(code) {
+  const c = normCode(code);
+  return {
+    holding: HOLDINGS[c] || null,
+    signal: SIGNALS[c] || null,
+    tradeable: TRADEABLE[c] || null,
+  };
+}
+
+function watchScore(bundle, item) {
+  let score = 0;
+  const t = bundle.tradeable;
+  const h = bundle.holding;
+  const s = bundle.signal;
+  if (t && typeof t.score === 'number') score += t.score;
+  if (h && typeof h.chg === 'number') score += Math.max(-20, Math.min(20, h.chg * 4));
+  if (h && typeof h.tp === 'number') score += Math.max(0, Math.min(15, h.tp / 8));
+  if (s && typeof s.signal_count === 'number') score += Math.min(12, s.signal_count * 1.5);
+  if ((item.note || '').trim()) score += 1;
+  return Math.round(score);
+}
+
+function watchReason(bundle, item) {
+  const parts = [];
+  const t = bundle.tradeable;
+  const h = bundle.holding;
+  const s = bundle.signal;
+  if (t && t.reasons && t.reasons.length) parts.push(t.reasons[0]);
+  if (t && t.label) parts.push(t.label);
+  if (s && s.signals && s.signals.length) parts.push(s.signals.slice(0, 2).join(' / '));
+  if (h && h.chg != null) parts.push(`Market ${h.chg >= 0 ? '+' : ''}${Number(h.chg).toFixed(2)}%`);
+  if ((item.signal || '').trim()) parts.push(item.signal);
+  return parts.filter(Boolean).slice(0, 3).join(' · ') || '暫無明確訊號';
 }
 
 function renderSummary() {
@@ -256,6 +405,66 @@ function renderSummary() {
   document.getElementById('updatedAt').textContent = new Date().toISOString().slice(0, 19).replace('T', ' ');
   document.getElementById('vqcUpdated').textContent = VQC.updated || '—';
   document.getElementById('ddUpdated').textContent = DD.updated || '—';
+}
+
+function renderWatchlistPrompt() {
+  const wl = loadWatchlist().map(x => ({
+    ...x,
+    code: normCode(x.code),
+    name: x.name || '',
+  })).filter(x => x.code);
+
+  const bundles = wl.map(item => {
+    const bundle = pickWatchData(item.code);
+    const score = watchScore(bundle, item);
+    const reason = watchReason(bundle, item);
+    return { ...item, ...bundle, score, reason };
+  }).sort((a, b) => b.score - a.score);
+
+  const active = bundles.filter(x => x.score >= 40);
+  const hot = bundles.filter(x => (x.tradeable && (x.tradeable.score || 0) >= 80) || (x.signal && x.signal.signal_count >= 1));
+
+  const cards = [
+    ['本機自選', wl.length, 'localStorage hk_watchlist_v1'],
+    ['有資料配對', bundles.filter(x => x.holding || x.signal || x.tradeable).length, '可對上 holdings / signals / tradeable'],
+    ['今日留意', hot.length, '高分 / 有訊號 / 有可炒形態'],
+    ['建議出手', active.length ? active.length : 0, active.length ? '可優先留意' : '暫時偏少'],
+  ];
+  document.getElementById('watchlistCards').innerHTML = cards.map(([k,v,s]) => `
+    <div class="mini">
+      <div class="lab">${k}</div>
+      <div class="val">${v}</div>
+      <div class="note">${s}</div>
+    </div>`).join('');
+
+  if (!wl.length) {
+    document.getElementById('watchlistNote').textContent =
+      '你部機暫時冇本機自選。去自選頁按 ★ 加入，呢度先會即時見到你自己的清單。';
+    document.getElementById('watchlistTable').innerHTML =
+      '<tr><td colspan="8" style="padding:22px;color:#8ea0bf;text-align:center">暫無本機自選代號</td></tr>';
+    return;
+  }
+
+  document.getElementById('watchlistNote').textContent =
+    '已按今日可留意程度排序：Tradeable 高分 / 有信號 / Market 走勢較強的排前。';
+
+  document.getElementById('watchlistTable').innerHTML = bundles.slice(0, 30).map(x => {
+    const t = x.tradeable || {};
+    const h = x.holding || {};
+    const s = x.signal || {};
+    const badge = t.label ? `<span class="pill ${t.label_class || 'warn'}">${t.label}</span>` : (s.signal_count ? '<span class="pill good">有信號</span>' : '<span class="pill warn">觀察</span>');
+    const hkex = s.hkexLink ? `<a class="btn" style="padding:3px 8px" href="${s.hkexLink}" target="_blank">HKEX</a>` : '';
+    return `<tr>
+      <td style="padding:8px 10px;font-weight:700">${x.code}</td>
+      <td style="padding:8px 10px">${x.name || h.name || s.name || ''}</td>
+      <td style="padding:8px 10px">${h.lp == null ? '—' : Number(h.lp).toFixed(3)}</td>
+      <td style="padding:8px 10px">${h.tp == null ? '—' : Number(h.tp).toFixed(1) + '%'}</td>
+      <td style="padding:8px 10px;color:${(h.chg ?? 0) >= 0 ? 'var(--green)' : 'var(--red)'}">${h.chg == null ? '—' : (h.chg >= 0 ? '+' : '') + Number(h.chg).toFixed(2) + '%'}</td>
+      <td style="padding:8px 10px">${h.t10 == null ? '—' : Number(h.t10).toFixed(1) + '%'}</td>
+      <td style="padding:8px 10px">${badge}</td>
+      <td style="padding:8px 10px;max-width:360px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${x.reason}${hkex ? ` · ${hkex}` : ''}</td>
+    </tr>`;
+  }).join('');
 }
 
 function renderBars() {
@@ -314,12 +523,19 @@ function renderRules() {
 }
 
 renderSummary();
+renderWatchlistPrompt();
 renderBars();
 renderRules();
 </script>
 </body>
 </html>"""
 
-html = html.replace("__VQC_JSON__", VQC_JSON).replace("__DD_JSON__", DD_JSON)
+html = (
+    html.replace("__VQC_JSON__", VQC_JSON)
+    .replace("__DD_JSON__", DD_JSON)
+    .replace("__HOLDINGS_JSON__", HOLDINGS_JSON)
+    .replace("__SIGNALS_JSON__", SIGNALS_JSON)
+    .replace("__TRADEABLE_JSON__", TRADEABLE_JSON)
+)
 OUT_PATH.write_text(html, encoding="utf-8")
 print(f"Generated {OUT_PATH} ({len(html)} bytes)")
