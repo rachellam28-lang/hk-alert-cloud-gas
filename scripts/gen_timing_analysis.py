@@ -127,6 +127,7 @@ a { color:inherit; text-decoration:none; }
   <a href="gap_fvg.html">⤴ Gap/FVG</a>
   <a href="fundflow.html">💰 資金</a>
   <a href="rights_analysis.html">📋 供配股</a>
+  <a href="daily_trade_prompt.html">🚦 每日提示</a>
   <a class="active" href="timing_analysis.html">⏱ 時間窗口</a>
   <a href="distribution_day.html">📉 分佈日</a>
   <a href="vqc_analysis.html">📈 成交轉勢日</a>
@@ -170,6 +171,7 @@ a { color:inherit; text-decoration:none; }
       </div>
     </div>
     <div class="link-row">
+      <a class="btn red" href="daily_trade_prompt.html">開每日提示</a>
       <a class="btn blue" href="vqc_analysis.html">開成交轉勢日</a>
       <a class="btn gold" href="distribution_day.html">開分佈日</a>
       <a class="btn teal" href="guide.html">開說明書</a>

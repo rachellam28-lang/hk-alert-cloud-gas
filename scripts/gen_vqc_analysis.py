@@ -146,6 +146,7 @@ tr:hover td {{ background: rgba(39,49,74,.22); }}
   <a href="gap_fvg.html">⤴ Gap/FVG</a>
   <a href="fundflow.html">💰 資金</a>
   <a href="rights_analysis.html">📋 供配股</a>
+  <a href="daily_trade_prompt.html">🚦 每日提示</a>
   <a href="timing_analysis.html">⏱ 時間窗口</a>
   <a class="active" href="vqc_analysis.html">📈 成交轉勢日</a>
   <a href="docs/ccass-warroom.html">⚡ 戰情室</a>
