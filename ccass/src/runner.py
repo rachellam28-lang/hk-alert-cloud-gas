@@ -32,7 +32,7 @@ except Exception:  # pragma: no cover - fallback for older runtimes
 
 from src.db import init_db, get_conn
 from src.logger import setup_logger
-from src.trading_calendar import today_hk, is_trading_day, previous_trading_day
+from src.trading_calendar import today_hk, is_trading_day, previous_trading_day, last_n_trading_days
 from src.universe import refresh_universe, get_active_stocks
 from src.scraper import HOLDINGSScraper, save_snapshot, HKEXBlockedError
 from src.trend import compute_trends_for_date
@@ -51,6 +51,58 @@ STATE_DIR = Path(__file__).parent.parent / "state"
 COOLDOWN_PATH = STATE_DIR / "hkex_cooldown.json"
 COOLDOWN_HOURS = 12
 MIN_SUCCESS_COVERAGE = 0.95
+
+
+def _date_coverage(date_str: str) -> tuple[int, int, float]:
+    """Return valid dashboard-equity coverage for a trade date."""
+    with get_conn() as conn:
+        active_row = conn.execute(
+            """
+            SELECT COUNT(*) AS n
+            FROM stock_universe
+            WHERE is_active=1
+              AND stock_code NOT LIKE '029%'
+              AND stock_code NOT LIKE '04621'
+              AND stock_code NOT LIKE '8%'
+            """
+        ).fetchone()
+        active_total = active_row["n"] if active_row else 0
+        date_row = conn.execute(
+            """
+            SELECT COUNT(*) AS n
+            FROM holdings_daily
+            WHERE trade_date = ? AND validation_failed = 0
+              AND stock_code NOT LIKE '029%'
+              AND stock_code NOT LIKE '04621'
+              AND stock_code NOT LIKE '8%'
+            """,
+            (date_str,),
+        ).fetchone()
+        date_count = date_row["n"] if date_row else 0
+    coverage = date_count / active_total if active_total else 0.0
+    return date_count, active_total, coverage
+
+
+def _reliable_trend_windows(target_date: date, windows: list[int]) -> list[int]:
+    """Only compute trend windows whose reference date has complete data."""
+    if not windows:
+        return []
+    max_window = max(windows)
+    all_tdays = last_n_trading_days(target_date, max_window + 1)
+    reliable: list[int] = []
+    for w in windows:
+        if len(all_tdays) <= w:
+            continue
+        ref_date = all_tdays[-(w + 1)].strftime("%Y-%m-%d")
+        ref_count, ref_total, ref_cov = _date_coverage(ref_date)
+        if ref_total and ref_cov >= MIN_SUCCESS_COVERAGE:
+            reliable.append(w)
+        else:
+            logger.warning(
+                "Trend %sd skipped for %s: ref %s coverage %.1f%% (%d/%d)",
+                w, target_date, ref_date, ref_cov * 100, ref_count, ref_total,
+            )
+    return reliable
 
 
 def load_config() -> dict:
@@ -515,9 +567,72 @@ def run_daily(
             coverage = succeeded / max(attempted, 1)
             return 0 if coverage >= MIN_SUCCESS_COVERAGE else 1
 
+        # Official outputs must only be produced from complete date snapshots.
+        # Partial DB rows are useful for resume, but unsafe for dashboard stats.
+        date_str = query_date.strftime("%Y-%m-%d")
+        date_count, active_total, date_coverage = _date_coverage(date_str)
+        if date_coverage < MIN_SUCCESS_COVERAGE:
+            finished_iso = datetime.utcnow().isoformat()
+            with get_conn() as conn:
+                conn.execute(
+                    """UPDATE scrape_runs SET
+                         finished_at = ?, stocks_attempted = ?,
+                         stocks_succeeded = ?, stocks_failed = ?,
+                         status = ?,
+                         error_summary = ?
+                       WHERE id = ?""",
+                    (
+                        finished_iso,
+                        attempted,
+                        succeeded,
+                        len(failed_stocks),
+                        "partial",
+                        (
+                            f"date coverage {date_count}/{active_total} "
+                            f"({date_coverage * 100:.1f}%)"
+                        ),
+                        run_id,
+                    ),
+                )
+            logger.error(
+                "Date coverage %.1f%% (%d/%d) < %.1f%%; skipping trends/alerts/export for %s",
+                date_coverage * 100,
+                date_count,
+                active_total,
+                MIN_SUCCESS_COVERAGE * 100,
+                date_str,
+            )
+            return 1
+
         # 4. Trends
+        trend_windows = _reliable_trend_windows(query_date, config["trend_windows"])
+        if not trend_windows:
+            finished_iso = datetime.utcnow().isoformat()
+            with get_conn() as conn:
+                conn.execute(
+                    """UPDATE scrape_runs SET
+                         finished_at = ?, stocks_attempted = ?,
+                         stocks_succeeded = ?, stocks_failed = ?,
+                         status = ?,
+                         error_summary = ?
+                       WHERE id = ?""",
+                    (
+                        finished_iso,
+                        attempted,
+                        succeeded,
+                        len(failed_stocks),
+                        "partial",
+                        "no complete trend reference dates",
+                        run_id,
+                    ),
+                )
+            logger.error(
+                "No complete trend reference dates for %s; skipping alerts/export",
+                date_str,
+            )
+            return 1
         try:
-            compute_trends_for_date(query_date, config["trend_windows"])
+            compute_trends_for_date(query_date, trend_windows)
         except Exception as e:
             logger.exception("Trend computation failed")
             send_admin_alert(f"Trend computation 失敗: {e}")

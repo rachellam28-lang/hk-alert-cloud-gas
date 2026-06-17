@@ -81,18 +81,20 @@ def compute_trends_for_date(target_date: date, windows: list[int] | None = None)
         delta_cols.append("delta_{w}d_pct".format(w=w))
         delta_cols.append("delta_{w}d_shares".format(w=w))
 
-    # Fill remaining columns (60d, 120d) with NULL — both on INSERT and UPDATE
-    extra_null_cols = ""
-    extra_null_vals = ""
+    # Null out unsupported/unreliable windows so stale values from an older run
+    # cannot survive when only a subset of windows is recomputed.
+    supported_windows = (5, 20, 60, 120)
+    missing_delta_cols = []
+    for w in supported_windows:
+        if w not in windows:
+            missing_delta_cols.append("delta_{w}d_pct".format(w=w))
+            missing_delta_cols.append("delta_{w}d_shares".format(w=w))
+    extra_null_cols = ", " + ", ".join(missing_delta_cols) if missing_delta_cols else ""
+    extra_null_vals = ", " + ", ".join(["NULL" for _ in missing_delta_cols]) if missing_delta_cols else ""
     extra_update_nulls = ""
-    if 60 not in windows:
-        extra_null_cols = ", delta_60d_pct, delta_120d_pct, delta_60d_shares, delta_120d_shares"
-        extra_null_vals = ", NULL, NULL, NULL, NULL"
-        extra_update_nulls = (
-            ",\n        delta_60d_pct = NULL,"
-            "\n        delta_120d_pct = NULL,"
-            "\n        delta_60d_shares = NULL,"
-            "\n        delta_120d_shares = NULL"
+    if missing_delta_cols:
+        extra_update_nulls = ",\n        " + ",\n        ".join(
+            "{c} = NULL".format(c=c) for c in missing_delta_cols
         )
 
     update_set = ",\n        ".join(
