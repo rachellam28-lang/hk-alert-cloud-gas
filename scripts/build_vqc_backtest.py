@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
 """Build VQC turn-date backtest data from TradingView historical OHLCV.
 
-The strategy uses daily bars to resample monthly candles, then triggers when the
-current month close crosses above the open of the highest-volume completed month
-within the recent lookback window.
+VQC is treated as a timing window, not a directional prediction. The trigger
+uses daily bars to resample monthly candles, then marks a VQC turn date when
+the current month close crosses above the open of the highest-volume completed
+month within the recent lookback window.
+
+For each VQC date the backtest checks the previous trading day's direction:
+if the previous day fell, did the next 2 trading days offer a rebound; if the
+previous day rose, did the next 2 trading days offer a pullback.
 
 Output:
   data/vqc_backtest.json
@@ -31,7 +36,7 @@ CCASS_JSON = BASE / "ccass.json"
 OUT_PATH = DATA_DIR / "vqc_backtest.json"
 
 LOOKBACK_MONTHS = max(int(os.getenv("VQC_LOOKBACK_MONTHS", "24")), 3)
-HORIZONS = [5, 20, 60]
+HORIZONS = [2, 5, 20, 60]
 DEFAULT_BARS = max(int(os.getenv("VQC_BACKTEST_BARS", "520")), 260)
 DEFAULT_WORKERS = min(max(int(os.getenv("VQC_BACKTEST_WORKERS", "6")), 1), 8)
 DEFAULT_BUCKET_LIMIT = max(int(os.getenv("VQC_BACKTEST_BUCKET_LIMIT", "150")), 0)
@@ -112,9 +117,10 @@ def _tv() -> TvDatafeed:
     return tv
 
 
-def fetch_history(code: str, n_bars: int = DEFAULT_BARS) -> pd.DataFrame:
-    sym = str(int(str(code).strip().zfill(5)))
-    df = _tv().get_hist(symbol=sym, exchange="HKEX", interval=Interval.in_daily, n_bars=n_bars)
+def fetch_history(code: str, n_bars: int = DEFAULT_BARS, exchange: str = "HKEX") -> pd.DataFrame:
+    raw = str(code).strip()
+    sym = str(int(raw.zfill(5))) if exchange.upper() == "HKEX" and raw.isdigit() else raw.upper()
+    df = _tv().get_hist(symbol=sym, exchange=exchange, interval=Interval.in_daily, n_bars=n_bars)
     if df is None or df.empty:
         return pd.DataFrame()
     df = df.copy()
@@ -187,13 +193,52 @@ def _max_gain_dd(df: pd.DataFrame, idx0: int, horizon: int, entry: float) -> tup
     return round(float(closes.max()) / entry - 1, 4), round(float(closes.min()) / entry - 1, 4)
 
 
+def _turn_window(df: pd.DataFrame, idx0: int) -> dict[str, Any] | None:
+    if idx0 < 2 or idx0 + 1 >= len(df):
+        return None
+    prev_close = float(df.iloc[idx0 - 2]["close"])
+    pre_close = float(df.iloc[idx0 - 1]["close"])
+    entry = float(df.iloc[idx0]["close"])
+    if prev_close <= 0 or pre_close <= 0 or entry <= 0:
+        return None
+    pre_ret = pre_close / prev_close - 1
+    if pre_ret == 0:
+        return None
+    window = df.iloc[idx0 + 1: idx0 + 3]
+    if window.empty:
+        return None
+    max_high = float(window["high"].max())
+    min_low = float(window["low"].min())
+    max_close = float(window["close"].max())
+    min_close = float(window["close"].min())
+    prev_dir = "down" if pre_ret < 0 else "up"
+    if prev_dir == "down":
+        hit = max_high > entry
+        best_move = max_high / entry - 1
+        close_move = max_close / entry - 1
+    else:
+        hit = min_low < entry
+        best_move = entry / min_low - 1 if min_low > 0 else None
+        close_move = entry / min_close - 1 if min_close > 0 else None
+    return {
+        "prev_day_direction": prev_dir,
+        "prev_day_return": round(pre_ret, 4),
+        "turn_hit_2d": bool(hit),
+        "turn_move_2d": round(best_move, 4) if best_move is not None else None,
+        "turn_close_move_2d": round(close_move, 4) if close_move is not None else None,
+    }
+
+
 def backtest_stock(stock: dict[str, Any], n_bars: int = DEFAULT_BARS) -> dict[str, Any] | None:
-    code = str(stock.get("c", "")).zfill(5)
+    raw_code = str(stock.get("c", ""))
+    code = raw_code.zfill(5) if raw_code.isdigit() else raw_code.upper()
+    symbol = str(stock.get("symbol") or code)
+    exchange = str(stock.get("exchange") or "HKEX")
     name = stock.get("n") or code
     mc = float(stock.get("mc") or 0)
     bucket = stock.get("mc_bucket") or mc_bucket(mc)
 
-    hist = fetch_history(code, n_bars=n_bars)
+    hist = fetch_history(symbol, n_bars=n_bars, exchange=exchange)
     if hist.empty or len(hist) < 100:
         return None
     monthly = resample_monthly(hist)
@@ -205,6 +250,7 @@ def backtest_stock(stock: dict[str, Any], n_bars: int = DEFAULT_BARS) -> dict[st
     baseline_20d: list[float] = []
     baseline_5d: list[float] = []
     baseline_60d: list[float] = []
+    baseline_turns: list[dict[str, Any]] = []
 
     for i in range(1, len(monthly)):
         sig = monthly.iloc[i]
@@ -225,6 +271,9 @@ def backtest_stock(stock: dict[str, Any], n_bars: int = DEFAULT_BARS) -> dict[st
             f60 = _forward_return(hist, idx0, 60, entry)
             if f60 is not None:
                 baseline_60d.append(f60)
+        tw = _turn_window(hist, idx0)
+        if tw:
+            baseline_turns.append(tw)
 
     for i in range(2, len(monthly)):
         current = monthly.iloc[i]
@@ -271,6 +320,8 @@ def backtest_stock(stock: dict[str, Any], n_bars: int = DEFAULT_BARS) -> dict[st
             "entry_price": round(entry, 3),
             "break_value": round(current_close, 3),
             "break_pct": round((current_close / ref_open - 1) * 100, 2),
+            **(_turn_window(hist, idx0) or {}),
+            "fwd_2d": _forward_return(hist, idx0, 2, entry),
             "fwd_5d": _forward_return(hist, idx0, 5, entry),
             "fwd_20d": _forward_return(hist, idx0, 20, entry),
             "fwd_60d": _forward_return(hist, idx0, 60, entry),
@@ -293,6 +344,7 @@ def backtest_stock(stock: dict[str, Any], n_bars: int = DEFAULT_BARS) -> dict[st
         "baseline_5d": [v for v in baseline_5d if v is not None],
         "baseline_20d": [v for v in baseline_20d if v is not None],
         "baseline_60d": [v for v in baseline_60d if v is not None],
+        "baseline_turns": baseline_turns,
     }
 
 
@@ -302,13 +354,62 @@ def _bucket_stats(events: list[dict[str, Any]], key: str, values: list[str]) -> 
         rows = [e for e in events if e.get(key) == val]
         f20 = [e["fwd_20d"] for e in rows if e.get("fwd_20d") is not None]
         f5 = [e["fwd_5d"] for e in rows if e.get("fwd_5d") is not None]
+        turns = [e for e in rows if e.get("turn_hit_2d") is not None]
         out[val] = {
             "count": len(rows),
+            "turn_hit_rate_2d": round(100 * sum(1 for x in turns if x.get("turn_hit_2d")) / len(turns), 1) if turns else None,
             "fwd5_win_rate": round(100 * sum(1 for x in f5 if x > 0) / len(f5), 1) if f5 else None,
             "fwd20_win_rate": round(100 * sum(1 for x in f20 if x > 0) / len(f20), 1) if f20 else None,
             "median_fwd20": round(100 * median(f20), 2) if f20 else None,
             "avg_fwd20": round(100 * (sum(f20) / len(f20)), 2) if f20 else None,
         }
+    return out
+
+
+def _turn_stats(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    down = [r for r in rows if r.get("prev_day_direction") == "down" and r.get("turn_hit_2d") is not None]
+    up = [r for r in rows if r.get("prev_day_direction") == "up" and r.get("turn_hit_2d") is not None]
+    all_rows = down + up
+
+    def rate(items: list[dict[str, Any]]) -> float | None:
+        if not items:
+            return None
+        return round(100 * sum(1 for r in items if r.get("turn_hit_2d")) / len(items), 1)
+
+    return {
+        "overall_rate_2d": rate(all_rows),
+        "overall_n": len(all_rows),
+        "down_rebound_rate_2d": rate(down),
+        "down_n": len(down),
+        "up_pullback_rate_2d": rate(up),
+        "up_n": len(up),
+    }
+
+
+def _reference_examples(n_bars: int) -> list[dict[str, Any]]:
+    refs = [
+        {"c": "02800", "symbol": "2800", "exchange": "HKEX", "n": "盈富基金", "mc": 0, "mc_bucket": "large"},
+        {"c": "QQQ", "symbol": "QQQ", "exchange": "NASDAQ", "n": "QQQ", "mc": 0, "mc_bucket": "large"},
+    ]
+    out = []
+    for stock in refs:
+        try:
+            res = backtest_stock(stock, n_bars=n_bars)
+        except Exception as exc:
+            out.append({"code": stock["c"], "name": stock["n"], "error": str(exc)})
+            continue
+        if not res:
+            out.append({"code": stock["c"], "name": stock["n"], "error": "no data"})
+            continue
+        stats = _turn_stats(res.get("events", []))
+        out.append({
+            "code": stock["c"],
+            "name": stock["n"],
+            "exchange": stock["exchange"],
+            "events_total": len(res.get("events", [])),
+            "months": res.get("months"),
+            **stats,
+        })
     return out
 
 
@@ -356,21 +457,25 @@ def main() -> int:
                 print(f"[vqc] fetched {fetched}/{len(universe)} stocks, events={len(events)}")
 
     # Aggregate.
+    all_f2 = [e["fwd_2d"] for e in events if e.get("fwd_2d") is not None]
     all_f5 = [e["fwd_5d"] for e in events if e.get("fwd_5d") is not None]
     all_f20 = [e["fwd_20d"] for e in events if e.get("fwd_20d") is not None]
     all_f60 = [e["fwd_60d"] for e in events if e.get("fwd_60d") is not None]
     base20 = [x for r in per_code for x in r.get("baseline_20d", []) if x is not None]
     base5 = [x for r in per_code for x in r.get("baseline_5d", []) if x is not None]
     base60 = [x for r in per_code for x in r.get("baseline_60d", []) if x is not None]
+    base_turns = [x for r in per_code for x in r.get("baseline_turns", []) if x is not None]
 
     strength_stats = _bucket_stats(events, "strength_bucket", ["high", "mid", "low"])
     mc_stats = _bucket_stats(events, "mc_bucket", ["small", "mid", "large"])
+    turn_stats = _turn_stats(events)
+    baseline_turn_stats = _turn_stats(base_turns)
 
     top_winners = sorted([e for e in events if e.get("fwd_20d") is not None], key=lambda x: x["fwd_20d"], reverse=True)[:20]
     top_losers = sorted([e for e in events if e.get("fwd_20d") is not None], key=lambda x: x["fwd_20d"])[:20]
 
     out = {
-        "schema_v": 1,
+        "schema_v": 2,
         "updated": datetime.now().isoformat(timespec="seconds"),
         "lookback_months": LOOKBACK_MONTHS,
         "bars": args.bars,
@@ -385,10 +490,19 @@ def main() -> int:
         "events_with_f60": len(all_f60),
         "summary": {
             "signal_count": len(events),
+            **turn_stats,
+            "baseline_overall_rate_2d": baseline_turn_stats["overall_rate_2d"],
+            "baseline_overall_n": baseline_turn_stats["overall_n"],
+            "baseline_down_rebound_rate_2d": baseline_turn_stats["down_rebound_rate_2d"],
+            "baseline_down_n": baseline_turn_stats["down_n"],
+            "baseline_up_pullback_rate_2d": baseline_turn_stats["up_pullback_rate_2d"],
+            "baseline_up_n": baseline_turn_stats["up_n"],
+            "signal_win_2d": round(100 * sum(1 for x in all_f2 if x > 0) / len(all_f2), 1) if all_f2 else None,
             "signal_win_5d": round(100 * sum(1 for x in all_f5 if x > 0) / len(all_f5), 1) if all_f5 else None,
             "signal_win_20d": round(100 * sum(1 for x in all_f20 if x > 0) / len(all_f20), 1) if all_f20 else None,
             "signal_win_60d": round(100 * sum(1 for x in all_f60 if x > 0) / len(all_f60), 1) if all_f60 else None,
             "signal_median_5d": round(100 * median(all_f5), 2) if all_f5 else None,
+            "signal_median_2d": round(100 * median(all_f2), 2) if all_f2 else None,
             "signal_median_20d": round(100 * median(all_f20), 2) if all_f20 else None,
             "signal_median_60d": round(100 * median(all_f60), 2) if all_f60 else None,
             "baseline_median_20d": round(100 * median(base20), 2) if base20 else None,
@@ -399,11 +513,13 @@ def main() -> int:
         "edge": {
             "edge_20d": None,
             "edge_win_20d": None,
+            "edge_turn_2d": None,
         },
         "strength_stats": strength_stats,
         "mc_stats": mc_stats,
         "top_winners": top_winners,
         "top_losers": top_losers,
+        "reference_examples": _reference_examples(args.bars),
         "events": sorted(events, key=lambda x: (x.get("signal_date", ""), x.get("fwd_20d") if x.get("fwd_20d") is not None else -9999), reverse=True),
         "per_code": per_code,
     }
@@ -411,6 +527,8 @@ def main() -> int:
         out["edge"]["edge_20d"] = round(out["summary"]["signal_median_20d"] - out["summary"]["baseline_median_20d"], 2)
     if out["summary"]["signal_win_20d"] is not None and out["summary"]["baseline_win_20d"] is not None:
         out["edge"]["edge_win_20d"] = round(out["summary"]["signal_win_20d"] - out["summary"]["baseline_win_20d"], 1)
+    if out["summary"]["overall_rate_2d"] is not None and out["summary"]["baseline_overall_rate_2d"] is not None:
+        out["edge"]["edge_turn_2d"] = round(out["summary"]["overall_rate_2d"] - out["summary"]["baseline_overall_rate_2d"], 1)
 
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     tmp = OUT_PATH.with_suffix(".json.tmp")

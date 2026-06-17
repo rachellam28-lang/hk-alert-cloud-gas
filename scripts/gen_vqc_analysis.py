@@ -97,6 +97,12 @@ a {{ color: inherit; text-decoration: none; }}
 .mini {{ background: #10192b; border:1px solid #24304a; border-radius: 14px; padding: 12px; }}
 .mini .lab {{ color: var(--muted); font-size: 11px; }}
 .mini .val {{ font-size: 24px; font-weight: 900; margin-top: 5px; }}
+.ref-grid {{ display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:10px; margin-top:12px; }}
+.ref-card {{ background:#10192b; border:1px solid #24304a; border-radius:14px; padding:12px; }}
+.ref-title {{ font-size:13px; font-weight:900; margin-bottom:8px; }}
+.ref-stats {{ display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:8px; }}
+.ref-stat .lab {{ color:var(--muted); font-size:10px; }}
+.ref-stat .val {{ font-size:20px; font-weight:900; margin-top:3px; }}
 .table-wrap {{ overflow-x:auto; margin-top: 8px; }}
 table {{ width: 100%; border-collapse: collapse; min-width: 1100px; }}
 th, td {{ text-align:left; padding: 8px 10px; border-bottom: 1px solid #1f2a40; font-size: 12px; white-space: nowrap; }}
@@ -119,7 +125,7 @@ tr:hover td {{ background: rgba(39,49,74,.22); }}
   .hero {{ flex-direction: column; align-items:flex-start; }}
   .hero-meta {{ text-align:left; min-width: 0; }}
   .cards {{ grid-template-columns: repeat(2, minmax(0,1fr)); }}
-  .grid-2, .rule-grid, .mini-grid {{ grid-template-columns: 1fr; }}
+  .grid-2, .rule-grid, .mini-grid, .ref-grid {{ grid-template-columns: 1fr; }}
   .bar-row {{ grid-template-columns: 92px 1fr 58px; }}
 }}
 </style>
@@ -143,8 +149,8 @@ tr:hover td {{ background: rgba(39,49,74,.22); }}
       <div class="eyebrow">VQC TURN DATE</div>
       <div class="title">VQC 轉勢日回測</div>
       <div class="subtitle">
-        條件：現月收市向上穿越最近 <b>{DATA.get("lookback_months", 24)}</b> 個完成月中，成交量最大那個月的開市價。
-        回測以 TradingView 日線重組月K，確認點為月收市。頁面會持續跟住 `data/vqc_backtest.json` 更新。
+        VQC 唔係估升跌，而係搵高機率轉勢時間窗口。先看時間，再看價格反應，最後才部署策略。
+        回測會分開統計：VQC 前一個交易日下跌後，之後 2 個交易日內有否反彈；前一日上升後，之後 2 個交易日內有否回落。
       </div>
     </div>
     <div class="hero-meta">
@@ -157,6 +163,11 @@ tr:hover td {{ background: rgba(39,49,74,.22); }}
   <section class="cards" id="summaryCards"></section>
 
   <section class="panel">
+    <div class="panel-title">指定標的示例</div>
+    <div class="ref-grid" id="referenceExamples"></div>
+  </section>
+
+  <section class="panel">
     <div class="panel-title">策略定義</div>
     <div class="rule-grid">
       <div class="rule-list">
@@ -164,12 +175,12 @@ tr:hover td {{ background: rgba(39,49,74,.22); }}
         2. 喺每個完成月，搵最近 <b>{DATA.get("lookback_months", 24)}</b> 個完成月中成交量最大嗰個月。<br>
         3. 用嗰個月嘅 <b>Open</b> 做轉勢線。<br>
         4. 當現月收市 <b>升穿</b> 轉勢線，視作 VQC 轉勢日。<br>
-        5. 回測入場價 = 該月最後交易日收市，並計 5D / 20D / 60D forward return。
+        5. 再看 VQC 前一個交易日方向，統計之後 2 個交易日內有否出現反向機會。
       </div>
       <div class="rule-list">
         - 參考樣本：<b id="universeInfo"></b><br>
-        - 20D baseline：所有月收市 forward 20D 中位數<br>
-        - Edge：VQC 中位數 vs baseline 中位數<br>
+        - 2D baseline：所有月收市的同一套前日升跌 / 後兩日反向統計<br>
+        - Edge：VQC 2D 反向窗口命中率 vs baseline<br>
         - 強度分層：以高成交月 volume ratio 分 high / mid / low
       </div>
     </div>
@@ -213,12 +224,12 @@ tr:hover td {{ background: rgba(39,49,74,.22); }}
             <th>信號日</th>
             <th>Ref 月</th>
             <th>量比</th>
+            <th>前日</th>
+            <th>2D窗口</th>
+            <th>2D幅度</th>
             <th>突破%</th>
-            <th>5D</th>
+            <th>2D</th>
             <th>20D</th>
-            <th>60D</th>
-            <th>MaxG20D</th>
-            <th>MaxDD20D</th>
           </tr>
         </thead>
         <tbody id="tableBody"></tbody>
@@ -227,7 +238,7 @@ tr:hover td {{ background: rgba(39,49,74,.22); }}
   </section>
 
   <div class="foot">
-    資料源：TradingView 日線 · 回測邏輯：月K + 高成交月 Open 突破 · 此頁會跟 `data/vqc_backtest.json` 同步更新。<br>
+    資料源：TradingView 日線 · 回測邏輯：月K + 高成交月 Open 觸發 VQC 時間窗口 · 此頁會跟 `data/vqc_backtest.json` 同步更新。<br>
     若你想將 universe 擴展到全市場，只需要重跑 `scripts/build_vqc_backtest.py --bucket-limit 0`。
   </div>
 </div>
@@ -255,10 +266,10 @@ function renderCards() {{
   const cards = [
     ['樣本股數', DATA.sample_total ?? 0, `Universe ${{DATA.universe_total ?? 0}}`],
     ['訊號數', s.signal_count ?? 0, `訊號 / 月點`],
-    ['5日命中率', s.signal_win_5d == null ? '—' : s.signal_win_5d.toFixed(1)+'%', `baseline ${{s.baseline_median_5d == null ? '—' : s.baseline_median_5d.toFixed(2)+'%'}}`],
-    ['20日命中率', s.signal_win_20d == null ? '—' : s.signal_win_20d.toFixed(1)+'%', `edge ${{edge.edge_win_20d == null ? '—' : (edge.edge_win_20d>=0?'+':'')+edge.edge_win_20d.toFixed(1)+'pt'}}`],
-    ['平均20日', s.signal_median_20d == null ? '—' : s.signal_median_20d.toFixed(2)+'%', `baseline ${{s.baseline_median_20d == null ? '—' : s.baseline_median_20d.toFixed(2)+'%'}}`],
-    ['Edge vs baseline', edge.edge_20d == null ? '—' : (edge.edge_20d >= 0 ? '+' : '') + edge.edge_20d.toFixed(2)+'%', '20D median 差距'],
+    ['前日跌 -> 2D反彈', s.down_rebound_rate_2d == null ? '—' : s.down_rebound_rate_2d.toFixed(1)+'%', `n=${{s.down_n ?? 0}}`],
+    ['前日升 -> 2D回落', s.up_pullback_rate_2d == null ? '—' : s.up_pullback_rate_2d.toFixed(1)+'%', `n=${{s.up_n ?? 0}}`],
+    ['整體2D窗口', s.overall_rate_2d == null ? '—' : s.overall_rate_2d.toFixed(1)+'%', `baseline ${{s.baseline_overall_rate_2d == null ? '—' : s.baseline_overall_rate_2d.toFixed(1)+'%'}}`],
+    ['Edge vs baseline', edge.edge_turn_2d == null ? '—' : (edge.edge_turn_2d >= 0 ? '+' : '') + edge.edge_turn_2d.toFixed(1)+'pt', '2D window 差距'],
   ];
   document.getElementById('summaryCards').innerHTML = cards.map(([k,v,s2]) => `
     <div class="card">
@@ -271,16 +282,34 @@ function renderCards() {{
   document.getElementById('universeInfo').textContent = `${{DATA.sample_total ?? 0}} / ${{DATA.universe_total ?? 0}}`;
 }}
 
+function renderReferences() {{
+  const refs = DATA.reference_examples || [];
+  document.getElementById('referenceExamples').innerHTML = refs.map(r => {{
+    if (r.error) {{
+      return `<div class="ref-card"><div class="ref-title">${{r.code}} ${{r.name}}</div><div class="foot">${{r.error}}</div></div>`;
+    }}
+    return `<div class="ref-card">
+      <div class="ref-title">${{r.code}} ${{r.name}} <span class="pill large">${{r.exchange || ''}}</span></div>
+      <div class="ref-stats">
+        <div class="ref-stat"><div class="lab">整體2D</div><div class="val">${{r.overall_rate_2d == null ? '—' : r.overall_rate_2d.toFixed(1)+'%'}}</div></div>
+        <div class="ref-stat"><div class="lab">前日跌反彈</div><div class="val green">${{r.down_rebound_rate_2d == null ? '—' : r.down_rebound_rate_2d.toFixed(1)+'%'}}</div></div>
+        <div class="ref-stat"><div class="lab">前日升回落</div><div class="val red">${{r.up_pullback_rate_2d == null ? '—' : r.up_pullback_rate_2d.toFixed(1)+'%'}}</div></div>
+      </div>
+      <div class="foot">events=${{r.events_total ?? 0}} · n=${{r.overall_n ?? 0}}</div>
+    </div>`;
+  }}).join('');
+}}
+
 function renderEdge() {{
   const s = DATA.summary || {{}};
   const edge = DATA.edge || {{}};
   const vals = [
-    ['VQC 20D 中位數', s.signal_median_20d],
-    ['Baseline 20D 中位數', s.baseline_median_20d],
-    ['Edge 20D', edge.edge_20d],
-    ['Baseline 20D Win', s.baseline_win_20d == null ? null : s.baseline_win_20d.toFixed(1)+'%'],
-    ['VQC 20D Win', s.signal_win_20d == null ? null : s.signal_win_20d.toFixed(1)+'%'],
-    ['5D 中位數', s.signal_median_5d],
+    ['VQC 2D 整體', s.overall_rate_2d == null ? null : s.overall_rate_2d.toFixed(1)+'%'],
+    ['Baseline 2D 整體', s.baseline_overall_rate_2d == null ? null : s.baseline_overall_rate_2d.toFixed(1)+'%'],
+    ['Edge 2D', edge.edge_turn_2d == null ? null : (edge.edge_turn_2d >= 0 ? '+' : '') + edge.edge_turn_2d.toFixed(1)+'pt'],
+    ['前日跌反彈', s.down_rebound_rate_2d == null ? null : s.down_rebound_rate_2d.toFixed(1)+'%'],
+    ['前日升回落', s.up_pullback_rate_2d == null ? null : s.up_pullback_rate_2d.toFixed(1)+'%'],
+    ['2D 中位數', s.signal_median_2d],
   ];
   document.getElementById('edgeGrid').innerHTML = vals.map(([k,v]) => `
     <div class="mini">
@@ -292,7 +321,7 @@ function renderEdge() {{
 function renderBars(containerId, stats, order, colors) {{
   const rows = order.map(key => {{
     const s = stats[key] || {{}};
-    const pct = s.fwd20_win_rate ?? 0;
+    const pct = s.turn_hit_rate_2d ?? s.fwd20_win_rate ?? 0;
     const width = Math.max(3, Math.min(100, pct));
     const label = key === 'high' ? '高強度' : key === 'mid' ? '中強度' : key === 'low' ? '低強度' : key === 'small' ? '小市值' : key === 'mid2' ? '中市值' : '大市值';
     const pill = key === 'small' || key === 'mid' || key === 'large' ? key : key;
@@ -321,9 +350,15 @@ function renderTable() {{
     return String(r.code || '').includes(q) || String(r.name || '').toLowerCase().includes(q);
   }});
   rows.sort((a,b) => {{
-    const av = a.fwd_20d == null ? -9999 : a.fwd_20d;
-    const bv = b.fwd_20d == null ? -9999 : b.fwd_20d;
-    return bv - av;
+    const av = a.signal_date || '';
+    const bv = b.signal_date || '';
+    if (av !== bv) return bv.localeCompare(av);
+    const ah = a.turn_hit_2d ? 1 : 0;
+    const bh = b.turn_hit_2d ? 1 : 0;
+    if (ah !== bh) return bh - ah;
+    const am = a.turn_move_2d == null ? -9999 : a.turn_move_2d;
+    const bm = b.turn_move_2d == null ? -9999 : b.turn_move_2d;
+    return bm - am;
   }});
   document.getElementById('tableBody').innerHTML = rows.slice(0, 300).map(r => `
     <tr>
@@ -333,12 +368,12 @@ function renderTable() {{
       <td>${{r.signal_date}}</td>
       <td>${{r.ref_month}}</td>
       <td><span class="pill ${{r.strength_bucket || ''}}">${{r.volume_ratio == null ? '—' : r.volume_ratio.toFixed(2)+'x'}}</span></td>
+      <td>${{r.prev_day_direction === 'down' ? '跌' : r.prev_day_direction === 'up' ? '升' : '—'}} ${{fmtPct(r.prev_day_return == null ? null : r.prev_day_return*100)}}</td>
+      <td style="color:${{r.turn_hit_2d ? '#6fe3a4' : '#ff9a98'}}">${{r.turn_hit_2d ? '有' : '—'}}</td>
+      <td>${{fmtPct(r.turn_move_2d == null ? null : r.turn_move_2d*100)}}</td>
       <td style="color:${{r.break_pct >= 0 ? '#6fe3a4' : '#ff9a98'}}">${{fmtPct(r.break_pct)}}</td>
-      <td style="color:${{(r.fwd_5d ?? 0) >= 0 ? '#6fe3a4' : '#ff9a98'}}">${{fmtPct(r.fwd_5d == null ? null : r.fwd_5d*100)}}</td>
+      <td style="color:${{(r.fwd_2d ?? 0) >= 0 ? '#6fe3a4' : '#ff9a98'}}">${{fmtPct(r.fwd_2d == null ? null : r.fwd_2d*100)}}</td>
       <td style="color:${{(r.fwd_20d ?? 0) >= 0 ? '#6fe3a4' : '#ff9a98'}}">${{fmtPct(r.fwd_20d == null ? null : r.fwd_20d*100)}}</td>
-      <td style="color:${{(r.fwd_60d ?? 0) >= 0 ? '#6fe3a4' : '#ff9a98'}}">${{fmtPct(r.fwd_60d == null ? null : r.fwd_60d*100)}}</td>
-      <td>${{fmtPct(r.max_gain_20d == null ? null : r.max_gain_20d*100)}}</td>
-      <td>${{fmtPct(r.max_drawdown_20d == null ? null : r.max_drawdown_20d*100)}}</td>
     </tr>`).join('');
 }}
 
@@ -349,6 +384,7 @@ function setFilter(next) {{
 }}
 
 renderCards();
+renderReferences();
 renderEdge();
 renderBars('strengthBars', DATA.strength_stats || {{}}, ['high','mid','low'], {{
   high: 'bar-fill-green',
