@@ -1,5 +1,79 @@
 {
-  "updated": "2026-06-15 01:51 UTC",
-  "count": 0,
-  "watchlist": []
+  "updated": "2026-06-18 01:45 UTC",
+  "count": 9,
+  "watchlist": [
+    {
+      "code": "01952",
+      "name": "EVEREST MED",
+      "types": [
+        "股東增持"
+      ],
+      "ann_date": "2026-06-18"
+    },
+    {
+      "code": "80992",
+      "name": "LENOVO GROUP-R",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-06-18"
+    },
+    {
+      "code": "00992",
+      "name": "LENOVO GROUP",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-06-18"
+    },
+    {
+      "code": "01792",
+      "name": "CMON",
+      "types": [
+        "供股",
+        "配股"
+      ],
+      "ann_date": "2026-06-18"
+    },
+    {
+      "code": "00607",
+      "name": "FULLSHARE",
+      "types": [
+        "復牌"
+      ],
+      "ann_date": "2026-06-18"
+    },
+    {
+      "code": "00658",
+      "name": "C TRANSMISSION",
+      "types": [
+        "復牌"
+      ],
+      "ann_date": "2026-06-18"
+    },
+    {
+      "code": "01208",
+      "name": "MMG",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-06-16"
+    },
+    {
+      "code": "00419",
+      "name": "HONY MEDIA",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-06-15"
+    },
+    {
+      "code": "03908",
+      "name": "CICC",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-06-15"
+    }
+  ]
 }
