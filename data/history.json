@@ -1,10 +1,57 @@
 {
   "ok": true,
-  "total": 121,
+  "total": 123,
   "days": [
     {
       "date": "2026-06-18",
       "alerts": [
+        {
+          "source": "hkexnews",
+          "category": "corp_action",
+          "code": "02349",
+          "symbol": "2349.HK",
+          "name": "CH CITY INFRA",
+          "signal": "披露易公告 - 配股 / 復牌",
+          "timeframe": "公告",
+          "message": "內幕消息 AND 復牌",
+          "title_original": "內幕消息 AND 復牌",
+          "strategy": "HKEXnews Corp Action",
+          "chart_url": "",
+          "source_url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0618/2026061800399.pdf",
+          "announcement_date": "2026-06-18",
+          "release_time": "18/06/2026 12:23",
+          "tags": [
+            "公告",
+            "配股",
+            "復牌"
+          ],
+          "priority": 2,
+          "raw": "{\"code\": \"02349\", \"name\": \"CH CITY INFRA\", \"types\": [\"配股\", \"復牌\"], \"title\": \"內幕消息 AND 復牌\", \"title_en\": \"INSIDE INFORMATION\\nAND\\nRESUMPTION OF TRADING\", \"release_time\": \"18/06/2026 12:23\", \"release_date\": \"2026-06-18\", \"url\": \"https://www.hkexnews.hk/listedco/listconews/sehk/2026/0618/2026061800399.pdf\"}",
+          "created_at": "2026-06-18T13:04:17"
+        },
+        {
+          "source": "hkexnews",
+          "category": "corp_action",
+          "code": "02349",
+          "symbol": "2349.HK",
+          "name": "CH CITY INFRA",
+          "signal": "披露易公告 - 復牌",
+          "timeframe": "公告",
+          "message": "公司公告：EXCHANGE NOTICE - RESUMPTION OF TRADING",
+          "title_original": "公司公告：EXCHANGE NOTICE - RESUMPTION OF TRADING",
+          "strategy": "HKEXnews Corp Action",
+          "chart_url": "",
+          "source_url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0618/2026061800407.htm",
+          "announcement_date": "2026-06-18",
+          "release_time": "18/06/2026 12:37",
+          "tags": [
+            "公告",
+            "復牌"
+          ],
+          "priority": 2,
+          "raw": "{\"code\": \"02349\", \"name\": \"CH CITY INFRA\", \"types\": [\"復牌\"], \"title\": \"公司公告：EXCHANGE NOTICE - RESUMPTION OF TRADING\", \"title_en\": \"EXCHANGE NOTICE - RESUMPTION OF TRADING\", \"release_time\": \"18/06/2026 12:37\", \"release_date\": \"2026-06-18\", \"url\": \"https://www.hkexnews.hk/listedco/listconews/sehk/2026/0618/2026061800407.htm\"}",
+          "created_at": "2026-06-18T13:04:09"
+        },
         {
           "source": "hkexnews",
           "category": "corp_action",

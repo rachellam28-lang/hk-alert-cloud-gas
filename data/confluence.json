@@ -28,6 +28,267 @@
     "pattern": "catalyst"
   },
   {
+    "code": "00658",
+    "name": "C TRANSMISSION",
+    "types": [
+      "復牌"
+    ],
+    "title": "公司公告：EXCHANGE NOTICE - RESUMPTION OF TRADING",
+    "date": "2026-06-18",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0618/2026061800179.htm",
+    "type": "resume",
+    "typeLabel": "復牌",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "披露易公告 - 復牌"
+    ],
+    "signal_types_summary": [
+      "披露易公告 - 復牌"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "00607",
+    "name": "FULLSHARE",
+    "types": [
+      "復牌"
+    ],
+    "title": "公司公告：EXCHANGE NOTICE - RESUMPTION OF TRADING",
+    "date": "2026-06-18",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0618/2026061800177.htm",
+    "type": "resume",
+    "typeLabel": "復牌",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "披露易公告 - 復牌"
+    ],
+    "signal_types_summary": [
+      "披露易公告 - 復牌"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01792",
+    "name": "CMON",
+    "types": [
+      "供股",
+      "配股"
+    ],
+    "title": "公司公告：PROPOSED RIGHTS ISSUE ON THE BASIS OF THREE RIGHTS SHARES FOR EVERY ONE EX…",
+    "date": "2026-06-18",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0618/2026061800153.pdf",
+    "type": "rights",
+    "typeLabel": "供股 / 配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "觀察·供股 / 配股"
+    ],
+    "signal_types_summary": [
+      "觀察·供股 / 配股"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "00992",
+    "name": "LENOVO GROUP",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：(1) PROPOSED ISSUANCE OF US$2,000 MILLION ZERO COUPON CONVERTIBLE BONDS DU…",
+    "date": "2026-06-18",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0618/2026061800133.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "觀察·配股"
+    ],
+    "signal_types_summary": [
+      "觀察·配股"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "80992",
+    "name": "LENOVO GROUP-R",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：(1) PROPOSED ISSUANCE OF US$2,000 MILLION ZERO COUPON CONVERTIBLE BONDS DU…",
+    "date": "2026-06-18",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0618/2026061800133.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "觀察·配股"
+    ],
+    "signal_types_summary": [
+      "觀察·配股"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01952",
+    "name": "EVEREST MED",
+    "types": [
+      "股東增持"
+    ],
+    "title": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING BY SUBSTANTIAL SHAREHOLDER…",
+    "date": "2026-06-18",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0618/2026061800131.pdf",
+    "type": "increase",
+    "typeLabel": "股東增持",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "披露易公告 - 股東增持"
+    ],
+    "signal_types_summary": [
+      "披露易公告 - 股東增持"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "00992",
+    "name": "LENOVO GROUP",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：PROPOSED ISSUE OF CONVERTIBLE BONDS UNDER SHARE ISSUANCE MANDATE, PROPOSED…",
+    "date": "2026-06-17",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0617/2026061701320.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "觀察·配股"
+    ],
+    "signal_types_summary": [
+      "觀察·配股"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 1,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "80992",
+    "name": "LENOVO GROUP-R",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：PROPOSED ISSUE OF CONVERTIBLE BONDS UNDER SHARE ISSUANCE MANDATE, PROPOSED…",
+    "date": "2026-06-17",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0617/2026061701320.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "觀察·配股"
+    ],
+    "signal_types_summary": [
+      "觀察·配股"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 1,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "00607",
+    "name": "FULLSHARE",
+    "types": [
+      "復牌"
+    ],
+    "title": "公司公告：ANNUAL RESULTS ANNOUNCEMENT FOR THE YEAR ENDED 31 DECEMBER 2025 AND RESUMP…",
+    "date": "2026-06-17",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0617/2026061701691.pdf",
+    "type": "resume",
+    "typeLabel": "復牌",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "披露易公告 - 復牌"
+    ],
+    "signal_types_summary": [
+      "披露易公告 - 復牌"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 1,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "00658",
+    "name": "C TRANSMISSION",
+    "types": [
+      "復牌"
+    ],
+    "title": "公司公告：ANNOUNCEMENT OF ANNUAL RESULTS FOR THE YEAR ENDED 31 DECEMBER 2025 AND RES…",
+    "date": "2026-06-17",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0617/2026061701684.pdf",
+    "type": "resume",
+    "typeLabel": "復牌",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "披露易公告 - 復牌"
+    ],
+    "signal_types_summary": [
+      "披露易公告 - 復牌"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 1,
+    "pattern": "catalyst"
+  },
+  {
     "code": "01208",
     "name": "MMG",
     "types": [
@@ -106,6 +367,58 @@
     "pattern": "catalyst"
   },
   {
+    "code": "01952",
+    "name": "EVEREST MED",
+    "types": [
+      "股東增持"
+    ],
+    "title": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING BY SUBSTANTIAL SHAREHOLDER…",
+    "date": "2026-06-10",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0610/2026061000037.pdf",
+    "type": "increase",
+    "typeLabel": "股東增持",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "披露易公告 - 股東增持"
+    ],
+    "signal_types_summary": [
+      "披露易公告 - 股東增持"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 8,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01952",
+    "name": "EVEREST MED",
+    "types": [
+      "股東增持"
+    ],
+    "title": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING BY SUBSTANTIAL SHAREHOLDER…",
+    "date": "2026-06-04",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0604/2026060400115.pdf",
+    "type": "increase",
+    "typeLabel": "股東增持",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "披露易公告 - 股東增持"
+    ],
+    "signal_types_summary": [
+      "披露易公告 - 股東增持"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 14,
+    "pattern": "catalyst"
+  },
+  {
     "code": "00201",
     "name": "MAGNIFICENT",
     "types": [
@@ -156,6 +469,32 @@
     ],
     "first_pre_days": null,
     "first_post_days": 14,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01952",
+    "name": "EVEREST MED",
+    "types": [
+      "股東增持"
+    ],
+    "title": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING BY SUBSTANTIAL SHAREHOLDER…",
+    "date": "2026-05-22",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0522/2026052200015.pdf",
+    "typeLabel": "股東增持",
+    "type": "increase",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "披露易公告 - 股東增持"
+    ],
+    "signal_types_summary": [
+      "披露易公告 - 股東增持"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 27,
     "pattern": "catalyst"
   },
   {

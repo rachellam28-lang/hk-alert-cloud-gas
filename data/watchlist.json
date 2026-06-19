@@ -1,19 +1,12 @@
 {
-  "updated": "2026-06-18 01:45 UTC",
-  "count": 9,
+  "updated": "2026-06-19 01:58 UTC",
+  "count": 10,
   "watchlist": [
     {
-      "code": "01952",
-      "name": "EVEREST MED",
+      "code": "01792",
+      "name": "CMON",
       "types": [
-        "股東增持"
-      ],
-      "ann_date": "2026-06-18"
-    },
-    {
-      "code": "80992",
-      "name": "LENOVO GROUP-R",
-      "types": [
+        "供股",
         "配股"
       ],
       "ann_date": "2026-06-18"
@@ -27,11 +20,18 @@
       "ann_date": "2026-06-18"
     },
     {
-      "code": "01792",
-      "name": "CMON",
+      "code": "80992",
+      "name": "LENOVO GROUP-R",
       "types": [
-        "供股",
         "配股"
+      ],
+      "ann_date": "2026-06-18"
+    },
+    {
+      "code": "01952",
+      "name": "EVEREST MED",
+      "types": [
+        "股東增持"
       ],
       "ann_date": "2026-06-18"
     },
@@ -47,6 +47,15 @@
       "code": "00658",
       "name": "C TRANSMISSION",
       "types": [
+        "復牌"
+      ],
+      "ann_date": "2026-06-18"
+    },
+    {
+      "code": "02349",
+      "name": "CH CITY INFRA",
+      "types": [
+        "配股",
         "復牌"
       ],
       "ann_date": "2026-06-18"
