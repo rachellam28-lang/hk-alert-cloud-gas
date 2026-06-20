@@ -10,14 +10,16 @@ Maps Longbridge broker_holding_detail fields to HOLDINGSSnapshot / holdings form
   ratio.value  -> pct_of_issued (float)
 """
 
-import json, subprocess, os, sys, time, logging
+import json, os, sys, time, logging
 from datetime import date
 from dataclasses import dataclass
 from typing import Optional
 
+import requests
+
 logger = logging.getLogger(__name__)
 
-BASE = "https://mcp.longbridge.com"
+BASE = os.environ.get("LONGBRIDGE_MCP_URL", "https://mcp.longbridge.com/agent")
 MAX_RETRIES = 2
 RETRY_DELAY = 3.0  # seconds base
 
@@ -54,7 +56,11 @@ class LongbridgeMCPClient:
 
     def __init__(self):
         self.token = _load_token()
-        self.auth_hdr = "Authorization: " + "Bearer" + " " + self.token
+        self.headers = {
+            "Content-Type": "application/json",
+            "Accept": "application/json, text/event-stream",
+            "Authorization": "Bearer " + self.token,
+        }
         self._initialized = False
 
     def _call(self, method: str, params: dict | None = None) -> dict:
@@ -65,17 +71,8 @@ class LongbridgeMCPClient:
 
         for attempt in range(MAX_RETRIES):
             try:
-                r = subprocess.run(
-                    [
-                        "curl", "-s", "-X", "POST", BASE,
-                        "-H", "Content-Type: application/json",
-                        "-H", "Accept: application/json, text/event-stream",
-                        "-H", self.auth_hdr,
-                        "-d", json.dumps(body),
-                    ],
-                    capture_output=True, text=True, timeout=30,
-                )
-                raw = r.stdout.strip()
+                r = requests.post(BASE, headers=self.headers, json=body, timeout=30)
+                raw = r.text.strip()
                 if raw.startswith("data: "):
                     raw = raw[6:]
                 data = json.loads(raw)
@@ -90,7 +87,7 @@ class LongbridgeMCPClient:
                     raise RuntimeError(f"MCP error: {err_msg}")
 
                 return data
-            except (subprocess.TimeoutExpired, json.JSONDecodeError) as e:
+            except (requests.RequestException, json.JSONDecodeError) as e:
                 if attempt < MAX_RETRIES - 1:
                     delay = RETRY_DELAY * (2 ** attempt)
                     logger.warning("MCP call failed: %s, retrying in %.1fs", e, delay)
@@ -110,13 +107,10 @@ class LongbridgeMCPClient:
         })
         # initialized notification
         body = {"jsonrpc": "2.0", "method": "notifications/initialized"}
-        subprocess.run(
-            ["curl", "-s", "-X", "POST", BASE,
-             "-H", "Content-Type: application/json",
-             "-H", self.auth_hdr,
-             "-d", json.dumps(body)],
-            capture_output=True, timeout=5,
-        )
+        try:
+            requests.post(BASE, headers=self.headers, json=body, timeout=5)
+        except requests.RequestException:
+            logger.debug("Longbridge initialized notification failed", exc_info=True)
         self._initialized = True
 
     def broker_holding_detail(self, symbol: str, query_date: str | None = None) -> dict:

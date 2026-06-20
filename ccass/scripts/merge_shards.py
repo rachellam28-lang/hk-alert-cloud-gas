@@ -11,11 +11,12 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from datetime import datetime, date
 from pathlib import Path
 
-SHARD_TOTAL = 1  # single-shard mode (GHA disabled — local sequential only)
+SHARD_TOTAL = int(os.environ.get("SHARD_TOTAL", "1"))
 SHARD_PREFIX = "holdings-shard"
 PROJECT_ROOT = Path(__file__).parent.parent
 
@@ -24,6 +25,23 @@ def _shard_path(idx: int) -> Path:
     """Shard files always at repo root (PROJECT_ROOT.parent).
     Deterministic — no CWD dependency."""
     return PROJECT_ROOT.parent / f"{SHARD_PREFIX}-{idx}.json"
+
+
+def _safe_atomic_write(path: Path, payload: dict) -> None:
+    """Atomic JSON write with best-effort parent creation.
+
+    Some runtime environments raise ENOSYS on mkdir/stat against mounted
+    paths even when the directory already exists. If that happens, fall
+    back to writing directly.
+    """
+    try:
+        path.parent.mkdir(parents=True, exist_ok=True)
+    except OSError as e:
+        if getattr(e, "errno", None) not in (38,):
+            raise
+    tmp = path.with_suffix(".tmp")
+    tmp.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    tmp.replace(path)
 
 
 def _validate_shard(fpath: Path, expected_date: str, expected_shard: int) -> dict | None:
@@ -140,7 +158,7 @@ def update_holdings_json(target_date: date) -> None:
     # Get stock names (exclude non-equity: temp codes, prefs, warrants)
     EXCLUDE_PATTERNS = [
         "029%",        # temp consolidation/split codes
-        "04621",       # preference share
+        "04%",         # non-core 04xxx counters (e.g. 04337)
         "8%",          # RMB counters (人仔櫃台)
     ]
     EXCLUDE_NAME_KEYWORDS = ["PREF", "優先", "股權", "二千五", "二千", "一萬"]
@@ -285,7 +303,7 @@ def update_holdings_json(target_date: date) -> None:
         FROM stock_universe
         WHERE is_active=1
           AND stock_code NOT LIKE '029%'
-          AND stock_code NOT LIKE '04621'
+          AND stock_code NOT LIKE '04%'
           AND stock_code NOT LIKE '8%'
         """
     ).fetchone()
@@ -296,7 +314,7 @@ def update_holdings_json(target_date: date) -> None:
         FROM holdings_daily
         WHERE trade_date = ? AND validation_failed = 0
           AND stock_code NOT LIKE '029%'
-          AND stock_code NOT LIKE '04621'
+          AND stock_code NOT LIKE '04%'
           AND stock_code NOT LIKE '8%'
         """,
         (target_date.strftime("%Y-%m-%d"),),
@@ -345,15 +363,10 @@ def update_holdings_json(target_date: date) -> None:
     legacy_out = dict(out)
     legacy_out["alerts_today"] = 0
 
-    def _atomic_write(path: Path, payload: dict) -> None:
-        tmp = path.with_suffix(".tmp")
-        tmp.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
-        tmp.replace(path)
-
     holdings_path = PROJECT_ROOT.parent / "holdings.json"
     ccass_path = PROJECT_ROOT.parent / "ccass.json"
-    _atomic_write(holdings_path, out)
-    _atomic_write(ccass_path, legacy_out)
+    _safe_atomic_write(holdings_path, out)
+    _safe_atomic_write(ccass_path, legacy_out)
 
     verified = json.loads(holdings_path.read_text(encoding="utf-8"))
     if verified.get("updated") != target_date.strftime("%Y-%m-%d"):
@@ -370,9 +383,18 @@ def update_holdings_json(target_date: date) -> None:
 
 
 def main():
+    global SHARD_TOTAL
     parser = argparse.ArgumentParser(description="Merge 6 shard JSONs into DB")
     parser.add_argument("--date", required=True, help="Query date YYYY-MM-DD")
+    parser.add_argument(
+        "--shard-total",
+        type=int,
+        default=SHARD_TOTAL,
+        help="Total number of shard JSON files expected (default: env SHARD_TOTAL or 1)",
+    )
     args = parser.parse_args()
+
+    SHARD_TOTAL = args.shard_total
 
     date_str = args.date
     print(f"Merge: query_date={date_str}")

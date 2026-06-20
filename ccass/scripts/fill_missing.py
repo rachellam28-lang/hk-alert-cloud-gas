@@ -1,5 +1,6 @@
 """Bulk fill missing HOLDINGS stocks for specific dates."""
-import json, random, sqlite3, subprocess, sys, os, time
+import argparse
+import json, random, sqlite3, subprocess, sys, os, time, signal
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from datetime import datetime
@@ -9,24 +10,54 @@ PROJECT = Path(__file__).parent.parent
 DB = PROJECT / "holdings.db"
 SCRAPE_ONE = PROJECT / "src" / "scrape_one.py"
 CONFIG = PROJECT / "config.yaml"
+sys.path.insert(0, str(PROJECT))
 
 
 def _load_scraping_config() -> dict:
     with open(CONFIG, encoding="utf-8") as f:
         cfg = yaml.safe_load(f) or {}
     sc = cfg.get("scraping", {})
-    return {
+    out = {
         "user_agent": sc.get("user_agent", "Mozilla/5.0"),
         "delay_min_seconds": float(sc.get("delay_min_seconds", 4.0)),
         "delay_max_seconds": float(sc.get("delay_max_seconds", 10.0)),
         "timeout_seconds": int(sc.get("timeout_seconds", 30)),
         "max_retries": int(sc.get("max_retries", 3)),
     }
+    if os.environ.get("HOLDINGS_BACKFILL_FAST", "0") == "1":
+        out["delay_min_seconds"] = min(out["delay_min_seconds"], float(os.environ.get("FILL_DELAY_MIN", "1.5")))
+        out["delay_max_seconds"] = min(out["delay_max_seconds"], float(os.environ.get("FILL_DELAY_MAX", "3.0")))
+        out["timeout_seconds"] = min(out["timeout_seconds"], int(os.environ.get("FILL_TIMEOUT", "20")))
+        out["max_retries"] = min(out["max_retries"], int(os.environ.get("FILL_RETRIES", "1")))
+    return out
+
+
+def _run_child(cmd: list[str], timeout: int) -> subprocess.CompletedProcess:
+    proc = subprocess.Popen(
+        cmd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        start_new_session=True,
+    )
+    try:
+        stdout, stderr = proc.communicate(timeout=timeout)
+        return subprocess.CompletedProcess(cmd, proc.returncode, stdout, stderr)
+    except subprocess.TimeoutExpired as e:
+        try:
+            os.killpg(proc.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+        stdout, stderr = proc.communicate()
+        raise subprocess.TimeoutExpired(cmd, timeout, output=stdout, stderr=stderr) from e
 
 
 def _scrape_one(code: str, target_date: str, sc_cfg: dict) -> tuple[str, dict | None, str | None]:
-    hard_timeout = sc_cfg["timeout_seconds"] * sc_cfg["max_retries"] + 30
-    result = subprocess.run(
+    if os.environ.get("HOLDINGS_PROVIDER", "hkex").lower() == "longbridge":
+        return _scrape_one_longbridge(code, target_date)
+
+    hard_timeout = sc_cfg["timeout_seconds"] * sc_cfg["max_retries"] + 5
+    result = _run_child(
         [
             sys.executable, str(SCRAPE_ONE), code, target_date,
             sc_cfg["user_agent"],
@@ -35,7 +66,7 @@ def _scrape_one(code: str, target_date: str, sc_cfg: dict) -> tuple[str, dict | 
             str(sc_cfg["timeout_seconds"]),
             str(sc_cfg["max_retries"]),
         ],
-        capture_output=True, text=True, timeout=hard_timeout,
+        timeout=hard_timeout,
     )
     if result.returncode != 0:
         return code, None, result.stderr.strip() or result.stdout.strip() or f"exit={result.returncode}"
@@ -50,6 +81,52 @@ def _scrape_one(code: str, target_date: str, sc_cfg: dict) -> tuple[str, dict | 
     if not data.get("ok"):
         return code, None, data.get("reason", "not ok")
     return code, data, None
+
+
+def _snapshot_to_dict(snap) -> dict:
+    from src.scraper import _compute_concentration_metrics
+
+    sorted_shares = sorted(
+        [h["shares"] for h in snap.holdings if h.get("shares")],
+        reverse=True,
+    )
+    top5 = sum(sorted_shares[:5])
+    top10 = sum(sorted_shares[:10])
+    top5_pct = round(top5 / snap.total_shares * 100, 2) if snap.total_shares > 0 else None
+    top10_pct = round(top10 / snap.total_shares * 100, 2) if snap.total_shares > 0 else None
+    cm = _compute_concentration_metrics(snap.holdings)
+    return {
+        "ok": True,
+        "stock_code": snap.stock_code,
+        "trade_date": snap.trade_date,
+        "total_shares": snap.total_shares,
+        "total_pct": snap.total_pct,
+        "num_participants": snap.num_participants,
+        "top5_pct": top5_pct,
+        "top10_pct": top10_pct,
+        "adj_hhi": cm.get("adj_hhi"),
+        "broker_top5_pct": cm.get("broker_top5_pct"),
+        "top_broker_id": cm.get("top_broker_id", ""),
+        "top_broker_name": cm.get("top_broker_name", ""),
+        "top_broker_pct": cm.get("top_broker_pct"),
+        "futu_pct": cm.get("futu_pct"),
+        "a00005_pct": cm.get("a00005_pct"),
+        "adjusted_float": cm.get("adjusted_float"),
+        "holdings": snap.holdings,
+    }
+
+
+def _scrape_one_longbridge(code: str, target_date: str) -> tuple[str, dict | None, str | None]:
+    from datetime import date
+    from src.longbridge_provider import scrape_stock
+
+    try:
+        snap = scrape_stock(code, date.fromisoformat(target_date))
+    except Exception as e:
+        return code, None, str(e)[:200]
+    if not snap or not snap.holdings:
+        return code, None, "no_data"
+    return code, _snapshot_to_dict(snap), None
 
 
 def _save_snapshot(db: sqlite3.Connection, data: dict) -> None:
@@ -98,7 +175,7 @@ def fill_missing(target_date: str, max_stocks: int = 3000):
     db.execute("PRAGMA foreign_keys=ON")
 
     # Get full universe from the date with most stocks
-    EXCLUDE_PATTERNS = ["029%", "04621", "8%"]
+    EXCLUDE_PATTERNS = ["029%", "04%", "8%"]
     exclude_clauses = " AND ".join(["stock_code NOT LIKE ?" for _ in EXCLUDE_PATTERNS])
     
     # Find the date with the most stocks (reference universe)
@@ -148,7 +225,6 @@ def fill_missing(target_date: str, max_stocks: int = 3000):
                 if i % 50 == 0:
                     print(f"  Progress: {i}/{len(missing)} ({100*i/len(missing):.1f}%), succeeded={succeeded}, failed={len(failed)}")
     else:
-        hard_timeout = sc_cfg["timeout_seconds"] * sc_cfg["max_retries"] + 30
         for i, code in enumerate(missing, 1):
             try:
                 code, data, err = _scrape_one(code, target_date, sc_cfg)
@@ -169,5 +245,8 @@ def fill_missing(target_date: str, max_stocks: int = 3000):
         print(f"Failed: {failed[:20]}...")
 
 if __name__ == "__main__":
-    date = sys.argv[1] if len(sys.argv) > 1 else "2026-05-20"
-    fill_missing(date)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("date", nargs="?", default="2026-05-20")
+    parser.add_argument("--max-stocks", type=int, default=int(os.environ.get("FILL_MAX_STOCKS", "3000")))
+    args = parser.parse_args()
+    fill_missing(args.date, max_stocks=args.max_stocks)

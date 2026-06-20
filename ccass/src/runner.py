@@ -14,9 +14,11 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import signal
 import sys
 import time
 import traceback
+from itertools import islice
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_completed, TimeoutError as FutureTimeoutError
 from datetime import datetime, date, timedelta
 from pathlib import Path
@@ -62,7 +64,7 @@ def _date_coverage(date_str: str) -> tuple[int, int, float]:
             FROM stock_universe
             WHERE is_active=1
               AND stock_code NOT LIKE '029%'
-              AND stock_code NOT LIKE '04621'
+              AND stock_code NOT LIKE '04%'
               AND stock_code NOT LIKE '8%'
             """
         ).fetchone()
@@ -73,7 +75,7 @@ def _date_coverage(date_str: str) -> tuple[int, int, float]:
             FROM holdings_daily
             WHERE trade_date = ? AND validation_failed = 0
               AND stock_code NOT LIKE '029%'
-              AND stock_code NOT LIKE '04621'
+              AND stock_code NOT LIKE '04%'
               AND stock_code NOT LIKE '8%'
             """,
             (date_str,),
@@ -138,8 +140,10 @@ def _apply_runtime_tuning(config: dict) -> dict:
     if backfill_fast:
         # Sequential backfill only. Keep FATAL-003 intact, but cap dead-stock wait time
         # so one or two hanging codes do not stall an entire trading day.
-        sc_cfg["delay_min_seconds"] = min(float(sc_cfg.get("delay_min_seconds", 4.0)), 2.0)
-        sc_cfg["delay_max_seconds"] = min(float(sc_cfg.get("delay_max_seconds", 10.0)), 4.0)
+        # Batch mode already reuses HKEX form tokens, so aggressive sub-second
+        # pacing is unnecessary and increases WAF risk.
+        sc_cfg["delay_min_seconds"] = min(float(sc_cfg.get("delay_min_seconds", 4.0)), 1.5)
+        sc_cfg["delay_max_seconds"] = min(float(sc_cfg.get("delay_max_seconds", 10.0)), 3.0)
         sc_cfg["parallel_workers"] = 1
         sc_cfg["timeout_seconds"] = min(int(sc_cfg.get("timeout_seconds", 30)), 20)
         sc_cfg["max_retries"] = min(int(sc_cfg.get("max_retries", 3)), 1)
@@ -187,6 +191,91 @@ def _clear_cooldown() -> None:
             COOLDOWN_PATH.unlink()
     except OSError:
         logger.warning("Failed to clear cooldown marker: %s", COOLDOWN_PATH)
+
+
+def _chunks(items: list[str], size: int):
+    """Yield fixed-size chunks without copying the whole list repeatedly."""
+    it = iter(items)
+    while True:
+        chunk = list(islice(it, size))
+        if not chunk:
+            break
+        yield chunk
+
+
+def _daily_row_from_snapshot(conn, data: dict) -> None:
+    """Persist one scraped snapshot dict into SQLite."""
+    now_iso = datetime.utcnow().isoformat()
+    conn.execute("""
+        INSERT OR REPLACE INTO ccass_daily
+        (stock_code, trade_date, total_shares, total_pct,
+         num_participants, top5_pct, top10_pct,
+         adj_hhi, broker_top5_pct, top_broker_id,
+         top_broker_name, top_broker_pct,
+         futu_pct, a00005_pct, adjusted_float,
+         scraped_at, validation_failed)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)
+    """, (
+        data["stock_code"], data["trade_date"],
+        data.get("total_shares"), data.get("total_pct"),
+        data.get("num_participants"), data.get("top5_pct"),
+        data.get("top10_pct"), data.get("adj_hhi"),
+        data.get("broker_top5_pct"), data.get("top_broker_id"),
+        data.get("top_broker_name"), data.get("top_broker_pct"),
+        data.get("futu_pct"), data.get("a00005_pct"),
+        data.get("adjusted_float"),
+        now_iso,
+    ))
+    conn.execute(
+        "DELETE FROM ccass_holdings WHERE stock_code = ? AND trade_date = ?",
+        (data["stock_code"], data["trade_date"]),
+    )
+    for h in data.get("holdings", []):
+        conn.execute("""
+            INSERT OR REPLACE INTO ccass_holdings
+            (stock_code, trade_date, participant_id,
+             participant_name, shares, pct_of_issued)
+            VALUES (?, ?, ?, ?, ?, ?)
+        """, (
+            data["stock_code"], data["trade_date"],
+            h.get("participant_id"), h.get("participant_name"),
+            h.get("shares"), h.get("pct_of_issued"),
+        ))
+
+
+def _shard_payload_from_snapshot(data: dict) -> dict:
+    return {
+        "stock_code": data["stock_code"],
+        "trade_date": data["trade_date"],
+        "total_shares": data.get("total_shares"),
+        "total_pct": data.get("total_pct"),
+        "num_participants": data.get("num_participants", 0),
+        "holdings": data.get("holdings", []),
+    }
+
+
+def _run_child(cmd: list[str], timeout: int, input_text: str | None = None):
+    """Run scraper child with a process-group kill on timeout."""
+    import subprocess as _sp
+
+    proc = _sp.Popen(
+        cmd,
+        stdin=_sp.PIPE if input_text is not None else None,
+        stdout=_sp.PIPE,
+        stderr=_sp.PIPE,
+        text=True,
+        start_new_session=True,
+    )
+    try:
+        stdout, stderr = proc.communicate(input=input_text, timeout=timeout)
+        return _sp.CompletedProcess(cmd, proc.returncode, stdout, stderr)
+    except _sp.TimeoutExpired as e:
+        try:
+            os.killpg(proc.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+        stdout, stderr = proc.communicate()
+        raise _sp.TimeoutExpired(cmd, timeout, output=stdout, stderr=stderr) from e
 
 
 def should_refresh_universe(force: bool = False) -> bool:
@@ -328,6 +417,7 @@ def run_daily(
     init_db()
     _restore_db()  # Decompress holdings.db.gz if DB is empty (fresh checkout)
     config = _apply_runtime_tuning(load_config())
+    backfill_fast = bool(config.get("_runtime_backfill_fast_mode", False))
     target_date = target_date or today_hk()
 
     if not skip_scrape:
@@ -356,15 +446,17 @@ def run_daily(
         query_date = previous_trading_day(target_date)
     logger.info("Querying HOLDINGS data for %s", query_date)
 
-    # 1. Start run log
-    now_iso = datetime.now(tz=HK_TZ).isoformat()
-    with get_conn() as conn:
-        cur = conn.execute(
-            """INSERT INTO scrape_runs (run_date, started_at, status)
-               VALUES (?, ?, 'running')""",
-            (target_date.strftime("%Y-%m-%d"), now_iso),
-        )
-        run_id = cur.lastrowid
+    run_id = None
+    if not out_path:
+        # 1. Start run log
+        now_iso = datetime.now(tz=HK_TZ).isoformat()
+        with get_conn() as conn:
+            cur = conn.execute(
+                """INSERT INTO scrape_runs (run_date, started_at, status)
+                   VALUES (?, ?, 'running')""",
+                (target_date.strftime("%Y-%m-%d"), now_iso),
+            )
+            run_id = cur.lastrowid
 
     failed_stocks: list[str] = []
     succeeded = 0
@@ -456,89 +548,107 @@ def run_daily(
                 # Sequential: subprocess per stock — kills reliably, ~2s overhead but never hangs.
                 import subprocess as _sp
                 import os as _os
-                HARD_TIMEOUT = sc_cfg["timeout_seconds"] * sc_cfg["max_retries"] + 30  # P0-2: dynamic timeout
+                HARD_TIMEOUT = sc_cfg["timeout_seconds"] * sc_cfg["max_retries"] + (5 if backfill_fast else 30)  # P0-2: dynamic timeout
                 _scrape_one = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "scrape_one.py")
-                for i, code in enumerate(stocks, 1):
-                    attempted += 1
-                    if i % 50 == 0:
-                        logger.info("Progress: %d/%d (%.1f%%)", i, len(stocks), 100 * i / len(stocks))
-                    try:
-                        result = _sp.run(
-                            [sys.executable, _scrape_one, code, query_date.strftime("%Y-%m-%d"),
-                             sc_cfg["user_agent"],
-                             str(sc_cfg["delay_min_seconds"]),
-                             str(sc_cfg["delay_max_seconds"]),
-                             str(sc_cfg["timeout_seconds"]),
-                             str(sc_cfg["max_retries"])],
-                            capture_output=True, text=True, timeout=HARD_TIMEOUT,
-                        )
-                        if result.returncode != 0:
-                            failed_stocks.append(code)
-                            continue
-                        data = json.loads(result.stdout)
-                        if data.get("ok"):
-                            # Save to DB in main process (avoids SQLite lock contention)
-                            try:
-                                with get_conn() as conn:
-                                    now_iso = datetime.utcnow().isoformat()
-                                    conn.execute("""
-                                        INSERT OR REPLACE INTO ccass_daily
-                                        (stock_code, trade_date, total_shares, total_pct,
-                                         num_participants, top5_pct, top10_pct,
-                                         adj_hhi, broker_top5_pct, top_broker_id,
-                                         top_broker_name, top_broker_pct,
-                                         futu_pct, a00005_pct, adjusted_float,
-                                         scraped_at, validation_failed)
-                                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)
-                                    """, (
-                                        data["stock_code"], data["trade_date"],
-                                        data.get("total_shares"), data.get("total_pct"),
-                                        data.get("num_participants"), data.get("top5_pct"),
-                                        data.get("top10_pct"), data.get("adj_hhi"),
-                                        data.get("broker_top5_pct"), data.get("top_broker_id"),
-                                        data.get("top_broker_name"), data.get("top_broker_pct"),
-                                        data.get("futu_pct"), data.get("a00005_pct"),
-                                        data.get("adjusted_float"),
-                                        now_iso,
-                                    ))
-                                    # P1-5: DELETE old holdings + INSERT new (atomic replace)
-                                    conn.execute(
-                                        "DELETE FROM ccass_holdings WHERE stock_code = ? AND trade_date = ?",
-                                        (data["stock_code"], data["trade_date"]),
-                                    )
-                                    for h in data.get("holdings", []):
-                                        conn.execute("""
-                                            INSERT OR REPLACE INTO ccass_holdings
-                                            (stock_code, trade_date, participant_id,
-                                             participant_name, shares, pct_of_issued)
-                                            VALUES (?, ?, ?, ?, ?, ?)
-                                        """, (
-                                            data["stock_code"], data["trade_date"],
-                                            h.get("participant_id"), h.get("participant_name"),
-                                            h.get("shares"), h.get("pct_of_issued"),
-                                        ))
-                            except Exception as e:
-                                logger.error("DB save failed for %s: %s", code, e)
+                batch_size = int(os.environ.get("HOLDINGS_BATCH_SIZE", "12" if backfill_fast else "1"))
+                if batch_size > 1 and os.environ.get("HOLDINGS_PROVIDER", "hkex").lower() == "hkex":
+                    _scrape_batch = _os.path.join(
+                        _os.path.dirname(_os.path.abspath(__file__)),
+                        "scrape_batch.py",
+                    )
+                    for batch_no, batch in enumerate(_chunks(stocks, batch_size), 1):
+                        attempted += len(batch)
+                        done = min(batch_no * batch_size, len(stocks))
+                        if done % 48 == 0 or done >= len(stocks):
+                            logger.info("Progress: %d/%d (%.1f%%)", done, len(stocks), 100 * done / len(stocks))
+                        batch_timeout = max(45, len(batch) * HARD_TIMEOUT + 15)
+                        try:
+                            result = _run_child(
+                                [sys.executable, _scrape_batch, query_date.strftime("%Y-%m-%d"),
+                                 sc_cfg["user_agent"],
+                                 str(sc_cfg["delay_min_seconds"]),
+                                 str(sc_cfg["delay_max_seconds"]),
+                                 str(sc_cfg["timeout_seconds"]),
+                                 str(sc_cfg["max_retries"])],
+                                timeout=batch_timeout,
+                                input_text=json.dumps(batch),
+                            )
+                            if result.returncode == 2:
+                                raise HKEXBlockedError(result.stdout[-500:] or result.stderr[-500:])
+                            if result.returncode != 0:
+                                logger.warning(
+                                    "Batch %d failed rc=%s stderr=%s",
+                                    batch_no, result.returncode, result.stderr[-300:],
+                                )
+                                failed_stocks.extend(batch)
+                                continue
+                            payload = json.loads(result.stdout)
+                            if not payload.get("ok"):
+                                failed_stocks.extend(batch)
+                                continue
+                            for data in payload.get("results", []):
+                                code = data.get("stock_code", "")
+                                if data.get("ok"):
+                                    if out_path:
+                                        collected_for_shard.append(_shard_payload_from_snapshot(data))
+                                    else:
+                                        try:
+                                            with get_conn() as conn:
+                                                _daily_row_from_snapshot(conn, data)
+                                        except Exception as e:
+                                            logger.error("DB save failed for %s: %s", code, e)
+                                            failed_stocks.append(code or "?")
+                                            continue
+                                    succeeded += 1
+                                else:
+                                    failed_stocks.append(code or "?")
+                        except _sp.TimeoutExpired:
+                            logger.warning("Batch %d (%d stocks) timed out after %ds", batch_no, len(batch), batch_timeout)
+                            failed_stocks.extend(batch)
+                        except HKEXBlockedError:
+                            raise
+                        except Exception:
+                            logger.exception("Unexpected error on batch %d", batch_no)
+                            failed_stocks.extend(batch)
+                else:
+                    for i, code in enumerate(stocks, 1):
+                        attempted += 1
+                        if i % 50 == 0:
+                            logger.info("Progress: %d/%d (%.1f%%)", i, len(stocks), 100 * i / len(stocks))
+                        try:
+                            result = _run_child(
+                                [sys.executable, _scrape_one, code, query_date.strftime("%Y-%m-%d"),
+                                 sc_cfg["user_agent"],
+                                 str(sc_cfg["delay_min_seconds"]),
+                                 str(sc_cfg["delay_max_seconds"]),
+                                 str(sc_cfg["timeout_seconds"]),
+                                 str(sc_cfg["max_retries"])],
+                                timeout=HARD_TIMEOUT,
+                            )
+                            if result.returncode != 0:
                                 failed_stocks.append(code)
                                 continue
-                            succeeded += 1
-                            if out_path:
-                                collected_for_shard.append({
-                                    "stock_code": data["stock_code"],
-                                    "trade_date": data["trade_date"],
-                                    "total_shares": data.get("total_shares"),
-                                    "total_pct": data.get("total_pct"),
-                                    "num_participants": data.get("num_participants", 0),
-                                    "holdings": data.get("holdings", []),
-                                })
-                        else:
+                            data = json.loads(result.stdout)
+                            if data.get("ok"):
+                                if out_path:
+                                    collected_for_shard.append(_shard_payload_from_snapshot(data))
+                                else:
+                                    try:
+                                        with get_conn() as conn:
+                                            _daily_row_from_snapshot(conn, data)
+                                    except Exception as e:
+                                        logger.error("DB save failed for %s: %s", code, e)
+                                        failed_stocks.append(code)
+                                        continue
+                                succeeded += 1
+                            else:
+                                failed_stocks.append(code)
+                        except _sp.TimeoutExpired:
+                            logger.warning("Stock %s timed out after %ds — skipping", code, HARD_TIMEOUT)
                             failed_stocks.append(code)
-                    except _sp.TimeoutExpired:
-                        logger.warning("Stock %s timed out after %ds — skipping", code, HARD_TIMEOUT)
-                        failed_stocks.append(code)
-                    except Exception as e:
-                        logger.exception("Unexpected error on %s", code)
-                        failed_stocks.append(code)
+                        except Exception:
+                            logger.exception("Unexpected error on %s", code)
+                            failed_stocks.append(code)
 
         # Shard output mode: write artifact JSON + early return.
         # Trends / alerts / events / holdings.json are handled by the merge phase.
@@ -551,19 +661,6 @@ def run_daily(
                 "Shard %s/%s: wrote %d snapshots → %s",
                 shard, shard_total, len(collected_for_shard), out_path,
             )
-            with get_conn() as conn:
-                conn.execute(
-                    """UPDATE scrape_runs
-                         SET finished_at=?, stocks_attempted=?,
-                             stocks_succeeded=?, stocks_failed=?, status=?
-                       WHERE id=?""",
-                    (
-                        datetime.utcnow().isoformat(), attempted, succeeded,
-                        len(failed_stocks),
-                        "success" if not failed_stocks else "partial",
-                        run_id,
-                    ),
-                )
             coverage = succeeded / max(attempted, 1)
             return 0 if coverage >= MIN_SUCCESS_COVERAGE else 1
 
@@ -572,28 +669,29 @@ def run_daily(
         date_str = query_date.strftime("%Y-%m-%d")
         date_count, active_total, date_coverage = _date_coverage(date_str)
         if date_coverage < MIN_SUCCESS_COVERAGE:
-            finished_iso = datetime.utcnow().isoformat()
-            with get_conn() as conn:
-                conn.execute(
-                    """UPDATE scrape_runs SET
-                         finished_at = ?, stocks_attempted = ?,
-                         stocks_succeeded = ?, stocks_failed = ?,
-                         status = ?,
-                         error_summary = ?
-                       WHERE id = ?""",
-                    (
-                        finished_iso,
-                        attempted,
-                        succeeded,
-                        len(failed_stocks),
-                        "partial",
+            if run_id is not None:
+                finished_iso = datetime.utcnow().isoformat()
+                with get_conn() as conn:
+                    conn.execute(
+                        """UPDATE scrape_runs SET
+                             finished_at = ?, stocks_attempted = ?,
+                             stocks_succeeded = ?, stocks_failed = ?,
+                             status = ?,
+                             error_summary = ?
+                           WHERE id = ?""",
                         (
-                            f"date coverage {date_count}/{active_total} "
-                            f"({date_coverage * 100:.1f}%)"
+                            finished_iso,
+                            attempted,
+                            succeeded,
+                            len(failed_stocks),
+                            "partial",
+                            (
+                                f"date coverage {date_count}/{active_total} "
+                                f"({date_coverage * 100:.1f}%)"
+                            ),
+                            run_id,
                         ),
-                        run_id,
-                    ),
-                )
+                    )
             logger.error(
                 "Date coverage %.1f%% (%d/%d) < %.1f%%; skipping trends/alerts/export for %s",
                 date_coverage * 100,
@@ -607,25 +705,26 @@ def run_daily(
         # 4. Trends
         trend_windows = _reliable_trend_windows(query_date, config["trend_windows"])
         if not trend_windows:
-            finished_iso = datetime.utcnow().isoformat()
-            with get_conn() as conn:
-                conn.execute(
-                    """UPDATE scrape_runs SET
-                         finished_at = ?, stocks_attempted = ?,
-                         stocks_succeeded = ?, stocks_failed = ?,
-                         status = ?,
-                         error_summary = ?
-                       WHERE id = ?""",
-                    (
-                        finished_iso,
-                        attempted,
-                        succeeded,
-                        len(failed_stocks),
-                        "partial",
-                        "no complete trend reference dates",
-                        run_id,
-                    ),
-                )
+            if run_id is not None:
+                finished_iso = datetime.utcnow().isoformat()
+                with get_conn() as conn:
+                    conn.execute(
+                        """UPDATE scrape_runs SET
+                             finished_at = ?, stocks_attempted = ?,
+                             stocks_succeeded = ?, stocks_failed = ?,
+                             status = ?,
+                             error_summary = ?
+                           WHERE id = ?""",
+                        (
+                            finished_iso,
+                            attempted,
+                            succeeded,
+                            len(failed_stocks),
+                            "partial",
+                            "no complete trend reference dates",
+                            run_id,
+                        ),
+                    )
             logger.error(
                 "No complete trend reference dates for %s; skipping alerts/export",
                 date_str,
@@ -681,25 +780,26 @@ def run_daily(
 
         coverage = succeeded / max(attempted, 1) if attempted else 1.0
         status = "success" if coverage >= MIN_SUCCESS_COVERAGE else "partial"
-        finished_iso = datetime.utcnow().isoformat()
-        with get_conn() as conn:
-            conn.execute(
-                """UPDATE scrape_runs SET
-                     finished_at = ?, stocks_attempted = ?,
-                     stocks_succeeded = ?, stocks_failed = ?,
-                     status = ?,
-                     error_summary = ?
-                   WHERE id = ?""",
-                (
-                    finished_iso,
-                    attempted,
-                    succeeded,
-                    len(failed_stocks),
-                    status,
-                    ",".join(failed_stocks[:50]) if failed_stocks else None,
-                    run_id,
-                ),
-            )
+        if run_id is not None:
+            finished_iso = datetime.utcnow().isoformat()
+            with get_conn() as conn:
+                conn.execute(
+                    """UPDATE scrape_runs SET
+                         finished_at = ?, stocks_attempted = ?,
+                         stocks_succeeded = ?, stocks_failed = ?,
+                         status = ?,
+                         error_summary = ?
+                       WHERE id = ?""",
+                    (
+                        finished_iso,
+                        attempted,
+                        succeeded,
+                        len(failed_stocks),
+                        status,
+                        ",".join(failed_stocks[:50]) if failed_stocks else None,
+                        run_id,
+                    ),
+                )
 
         logger.info(
             "Done: %d/%d succeeded, %d failed, coverage %.1f%%",
@@ -724,26 +824,28 @@ def run_daily(
     except HKEXBlockedError as e:
         logger.error("HKEX block detected: %s", e)
         _mark_cooldown(str(e))
-        finished_iso = datetime.utcnow().isoformat()
-        with get_conn() as conn:
-            conn.execute(
-                """UPDATE scrape_runs SET
-                     finished_at = ?, status = 'blocked', error_summary = ?
-                   WHERE id = ?""",
-                (finished_iso, str(e)[:500], run_id),
-            )
+        if run_id is not None:
+            finished_iso = datetime.utcnow().isoformat()
+            with get_conn() as conn:
+                conn.execute(
+                    """UPDATE scrape_runs SET
+                         finished_at = ?, status = 'blocked', error_summary = ?
+                       WHERE id = ?""",
+                    (finished_iso, str(e)[:500], run_id),
+                )
         return 2
 
     except Exception as e:
         logger.exception("Fatal error in run_daily")
-        finished_iso = datetime.utcnow().isoformat()
-        with get_conn() as conn:
-            conn.execute(
-                """UPDATE scrape_runs SET
-                     finished_at = ?, status = 'failed', error_summary = ?
-                   WHERE id = ?""",
-                (finished_iso, str(e)[:500], run_id),
-            )
+        if run_id is not None:
+            finished_iso = datetime.utcnow().isoformat()
+            with get_conn() as conn:
+                conn.execute(
+                    """UPDATE scrape_runs SET
+                         finished_at = ?, status = 'failed', error_summary = ?
+                       WHERE id = ?""",
+                    (finished_iso, str(e)[:500], run_id),
+                )
         send_admin_alert(f"❌ HOLDINGS daily run 失敗:\n{traceback.format_exc()[:1500]}")
         return 2
 
@@ -791,7 +893,7 @@ def _export_json(query_date: date, alerts_today: int) -> None:
                    LEFT JOIN holdings_trends t ON t.stock_code = cd.stock_code AND t.trade_date = cd.trade_date
                    WHERE cd.trade_date = ? AND cd.validation_failed = 0
                      AND cd.stock_code NOT LIKE '029%'
-                     AND cd.stock_code NOT LIKE '04621'
+                     AND cd.stock_code NOT LIKE '04%'
                      AND cd.stock_code NOT LIKE '8%'
                    ORDER BY t.delta_5d_pct DESC""",
                 (date_str,),
@@ -877,7 +979,7 @@ def _export_json(query_date: date, alerts_today: int) -> None:
                 FROM stock_universe
                 WHERE is_active=1
                   AND stock_code NOT LIKE '029%'
-                  AND stock_code NOT LIKE '04621'
+                  AND stock_code NOT LIKE '04%'
                   AND stock_code NOT LIKE '8%'
                 """
             ).fetchone()
@@ -888,7 +990,7 @@ def _export_json(query_date: date, alerts_today: int) -> None:
                 FROM holdings_daily
                 WHERE trade_date = ? AND validation_failed = 0
                   AND stock_code NOT LIKE '029%'
-                  AND stock_code NOT LIKE '04621'
+                  AND stock_code NOT LIKE '04%'
                   AND stock_code NOT LIKE '8%'
                 """,
                 (date_str,),
@@ -1142,8 +1244,7 @@ def _write_shard_json(
             for s in snapshots
         ],
     }
-    Path(out_path).parent.mkdir(parents=True, exist_ok=True)
-    Path(out_path).write_text(_json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+    _safe_write_json(Path(out_path), _json.dumps(payload, ensure_ascii=False))
 
 
 def _write_shard_output(
@@ -1173,8 +1274,24 @@ def _write_shard_output(
         "failed_stocks": failed_stocks,
         "snapshots": snapshots,
     }
-    Path(out_path).parent.mkdir(parents=True, exist_ok=True)
-    Path(out_path).write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+    _safe_write_json(Path(out_path), json.dumps(payload, ensure_ascii=False))
+
+
+def _safe_write_json(path: Path, content: str) -> None:
+    """Best-effort atomic JSON write.
+
+    Some execution environments expose paths that exist but do not fully
+    implement parent stat/mkdir semantics. If mkdir fails with ENOSYS,
+    keep going and write directly when the parent already exists.
+    """
+    try:
+        path.parent.mkdir(parents=True, exist_ok=True)
+    except OSError as e:
+        if getattr(e, "errno", None) not in (38,):  # Function not implemented
+            raise
+    tmp = path.with_suffix(".tmp")
+    tmp.write_text(content, encoding="utf-8")
+    tmp.replace(path)
 
 
 def main():
