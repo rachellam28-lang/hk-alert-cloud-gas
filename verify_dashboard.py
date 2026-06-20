@@ -5,7 +5,7 @@ import json, sys, math
 from pathlib import Path
 
 PROJECT = Path(__file__).parent
-CCASS_JSON = PROJECT / "ccass.json"
+CCASS_JSON = PROJECT / "holdings.json"
 
 def verify():
     errors = []

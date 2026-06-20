@@ -11,7 +11,7 @@ import time
 import re
 from pathlib import Path
 
-CCASS_JSON = Path(r'C:\Users\Administrator\Desktop\automatic\ccass-debug\holdings.json')
+CCASS_JSON = Path(__file__).parent.parent / 'holdings.json'
 BATCH_SIZE = 20  # stocks per npx call
 DELAY = 2  # seconds between batches
 KLINE_DAYS = 200
