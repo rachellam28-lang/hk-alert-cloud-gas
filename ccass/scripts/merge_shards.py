@@ -186,7 +186,7 @@ def update_holdings_json(target_date: date) -> None:
     for row in db.execute("""
         SELECT stock_code, delta_5d_pct, delta_20d_pct, delta_60d_pct, delta_120d_pct,
                consecutive_increase_days, consecutive_decrease_days
-        FROM holdings_trends
+        FROM ccass_trends
         WHERE trade_date = ?
     """, (target_date.strftime("%Y-%m-%d"),)).fetchall():
         trends[row[0]] = {

@@ -48,7 +48,12 @@ def compute_trends_for_date(target_date: date, windows: list[int] | None = None)
                 "AND ref{w}.validation_failed = 0".format(w=w)
             )
             ref_selects.append(
-                "cur.total_pct - ref{w}.total_pct AS delta_{w}d_pct, "
+                "CASE "
+                "WHEN cur.total_shares IS NOT NULL AND ref{w}.total_shares IS NOT NULL AND ref{w}.total_shares != 0 "
+                "THEN (cur.total_shares - ref{w}.total_shares) * 100.0 / ref{w}.total_shares "
+                "WHEN cur.total_pct IS NOT NULL AND ref{w}.total_pct IS NOT NULL "
+                "THEN cur.total_pct - ref{w}.total_pct "
+                "ELSE NULL END AS delta_{w}d_pct, "
                 "cur.total_shares - ref{w}.total_shares AS delta_{w}d_shares".format(w=w)
             )
             ref_params.append(rd)
