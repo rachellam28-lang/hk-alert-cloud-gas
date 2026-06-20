@@ -126,9 +126,7 @@ def load_fcf():
     with open(fcf_path) as f:
         data = json.load(f)
 
-    # Support both:
-    # 1) raw format: {code: {cfo, capex, fcf, unit, report}}
-    # 2) enriched format: {code: {latest, trend_5y, fcf5y, ...}}
+    # Support raw format: {code: {cfo, capex, fcf, unit, report}}
     normalized = {}
     for code, item in data.items():
         code = str(code).zfill(5)
@@ -284,10 +282,6 @@ def build_ccass_json():
                         s["fcf"] = round(latest_val / 1e8, 1) if abs(latest_val) > 1e6 else round(latest_val, 1)
                     except Exception:
                         s["fcf"] = latest
-                if s.get("fcfy") is None:
-                    s["fcfy"] = fc.get("trend_5y") or fc.get("trend")
-                if s.get("fcf_trend") is None:
-                    s["fcf_trend"] = fc.get("trend_5y") or fc.get("trend")
             else:
                 s["fcf"] = fc
         

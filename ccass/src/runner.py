@@ -871,56 +871,36 @@ def _fetch_market_caps(codes: list[str], fetch_remote: bool = True) -> dict[str,
 
 
 def _load_fcf_overlay() -> dict[str, dict]:
-    """Load FCF enrichment from data/fcf.json and any existing holdings snapshot.
+    """Load FCF enrichment from data/fcf.json.
 
-    data/fcf.json currently stores raw annual cash-flow values keyed by stock code.
-    Older holdings snapshots may already contain fcf/fcf5y/fcf_trend. We merge both
-    so the dashboard does not lose enrichment when runner rewrites holdings.json.
+    data/fcf.json stores raw annual cash-flow values keyed by stock code.
+    We only preserve the latest FCF figure; 5Y trend display has been removed.
     """
     overlay: dict[str, dict] = {}
 
-    def _merge_from(path: Path) -> None:
-        if not path.exists():
-            return
-        try:
-            payload = json.loads(path.read_text(encoding="utf-8"))
-        except Exception:
-            return
-
-        # Newer flat format: {"00700": {"cfo": ..., "capex": ..., "fcf": ...}}
-        if isinstance(payload, dict) and payload:
-            if all(isinstance(v, dict) for v in payload.values()):
-                for code, item in payload.items():
-                    code = str(code).zfill(5)
-                    merged: dict = overlay.setdefault(code, {})
-                    latest = item.get("latest", item.get("fcf"))
-                    if latest is not None and merged.get("fcf") is None:
-                        try:
-                            val = float(latest)
-                            # Raw API values are in HKD; convert to billions for the dashboard.
-                            merged["fcf"] = round(val / 1e8, 1) if abs(val) > 1e6 else round(val, 1)
-                        except Exception:
-                            pass
-                    for key in ("fcf5y", "fcf_trend", "fcfy"):
-                        if item.get(key) is not None and merged.get(key) is None:
-                            merged[key] = item.get(key)
-                return
-
-        # Holdings snapshot format: {"stocks": [{c, fcf, fcf5y, fcf_trend, ...}, ...]}
-        if isinstance(payload, dict) and isinstance(payload.get("stocks"), list):
-            for item in payload["stocks"]:
-                if not isinstance(item, dict) or not item.get("c"):
-                    continue
-                code = str(item["c"]).zfill(5)
-                merged = overlay.setdefault(code, {})
-                for key in ("fcf", "fcf5y", "fcf_trend", "fcfy"):
-                    if item.get(key) is not None and merged.get(key) is None:
-                        merged[key] = item.get(key)
-
     root_path = Path(__file__).parent.parent.parent
-    _merge_from(root_path / "data" / "fcf.json")
-    _merge_from(root_path / "holdings.json")
-    _merge_from(root_path / "data" / "holdings.json")
+    fcf_path = root_path / "data" / "fcf.json"
+    if not fcf_path.exists():
+        return overlay
+    try:
+        payload = json.loads(fcf_path.read_text(encoding="utf-8"))
+    except Exception:
+        return overlay
+
+    if isinstance(payload, dict):
+        for code, item in payload.items():
+            if not isinstance(item, dict):
+                continue
+            code = str(code).zfill(5)
+            latest = item.get("latest", item.get("fcf"))
+            if latest is None:
+                continue
+            try:
+                val = float(latest)
+                # Raw API values are in HKD; convert to billions for the dashboard.
+                overlay[code] = {"fcf": round(val / 1e8, 1) if abs(val) > 1e6 else round(val, 1)}
+            except Exception:
+                continue
     return overlay
 
 
@@ -1024,7 +1004,7 @@ def _export_json(query_date: date, alerts_today: int) -> None:
             extra = fcf_overlay.get(s["c"])
             if not extra:
                 continue
-            for key in ("fcf", "fcf5y", "fcf_trend", "fcfy"):
+            for key in ("fcf",):
                 if s.get(key) is None and extra.get(key) is not None:
                     s[key] = extra[key]
 
