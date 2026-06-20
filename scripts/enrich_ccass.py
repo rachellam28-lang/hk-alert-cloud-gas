@@ -125,9 +125,25 @@ def load_fcf():
         return {}
     with open(fcf_path) as f:
         data = json.load(f)
-    # fcf.json is {code: {latest, trend_5y, ...}}
-    logger.info("Loaded %d FCF entries", len(data))
-    return data
+
+    # Support both:
+    # 1) raw format: {code: {cfo, capex, fcf, unit, report}}
+    # 2) enriched format: {code: {latest, trend_5y, fcf5y, ...}}
+    normalized = {}
+    for code, item in data.items():
+        code = str(code).zfill(5)
+        if isinstance(item, dict):
+            latest = item.get("latest", item.get("fcf"))
+            entry = dict(item)
+            if latest is not None:
+                entry["latest"] = latest
+                entry["fcf"] = item.get("fcf", latest)
+            normalized[code] = entry
+        else:
+            normalized[code] = item
+
+    logger.info("Loaded %d FCF entries", len(normalized))
+    return normalized
 
 
 def load_signals():
@@ -261,8 +277,17 @@ def build_ccass_json():
         if code in fcf_data:
             fc = fcf_data[code]
             if isinstance(fc, dict):
-                s["fcf"] = fc.get("latest")
-                s["fcfy"] = fc.get("trend_5y") or fc.get("trend")
+                latest = fc.get("latest", fc.get("fcf"))
+                if latest is not None and s.get("fcf") is None:
+                    try:
+                        latest_val = float(latest)
+                        s["fcf"] = round(latest_val / 1e8, 1) if abs(latest_val) > 1e6 else round(latest_val, 1)
+                    except Exception:
+                        s["fcf"] = latest
+                if s.get("fcfy") is None:
+                    s["fcfy"] = fc.get("trend_5y") or fc.get("trend")
+                if s.get("fcf_trend") is None:
+                    s["fcf_trend"] = fc.get("trend_5y") or fc.get("trend")
             else:
                 s["fcf"] = fc
         

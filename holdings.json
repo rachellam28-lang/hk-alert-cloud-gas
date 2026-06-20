@@ -216,7 +216,8 @@
       "tbp": 3.37,
       "fp": 0.34,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 2203.8
     },
     {
       "c": "00006",
@@ -2088,7 +2089,8 @@
       "tbp": 17.2,
       "fp": 17.2,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": -0.6
     },
     {
       "c": "00070",
@@ -2988,7 +2990,8 @@
       "tbp": 20.82,
       "fp": 4.33,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 21.9
     },
     {
       "c": "00097",
@@ -5868,7 +5871,8 @@
       "tbp": 9.34,
       "fp": 1.07,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 24.0
     },
     {
       "c": "00191",
@@ -7776,7 +7780,8 @@
       "tbp": 6.63,
       "fp": 0.3,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 115.6
     },
     {
       "c": "00258",
@@ -8100,7 +8105,8 @@
       "tbp": 20.12,
       "fp": 0.9,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 10.6
     },
     {
       "c": "00269",
@@ -8964,7 +8970,8 @@
       "tbp": 11.51,
       "fp": 0.26,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 467.3
     },
     {
       "c": "00301",
@@ -10908,7 +10915,8 @@
       "tbp": 26.46,
       "fp": 2.3,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 0.4
     },
     {
       "c": "00363",
@@ -11196,7 +11204,8 @@
       "tbp": 26.86,
       "fp": 0.58,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 57.2
     },
     {
       "c": "00373",
@@ -12276,7 +12285,8 @@
       "tbp": 4.23,
       "fp": 1.93,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 0.6
     },
     {
       "c": "00410",
@@ -14040,7 +14050,8 @@
       "tbp": 12.49,
       "fp": 0.19,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 1.7
     },
     {
       "c": "00491",
@@ -15372,7 +15383,8 @@
       "tbp": 40.09,
       "fp": 0.72,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 4.4
     },
     {
       "c": "00543",
@@ -15660,7 +15672,8 @@
       "tbp": 2.24,
       "fp": 0.43,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 2.0
     },
     {
       "c": "00553",
@@ -15984,7 +15997,8 @@
       "tbp": 4.75,
       "fp": 1.58,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 9.3
     },
     {
       "c": "00565",
@@ -17892,7 +17906,8 @@
       "tbp": 13.64,
       "fp": 0.17,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 13.4
     },
     {
       "c": "00632",
@@ -18468,7 +18483,8 @@
       "tbp": 13.68,
       "fp": 0.17,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 217.5
     },
     {
       "c": "00657",
@@ -19224,7 +19240,8 @@
       "tbp": 10.37,
       "fp": 0.34,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 140.7
     },
     {
       "c": "00684",
@@ -19656,7 +19673,8 @@
       "tbp": 2.96,
       "fp": 1.08,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 23.0
     },
     {
       "c": "00697",
@@ -19728,7 +19746,8 @@
       "tbp": 14.01,
       "fp": 5.16,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 12.1
     },
     {
       "c": "00698",
@@ -19800,7 +19819,8 @@
       "tbp": 5.2,
       "fp": 1.05,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 2386.7
     },
     {
       "c": "00701",
@@ -20232,7 +20252,8 @@
       "tbp": 43.2,
       "fp": 1.53,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": -5.2
     },
     {
       "c": "00717",
@@ -21780,7 +21801,8 @@
       "tbp": 6.27,
       "fp": 2.0,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": -3.1
     },
     {
       "c": "00776",
@@ -23904,7 +23926,8 @@
       "tbp": 2.48,
       "fp": 0.19,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 4567.1
     },
     {
       "c": "00858",
@@ -24264,7 +24287,8 @@
       "tbp": 25.14,
       "fp": 0.33,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 7.9
     },
     {
       "c": "00868",
@@ -24444,7 +24468,8 @@
       "tbp": 0.83,
       "fp": 0.83,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": -16.3
     },
     {
       "c": "00875",
@@ -24696,7 +24721,8 @@
       "tbp": 6.47,
       "fp": 0.46,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 2314.4
     },
     {
       "c": "00884",
@@ -26208,7 +26234,8 @@
       "tbp": 1.39,
       "fp": 0.15,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 23003.0
     },
     {
       "c": "00941",
@@ -26244,7 +26271,8 @@
       "tbp": 2.03,
       "fp": 0.6,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 841.1
     },
     {
       "c": "00943",
@@ -27396,7 +27424,8 @@
       "tbp": 10.18,
       "fp": 1.07,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": -405.1
     },
     {
       "c": "00994",
@@ -27468,7 +27497,8 @@
       "tbp": 18.97,
       "fp": 0.12,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 23.4
     },
     {
       "c": "00997",
@@ -28620,7 +28650,8 @@
       "tbp": 17.02,
       "fp": 0.26,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 25.2
     },
     {
       "c": "01045",
@@ -29916,7 +29947,8 @@
       "tbp": 0.52,
       "fp": 0.22,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 314.3
     },
     {
       "c": "01090",
@@ -31140,7 +31172,8 @@
       "tbp": 22.29,
       "fp": 0.68,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 54.3
     },
     {
       "c": "01129",
@@ -33336,7 +33369,8 @@
       "tbp": 2.77,
       "fp": 0.87,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": -1081.4
     },
     {
       "c": "01215",
@@ -33768,7 +33802,8 @@
       "tbp": 21.3,
       "fp": 5.47,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": -0.4
     },
     {
       "c": "01229",
@@ -33840,7 +33875,8 @@
       "tbp": 20.48,
       "fp": 0.01,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 0.3
     },
     {
       "c": "01232",
@@ -35424,7 +35460,8 @@
       "tbp": 0.88,
       "fp": 0.2,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 23090.3
     },
     {
       "c": "01289",
@@ -35712,7 +35749,8 @@
       "tbp": 1.16,
       "fp": 0.1,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 527.4
     },
     {
       "c": "01302",
@@ -36180,7 +36218,8 @@
       "tbp": 1.33,
       "fp": 0.87,
       "a5": 74.9,
-      "suspended": false
+      "suspended": false,
+      "fcf": 11.2
     },
     {
       "c": "01321",
@@ -36360,7 +36399,8 @@
       "tbp": 58.72,
       "fp": 1.86,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 0.7
     },
     {
       "c": "01326",
@@ -37764,7 +37804,8 @@
       "tbp": 7.26,
       "fp": 1.59,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 5.7
     },
     {
       "c": "01388",
@@ -38016,7 +38057,8 @@
       "tbp": 1.25,
       "fp": 0.18,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 20388.7
     },
     {
       "c": "01399",
@@ -38556,7 +38598,8 @@
       "tbp": 6.52,
       "fp": 0.44,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 18.8
     },
     {
       "c": "01419",
@@ -39204,7 +39247,8 @@
       "tbp": 28.93,
       "fp": 18.44,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 3.9
     },
     {
       "c": "01449",
@@ -40104,7 +40148,8 @@
       "tbp": 17.1,
       "fp": 0.64,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 0.3
     },
     {
       "c": "01489",
@@ -41544,7 +41589,8 @@
       "tbp": 12.28,
       "fp": 1.31,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 18.9
     },
     {
       "c": "01551",
@@ -42660,7 +42706,8 @@
       "tbp": 22.41,
       "fp": 8.4,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": -0.3
     },
     {
       "c": "01591",
@@ -43308,7 +43355,8 @@
       "tbp": 56.83,
       "fp": 7.99,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 0.6
     },
     {
       "c": "01618",
@@ -43344,7 +43392,8 @@
       "tbp": 3.89,
       "fp": 1.48,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 100.1
     },
     {
       "c": "01620",
@@ -44388,7 +44437,8 @@
       "tbp": 17.04,
       "fp": 0.09,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 4409.8
     },
     {
       "c": "01660",
@@ -44640,7 +44690,8 @@
       "tbp": 8.39,
       "fp": 0.51,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 5.1
     },
     {
       "c": "01669",
@@ -45396,7 +45447,8 @@
       "tbp": 47.38,
       "fp": 7.11,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 0.5
     },
     {
       "c": "01701",
@@ -47988,7 +48040,8 @@
       "tbp": 25.83,
       "fp": 2.53,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 0.3
     },
     {
       "c": "01787",
@@ -48672,7 +48725,8 @@
       "tbp": 17.22,
       "fp": 1.14,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 236.6
     },
     {
       "c": "01812",
@@ -50112,7 +50166,8 @@
       "tbp": 42.52,
       "fp": 4.44,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 0.2
     },
     {
       "c": "01865",
@@ -50508,7 +50563,8 @@
       "tbp": 4.27,
       "fp": 1.53,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": -14.2
     },
     {
       "c": "01876",
@@ -53028,7 +53084,8 @@
       "tbp": 20.51,
       "fp": 0.25,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 532.7
     },
     {
       "c": "01965",
@@ -54792,7 +54849,8 @@
       "tbp": 7.49,
       "fp": 1.66,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": -16.3
     },
     {
       "c": "02030",
@@ -55404,7 +55462,8 @@
       "tbp": 42.19,
       "fp": 1.82,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 18.4
     },
     {
       "c": "02098",
@@ -55440,7 +55499,8 @@
       "tbp": 5.15,
       "fp": 0.7,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 0.5
     },
     {
       "c": "02100",
@@ -56700,7 +56760,8 @@
       "tbp": 45.18,
       "fp": 10.83,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 2.2
     },
     {
       "c": "02152",
@@ -58356,7 +58417,8 @@
       "tbp": 57.89,
       "fp": 3.54,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 0.5
     },
     {
       "c": "02210",
@@ -59148,7 +59210,8 @@
       "tbp": 1.1,
       "fp": 1.1,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": -278.6
     },
     {
       "c": "02239",
@@ -59364,7 +59427,8 @@
       "tbp": 3.83,
       "fp": 1.79,
       "a5": 72.68,
-      "suspended": false
+      "suspended": false,
+      "fcf": -0.3
     },
     {
       "c": "02255",
@@ -60876,7 +60940,8 @@
       "tbp": 42.68,
       "fp": 0.08,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 1.4
     },
     {
       "c": "02318",
@@ -60912,7 +60977,8 @@
       "tbp": 5.63,
       "fp": 0.52,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 7199.5
     },
     {
       "c": "02320",
@@ -61236,7 +61302,8 @@
       "tbp": 19.74,
       "fp": 0.6,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": -0.5
     },
     {
       "c": "02328",
@@ -61992,7 +62059,8 @@
       "tbp": 2.15,
       "fp": 2.15,
       "a5": 56.47,
-      "suspended": false
+      "suspended": false,
+      "fcf": -141.1
     },
     {
       "c": "02359",
@@ -62208,7 +62276,8 @@
       "tbp": 60.4,
       "fp": 2.13,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 15.0
     },
     {
       "c": "02368",
@@ -62748,7 +62817,8 @@
       "tbp": 5.16,
       "fp": 0.32,
       "a5": 13.42,
-      "suspended": false
+      "suspended": false,
+      "fcf": 87.5
     },
     {
       "c": "02388",
@@ -63072,7 +63142,8 @@
       "tbp": 3.05,
       "fp": 1.14,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 18.8
     },
     {
       "c": "02402",
@@ -65880,7 +65951,8 @@
       "tbp": 3.97,
       "fp": 2.52,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": -2.1
     },
     {
       "c": "02526",
@@ -65916,7 +65988,8 @@
       "tbp": 33.27,
       "fp": 1.58,
       "a5": 91.53,
-      "suspended": false
+      "suspended": false,
+      "fcf": -0.6
     },
     {
       "c": "02528",
@@ -66672,7 +66745,8 @@
       "tbp": 56.06,
       "fp": 56.06,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 0.9
     },
     {
       "c": "02561",
@@ -67536,7 +67610,8 @@
       "tbp": 8.46,
       "fp": 1.64,
       "a5": 95.33,
-      "suspended": false
+      "suspended": false,
+      "fcf": 8.1
     },
     {
       "c": "02590",
@@ -67572,7 +67647,8 @@
       "tbp": 6.13,
       "fp": 3.06,
       "a5": 54.34,
-      "suspended": false
+      "suspended": false,
+      "fcf": -0.5
     },
     {
       "c": "02591",
@@ -68220,7 +68296,8 @@
       "tbp": 13.97,
       "fp": 4.15,
       "a5": 76.48,
-      "suspended": false
+      "suspended": false,
+      "fcf": -0.5
     },
     {
       "c": "02616",
@@ -68544,7 +68621,8 @@
       "tbp": 1.58,
       "fp": 0.41,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 5092.1
     },
     {
       "c": "02630",
@@ -68868,7 +68946,8 @@
       "tbp": 7.8,
       "fp": 1.87,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 16.0
     },
     {
       "c": "02643",
@@ -70272,7 +70351,8 @@
       "tbp": 14.12,
       "fp": 14.12,
       "a5": 90.59,
-      "suspended": false
+      "suspended": false,
+      "fcf": -0.7
     },
     {
       "c": "02714",
@@ -71532,7 +71612,8 @@
       "tbp": 27.28,
       "fp": 0.29,
       "a5": 75.33,
-      "suspended": false
+      "suspended": false,
+      "fcf": -11.6
     },
     {
       "c": "02892",
@@ -71640,7 +71721,8 @@
       "tbp": 1.8,
       "fp": 0.59,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 492.1
     },
     {
       "c": "03200",
@@ -72360,7 +72442,8 @@
       "tbp": 34.12,
       "fp": 0.64,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 200.9
     },
     {
       "c": "03321",
@@ -72504,7 +72587,8 @@
       "tbp": 1.49,
       "fp": 0.18,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 1018.0
     },
     {
       "c": "03329",
@@ -72576,7 +72660,8 @@
       "tbp": 9.82,
       "fp": 4.18,
       "a5": 27.96,
-      "suspended": false
+      "suspended": false,
+      "fcf": 5.7
     },
     {
       "c": "03332",
@@ -72684,7 +72769,8 @@
       "tbp": 2.47,
       "fp": 1.08,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 10.0
     },
     {
       "c": "03348",
@@ -73332,7 +73418,8 @@
       "tbp": 17.71,
       "fp": 0.48,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 10.6
     },
     {
       "c": "03395",
@@ -73440,7 +73527,8 @@
       "tbp": 9.37,
       "fp": 0.91,
       "a5": 50.41,
-      "suspended": false
+      "suspended": false,
+      "fcf": 97.2
     },
     {
       "c": "03399",
@@ -74664,7 +74752,8 @@
       "tbp": 23.13,
       "fp": 1.72,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": -6.2
     },
     {
       "c": "03698",
@@ -74988,7 +75077,8 @@
       "tbp": 4.68,
       "fp": 1.14,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 1006.1
     },
     {
       "c": "03759",
@@ -75204,7 +75294,8 @@
       "tbp": 8.02,
       "fp": 8.02,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": -55.4
     },
     {
       "c": "03808",
@@ -75528,7 +75619,8 @@
       "tbp": 39.02,
       "fp": 8.69,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": -3.4
     },
     {
       "c": "03838",
@@ -75744,7 +75836,8 @@
       "tbp": 25.43,
       "fp": 0.1,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 93.2
     },
     {
       "c": "03869",
@@ -76140,7 +76233,8 @@
       "tbp": 13.27,
       "fp": 0.76,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 21.9
     },
     {
       "c": "03889",
@@ -76356,7 +76450,8 @@
       "tbp": 6.98,
       "fp": 0.37,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 58.4
     },
     {
       "c": "03903",
@@ -76824,7 +76919,8 @@
       "tbp": 19.0,
       "fp": 0.31,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 4686.7
     },
     {
       "c": "03969",
@@ -77040,7 +77136,8 @@
       "tbp": 1.87,
       "fp": 0.32,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 8422.7
     },
     {
       "c": "03990",
@@ -77976,7 +78073,8 @@
       "tbp": 7.81,
       "fp": 3.7,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 0.7
     },
     {
       "c": "06088",
@@ -79020,7 +79118,8 @@
       "tbp": 33.97,
       "fp": 0.69,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 14.8
     },
     {
       "c": "06185",
@@ -79380,7 +79479,8 @@
       "tbp": 14.18,
       "fp": 3.11,
       "a5": 87.6,
-      "suspended": false
+      "suspended": false,
+      "fcf": 1.0
     },
     {
       "c": "06601",
@@ -79992,7 +80092,8 @@
       "tbp": 52.32,
       "fp": 0.28,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 45.1
     },
     {
       "c": "06651",
@@ -80964,7 +81065,8 @@
       "tbp": 28.27,
       "fp": 1.51,
       "a5": 85.78,
-      "suspended": false
+      "suspended": false,
+      "fcf": 1.9
     },
     {
       "c": "06809",
@@ -83304,7 +83406,8 @@
       "tbp": 16.43,
       "fp": 3.02,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": -14.7
     },
     {
       "c": "06980",
@@ -96480,7 +96583,8 @@
       "tbp": 23.06,
       "fp": 13.58,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": -196.4
     },
     {
       "c": "09890",
@@ -96660,7 +96764,8 @@
       "tbp": 8.87,
       "fp": 5.93,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 17.8
     },
     {
       "c": "09900",
@@ -97452,7 +97557,8 @@
       "tbp": 23.41,
       "fp": 23.41,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": -1.9
     },
     {
       "c": "09955",
@@ -98280,7 +98386,8 @@
       "tbp": 0.32,
       "fp": 0.32,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 3.5
     },
     {
       "c": "09993",
@@ -98496,7 +98603,8 @@
       "tbp": 0.47,
       "fp": 0.07,
       "a5": 0.0,
-      "suspended": false
+      "suspended": false,
+      "fcf": 550.0
     }
   ],
   "top_increase": [

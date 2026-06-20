@@ -21,9 +21,10 @@
   ];
 
   const path = location.pathname.toLowerCase();
+  const normalized = path.replace(/\/+$/, '');
   nav.innerHTML = items.map(([href, label]) => {
     const rel = href.toLowerCase().replace(/^\.\//, '');
-    const active = path.endsWith('/' + rel) || (path === '/' && rel === 'index.html');
+    const active = normalized.endsWith('/' + rel) || (rel === 'index.html' && path.endsWith('/'));
     return `<a href="${base}${href}"${active ? ' class="active"' : ''}>${label}</a>`;
   }).join('');
 })();
