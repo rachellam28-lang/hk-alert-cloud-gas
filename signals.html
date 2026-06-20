@@ -128,37 +128,12 @@ th.sort-active{color:var(--primary)}.sort-icon{margin-left:4px;font-size:9px}
 .status-empty{background:#0f1a2e}
 </style>
 </head><body>
-  <nav class="site-nav">
-    <a href="./index.html">📦 Market</a>
-    <a href="./signals.html">🔔 訊號</a>
-    <a href="./watchlist.html">⭐ 自選</a>
-    <a href="./history.html">🕐 歷史</a>
-    <a href="./gap_fvg.html">⤴ Gap/FVG</a>
-    <a href="./fundflow.html">💰 資金</a>
-    <a href="./rights_analysis.html">📋 供配股</a>
-    <a href="./timing_analysis.html">⏱ 時間窗口</a>
-    <a href="./distribution_day.html">📉 分佈日</a>
-    <a href="./vqc_analysis.html">📈 成交轉勢日</a>
-    <a href="./docs/ccass-warroom.html">⚡ 戰情室</a>
-    <a href="./us.html">🇺🇸 美股</a>
-    <a href="./guide.html">📖 說明</a>
-  </nav>
+  <nav class="site-nav" id="sharedSiteNav"></nav>
 
 <header class="topbar"><div class="topbar-inner">
   <div class="brand">
     <div class="logo"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg></div>
     <div><div class="brand-title">港股訊號儀表板</div><div class="brand-sub">港股訊號 · HKEX</div></div>
-    <a style="font-size:12px;color:#dc2626;margin-left:6px;padding:3px 9px;border:1px solid #dc2626;border-radius:6px;white-space:nowrap;font-weight:600" href="./us.html">🇺🇸 美股版 →</a>
-    <a style="font-size:12px;color:#b45309;margin-left:4px;padding:3px 9px;border:1px solid #fcd34d;border-radius:6px;white-space:nowrap;font-weight:600" href="./watchlist.html">⭐ 自選 →</a>
-    <a style="font-size:12px;color:#6d28d9;margin-left:4px;padding:3px 9px;border:1px solid #c4b5fd;border-radius:6px;white-space:nowrap;font-weight:600" href="./history.html">🕐 歷史 →</a>
-    <a style="font-size:12px;color:#b45309;margin-left:4px;padding:3px 9px;border:1px solid #fcd34d;border-radius:6px;white-space:nowrap;font-weight:600" href="./gap_fvg.html">⤴ Gap/FVG →</a>
-    <a style="font-size:12px;color:#0284c7;margin-left:4px;padding:3px 9px;border:1px solid #86efac;border-radius:6px;white-space:nowrap;font-weight:600" href="./index.html">📦 Market →</a>
-    <a style="font-size:12px;color:#1d4ed8;margin-left:4px;padding:3px 9px;border:1px solid #93c5fd;border-radius:6px;white-space:nowrap;font-weight:600" href="./timing_analysis.html">⏱ 時間窗口</a>
-    <a style="font-size:12px;color:#0f766e;margin-left:4px;padding:3px 9px;border:1px solid #5eead4;border-radius:6px;white-space:nowrap;font-weight:600" href="./vqc_analysis.html">📈 成交轉勢日</a>
-    <a style="font-size:12px;color:#a16207;margin-left:4px;padding:3px 9px;border:1px solid #fde68a;border-radius:6px;white-space:nowrap;font-weight:600" href="./distribution_day.html">📉 分佈日</a>
-    <a style="font-size:12px;color:#64748b;margin-left:4px;padding:3px 9px;border:1px solid var(--line);border-radius:6px;white-space:nowrap;font-weight:600" href="./guide.html">📖 說明書</a>
-    <a style="font-size:12px;color:#15803d;margin-left:4px;padding:3px 9px;border:1px solid #86efac;border-radius:6px;white-space:nowrap;font-weight:600" href="./fundflow.html">💰 資金 →</a>
-    <a style="font-size:12px;color:#0891b2;margin-left:4px;padding:3px 9px;border:1px solid #67e8f9;border-radius:6px;white-space:nowrap;font-weight:600" href="./rights_analysis.html">📋 供配股</a>
   </div>
   <div class="topright">
     <span class="dot loading" id="statusDot"></span>
@@ -217,6 +192,7 @@ th.sort-active{color:var(--primary)}.sort-icon{margin-left:4px;font-size:9px}
   <div class="foot">港股訊號雲 · Cloudflare Pages · 真實數據</div>
 </main>
 
+<script src="./shared-nav.js"></script>
 <script>
 function showLoading(el,msg){
   if(!el)return;

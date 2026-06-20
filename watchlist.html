@@ -13,10 +13,6 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .brand{display:flex;align-items:center;gap:10px}
 .logo{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#0284c7,#0ea5e9);display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
 .brand-title{font-size:14px;font-weight:600}
-.nav-links{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-.nav-link{font-size:12px;padding:4px 10px;border-radius:6px;border:1px solid var(--line);color:var(--text-soft);font-weight:500;white-space:nowrap}
-.nav-link:hover{background:var(--surface-soft);text-decoration:none;color:var(--text)}
-.nav-link.active{background:var(--amber-soft);border-color:var(--amber-border);color:var(--amber)}
 .wrap{max-width:1440px;margin:0 auto;padding:18px 20px 36px}
 .section-head{display:flex;align-items:center;gap:8px;margin:20px 0 10px;font-size:11px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.16em;white-space:nowrap}
 .section-head-title{white-space:nowrap}
@@ -57,7 +53,7 @@ tbody tr:hover{background:var(--surface-soft)}
 .foot{margin-top:24px;padding-top:14px;border-top:1px solid var(--line);text-align:center;color:var(--mute-2);font-size:11px}
 @media(max-width:720px){.fg:nth-child(n+3){min-width:0}.name-col{max-width:90px}.note-in{width:90px}.section-head{font-size:10px;gap:6px}}
 @media(max-width:520px){thead th:nth-child(2),tbody td:nth-child(2){display:none}}
-@media(max-width:640px){.site-nav{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:6px 8px;gap:6px}.site-nav a{flex:0 0 auto}.nav-links{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}.topbar-inner{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch}}
+@media(max-width:640px){.site-nav{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:6px 8px;gap:6px}.site-nav a{flex:0 0 auto}.topbar-inner{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch}}
 @media(prefers-color-scheme:dark){
   :root{--bg:#0f172a;--surface:#1e293b;--surface-soft:#162032;--text:#f1f5f9;--text-soft:#cbd5e1;--mute:#64748b;--mute-2:#475569;--line:#334155;--line-soft:#1e293b;--primary:#38bdf8;--primary-soft:#0c2d44;--primary-border:#0369a1;--up:#4ade80;--up-soft:#052e16;--up-border:#166534;--down:#f87171;--down-soft:#2d0a0a;--down-border:#991b1b;--amber:#fbbf24;--amber-soft:#1c0f00;--amber-border:#92400e}
   .topbar{background:rgba(15,23,42,.92)}
@@ -72,42 +68,13 @@ tbody tr:hover{background:var(--surface-soft)}
 .status-empty{background:#0f1a2e}
 </style>
 </head><body>
-  <nav class="site-nav">
-    <a href="./index.html">📦 Market</a>
-    <a href="./signals.html">🔔 訊號</a>
-    <a href="./watchlist.html">⭐ 自選</a>
-    <a href="./history.html">🕐 歷史</a>
-    <a href="./gap_fvg.html">⤴ Gap/FVG</a>
-    <a href="./fundflow.html">💰 資金</a>
-    <a href="./rights_analysis.html">📋 供配股</a>
-    <a href="./daily_trade_prompt.html">🚦 每日提示</a>
-    <a href="./timing_analysis.html">⏱ 時間窗口</a>
-    <a href="./distribution_day.html">📉 分佈日</a>
-    <a href="./vqc_analysis.html">📈 成交轉勢日</a>
-    <a href="./docs/ccass-warroom.html">⚡ 戰情室</a>
-    <a href="./us.html">🇺🇸 美股</a>
-    <a href="./guide.html">📖 說明</a>
-  </nav>
+  <nav class="site-nav" id="sharedSiteNav"></nav>
 
 
 <header class="topbar"><div class="topbar-inner">
   <div class="brand">
     <div class="logo"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg></div>
     <div class="brand-title">自選代號</div>
-  </div>
-  <div class="nav-links">
-    <a style="font-size:12px;color:var(--primary);margin-left:4px;padding:3px 9px;border:1px solid var(--line);border-radius:6px;white-space:nowrap;font-weight:600" href="./index.html">🇭🇰 港股版 ←</a>
-    <a style="font-size:12px;color:#dc2626;margin-left:4px;padding:3px 9px;border:1px solid #dc2626;border-radius:6px;white-space:nowrap;font-weight:600" href="./us.html">🇺🇸 美股</a>
-    <a style="font-size:12px;color:#f59e0b;margin-left:4px;padding:3px 9px;border:1px solid #fcd34d;border-radius:6px;white-space:nowrap;font-weight:600" href="./watchlist.html">⭐ 自選</a>
-    <a style="font-size:12px;color:#6d28d9;margin-left:4px;padding:3px 9px;border:1px solid #c4b5fd;border-radius:6px;white-space:nowrap;font-weight:600" href="./history.html">🕐 歷史</a>
-    <a style="font-size:12px;color:#b45309;margin-left:4px;padding:3px 9px;border:1px solid #fcd34d;border-radius:6px;white-space:nowrap;font-weight:600" href="./gap_fvg.html">⤴ Gap/FVG</a>
-    <a style="font-size:12px;color:#64748b;margin-left:4px;padding:3px 9px;border:1px solid var(--line);border-radius:6px;white-space:nowrap;font-weight:600" href="./guide.html">📖 說明書</a>
-    <a style="font-size:12px;color:#15803d;margin-left:4px;padding:3px 9px;border:1px solid #86efac;border-radius:6px;white-space:nowrap;font-weight:600" href="./fundflow.html">💰 資金 →</a>
-    <a style="font-size:12px;color:#0891b2;margin-left:4px;padding:3px 9px;border:1px solid #67e8f9;border-radius:6px;white-space:nowrap;font-weight:600" href="./rights_analysis.html">📋 供配股</a>
-    <a style="font-size:12px;color:#b91c1c;margin-left:4px;padding:3px 9px;border:1px solid #fca5a5;border-radius:6px;white-space:nowrap;font-weight:600" href="./daily_trade_prompt.html">🚦 每日提示</a>
-    <a style="font-size:12px;color:#1d4ed8;margin-left:4px;padding:3px 9px;border:1px solid #93c5fd;border-radius:6px;white-space:nowrap;font-weight:600" href="./timing_analysis.html">⏱ 時間窗口</a>
-    <a style="font-size:12px;color:#a16207;margin-left:4px;padding:3px 9px;border:1px solid #fde68a;border-radius:6px;white-space:nowrap;font-weight:600" href="./distribution_day.html">📉 分佈日</a>
-    <a style="font-size:12px;color:#0f766e;margin-left:4px;padding:3px 9px;border:1px solid #5eead4;border-radius:6px;white-space:nowrap;font-weight:600" href="./vqc_analysis.html">📈 成交轉勢日</a>
   </div>
 </div></header>
 
@@ -160,6 +127,7 @@ tbody tr:hover{background:var(--surface-soft)}
 </div>
 </main>
 
+<script src="./shared-nav.js"></script>
 <script>
 function showLoading(el,msg){
   if(!el)return;

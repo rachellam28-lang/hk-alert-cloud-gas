@@ -15,6 +15,12 @@ backfill-shard-*.json
 backfill-shard-*.json.tmp
 ccass-shard-*.json
 ccass-shard-*.json.tmp
+backfill_correct_*.log
+shard_*.log
+sharded_*_master.log
+
+# Local notes / daily logs
+Daily/
 
 # Python
 __pycache__/

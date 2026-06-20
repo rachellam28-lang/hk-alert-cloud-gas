@@ -43,6 +43,10 @@ tr:hover td { background: #161b22; }
 .trade-buy { background: #1a3a1a; color: #3fb950; border: 1px solid #3fb950; }
 .trade-wait { background: #3a2e0a; color: #d2991d; border: 1px solid #d2991d; }
 .trade-avoid { background: #3a1111; color: #f85149; border: 1px solid #f85149; }
+.issuer-badge { display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: 700; }
+.issuer-high { background: #3a1111; color: #f85149; border: 1px solid #f85149; }
+.issuer-neutral { background: #21262d; color: #c9d1d9; border: 1px solid #30363d; }
+.issuer-low { background: #1a3a1a; color: #3fb950; border: 1px solid #3fb950; }
 .conviction { display: inline-flex; gap: 2px; }
 .conviction span { font-size: 14px; }
 .thesis { max-width: 280px; overflow: hidden; text-overflow: ellipsis; color: #8b949e; font-size: 10px; white-space: normal; }
@@ -78,19 +82,19 @@ tr:hover td { background: #161b22; }
 </div>
 
 <div class="summary" id="rightsSummary">
-  <div class="card buy"><div class="label">🟢 跟</div><div class="value">7</div></div>
-  <div class="card wait"><div class="label">🟡 等</div><div class="value">4</div></div>
-  <div class="card avoid"><div class="label">🔴 避</div><div class="value">16</div></div>
+  <div class="card buy"><div class="label">🟢 跟</div><div class="value" id="summaryFollow">-</div></div>
+  <div class="card wait"><div class="label">🟡 等</div><div class="value" id="summaryWait">-</div></div>
+  <div class="card avoid"><div class="label">🔴 避</div><div class="value" id="summaryAvoid">-</div></div>
   <div class="card"><div class="label">💡 核心理念</div><div class="value" style="font-size:10px;color:#58a6ff;line-height:1.5">配售本體 -EV (median -11.8%, 62%輸錢)<br>唯一實證: 配售後5日內收市升穿+8%=跳升確認<br>跳升組 16% 60日內翻倍, 係冇跳組 2.4x</div></div>
 </div>
 
 <div class="tabs">
-  <div class="tab active" onclick="filter('all')">全部<span class="count">402</span></div>
-  <div class="tab" onclick="filter('🟢')">🟢 跟<span class="count">7</span></div>
-  <div class="tab" onclick="filter('🟡')">🟡 等<span class="count">4</span></div>
-  <div class="tab" onclick="filter('🔴')">🔴 避<span class="count">16</span></div>
-  <div class="tab" onclick="filter('供股')">供股<span class="count">40</span></div>
-  <div class="tab" onclick="filter('先舊後新')">先舊後新<span class="count">18</span></div>
+  <div class="tab active" onclick="filter('all')">全部<span class="count" id="tabAll">-</span></div>
+  <div class="tab" onclick="filter('🟢')">🟢 跟<span class="count" id="tabFollow">-</span></div>
+  <div class="tab" onclick="filter('🟡')">🟡 等<span class="count" id="tabWait">-</span></div>
+  <div class="tab" onclick="filter('🔴')">🔴 避<span class="count" id="tabAvoid">-</span></div>
+  <div class="tab" onclick="filter('供股')">供股<span class="count" id="tabRightsIssue">-</span></div>
+  <div class="tab" onclick="filter('先舊後新')">先舊後新<span class="count" id="tabTopUp">-</span></div>
 </div>
 
 <div class="search-box">
@@ -111,8 +115,9 @@ tr:hover td { background: #161b22; }
   <th onclick="sortTable(7)">🚀跳升</th>
   <th onclick="sortTable(8)">攤薄</th>
   <th onclick="sortTable(9)">訊號</th>
-  <th onclick="sortTable(10)">配售代理</th>
-  <th onclick="sortTable(11)">事後%</th>
+  <th onclick="sortTable(10)">發行方</th>
+  <th onclick="sortTable(11)">配售代理</th>
+  <th onclick="sortTable(12)">事後%</th>
   <th>邏輯</th>
 </tr>
 </thead>
@@ -120,8 +125,8 @@ tr:hover td { background: #161b22; }
 </table>
 </div>
 
-<div class="footer">
-  📊 402條配售真實統計: median 事後% -11.8% · 62% 輸錢 · 6.5% 升超過100%<br>跳升確認後: &gt;100% 比率 16%（vs 冇跳升 7%）｜ 數據: 自家 track_outcomes 每日回填<br>⚠️ 08120 (+318%) 係 6.5% 嘅倖存者，唔係常態
+<div class="footer" id="rightsFooter">
+  📊 配售真實統計: median 事後% -11.8% · 62% 輸錢 · 6.5% 升超過100%<br>跳升確認後: &gt;100% 比率 16%（vs 冇跳升 7%）｜ 數據: 自家 track_outcomes 每日回填<br>⚠️ 08120 (+318%) 係 6.5% 嘅倖存者，唔係常態
 </div>
 
 <script>
@@ -133,21 +138,7 @@ function fmtAmt(n) {
   return n ? String(n) : '-';
 }
 
-const AGENT_KEYWORDS = ['Guotai','KGI','Haitong','CLSA','UBS','Citi',
-  'Goldman','Morgan','Macquarie','Futu','Tiger','CMBI','CCB','BOC',
-  'Huatai','Essence','Ping An','CITIC','Shenwan','Hongyuan','Deutsche',
-  'Nomura','DBS','OCBC','Soochow','Guosen','國泰','海通','中銀','建銀','華泰','平安',
-  '中信','申萬','宏源','興證','招銀','光大'];
-
-function extractAgentFromName(text) {
-  if (!text) return null;
-  for (const kw of AGENT_KEYWORDS) {
-    if (text.toLowerCase().includes(kw.toLowerCase())) return kw;
-  }
-  return null;
-}
-
-function updateRightsSummary(rows) {
+function countSignals(rows) {
   let follow = 0, wait = 0, avoid = 0;
   rows.forEach(r => {
     const sig = ((r.trade||{}).signal || '').toString();
@@ -155,14 +146,111 @@ function updateRightsSummary(rows) {
     else if (sig.includes('避') || sig.includes('💀')) avoid++;
     else wait++;
   });
-  const el = document.getElementById('rightsSummary');
-  if (el) {
-    el.innerHTML =
-      '<span class="tag green">🟢 跟 ' + follow + '</span>' +
-      '<span class="tag yellow">🟡 等 ' + wait + '</span>' +
-      '<span class="tag red">🔴 避 ' + avoid + '</span>' +
-      '<span class="tag gray">全部 ' + rows.length + '</span>';
+  return { follow, wait, avoid, total: rows.length };
+}
+
+function countCategories(rows) {
+  const out = { '供股': 0, '先舊後新': 0 };
+  rows.forEach(r => {
+    if (out[r.category] != null) out[r.category]++;
+  });
+  return out;
+}
+
+function parseNum(v) {
+  const n = Number(v);
+  return Number.isFinite(n) ? n : null;
+}
+
+function issuerPressureScore(d) {
+  let score = 50;
+  const cat = d.category || '';
+  const method = String(d.method || '');
+  const purpose = String(d.purpose || '');
+  const discount = parseNum(d.discount_pct);
+  const dilution = parseNum(d.pct_num);
+  const amount = parseNum(d.amount_num);
+
+  if (cat === '先舊後新') score += 12;
+  else if (cat === '供股') score += 10;
+  else if (cat === '配售') score += 6;
+  else if (cat === '代價發行') score += 4;
+  else if (cat.includes('債')) score += 14;
+
+  if (discount != null) {
+    if (discount <= -30) score += 22;
+    else if (discount <= -20) score += 18;
+    else if (discount <= -10) score += 12;
+    else if (discount <= -5) score += 6;
+    else if (discount >= 10) score -= 6;
   }
+
+  if (dilution != null) {
+    if (dilution >= 50) score += 18;
+    else if (dilution >= 20) score += 12;
+    else if (dilution >= 10) score += 8;
+    else if (dilution <= 3) score -= 4;
+  }
+
+  if (amount != null && dilution != null && dilution > 0) {
+    const impliedMcap = amount / (dilution / 100);
+    const issueToMcap = impliedMcap > 0 ? amount / impliedMcap : null;
+    if (issueToMcap != null) {
+      if (issueToMcap >= 0.25) score += 16;
+      else if (issueToMcap >= 0.10) score += 10;
+      else if (issueToMcap <= 0.02) score -= 4;
+    }
+  }
+
+  if (/(償還債務|再融資|營運資金|營運需要|working capital|debt repayment|refinanc)/i.test(purpose)) {
+    score += 10;
+  }
+  if (/(收購|acquisition|併購|投資|業務發展|擴大資本基礎)/i.test(purpose)) {
+    score += 4;
+  }
+
+  score = Math.max(0, Math.min(100, Math.round(score)));
+  let label = '中性';
+  let cls = 'issuer-neutral';
+  if (score >= 80) { label = '壓力高'; cls = 'issuer-high'; }
+  else if (score >= 60) { label = '偏發行方'; cls = 'issuer-high'; }
+  else if (score >= 40) { label = '中性'; cls = 'issuer-neutral'; }
+  else if (score >= 20) { label = '偏股東'; cls = 'issuer-low'; }
+  else { label = '低壓'; cls = 'issuer-low'; }
+  return { score, label, cls, method };
+}
+
+function updateRightsSummary(rows) {
+  const sig = countSignals(rows);
+  const cats = countCategories(rows);
+  const setText = (id, value) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = String(value);
+  };
+  setText('tabAll', sig.total);
+  setText('tabFollow', sig.follow);
+  setText('tabWait', sig.wait);
+  setText('tabAvoid', sig.avoid);
+  setText('tabRightsIssue', cats['供股']);
+  setText('tabTopUp', cats['先舊後新']);
+  const footer = document.getElementById('rightsFooter');
+  if (footer) {
+    footer.innerHTML =
+      '📊 ' + sig.total + '條配售真實統計: median 事後% -11.8% · 62% 輸錢 · 6.5% 升超過100%<br>' +
+      '跳升確認後: &gt;100% 比率 16%（vs 冇跳升 7%）｜ 數據: 自家 track_outcomes 每日回填<br>' +
+      '⚠️ 08120 (+318%) 係 6.5% 嘅倖存者，唔係常態';
+  }
+}
+
+function updateVisibleSummary(rows) {
+  const sig = countSignals(rows);
+  const setText = (id, value) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = String(value);
+  };
+  setText('summaryFollow', sig.follow);
+  setText('summaryWait', sig.wait);
+  setText('summaryAvoid', sig.avoid);
 }
 
 function render(rows) {
@@ -185,6 +273,9 @@ function render(rows) {
     else if (js === 'waiting') jumpHtml = '<span class="jump-wait">⏳ ' + (jp != null ? '+' + jp.toFixed(1) + '%' : '—') + '</span>';
     else if (js === 'no_jump') jumpHtml = '<span class="jump-gray">✗ +' + (jp != null ? jp.toFixed(1) : '0') + '%</span>';
     else jumpHtml = '<span class="jump-gray">—</span>';
+
+    const issuer = issuerPressureScore(d);
+    const issuerHtml = `<span class="issuer-badge ${issuer.cls}" title="公告條款代理分數，唔係內部意圖；高分表示較大發行壓力">${issuer.label} ${issuer.score}</span>`;
     
     // Return
     let ret = d.manual_return_pct != null ? d.manual_return_pct : (d.current_return_pct != null ? d.current_return_pct : null);
@@ -202,7 +293,8 @@ function render(rows) {
       <td>${jumpHtml}</td>
       <td>${d.pct_num > 0 ? d.pct_num.toFixed(1)+'%' : '-'}</td>
       <td><span class="signal ${t.sig_class||''}">${t.signal||'➖'}</span></td>
-      <td>${d.placing_agent || d.manual_vendor || extractAgentFromName(d.name) || '<span style="color:#475569">—</span>'}</td>
+      <td>${issuerHtml}</td>
+      <td>${d.placing_agent || d.manual_vendor || '<span style="color:#475569">—</span>'}</td>
       <td style="color:${(ret||0) >= 0 ? '#3fb950' : '#f85149'};font-weight:${Math.abs(ret||0) > 20 ? 'bold' : 'normal'}">${ret != null ? (ret >= 0 ? '+' : '') + ret.toFixed(1) + '%' : '-'}</td>
       <td>
         <div class="thesis">${t.thesis||''}</div>
@@ -210,7 +302,7 @@ function render(rows) {
       </td>
     </tr>`;
   }).join('');
-  updateRightsSummary(rows);
+  updateVisibleSummary(rows);
 }
 
 let searchTerm = '';
@@ -249,19 +341,27 @@ function sortTable(col) {
   sortAsc = sortCol === col ? !sortAsc : false;
   sortCol = col;
   let rows = getFilteredRows();
-  const keys = ['date_parsed','code','name','category','price_num','market_price','discount_pct','jump_8d_pct','pct_num'];
+  const keys = ['date_parsed','code','name','category','price_num','market_price','discount_pct','jump_8d_pct','pct_num',null,'issuer_score','placing_agent','ret'];
   rows.sort((a,b) => {
     let va, vb;
     if (col === 7) { va = a.jump_8d_pct != null ? a.jump_8d_pct : (a.trade||{}).jump_status==='waiting' ? 999 : -999; vb = b.jump_8d_pct != null ? b.jump_8d_pct : (b.trade||{}).jump_status==='waiting' ? 999 : -999; }
     else if (col === 6) { va = a.discount_pct != null ? a.discount_pct : 999; vb = b.discount_pct != null ? b.discount_pct : 999; }
     else if (col === 5) { va = a.market_price||0; vb = b.market_price||0; }
+    else if (col === 10) { va = issuerPressureScore(a).score; vb = issuerPressureScore(b).score; }
+    else if (col === 11) { va = a.placing_agent || a.manual_vendor || ''; vb = b.placing_agent || b.manual_vendor || ''; }
+    else if (col === 12) { va = a.manual_return_pct != null ? a.manual_return_pct : (a.current_return_pct != null ? a.current_return_pct : null); vb = b.manual_return_pct != null ? b.manual_return_pct : (b.current_return_pct != null ? b.current_return_pct : null); }
     else { va = a[keys[col]]||''; vb = b[keys[col]]||''; }
-    if (typeof va === 'number') return sortAsc ? va - vb : vb - va;
+    if (typeof va === 'number' || typeof vb === 'number') {
+      const na = va == null ? -999999 : Number(va);
+      const nb = vb == null ? -999999 : Number(vb);
+      return sortAsc ? na - nb : nb - na;
+    }
     return sortAsc ? String(va).localeCompare(String(vb)) : String(vb).localeCompare(String(va));
   });
   render(rows);
 }
 
+updateRightsSummary(DATA);
 render(DATA);
 </script>
 </body>

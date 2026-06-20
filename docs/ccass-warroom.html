@@ -22,7 +22,7 @@ body::before{content:''; position:fixed; inset:0; pointer-events:none; z-index:9
 .suitenav{display:flex; gap:6px; padding:8px 16px; flex-wrap:wrap; border-bottom:1px solid var(--line); background:rgba(255,255,255,.02)}
 .suitenav a{font-size:12px; color:var(--dim); text-decoration:none; padding:3px 9px; border:1px solid rgba(255,255,255,.08); border-radius:6px; white-space:nowrap}
 .suitenav a:hover{color:var(--cy); border-color:var(--cy)}
-.suitenav a.here{color:var(--cy); border-color:var(--cy); box-shadow:0 0 8px rgba(0,229,255,.3)}
+.suitenav a.here,.suitenav a.active{color:var(--cy); border-color:var(--cy); box-shadow:0 0 8px rgba(0,229,255,.3)}
 
 header{display:flex; align-items:center; gap:16px; padding:12px 20px; border-bottom:1px solid var(--line);
   background:linear-gradient(180deg, rgba(0,229,255,.06), transparent)}
@@ -141,21 +141,7 @@ footer a{color:var(--cy)}
 </head>
 <body>
 
-<nav class="suitenav">
-  <a href="../index.html">📦 Market</a>
-  <a href="../signals.html">🔔 訊號</a>
-  <a href="../watchlist.html">⭐ 自選</a>
-  <a href="../history.html">🕐 歷史</a>
-  <a href="../gap_fvg.html">⤴ Gap/FVG</a>
-  <a href="../fundflow.html">💰 資金</a>
-  <a href="../rights_analysis.html">📋 供配股</a>
-  <a href="../daily_trade_prompt.html">🚦 每日提示</a>
-  <a href="../timing_analysis.html">⏱ 時間窗口</a>
-  <a href="../distribution_day.html">📉 分佈日</a>
-  <a class="here" href="#">⚡ 戰情室</a>
-  <a href="../us.html">🇺🇸 美股</a>
-  <a href="../guide.html">📖 說明</a>
-</nav>
+<nav class="suitenav site-nav" id="sharedSiteNav" data-base="../"></nav>
 
 <header>
   <div class="logo">
@@ -506,5 +492,6 @@ document.addEventListener('visibilitychange',()=>{
 });
 boot();
 </script>
+<script src="../shared-nav.js"></script>
 </body>
 </html>
