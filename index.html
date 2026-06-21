@@ -69,6 +69,10 @@ tbody tr{cursor:pointer}
 .cpill em{font-style:normal;font-weight:600;margin-left:3px;opacity:.85}
 .cpill-placement{background:var(--down-soft);color:var(--down);border-color:var(--down-border)}
 .cpill-rights{background:var(--violet-soft);color:var(--violet);border-color:var(--violet-border)}
+.cpill-issuer{font-size:10px;font-weight:800;padding:1px 6px;border-radius:999px;border:1px solid transparent;margin:1px 2px 1px 0}
+.issuer-high{background:#2a103f;color:#c4b5fd;border-color:#7c3aed}
+.issuer-mid{background:#1f2937;color:#ddd6fe;border-color:#8b5cf6}
+.issuer-low{background:#10281d;color:#86efac;border-color:#22c55e}
 .cpill-increase{background:var(--up-soft);color:var(--up);border-color:var(--up-border)}
 .cpill-decrease{background:var(--down-soft);color:var(--down);border-color:var(--down-border)}
 .cpill-buyback{background:var(--primary-soft);color:var(--primary);border-color:var(--primary-border)}
@@ -932,6 +936,19 @@ function shortLabel(lbl){
   if(!lbl)return'';
   return lbl.replace('IPO首日高突破','🚀高破').replace('IPO首日開突破','🚀開破').replace('半年POC','半POC').replace('3年POC','3yPOC').replace('12月POC','12mPOC').replace('向上跳空缺口','🔼跳空').replace('向上FVG','📈FVG').replace('上破POC 12M','🎯POC12M');
 }
+function issuerFavorBadge(sig){
+  if(!sig || (!sig.pl && !sig.ri)) return '';
+  var score = 0;
+  if(sig.pl) score += 1;
+  if(sig.ri) score += 2;
+  if(sig.pl && sig.ri) score += 1;
+  var label = score >= 3 ? '高' : (score >= 2 ? '中' : '低');
+  var cls = score >= 3 ? 'issuer-high' : (score >= 2 ? 'issuer-mid' : 'issuer-low');
+  var tip = sig.ri
+    ? '供股通常較偏發行方，對股東稀釋壓力較大'
+    : '配股通常比供股輕，但仍偏向發行方融資';
+  return '<span class="cpill cpill-issuer '+cls+'" title="'+tip+'">發行方有利度 '+label+'</span>';
+}
 // P2: Composite score 0-10
 function calcScore(s){
   var d5v=s.d5, aboveYO=s.lp&&s.yo&&s.lp>s.yo, fcf=s.fcf, vr=s.vr;
@@ -1326,10 +1343,10 @@ function renderTable(){
       var sig=signalMap.get(s.c);
       var corpHtml='';
       if(sig){
-        if(sig.pl) corpHtml+='<span class="cpill cpill-placement"><span>📋</span>配股'+(sig.plDate?' <em>'+sig.plDate.slice(5)+'</em>':'')+'</span>';
-        if(sig.ri) corpHtml+='<span class="cpill cpill-rights"><span>📦</span>供股公告'+(sig.riDate?' <em>'+sig.riDate.slice(5)+'</em>':'')+'</span>';
-        if(sig.inc) corpHtml+='<span class="cpill cpill-increase"><span>📈</span>增持</span>';
-      }
+    if(sig.pl) corpHtml+='<span class="cpill cpill-placement"><span>📋</span>配股'+(sig.plDate?' <em>'+sig.plDate.slice(5)+'</em>':'')+'</span>';
+    if(sig.ri) corpHtml+='<span class="cpill cpill-rights"><span>📦</span>供股公告'+(sig.riDate?' <em>'+sig.riDate.slice(5)+'</em>':'')+'</span>';
+    if(sig.inc) corpHtml+='<span class="cpill cpill-increase"><span>📈</span>增持</span>';
+  }
       var techSig=techSignalMap.get(s.c)||[];
       var techHtml=techSig.slice(0,4).map(function(ss){
         var dateStr=ss.date?'<span class="spill-date">'+fmtDate(ss.date).slice(5)+'</span>':'';
@@ -1349,7 +1366,8 @@ function renderTable(){
       if(conPat==='catalyst') conBadge='<span class="cpill cpill-confluence cpill-con-catalyst">🚀催化</span>';
       else if(conPat==='dual') conBadge='<span class="cpill cpill-confluence cpill-con-dual">💎雙向訊號</span>';
       else if(conPat==='frontrun') conBadge='<span class="cpill cpill-confluence cpill-con-frontrun">🦆搶跑</span>';
-      var mergedSig=(techHtml||'')+(corpHtml?'<div class="cpillrow">'+corpHtml+'</div>':'');
+      var issuerBadge=issuerFavorBadge(sig);
+      var mergedSig=(techHtml||'')+(issuerBadge||'')+(corpHtml?'<div class="cpillrow">'+corpHtml+'</div>':'');
       var sigDisplay=(conBadge||'')+(btHtml||'')+(mergedSig||'<span class="mc-null">—</span>');
       var priceVal=priceMap.get(s.c) ?? s.lp;
       var aboveYO = s.lp && s.yo && s.lp > s.yo;
@@ -1435,7 +1453,8 @@ function renderTable(){
       var body='<span class="'+cls+'">'+esc(shortLabel(ss.label))+dateStr+'</span>';
       return ss.link?'<a class="splink" href="'+esc(ss.link)+'" target="_blank" rel="noopener">'+body+'</a>':body;
     }).join(' ');
-    var sigPills=conBadge+(btHtml||'')+(techHtml||'')+(corpHtml?' '+corpHtml:'');
+    var issuerBadge=issuerFavorBadge(sig);
+    var sigPills=conBadge+(btHtml||'')+(techHtml||'')+(issuerBadge?issuerBadge:'')+(corpHtml?' '+corpHtml:'');
     var techCount=techSig.length;
     var corpCount=sig?[sig.pl,sig.ri,sig.inc].filter(Boolean).length:0;
     var totalSigCount=techCount+corpCount;
@@ -1623,6 +1642,7 @@ async function showDetail(code){
   const sig=signalMap.get(s.c);
   let dsigHtml='';
   if(sig){
+    dsigHtml+=issuerFavorBadge(sig);
     if(sig.pl) dsigHtml+='<span class="cpill cpill-placement"><span>📋</span>配股'+(sig.plDate?' <em>'+sig.plDate.slice(5)+'</em>':'')+'</span>';
     if(sig.ri) dsigHtml+='<span class="cpill cpill-rights"><span>📦</span>供股公告'+(sig.riDate?' <em>'+sig.riDate.slice(5)+'</em>':'')+'</span>';
     if(sig.inc) dsigHtml+='<span class="cpill cpill-increase"><span>📈</span>增持</span>';
