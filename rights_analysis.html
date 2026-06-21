@@ -115,7 +115,7 @@ tr:hover td { background: #161b22; }
   <th onclick="sortTable(7)">🚀跳升</th>
   <th onclick="sortTable(8)">攤薄</th>
   <th onclick="sortTable(9)">訊號</th>
-  <th onclick="sortTable(10)">發行方</th>
+  <th onclick="sortTable(10)">發行方有利度</th>
   <th onclick="sortTable(11)">配售代理</th>
   <th onclick="sortTable(12)">事後%</th>
   <th>邏輯</th>
@@ -212,11 +212,11 @@ function issuerPressureScore(d) {
   score = Math.max(0, Math.min(100, Math.round(score)));
   let label = '中性';
   let cls = 'issuer-neutral';
-  if (score >= 80) { label = '壓力高'; cls = 'issuer-high'; }
+  if (score >= 80) { label = '有利度高'; cls = 'issuer-high'; }
   else if (score >= 60) { label = '偏發行方'; cls = 'issuer-high'; }
   else if (score >= 40) { label = '中性'; cls = 'issuer-neutral'; }
   else if (score >= 20) { label = '偏股東'; cls = 'issuer-low'; }
-  else { label = '低壓'; cls = 'issuer-low'; }
+  else { label = '股東友好'; cls = 'issuer-low'; }
   return { score, label, cls, method };
 }
 
@@ -275,7 +275,7 @@ function render(rows) {
     else jumpHtml = '<span class="jump-gray">—</span>';
 
     const issuer = issuerPressureScore(d);
-    const issuerHtml = `<span class="issuer-badge ${issuer.cls}" title="公告條款代理分數，唔係內部意圖；高分表示較大發行壓力">${issuer.label} ${issuer.score}</span>`;
+    const issuerHtml = `<span class="issuer-badge ${issuer.cls}" title="公告條款代理分數，唔係內部意圖；高分＝對發行方更有利／對股東稀釋壓力更大">${issuer.label} ${issuer.score}</span>`;
     
     // Return
     let ret = d.manual_return_pct != null ? d.manual_return_pct : (d.current_return_pct != null ? d.current_return_pct : null);
