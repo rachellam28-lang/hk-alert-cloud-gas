@@ -275,7 +275,7 @@ function render(rows) {
     else jumpHtml = '<span class="jump-gray">—</span>';
 
     const issuer = issuerPressureScore(d);
-    const issuerHtml = `<span class="issuer-badge ${issuer.cls}" title="公告條款代理分數，唔係內部意圖；高分＝對發行方更有利／對股東稀釋壓力更大">${issuer.label} ${issuer.score}</span>`;
+    const issuerHtml = `<span class="issuer-badge ${issuer.cls}" title="公告條款代理分數，唔係內部意圖；高分＝對發行方更有利／對股東稀釋壓力更大">發行方有利度 ${issuer.label} ${issuer.score}</span>`;
     
     // Return
     let ret = d.manual_return_pct != null ? d.manual_return_pct : (d.current_return_pct != null ? d.current_return_pct : null);

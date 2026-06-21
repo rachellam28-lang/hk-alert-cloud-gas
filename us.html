@@ -149,6 +149,7 @@ th.sort-active{color:var(--primary)}.sort-icon{margin-left:4px;font-size:9px}
   <div class="breadth-card" id="breadthCard" style="display:none"><div class="breadth-head">市場寬度 · 52周高低位分布</div><div id="breadthRows"></div></div>
   <div class="hold-card" id="holdCard" style="display:none">
     <div class="hold-head"><span>📊 機構持倉分析</span><span id="holdDate" style="font-weight:400;color:var(--mute-2)"></span></div>
+    <div id="holdNote" class="muted" style="font-size:11px;padding:0 0 8px 0"></div>
     <div class="hold-cols">
       <div><div class="hold-col-head up">▲ 機構增加</div><div id="holdUp"></div></div>
       <div><div class="hold-col-head dn">▼ 機構減少</div><div id="holdDn"></div></div>
@@ -382,10 +383,19 @@ function attachSort(){
 // --- Holdings card (like Market for HK) ---
 function renderHoldings(h){
   const card=document.getElementById('holdCard');
-  if(!h||!h.stocks){card.style.display='none';return;}
+  const note=document.getElementById('holdNote');
+  if(!h||!h.stocks){
+    card.style.display='';
+    document.getElementById('holdDate').textContent='';
+    if(note) note.textContent='US holdings feed 暫時未有可用資料，頁面其餘部分仍可正常顯示。';
+    document.getElementById('holdUp').innerHTML='<div style="color:var(--mute-2);font-size:11px;padding:6px 0">暫無數據</div>';
+    document.getElementById('holdDn').innerHTML='<div style="color:var(--mute-2);font-size:11px;padding:6px 0">暫無數據</div>';
+    return;
+  }
   const stocks=Object.values(h.stocks);
   if(!stocks.length){card.style.display='none';return;}
   card.style.display='';
+  if(note) note.textContent='';
   document.getElementById('holdDate').textContent=h.updated||'';
   // Compute top by inst_count (most institutions)
   const byCount = [...stocks].filter(s=>s.inst_count).sort((a,b)=>b.inst_count-a.inst_count).slice(0,5);
@@ -513,10 +523,7 @@ async function loadData(){
       .then(r=>r.ok?r.json():null)
       .then(m=>{renderMarket(m);renderBreadth(m);})
       .catch(()=>{});
-    fetch('./us_holdings.json?_='+Date.now())
-      .then(r=>r.ok?r.json():null)
-      .then(h=>renderHoldings(h))
-      .catch(()=>{});
+    renderHoldings(null);
     const t=new Date(data.updatedAt);
     const p=n=>n<10?'0'+n:''+n;
     upd.textContent='更新於 '+t.getFullYear()+'-'+p(t.getMonth()+1)+'-'+p(t.getDate())+' '+p(t.getHours())+':'+p(t.getMinutes());

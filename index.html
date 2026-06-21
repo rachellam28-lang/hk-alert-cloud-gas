@@ -931,16 +931,15 @@ function shortLabel(lbl){
 }
 function issuerFavorBadge(sig){
   if(!sig || (!sig.pl && !sig.ri)) return '';
-  var score = 0;
-  if(sig.pl) score += 1;
-  if(sig.ri) score += 2;
-  if(sig.pl && sig.ri) score += 1;
-  var label = score >= 3 ? '高' : (score >= 2 ? '中' : '低');
-  var cls = score >= 3 ? 'issuer-high' : (score >= 2 ? 'issuer-mid' : 'issuer-low');
-  var tip = sig.ri
-    ? '供股通常較偏發行方，對股東稀釋壓力較大'
-    : '配股通常比供股輕，但仍偏向發行方融資';
-  return '<span class="cpill cpill-issuer '+cls+'" title="'+tip+'">發行方有利度 '+label+'</span>';
+  var score = 50;
+  if(sig.pl) score += 8;
+  if(sig.ri) score += 15;
+  if(sig.pl && sig.ri) score += 7;
+  score = Math.max(0, Math.min(100, Math.round(score)));
+  var label = score >= 80 ? '有利度高' : (score >= 60 ? '偏發行方' : (score >= 40 ? '中性' : (score >= 20 ? '偏股東' : '股東友好')));
+  var cls = score >= 60 ? 'issuer-high' : (score >= 40 ? 'issuer-mid' : 'issuer-low');
+  var tip = '公告條款代理分數，唔係內部意圖；高分＝對發行方更有利／對股東稀釋壓力更大';
+  return '<span class="cpill cpill-issuer '+cls+'" title="'+tip+'">發行方有利度 '+label+' '+score+'</span>';
 }
 // P2: Composite score 0-10
 function calcScore(s){
@@ -2219,27 +2218,9 @@ async function loadData(){
       .then(t=>{if(t)renderTransfers(t, priceMap);})
       .catch(()=>{}); */
 
-    // Fetch price data: use local prices.json + signals.json (GAS removed)
-    Promise.all([
-      fetch('./data/prices.json?_='+Date.now()).then(r=>r.ok?r.json():null),
-      fetch('./data/signals.json?_='+Date.now()).then(r=>r.ok?r.json():null)
-    ]).then(([prices, signals])=>{
-          if(prices&&prices.groups&&signals&&signals.groups){
-            // Merge signals/corpTypes/hkexLink into prices groups
-            const sigByCode = new Map(signals.groups.map(g=>[String(g.code||'').padStart(5,'0'), g]));
-            prices.groups.forEach(g=>{
-              const code = String(g.code||'').padStart(5,'0');
-              const sig = sigByCode.get(code);
-              if(sig){
-                g.signals = sig.signals||[];
-                g.corpTypes = sig.corpTypes||{};
-                g.hkexLink = sig.hkexLink||'';
-              }
-            });
-          }
-          if(signals) prices.recentCorps = signals.recentCorps||[];
-          return prices;
-    })
+    // Fetch latest feed from signals.json (fresher than prices.json)
+    fetch('./data/signals.json?_='+Date.now())
+      .then(r=>r.ok?r.json():null)
     .then(d=>{
         if(d&&d.groups){
           // Merge GAS data into localStorage cache (9-month retention)

@@ -10,7 +10,8 @@ Data sources:
   - scanner/corp_scan_result.json → alerted/watched signals + recentCorps
   - fvg.json → FVG signals  
   - data/breakthroughs.json → breakout/ipo/POC signals
-  - data/prices.json → stock codes, names, latest prices
+  - data/stock_prices.json → stock codes, names, latest prices (primary)
+  - data/prices.json → fallback only
 
 Usage:
   python scripts/generate_signals_json.py
@@ -24,6 +25,7 @@ ROOT = PROJECT.parent                    # ccass-debug/
 DATA = ROOT / "data"
 SCANNER = ROOT / "scanner"
 OUT = DATA / "signals.json"
+STOCK_PRICES_JSON = DATA / "stock_prices.json"
 PRICES_JSON = DATA / "prices.json"
 CORP_SCAN = SCANNER / "corp_scan_result.json"
 FVG_JSON = ROOT / "fvg.json"
@@ -150,23 +152,66 @@ def build_corp_types_from_announcements(window_days=CORP_WINDOW_DAYS):
     return corp_map
 
 
-def generate():
-    # 1. Load base prices/names from prices.json (always available)
-    prices_data = load_json(PRICES_JSON)
-    price_groups = prices_data.get("groups", []) if isinstance(prices_data, dict) else []
+def load_stock_prices():
+    """Prefer stock_prices.json (fresh Futu/Longbridge cache), fallback to prices.json."""
+    for path in (STOCK_PRICES_JSON, PRICES_JSON):
+        data = load_json(path)
+        if not isinstance(data, dict) or not data:
+            continue
 
-    if not price_groups:
-        print("ERROR: prices.json not found or empty — cannot generate signals.json")
+        # stock_prices.json schema: {code: {lp, ...}}
+        sample_key = next(iter(data), None)
+        if sample_key and isinstance(data.get(sample_key), dict) and ("lp" in data[sample_key] or "latestPrice" in data[sample_key]):
+            return path, data
+
+        # prices.json schema: {ok, groups:[{code,name,latestPrice}]}
+        groups = data.get("groups", [])
+        if groups:
+            stock_info = {}
+            for g in groups:
+                code = str(g.get("code", "")).strip()
+                stock_info[code] = {
+                    "name": g.get("name", ""),
+                    "latestPrice": g.get("latestPrice"),
+                }
+            return path, stock_info
+
+    return None, {}
+
+
+def generate():
+    # 1. Load base prices/names from stock_prices.json first
+    source_path, raw_prices = load_stock_prices()
+    if not raw_prices:
+        print("ERROR: no usable price source found — cannot generate signals.json")
         return
 
     # Build lookup: code → {name, latestPrice}
     stock_info = {}
-    for g in price_groups:
-        code = str(g.get("code", "")).strip()
-        stock_info[code] = {
-            "name": g.get("name", ""),
-            "latestPrice": g.get("latestPrice"),
-        }
+    if source_path == STOCK_PRICES_JSON:
+        names = {}
+        try:
+            # If available, use prices.json names as a fallback naming map
+            prices_data = load_json(PRICES_JSON)
+            if isinstance(prices_data, dict):
+                for g in prices_data.get("groups", []) or []:
+                    code = str(g.get("code", "")).strip()
+                    if code:
+                        names[code] = g.get("name", "")
+        except Exception:
+            pass
+        for code, entry in raw_prices.items():
+            if not isinstance(entry, dict):
+                continue
+            lp = entry.get("lp", entry.get("latestPrice"))
+            if lp is None:
+                continue
+            stock_info[str(code).strip()] = {
+                "name": names.get(str(code).strip(), ""),
+                "latestPrice": lp,
+            }
+    else:
+        stock_info = raw_prices
 
     # === CORP TYPES: from announcements.json (full history, 90-day window) ===
     corp_map = build_corp_types_from_announcements()
@@ -284,7 +329,7 @@ def generate():
         "groups": groups,
         "recentCorps": recent_corps,
         "updatedAt": datetime.now().isoformat(),
-        "source": "scanner + fvg + breakthroughs + announcements.json (GAS fallback)",
+        "source": f"scanner + fvg + breakthroughs + announcements.json (price base: {source_path.name if source_path else 'unknown'})",
         "totalStocks": len(groups),
         "totalWithSignals": sum(1 for g in groups if g["signals"]),
         "totalWithCorpTypes": sum(1 for g in groups if any(g["corpTypes"].values())),
