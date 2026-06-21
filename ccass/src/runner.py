@@ -871,36 +871,44 @@ def _fetch_market_caps(codes: list[str], fetch_remote: bool = True) -> dict[str,
 
 
 def _load_fcf_overlay() -> dict[str, dict]:
-    """Load FCF enrichment from data/fcf.json.
+    """Load FCF enrichment from data/fcf.json and data/fcf5y.json.
 
-    data/fcf.json stores raw annual cash-flow values keyed by stock code.
-    We only preserve the latest FCF figure; 5Y trend display has been removed.
+    - data/fcf.json stores raw annual cash-flow values keyed by stock code.
+    - data/fcf5y.json stores the 5-year annual sequence for the old bar display.
     """
     overlay: dict[str, dict] = {}
-
     root_path = Path(__file__).parent.parent.parent
-    fcf_path = root_path / "data" / "fcf.json"
-    if not fcf_path.exists():
-        return overlay
-    try:
-        payload = json.loads(fcf_path.read_text(encoding="utf-8"))
-    except Exception:
-        return overlay
 
-    if isinstance(payload, dict):
-        for code, item in payload.items():
-            if not isinstance(item, dict):
-                continue
-            code = str(code).zfill(5)
-            latest = item.get("latest", item.get("fcf"))
-            if latest is None:
-                continue
-            try:
-                val = float(latest)
-                # Raw API values are in HKD; convert to billions for the dashboard.
-                overlay[code] = {"fcf": round(val / 1e8, 1) if abs(val) > 1e6 else round(val, 1)}
-            except Exception:
-                continue
+    def _load_json(path: Path) -> dict:
+        if not path.exists():
+            return {}
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            return payload if isinstance(payload, dict) else {}
+        except Exception:
+            return {}
+
+    fcf_payload = _load_json(root_path / "data" / "fcf.json")
+    for code, item in fcf_payload.items():
+        if not isinstance(item, dict):
+            continue
+        code = str(code).zfill(5)
+        latest = item.get("latest", item.get("fcf"))
+        if latest is None:
+            continue
+        try:
+            val = float(latest)
+            overlay.setdefault(code, {})["fcf"] = round(val / 1e8, 1) if abs(val) > 1e6 else round(val, 1)
+        except Exception:
+            continue
+
+    fcf5y_payload = _load_json(root_path / "data" / "fcf5y.json")
+    for code, seq in fcf5y_payload.items():
+        if not isinstance(seq, list) or not seq:
+            continue
+        code = str(code).zfill(5)
+        overlay.setdefault(code, {})["fcf5y"] = seq
+
     return overlay
 
 
@@ -1004,7 +1012,7 @@ def _export_json(query_date: date, alerts_today: int) -> None:
             extra = fcf_overlay.get(s["c"])
             if not extra:
                 continue
-            for key in ("fcf",):
+            for key in ("fcf", "fcf5y"):
                 if s.get(key) is None and extra.get(key) is not None:
                     s[key] = extra[key]
 

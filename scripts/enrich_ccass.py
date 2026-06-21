@@ -144,6 +144,18 @@ def load_fcf():
     return normalized
 
 
+def load_fcf5y():
+    """Load 5-year FCF bar data."""
+    path = PROJ / "data" / "fcf5y.json"
+    if not path.exists():
+        logger.warning("No fcf5y.json found")
+        return {}
+    with open(path) as f:
+        data = json.load(f)
+    logger.info("Loaded %d FCF 5Y entries", len(data) if isinstance(data, dict) else 0)
+    return data if isinstance(data, dict) else {}
+
+
 def load_signals():
     """Load signal data."""
     sig_path = PROJ / "data" / "signals.json"
@@ -260,6 +272,7 @@ def build_ccass_json():
                         continue
                     price_data[code][k] = fp[k]
     fcf_data = load_fcf()
+    fcf5y_data = load_fcf5y()
     signals = load_signals()
     
     enriched = 0
@@ -284,6 +297,9 @@ def build_ccass_json():
                         s["fcf"] = latest
             else:
                 s["fcf"] = fc
+
+        if code in fcf5y_data and s.get("fcf5y") is None:
+            s["fcf5y"] = fcf5y_data[code]
         
         # Signals
         if code in signals:

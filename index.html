@@ -886,11 +886,19 @@ function fmtStreak(su,sd){
   return '';
 }
 function deltaClass(v){if(v==null)return'delta-null';return v>0?'delta-up':'delta-dn';}
-function fcfBarHtml(v, max){
-  if(v==null || !Number.isFinite(v) || !max || !Number.isFinite(max) || max<=0)return '';
-  var h=Math.max(2,Math.round(Math.abs(v)/max*20));
-  var cls=v>=0?'up':'dn';
-  return '<span class="fcf-bars"><span class="fcf-bar '+cls+'" style="height:'+h+'px" title="FCF: '+v.toFixed(1)+'億"></span></span>';
+function fcfBars(data){
+  if(!Array.isArray(data) || !data.length)return '';
+  var vals=data.map(function(d){return Number(d&&d.fcf);}).filter(function(v){return Number.isFinite(v);});
+  if(!vals.length)return '';
+  var max=Math.max.apply(null, vals.map(function(v){return Math.abs(v);}));
+  if(!max||!Number.isFinite(max))return '';
+  return'<span class="fcf-bars">'+data.map(function(d){
+    var v=Number(d&&d.fcf);
+    if(!Number.isFinite(v)) return '';
+    var h=Math.max(2,Math.round(Math.abs(v)/max*20));
+    var cls=v>=0?'up':'dn';
+    return'<span class="fcf-bar '+cls+'" style="height:'+h+'px" title="'+d.y+': '+v.toFixed(1)+'億"></span>';
+  }).join('')+'</span>';
 }
 
 function pbar(v,c){return'<div class="pbar-wrap"><div class="pbar"><div class="pbar-fill pbar-'+c+'" style="width:'+Math.min(v,100)+'%"></div></div><span class="pbar-val">'+v.toFixed(1)+'%</span></div>';}
@@ -1290,11 +1298,6 @@ function renderSummaryBar(data){
 
 function renderTable(){
   var wl=loadWatchlist();
-  var maxFcf=0;
-  filtered.forEach(function(s){
-    var v=Number(s && s.fcf);
-    if(Number.isFinite(v) && Math.abs(v)>maxFcf) maxFcf=Math.abs(v);
-  });
   var groups={small:[],mid:[],large:[]};
     filtered.forEach(function(s){
       var mc=s.mc;
@@ -1385,7 +1388,7 @@ function renderTable(){
         +'<td class="hide-d120">'+d120+'</td>'
         +'<td class="hide-np"><span class="num">'+s.np+'</span></td>'
         +'<td class="hide-mc"><span class="num">'+fmtMC(s.mc)+'</span></td>'
-        +'<td class="hide-fcf"><span class="num">'+(s.fcf!=null?s.fcf.toFixed(0):'<span class="mc-null">—</span>')+'</span>'+fcfBarHtml(s.fcf,maxFcf)+'</td>'
+        +'<td class="hide-fcf"><span class="num">'+(s.fcf!=null?s.fcf.toFixed(0):'<span class="mc-null">—</span>')+'</span>'+(s.fcf5y?fcfBars(s.fcf5y):'')+'</td>'
         +'<td class="hide-link" onclick="event.stopPropagation()">'+linkHtml+'</td>'
         +'</tr>';
     }).join('');
@@ -1473,7 +1476,7 @@ function renderTable(){
         +'<div class="sc-metric"><span class="sc-metric-label">120日</span><span class="sc-metric-val '+(s.d120!=null?(s.d120>=0?'up':'dn'):'muted')+'">'+(s.d120!=null?fmtPct(s.d120):'—')+'</span></div>'
         +'<div class="sc-metric"><span class="sc-metric-label">⭐評分</span><span class="sc-metric-val" style="color:'+scoreColor(calcScore(s))+'">'+calcScore(s)+'</span></div>'
         +'<div class="sc-metric"><span class="sc-metric-label">量比</span><span class="sc-metric-val">'+(s.vr!=null?s.vr.toFixed(1):'—')+'</span></div>'
-        +'<div class="sc-metric"><span class="sc-metric-label">FCF</span><span class="sc-metric-val">'+(s.fcf!=null?s.fcf.toFixed(0)+'億':'—')+'</span>'+fcfBarHtml(s.fcf,maxFcf)+'</div>'
+        +'<div class="sc-metric"><span class="sc-metric-label">FCF</span><span class="sc-metric-val">'+(s.fcf!=null?s.fcf.toFixed(0)+'億':'—')+'</span>'+(s.fcf5y?fcfBars(s.fcf5y):'')+'</div>'
       +'</div>'
       +(sigPills?'<div class="sc-sigs">'+sigPills+'</div>':'')
       +'</div>';
