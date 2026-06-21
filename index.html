@@ -635,7 +635,7 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
         <button class="preset-btn" onclick="loadPreset('placement')">配股預警</button>
         <button class="preset-btn" onclick="loadPreset('mom')">高動能</button>
         <button class="preset-btn con-btn-con-catalyst" id="conBtnCat" onclick="toggleConFilter('catalyst')">🚀催化</button>
-        <button class="preset-btn con-btn-con-dual" id="conBtnDual" onclick="toggleConFilter('dual')">💎雙向</button>
+        <button class="preset-btn con-btn-con-dual" id="conBtnDual" onclick="toggleConFilter('dual')">💎雙向訊號</button>
         <button class="preset-btn con-btn-con-frontrun" id="conBtnFr" onclick="toggleConFilter('frontrun')">🦆搶跑</button>
         <button class="preset-save" onclick="savePreset()" title="儲存當前篩選為預設">+</button>
       </div>
@@ -646,7 +646,7 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
         <span class="group-sep">·</span>
         <button class="btn-ghost" id="filterConcentrated" onclick="toggleFilter('concentrated')">高集中度</button>
         <button class="btn-ghost" id="filterPlacement" onclick="toggleFilter('placement')">配股</button>
-        <button class="btn-ghost" id="filterRights" onclick="toggleFilter('rights')">供股</button>
+        <button class="btn-ghost" id="filterRights" onclick="toggleFilter('rights')">供股公告</button>
       </div>
       <div class="toolbar-sect">
         <span class="group-sep">·</span>
@@ -1291,7 +1291,7 @@ function renderSummaryBar(data){
     +(covLabel?'<span class="scnt">🧩 <b>'+covLabel+'</b> 覆蓋</span>':'')
     +'<span class="scnt">📦 <b>'+allStocks.length+'</b> 隻股票</span>'
     +(mcCnt?'<span class="scnt">💰 <b>'+(totalMc!=null?totalMc.toFixed(0):'0')+'億</b> 總市值</span>':'')
-    +'<span class="scnt">📊 <b>'+data.first_date+'</b> 至 <b>'+esc(data.updated)+'</b></span>'+(pCnt?'<span class="scnt" style="border-color:var(--down-border);background:var(--down-soft);color:var(--down)">配股 <b>'+pCnt+'</b></span>':'')+(rCnt?'<span class="scnt" style="border-color:var(--violet-border);background:var(--violet-soft);color:var(--violet)">供股 <b>'+rCnt+'</b></span>':'')
+    +'<span class="scnt">📊 <b>'+data.first_date+'</b> 至 <b>'+esc(data.updated)+'</b></span>'+(pCnt?'<span class="scnt" style="border-color:var(--down-border);background:var(--down-soft);color:var(--down)">配股 <b>'+pCnt+'</b></span>':'')+(rCnt?'<span class="scnt" style="border-color:var(--violet-border);background:var(--violet-soft);color:var(--violet)">供股公告 <b>'+rCnt+'</b></span>':'')
     +'<span class="scnt" style="border-color:var(--up-border);background:var(--up-soft);color:var(--up)">▲ <b>'+up+'</b> 增持</span>'
     +'<span class="scnt" style="border-color:var(--down-border);background:var(--down-soft);color:var(--down)">▼ <b>'+dn+'</b> 減持</span>';
 }
@@ -1327,7 +1327,7 @@ function renderTable(){
       var corpHtml='';
       if(sig){
         if(sig.pl) corpHtml+='<span class="cpill cpill-placement"><span>📋</span>配股'+(sig.plDate?' <em>'+sig.plDate.slice(5)+'</em>':'')+'</span>';
-        if(sig.ri) corpHtml+='<span class="cpill cpill-rights"><span>📦</span>供股'+(sig.riDate?' <em>'+sig.riDate.slice(5)+'</em>':'')+'</span>';
+        if(sig.ri) corpHtml+='<span class="cpill cpill-rights"><span>📦</span>供股公告'+(sig.riDate?' <em>'+sig.riDate.slice(5)+'</em>':'')+'</span>';
         if(sig.inc) corpHtml+='<span class="cpill cpill-increase"><span>📈</span>增持</span>';
       }
       var techSig=techSignalMap.get(s.c)||[];
@@ -1347,7 +1347,7 @@ function renderTable(){
       var conPat=confluenceMap.get(s.c);
       var conBadge='';
       if(conPat==='catalyst') conBadge='<span class="cpill cpill-confluence cpill-con-catalyst">🚀催化</span>';
-      else if(conPat==='dual') conBadge='<span class="cpill cpill-confluence cpill-con-dual">💎雙向</span>';
+      else if(conPat==='dual') conBadge='<span class="cpill cpill-confluence cpill-con-dual">💎雙向訊號</span>';
       else if(conPat==='frontrun') conBadge='<span class="cpill cpill-confluence cpill-con-frontrun">🦆搶跑</span>';
       var mergedSig=(techHtml||'')+(corpHtml?'<div class="cpillrow">'+corpHtml+'</div>':'');
       var sigDisplay=(conBadge||'')+(btHtml||'')+(mergedSig||'<span class="mc-null">—</span>');
@@ -1417,7 +1417,7 @@ function renderTable(){
     var corpHtml='';
     if(sig){
       if(sig.pl) corpHtml+='<span class="cpill cpill-placement"><span>📋</span>配股'+(sig.plDate?' <em>'+sig.plDate.slice(5)+'</em>':'')+'</span>';
-      if(sig.ri) corpHtml+='<span class="cpill cpill-rights"><span>📦</span>供股'+(sig.riDate?' <em>'+sig.riDate.slice(5)+'</em>':'')+'</span>';
+      if(sig.ri) corpHtml+='<span class="cpill cpill-rights"><span>📦</span>供股公告'+(sig.riDate?' <em>'+sig.riDate.slice(5)+'</em>':'')+'</span>';
       if(sig.inc) corpHtml+='<span class="cpill cpill-increase"><span>📈</span>增持</span>';
     }
     var techSig=techSignalMap.get(s.c)||[];
@@ -1427,7 +1427,7 @@ function renderTable(){
     var conPat=confluenceMap.get(s.c);
     var conBadge='';
     if(conPat==='catalyst') conBadge='<span class="cpill cpill-confluence cpill-con-catalyst">🚀催化</span>';
-    else if(conPat==='dual') conBadge='<span class="cpill cpill-confluence cpill-con-dual">💎雙向</span>';
+    else if(conPat==='dual') conBadge='<span class="cpill cpill-confluence cpill-con-dual">💎雙向訊號</span>';
     else if(conPat==='frontrun') conBadge='<span class="cpill cpill-confluence cpill-con-frontrun">🦆搶跑</span>';
     var techHtml=techSig.slice(0,4).map(function(ss){
       var dateStr=ss.date?'<span class="spill-date">'+fmtDate(ss.date).slice(5)+'</span>':'';
@@ -1624,7 +1624,7 @@ async function showDetail(code){
   let dsigHtml='';
   if(sig){
     if(sig.pl) dsigHtml+='<span class="cpill cpill-placement"><span>📋</span>配股'+(sig.plDate?' <em>'+sig.plDate.slice(5)+'</em>':'')+'</span>';
-    if(sig.ri) dsigHtml+='<span class="cpill cpill-rights"><span>📦</span>供股'+(sig.riDate?' <em>'+sig.riDate.slice(5)+'</em>':'')+'</span>';
+    if(sig.ri) dsigHtml+='<span class="cpill cpill-rights"><span>📦</span>供股公告'+(sig.riDate?' <em>'+sig.riDate.slice(5)+'</em>':'')+'</span>';
     if(sig.inc) dsigHtml+='<span class="cpill cpill-increase"><span>📈</span>增持</span>';
       }
 
