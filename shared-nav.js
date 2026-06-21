@@ -27,4 +27,46 @@
     const active = normalized.endsWith('/' + rel) || (rel === 'index.html' && path.endsWith('/'));
     return `<a href="${base}${href}"${active ? ' class="active"' : ''}>${label}</a>`;
   }).join('');
+
+  let patchTimer = null;
+  const patchLabels = () => {
+    const rightsBtn = document.getElementById('filterRights');
+    if (rightsBtn && rightsBtn.textContent.trim() === '供股') rightsBtn.textContent = '供股公告';
+
+    const dualBtn = document.getElementById('conBtnDual');
+    if (dualBtn && dualBtn.textContent.indexOf('雙向') !== -1 && !dualBtn.textContent.includes('訊號')) {
+      dualBtn.textContent = '💎雙向訊號';
+    }
+
+    document.querySelectorAll('.cpill-rights').forEach(el => {
+      if (el.dataset.labelPatched === '1') return;
+      el.innerHTML = el.innerHTML.replace(/供股(?!公告)/g, '供股公告');
+      el.dataset.labelPatched = '1';
+    });
+
+    document.querySelectorAll('.cpill-con-dual').forEach(el => {
+      if (el.dataset.labelPatched === '1') return;
+      el.innerHTML = el.innerHTML.replace(/💎雙向(?!訊號)/g, '💎雙向訊號');
+      el.dataset.labelPatched = '1';
+    });
+
+    document.querySelectorAll('.scnt').forEach(el => {
+      if (el.dataset.labelPatched === '1') return;
+      if (el.textContent.trim().startsWith('供股 ')) {
+        el.innerHTML = el.innerHTML.replace('供股 ', '供股公告 ');
+        el.dataset.labelPatched = '1';
+      }
+    });
+  };
+
+  const schedulePatch = () => {
+    clearTimeout(patchTimer);
+    patchTimer = setTimeout(patchLabels, 25);
+  };
+
+  schedulePatch();
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', schedulePatch, { once: true });
+  }
+  new MutationObserver(schedulePatch).observe(document.documentElement, { childList: true, subtree: true });
 })();
