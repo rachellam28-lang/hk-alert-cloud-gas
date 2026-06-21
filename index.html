@@ -261,7 +261,6 @@ tbody tr{cursor:pointer}
   }
 }
 @media(max-width:640px){.topbar-inner{padding:6px 10px;gap:8px}.brand{gap:6px;flex-shrink:0}.brand>a{font-size:10px!important;padding:1px 5px!important;margin-left:2px!important}.logo{display:none}.brand-title{font-size:12px;white-space:nowrap}.brand-sub{display:none}.topright{gap:3px;font-size:10px}.refresh-tag{display:none}.wrap{padding:8px 2px 20px!important}}
-@media(max-width:560px){.hide-d120,.th-d120{display:none}}
 @media(max-width:480px){.hide-d60,.th-d60{display:none}.btn-ghost,.btn-csv,.preset-btn,.col-toggle-btn{padding:2px 5px!important;font-size:9px!important}}
 @media(max-width:360px){.hide-d20,.th-d20{display:none}.topbar-inner{padding:4px 6px;gap:4px}.brand-title{font-size:11px}.brand>a{font-size:9px!important;padding:1px 4px!important}.topright span:last-child{font-size:8px}}
 /* Streak badge in card header */
@@ -387,7 +386,6 @@ tbody tr{cursor:pointer}
   .mc-section .hide-yo_pct,.mc-section .th-yo_pct,
   .mc-section .hide-score,.mc-section .th-score,
   .mc-section .hide-link,.mc-section .th-link,
-  .mc-section .hide-d120,.mc-section .th-d120,
   .mc-section .hide-d60,.mc-section .th-d60,
   .mc-section .hide-d20,.mc-section .th-d20{
     display:table-cell!important;
@@ -549,15 +547,15 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
   <div class="bt-cards" id="btCards" style="display:none;gap:10px;flex-wrap:wrap;margin-bottom:10px">
     <div id="btIpo" class="ipo-card" style="display:none;flex:1;min-width:260px">
       <div class="ipo-head"><span>🚀上破IPO開</span><span class="ipo-count" id="btIpoCount"></span></div>
-      <table class="ipo-tbl"><thead><tr><th>代碼(名稱)</th><th>價格</th></tr></thead><tbody id="btIpoBody"><tr class="placeholder-row"><td colspan="20" style="text-align:center;padding:32px;color:#475569">⏳ 載入數據中…</td></tr></tbody></table>
+      <table class="ipo-tbl"><thead><tr><th>代碼(名稱)</th><th>價格</th></tr></thead><tbody id="btIpoBody"><tr class="placeholder-row"><td colspan="19" style="text-align:center;padding:32px;color:#475569">⏳ 載入數據中…</td></tr></tbody></table>
     </div>
     <div id="btPlacement" class="ipo-card" style="display:none;flex:1;min-width:260px">
       <div class="ipo-head"><span>🚀上破配股價</span><span class="ipo-count" id="btPlacementCount"></span></div>
-      <table class="ipo-tbl"><thead><tr><th>代碼(名稱)</th><th>價格</th></tr></thead><tbody id="btPlacementBody"><tr class="placeholder-row"><td colspan="20" style="text-align:center;padding:32px;color:#475569">⏳ 載入數據中…</td></tr></tbody></table>
+      <table class="ipo-tbl"><thead><tr><th>代碼(名稱)</th><th>價格</th></tr></thead><tbody id="btPlacementBody"><tr class="placeholder-row"><td colspan="19" style="text-align:center;padding:32px;color:#475569">⏳ 載入數據中…</td></tr></tbody></table>
     </div>
     <div id="btRights" class="ipo-card" style="display:none;flex:1;min-width:260px">
       <div class="ipo-head"><span>🚀上破供股價</span><span class="ipo-count" id="btRightsCount"></span></div>
-      <table class="ipo-tbl"><thead><tr><th>代碼(名稱)</th><th>價格</th></tr></thead><tbody id="btRightsBody"><tr class="placeholder-row"><td colspan="20" style="text-align:center;padding:32px;color:#475569">⏳ 載入數據中…</td></tr></tbody></table>
+      <table class="ipo-tbl"><thead><tr><th>代碼(名稱)</th><th>價格</th></tr></thead><tbody id="btRightsBody"><tr class="placeholder-row"><td colspan="19" style="text-align:center;padding:32px;color:#475569">⏳ 載入數據中…</td></tr></tbody></table>
     </div>
   </div>
 
@@ -580,7 +578,6 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
           <option value="sd">連續減持</option>
           <option value="d20">20日Δ</option>
           <option value="d60">60日Δ</option>
-          <option value="d120">120日Δ</option>
           <option value="sig">信號</option>
           <option value="price">現價</option>
           <option value="code">代碼</option>
@@ -621,7 +618,6 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
             <label><input type="checkbox" data-col="d20" checked onchange="toggleCol(this)"> 20日Δ</label>
             <label><input type="checkbox" data-col="streak" checked onchange="toggleCol(this)"> 🔁連續</label>
             <label><input type="checkbox" data-col="d60" checked onchange="toggleCol(this)"> 60日Δ</label>
-            <label><input type="checkbox" data-col="d120" checked onchange="toggleCol(this)"> 120日Δ</label>
             <label><input type="checkbox" data-col="np" checked onchange="toggleCol(this)"> 參與者</label>
             <label><input type="checkbox" data-col="mc" checked onchange="toggleCol(this)"> 市值</label>
             <label><input type="checkbox" data-col="chg" checked onchange="toggleCol(this)"> 今日Δ%</label>
@@ -683,13 +679,12 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
           <th class="sortable" data-sort="d5" onclick="sortBy('d5',event)"><span>5日Δ</span><span class="sort-icon"></span></th>
           <th class="sortable th-d20" data-sort="d20" onclick="sortBy('d20',event)"><span>20日Δ</span><span class="sort-icon"></span></th>
           <th class="sortable th-d60" data-sort="d60" onclick="sortBy('d60',event)"><span>60日Δ</span><span class="sort-icon"></span></th>
-          <th class="sortable th-d120" data-sort="d120" onclick="sortBy('d120',event)"><span>120日Δ</span><span class="sort-icon"></span></th>
           <th class="sortable th-np" data-sort="np" onclick="sortBy('np',event)"><span>參與者</span><span class="sort-icon"></span></th>
           <th class="sortable th-mc" data-sort="mc" onclick="sortBy('mc',event)"><span>市值</span><span class="sort-icon"></span></th>
           <th class="sortable th-fcf" data-sort="fcf" onclick="sortBy('fcf',event)"><span>FCF(億)</span><span class="sort-icon"></span></th>
           <th class="sortable th-link"><span>連結</span></th>
         </tr></thead>
-        <tbody id="mcSmallTbody"><tr class="placeholder-row"><td colspan="20" style="text-align:center;padding:32px;color:#475569">⏳ 載入數據中…</td></tr></tbody>
+        <tbody id="mcSmallTbody"><tr class="placeholder-row"><td colspan="19" style="text-align:center;padding:32px;color:#475569">⏳ 載入數據中…</td></tr></tbody>
       </table></div>
       <div class="mc-pagination" id="mcPagSmall"></div>
     </div>
@@ -716,13 +711,12 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
           <th class="sortable" data-sort="d5" onclick="sortBy('d5',event)"><span>5日Δ</span><span class="sort-icon"></span></th>
           <th class="sortable th-d20" data-sort="d20" onclick="sortBy('d20',event)"><span>20日Δ</span><span class="sort-icon"></span></th>
           <th class="sortable th-d60" data-sort="d60" onclick="sortBy('d60',event)"><span>60日Δ</span><span class="sort-icon"></span></th>
-          <th class="sortable th-d120" data-sort="d120" onclick="sortBy('d120',event)"><span>120日Δ</span><span class="sort-icon"></span></th>
           <th class="sortable th-np" data-sort="np" onclick="sortBy('np',event)"><span>參與者</span><span class="sort-icon"></span></th>
           <th class="sortable th-mc" data-sort="mc" onclick="sortBy('mc',event)"><span>市值</span><span class="sort-icon"></span></th>
           <th class="sortable th-fcf" data-sort="fcf" onclick="sortBy('fcf',event)"><span>FCF(億)</span><span class="sort-icon"></span></th>
           <th class="sortable th-link"><span>連結</span></th>
         </tr></thead>
-        <tbody id="mcMidTbody"><tr class="placeholder-row"><td colspan="20" style="text-align:center;padding:32px;color:#475569">⏳ 載入數據中…</td></tr></tbody>
+        <tbody id="mcMidTbody"><tr class="placeholder-row"><td colspan="19" style="text-align:center;padding:32px;color:#475569">⏳ 載入數據中…</td></tr></tbody>
       </table></div>
       <div class="mc-pagination" id="mcPagMid"></div>
     </div>
@@ -749,13 +743,12 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
           <th class="sortable" data-sort="d5" onclick="sortBy('d5',event)"><span>5日Δ</span><span class="sort-icon"></span></th>
           <th class="sortable th-d20" data-sort="d20" onclick="sortBy('d20',event)"><span>20日Δ</span><span class="sort-icon"></span></th>
           <th class="sortable th-d60" data-sort="d60" onclick="sortBy('d60',event)"><span>60日Δ</span><span class="sort-icon"></span></th>
-          <th class="sortable th-d120" data-sort="d120" onclick="sortBy('d120',event)"><span>120日Δ</span><span class="sort-icon"></span></th>
           <th class="sortable th-np" data-sort="np" onclick="sortBy('np',event)"><span>參與者</span><span class="sort-icon"></span></th>
           <th class="sortable th-mc" data-sort="mc" onclick="sortBy('mc',event)"><span>市值</span><span class="sort-icon"></span></th>
           <th class="sortable th-fcf" data-sort="fcf" onclick="sortBy('fcf',event)"><span>FCF(億)</span><span class="sort-icon"></span></th>
           <th class="sortable th-link"><span>連結</span></th>
         </tr></thead>
-        <tbody id="mcLargeTbody"><tr class="placeholder-row"><td colspan="20" style="text-align:center;padding:32px;color:#475569">⏳ 載入數據中…</td></tr></tbody>
+        <tbody id="mcLargeTbody"><tr class="placeholder-row"><td colspan="19" style="text-align:center;padding:32px;color:#475569">⏳ 載入數據中…</td></tr></tbody>
       </table></div>
       <div class="mc-pagination" id="mcPagLarge"></div>
     </div>
@@ -909,8 +902,8 @@ function pbar(v,c){return'<div class="pbar-wrap"><div class="pbar"><div class="p
 function cc(v){if(v>=80)return'vhi';if(v>=60)return'hi';if(v>=40)return'mid';return'lo';}
 function cl(v){if(v>=80)return'非常高';if(v>=60)return'高';if(v>=40)return'中';return'低';}
 function dc(v){if(v==null)return'<span class="dcell zero">—</span>';var c=v>0?'up':(v<0?'dn':'zero');var a=v>0?'▲':(v<0?'▼':'—');var s=v>0?'+':'';return'<span class="dcell '+c+'"><span style="font-size:9px">'+a+'</span>'+s+v.toFixed(2)+'%</span>';}
-function sl(d5,d20,d60,d120){var v=[d5||0,d20||0,d60||0,d120||0];var mx=Math.max.apply(null,v.map(function(x){return Math.abs(x);}));if(mx<1)mx=1;var w=80,h=28;function px(i){return(i/3)*w;}function py(vv){return h/2-(vv/mx)*(h/2-4)*(vv>=0?1:-1);}var pts=v.map(function(vv,i){return px(i)+','+py(vv);}).join(' ');var lc=v[v.length-1]>=0?'var(--up)':'var(--down)';var lb=['5日','20日','60日','120日'];return'<div class="spark-wrap"><svg class="spark-svg" width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'"><line x1="0" y1="'+h/2+'" x2="'+w+'" y2="'+h/2+'" stroke="var(--line)" stroke-width="1" stroke-dasharray="2,2"/><polyline points="'+pts+'" fill="none" stroke="'+lc+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="'+px(0)+'" cy="'+py(v[0])+'" r="2" fill="'+lc+'"/><circle cx="'+px(3)+'" cy="'+py(v[3])+'" r="2.5" fill="'+lc+'"/></svg><div class="spark-labels">'+lb.map(function(l,i){return'<span class="spark-lbl"><span class="spark-dot '+(v[i]>=0?'up':'dn')+'"></span>'+l+': '+(v[i]>=0?'+':'')+v[i].toFixed(2)+'%</span>';}).join('')+'</div></div>';}
-function ecsv(){var h=['代碼','名稱','前年Δ%','現價','Market%','Top5%','Top10%','5日Δ','20日Δ','60日Δ','120日Δ','參與者數','市值(億)'];var r=filtered.map(function(s){var p=priceMap.get(s.c);return[esc(s.c),esc(s.n),s.py_pct!=null?s.py_pct.toFixed(2)+'%':'',p||'',s.tp.toFixed(2),s.t5.toFixed(2),s.t10.toFixed(2),s.d5!=null?s.d5.toFixed(2):'',s.d20!=null?s.d20.toFixed(2):'',s.d60!=null?s.d60.toFixed(2):'',s.d120!=null?s.d120.toFixed(2):'',s.np,s.mc!=null?s.mc.toFixed(1):''].join(',');}).join('\n');var csv='\uFEFF'+h.join(',')+'\n'+r;var b=new Blob([csv],{type:'text/csv;charset=utf-8'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='hkdata_'+new Date().toISOString().slice(0,10)+'.csv';a.click();URL.revokeObjectURL(a.href);}
+function sl(d5,d20,d60,d120){var v=[d5||0,d20||0,d60||0];var mx=Math.max.apply(null,v.map(function(x){return Math.abs(x);}));if(mx<1)mx=1;var w=80,h=28;function px(i){return(i/2)*w;}function py(vv){return h/2-(vv/mx)*(h/2-4)*(vv>=0?1:-1);}var pts=v.map(function(vv,i){return px(i)+','+py(vv);}).join(' ');var lc=v[v.length-1]>=0?'var(--up)':'var(--down)';var lb=['5日','20日','60日'];return'<div class="spark-wrap"><svg class="spark-svg" width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'"><line x1="0" y1="'+h/2+'" x2="'+w+'" y2="'+h/2+'" stroke="var(--line)" stroke-width="1" stroke-dasharray="2,2"/><polyline points="'+pts+'" fill="none" stroke="'+lc+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="'+px(0)+'" cy="'+py(v[0])+'" r="2" fill="'+lc+'"/><circle cx="'+px(2)+'" cy="'+py(v[2])+'" r="2.5" fill="'+lc+'"/></svg><div class="spark-labels">'+lb.map(function(l,i){return'<span class="spark-lbl"><span class="spark-dot '+(v[i]>=0?'up':'dn')+'"></span>'+l+': '+(v[i]>=0?'+':'')+v[i].toFixed(2)+'%</span>';}).join('')+'</div></div>';}
+function ecsv(){var h=['代碼','名稱','前年Δ%','現價','Market%','Top5%','Top10%','5日Δ','20日Δ','60日Δ','參與者數','市值(億)'];var r=filtered.map(function(s){var p=priceMap.get(s.c);return[esc(s.c),esc(s.n),s.py_pct!=null?s.py_pct.toFixed(2)+'%':'',p||'',s.tp.toFixed(2),s.t5.toFixed(2),s.t10.toFixed(2),s.d5!=null?s.d5.toFixed(2):'',s.d20!=null?s.d20.toFixed(2):'',s.d60!=null?s.d60.toFixed(2):'',s.np,s.mc!=null?s.mc.toFixed(1):''].join(',');}).join('\n');var csv='\uFEFF'+h.join(',')+'\n'+r;var b=new Blob([csv],{type:'text/csv;charset=utf-8'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='hkdata_'+new Date().toISOString().slice(0,10)+'.csv';a.click();URL.revokeObjectURL(a.href);}
 
 function hasMC(s){return Number.isFinite(s.mc)&&s.mc>0;}
 function normalizeStockMC(s){
@@ -1062,7 +1055,7 @@ function cmpSortVal(va,vb,dir){
 function updateSortInfo(){
   var el=document.getElementById('sortInfo');
   if(!el)return;
-  var names={code:'代碼',n:'名稱',price:'現價',yo_pct:'今年Δ%',tp:'Market%',t5:'Top5%',t10:'Top10%',d5:'5日Δ',d20:'20日Δ',d60:'60日Δ',d120:'120日Δ',np:'參與者',mc:'市值',chg:'今日Δ%',fcf:'FCF(億)',vr:'量比',sig:'信號',su:'連續增持',sd:'連續減持',yearyo:'🔺年開',prevyo:'😻前年',pypct:'前年Δ%',score:'⭐評分'};
+  var names={code:'代碼',n:'名稱',price:'現價',yo_pct:'今年Δ%',tp:'Market%',t5:'Top5%',t10:'Top10%',d5:'5日Δ',d20:'20日Δ',d60:'60日Δ',np:'參與者',mc:'市值',chg:'今日Δ%',fcf:'FCF(億)',vr:'量比',sig:'信號',su:'連續增持',sd:'連續減持',yearyo:'🔺年開',prevyo:'😻前年',pypct:'前年Δ%',score:'⭐評分'};
   var p=names[sortCol]||sortCol,pa=sortDir===1?'▲':'▼';
   if(sortCol2){var sn=names[sortCol2]||sortCol2,sa=sortDir2===1?'▲':'▼';el.innerHTML='<b>'+p+' '+pa+'</b><span class=\"si-sep\">|</span><span style=\"opacity:.7\">'+sn+' '+sa+'</span>';}
   else el.innerHTML='<b>'+p+' '+pa+'</b>';
@@ -1339,7 +1332,6 @@ function renderTable(){
       var d5=s.d5!==null?'<span class="num '+deltaClass(s.d5)+'">'+fmtPct(s.d5)+'</span>':'<span class="num delta-null">—</span>';
       var d20=s.d20!==null?'<span class="num '+deltaClass(s.d20)+'">'+fmtPct(s.d20)+'</span>':'<span class="num delta-null">—</span>';
       var d60=s.d60!==null?'<span class="num '+deltaClass(s.d60)+'">'+fmtPct(s.d60)+'</span>':'<span class="num delta-null">—</span>';
-      var d120=s.d120!==null?'<span class="num '+deltaClass(s.d120)+'">'+fmtPct(s.d120)+'</span>':'<span class="num delta-null">—</span>';
       var sig=signalMap.get(s.c);
       var corpHtml='';
       if(sig){
@@ -1403,7 +1395,6 @@ function renderTable(){
         +'<td>'+d5+'</td>'
         +'<td class="hide-d20">'+d20+'</td>'
         +'<td class="hide-d60">'+d60+'</td>'
-        +'<td class="hide-d120">'+d120+'</td>'
         +'<td class="hide-np"><span class="num">'+s.np+'</span></td>'
         +'<td class="hide-mc"><span class="num">'+fmtMC(s.mc)+'</span></td>'
         +'<td class="hide-fcf"><span class="num">'+(s.fcf!=null?s.fcf.toFixed(0):'<span class="mc-null">—</span>')+'</span>'+(s.fcf5y?fcfBars(s.fcf5y):'')+'</td>'
@@ -1492,7 +1483,6 @@ function renderTable(){
         +'<div class="sc-metric"><span class="sc-metric-label">今日Δ</span><span class="sc-metric-val '+(s.chg!=null?(s.chg>=0?'up':'dn'):'muted')+'">'+(s.chg!=null?fmtPct(s.chg):'—')+'</span></div>'
         +'<div class="sc-metric"><span class="sc-metric-label">參與者</span><span class="sc-metric-val">'+(s.np!=null?s.np:'—')+'</span></div>'
         +'<div class="sc-metric"><span class="sc-metric-label">60日</span><span class="sc-metric-val '+(s.d60!=null?(s.d60>=0?'up':'dn'):'muted')+'">'+(s.d60!=null?fmtPct(s.d60):'—')+'</span></div>'
-        +'<div class="sc-metric"><span class="sc-metric-label">120日</span><span class="sc-metric-val '+(s.d120!=null?(s.d120>=0?'up':'dn'):'muted')+'">'+(s.d120!=null?fmtPct(s.d120):'—')+'</span></div>'
         +'<div class="sc-metric"><span class="sc-metric-label">⭐評分</span><span class="sc-metric-val" style="color:'+scoreColor(calcScore(s))+'">'+calcScore(s)+'</span></div>'
         +'<div class="sc-metric"><span class="sc-metric-label">量比</span><span class="sc-metric-val">'+(s.vr!=null?s.vr.toFixed(1):'—')+'</span></div>'
         +'<div class="sc-metric"><span class="sc-metric-label">FCF</span><span class="sc-metric-val">'+(s.fcf!=null?s.fcf.toFixed(0)+'億':'—')+'</span>'+(s.fcf5y?fcfBars(s.fcf5y):'')+'</div>'
@@ -1626,7 +1616,6 @@ async function showDetail(code){
   const d5html=s.d5!==null?`<span class="dmeta-val ${s.d5>0?'up':'dn'}">${fmtPct(s.d5)}</span><span class="dmeta-sub">5日變化</span>`:'<span class="dmeta-val delta-null">—</span><span class="dmeta-sub">5日變化</span>';
   const d20html=s.d20!==null?`<span class="dmeta-val ${s.d20>0?'up':'dn'}">${fmtPct(s.d20)}</span><span class="dmeta-sub">20日變化</span>`:'<span class="dmeta-val delta-null">—</span><span class="dmeta-sub">20日變化</span>';
 	const d60html=s.d60!==null?`<span class="dmeta-val ${s.d60>0?'up':'dn'}">${fmtPct(s.d60)}</span><span class="dmeta-sub">60日變化</span>`:'<span class="dmeta-val delta-null">—</span><span class="dmeta-sub">60日變化</span>';
-	const d120html=s.d120!==null?`<span class="dmeta-val ${s.d120>0?'up':'dn'}">${fmtPct(s.d120)}</span><span class="dmeta-sub">120日變化</span>`:'<span class="dmeta-val delta-null">—</span><span class="dmeta-sub">120日變化</span>';
 
   // Price
   const priceVal=priceMap.get(s.c) ?? s.lp;
@@ -1701,7 +1690,6 @@ async function showDetail(code){
     +'<div class="dmeta">'+d5html+'</div>'
     +'<div class="dmeta">'+d20html+'</div>'
 	+'<div class="dmeta">'+d60html+'</div>'
-	+'<div class="dmeta">'+d120html+'</div>'
     +'<div class="dmeta">'+(s.su>1?'<span class="dmeta-val up">🔥 '+s.su+'日</span><span class="dmeta-sub">連續增持</span>':'<span class="dmeta-val" style="color:var(--mute-2)">—</span><span class="dmeta-sub">連續增持</span>')+'</div>'
     +'<div class="dmeta">'+(s.sd>1?'<span class="dmeta-val dn">❄️ '+s.sd+'日</span><span class="dmeta-sub">連續減持</span>':'<span class="dmeta-val" style="color:var(--mute-2)">—</span><span class="dmeta-sub">連續減持</span>')+'</div>'
     +'</div>'
