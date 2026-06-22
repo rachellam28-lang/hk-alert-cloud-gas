@@ -1,7 +1,73 @@
 {
-  "updated": "2026-06-21 22:36 UTC",
-  "count": 123,
+  "updated": "2026-06-22 00:39 UTC",
+  "count": 126,
   "alerts": [
+    {
+      "source": "hkexnews",
+      "category": "corp_action",
+      "code": "01025",
+      "symbol": "1025.HK",
+      "name": "KNT HOLDINGS",
+      "signal": "觀察·配股",
+      "timeframe": "公告",
+      "message": "配售新股（一般授權）",
+      "strategy": "HKEXnews Corp Action (觀察)",
+      "chart_url": "",
+      "source_url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0622/2026062200145.pdf",
+      "announcement_date": "2026-06-22",
+      "release_time": "22/06/2026 06:45",
+      "tags": [
+        "公告",
+        "觀察",
+        "配股"
+      ],
+      "priority": 0,
+      "raw": "{\"code\": \"01025\", \"name\": \"KNT HOLDINGS\", \"types\": [\"配股\"], \"title\": \"配售新股（一般授權）\", \"title_en\": \"PLACING OF NEW SHARES\\nUNDER GENERAL MANDATE\", \"release_time\": \"22/06/2026 06:45\", \"release_date\": \"2026-06-22\", \"url\": \"https://www.hkexnews.hk/listedco/listconews/sehk/2026/0622/2026062200145.pdf\"}"
+    },
+    {
+      "source": "hkexnews",
+      "category": "corp_action",
+      "code": "00488",
+      "symbol": "0488.HK",
+      "name": "LAI SUN DEV",
+      "signal": "觀察·聯合公告",
+      "timeframe": "公告",
+      "message": "公司公告：JOINT ANNOUNCEMENT: VERY SUBSTANTIAL DISPOSAL - UPDATE ON DISPOSAL OF EQUI…",
+      "strategy": "HKEXnews Corp Action (觀察)",
+      "chart_url": "",
+      "source_url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0622/2026062200177.pdf",
+      "announcement_date": "2026-06-22",
+      "release_time": "22/06/2026 07:42",
+      "tags": [
+        "公告",
+        "觀察",
+        "聯合公告"
+      ],
+      "priority": 0,
+      "raw": "{\"code\": \"00488\", \"name\": \"LAI SUN DEV\", \"types\": [\"聯合公告\"], \"title\": \"公司公告：JOINT ANNOUNCEMENT: VERY SUBSTANTIAL DISPOSAL - UPDATE ON DISPOSAL OF EQUI…\", \"title_en\": \"JOINT ANNOUNCEMENT: VERY SUBSTANTIAL DISPOSAL - UPDATE ON DISPOSAL OF EQUITY INTEREST IN THE ENTITY OWNING THE SPL PROPERTY\", \"release_time\": \"22/06/2026 07:42\", \"release_date\": \"2026-06-22\", \"url\": \"https://www.hkexnews.hk/listedco/listconews/sehk/2026/0622/2026062200177.pdf\"}"
+    },
+    {
+      "source": "hkexnews",
+      "category": "corp_action",
+      "code": "00191",
+      "symbol": "0191.HK",
+      "name": "LAI SUN INT'L",
+      "signal": "觀察·聯合公告",
+      "timeframe": "公告",
+      "message": "公司公告：JOINT ANNOUNCEMENT: VERY SUBSTANTIAL DISPOSAL - UPDATE ON DISPOSAL OF EQUI…",
+      "strategy": "HKEXnews Corp Action (觀察)",
+      "chart_url": "",
+      "source_url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0622/2026062200177.pdf",
+      "announcement_date": "2026-06-22",
+      "release_time": "22/06/2026 07:42",
+      "tags": [
+        "公告",
+        "觀察",
+        "聯合公告"
+      ],
+      "priority": 0,
+      "raw": "{\"code\": \"00191\", \"name\": \"LAI SUN INT'L\", \"types\": [\"聯合公告\"], \"title\": \"公司公告：JOINT ANNOUNCEMENT: VERY SUBSTANTIAL DISPOSAL - UPDATE ON DISPOSAL OF EQUI…\", \"title_en\": \"JOINT ANNOUNCEMENT: VERY SUBSTANTIAL DISPOSAL - UPDATE ON DISPOSAL OF EQUITY INTEREST IN THE ENTITY OWNING THE SPL PROPERTY\", \"release_time\": \"22/06/2026 07:42\", \"release_date\": \"2026-06-22\", \"url\": \"https://www.hkexnews.hk/listedco/listconews/sehk/2026/0622/2026062200177.pdf\"}"
+    },
     {
       "source": "hkexnews",
       "category": "corp_action",

@@ -1,7 +1,31 @@
 {
-  "updated": "2026-06-21 22:36 UTC",
-  "count": 10,
+  "updated": "2026-06-22 00:39 UTC",
+  "count": 13,
   "watchlist": [
+    {
+      "code": "01025",
+      "name": "KNT HOLDINGS",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-06-22"
+    },
+    {
+      "code": "00488",
+      "name": "LAI SUN DEV",
+      "types": [
+        "聯合公告"
+      ],
+      "ann_date": "2026-06-22"
+    },
+    {
+      "code": "00191",
+      "name": "LAI SUN INT'L",
+      "types": [
+        "聯合公告"
+      ],
+      "ann_date": "2026-06-22"
+    },
     {
       "code": "01792",
       "name": "CMON",
