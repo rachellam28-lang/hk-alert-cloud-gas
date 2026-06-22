@@ -15,6 +15,9 @@ if os.path.exists(env_path):
 proj = r"C:\Users\Administrator\Desktop\automatic\ccass-debug"
 if proj not in sys.path:
     sys.path.insert(0, proj)
+scanner_dir = os.path.join(proj, "scanner")
+if scanner_dir not in sys.path:
+    sys.path.insert(0, scanner_dir)
 
 # ── Monkey-patch breakthrough exports to skip (saves ~4 min) ──
 import scanner.breakthrough_detector as btd

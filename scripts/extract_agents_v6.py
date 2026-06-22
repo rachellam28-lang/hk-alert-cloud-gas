@@ -1,9 +1,22 @@
 #!/usr/bin/env python3
-"""v6: Direct known-name matching — no regex context capture, no garbage."""
+"""v6: Direct known-name matching — Mistral OCR primary, EasyOCR fallback."""
 import json, os, re, requests, pymupdf, numpy as np, easyocr, sys, time
 sys.path.insert(0, '/tmp/hkex-filing-scraper/src')
 from hkex_scraper.api import fetch_chunk_via_api
 
+# ── Mistral OCR (primary) ──
+_script_dir = os.path.dirname(os.path.abspath(__file__))
+_mistral_path = os.path.join(_script_dir, '..', 'ccass', 'src')
+if _mistral_path not in sys.path:
+    sys.path.insert(0, _mistral_path)
+try:
+    from mistral_ocr import ocr_for_agent_extraction
+    _MISTRAL_OK = True
+except Exception as e:
+    print(f'[init] Mistral OCR unavailable: {e}')
+    _MISTRAL_OK = False
+
+# ── EasyOCR (fallback) ──
 reader = easyocr.Reader(['en', 'ch_sim'], gpu=False)
 p = json.load(open('data/placements_enriched.json', encoding='utf-8'))
 F = 'data/placements_enriched.json'
@@ -226,7 +239,14 @@ for idx, (orig_i, x) in enumerate(all_needs):
             agent = kn
             break
 
-    # OCR fallback
+    # OCR fallback — Mistral OCR primary
+    if not agent and _MISTRAL_OK:
+        try:
+            agent = ocr_for_agent_extraction(resp.content, KNOWN, name)
+        except Exception as e:
+            print(f' [mistral] {e}', end='')
+
+    # EasyOCR fallback
     if not agent:
         for pg_num in range(min(2, doc.page_count)):
             try:
