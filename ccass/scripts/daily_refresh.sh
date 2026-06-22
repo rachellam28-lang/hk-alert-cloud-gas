@@ -33,8 +33,8 @@ echo "2.6/5 Generate signals.json for dashboard fallback..."
 echo "3/5 Regenerate holdings.json..."
 "$PYTHON_BIN" scripts/regenerate_json.py || { echo "ERROR: holdings.json regeneration failed"; exit 1; }
 
-echo "4/5 Verify holdings.json..."
-"$PYTHON_BIN" scripts/verify_dashboard.py || { echo "ERROR: dashboard verification failed"; exit 1; }
+echo "4/5 Audit gate (verify data integrity before deploy)..."
+"$PYTHON_BIN" scripts/audit_gate.py || { echo "ERROR: audit gate failed — BLOCKING DEPLOY"; exit 1; }
 
 echo "5/5 Deploy to GitHub..."
 cd "$REPO_ROOT"

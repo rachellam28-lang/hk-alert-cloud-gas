@@ -27,17 +27,29 @@ def main():
     print(f"=== Post-backfill for {date} ===\n")
     
     # 1. Regenerate holdings.json
-    print("[1/3] Regenerate holdings.json...")
+    print("[1/4] Regenerate holdings.json...")
     if not run([PYTHON, "scripts/regenerate_json.py", "--date", date], cwd=CCASS_DIR):
         sys.exit(1)
     
     # 2. Detect transfers
-    print("\n[2/3] Detect transfers...")
+    print("\n[2/4] Detect transfers...")
     if not run([PYTHON, "scripts/detect_transfers.py", "--date", date], cwd=CCASS_DIR):
         sys.exit(1)
     
-    # 3. Git push all
-    print("\n[3/3] Push to GitHub...")
+    # 3. Audit gate — verify data integrity BEFORE pushing
+    print("\n[3/4] Audit gate...")
+    gate_cmd = [PYTHON, "scripts/audit_gate.py", "--date", date, "--warn-only"]
+    r = subprocess.run(gate_cmd, cwd=CCASS_DIR, capture_output=True, text=True)
+    if r.returncode == 1:
+        print(f"  FAIL: audit gate blocked\n{r.stdout[-500:]}")
+        sys.exit(1)
+    elif r.returncode == 2:
+        print(f"  WARN: audit gate warnings (proceeding with --warn-only)\n{r.stdout[-300:]}")
+    else:
+        print("  PASS: audit gate ok")
+    
+    # 4. Git push all
+    print("\n[4/4] Push to GitHub...")
     subprocess.run(["git", "add", "holdings.json", "data/"], cwd=REPO_ROOT, check=True, capture_output=True)
     r = subprocess.run(
         ["git", "commit", "-m", f"post-backfill {date}: holdings.json + alerts + transfers"],
