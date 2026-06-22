@@ -139,6 +139,7 @@ tr:hover td { background:rgba(39,49,74,.22); }
   <div class="foot">
     定義：收市低過前一日，兼成交量高過前一日，且跌幅至少 0.2%。
     這裡用 benchmark proxy 做市場層面回測，不當成個股訊號。
+    <br>更新於：<span id="distFooterUpdated">載入中…</span> · 數據來源：data/distribution_day_backtest.json（HK/US benchmark proxy）
   </div>
 </div>
 
@@ -278,6 +279,8 @@ async function loadData() {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     DATA = await res.json();
     document.getElementById('updatedAt').textContent = DATA.updated || '—';
+    const footerUpd = document.getElementById('distFooterUpdated');
+    if (footerUpd) footerUpd.textContent = DATA.updated || '—';
     renderCards();
     renderBench();
     renderBars();

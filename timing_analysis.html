@@ -140,7 +140,8 @@ a { color:inherit; text-decoration:none; }
   </section>
 
   <div class="foot">
-    來源：`data/vqc_backtest.json` + `data/distribution_day_backtest.json`。<br>
+    更新於：VQC <span id="timingVqcUpdated">載入中…</span> · 分佈日 <span id="timingDdUpdated">載入中…</span><br>
+    數據來源：data/vqc_backtest.json + data/distribution_day_backtest.json<br>
     這頁只做 timing workflow 總覽，不將兩套方法合成同一個數值。
   </div>
 </div>
@@ -273,6 +274,10 @@ async function loadData() {
     document.getElementById('updatedAt').textContent = new Date().toISOString().slice(0, 19).replace('T', ' ');
     document.getElementById('vqcUpdated').textContent = VQC.updated || '—';
     document.getElementById('ddUpdated').textContent = DD.updated || '—';
+    const vqcFooter = document.getElementById('timingVqcUpdated');
+    const ddFooter = document.getElementById('timingDdUpdated');
+    if (vqcFooter) vqcFooter.textContent = VQC.updated || '—';
+    if (ddFooter) ddFooter.textContent = DD.updated || '—';
     renderSummary();
     renderVQC();
     renderDD();

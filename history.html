@@ -113,7 +113,10 @@ tbody tr:hover{background:var(--surface-soft)}
     <span id="matchCount" style="font-size:11px;color:var(--mute);margin-left:4px"></span>
   </div>
   <div id="historyRoot"><div class="loading-msg">載入訊號歷史…</div></div>
-  <div class="foot">港股訊號雲 · 歷史回顧 · Google Apps Script</div>
+  <div class="foot">
+    更新於：<span id="historyFooterUpdated">載入中…</span><br>
+    數據來源：data/history.json（自家歷史記錄）
+  </div>
 </main>
 
 <script src="./shared-nav.js"></script>
@@ -348,7 +351,10 @@ async function load() {
       alerts: day.alerts.filter(a => a.category !== 'us_corp' && a.market !== 'US' && !(a.tags||'').includes('美股'))
     })).filter(day => day.alerts.length > 0);
     dot.className = 'dot';
-    upd.textContent = '共 ' + allDays.length + ' 天 · ' + (data.total||0) + ' 條記錄';
+    const updatedLabel = data.updated || data.updatedAt || '—';
+    upd.textContent = '更新於 ' + updatedLabel + ' · 共 ' + allDays.length + ' 天 · ' + (data.total||0) + ' 條記錄';
+    const footerUpd = document.getElementById('historyFooterUpdated');
+    if (footerUpd) footerUpd.textContent = updatedLabel;
     render('', '', '');
   } catch(e) {
     dot.className = 'dot error';

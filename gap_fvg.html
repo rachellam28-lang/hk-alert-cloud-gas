@@ -66,6 +66,7 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 
 .empty{padding:24px;text-align:center;color:var(--mute);font-size:13px}
 .loading{padding:20px;text-align:center;color:var(--mute);font-size:13px}
+.foot{margin-top:12px;padding:10px 8px 0;color:var(--mute);font-size:11px;line-height:1.5}
 
 @media(max-width:720px){
   .topbar-inner{padding:8px 12px}
@@ -165,6 +166,13 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 <div class="wrap" id="confluence-section" style="margin-top:12px">
   <div class="sec"><div class="sec-title">🎯 Confluence 公告×訊號 <span id="confluenceCount" style="font-size:10px;color:var(--mute);font-weight:400"></span></div></div>
   <section class="card" id="confluenceWrap" style="min-height:40px"><div class="loading-msg" style="padding:12px;color:var(--mute);font-size:12px">載入中…</div></section>
+</div>
+
+<div class="wrap" style="margin-top:10px">
+  <div class="foot">
+    更新於：見頂部時間 / 更新完成狀態<br>
+    數據來源：data/alerts.json · holdings.json · data/transfers.json · data/confluence.json
+  </div>
 </div>
 
 <script src="./shared-nav.js"></script>

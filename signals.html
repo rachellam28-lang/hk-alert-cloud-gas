@@ -189,7 +189,10 @@ th.sort-active{color:var(--primary)}.sort-icon{margin-left:4px;font-size:9px}
   <section class="card recent-card" id="recentWrap"><div class="loading-msg">載入中…</div></section>
   </div>
 
-  <div class="foot">港股訊號雲 · Cloudflare Pages · 真實數據</div>
+  <div class="foot">
+    更新於：<span id="signalsFooterUpdated">載入中…</span><br>
+    數據來源：data/signals.json · data/alerts.json · market.json · localStorage（corp cache / 自選）
+  </div>
 </main>
 
 <script src="./shared-nav.js"></script>
@@ -614,6 +617,8 @@ async function loadData(){
     const t=new Date(data.updatedAt);
     const p=n=>n<10?'0'+n:''+n;
     upd.textContent='更新於 '+t.getFullYear()+'-'+p(t.getMonth()+1)+'-'+p(t.getDate())+' '+p(t.getHours())+':'+p(t.getMinutes());
+    const footerUpd=document.getElementById('signalsFooterUpdated');
+    if (footerUpd) footerUpd.textContent = upd.textContent.replace(/^更新於\s*/, '');
     dot.className='dot';
     applyFilter();
   }catch(err){

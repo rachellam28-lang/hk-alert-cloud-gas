@@ -141,6 +141,8 @@ a { color:inherit; text-decoration:none; }
   </section>
 
   <div class="foot">
+    更新於：VQC <span id="dailyFooterVqc">載入中…</span> · 分佈日 <span id="dailyFooterDd">載入中…</span><br>
+    數據來源：data/vqc_backtest.json + data/distribution_day_backtest.json + watchlist/localStorage<br>
     呢頁係工作提示，不係投資建議。`分佈日` 做環境，`成交轉勢日` 做 timing，兩者一齊睇先最實用。
   </div>
 </div>
@@ -395,6 +397,13 @@ renderSummary();
 renderWatchlistPrompt();
 renderBars();
 renderRules();
+
+try {
+  const vqcFooter = document.getElementById('dailyFooterVqc');
+  const ddFooter = document.getElementById('dailyFooterDd');
+  if (vqcFooter) vqcFooter.textContent = VQC.updated || '—';
+  if (ddFooter) ddFooter.textContent = DD.updated || '—';
+} catch (e) {}
 </script>
 </body>
 </html>

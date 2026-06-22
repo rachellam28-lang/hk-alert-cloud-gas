@@ -203,7 +203,8 @@ tr:hover td { background: rgba(39,49,74,.22); }
 
   <div class="foot">
     資料源：TradingView 日線 · 回測邏輯：月K + 高成交月 Open 觸發成交轉勢日時間窗口 · 此頁會跟 `data/vqc_backtest.json` 同步更新。<br>
-    若你想將 universe 擴展到全市場，只需要重跑 `scripts/build_vqc_backtest.py --bucket-limit 0`。
+    更新於：<span id="vqcFooterUpdated">載入中…</span> · 數據來源：data/vqc_backtest.json（TradingView 日線回測）
+    <br>若你想將 universe 擴展到全市場，只需要重跑 `scripts/build_vqc_backtest.py --bucket-limit 0`。
   </div>
 </div>
 
@@ -381,6 +382,8 @@ async function loadData() {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     DATA = await res.json();
     document.getElementById('updatedAt').textContent = DATA.updated || '—';
+    const footerUpd = document.getElementById('vqcFooterUpdated');
+    if (footerUpd) footerUpd.textContent = DATA.updated || '—';
     renderCards();
     renderImageComparison();
     renderReferences();

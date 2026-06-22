@@ -235,10 +235,13 @@ function updateRightsSummary(rows) {
   setText('tabTopUp', cats['先舊後新']);
   const footer = document.getElementById('rightsFooter');
   if (footer) {
+    const newest = rows[0]?.date || '—';
+    const oldest = rows[rows.length - 1]?.date || '—';
     footer.innerHTML =
       '📊 ' + sig.total + '條配售真實統計: median 事後% -11.8% · 62% 輸錢 · 6.5% 升超過100%<br>' +
       '跳升確認後: &gt;100% 比率 16%（vs 冇跳升 7%）｜ 數據: 自家 track_outcomes 每日回填<br>' +
-      '⚠️ 08120 (+318%) 係 6.5% 嘅倖存者，唔係常態';
+      '⚠️ 08120 (+318%) 係 6.5% 嘅倖存者，唔係常態<br>' +
+      '更新範圍：' + oldest + ' → ' + newest + ' · 數據來源：HKEX 公告 / 自家 track_outcomes / 配售代理抽取';
   }
 }
 
