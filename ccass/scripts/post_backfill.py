@@ -48,29 +48,11 @@ def main():
     else:
         print("  PASS: audit gate ok")
     
-    # 4. Git push all
-    print("\n[4/4] Push to GitHub...")
-    subprocess.run(["git", "add", "holdings.json", "data/"], cwd=REPO_ROOT, check=True, capture_output=True)
-    r = subprocess.run(
-        ["git", "commit", "-m", f"post-backfill {date}: holdings.json + alerts + transfers"],
-        cwd=REPO_ROOT,
-        capture_output=True,
-        text=True,
-    )
-    if r.returncode != 0:
-        if "nothing to commit" in (r.stdout + r.stderr).lower():
-            print("  commit: nothing to commit")
-        else:
-            print(f"  commit failed: {r.stderr.strip()[-300:]}")
-            sys.exit(r.returncode)
-    else:
-        print(f"  commit: {r.stdout.strip()}")
-
-    push = subprocess.run(["git", "push"], cwd=REPO_ROOT, capture_output=True, text=True)
-    if push.returncode != 0:
-        print(f"  push failed: {push.stderr.strip()[-300:]}")
-        sys.exit(push.returncode)
-    print("  pushed")
+    # 4. Deploy to Cloudflare Pages (wrangler, bypasses GitHub)
+    print("\n[4/4] Deploy to Cloudflare Pages...")
+    deploy_cmd = [PYTHON, "scripts/_deploy_cf.py"]
+    if not run(deploy_cmd, cwd=CCASS_DIR):
+        sys.exit(1)
     
     print(f"\n=== Done: {date} ===")
 

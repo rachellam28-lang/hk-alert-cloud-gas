@@ -36,13 +36,7 @@ echo "3/5 Regenerate holdings.json..."
 echo "4/5 Audit gate (verify data integrity before deploy)..."
 "$PYTHON_BIN" scripts/audit_gate.py || { echo "ERROR: audit gate failed — BLOCKING DEPLOY"; exit 1; }
 
-echo "5/5 Deploy to GitHub..."
-cd "$REPO_ROOT"
-git add holdings.json ccass.json ccass/data/stock_prices.json ccass/data/suspended_stocks.json data/prices.json data/signals.json
-if git commit -m "daily: holdings refresh $(date +%Y-%m-%d)"; then
-    git push || { echo "ERROR: git push failed"; exit 1; }
-else
-    echo "No changes to commit"
-fi
+echo "5/5 Deploy to Cloudflare Pages (wrangler)..."
+"$PYTHON_BIN" scripts/_deploy_cf.py || { echo "ERROR: Cloudflare deploy failed"; exit 1; }
 
 echo "Done!"
