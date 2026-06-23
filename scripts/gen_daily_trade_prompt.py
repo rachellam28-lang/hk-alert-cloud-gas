@@ -102,6 +102,7 @@ for g in SIGNALS.get("groups", []):
         "signal_count": len(sigs),
         "signals": sig_labels[:5],
         "corpTypes": g.get("corpTypes") or {},
+        "issuer": g.get("issuer"),
         "hkexLink": g.get("hkexLink") or "",
     }
 
@@ -278,6 +279,7 @@ a { color:inherit; text-decoration:none; }
             <th style="padding:8px 10px">5D</th>
             <th style="padding:8px 10px">20D</th>
             <th style="padding:8px 10px">訊號 / 可炒</th>
+            <th style="padding:8px 10px">公告拆解</th>
             <th style="padding:8px 10px">今日原因</th>
           </tr>
         </thead>
@@ -399,6 +401,19 @@ function watchReason(bundle, item) {
   return parts.filter(Boolean).slice(0, 3).join(' · ') || '暫無明確訊號';
 }
 
+function issuerStack(issuer) {
+  if (!issuer) return '<span class="pill warn">—</span>';
+  const shareholder = issuer.shareholder_pressure || issuer;
+  const reaction = issuer.reaction || {};
+  const reactionPct = reaction.pct != null ? (reaction.pct >= 0 ? '+' : '') + Number(reaction.pct).toFixed(1) + '%' : '—';
+  return `
+    <div style="display:flex;flex-direction:column;gap:3px">
+      <span class="pill ${issuer.cls || 'warn'}">發行方有利度 ${issuer.label || '中性'} ${issuer.score ?? '—'}</span>
+      <span class="pill ${shareholder.cls || 'warn'}">股東短期壓力 ${shareholder.label || '中性'} ${shareholder.score ?? '—'}</span>
+      <span class="pill ${reaction.cls || 'warn'}">公告後價格反應 ${reactionPct} ${reaction.label || '未足夠數據'}</span>
+    </div>`;
+}
+
 function renderSummary() {
   const vs = VQC.summary || {};
   const edge = VQC.edge || {};
@@ -503,7 +518,7 @@ function renderWatchlistPrompt() {
     document.getElementById('watchlistNote').textContent =
       '你部機暫時冇本機自選。去自選頁按 ★ 加入，呢度先會即時見到你自己的清單。';
     document.getElementById('watchlistTable').innerHTML =
-      '<tr><td colspan="8" style="padding:22px;color:#8ea0bf;text-align:center">暫無本機自選代號</td></tr>';
+      '<tr><td colspan="9" style="padding:22px;color:#8ea0bf;text-align:center">暫無本機自選代號</td></tr>';
     return;
   }
 
@@ -524,6 +539,7 @@ function renderWatchlistPrompt() {
       <td style="padding:8px 10px;color:${(h.chg ?? 0) >= 0 ? 'var(--green)' : 'var(--red)'}">${h.chg == null ? '—' : (h.chg >= 0 ? '+' : '') + Number(h.chg).toFixed(2) + '%'}</td>
       <td style="padding:8px 10px">${h.t10 == null ? '—' : Number(h.t10).toFixed(1) + '%'}</td>
       <td style="padding:8px 10px">${badge}</td>
+      <td style="padding:8px 10px">${issuerStack((x.signal && x.signal.issuer) || (x.tradeable && x.tradeable.issuer) || null)}</td>
       <td style="padding:8px 10px;max-width:360px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${x.reason}${hkex ? ` · ${hkex}` : ''}</td>
     </tr>`;
   }).join('');

@@ -32,12 +32,14 @@ from schema import (
     make_event, normalize_legacy_alert, validate_event,
     parse_announcement_date, classify_announcement,
 )
+from issuer_score import issuer_pressure_score
 
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 PATHS = {
     "announcements": os.path.join(BASE, "data", "announcements.json"),
     "alerts":        os.path.join(BASE, "data", "alerts.json"),
+    "placements":    os.path.join(BASE, "data", "placements_enriched.json"),
     "holdings":      os.path.join(BASE, "holdings.json"),
     "events":        os.path.join(BASE, "events.json"),
     "signals_out":   os.path.join(BASE, "data", "signals.json"),
@@ -132,7 +134,29 @@ def merge_events(existing, new):
     return sorted(by_id.values(), key=lambda x: (x["alert_date"], x["code"]))
 
 
-def build_signals_json(holdings, events, corp_map):
+def build_issuer_map(placements):
+    """placements_enriched.json → {code: issuer_score_payload} using latest row per code."""
+    issuer_map = {}
+    for p in placements or []:
+        code = str(p.get("code", "")).strip().lstrip("0").zfill(5)
+        if not code or code == "00000":
+            continue
+        date = str(p.get("date_parsed") or p.get("date") or "")[:10]
+        if not date:
+            continue
+        cur = issuer_map.get(code)
+        payload = issuer_pressure_score(p)
+        payload.update({
+            "date": date,
+            "category": p.get("category"),
+            "method": p.get("method"),
+        })
+        if cur is None or date > cur.get("date", ""):
+            issuer_map[code] = payload
+    return issuer_map
+
+
+def build_signals_json(holdings, events, corp_map, issuer_map):
     """Generate frontend signals.json with corpTypes from announcements.json."""
     stocks = holdings.get("stocks", []) if holdings else []
 
@@ -170,6 +194,7 @@ def build_signals_json(holdings, events, corp_map):
             "latestPrice": s.get("lp"),
             "signals": sigs,
             "corpTypes": corp_types,
+            "issuer": issuer_map.get(code),
             "hkexLink": hkex_link,
         })
 
@@ -220,6 +245,7 @@ def main():
     print("[1/4] load inputs")
     announcements = load_json(PATHS["announcements"], default=[])
     alerts_doc = load_json(PATHS["alerts"], default={})
+    placements = load_json(PATHS["placements"], default=[])
     holdings = load_json(PATHS["holdings"], default={})
     existing_events = load_json(PATHS["events"], default=[])
     if isinstance(existing_events, dict):
@@ -236,7 +262,8 @@ def main():
     all_events = merge_events(existing_events, new_events)
 
     print("[4/4] build signals.json")
-    signals = build_signals_json(holdings, all_events, corp_map)
+    issuer_map = build_issuer_map(placements)
+    signals = build_signals_json(holdings, all_events, corp_map, issuer_map)
 
     if args.dry_run:
         print("\nDRY RUN — nothing written")

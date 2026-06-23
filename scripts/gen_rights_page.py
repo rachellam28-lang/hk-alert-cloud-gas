@@ -5,6 +5,8 @@ import json, re, os, glob
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data')
 RAW_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'raw')
 
+from issuer_score import issuer_pressure_score
+
 with open(os.path.join(DATA_DIR, 'placements_enriched.json'), 'r', encoding='utf-8') as f:
     data = json.load(f)
 
@@ -137,6 +139,7 @@ def trade_signal(p):
 for p in data:
     p['trade'] = trade_signal(p)
     p['jump_8d_pct'] = p['trade'].get('jump_8d_pct')
+    p['issuer'] = issuer_pressure_score(p)
 
 signals = {}
 for p in data:
@@ -253,6 +256,14 @@ tr:hover td {{ background: #161b22; }}
 .trade-avoid {{ background: #3a1111; color: #f85149; border: 1px solid #f85149; }}
 .conviction {{ display: inline-flex; gap: 2px; }}
 .conviction span {{ font-size: 14px; }}
+.issuer-badge {{ display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: 700; }}
+.issuer-high {{ background: #3a1111; color: #f85149; border: 1px solid #f85149; }}
+.issuer-neutral {{ background: #21262d; color: #c9d1d9; border: 1px solid #30363d; }}
+.issuer-low {{ background: #1a3a1a; color: #3fb950; border: 1px solid #3fb950; }}
+.issuer-stack {{ display:flex; flex-direction:column; gap:3px; }}
+.issuer-react-up {{ background: #122b18; color: #3fb950; border: 1px solid #3fb950; }}
+.issuer-react-neutral {{ background: #21262d; color: #c9d1d9; border: 1px solid #30363d; }}
+.issuer-react-down {{ background: #3a1111; color: #f85149; border: 1px solid #f85149; }}
 .thesis {{ max-width: 280px; overflow: hidden; text-overflow: ellipsis; color: #8b949e; font-size: 10px; white-space: normal; }}
 .risk {{ color: #f85149; font-size: 10px; }}
 .jump-green {{ color: #3fb950; font-weight: bold; }}
@@ -316,7 +327,7 @@ tr:hover td {{ background: #161b22; }}
   <th onclick="sortTable(7)">🚀跳升</th>
   <th onclick="sortTable(8)">攤薄</th>
   <th onclick="sortTable(9)">訊號</th>
-  <th onclick="sortTable(10)">配售代理</th>
+  <th onclick="sortTable(10)">公告拆解</th>
   <th onclick="sortTable(11)">事後%</th>
   <th>邏輯</th>
 </tr>
@@ -390,6 +401,10 @@ function render(rows) {{
     else if (js === 'waiting') jumpHtml = '<span class="jump-wait">⏳ ' + (jp != null ? '+' + jp.toFixed(1) + '%' : '—') + '</span>';
     else if (js === 'no_jump') jumpHtml = '<span class="jump-gray">✗ +' + (jp != null ? jp.toFixed(1) : '0') + '%</span>';
     else jumpHtml = '<span class="jump-gray">—</span>';
+    const issuer = d.issuer || {{score: 50, label: '中性', cls: 'issuer-neutral', shareholder_pressure: {{score: 50, label: '中性', cls: 'issuer-neutral'}}, reaction: {{pct: null, label: '未足夠數據', cls: 'issuer-react-neutral'}}}};
+    const shareholder = issuer.shareholder_pressure || {{score: issuer.score || 50, label: issuer.label || '中性', cls: issuer.cls || 'issuer-neutral'}};
+    const reaction = issuer.reaction || {{pct: null, label: '未足夠數據', cls: 'issuer-react-neutral'}};
+    const reactionPct = reaction.pct != null ? (reaction.pct >= 0 ? '+' : '') + reaction.pct.toFixed(1) + '%' : '—';
     
     // Return
     let ret = d.manual_return_pct != null ? d.manual_return_pct : (d.current_return_pct != null ? d.current_return_pct : null);
@@ -407,7 +422,13 @@ function render(rows) {{
       <td>${{jumpHtml}}</td>
       <td>${{d.pct_num > 0 ? d.pct_num.toFixed(1)+'%' : '-'}}</td>
       <td><span class="signal ${{t.sig_class||''}}">${{t.signal||'➖'}}</span></td>
-      <td>${{d.placing_agent || d.manual_vendor || extractAgentFromName(d.name) || '<span style="color:#475569">—</span>'}}</td>
+      <td>
+        <div class="issuer-stack" title="公告條款代理分數，唔係內部意圖；高分＝對發行方更有利／對股東短期壓力更大；公告後價格反應＝歷史 price reaction">
+          <span class="issuer-badge ${{issuer.cls}}">發行方有利度 ${{issuer.label}} ${{issuer.score}}</span>
+          <span class="issuer-badge ${{shareholder.cls}}">股東短期壓力 ${{shareholder.label}} ${{shareholder.score}}</span>
+          <span class="issuer-badge ${{reaction.cls}}">公告後價格反應 ${{reactionPct}} ${{reaction.label}}</span>
+        </div>
+      </td>
       <td style="color:${{(ret||0) >= 0 ? '#3fb950' : '#f85149'}};font-weight:${{Math.abs(ret||0) > 20 ? 'bold' : 'normal'}}">${{ret != null ? (ret >= 0 ? '+' : '') + ret.toFixed(1) + '%' : '-'}}</td>
       <td>
         <div class="thesis">${{t.thesis||''}}</div>
@@ -459,6 +480,7 @@ function sortTable(col) {{
     let va, vb;
     if (col === 7) {{ va = a.jump_8d_pct != null ? a.jump_8d_pct : (a.trade||{{}}).jump_status==='waiting' ? 999 : -999; vb = b.jump_8d_pct != null ? b.jump_8d_pct : (b.trade||{{}}).jump_status==='waiting' ? 999 : -999; }}
     else if (col === 6) {{ va = a.discount_pct != null ? a.discount_pct : 999; vb = b.discount_pct != null ? b.discount_pct : 999; }}
+    else if (col === 10) {{ va = (a.issuer || {{score: 50}}).score; vb = (b.issuer || {{score: 50}}).score; }}
     else if (col === 5) {{ va = a.market_price||0; vb = b.market_price||0; }}
     else {{ va = a[keys[col]]||''; vb = b[keys[col]]||''; }}
     if (typeof va === 'number') return sortAsc ? va - vb : vb - va;
