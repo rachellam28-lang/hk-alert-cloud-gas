@@ -1,0 +1,12 @@
+name = "ccass-refresh-cron"
+main = "src/index.js"
+compatibility_date = "2026-06-23"
+
+[triggers]
+crons = ["30 23 * * 0-4"] # 07:30 HKT Mon-Fri
+
+[vars]
+GITHUB_OWNER = "rachellam28-lang"
+GITHUB_REPO = "hk-alert-cloud-gas"
+GITHUB_WORKFLOW = "ccass_refresh.yml"
+GITHUB_REF = "main"
