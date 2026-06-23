@@ -11,7 +11,7 @@ PYTHON = sys.executable  # use same Python that launched this script
 
 def run(cmd, cwd):
     print(f"  RUN: {' '.join(cmd)}")
-    r = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True)
+    r = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True, timeout=300)
     if r.returncode != 0:
         print(f"  FAIL (rc={r.returncode}): {r.stderr[-300:]}")
     else:

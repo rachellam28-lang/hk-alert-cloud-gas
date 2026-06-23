@@ -37,8 +37,8 @@ self.addEventListener('fetch', event => {
                  url.pathname === '/' ||
                  !url.pathname.includes('.');
 
-  if (isHTML) {
-    // Network-first: always try to get fresh HTML
+  if (isHTML || url.pathname.endsWith('.json')) {
+    // Network-first: always try to get fresh HTML and JSON data
     event.respondWith(
       fetch(event.request).catch(() => caches.match(event.request))
     );

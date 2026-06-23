@@ -15,6 +15,11 @@ OUTPUT_JSON = r"C:\Users\Administrator\Desktop\automatic\ccass-debug\data\timesf
 
 
 def get_ccass_series(stock_code: str, field: str = "broker_top5_pct", min_days: int = 25):
+    ALLOWED_FIELDS = {"broker_top5_pct", "top5_pct", "total_pct", "adj_hhi",
+                      "futu_pct", "a00005_pct", "adjusted_float", "num_participants",
+                      "top10_pct", "top_broker_pct"}
+    if field not in ALLOWED_FIELDS:
+        raise ValueError(f"Illegal field: {field}. Allowed: {sorted(ALLOWED_FIELDS)}")
     db = sqlite3.connect(DB_PATH)
     cur = db.execute(f"""
         SELECT trade_date, {field}

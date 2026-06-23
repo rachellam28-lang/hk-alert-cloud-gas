@@ -170,7 +170,7 @@ def update_holdings_json(target_date: date) -> None:
         names[row[0]] = row[1] or row[0]
     
     # Get latest data for target_date (filter non-equity)
-    exclude_where = " AND ".join([f"cd.stock_code NOT LIKE '{p}'" for p in EXCLUDE_PATTERNS])
+    exclude_where = " AND ".join([f"cd.stock_code NOT LIKE ?" for p in EXCLUDE_PATTERNS])
     rows = db.execute(f"""
         SELECT cd.stock_code, cd.total_pct, cd.num_participants,
                cd.top5_pct, cd.top10_pct,
@@ -399,9 +399,9 @@ def main():
     date_str = args.date
     print(f"Merge: query_date={date_str}")
 
-    # Restore DB from holdings.db.gz if missing (fresh GHA checkout)
-    db_path = PROJECT_ROOT / "holdings.db"
-    db_gz_path = PROJECT_ROOT / "holdings.db.gz"
+    # Restore DB from ccass.db.gz if missing (fresh GHA checkout)
+    db_path = PROJECT_ROOT / "ccass.db"
+    db_gz_path = PROJECT_ROOT / "ccass.db.gz"
     if not db_path.exists() or db_path.stat().st_size == 0:
         if db_gz_path.exists():
             import gzip, shutil

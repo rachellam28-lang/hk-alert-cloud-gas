@@ -1,0 +1,30 @@
+[Telegram] not configured
+HKEXnews CN title map: 37 entries (new API)
+HKEXnews hits: 61
+corp filter: kept=0 skipped_old=61 skipped_unknown_date=0 today_hkt=2026-06-18
+[breakthrough] 00442 ipo break @0.75 → 0.76 (+1.3%)
+[breakthrough] 00505 ipo break @0.99 → 1.0 (+1.0%)
+[breakthrough] 00673 ipo break @0.51 → 0.54 (+5.9%)
+[breakthrough] 00897 ipo break @0.32 → 0.325 (+1.6%)
+[breakthrough] 00927 ipo break @0.51 → 0.52 (+2.0%)
+[breakthrough] 00943 ipo break @0.189 → 0.203 (+7.4%)
+[breakthrough] 01496 ipo break @0.163 → 0.163 (+0.0%)
+[breakthrough] 01593 ipo break @1.23 → 1.23 (+0.0%)
+[breakthrough] 01697 ipo break @0.305 → 0.305 (+0.0%)
+[breakthrough] 01900 ipo break @0.243 → 0.25 (+2.9%)
+[breakthrough] 02031 ipo break @0.37 → 0.37 (+0.0%)
+$2940.HK: possibly delisted; no price data found  (period=5d)
+$2944.HK: possibly delisted; no price data found  (period=5d)
+$2946.HK: possibly delisted; no price data found  (period=5d)
+$2952.HK: possibly delisted; no price data found  (period=5d)
+[breakthrough] 06898 ipo break @0.72 → 0.72 (+0.0%)
+[breakthrough] 08451 ipo break @0.073 → 0.075 (+2.7%)
+[breakthrough] 08456 ipo break @0.35 → 0.375 (+7.1%)
+$8552.HK: possibly delisted; no price data found  (period=5d)
+$8553.HK: possibly delisted; no price data found  (period=5d)
+$8557.HK: possibly delisted; no price data found  (period=5d)
+[breakthrough] 09998 ipo break @0.385 → 0.395 (+2.6%)
+[breakthrough] 81024 ipo break @39.02 → 41.08 (+5.3%)
+[breakthrough] exported 16 signals to C:\Users\Administrator\Desktop\automatic\ccass-debug\data\breakthroughs.json
+[corp] announcements.json: 0 new, 594 total
+[Telegram] not configured

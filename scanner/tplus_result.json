@@ -1,0 +1,1004 @@
+{
+  "scan_time": "2026-06-19 23:07 HKT",
+  "genuine_count": 48,
+  "red_alerts": [
+    {
+      "code": "02490",
+      "name": "LC LOGISTICS",
+      "date": "2026-06-12",
+      "close_ann": 4.72,
+      "close_now": 5.2,
+      "pct_change": 10.2,
+      "vol_ratio": 1.52,
+      "t_plus": 3,
+      "is_red": true,
+      "is_partial": false,
+      "types": [
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "01869",
+      "name": "KAFELAKU COFFEE",
+      "date": "2026-06-16",
+      "close_ann": 0.112,
+      "close_now": 0.124,
+      "pct_change": 10.7,
+      "vol_ratio": 5.13,
+      "t_plus": 1,
+      "is_red": true,
+      "is_partial": false,
+      "types": [
+        "配股"
+      ],
+      "flag": ""
+    }
+  ],
+  "partial_matches": [
+    {
+      "code": "09606",
+      "name": "DUALITYBIO-B",
+      "date": "2026-06-12",
+      "close_ann": 188.1,
+      "close_now": 185.1,
+      "pct_change": -1.6,
+      "vol_ratio": 2.29,
+      "t_plus": 3,
+      "is_red": false,
+      "is_partial": true,
+      "types": [
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "02028",
+      "name": "JOLIMARK",
+      "date": "2026-06-12",
+      "close_ann": 0.67,
+      "close_now": 0.81,
+      "pct_change": 20.9,
+      "vol_ratio": 0.25,
+      "t_plus": 3,
+      "is_red": false,
+      "is_partial": true,
+      "types": [
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "01069",
+      "name": "CN HEALTH TECH",
+      "date": "2026-06-16",
+      "close_ann": 0.3,
+      "close_now": 0.232,
+      "pct_change": -22.7,
+      "vol_ratio": 6.8,
+      "t_plus": 1,
+      "is_red": false,
+      "is_partial": true,
+      "types": [
+        "供股",
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "01152",
+      "name": "MOMENTUM FIN",
+      "date": "2026-06-16",
+      "close_ann": 0.31,
+      "close_now": 0.39,
+      "pct_change": 25.8,
+      "vol_ratio": 1.19,
+      "t_plus": 1,
+      "is_red": false,
+      "is_partial": true,
+      "types": [
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "02728",
+      "name": "JINTAI ENERGY H",
+      "date": "2026-06-17",
+      "close_ann": 0.021,
+      "close_now": 0.021,
+      "pct_change": 0.0,
+      "vol_ratio": 3.18,
+      "t_plus": 0,
+      "is_red": false,
+      "is_partial": true,
+      "types": [
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "01920",
+      "name": "JUNWEA GROUP",
+      "date": "2026-06-17",
+      "close_ann": 0.67,
+      "close_now": 0.67,
+      "pct_change": 0.0,
+      "vol_ratio": 2.44,
+      "t_plus": 0,
+      "is_red": false,
+      "is_partial": true,
+      "types": [
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "01792",
+      "name": "CMON",
+      "date": "2026-06-18",
+      "close_ann": 0.98,
+      "close_now": 0.98,
+      "pct_change": 0.0,
+      "vol_ratio": 3.09,
+      "t_plus": "?",
+      "is_red": false,
+      "is_partial": true,
+      "types": [
+        "供股",
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "06190",
+      "name": "BANKOFJIUJIANG",
+      "date": "2026-06-18",
+      "close_ann": 2.3,
+      "close_now": 2.3,
+      "pct_change": 0.0,
+      "vol_ratio": 2.1,
+      "t_plus": "?",
+      "is_red": false,
+      "is_partial": true,
+      "types": [
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "02495",
+      "name": "VOICECOMM",
+      "date": "2026-06-18",
+      "close_ann": 41.24,
+      "close_now": 41.24,
+      "pct_change": 0.0,
+      "vol_ratio": 2.35,
+      "t_plus": "?",
+      "is_red": false,
+      "is_partial": true,
+      "types": [
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "01208",
+      "name": "MMG",
+      "date": "2026-06-18",
+      "close_ann": 8.25,
+      "close_now": 8.25,
+      "pct_change": 0.0,
+      "vol_ratio": 1.5,
+      "t_plus": "?",
+      "is_red": false,
+      "is_partial": true,
+      "types": [
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "01736",
+      "name": "PARENTING NET",
+      "date": "2026-06-18",
+      "close_ann": 0.51,
+      "close_now": 0.51,
+      "pct_change": 0.0,
+      "vol_ratio": 49.19,
+      "t_plus": "?",
+      "is_red": false,
+      "is_partial": true,
+      "types": [
+        "配股"
+      ],
+      "flag": ""
+    }
+  ],
+  "all_results": [
+    {
+      "code": "02490",
+      "name": "LC LOGISTICS",
+      "date": "2026-06-12",
+      "close_ann": 4.72,
+      "close_now": 5.2,
+      "pct_change": 10.2,
+      "vol_ratio": 1.52,
+      "t_plus": 3,
+      "is_red": true,
+      "is_partial": false,
+      "types": [
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "09606",
+      "name": "DUALITYBIO-B",
+      "date": "2026-06-12",
+      "close_ann": 188.1,
+      "close_now": 185.1,
+      "pct_change": -1.6,
+      "vol_ratio": 2.29,
+      "t_plus": 3,
+      "is_red": false,
+      "is_partial": true,
+      "types": [
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "02515",
+      "name": "TJCD",
+      "date": "2026-06-12",
+      "close_ann": 1.23,
+      "close_now": 1.23,
+      "pct_change": 0.0,
+      "vol_ratio": 0.01,
+      "t_plus": 3,
+      "is_red": false,
+      "is_partial": false,
+      "types": [
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "00737",
+      "name": "BAY AREA DEV",
+      "types": [
+        "配股"
+      ],
+      "title": "認購新股（一般授權）",
+      "date": "2026-06-12",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0612/2026061201598.pdf",
+      "type": "placement",
+      "typeLabel": "配股",
+      "direction": "up",
+      "status": "no_data",
+      "error": "empty df"
+    },
+    {
+      "code": "80737",
+      "name": "BAY AREA DEV-R",
+      "date": "2026-06-12",
+      "close_ann": 1.62,
+      "close_now": 1.62,
+      "pct_change": 0.0,
+      "vol_ratio": 0.0,
+      "t_plus": 3,
+      "is_red": false,
+      "is_partial": false,
+      "types": [
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "00821",
+      "name": "VC HOLDINGS",
+      "types": [
+        "配股"
+      ],
+      "title": "配售新股（一般授權）",
+      "date": "2026-06-12",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0612/2026061201444.pdf",
+      "type": "placement",
+      "typeLabel": "配股",
+      "direction": "up",
+      "status": "no_data",
+      "error": "empty df"
+    },
+    {
+      "code": "01340",
+      "name": "HUISHENG INTL",
+      "date": "2026-06-12",
+      "close_ann": 0.101,
+      "close_now": 0.086,
+      "pct_change": -14.9,
+      "vol_ratio": 0.09,
+      "t_plus": 3,
+      "is_red": false,
+      "is_partial": false,
+      "types": [
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "02028",
+      "name": "JOLIMARK",
+      "date": "2026-06-12",
+      "close_ann": 0.67,
+      "close_now": 0.81,
+      "pct_change": 20.9,
+      "vol_ratio": 0.25,
+      "t_plus": 3,
+      "is_red": false,
+      "is_partial": true,
+      "types": [
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "01676",
+      "name": "GAODI HOLDINGS",
+      "date": "2026-06-12",
+      "close_ann": 0.208,
+      "close_now": 0.205,
+      "pct_change": -1.4,
+      "vol_ratio": 0.32,
+      "t_plus": 3,
+      "is_red": false,
+      "is_partial": false,
+      "types": [
+        "供股",
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "00254",
+      "name": "NUR HOLDINGS",
+      "types": [
+        "配股"
+      ],
+      "title": "認購完成 OF NEW SHARES（一般授權）",
+      "date": "2026-06-12",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0612/2026061200402.pdf",
+      "type": "placement",
+      "typeLabel": "配股",
+      "direction": "up",
+      "status": "no_data",
+      "error": "empty df"
+    },
+    {
+      "code": "09677",
+      "name": "WEIHAI BANK",
+      "date": "2026-06-14",
+      "close_ann": 2.86,
+      "close_now": 2.87,
+      "pct_change": 0.3,
+      "vol_ratio": 0.0,
+      "t_plus": 3,
+      "is_red": false,
+      "is_partial": false,
+      "types": [
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "03908",
+      "name": "CICC",
+      "date": "2026-06-15",
+      "close_ann": 21.12,
+      "close_now": 20.14,
+      "pct_change": -4.6,
+      "vol_ratio": 0.86,
+      "t_plus": 2,
+      "is_red": false,
+      "is_partial": false,
+      "types": [
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "00419",
+      "name": "HONY MEDIA",
+      "types": [
+        "配股"
+      ],
+      "title": "公司公告：COMPLETION OF THE SUBSCRIPTION AGREEMENT I AND TERMINATION OF THE SUBSCRIP…",
+      "date": "2026-06-15",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0615/2026061500510.pdf",
+      "type": "placement",
+      "typeLabel": "配股",
+      "direction": "up",
+      "status": "no_data",
+      "error": "empty df"
+    },
+    {
+      "code": "00943",
+      "name": "ZHONGZHENG INTL",
+      "types": [
+        "配股"
+      ],
+      "title": "公司公告：COMPLETION OF DISCLOSEABLE TRANSACTION IN RELATION TO ACQUISITION OF THE E…",
+      "date": "2026-06-15",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0615/2026061501472.pdf",
+      "type": "placement",
+      "typeLabel": "配股",
+      "direction": "up",
+      "status": "no_data",
+      "error": "empty df"
+    },
+    {
+      "code": "01069",
+      "name": "CN HEALTH TECH",
+      "date": "2026-06-16",
+      "close_ann": 0.3,
+      "close_now": 0.232,
+      "pct_change": -22.7,
+      "vol_ratio": 6.8,
+      "t_plus": 1,
+      "is_red": false,
+      "is_partial": true,
+      "types": [
+        "供股",
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "01152",
+      "name": "MOMENTUM FIN",
+      "date": "2026-06-16",
+      "close_ann": 0.31,
+      "close_now": 0.39,
+      "pct_change": 25.8,
+      "vol_ratio": 1.19,
+      "t_plus": 1,
+      "is_red": false,
+      "is_partial": true,
+      "types": [
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "01869",
+      "name": "KAFELAKU COFFEE",
+      "date": "2026-06-16",
+      "close_ann": 0.112,
+      "close_now": 0.124,
+      "pct_change": 10.7,
+      "vol_ratio": 5.13,
+      "t_plus": 1,
+      "is_red": true,
+      "is_partial": false,
+      "types": [
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "01188",
+      "name": "HYBRID KINETIC",
+      "date": "2026-06-16",
+      "close_ann": 0.012,
+      "close_now": 0.012,
+      "pct_change": 0.0,
+      "vol_ratio": 0,
+      "t_plus": 1,
+      "is_red": false,
+      "is_partial": false,
+      "types": [
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "01846",
+      "name": "EUROEYES",
+      "date": "2026-06-16",
+      "close_ann": 2.37,
+      "close_now": 2.31,
+      "pct_change": -2.5,
+      "vol_ratio": 1.19,
+      "t_plus": 1,
+      "is_red": false,
+      "is_partial": false,
+      "types": [
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "02039",
+      "name": "CIMC",
+      "date": "2026-06-16",
+      "close_ann": 8.96,
+      "close_now": 8.33,
+      "pct_change": -7.0,
+      "vol_ratio": 0.89,
+      "t_plus": 1,
+      "is_red": false,
+      "is_partial": false,
+      "types": [
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "00472",
+      "name": "NEW SILKROAD",
+      "types": [
+        "配股"
+      ],
+      "title": "公司公告：COMPLETION OF SUBSCRIPTIONS OF NEW SHARES UNDER THE GENERAL MANDATE",
+      "date": "2026-06-16",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0616/2026061601284.pdf",
+      "type": "placement",
+      "typeLabel": "配股",
+      "direction": "up",
+      "status": "no_data",
+      "error": "empty df"
+    },
+    {
+      "code": "01159",
+      "name": "SMART DIGI TECH",
+      "date": "2026-06-16",
+      "close_ann": 2.93,
+      "close_now": 2.92,
+      "pct_change": -0.3,
+      "vol_ratio": 0.36,
+      "t_plus": 1,
+      "is_red": false,
+      "is_partial": false,
+      "types": [
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "02728",
+      "name": "JINTAI ENERGY H",
+      "date": "2026-06-17",
+      "close_ann": 0.021,
+      "close_now": 0.021,
+      "pct_change": 0.0,
+      "vol_ratio": 3.18,
+      "t_plus": 0,
+      "is_red": false,
+      "is_partial": true,
+      "types": [
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "01920",
+      "name": "JUNWEA GROUP",
+      "date": "2026-06-17",
+      "close_ann": 0.67,
+      "close_now": 0.67,
+      "pct_change": 0.0,
+      "vol_ratio": 2.44,
+      "t_plus": 0,
+      "is_red": false,
+      "is_partial": true,
+      "types": [
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "02349",
+      "name": "CH CITY INFRA",
+      "date": "2026-06-17",
+      "close_ann": 0.067,
+      "close_now": 0.067,
+      "pct_change": 0.0,
+      "vol_ratio": 0.36,
+      "t_plus": 0,
+      "is_red": false,
+      "is_partial": false,
+      "types": [
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "00381",
+      "name": "AOM INT'L",
+      "types": [
+        "配股"
+      ],
+      "title": "公司公告：ISSUE OF NEW SHARES UNDER SPECIFIC MANDATE FOR LOAN CAPITALISATION IN RESP…",
+      "date": "2026-06-17",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0617/2026061701772.pdf",
+      "type": "placement",
+      "typeLabel": "配股",
+      "direction": "up",
+      "status": "no_data",
+      "error": "empty df"
+    },
+    {
+      "code": "06608",
+      "name": "BAIRONG-W",
+      "date": "2026-06-17",
+      "close_ann": 5.32,
+      "close_now": 5.32,
+      "pct_change": 0.0,
+      "vol_ratio": 1.16,
+      "t_plus": 0,
+      "is_red": false,
+      "is_partial": false,
+      "types": [
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "01011",
+      "name": "NT PHARMA",
+      "date": "2026-06-17",
+      "close_ann": 0.46,
+      "close_now": 0.46,
+      "pct_change": 0.0,
+      "vol_ratio": 0.0,
+      "t_plus": 0,
+      "is_red": false,
+      "is_partial": false,
+      "types": [
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "01372",
+      "name": "C CARBONNEUTRAL",
+      "date": "2026-06-17",
+      "close_ann": 0.93,
+      "close_now": 0.93,
+      "pct_change": 0.0,
+      "vol_ratio": 0.27,
+      "t_plus": 0,
+      "is_red": false,
+      "is_partial": false,
+      "types": [
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "00994",
+      "name": "CT VISION",
+      "types": [
+        "配股"
+      ],
+      "title": "配股完成 OF NEW SHARES（一般授權）",
+      "date": "2026-06-17",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0617/2026061701241.pdf",
+      "type": "placement",
+      "typeLabel": "配股",
+      "direction": "up",
+      "status": "no_data",
+      "error": "empty df"
+    },
+    {
+      "code": "00574",
+      "name": "PASHUN INT'L",
+      "types": [
+        "供股",
+        "配股"
+      ],
+      "title": "公司公告：RESULTS OF THE RIGHTS ISSUE ON THE BASIS OF ONE (1) RIGHTS SHARE FOR EVERY…",
+      "date": "2026-06-17",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0617/2026061700804.pdf",
+      "type": "rights",
+      "typeLabel": "供股 / 配股",
+      "direction": "up",
+      "status": "no_data",
+      "error": "empty df"
+    },
+    {
+      "code": "01020",
+      "name": "CIPRUN TECH",
+      "date": "2026-06-17",
+      "close_ann": 0.204,
+      "close_now": 0.204,
+      "pct_change": 0.0,
+      "vol_ratio": 0.47,
+      "t_plus": 0,
+      "is_red": false,
+      "is_partial": false,
+      "types": [
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "02889",
+      "name": "PATEO",
+      "date": "2026-06-17",
+      "close_ann": 186.9,
+      "close_now": 186.9,
+      "pct_change": 0.0,
+      "vol_ratio": 0.67,
+      "t_plus": 0,
+      "is_red": false,
+      "is_partial": false,
+      "types": [
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "00148",
+      "name": "KINGBOARD HLDG",
+      "types": [
+        "配股"
+      ],
+      "title": "公司公告：DISCLOSEABLE TRANSACTION - PLACING OF SHARES IN KINGBOARD LAMINATES HOLDIN…",
+      "date": "2026-06-17",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0617/2026061700295.pdf",
+      "type": "placement",
+      "typeLabel": "配股",
+      "direction": "up",
+      "_flag": "parent_subsidiary",
+      "status": "no_data",
+      "error": "empty df"
+    },
+    {
+      "code": "01888",
+      "name": "KB LAMINATES",
+      "date": "2026-06-17",
+      "close_ann": 91.85,
+      "close_now": 91.85,
+      "pct_change": 0.0,
+      "vol_ratio": 1.26,
+      "t_plus": 0,
+      "is_red": false,
+      "is_partial": false,
+      "types": [
+        "配股"
+      ],
+      "flag": "parent_subsidiary"
+    },
+    {
+      "code": "02465",
+      "name": "LOPAL TECH",
+      "date": "2026-06-17",
+      "close_ann": 12.34,
+      "close_now": 12.34,
+      "pct_change": 0.0,
+      "vol_ratio": 1.19,
+      "t_plus": 0,
+      "is_red": false,
+      "is_partial": false,
+      "types": [
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "01792",
+      "name": "CMON",
+      "date": "2026-06-18",
+      "close_ann": 0.98,
+      "close_now": 0.98,
+      "pct_change": 0.0,
+      "vol_ratio": 3.09,
+      "t_plus": "?",
+      "is_red": false,
+      "is_partial": true,
+      "types": [
+        "供股",
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "02623",
+      "name": "HK GOLD IND GP",
+      "date": "2026-06-18",
+      "close_ann": 4.7,
+      "close_now": 4.7,
+      "pct_change": 0.0,
+      "vol_ratio": 1.23,
+      "t_plus": "?",
+      "is_red": false,
+      "is_partial": false,
+      "types": [
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "09982",
+      "name": "CENTRALCHINA MT",
+      "date": "2026-06-18",
+      "close_ann": 0.099,
+      "close_now": 0.099,
+      "pct_change": 0.0,
+      "vol_ratio": 0.51,
+      "t_plus": "?",
+      "is_red": false,
+      "is_partial": false,
+      "types": [
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "02592",
+      "name": "CLOUDBREAK-B",
+      "date": "2026-06-18",
+      "close_ann": 1.17,
+      "close_now": 1.17,
+      "pct_change": 0.0,
+      "vol_ratio": 0.58,
+      "t_plus": "?",
+      "is_red": false,
+      "is_partial": false,
+      "types": [
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "06190",
+      "name": "BANKOFJIUJIANG",
+      "date": "2026-06-18",
+      "close_ann": 2.3,
+      "close_now": 2.3,
+      "pct_change": 0.0,
+      "vol_ratio": 2.1,
+      "t_plus": "?",
+      "is_red": false,
+      "is_partial": true,
+      "types": [
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "00107",
+      "name": "SICHUAN EXPRESS",
+      "types": [
+        "配股"
+      ],
+      "title": "公司公告：ANNOUNCEMENT - GENERAL MANDATE TO ISSUE SHARES; AND PROPOSED ISSUANCE OF A…",
+      "date": "2026-06-18",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0618/2026061802018.pdf",
+      "type": "placement",
+      "typeLabel": "配股",
+      "direction": "up",
+      "status": "no_data",
+      "error": "empty df"
+    },
+    {
+      "code": "01822",
+      "name": "CHINA WOOD INT",
+      "date": "2026-06-18",
+      "close_ann": 0.137,
+      "close_now": 0.137,
+      "pct_change": 0.0,
+      "vol_ratio": 0.04,
+      "t_plus": "?",
+      "is_red": false,
+      "is_partial": false,
+      "types": [
+        "供股",
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "02495",
+      "name": "VOICECOMM",
+      "date": "2026-06-18",
+      "close_ann": 41.24,
+      "close_now": 41.24,
+      "pct_change": 0.0,
+      "vol_ratio": 2.35,
+      "t_plus": "?",
+      "is_red": false,
+      "is_partial": true,
+      "types": [
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "00632",
+      "name": "CHK OIL",
+      "types": [
+        "配股"
+      ],
+      "title": "配股完成 OF NEW SHARES（一般授權）",
+      "date": "2026-06-18",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0618/2026061801172.pdf",
+      "type": "placement",
+      "typeLabel": "配股",
+      "direction": "up",
+      "status": "no_data",
+      "error": "empty df"
+    },
+    {
+      "code": "01208",
+      "name": "MMG",
+      "date": "2026-06-18",
+      "close_ann": 8.25,
+      "close_now": 8.25,
+      "pct_change": 0.0,
+      "vol_ratio": 1.5,
+      "t_plus": "?",
+      "is_red": false,
+      "is_partial": true,
+      "types": [
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "01736",
+      "name": "PARENTING NET",
+      "date": "2026-06-18",
+      "close_ann": 0.51,
+      "close_now": 0.51,
+      "pct_change": 0.0,
+      "vol_ratio": 49.19,
+      "t_plus": "?",
+      "is_red": false,
+      "is_partial": true,
+      "types": [
+        "配股"
+      ],
+      "flag": ""
+    },
+    {
+      "code": "09689",
+      "name": "JTF INTL",
+      "date": "2026-06-18",
+      "close_ann": 0.7,
+      "close_now": 0.7,
+      "pct_change": 0.0,
+      "vol_ratio": 0.43,
+      "t_plus": "?",
+      "is_red": false,
+      "is_partial": false,
+      "types": [
+        "配股"
+      ],
+      "flag": ""
+    }
+  ],
+  "skip_reasons": {
+    "CB/可換股債券": 5,
+    "復牌": 2,
+    "母公司減持子公司": 2
+  },
+  "skip_detail": {
+    "CB/可換股債券": [
+      "00992 LENOVO GROUP (2026-06-18)",
+      "80992 LENOVO GROUP-R (2026-06-18)",
+      "00992 LENOVO GROUP (2026-06-17)",
+      "80992 LENOVO GROUP-R (2026-06-17)",
+      "03963 RONGZHONG FIN (2026-06-17)"
+    ],
+    "復牌": [
+      "02349 CH CITY INFRA (2026-06-18)",
+      "01920 JUNWEA GROUP (2026-06-16)"
+    ],
+    "母公司減持子公司": [
+      "00148 KINGBOARD HLDG (2026-06-17)",
+      "01888 KB LAMINATES (2026-06-17)"
+    ]
+  }
+}

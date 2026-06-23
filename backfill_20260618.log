@@ -1,0 +1,78 @@
+============================================================
+DIRECT LONGBRIDGE BACKFILL
+Targets: ['2026-06-18']
+============================================================
+2026-06-19 07:07:43,876 [INFO] === BACKFILL 2026-06-18: 2796 stocks ===
+2026-06-19 07:07:43,877 [INFO] Already have 57 stocks, scraping 2739 remaining
+2026-06-19 07:19:24,746 [INFO] 200/2739 (7.3%) ok=200 fail=0 0.3/s ETA 8898s
+2026-06-19 07:31:00,456 [INFO] 400/2739 (14.6%) ok=400 fail=0 0.3/s ETA 8166s
+2026-06-19 07:37:24,916 [WARNING] Longbridge returned empty holdings for 00721.HK
+2026-06-19 07:42:39,544 [INFO] 600/2739 (21.9%) ok=599 fail=1 0.3/s ETA 7471s
+2026-06-19 07:54:21,912 [INFO] 800/2739 (29.2%) ok=799 fail=1 0.3/s ETA 6782s
+2026-06-19 07:58:52,488 [WARNING] MCP call failed: Expecting value: line 1 column 1 (char 0), retrying in 3.0s
+2026-06-19 07:59:06,192 [ERROR] Longbridge API failed for 01218.HK: MCP call failed after 2 attempts: Expecting value: line 1 column 1 (char 0)
+2026-06-19 07:59:18,676 [WARNING] MCP call failed: Expecting value: line 1 column 1 (char 0), retrying in 3.0s
+2026-06-19 07:59:33,354 [ERROR] Longbridge API failed for 01220.HK: MCP call failed after 2 attempts: Expecting value: line 1 column 1 (char 0)
+2026-06-19 08:06:50,948 [INFO] 1000/2739 (36.5%) ok=997 fail=3 0.3/s ETA 6168s
+2026-06-19 08:18:10,935 [INFO] 1200/2739 (43.8%) ok=1197 fail=3 0.3/s ETA 5421s
+2026-06-19 08:29:51,800 [INFO] 1400/2739 (51.1%) ok=1397 fail=3 0.3/s ETA 4713s
+2026-06-19 08:41:30,488 [INFO] 1600/2739 (58.4%) ok=1597 fail=3 0.3/s ETA 4005s
+2026-06-19 08:53:29,468 [INFO] 1800/2739 (65.7%) ok=1797 fail=3 0.3/s ETA 3310s
+2026-06-19 08:59:04,096 [WARNING] Longbridge returned empty holdings for 02699.HK
+2026-06-19 09:01:33,828 [WARNING] Longbridge returned empty holdings for 02940.HK
+2026-06-19 09:01:37,002 [WARNING] Longbridge returned empty holdings for 02944.HK
+2026-06-19 09:01:40,002 [WARNING] Longbridge returned empty holdings for 02946.HK
+2026-06-19 09:01:43,176 [WARNING] Longbridge returned empty holdings for 02948.HK
+2026-06-19 09:01:52,294 [WARNING] Longbridge returned empty holdings for 02952.HK
+2026-06-19 09:01:55,278 [WARNING] Longbridge returned empty holdings for 02955.HK
+2026-06-19 09:01:58,575 [WARNING] Longbridge returned empty holdings for 02956.HK
+2026-06-19 09:02:01,737 [WARNING] Longbridge returned empty holdings for 02957.HK
+2026-06-19 09:02:07,685 [WARNING] Longbridge returned empty holdings for 02959.HK
+2026-06-19 09:02:10,858 [WARNING] Longbridge returned empty holdings for 02960.HK
+2026-06-19 09:02:13,842 [WARNING] Longbridge returned empty holdings for 02961.HK
+2026-06-19 09:05:29,196 [INFO] 2000/2739 (73.0%) ok=1984 fail=16 0.3/s ETA 2611s
+2026-06-19 09:11:51,608 [WARNING] Longbridge returned empty holdings for 04332.HK
+2026-06-19 09:11:54,587 [WARNING] Longbridge returned empty holdings for 04333.HK
+2026-06-19 09:11:57,577 [WARNING] Longbridge returned empty holdings for 04335.HK
+2026-06-19 09:12:00,563 [WARNING] Longbridge returned empty holdings for 04336.HK
+2026-06-19 09:12:03,743 [WARNING] Longbridge returned empty holdings for 04337.HK
+2026-06-19 09:12:06,733 [WARNING] Longbridge returned empty holdings for 04338.HK
+2026-06-19 09:12:09,719 [WARNING] Longbridge returned empty holdings for 04621.HK
+2026-06-19 09:17:12,087 [INFO] 2200/2739 (80.3%) ok=2177 fail=23 0.3/s ETA 1903s
+2026-06-19 09:29:03,187 [INFO] 2400/2739 (87.6%) ok=2377 fail=23 0.3/s ETA 1198s
+2026-06-19 09:39:36,908 [WARNING] Longbridge returned empty holdings for 08552.HK
+2026-06-19 09:39:39,965 [WARNING] Longbridge returned empty holdings for 08553.HK
+2026-06-19 09:39:42,979 [WARNING] Longbridge returned empty holdings for 08556.HK
+2026-06-19 09:39:45,985 [WARNING] Longbridge returned empty holdings for 08557.HK
+2026-06-19 09:39:52,013 [WARNING] Longbridge returned empty holdings for 08559.HK
+2026-06-19 09:39:55,203 [WARNING] Longbridge returned empty holdings for 08560.HK
+2026-06-19 09:39:58,200 [WARNING] Longbridge returned empty holdings for 08561.HK
+2026-06-19 09:40:38,868 [INFO] 2600/2739 (94.9%) ok=2570 fail=30 0.3/s ETA 491s
+2026-06-19 09:47:20,273 [WARNING] Longbridge returned empty holdings for 80016.HK
+2026-06-19 09:47:23,428 [WARNING] Longbridge returned empty holdings for 80020.HK
+2026-06-19 09:47:26,575 [WARNING] Longbridge returned empty holdings for 80175.HK
+2026-06-19 09:47:29,758 [WARNING] Longbridge returned empty holdings for 80291.HK
+2026-06-19 09:47:32,757 [WARNING] Longbridge returned empty holdings for 80388.HK
+2026-06-19 09:47:35,755 [WARNING] Longbridge returned empty holdings for 80700.HK
+2026-06-19 09:47:38,737 [WARNING] Longbridge returned empty holdings for 80737.HK
+2026-06-19 09:47:41,906 [WARNING] Longbridge returned empty holdings for 80883.HK
+2026-06-19 09:47:45,086 [WARNING] Longbridge returned empty holdings for 80941.HK
+2026-06-19 09:47:48,266 [WARNING] Longbridge returned empty holdings for 80992.HK
+2026-06-19 09:47:51,422 [WARNING] Longbridge returned empty holdings for 81024.HK
+2026-06-19 09:47:54,406 [WARNING] Longbridge returned empty holdings for 81211.HK
+2026-06-19 09:47:57,430 [WARNING] Longbridge returned empty holdings for 81299.HK
+2026-06-19 09:48:00,725 [WARNING] Longbridge returned empty holdings for 81810.HK
+2026-06-19 09:48:03,744 [WARNING] Longbridge returned empty holdings for 82020.HK
+2026-06-19 09:48:06,737 [WARNING] Longbridge returned empty holdings for 82318.HK
+2026-06-19 09:48:09,909 [WARNING] Longbridge returned empty holdings for 82331.HK
+2026-06-19 09:48:12,916 [WARNING] Longbridge returned empty holdings for 82333.HK
+2026-06-19 09:48:15,910 [WARNING] Longbridge returned empty holdings for 82388.HK
+2026-06-19 09:48:18,950 [WARNING] Longbridge returned empty holdings for 83690.HK
+2026-06-19 09:48:21,945 [WARNING] Longbridge returned empty holdings for 86618.HK
+2026-06-19 09:48:28,554 [WARNING] Longbridge returned empty holdings for 89618.HK
+2026-06-19 09:48:31,558 [WARNING] Longbridge returned empty holdings for 89888.HK
+2026-06-19 09:48:34,773 [WARNING] Longbridge returned empty holdings for 89988.HK
+2026-06-19 09:48:35,574 [INFO] DONE 2026-06-18: ok=2685 fail=54 9652s
+============================================================
+ALL DONE: ok=2685 fail=54 160.9min
+============================================================

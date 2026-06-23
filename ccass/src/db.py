@@ -113,8 +113,7 @@ def init_db(db_path: Path = DB_PATH) -> None:
             END;
 
             CREATE TRIGGER holdings_daily_delete INSTEAD OF DELETE ON holdings_daily BEGIN
-                DELETE FROM ccass_daily
-                WHERE stock_code = OLD.stock_code AND trade_date = OLD.trade_date;
+                SELECT RAISE(ABORT, 'Direct delete on holdings_daily view is disabled. Use ccass_daily table instead.');
             END;
 
             CREATE TRIGGER holdings_holdings_insert INSTEAD OF INSERT ON holdings_holdings BEGIN

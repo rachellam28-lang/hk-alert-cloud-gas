@@ -19,7 +19,15 @@ import requests
 
 logger = logging.getLogger(__name__)
 
-BASE = os.environ.get("LONGBRIDGE_MCP_URL", "https://mcp.longbridge.com/agent")
+ALLOWED_MCP_HOSTS = {"mcp.longbridge.com", "mcp.longbridge.global", "localhost", "127.0.0.1"}
+_raw = os.environ.get("LONGBRIDGE_MCP_URL", "https://mcp.longbridge.com/agent")
+from urllib.parse import urlparse as _urlparse
+_parsed = _urlparse(_raw)
+if _parsed.hostname not in ALLOWED_MCP_HOSTS:
+    raise RuntimeError(
+        f"LONGBRIDGE_MCP_URL hostname {_parsed.hostname!r} not in allowlist: {ALLOWED_MCP_HOSTS}"
+    )
+BASE = _raw
 MAX_RETRIES = 2
 RETRY_DELAY = 3.0  # seconds base
 
@@ -72,6 +80,11 @@ class LongbridgeMCPClient:
         for attempt in range(MAX_RETRIES):
             try:
                 r = requests.post(BASE, headers=self.headers, json=body, timeout=30)
+                if r.status_code == 401:
+                    logger.warning("Longbridge token expired (401), reloading...")
+                    self.token = _load_token()
+                    self.headers["Authorization"] = "Bearer " + self.token
+                    continue
                 raw = r.text.strip()
                 if raw.startswith("data: "):
                     raw = raw[6:]

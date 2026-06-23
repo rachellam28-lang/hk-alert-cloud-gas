@@ -1,0 +1,77 @@
+{
+  "scan_date": "2026-06-23",
+  "scan_time": "09:05:23",
+  "total_raw": 98,
+  "same_day": 3,
+  "red_alerts": 0,
+  "watchlist": 3,
+  "results": [
+    {
+      "code": "00776",
+      "name": "IMPERIUM TEC GP",
+      "types": [
+        "供股",
+        "配股"
+      ],
+      "types_str": "供股 / 配股",
+      "title": "公司公告：(1) PROPOSED RIGHTS ISSUE ON THE BASIS OF ONE (1) RIGHTS SHARE FOR EVERY T…",
+      "ann_date": "2026-06-23",
+      "rel_time": "23/06/2026 08:12",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0623/2026062300151.pdf",
+      "vol_ratio": null,
+      "price_jump_pct": null,
+      "jump_detail": "",
+      "grade": "🟡 WATCHLIST",
+      "red": false,
+      "watch": true,
+      "skip_reason": "vol=N/A<1.5x; jump=N/A (insufficient history)",
+      "placement": true,
+      "increase": false,
+      "rights": true
+    },
+    {
+      "code": "02650",
+      "name": "ZHIDA TECH",
+      "types": [
+        "配股"
+      ],
+      "types_str": "配股",
+      "title": "公司公告：ANNOUNCEMENT PLACING OF NEW H SHARES UNDER THE GENERAL MANDATE",
+      "ann_date": "2026-06-23",
+      "rel_time": "23/06/2026 07:41",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0623/2026062300145.pdf",
+      "vol_ratio": null,
+      "price_jump_pct": null,
+      "jump_detail": "",
+      "grade": "🟡 WATCHLIST",
+      "red": false,
+      "watch": true,
+      "skip_reason": "vol=N/A<1.5x; jump=N/A (insufficient history)",
+      "placement": true,
+      "increase": false,
+      "rights": false
+    },
+    {
+      "code": "02362",
+      "name": "JINCHUAN INTL",
+      "types": [
+        "收購/要約"
+      ],
+      "types_str": "收購/要約",
+      "title": "公司公告：DESPATCH OF RESPONSE DOCUMENT RELATING TO UNCONDITIONAL VOLUNTARY CASH PAR…",
+      "ann_date": "2026-06-23",
+      "rel_time": "23/06/2026 06:47",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0623/2026062300099.pdf",
+      "vol_ratio": null,
+      "price_jump_pct": null,
+      "jump_detail": "",
+      "grade": "🟡 WATCHLIST",
+      "red": false,
+      "watch": true,
+      "skip_reason": "type=收購/要約",
+      "placement": false,
+      "increase": false,
+      "rights": false
+    }
+  ]
+}

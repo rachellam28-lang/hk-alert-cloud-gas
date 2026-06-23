@@ -1,5 +1,5 @@
 {
- "at": "2026-06-19T10:30:27.770130",
+ "at": "2026-06-22T09:37:48.617571",
  "freshness": [
   {
    "name": "holdings.json",
@@ -9,32 +9,32 @@
   {
    "name": "signals.json",
    "status": "🟢",
-   "detail": "0.5h old"
+   "detail": "0.9h old"
   },
   {
    "name": "alerts.json",
    "status": "🟢",
-   "detail": "0.5h old"
+   "detail": "0.9h old"
   },
   {
    "name": "announcements.json",
    "status": "🟢",
-   "detail": "0.5h old"
+   "detail": "0.9h old"
   },
   {
    "name": "events.json",
    "status": "🟢",
-   "detail": "0.5h old"
+   "detail": "0.9h old"
   },
   {
    "name": "price_snapshot",
    "status": "🟢",
-   "detail": "0.5h old"
+   "detail": "1.0h old"
   }
  ],
  "ann_volume": {
   "status": "⚠️",
-  "detail": "today 0 vs median 12 — check scraper"
+  "detail": "today 3 vs median 12 (76% dev)"
  },
  "deepseek": {
   "status": "⚪",
@@ -49,7 +49,7 @@
   {
    "name": "events",
    "status": "🟢",
-   "detail": "808 total, 23 recent, 0 filled"
+   "detail": "820 total, 12 recent, 0 filled"
   }
  ]
 }

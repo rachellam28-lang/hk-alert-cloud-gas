@@ -226,8 +226,14 @@ class TelegramPusher:
         disable_web_page_preview: bool = True,
         timeout_seconds: Optional[float] = None,
     ) -> bool:
-        """分段發送長消息（按 `\\n---\\n` 分隔）。"""
+        """分段發送長消息（按 `\\n---\\n` 分隔）。FATAL-001: max 20 chunks, 3s throttle."""
+        import time as _time
+        MAX_CHUNKS = 20
+        THROTTLE_SECONDS = 3.0
         sections = content.split("\n---\n")
+        if len(sections) > MAX_CHUNKS:
+            logger.warning("Truncating %d sections to %d max chunks", len(sections), MAX_CHUNKS)
+            sections = sections[:MAX_CHUNKS]
         current_chunk: list[str] = []
         current_length = 0
         all_success = True
@@ -248,6 +254,7 @@ class TelegramPusher:
                     ):
                         all_success = False
                     chunk_index += 1
+                    _time.sleep(THROTTLE_SECONDS)
                 current_chunk = [section]
                 current_length = section_length
             else:
@@ -264,6 +271,7 @@ class TelegramPusher:
                 timeout_seconds=timeout_seconds,
             ):
                 all_success = False
+            _time.sleep(THROTTLE_SECONDS)
 
         return all_success
 

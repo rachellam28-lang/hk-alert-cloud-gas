@@ -1,0 +1,33 @@
+[Telegram] not configured
+HKEXnews CN title map: 37 entries (new API)
+HKEXnews hits: 86
+corp filter: kept=8 skipped_old=78 skipped_unknown_date=0 today_hkt=2026-06-18
+[breakthrough] exported 0 signals to C:\Users\Administrator\Desktop\automatic\ccass-debug\data\breakthroughs.json
+[corp] announcements.json: 2 new, 620 total
+[local] watchlist +02349 (復牌)
+[local] alert stored: 02349 披露易公告 - 復牌
+[gas] forwarded: 02349
+[Telegram] not configured
+[local] watchlist +02349 (配股, 復牌)
+[local] alert stored: 02349 披露易公告 - 配股 / 復牌
+[gas] forwarded: 02349
+[Telegram] not configured
+[local] watchlist +00658 (復牌)
+[Telegram] not configured
+[local] watchlist +00607 (復牌)
+[Telegram] not configured
+[local] watchlist +01792 (供股, 配股)
+[corp] 01792 watchlist-only — volume=N/A types=['供股', '配股']
+[local] watchlist +00992 (配股)
+[corp] 00992 watchlist-only — volume=N/A types=['配股']
+[local] watchlist +80992 (配股)
+[corp] 80992 watchlist-only — volume=N/A types=['配股']
+[local] watchlist +01952 (股東增持)
+[Telegram] not configured
+[Telegram] not configured
+[breakthrough] exported 0 signals to C:\Users\Administrator\Desktop\automatic\ccass-debug\data\breakthroughs.json
+[corp] checking watchlist for year-open breakout...
+[year_open_wl] fetching watchlist from GAS...
+[year_open_wl] checking 10 watchlist stocks for year-open breakout...
+[year_open_wl] done: 0 hits / 10 checked (0s)
+[confluence] saved 20 records (dual-direction, 30d window)

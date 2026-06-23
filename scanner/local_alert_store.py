@@ -169,9 +169,8 @@ def _forward_to_gas(payload: dict[str, Any]) -> None:
     """POST alert to GAS v2 webhook. Silent on failure."""
     try:
         import urllib.request
-        GAS_URL = "https://script.google.com/macros/s/AKfycbw4ySZih9cXdtPDzkr9QkVAY-UrIdfl1SXcUE64Q_dxk-nytyr7RnnFXEquk_qb_A54DA/exec"
-        # Secret split to avoid redaction
-        S = "".join(["3vzh77WnYKjHRDX8", "mPq2xkF9tbLsU4nA"])
+        GAS_URL = os.getenv("GAS_WEBHOOK_URL", "")
+        S = os.getenv("GAS_WEBHOOK_SECRET", "")
         p = {
             "secret": S,
             "created_at": payload.get("created_at", datetime.now(HKT).isoformat()),
@@ -197,8 +196,8 @@ def _forward_to_gas(payload: dict[str, Any]) -> None:
             r = json.loads(resp.read())
             if r.get("ok"):
                 print(f"[gas] forwarded: {payload.get('code')}")
-    except Exception:
-        pass  # best-effort
+    except Exception as e:
+        logger.warning("GAS forward failed: %s", e)  # best-effort but log the failure
 
 
 # ── Watchlist Store ─────────────────────────────────────────────────────────────
@@ -303,8 +302,10 @@ def _export_alerts_json() -> Path:
         "alerts": alerts,
     }
     path = DATA_DIR / "alerts.json"
-    with open(path, "w", encoding="utf-8") as f:
+    tmp_path = path.with_suffix(".tmp")
+    with open(tmp_path, "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, indent=2)
+    tmp_path.replace(path)
     return path
 
 
@@ -317,8 +318,10 @@ def export_watchlist_json() -> Path:
         "watchlist": list(wl.values()),
     }
     path = DATA_DIR / "watchlist.json"
-    with open(path, "w", encoding="utf-8") as f:
+    tmp_path = path.with_suffix(".tmp")
+    with open(tmp_path, "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, indent=2)
+    tmp_path.replace(path)
     return path
 
 

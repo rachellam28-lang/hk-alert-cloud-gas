@@ -139,6 +139,84 @@
     "pattern": "catalyst"
   },
   {
+    "code": "00191",
+    "name": "LAI SUN INT'L",
+    "types": [
+      "聯合公告"
+    ],
+    "title": "公司公告：JOINT ANNOUNCEMENT: VERY SUBSTANTIAL DISPOSAL - UPDATE ON DISPOSAL OF EQUI…",
+    "date": "2026-06-22",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0622/2026062200177.pdf",
+    "type": "announcement",
+    "typeLabel": "聯合公告",
+    "direction": "neutral",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "觀察·聯合公告"
+    ],
+    "signal_types_summary": [
+      "觀察·聯合公告"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "00488",
+    "name": "LAI SUN DEV",
+    "types": [
+      "聯合公告"
+    ],
+    "title": "公司公告：JOINT ANNOUNCEMENT: VERY SUBSTANTIAL DISPOSAL - UPDATE ON DISPOSAL OF EQUI…",
+    "date": "2026-06-22",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0622/2026062200177.pdf",
+    "type": "announcement",
+    "typeLabel": "聯合公告",
+    "direction": "neutral",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "觀察·聯合公告"
+    ],
+    "signal_types_summary": [
+      "觀察·聯合公告"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01025",
+    "name": "KNT HOLDINGS",
+    "types": [
+      "配股"
+    ],
+    "title": "配售新股（一般授權）",
+    "date": "2026-06-22",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0622/2026062200145.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "觀察·配股"
+    ],
+    "signal_types_summary": [
+      "觀察·配股"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
     "code": "00658",
     "name": "C TRANSMISSION",
     "types": [

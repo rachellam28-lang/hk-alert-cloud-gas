@@ -95,6 +95,9 @@ def save_snapshot(stock_code, trade_date, snap):
                 ),
             )
             conn.execute("COMMIT")
+            # Also write participant-level holdings for dashboard detail
+            from src.db import _write_holdings
+            _write_holdings(conn, stock_code, trade_date, holdings)
         except Exception:
             conn.execute("ROLLBACK")
             raise

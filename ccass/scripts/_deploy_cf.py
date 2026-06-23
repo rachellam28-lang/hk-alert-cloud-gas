@@ -56,7 +56,8 @@ def main():
     # Check required files exist
     missing = [f for f in DEPLOY_FILES if not (src / f).exists()]
     if missing:
-        print(f"WARNING: Missing files: {missing}")
+        print(f"ERROR: Missing required deploy files: {missing}")
+        sys.exit(1)
 
     # Create temp deploy dir with only dashboard files
     tmp = Path(tempfile.mkdtemp(prefix="cf_deploy_"))
@@ -80,8 +81,11 @@ def main():
         env = os.environ.copy()
         env["CLOUDFLARE_API_TOKEN"] = token
         env["CLOUDFLARE_ACCOUNT_ID"] = env.get(
-            "CLOUDFLARE_ACCOUNT_ID", "b127f73a2616b1f42f1012f397b80455"
+            "CLOUDFLARE_ACCOUNT_ID", os.getenv("CLOUDFLARE_ACCOUNT_ID", "")
         )
+        if not env["CLOUDFLARE_ACCOUNT_ID"]:
+            print("ERROR: CLOUDFLARE_ACCOUNT_ID not set in .env")
+            sys.exit(1)
 
         r = subprocess.run(
             [

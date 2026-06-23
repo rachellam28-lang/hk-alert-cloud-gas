@@ -122,7 +122,7 @@ if _HAS_TELEGRAM_PUSHER and TELEGRAM_TOKEN and TELEGRAM_CHAT_ID:
             bot_token=TELEGRAM_TOKEN,
             chat_id=TELEGRAM_CHAT_ID,
         )
-        print(f"[telegram_pusher] initialized (token={TELEGRAM_TOKEN[:8]}...)")
+        print(f"[telegram_pusher] initialized (token configured={bool(TELEGRAM_TOKEN)})")
     except Exception as _exc:
         print(f"[telegram_pusher] init failed: {_exc}")
 
@@ -1462,7 +1462,7 @@ def _get_daily_history_batch_futu(codes: list[str], years: int) -> dict[str, pd.
     OpenQuoteContext (Futu recommends one context per thread)."""
     if not _FUTU_AVAILABLE or not USE_FUTU or not codes:
         return {}
-    workers = min(YF_BATCH_THREADS, len(codes), 8)
+    workers = min(YF_BATCH_THREADS, len(codes), 4)  # cap at 4 to avoid API throttling
 
     def _fetch(code: str) -> tuple[str, pd.DataFrame]:
         return code, get_daily_history_futu(code, years)

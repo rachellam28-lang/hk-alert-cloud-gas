@@ -26,7 +26,7 @@ def compute_trends_for_date(target_date: date, windows: list[int] | None = None)
 
     # Pre-compute reference dates: for each window, find the trading day N days back
     ref_dates = {}
-    max_window = max(windows)
+    max_window = max(windows) if windows else 0
     all_tdays = last_n_trading_days(target_date, max_window + 1)
     for w in windows:
         if len(all_tdays) > w:

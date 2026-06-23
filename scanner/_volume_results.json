@@ -1,0 +1,110 @@
+{
+  "00298": {
+    "price": 0.106,
+    "volume": 970000,
+    "avg_vol_20d": 270644.5,
+    "vol_ratio": 3.58
+  },
+  "00367": {
+    "price": 0.27,
+    "volume": 180000,
+    "avg_vol_20d": 155750.6,
+    "vol_ratio": 1.16
+  },
+  "00607": {
+    "price": 0.89,
+    "volume": 2902350,
+    "avg_vol_20d": 0.0,
+    "vol_ratio": null
+  },
+  "00632": {
+    "price": 0.226,
+    "volume": 1075200,
+    "avg_vol_20d": 3732170.6,
+    "vol_ratio": 0.29
+  },
+  "00658": {
+    "price": 1.63,
+    "volume": 6302000,
+    "avg_vol_20d": 0.0,
+    "vol_ratio": null
+  },
+  "00751": {
+    "price": 4.46,
+    "volume": 3774941,
+    "avg_vol_20d": 1327019.9,
+    "vol_ratio": 2.84
+  },
+  "00852": {
+    "price": 0.166,
+    "volume": 0,
+    "avg_vol_20d": 0.0,
+    "vol_ratio": null
+  },
+  "00992": {
+    "price": 23.78,
+    "volume": 163398346,
+    "avg_vol_20d": 276035107.8,
+    "vol_ratio": 0.59
+  },
+  "01208": {
+    "price": 8.25,
+    "volume": 77927429,
+    "avg_vol_20d": 51920036.9,
+    "vol_ratio": 1.5
+  },
+  "01417": {
+    "price": 2.24,
+    "volume": 3996000,
+    "avg_vol_20d": 3358159.0,
+    "vol_ratio": 1.19
+  },
+  "01736": {
+    "price": 0.51,
+    "volume": 727500,
+    "avg_vol_20d": 14687.5,
+    "vol_ratio": 49.53
+  },
+  "01780": {
+    "price": 3.15,
+    "volume": 6337500,
+    "avg_vol_20d": 10394292.2,
+    "vol_ratio": 0.61
+  },
+  "01792": {
+    "price": 0.98,
+    "volume": 1136569,
+    "avg_vol_20d": 356571.3,
+    "vol_ratio": 3.19
+  },
+  "01952": {
+    "price": 26.68,
+    "volume": 4418000,
+    "avg_vol_20d": 3490582.1,
+    "vol_ratio": 1.27
+  },
+  "02349": {
+    "price": 0.067,
+    "volume": 520800,
+    "avg_vol_20d": 1455040.0,
+    "vol_ratio": 0.36
+  },
+  "02495": {
+    "price": 41.24,
+    "volume": 328440,
+    "avg_vol_20d": 139369.0,
+    "vol_ratio": 2.36
+  },
+  "09689": {
+    "price": 0.7,
+    "volume": 156000,
+    "avg_vol_20d": 364700.0,
+    "vol_ratio": 0.43
+  },
+  "80992": {
+    "price": 23.78,
+    "volume": 163398346,
+    "avg_vol_20d": 276035107.8,
+    "vol_ratio": 0.59
+  }
+}

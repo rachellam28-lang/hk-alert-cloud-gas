@@ -37,7 +37,7 @@ def setup_logger(name: str = "holdings", level: str = "INFO") -> logging.Logger:
         try:
             os.rename(source, dest)
         except OSError:
-            pass  # file locked, just keep writing to current
+            logger.warning("Log rotation failed (file locked?): %s -> %s", source, dest)
     fh.rotator = _safe_rotator
     fh.setFormatter(fmt)
     logger.addHandler(fh)

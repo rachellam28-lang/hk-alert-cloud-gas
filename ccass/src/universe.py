@@ -160,6 +160,20 @@ def refresh_universe() -> int:
                 added += 1
 
     logger.info("Universe refreshed: %d added, %d total", added, len(stocks))
+
+    # Deactivate stocks no longer in the universe (delisted / invalid codes)
+    codes_set = {code for code, _ in stocks}
+    with get_conn() as conn:
+        conn.execute(
+            """UPDATE stock_universe SET is_active = 0
+               WHERE stock_code NOT IN ({})
+               AND is_active = 1""".format(",".join("?" * len(codes_set))),
+            list(codes_set),
+        )
+        deactivated = conn.total_changes
+    if deactivated:
+        logger.info("Deactivated %d delisted stocks", deactivated)
+
     return added
 
 

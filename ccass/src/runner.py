@@ -536,9 +536,10 @@ def run_daily(
             sc_cfg = config["scraping"]
             n_workers = sc_cfg.get("parallel_workers", 1)
             if config.get("_runtime_ultra_fast_mode") and len(stocks) > 1:
-                # In ultra-fast mode, split the remaining universe across a few more workers
-                # if the configured count is still conservative.
-                n_workers = max(n_workers, 16)
+                # P0-2: FATAL-003 — HKEX provider must stay sequential regardless of mode
+                provider = os.environ.get("HOLDINGS_PROVIDER", "hkex").lower()
+                if provider != "hkex":
+                    n_workers = max(n_workers, 16)
 
             if n_workers > 1 and len(stocks) > 100:
                 attempted, succeeded, failed_stocks = _scrape_parallel(
@@ -814,7 +815,9 @@ def run_daily(
             else:
                 logger.error("No valid HOLDINGS rows scraped for %s; skipping holdings.json export", query_date)
                 return 1
-        _export_json(query_date, len(alerts_found))
+        if not _export_json(query_date, len(alerts_found)):
+            logger.error("holdings.json export failed; returning failure")
+            return 1
         if coverage < MIN_SUCCESS_COVERAGE:
             logger.error("Coverage %.1f%% < %.1f%%; returning partial failure", coverage * 100, MIN_SUCCESS_COVERAGE * 100)
             return 1
@@ -912,8 +915,9 @@ def _load_fcf_overlay() -> dict[str, dict]:
     return overlay
 
 
-def _export_json(query_date: date, alerts_today: int) -> None:
-    """Export all stocks + top movers to holdings.json in repo root for dashboard."""
+def _export_json(query_date: date, alerts_today: int) -> bool:
+    """Export all stocks + top movers to holdings.json in repo root for dashboard.
+    Returns True on success, False on failure (so caller can decide exit code)."""
     date_str = query_date.strftime("%Y-%m-%d")
     top_increase: list[dict] = []
     top_decrease: list[dict] = []
@@ -1105,6 +1109,9 @@ def _export_json(query_date: date, alerts_today: int) -> None:
         _stage_outputs(out_path)
     except Exception as e:
         logger.warning("holdings.json export failed: %s", e)
+        return False
+
+    return True
 
 
 def _post_movers_to_gas(

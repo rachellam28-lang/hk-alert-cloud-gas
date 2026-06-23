@@ -226,6 +226,19 @@ if __name__ == "__main__":
 
     if args.add_price:
         code, etype, price_str, date_str = args.add_price
+        if not code or len(code) > 5:
+            sys.exit(f"ERROR: invalid stock code: {code}")
+        if etype not in ("placement", "rights"):
+            sys.exit(f"ERROR: event type must be placement or rights, got: {etype}")
+        try:
+            float(price_str)
+        except ValueError:
+            sys.exit(f"ERROR: invalid price: {price_str}")
+        from datetime import datetime as _dt
+        try:
+            _dt.strptime(date_str, "%Y-%m-%d")
+        except ValueError:
+            sys.exit(f"ERROR: invalid date format: {date_str} (use YYYY-MM-DD)")
         cache = load_price_cache()
         if code not in cache:
             cache[code] = []

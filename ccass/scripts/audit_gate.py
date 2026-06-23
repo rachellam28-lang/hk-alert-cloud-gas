@@ -124,7 +124,7 @@ def _check_freshness(conn):
     # Check staleness
     try:
         latest = datetime.strptime(latest_date, "%Y-%m-%d").date()
-        today = date.today()
+        today = datetime.now(HKT).date()
         days_behind = (today - latest).days
         result["days_behind"] = days_behind
 
