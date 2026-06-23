@@ -19,6 +19,7 @@ import argparse
 import json
 import os
 import statistics
+import subprocess
 import sys
 import urllib.request
 from datetime import datetime, timedelta
@@ -27,6 +28,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from schema import parse_announcement_date
 
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+CCASS_DIR = os.path.join(BASE, "ccass")
 
 WATCH_FILES = {
     "holdings.json":        {"path": os.path.join(BASE, "holdings.json"),              "max_age_h": 26},
@@ -34,7 +36,8 @@ WATCH_FILES = {
     "alerts.json":          {"path": os.path.join(BASE, "data", "alerts.json"),        "max_age_h": 26},
     "announcements.json":   {"path": os.path.join(BASE, "data", "announcements.json"), "max_age_h": 26},
     "events.json":          {"path": os.path.join(BASE, "events.json"),                "max_age_h": 26},
-    "price_snapshot":       {"path": os.path.join(BASE, "raw"),                        "max_age_h": 26},
+    "price_snapshot":       {"path": os.path.join(BASE, "data", "prices.json"),        "max_age_h": 26},
+    "jieqi_backtest":       {"path": os.path.join(BASE, "data", "jieqi_backtest.json"), "max_age_h": 72},
 }
 
 DEEPSEEK_BALANCE_WARN = 5.0
@@ -52,16 +55,82 @@ def load_json(path, default=None):
         return default
 
 
+def _latest_date_from_items(items, keys):
+    dates = []
+    for item in items or []:
+        if not isinstance(item, dict):
+            continue
+        for key in keys:
+            val = item.get(key)
+            if not val:
+                continue
+            dates.append(str(val)[:10])
+            break
+    return max(dates) if dates else None
+
+
 def check_freshness():
     rows = []
-    now = datetime.now()
     for name, cfg in WATCH_FILES.items():
         if not os.path.exists(cfg["path"]):
             rows.append({"name": name, "status": "⚪", "detail": "file missing"})
             continue
-        age_h = (now - datetime.fromtimestamp(os.path.getmtime(cfg["path"]))).total_seconds() / 3600
-        status = "🔴" if age_h > cfg["max_age_h"] else "🟢"
-        rows.append({"name": name, "status": status, "detail": f"{age_h:.1f}h old"})
+        if name == "holdings.json":
+            data = load_json(cfg["path"], default={}) or {}
+            updated = data.get("updated", "—")
+            coverage = data.get("coverage_pct")
+            stock_count = data.get("stock_count")
+            rows.append({
+                "name": name,
+                "status": "🟢" if updated not in (None, "", "—") else "🔴",
+                "detail": f"updated={updated} coverage={coverage}% stock_count={stock_count}",
+            })
+        elif name == "signals.json":
+            data = load_json(cfg["path"], default={}) or {}
+            updated = str(data.get("updatedAt") or data.get("updated") or "—")[:19].replace("T", " ")
+            rows.append({
+                "name": name,
+                "status": "🟢" if updated != "—" else "🔴",
+                "detail": f"updated={updated} groups={len(data.get('groups', []))}",
+            })
+        elif name == "alerts.json":
+            data = load_json(cfg["path"], default={}) or {}
+            updated = data.get("updated", "—")
+            rows.append({
+                "name": name,
+                "status": "🟢" if updated not in (None, "", "—") else "🔴",
+                "detail": f"updated={updated} count={data.get('count', '—')}",
+            })
+        elif name == "announcements.json":
+            data = load_json(cfg["path"], default=[]) or []
+            latest = _latest_date_from_items(data, ("date", "release_time"))
+            rows.append({
+                "name": name,
+                "status": "🟢" if latest else "⚪",
+                "detail": f"latest={latest or '—'} count={len(data)}",
+            })
+        elif name == "events.json":
+            data = load_json(cfg["path"], default=[]) or []
+            if isinstance(data, dict):
+                data = data.get("events", [])
+            latest = _latest_date_from_items(data, ("alert_date", "signal_date"))
+            rows.append({
+                "name": name,
+                "status": "🟢" if latest else "⚪",
+                "detail": f"latest={latest or '—'} count={len(data)}",
+            })
+        elif name == "jieqi_backtest":
+            data = load_json(cfg["path"], default={}) or {}
+            updated = str(data.get("updated") or "—")[:19].replace("T", " ")
+            rows.append({
+                "name": name,
+                "status": "🟢" if updated != "—" else "⚪",
+                "detail": f"updated={updated} terms={len(data.get('term_stats', []))}",
+            })
+        else:
+            age_h = (datetime.now() - datetime.fromtimestamp(os.path.getmtime(cfg["path"]))).total_seconds() / 3600
+            status = "🔴" if age_h > cfg["max_age_h"] else "🟢"
+            rows.append({"name": name, "status": status, "detail": f"{age_h:.1f}h old"})
     return rows
 
 
@@ -147,11 +216,53 @@ def check_integrity():
     return rows
 
 
+def check_ccass_publish():
+    """Use the real audit gate so Telegram reflects the actual publish state."""
+    try:
+        proc = subprocess.run(
+            [sys.executable, "scripts/audit_gate.py", "--min-coverage", "99.0"],
+            cwd=CCASS_DIR,
+            capture_output=True,
+            text=True,
+            timeout=300,
+        )
+        stdout = (proc.stdout or "").strip()
+        if not stdout:
+            return {
+                "status": "🔴",
+                "detail": "audit_gate returned no output",
+                "raw": "",
+            }
+        data = json.loads(stdout)
+        status = data.get("status", "FAIL")
+        latest_db = data.get("latest_db_date", "—")
+        holdings_updated = data.get("holdings_updated", "—")
+        coverage_pct = data.get("coverage_pct", "—")
+        verify_data_obj = data.get("verify_data", {}) or {}
+        verify_dash_obj = data.get("verify_dashboard", {}) or {}
+        verify_data = verify_data_obj.get("status") or ("WARN" if verify_data_obj.get("warnings") else "PASS")
+        verify_dash = verify_dash_obj.get("status") or ("WARN" if verify_dash_obj.get("warnings") else "PASS")
+        detail = (
+            f"DB {latest_db} | publish {holdings_updated} | coverage {coverage_pct}% "
+            f"| verify_data {verify_data} | verify_dashboard {verify_dash}"
+        )
+        if status == "PASS":
+            return {"status": "🟢", "detail": detail, "raw": data}
+        if status == "WARN":
+            return {"status": "⚠️", "detail": detail, "raw": data}
+        return {"status": "🔴", "detail": detail, "raw": data}
+    except Exception as exc:
+        return {"status": "🔴", "detail": f"audit_gate error: {exc}", "raw": ""}
+
+
 def format_report(freshness, ann_vol, balance, integrity):
     lines = [f"🏥 System Health — {datetime.now().strftime('%Y-%m-%d %H:%M')} HKT", ""]
     lines.append("📁 Freshness")
     for r in freshness:
         lines.append(f"  {r['status']} {r['name']}: {r['detail']}")
+    publish = check_ccass_publish()
+    lines.append(f"🗃 CCASS publish: {publish['status']} {publish['detail']}")
+    lines.append("ℹ️ Longbridge backfill: 只補歷史 holdings，不補 price / signals")
     lines.append(f"📰 Announcements: {ann_vol['status']} {ann_vol['detail']}")
     lines.append(f"💰 DeepSeek: {balance['status']} {balance['detail']}")
     if integrity:
@@ -166,8 +277,15 @@ def format_report(freshness, ann_vol, balance, integrity):
 
 
 def push_telegram(text):
-    token = os.environ.get("TELEGRAM_BOT_TOKEN", "")
-    chat = os.environ.get("TELEGRAM_CHAT_ID", "")
+    token = (
+        os.environ.get("TELEGRAM_TOKEN", "")
+        or os.environ.get("TELEGRAM_BOT_TOKEN", "")
+        or os.environ.get("TG_BOT_TOKEN", "")
+    )
+    chat = (
+        os.environ.get("TELEGRAM_CHAT_ID", "")
+        or os.environ.get("TELEGRAM_ADMIN_CHAT_ID", "")
+    )
     if not (token and chat):
         print("⚪ no Telegram config, skip push")
         return

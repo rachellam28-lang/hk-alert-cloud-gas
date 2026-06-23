@@ -67,6 +67,24 @@ def load_dopamine_thresholds() -> tuple[float, int]:
 TELEGRAM_API = "https://api.telegram.org/bot{token}/sendMessage"
 
 
+def _telegram_token() -> str:
+    return (
+        os.getenv("TELEGRAM_TOKEN")
+        or os.getenv("TELEGRAM_BOT_TOKEN")
+        or os.getenv("TG_BOT_TOKEN")
+        or ""
+    )
+
+
+def _telegram_chat_id(default: Optional[str] = None) -> str:
+    return (
+        default
+        or os.getenv("TELEGRAM_CHAT_ID")
+        or os.getenv("TELEGRAM_ADMIN_CHAT_ID")
+        or ""
+    )
+
+
 def send_telegram(
     text: str,
     chat_id: Optional[str] = None,
@@ -74,12 +92,12 @@ def send_telegram(
     max_retries: int = 3,
 ) -> bool:
     """Send 一條 message with retry on 429. 回傳 True 如果成功。"""
-    token = os.getenv("TELEGRAM_TOKEN")
+    token = _telegram_token()
     if not token:
         logger.error("TELEGRAM_TOKEN missing — cannot send")
         return False
     if chat_id is None:
-        chat_id = os.getenv("TELEGRAM_CHAT_ID")
+        chat_id = _telegram_chat_id()
     if not chat_id:
         logger.error("TELEGRAM_CHAT_ID missing")
         return False
@@ -351,6 +369,5 @@ def scan_alerts_for_date(target_date: date) -> int:
 
 def send_admin_alert(message: str) -> None:
     """系統錯誤通知 admin。"""
-    admin = os.getenv("TELEGRAM_ADMIN_CHAT_ID") or os.getenv("TELEGRAM_CHAT_ID")
+    admin = _telegram_chat_id()
     send_telegram(f"🚨 <b>HOLDINGS Tracker</b>\n{message}", chat_id=admin)
-

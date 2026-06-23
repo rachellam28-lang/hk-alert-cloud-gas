@@ -10,7 +10,7 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).parent.parent
 # Primary source of truth. Keep all runners/exporters on the same DB to avoid
 # stale dashboard output from an empty legacy ccass.db.
-DB_PATH = PROJECT_ROOT / "ccass.db"
+DB_PATH = PROJECT_ROOT / "holdings.db"
 SCHEMA_PATH = PROJECT_ROOT / "db" / "schema.sql"
 BACKUP_DIR = PROJECT_ROOT / "backups"
 

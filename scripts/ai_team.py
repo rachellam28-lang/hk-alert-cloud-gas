@@ -10,6 +10,7 @@ AI Team 集成 — 用 TradingAgents 分析 CCASS 信號，輸出 Buy/Hold/Sell 
     python scripts/ai_team.py --limit 3 --min-vr 2.0       # 分析 VR >= 2.0 嘅 top 3
 
 環境變數 (from .env):
+    DEEPSEEK_API_KEY / DEEPSEEK_MODEL / 
     TRADINGAGENTS_LLM_PROVIDER / TRADINGAGENTS_DEEP_THINK_LLM / 
     TRADINGAGENTS_QUICK_THINK_LLM / TRADINGAGENTS_LLM_BACKEND_URL
 """
@@ -28,7 +29,7 @@ from typing import Optional
 # ── Paths ─────────────────────────────────────────────────────
 PROJECT_DIR = Path(__file__).resolve().parent.parent  # ccass-debug/
 DATA_DIR = PROJECT_DIR / "data"
-DB_PATH = PROJECT_DIR / "holdings.db"
+DB_PATH = PROJECT_DIR / "ccass" / "holdings.db"
 OUTPUT_DIR = PROJECT_DIR / "data" / "ai_team_output"
 TRADINGAGENTS_DIR = PROJECT_DIR.parent / "TradingAgents"
 

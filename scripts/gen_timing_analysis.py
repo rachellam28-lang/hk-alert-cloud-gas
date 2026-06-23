@@ -129,6 +129,7 @@ a { color:inherit; text-decoration:none; }
   <a href="rights_analysis.html">📋 供配股</a>
   <a href="daily_trade_prompt.html">🚦 每日提示</a>
   <a class="active" href="timing_analysis.html">⏱ 時間窗口</a>
+  <a href="jieqi_analysis.html">🧭 節氣窗口</a>
   <a href="distribution_day.html">📉 分佈日</a>
   <a href="vqc_analysis.html">📈 成交轉勢日</a>
   <a href="docs/ccass-warroom.html">⚡ 戰情室</a>
@@ -173,6 +174,7 @@ a { color:inherit; text-decoration:none; }
     <div class="link-row">
       <a class="btn red" href="daily_trade_prompt.html">開每日提示</a>
       <a class="btn blue" href="vqc_analysis.html">開成交轉勢日</a>
+      <a class="btn teal" href="jieqi_analysis.html">開節氣窗口</a>
       <a class="btn gold" href="distribution_day.html">開分佈日</a>
       <a class="btn teal" href="guide.html">開說明書</a>
     </div>
@@ -230,12 +232,11 @@ function renderSummary() {
   const vs = VQC.summary || {};
   const ds = (DD.benchmarks || []).map(b => b.summary || {});
   const hk = ds[0] || {};
-  const us = ds[1] || {};
   const cards = [
     ['成交轉勢日訊號', VQC.events_total ?? 0, `sample ${VQC.sample_total ?? 0} / universe ${VQC.universe_total ?? 0}`],
     ['成交轉勢日2D', vs.overall_rate_2d == null ? '—' : vs.overall_rate_2d.toFixed(1) + '%', `edge ${VQC.edge?.edge_turn_2d == null ? '—' : (VQC.edge.edge_turn_2d >= 0 ? '+' : '') + VQC.edge.edge_turn_2d.toFixed(1) + 'pt'}`],
     ['分佈日訊號', DD.signals_total ?? 0, `benchmarks ${DD.benchmarks_with_data ?? 0}`],
-    ['當前大市狀態', stateLabel(hk.current_market_state), `HK ${hk.current_dd_count_25d ?? '—'}D · US ${us.current_dd_count_25d ?? '—'}D`],
+    ['當前大市狀態', stateLabel(hk.current_market_state), `HK ${hk.current_dd_count_25d ?? '—'}D`],
   ];
   document.getElementById('summaryCards').innerHTML = cards.map(([k,v,s]) => `
     <div class="card">
@@ -268,10 +269,8 @@ function renderVQC() {
 function renderDD() {
   const bms = DD.benchmarks || [];
   const hk = (bms[0] && bms[0].summary) || {};
-  const us = (bms[1] && bms[1].summary) || {};
   const items = [
     ['HK 現況', (hk.current_dd_count_25d ?? '—') + 'D'],
-    ['US 現況', (us.current_dd_count_25d ?? '—') + 'D'],
     ['總訊號', DD.signals_total ?? 0],
     ['窗口', DD.window_days ?? 25],
     ['跌幅門檻', (DD.drop_pct ?? 0).toFixed(1) + '%'],
@@ -283,7 +282,7 @@ function renderDD() {
       <div class="val">${v}</div>
     </div>`).join('');
   document.getElementById('ddNote').textContent =
-    `更新：${DD.updated || '—'} · proxy = HSI1! / QQQ · 主要看大市壓力是否支持你出手。`;
+    `更新：${DD.updated || '—'} · proxy = HSI1! · 主要看大市壓力是否支持你出手。`;
 }
 
 function renderBench() {

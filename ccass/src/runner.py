@@ -1161,8 +1161,8 @@ def _stage_outputs(json_path):
     """
     import subprocess, gzip, shutil
     repo_root = json_path.parent
-    db_path = json_path.parent / "holdings" / "holdings.db"
-    db_gz_path = json_path.parent / "holdings" / "holdings.db.gz"
+    db_path = json_path.parent / "ccass" / "holdings.db"
+    db_gz_path = json_path.parent / "ccass" / "holdings.db.gz"
     try:
         # Compress holdings.db
         if db_path.exists():
@@ -1177,7 +1177,7 @@ def _stage_outputs(json_path):
         subprocess.run(["git","add","holdings.json"], cwd=repo_root, capture_output=True)
         subprocess.run(["git","add","ccass.json"], cwd=repo_root, capture_output=True)
         if db_gz_path.exists():
-            subprocess.run(["git","add","holdings/holdings.db.gz"], cwd=repo_root, capture_output=True)
+            subprocess.run(["git","add","ccass/holdings.db.gz"], cwd=repo_root, capture_output=True)
         logger.info("Staged holdings.json + ccass.json + holdings.db.gz for workflow commit")
     except Exception as e:
         logger.warning("Stage outputs failed: %s", e)

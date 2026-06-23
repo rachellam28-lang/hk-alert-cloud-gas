@@ -33,10 +33,16 @@ echo "2.6/5 Generate signals.json for dashboard fallback..."
 echo "3/5 Regenerate holdings.json..."
 "$PYTHON_BIN" scripts/regenerate_json.py || { echo "ERROR: holdings.json regeneration failed"; exit 1; }
 
-echo "4/5 Audit gate (verify data integrity before deploy)..."
-"$PYTHON_BIN" scripts/audit_gate.py || { echo "ERROR: audit gate failed — BLOCKING DEPLOY"; exit 1; }
+echo "4/5 Audit gate..."
+"$PYTHON_BIN" scripts/audit_gate.py --min-coverage "${AUDIT_MIN_COVERAGE:-99.0}" || { echo "ERROR: audit gate failed"; exit 1; }
 
-echo "5/5 Deploy to Cloudflare Pages (wrangler)..."
-"$PYTHON_BIN" scripts/_deploy_cf.py || { echo "ERROR: Cloudflare deploy failed"; exit 1; }
+echo "5/5 Deploy to GitHub..."
+cd "$REPO_ROOT"
+git add holdings.json ccass.json data/stock_prices.json data/suspended_stocks.json data/prices.json data/signals.json
+if git commit -m "daily: holdings refresh $(date +%Y-%m-%d)"; then
+    git push || { echo "ERROR: git push failed"; exit 1; }
+else
+    echo "No changes to commit"
+fi
 
 echo "Done!"

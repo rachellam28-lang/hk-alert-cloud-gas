@@ -6,7 +6,6 @@ an index or benchmark proxy closes lower on higher volume than the prior day.
 
 This module backtests the concept on liquid benchmark proxies:
   - HK: HSI1! on HKEX
-  - US: QQQ on NASDAQ
 
 Output:
   data/distribution_day_backtest.json
@@ -41,14 +40,6 @@ BENCHMARKS = [
         "exchange": "HKEX",
         "name": "Hang Seng Proxy",
         "label": "HK proxy",
-    },
-    {
-        "key": "us",
-        "code": "QQQ",
-        "symbol": "QQQ",
-        "exchange": "NASDAQ",
-        "name": "QQQ",
-        "label": "US proxy",
     },
 ]
 

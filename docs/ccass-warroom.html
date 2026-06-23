@@ -209,7 +209,7 @@ footer a{color:var(--cy)}
   </div>
 </div>
 
-<footer>數據:你現有系統 holdings / signals / announcements / breakthroughs · 每10分鐘自動更新 · <a href="../rights_analysis.html">📋 供配股詳細分析</a> · <a href="../daily_trade_prompt.html">🚦 每日提示</a> · <a href="../timing_analysis.html">⏱ 時間窗口</a> · <a href="../distribution_day.html">📉 分佈日</a> · 僅供研究,不構成投資建議</footer>
+<footer>數據:你現有系統 holdings / signals / announcements / breakthroughs · 每10分鐘自動更新 · <a href="../rights_analysis.html">📋 供配股詳細分析</a> · <a href="../daily_trade_prompt.html">🚦 每日提示</a> · <a href="../timing_analysis.html">⏱ 時間窗口</a> · <a href="../jieqi_analysis.html">🧭 節氣窗口</a> · <a href="../distribution_day.html">📉 分佈日</a> · 僅供研究,不構成投資建議</footer>
 
 <script>
 /* ════════════════════════════════════════════════════
@@ -275,7 +275,7 @@ async function boot(retry=0){
   sysmsg(warn.join("<br>") || null);
 
   try{ build(H, S||{groups:[]}, A||[], B||{active_prices:{}}); }
-  catch(e){ sysmsg(`❌ 數據解析出錯:${e.message}。可能後台檔案格式改咗,話返畀 Claude 知。`); return; }
+  catch(e){ sysmsg(`❌ 數據解析出錯:${e.message}。可能後台檔案格式改咗,要通知 AI 跟進。`); return; }
 
   LAST_OK = Date.now(); nextAt = Date.now()+REFRESH_MIN*60000;
   $('dsrc').textContent = "LIVE · "+(BASE===SITE?"絕對路徑":"相對路徑");
@@ -409,6 +409,7 @@ function select(i){
     `<a href="${BASE===SITE?SITE:'..'}/rights_analysis.html" target="_blank">供配股分析 ↗</a>`,
     `<a href="${BASE===SITE?SITE:'..'}/daily_trade_prompt.html" target="_blank">每日提示 ↗</a>`,
     `<a href="${BASE===SITE?SITE:'..'}/timing_analysis.html" target="_blank">時間窗口總覽 ↗</a>`,
+    `<a href="${BASE===SITE?SITE:'..'}/jieqi_analysis.html" target="_blank">節氣窗口 ↗</a>`,
     `<a href="${BASE===SITE?SITE:'..'}/distribution_day.html" target="_blank">分佈日分析 ↗</a>`,
   ].filter(Boolean).join('');
 

@@ -1,25 +1,28 @@
 #!/usr/bin/env python3
-"""Telegram → Claude bridge bot. Polling mode with session memory."""
+"""Telegram → DeepSeek bridge bot. Polling mode with session memory."""
 import os, sys, json, time, requests
 from datetime import datetime, timedelta
 
 # === CONFIG ===
 TG_TOKEN = os.environ.get("TG_BOT_TOKEN", "<YOUR_TG_TOKEN>")
-ANTHROPIC_KEY = os.environ.get("ANTHROPIC_API_KEY", "<YOUR_ANTHROPIC_KEY>")
-MODEL = "claude-sonnet-4-20250514"
+DEEPSEEK_KEY = os.environ.get("DEEPSEEK_API_KEY", "<YOUR_DEEPSEEK_KEY>")
+MODEL = os.environ.get("DEEPSEEK_MODEL", "deepseek-v4-pro")
 MAX_TOKENS = 4096
 SESSION_TTL = timedelta(hours=1)  # keep per-chat history for 1hr
 
 TG_API = f"https://api.telegram.org/bot{TG_TOKEN}"
-ANTHROPIC_URL = "https://api.anthropic.com/v1/messages"
+DEEPSEEK_URL = "https://api.deepseek.com/chat/completions"
 
 # === Per-chat session store ===
 sessions: dict[int, dict] = {}  # chat_id → {"messages": [...], "last_active": datetime}
 
 
-def claude_reply(chat_id: int, text: str) -> str:
+def deepseek_reply(chat_id: int, text: str) -> str:
     now = datetime.now()
     sess = sessions.get(chat_id)
+
+    if not DEEPSEEK_KEY or DEEPSEEK_KEY.startswith("<YOUR_"):
+        return "❌ DEEPSEEK_API_KEY 未設定。"
 
     # Init or refresh session
     if not sess or (now - sess["last_active"]) > SESSION_TTL:
@@ -36,10 +39,9 @@ def claude_reply(chat_id: int, text: str) -> str:
 
     try:
         resp = requests.post(
-            ANTHROPIC_URL,
+            DEEPSEEK_URL,
             headers={
-                "x-api-key": ANTHROPIC_KEY,
-                "anthropic-version": "2023-06-01",
+                "Authorization": f"Bearer {DEEPSEEK_KEY}",
                 "content-type": "application/json",
             },
             json={
@@ -55,11 +57,11 @@ def claude_reply(chat_id: int, text: str) -> str:
             err = resp.json().get("error", {}).get("message", resp.text)
             return f"❌ API error: {err}"
         data = resp.json()
-        reply = data["content"][0]["text"]
+        reply = data["choices"][0]["message"]["content"]
         sess["messages"].append({"role": "assistant", "content": reply})
         return reply
     except requests.exceptions.Timeout:
-        return "⏳ Claude timeout — 試多次？"
+        return "⏳ DeepSeek timeout — 試多次？"
     except Exception as e:
         return f"❌ Error: {e}"
 
@@ -88,7 +90,7 @@ def main():
                     continue
 
                 print(f"[{chat_id}] {text[:80]}...")
-                reply = claude_reply(chat_id, text)
+                reply = deepseek_reply(chat_id, text)
 
                 # Telegram max 4096 chars per message
                 for chunk in [reply[i:i+4000] for i in range(0, len(reply), 4000)]:

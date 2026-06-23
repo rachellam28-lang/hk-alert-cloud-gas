@@ -13,10 +13,10 @@
     ['rights_analysis.html', '📋 供配股'],
     ['daily_trade_prompt.html', '🚦 每日提示'],
     ['timing_analysis.html', '⏱ 時間窗口'],
+    ['jieqi_analysis.html', '🧭 節氣窗口'],
     ['distribution_day.html', '📉 分佈日'],
     ['vqc_analysis.html', '📈 成交轉勢日'],
     ['docs/ccass-warroom.html', '⚡ 戰情室'],
-    ['us.html', '🇺🇸 美股'],
     ['guide.html', '📖 說明'],
   ];
 

@@ -11,7 +11,7 @@ PYTHON = sys.executable  # use same Python that launched this script
 
 def run(cmd, cwd):
     print(f"  RUN: {' '.join(cmd)}")
-    r = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True, timeout=300)
+    r = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True)
     if r.returncode != 0:
         print(f"  FAIL (rc={r.returncode}): {r.stderr[-300:]}")
     else:
@@ -27,33 +27,44 @@ def main():
     print(f"=== Post-backfill for {date} ===\n")
     
     # 1. Regenerate holdings.json
-    print("[1/4] Regenerate holdings.json...")
+    print("[1/3] Regenerate holdings.json...")
     if not run([PYTHON, "scripts/regenerate_json.py", "--date", date], cwd=CCASS_DIR):
         sys.exit(1)
     
     # 2. Detect transfers
-    print("\n[2/4] Detect transfers...")
+    print("\n[2/3] Detect transfers...")
     if not run([PYTHON, "scripts/detect_transfers.py", "--date", date], cwd=CCASS_DIR):
         sys.exit(1)
-    
-    # 3. Audit gate — verify data integrity BEFORE pushing
+
+    # 3. Audit gate before publishing
     print("\n[3/4] Audit gate...")
-    gate_cmd = [PYTHON, "scripts/audit_gate.py", "--date", date, "--warn-only"]
-    r = subprocess.run(gate_cmd, cwd=CCASS_DIR, capture_output=True, text=True)
-    if r.returncode == 1:
-        print(f"  FAIL: audit gate blocked\n{r.stdout[-500:]}")
+    if not run([PYTHON, "scripts/audit_gate.py", "--min-coverage", "99.0"], cwd=CCASS_DIR):
         sys.exit(1)
-    elif r.returncode == 2:
-        print(f"  WARN: audit gate warnings (proceeding with --warn-only)\n{r.stdout[-300:]}")
+
+    # 4. Git push all
+    print("\n[4/4] Push to GitHub...")
+    subprocess.run(["git", "add", "holdings.json", "data/"], cwd=REPO_ROOT, check=True, capture_output=True)
+    r = subprocess.run(
+        ["git", "commit", "-m", f"post-backfill {date}: holdings.json + alerts + transfers"],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+    )
+    if r.returncode != 0:
+        if "nothing to commit" in (r.stdout + r.stderr).lower():
+            print("  commit: nothing to commit")
+        else:
+            print(f"  commit failed: {r.stderr.strip()[-300:]}")
+            sys.exit(r.returncode)
     else:
-        print("  PASS: audit gate ok")
-    
-    # 4. Deploy to Cloudflare Pages (wrangler, bypasses GitHub)
-    print("\n[4/4] Deploy to Cloudflare Pages...")
-    deploy_cmd = [PYTHON, "scripts/_deploy_cf.py"]
-    if not run(deploy_cmd, cwd=CCASS_DIR):
-        sys.exit(1)
-    
+        print(f"  commit: {r.stdout.strip()}")
+
+    push = subprocess.run(["git", "push"], cwd=REPO_ROOT, capture_output=True, text=True)
+    if push.returncode != 0:
+        print(f"  push failed: {push.stderr.strip()[-300:]}")
+        sys.exit(push.returncode)
+    print("  pushed")
+
     print(f"\n=== Done: {date} ===")
 
 if __name__ == "__main__":

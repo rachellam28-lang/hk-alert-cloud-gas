@@ -262,7 +262,6 @@ tr:hover td {{ background: rgba(39,49,74,.22); }}
 const DATA = {DATA_JSON};
 const IMAGE_EXAMPLES = [
   {{ name: '2800.HK 圖片例子', overall: null, down: 90.9, up: 80.6, note: '你提供的兩年回測數字' }},
-  {{ name: 'QQQ 圖片例子', overall: 72.5, down: null, up: null, note: '你提供的整體數字' }},
 ];
 let currentFilter = 'all';
 let searchTerm = '';

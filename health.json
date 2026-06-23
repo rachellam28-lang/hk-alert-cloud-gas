@@ -1,40 +1,45 @@
 {
- "at": "2026-06-22T09:37:48.617571",
+ "at": "2026-06-23T20:25:36.058605",
  "freshness": [
   {
    "name": "holdings.json",
    "status": "🟢",
-   "detail": "0.0h old"
+   "detail": "updated=2026-06-19 coverage=99.5% stock_count=2741"
   },
   {
    "name": "signals.json",
    "status": "🟢",
-   "detail": "0.9h old"
+   "detail": "updated=2026-06-22 06:36:37 groups=2780"
   },
   {
    "name": "alerts.json",
    "status": "🟢",
-   "detail": "0.9h old"
+   "detail": "updated=2026-06-21 22:36 UTC count=123"
   },
   {
    "name": "announcements.json",
    "status": "🟢",
-   "detail": "0.9h old"
+   "detail": "latest=2026-06-18 count=640"
   },
   {
    "name": "events.json",
    "status": "🟢",
-   "detail": "0.9h old"
+   "detail": "latest=2026-06-19 count=808"
   },
   {
    "name": "price_snapshot",
    "status": "🟢",
-   "detail": "1.0h old"
+   "detail": "9.9h old"
+  },
+  {
+   "name": "jieqi_backtest",
+   "status": "🟢",
+   "detail": "updated=2026-06-23 20:07:01 terms=24"
   }
  ],
  "ann_volume": {
   "status": "⚠️",
-  "detail": "today 3 vs median 12 (76% dev)"
+  "detail": "today 0 vs median 12 — check scraper"
  },
  "deepseek": {
   "status": "⚪",
@@ -44,12 +49,12 @@
   {
    "name": "corpTypes",
    "status": "🟢",
-   "detail": "224/2741 stocks have corp actions"
+   "detail": "160/2780 stocks have corp actions"
   },
   {
    "name": "events",
-   "status": "🟢",
-   "detail": "820 total, 12 recent, 0 filled"
+   "status": "⚠️",
+   "detail": "808 total, 0 recent, 0 filled"
   }
  ]
 }

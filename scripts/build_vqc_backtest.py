@@ -389,7 +389,6 @@ def _turn_stats(rows: list[dict[str, Any]]) -> dict[str, Any]:
 def _reference_examples(n_bars: int) -> list[dict[str, Any]]:
     refs = [
         {"c": "02800", "symbol": "2800", "exchange": "HKEX", "n": "盈富基金", "mc": 0, "mc_bucket": "large"},
-        {"c": "QQQ", "symbol": "QQQ", "exchange": "NASDAQ", "n": "QQQ", "mc": 0, "mc_bucket": "large"},
     ]
     out = []
     for stock in refs:

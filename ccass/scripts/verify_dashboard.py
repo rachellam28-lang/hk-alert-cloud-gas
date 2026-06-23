@@ -106,11 +106,4 @@ result = {
 }
 
 print(json.dumps(result, ensure_ascii=False, indent=2))
-
-if __name__ == "__main__":
-    status = result["status"]
-    if status == "FAIL":
-        sys.exit(1)
-    elif status == "WARN":
-        sys.exit(2)
-    sys.exit(0)
+sys.exit(1 if result["status"] == "FAIL" else 0)

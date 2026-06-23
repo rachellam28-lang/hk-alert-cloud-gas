@@ -124,7 +124,7 @@ tr:hover td { background:rgba(39,49,74,.22); }
       <div class="eyebrow">MARK MINERVINI</div>
       <div class="title">Distribution Day 分佈日</div>
       <div class="subtitle">
-        分佈日係市場壓力訊號：benchmark / index / ETF 收低，而且成交量高過上一日。呢頁用 HSI1! 同 QQQ 做 proxy，
+        分佈日係市場壓力訊號：benchmark / index / ETF 收低，而且成交量高過上一日。呢頁用 HSI1! 做 proxy，
         以 25 個交易日 rolling count 去睇市場係 healthy、caution、under pressure 定 correction。
       </div>
     </div>
@@ -153,7 +153,6 @@ tr:hover td { background:rgba(39,49,74,.22); }
       <input id="search" type="text" placeholder="搜尋 benchmark / 日期…" oninput="renderTable()" />
       <button class="btn active" data-filter="all" onclick="setFilter('all')">全部</button>
       <button class="btn" data-filter="hk" onclick="setFilter('hk')">HK</button>
-      <button class="btn" data-filter="us" onclick="setFilter('us')">US</button>
       <button class="btn" data-filter="pressure" onclick="setFilter('pressure')">壓力日</button>
     </div>
     <div class="table-wrap">
@@ -214,7 +213,6 @@ function renderCards() {
     ['Benchmark 數', benchmarks.length, `有數據：${DATA.benchmarks_with_data ?? 0}`],
     ['分佈日總數', DATA.signals_total ?? 0, `window ${DATA.window_days ?? 25}`],
     ['HK 現況', (benchmarks[0]?.summary?.current_dd_count_25d ?? 0) + 'D', stateLabel(benchmarks[0]?.summary?.current_market_state)],
-    ['US 現況', (benchmarks[1]?.summary?.current_dd_count_25d ?? 0) + 'D', stateLabel(benchmarks[1]?.summary?.current_market_state)],
   ];
   document.getElementById('summaryCards').innerHTML = cards.map(([k,v,s]) => `
     <div class="card">
@@ -276,7 +274,6 @@ function renderBars() {
 function matchesFilter(row) {
   if (currentFilter === 'all') return true;
   if (currentFilter === 'hk') return row.benchmark === 'HK';
-  if (currentFilter === 'us') return row.benchmark === 'US';
   if (currentFilter === 'pressure') return row.dd_count_25d >= 4;
   return true;
 }
@@ -285,7 +282,7 @@ function renderTable() {
   const q = (document.getElementById('search').value || '').trim().toLowerCase();
   const rows = [];
   for (const b of (DATA.benchmarks || [])) {
-    const bench = b.label === 'HK proxy' ? 'HK' : 'US';
+    const bench = 'HK';
     for (const r of (b.signals || [])) {
       rows.push({...r, benchmark: bench, bench_name: b.code + ' ' + b.name});
     }

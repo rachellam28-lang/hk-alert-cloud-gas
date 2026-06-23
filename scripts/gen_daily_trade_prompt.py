@@ -9,6 +9,7 @@ from pathlib import Path
 BASE = Path(__file__).resolve().parent.parent
 VQC_PATH = BASE / "data" / "vqc_backtest.json"
 DD_PATH = BASE / "data" / "distribution_day_backtest.json"
+JIEQI_PATH = BASE / "data" / "jieqi_backtest.json"
 HOLDINGS_PATH = BASE / "data" / "holdings.json"
 SIGNALS_PATH = BASE / "data" / "signals.json"
 TRADEABLE_PATH = BASE / "data" / "tradeable.json"
@@ -43,6 +44,19 @@ DD = load_json(
         "window_days": 25,
         "drop_pct": 0.2,
         "signal_label": "Distribution Day",
+    },
+)
+JIEQI = load_json(
+    JIEQI_PATH,
+    {
+        "updated": "",
+        "summary": {},
+        "window": {},
+        "offset_stats": [],
+        "top_terms": [],
+        "terms_total": 0,
+        "sample_total": 0,
+        "universe_total": 0,
     },
 )
 
@@ -112,6 +126,7 @@ for item in TRADEABLE:
 
 VQC_JSON = json.dumps(VQC, ensure_ascii=False)
 DD_JSON = json.dumps(DD, ensure_ascii=False)
+JIEQI_JSON = json.dumps(JIEQI, ensure_ascii=False)
 HOLDINGS_JSON = json.dumps(holdings_map, ensure_ascii=False)
 SIGNALS_JSON = json.dumps(signals_map, ensure_ascii=False)
 TRADEABLE_JSON = json.dumps(tradeable_map, ensure_ascii=False)
@@ -192,6 +207,7 @@ a { color:inherit; text-decoration:none; }
   <a href="rights_analysis.html">📋 供配股</a>
   <a class="active" href="daily_trade_prompt.html">🚦 每日提示</a>
   <a href="timing_analysis.html">⏱ 時間窗口</a>
+  <a href="jieqi_analysis.html">🧭 節氣窗口</a>
   <a href="distribution_day.html">📉 分佈日</a>
   <a href="vqc_analysis.html">📈 成交轉勢日</a>
   <a href="docs/ccass-warroom.html">⚡ 戰情室</a>
@@ -217,14 +233,30 @@ a { color:inherit; text-decoration:none; }
   <section class="cards" id="summaryCards"></section>
 
   <section class="panel">
+    <div class="panel-title">今日節氣窗口</div>
+    <div class="mini-grid" id="jieqiCards"></div>
+    <div class="note" id="jieqiNote"></div>
+    <div class="link-row">
+      <a class="btn teal" href="jieqi_analysis.html">開節氣窗口</a>
+    </div>
+  </section>
+
+  <section class="panel">
     <div class="panel-title">今日總結</div>
     <div class="mini-grid" id="decisionGrid"></div>
     <div class="note" id="decisionNote"></div>
     <div class="link-row">
       <a class="btn blue" href="timing_analysis.html">開時間窗口</a>
+      <a class="btn teal" href="jieqi_analysis.html">開節氣窗口</a>
       <a class="btn gold" href="distribution_day.html">開分佈日</a>
       <a class="btn red" href="vqc_analysis.html">開成交轉勢日</a>
     </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-title">CCASS 教室</div>
+    <div class="mini-grid" id="ccassCards"></div>
+    <div class="note" id="ccassNote"></div>
   </section>
 
   <section class="panel">
@@ -275,11 +307,16 @@ a { color:inherit; text-decoration:none; }
   <div class="foot">
     呢頁係工作提示，不係投資建議。`分佈日` 做環境，`成交轉勢日` 做 timing，兩者一齊睇先最實用。
   </div>
+  <div class="foot" id="tradePromptFoot">
+    更新於：載入中…<br>
+    數據來源：data/vqc_backtest.json · data/distribution_day_backtest.json · holdings.json · localStorage（hk_watchlist_v1）
+  </div>
 </div>
 
 <script>
 const VQC = __VQC_JSON__;
 const DD = __DD_JSON__;
+const JIEQI = __JIEQI_JSON__;
 const HOLDINGS = __HOLDINGS_JSON__;
 const SIGNALS = __SIGNALS_JSON__;
 const TRADEABLE = __TRADEABLE_JSON__;
@@ -366,18 +403,16 @@ function renderSummary() {
   const vs = VQC.summary || {};
   const edge = VQC.edge || {};
   const hk = getBench('hk').summary || {};
-  const us = getBench('us').summary || {};
   const hkState = hk.current_market_state || 'healthy';
-  const usState = us.current_market_state || 'healthy';
-  const marketScore = clamp(Math.round((stateScore(hkState) * 0.7) + (stateScore(usState) * 0.3)), 0, 100);
+  const marketScore = clamp(Math.round(stateScore(hkState)), 0, 100);
   const vqcBase = (vs.overall_rate_2d ?? 50) - (vs.baseline_overall_rate_2d ?? 50);
   const vqcEdge = edge.edge_turn_2d ?? 0;
   const vqcScore = clamp(Math.round(50 + vqcBase * 1.8 + vqcEdge * 2.2), 0, 100);
-  const combined = clamp(Math.round(marketScore * 0.6 + vqcScore * 0.4), 0, 100);
+  const combined = clamp(Math.round(marketScore * 0.55 + vqcScore * 0.45), 0, 100);
   const [action, cls] = verdict(combined);
   const cards = [
     ['今日判斷', action, `score ${combined}/100`],
-    ['市場濾網', stateLabel(hkState), `HK ${hk.current_dd_count_25d ?? '—'}D / US ${us.current_dd_count_25d ?? '—'}D`],
+    ['市場濾網', stateLabel(hkState), `HK ${hk.current_dd_count_25d ?? '—'}D`],
     ['VQC 信號', vs.overall_rate_2d == null ? '—' : vs.overall_rate_2d.toFixed(1) + '%', `edge ${vqcEdge >= 0 ? '+' : ''}${vqcEdge.toFixed(1)}pt`],
     ['環境基調', marketScore >= 70 ? '偏好' : marketScore >= 50 ? '中性' : '偏弱', `市場 ${marketScore} / VQC ${vqcScore}`],
   ];
@@ -394,7 +429,7 @@ function renderSummary() {
     <div class="mini"><div class="lab">市場分</div><div class="val">${marketScore}</div></div>`;
 
   const notes = [];
-  if (hkState === 'correction' || usState === 'correction') notes.push('大市已入 correction，先防守，唔好追新倉。');
+  if (hkState === 'correction') notes.push('大市已入 correction，先防守，唔好追新倉。');
   else if (hkState === 'under_pressure') notes.push('HK 市況受壓，只做最強 trigger。');
   else if (hkState === 'caution') notes.push('大市偏緊，要收窄出手條件。');
   else notes.push('大市環境正常，VQC 有機會先值得跟。');
@@ -405,6 +440,33 @@ function renderSummary() {
   document.getElementById('updatedAt').textContent = new Date().toISOString().slice(0, 19).replace('T', ' ');
   document.getElementById('vqcUpdated').textContent = VQC.updated || '—';
   document.getElementById('ddUpdated').textContent = DD.updated || '—';
+}
+
+function renderJieqi() {
+  const s = JIEQI.summary || {};
+  const top = (JIEQI.top_terms || [])[0] || {};
+  const cards = [
+    ['窗口命中', s.window_rate_any == null ? '—' : s.window_rate_any.toFixed(1) + '%', `baseline ${s.baseline_window_rate_any == null ? '—' : s.baseline_window_rate_any.toFixed(1) + '%'}`],
+    ['最佳 offset', s.best_offset == null ? '—' : (s.best_offset > 0 ? '+' : '') + s.best_offset + 'D', `hit ${s.best_offset_rate_2d == null ? '—' : s.best_offset_rate_2d.toFixed(1) + '%'}`],
+    ['窗口 Edge', s.edge_window_any == null ? '—' : (s.edge_window_any >= 0 ? '+' : '') + s.edge_window_any.toFixed(1) + 'pt', '±2 trading days'],
+    ['首選節氣', top.term_name || '—', `window ${top.window_rate_any == null ? '—' : top.window_rate_any.toFixed(1) + '%'}`],
+  ];
+  document.getElementById('jieqiCards').innerHTML = cards.map(([k,v,s2]) => `
+    <div class="mini">
+      <div class="lab">${k}</div>
+      <div class="val">${v}</div>
+      <div class="note">${s2}</div>
+    </div>`).join('');
+
+  const notes = [];
+  if (s.window_rate_any == null) {
+    notes.push('節氣窗口暫時未有足夠回測資料。');
+  } else {
+    notes.push(`節氣以 ±${s.window_span_days ?? 2} 個交易日窗口去睇，唔再只睇正日。`);
+    notes.push(`目前最佳 offset 係 ${s.best_offset == null ? '—' : (s.best_offset > 0 ? '+' : '') + s.best_offset + 'D'}。`);
+    notes.push('如果窗口 edge 無明顯高過 baseline，就只當 calendar anchor。');
+  }
+  document.getElementById('jieqiNote').textContent = notes.join(' ');
 }
 
 function renderWatchlistPrompt() {
@@ -467,14 +529,51 @@ function renderWatchlistPrompt() {
   }).join('');
 }
 
+function renderCcassLesson() {
+  const stocks = Object.values(HOLDINGS || {});
+  const valid = stocks.filter(s => s && typeof s.d5 === 'number');
+  const gainers = valid
+    .filter(s => (s.d5 || 0) > 0)
+    .sort((a, b) => (b.d5 || 0) - (a.d5 || 0));
+  const losers = valid
+    .filter(s => (s.d5 || 0) < 0)
+    .sort((a, b) => (a.d5 || 0) - (b.d5 || 0));
+  const strongBuy = gainers.find(s => (s.su || 0) > 0) || gainers[0];
+  const strongSell = losers.find(s => (s.sd || 0) > 0) || losers[0];
+  const accCount = valid.filter(s => (s.d5 || 0) > 0 && (s.su || 0) > 0).length;
+  const distCount = valid.filter(s => (s.d5 || 0) < 0 && (s.sd || 0) > 0).length;
+
+  const cards = [
+    ['增持/收集', accCount, 'd5 > 0 且 su = 1'],
+    ['減持/派發', distCount, 'd5 < 0 且 sd = 1'],
+    ['最強增持', strongBuy ? `${strongBuy.c}` : '—', strongBuy ? `${strongBuy.n} · ${fmtPct(strongBuy.d5)}` : '暫無'],
+    ['最強減持', strongSell ? `${strongSell.c}` : '—', strongSell ? `${strongSell.n} · ${fmtPct(strongSell.d5)}` : '暫無'],
+  ];
+  document.getElementById('ccassCards').innerHTML = cards.map(([k,v,s]) => `
+    <div class="mini">
+      <div class="lab">${k}</div>
+      <div class="val">${v}</div>
+      <div class="note">${s}</div>
+    </div>`).join('');
+
+  const hints = [];
+  if (strongBuy && strongBuy.d5 >= 10) {
+    hints.push(`例子：${strongBuy.c} ${strongBuy.n} 近 5 日 +${strongBuy.d5.toFixed(2)}%，可當「收集窗」示範。`);
+  }
+  if (strongSell && strongSell.d5 <= -10) {
+    hints.push(`例子：${strongSell.c} ${strongSell.n} 近 5 日 ${strongSell.d5.toFixed(2)}%，可當「派發窗」示範。`);
+  }
+  hints.push('教學重點：CCASS 睇的是「席位變化」，唔係即日方向；要配合股價、成交量、公告先解讀。');
+  hints.push('你系統入面可以把呢頁當成「日常解讀層」，而唔係硬訊號。');
+  document.getElementById('ccassNote').textContent = hints.join(' ');
+}
+
 function renderBars() {
   const vs = VQC.summary || {};
   const hk = (getBench('hk').summary || {});
-  const us = (getBench('us').summary || {});
   const marketState = [
     ['HK 狀態', stateLabel(hk.current_market_state), 'bar-fill-blue', stateScore(hk.current_market_state)],
-    ['US 狀態', stateLabel(us.current_market_state), 'bar-fill-green', stateScore(us.current_market_state)],
-    ['市場總分', 'market', 'bar-fill-amber', clamp(Math.round((stateScore(hk.current_market_state || 'healthy') * 0.7) + (stateScore(us.current_market_state || 'healthy') * 0.3)), 0, 100)],
+    ['市場總分', 'market', 'bar-fill-amber', clamp(Math.round(stateScore(hk.current_market_state || 'healthy')), 0, 100)],
   ];
   const triggerState = [
     ['VQC 整體2D', fmtPct(vs.overall_rate_2d), 'bar-fill-green', clamp(Math.round((vs.overall_rate_2d ?? 0)), 0, 100)],
@@ -502,12 +601,10 @@ function renderBars() {
 
 function renderRules() {
   const hk = getBench('hk').summary || {};
-  const us = getBench('us').summary || {};
   const hkState = hk.current_market_state || 'healthy';
-  const usState = us.current_market_state || 'healthy';
   const vqc = VQC.summary || {};
   const lines = [
-    hkState === 'correction' || usState === 'correction'
+    hkState === 'correction'
       ? '1. 今日不宜主動加倉，先等大市壓力降級。'
       : '1. 可以做，但只限有明確 trigger 嘅標的。',
     hkState === 'under_pressure'
@@ -523,9 +620,17 @@ function renderRules() {
 }
 
 renderSummary();
+renderJieqi();
+renderCcassLesson();
 renderWatchlistPrompt();
 renderBars();
 renderRules();
+
+const tradePromptFoot = document.getElementById('tradePromptFoot');
+if (tradePromptFoot) {
+  const updated = VQC.updated ? String(VQC.updated).replace('T', ' ').slice(0, 16) : '—';
+  tradePromptFoot.innerHTML = `更新於：${updated}<br>數據來源：data/vqc_backtest.json · data/distribution_day_backtest.json · data/jieqi_backtest.json · holdings.json · localStorage（hk_watchlist_v1）`;
+}
 </script>
 </body>
 </html>"""
@@ -533,6 +638,7 @@ renderRules();
 html = (
     html.replace("__VQC_JSON__", VQC_JSON)
     .replace("__DD_JSON__", DD_JSON)
+    .replace("__JIEQI_JSON__", JIEQI_JSON)
     .replace("__HOLDINGS_JSON__", HOLDINGS_JSON)
     .replace("__SIGNALS_JSON__", SIGNALS_JSON)
     .replace("__TRADEABLE_JSON__", TRADEABLE_JSON)

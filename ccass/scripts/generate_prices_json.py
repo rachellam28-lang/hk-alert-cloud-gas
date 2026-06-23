@@ -17,7 +17,8 @@ from datetime import datetime
 
 PROJECT = Path(__file__).parent.parent
 DB = PROJECT / "holdings.db"
-PRICES_JSON = PROJECT / "data" / "stock_prices.json"
+PRICES_JSON = PROJECT.parent / "data" / "stock_prices.json"
+LEGACY_PRICES_JSON = PROJECT / "data" / "stock_prices.json"
 OUT = PROJECT.parent / "data" / "prices.json"
 
 
@@ -43,11 +44,15 @@ def generate():
 
     # Try stock_prices.json first (maintained daily by refresh_prices_and_suspended.py)
     prices = {}
-    if PRICES_JSON.exists():
+    for candidate in (PRICES_JSON, LEGACY_PRICES_JSON):
+        if not candidate.exists():
+            continue
         try:
-            prices = json.loads(PRICES_JSON.read_text(encoding="utf-8"))
+            prices = json.loads(candidate.read_text(encoding="utf-8"))
         except Exception:
             prices = {}
+        if prices:
+            break
 
     # Fallback: read from stock_prices DB table (latest close per stock)
     if not prices:

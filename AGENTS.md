@@ -70,6 +70,13 @@
 - Easier to add columns later, query 比 Python pandas 簡單
 - Keep it simple — 呢個 use case 根本唔需要 PostgreSQL
 
+### GUIDELINE-007：Telegram / dashboard / notes must share the same source of truth
+- 所有對外 update（Telegram、health_check、daily note、dashboard summary）必須同一套口徑
+- 優先級：`holdings.db` / `ccass_trends` / `holdings.json` / `ccass.json` / `data/*.json`
+- 唔可以 Telegram 講 updated，但頁面/notes 用舊 cache
+- 當有 cache / fallback / legacy duplicate（例如 `data/prices.json` vs `data/stock_prices.json`）時，要明確揀一個 primary source，其他只可作 fallback 並標示
+- 如果發現 Telegram 同頁面唔一致，先修 source / export path，再修文案
+
 ---
 
 ## 主動性規則（Proactive Mandate）
