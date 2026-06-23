@@ -33,12 +33,18 @@ echo "2.6/5 Generate signals.json for dashboard fallback..."
 echo "3/5 Regenerate holdings.json..."
 "$PYTHON_BIN" scripts/regenerate_json.py || { echo "ERROR: holdings.json regeneration failed"; exit 1; }
 
+echo "3.5/5 Build publish bundle..."
+"$PYTHON_BIN" scripts/build_publish_bundle.py || { echo "ERROR: publish bundle build failed"; exit 1; }
+
+echo "3.6/5 Regenerate daily trade prompt..."
+"$PYTHON_BIN" scripts/gen_daily_trade_prompt.py || { echo "ERROR: daily trade prompt generation failed"; exit 1; }
+
 echo "4/5 Audit gate..."
 "$PYTHON_BIN" scripts/audit_gate.py --min-coverage "${AUDIT_MIN_COVERAGE:-99.0}" || { echo "ERROR: audit gate failed"; exit 1; }
 
 echo "5/5 Deploy to GitHub..."
 cd "$REPO_ROOT"
-git add holdings.json ccass.json data/stock_prices.json data/suspended_stocks.json data/prices.json data/signals.json
+git add holdings.json ccass.json data/stock_prices.json data/suspended_stocks.json data/prices.json data/signals.json data/publish_bundle.json daily_trade_prompt.html
 if git commit -m "daily: holdings refresh $(date +%Y-%m-%d)"; then
     git push || { echo "ERROR: git push failed"; exit 1; }
 else

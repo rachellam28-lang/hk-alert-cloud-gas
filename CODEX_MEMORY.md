@@ -1,6 +1,6 @@
 # Codex Persistent Memory
 
-Last updated: 2026-06-23
+Last updated: 2026-06-24
 
 ## Always load first
 
@@ -35,12 +35,15 @@ If these disagree with chat history, prefer the file state and current repo stat
   - Both show `美股P/E` and `美股 breadth`
 - A Cloudflare Cron Trigger path is being added to trigger the GitHub refresh workflow.
 - GitHub workflow push may fail if PAT lacks `workflow` scope.
+- `data/publish_bundle.json` is the shared publish metadata layer for Telegram / dashboard / Daily / health check.
 
 ## Cloudflare / GitHub
 
 - Main site deploys from GitHub `main` to Cloudflare Pages.
 - Cloudflare schedule should trigger GitHub `workflow_dispatch` for refresh.
 - If GitHub workflow push fails, check PAT `workflow` scope first.
+- CCASS events cron should use its own Telegram bot/chat secrets, not the Hermes bot.
+- Major source-of-truth changes should be synced to Hermes via Telegram so the human-visible side stays aligned.
 
 ## User preferences
 
@@ -49,6 +52,8 @@ If these disagree with chat history, prefer the file state and current repo stat
 - User wants direct fixes, not just analysis.
 - User wants the system to stay HK-only in the UI, except for `美股P/E` and `美股 breadth`.
 - User dislikes vague explanations; give a short conclusion, then details only if needed.
+- User wants CCASS cron alerts separated from Hermes because Hermes gets too many messages.
+- User wants major workflow / source-of-truth changes mirrored to Hermes via Telegram updates.
 
 ## Keep updated
 

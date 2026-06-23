@@ -10,6 +10,7 @@ BASE = Path(__file__).resolve().parent.parent
 VQC_PATH = BASE / "data" / "vqc_backtest.json"
 DD_PATH = BASE / "data" / "distribution_day_backtest.json"
 JIEQI_PATH = BASE / "data" / "jieqi_backtest.json"
+BUNDLE_PATH = BASE / "data" / "publish_bundle.json"
 HOLDINGS_PATH = BASE / "data" / "holdings.json"
 SIGNALS_PATH = BASE / "data" / "signals.json"
 TRADEABLE_PATH = BASE / "data" / "tradeable.json"
@@ -57,6 +58,16 @@ JIEQI = load_json(
         "terms_total": 0,
         "sample_total": 0,
         "universe_total": 0,
+    },
+)
+BUNDLE = load_json(
+    BUNDLE_PATH,
+    {
+        "generated_at": "",
+        "publish": {},
+        "files": {},
+        "headline": {},
+        "telegram": {},
     },
 )
 
@@ -319,6 +330,7 @@ a { color:inherit; text-decoration:none; }
 const VQC = __VQC_JSON__;
 const DD = __DD_JSON__;
 const JIEQI = __JIEQI_JSON__;
+const PUBLISH_BUNDLE = __BUNDLE_JSON__;
 const HOLDINGS = __HOLDINGS_JSON__;
 const SIGNALS = __SIGNALS_JSON__;
 const TRADEABLE = __TRADEABLE_JSON__;
@@ -452,7 +464,8 @@ function renderSummary() {
   else notes.push('VQC 數字對 baseline 有優勢，可作 timing 參考。');
   document.getElementById('decisionNote').textContent = notes.join(' ');
 
-  document.getElementById('updatedAt').textContent = new Date().toISOString().slice(0, 19).replace('T', ' ');
+  const bundleUpdated = PUBLISH_BUNDLE.generated_at || new Date().toISOString().slice(0, 19);
+  document.getElementById('updatedAt').textContent = String(bundleUpdated).replace('T', ' ').slice(0, 19);
   document.getElementById('vqcUpdated').textContent = VQC.updated || '—';
   document.getElementById('ddUpdated').textContent = DD.updated || '—';
 }
@@ -644,8 +657,8 @@ renderRules();
 
 const tradePromptFoot = document.getElementById('tradePromptFoot');
 if (tradePromptFoot) {
-  const updated = VQC.updated ? String(VQC.updated).replace('T', ' ').slice(0, 16) : '—';
-  tradePromptFoot.innerHTML = `更新於：${updated}<br>數據來源：data/vqc_backtest.json · data/distribution_day_backtest.json · data/jieqi_backtest.json · holdings.json · localStorage（hk_watchlist_v1）`;
+  const updated = (PUBLISH_BUNDLE.generated_at || VQC.updated || '').replace('T', ' ').slice(0, 16) || '—';
+  tradePromptFoot.innerHTML = `更新於：${updated}<br>數據來源：data/publish_bundle.json · data/vqc_backtest.json · data/distribution_day_backtest.json · data/jieqi_backtest.json · holdings.json · localStorage（hk_watchlist_v1）`;
 }
 </script>
 </body>
@@ -655,6 +668,7 @@ html = (
     html.replace("__VQC_JSON__", VQC_JSON)
     .replace("__DD_JSON__", DD_JSON)
     .replace("__JIEQI_JSON__", JIEQI_JSON)
+    .replace("__BUNDLE_JSON__", json.dumps(BUNDLE, ensure_ascii=False))
     .replace("__HOLDINGS_JSON__", HOLDINGS_JSON)
     .replace("__SIGNALS_JSON__", SIGNALS_JSON)
     .replace("__TRADEABLE_JSON__", TRADEABLE_JSON)

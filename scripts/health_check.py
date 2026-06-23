@@ -32,6 +32,7 @@ CCASS_DIR = os.path.join(BASE, "ccass")
 
 WATCH_FILES = {
     "holdings.json":        {"path": os.path.join(BASE, "holdings.json"),              "max_age_h": 26},
+    "publish_bundle":      {"path": os.path.join(BASE, "data", "publish_bundle.json"), "max_age_h": 26},
     "signals.json":         {"path": os.path.join(BASE, "data", "signals.json"),       "max_age_h": 26},
     "alerts.json":          {"path": os.path.join(BASE, "data", "alerts.json"),        "max_age_h": 26},
     "announcements.json":   {"path": os.path.join(BASE, "data", "announcements.json"), "max_age_h": 26},
@@ -84,6 +85,24 @@ def check_freshness():
                 "name": name,
                 "status": "🟢" if updated not in (None, "", "—") else "🔴",
                 "detail": f"updated={updated} coverage={coverage}% stock_count={stock_count}",
+            })
+        elif name == "publish_bundle":
+            data = load_json(cfg["path"], default={}) or {}
+            generated = str(data.get("generated_at") or "—")[:19].replace("T", " ")
+            publish = data.get("publish", {}) or {}
+            files = data.get("files", {}) or {}
+            holdings = files.get("holdings", {}) or {}
+            signals = files.get("signals", {}) or {}
+            alerts = files.get("alerts", {}) or {}
+            rows.append({
+                "name": name,
+                "status": "🟢" if generated != "—" else "🔴",
+                "detail": (
+                    f"generated={generated} publish={publish.get('status', '—')} "
+                    f"holdings={holdings.get('updated', '—')} "
+                    f"signals={signals.get('updated', '—')} "
+                    f"alerts={alerts.get('updated', '—')}"
+                ),
             })
         elif name == "signals.json":
             data = load_json(cfg["path"], default={}) or {}
@@ -218,6 +237,33 @@ def check_integrity():
 
 def check_ccass_publish():
     """Use the real audit gate so Telegram reflects the actual publish state."""
+    bundle = load_json(os.path.join(BASE, "data", "publish_bundle.json"), default={}) or {}
+    if bundle:
+        publish = bundle.get("publish", {}) or {}
+        files = bundle.get("files", {}) or {}
+        holdings = files.get("holdings", {}) or {}
+        signals = files.get("signals", {}) or {}
+        alerts = files.get("alerts", {}) or {}
+        latest_db = publish.get("latest_db_date", "—")
+        holdings_updated = publish.get("holdings_updated") or holdings.get("updated", "—")
+        coverage_pct = publish.get("coverage_pct")
+        verify_data_obj = publish.get("verify_data", {}) or {}
+        verify_dash_obj = publish.get("verify_dashboard", {}) or {}
+        verify_data = verify_data_obj.get("status") or ("WARN" if verify_data_obj.get("warnings") else "PASS")
+        verify_dash = verify_dash_obj.get("status") or ("WARN" if verify_dash_obj.get("warnings") else "PASS")
+        detail = (
+            f"bundle {bundle.get('generated_at', '—')[:19].replace('T', ' ')} | "
+            f"DB {latest_db} | publish {holdings_updated} | coverage {coverage_pct}% "
+            f"| signals {signals.get('updated', '—')} | alerts {alerts.get('updated', '—')} "
+            f"| verify_data {verify_data} | verify_dashboard {verify_dash}"
+        )
+        if publish.get("status") == "PASS":
+            return {"status": "🟢", "detail": detail, "raw": bundle}
+        if publish.get("status") == "WARN":
+            return {"status": "⚠️", "detail": detail, "raw": bundle}
+        if publish.get("status"):
+            return {"status": "🔴", "detail": detail, "raw": bundle}
+        # fall through if bundle exists but publish block empty
     try:
         proc = subprocess.run(
             [sys.executable, "scripts/audit_gate.py", "--min-coverage", "99.0"],
