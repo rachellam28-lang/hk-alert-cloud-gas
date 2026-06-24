@@ -21,6 +21,9 @@ sharded_*_master.log
 
 # Local notes / daily logs
 Daily/
+*.log
+*.log.*
+.codex-pass*.log
 
 # Python
 __pycache__/

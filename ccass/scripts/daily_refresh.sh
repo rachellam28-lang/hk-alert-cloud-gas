@@ -39,6 +39,9 @@ echo "3.5/5 Build publish bundle..."
 echo "3.6/5 Regenerate daily trade prompt..."
 "$PYTHON_BIN" scripts/gen_daily_trade_prompt.py || { echo "ERROR: daily trade prompt generation failed"; exit 1; }
 
+echo "3.7/5 Cleanup logs..."
+"$PYTHON_BIN" scripts/cleanup_logs.py || { echo "ERROR: log cleanup failed"; exit 1; }
+
 echo "4/5 Audit gate..."
 "$PYTHON_BIN" scripts/audit_gate.py --min-coverage "${AUDIT_MIN_COVERAGE:-99.0}" || { echo "ERROR: audit gate failed"; exit 1; }
 
