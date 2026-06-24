@@ -15,6 +15,33 @@
 
 所有對外輸出都要盡量讀同一套 metadata，避免「Telegram 講更新，但頁面食舊 cache」。
 
+### 主流程圖
+
+```mermaid
+flowchart LR
+    A[HKEX / Futu / Longbridge / localStorage] --> B[holdings.db / raw JSON]
+    B --> C[runner.py / trend / signal / score]
+    C --> D[holdings.json / ccass.json / data/*.json]
+    D --> E[publish_bundle.json]
+    E --> F[index.html / signals.html / rights_analysis.html / daily_trade_prompt.html]
+    E --> G[health_check.py]
+    E --> H[Telegram]
+    H --> I[Hermes bot]
+    H --> J[Cron / events bot]
+    F --> K[Cloudflare Pages]
+    K --> L[Live site]
+    G --> H
+    C --> M[Daily/ + Obsidian]
+```
+
+### 你可以點樣理解
+
+- **source**：原始資料先入 `holdings.db` 同 `data/*.json`
+- **compute**：`runner.py` 同相關 script 計 trend / score / backtest
+- **publish**：`publish_bundle.json` 做共用 metadata
+- **display**：網站頁面只讀已發佈資料
+- **notify**：Telegram 同 health check 都要讀同一份 bundle
+
 ---
 
 ## 2. 原始資料層
@@ -286,4 +313,3 @@
 - Daily note
 
 五邊一致，先算真完成。
-
