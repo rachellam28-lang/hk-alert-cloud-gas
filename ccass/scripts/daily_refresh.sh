@@ -47,7 +47,7 @@ echo "4/5 Audit gate..."
 
 echo "5/5 Deploy to GitHub..."
 cd "$REPO_ROOT"
-git add holdings.json ccass.json data/stock_prices.json data/suspended_stocks.json data/prices.json data/signals.json data/publish_bundle.json daily_trade_prompt.html
+git add holdings.json data/holdings.json ccass.json data/stock_prices.json data/suspended_stocks.json data/prices.json data/signals.json data/publish_bundle.json daily_trade_prompt.html
 if git commit -m "daily: holdings refresh $(date +%Y-%m-%d)"; then
     git push || { echo "ERROR: git push failed"; exit 1; }
 else

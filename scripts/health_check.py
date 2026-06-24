@@ -32,6 +32,7 @@ CCASS_DIR = os.path.join(BASE, "ccass")
 
 WATCH_FILES = {
     "holdings.json":        {"path": os.path.join(BASE, "holdings.json"),              "max_age_h": 26},
+    "data/holdings.json":   {"path": os.path.join(BASE, "data", "holdings.json"),      "max_age_h": 26},
     "publish_bundle":      {"path": os.path.join(BASE, "data", "publish_bundle.json"), "max_age_h": 26},
     "signals.json":         {"path": os.path.join(BASE, "data", "signals.json"),       "max_age_h": 26},
     "alerts.json":          {"path": os.path.join(BASE, "data", "alerts.json"),        "max_age_h": 26},
@@ -207,6 +208,29 @@ def check_deepseek_balance():
 
 def check_integrity():
     rows = []
+
+    # Hard consistency check: root holdings.json and data/holdings.json must match.
+    root_holdings = load_json(WATCH_FILES["holdings.json"]["path"], default={}) or {}
+    data_holdings = load_json(WATCH_FILES["data/holdings.json"]["path"], default={}) or {}
+    if root_holdings and data_holdings:
+        same_updated = root_holdings.get("updated") == data_holdings.get("updated")
+        same_count = root_holdings.get("stock_count") == data_holdings.get("stock_count")
+        same_coverage = root_holdings.get("coverage_pct") == data_holdings.get("coverage_pct")
+        if not (same_updated and same_count and same_coverage):
+            rows.append({
+                "name": "holdings-sync",
+                "status": "🔴",
+                "detail": (
+                    f"root={root_holdings.get('updated')} / {root_holdings.get('stock_count')} "
+                    f"vs data={data_holdings.get('updated')} / {data_holdings.get('stock_count')}"
+                ),
+            })
+        else:
+            rows.append({
+                "name": "holdings-sync",
+                "status": "🟢",
+                "detail": f"updated={root_holdings.get('updated')} count={root_holdings.get('stock_count')}",
+            })
 
     sig = load_json(WATCH_FILES["signals.json"]["path"], default={})
     groups = sig.get("groups", [])

@@ -1,5 +1,5 @@
 """Regenerate holdings.json directly from DB — skips shard validation."""
-import json, sys, sqlite3, argparse
+import json, sys, sqlite3, argparse, shutil
 from pathlib import Path
 
 # Add holdings/ to path
@@ -44,6 +44,9 @@ if __name__ == "__main__":
     update_holdings_json(target_date)
     out_path = Path(__file__).parent.parent.parent / "holdings.json"
     data = json.loads(out_path.read_text(encoding="utf-8"))
+    data_path = Path(__file__).parent.parent.parent / "data" / "holdings.json"
+    data_path.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(out_path, data_path)
     expected = target_date.isoformat()
     if data.get("updated") != expected:
         print(f"ERROR: holdings.json stale date: {data.get('updated')} != {expected}")

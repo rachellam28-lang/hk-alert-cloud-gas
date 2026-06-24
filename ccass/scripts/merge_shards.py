@@ -170,7 +170,8 @@ def update_holdings_json(target_date: date) -> None:
         names[row[0]] = row[1] or row[0]
     
     # Get latest data for target_date (filter non-equity)
-    exclude_where = " AND ".join([f"cd.stock_code NOT LIKE ?" for p in EXCLUDE_PATTERNS])
+    exclude_params = tuple(EXCLUDE_PATTERNS)
+    exclude_where = " AND ".join([f"cd.stock_code NOT LIKE ?" for _ in EXCLUDE_PATTERNS])
     rows = db.execute(f"""
         SELECT cd.stock_code, cd.total_pct, cd.num_participants,
                cd.top5_pct, cd.top10_pct,
@@ -179,7 +180,7 @@ def update_holdings_json(target_date: date) -> None:
                cd.a00005_pct
         FROM holdings_daily cd
         WHERE cd.trade_date = ? AND {exclude_where}
-    """, (target_date.strftime("%Y-%m-%d"),)).fetchall()
+    """, (target_date.strftime("%Y-%m-%d"), *exclude_params)).fetchall()
     
     # Get trends for this date (with streak)
     trends = {}

@@ -99,8 +99,6 @@ def load_westock_deltas():
             stocks[code] = {
                 "d5": g.get("d5"),
                 "d20": g.get("d20"),
-                "d60": g.get("d60"),
-                "d120": g.get("d120"),
                 "lp": g.get("latestPrice"),
                 "mc": g.get("marketCap"),
                 "chg": g.get("changePercent"),
