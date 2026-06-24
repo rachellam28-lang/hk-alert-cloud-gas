@@ -6,7 +6,8 @@ Last updated: 2026-06-24
 
 1. `CODEX_MEMORY.md`
 2. `AGENTS.md`
-3. Latest file in `Daily/`
+3. `SYSTEM_MAP.md`
+4. Latest file in `Daily/`
 
 If these disagree with chat history, prefer the file state and current repo state.
 
@@ -17,6 +18,7 @@ If these disagree with chat history, prefer the file state and current repo stat
 - Prefer structural fixes over band-aids.
 - Keep small-cap data priority high.
 - Keep explanations short; act first, explain after.
+- The repo now has a canonical system map in `SYSTEM_MAP.md`; read it when orienting to the project.
 
 ## Current project facts
 
