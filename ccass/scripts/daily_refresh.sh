@@ -18,7 +18,28 @@ fi
 
 echo "=== $(date) ==="
 echo "1/5 Run HOLDINGS scrape..."
-"$PYTHON_BIN" -m src.runner || { echo "ERROR: HOLDINGS scrape failed"; exit 1; }
+RUNNER_ATTEMPTS="${HOLDINGS_RUNNER_ATTEMPTS:-3}"
+runner_rc=1
+for attempt in $(seq 1 "$RUNNER_ATTEMPTS"); do
+    echo "  attempt $attempt/$RUNNER_ATTEMPTS"
+    "$PYTHON_BIN" -m src.runner
+    runner_rc=$?
+    if [[ "$runner_rc" -eq 0 ]]; then
+        break
+    fi
+    if [[ "$runner_rc" -ne 1 ]]; then
+        echo "ERROR: HOLDINGS scrape failed (rc=$runner_rc)"
+        exit "$runner_rc"
+    fi
+    if [[ "$attempt" -lt "$RUNNER_ATTEMPTS" ]]; then
+        echo "  partial run; retrying resume mode..."
+        sleep 5
+    fi
+done
+if [[ "$runner_rc" -ne 0 ]]; then
+    echo "ERROR: HOLDINGS scrape remained partial after $RUNNER_ATTEMPTS attempts"
+    exit 1
+fi
 
 echo "2/5 Refresh prices + suspended (Futu)..."
 "$PYTHON_BIN" scripts/daily_lp_futu.py || { echo "ERROR: price refresh failed"; exit 1; }
