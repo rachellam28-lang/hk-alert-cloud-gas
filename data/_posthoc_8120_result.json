@@ -1,6 +1,188 @@
 {
-  "scan_date": "2026-06-22",
+  "scan_date": "2026-06-23",
   "results": [
+    {
+      "code": "01025",
+      "name": "KNT HOLDINGS",
+      "ann_date": "2026-06-22",
+      "typeLabel": "\u914d\u80a1",
+      "is_placement": true,
+      "is_rights": false,
+      "is_increase": false,
+      "best_alert": null,
+      "best_info": null,
+      "all_days": [
+        {
+          "offset": 1,
+          "date": "2026-06-23",
+          "jump": -7.08,
+          "vol_ratio": 0.11,
+          "close": 0.21,
+          "alert": "-"
+        }
+      ],
+      "ann_close": 0.226
+    },
+    {
+      "code": "02166",
+      "name": "SMART-CORE",
+      "ann_date": "2026-06-22",
+      "typeLabel": "\u914d\u80a1",
+      "is_placement": true,
+      "is_rights": false,
+      "is_increase": false,
+      "best_alert": "RED",
+      "best_info": [
+        1,
+        "2026-06-23",
+        24.08,
+        1.72,
+        4.38,
+        3.53
+      ],
+      "all_days": [
+        {
+          "offset": 1,
+          "date": "2026-06-23",
+          "jump": 24.08,
+          "vol_ratio": 1.72,
+          "close": 4.38,
+          "alert": "RED"
+        }
+      ],
+      "ann_close": 3.53
+    },
+    {
+      "code": "02889",
+      "name": "PATEO",
+      "ann_date": "2026-06-22",
+      "typeLabel": "\u80a1\u6771\u589e\u6301",
+      "is_placement": false,
+      "is_rights": false,
+      "is_increase": true,
+      "best_alert": "WATCH",
+      "best_info": [
+        1,
+        "2026-06-23",
+        -18.93,
+        0.72,
+        134.5,
+        165.9
+      ],
+      "all_days": [
+        {
+          "offset": 1,
+          "date": "2026-06-23",
+          "jump": -18.93,
+          "vol_ratio": 0.72,
+          "close": 134.5,
+          "alert": "WATCH"
+        }
+      ],
+      "ann_close": 165.9
+    },
+    {
+      "code": "03700",
+      "name": "INKEVERSE",
+      "ann_date": "2026-06-22",
+      "typeLabel": "\u914d\u80a1",
+      "is_placement": true,
+      "is_rights": false,
+      "is_increase": false,
+      "best_alert": null,
+      "best_info": null,
+      "all_days": [
+        {
+          "offset": 1,
+          "date": "2026-06-23",
+          "jump": -0.68,
+          "vol_ratio": 0.75,
+          "close": 1.45,
+          "alert": "-"
+        }
+      ],
+      "ann_close": 1.46
+    },
+    {
+      "code": "03708",
+      "name": "WORLD DIGI ECON",
+      "ann_date": "2026-06-22",
+      "typeLabel": "\u914d\u80a1",
+      "is_placement": true,
+      "is_rights": false,
+      "is_increase": false,
+      "best_alert": "WATCH",
+      "best_info": [
+        1,
+        "2026-06-23",
+        8.47,
+        0.83,
+        0.205,
+        0.189
+      ],
+      "all_days": [
+        {
+          "offset": 1,
+          "date": "2026-06-23",
+          "jump": 8.47,
+          "vol_ratio": 0.83,
+          "close": 0.205,
+          "alert": "WATCH"
+        }
+      ],
+      "ann_close": 0.189
+    },
+    {
+      "code": "00080",
+      "name": "CAI CORP",
+      "ann_date": "2026-06-22",
+      "typeLabel": "\u914d\u80a1",
+      "is_placement": true,
+      "is_rights": false,
+      "is_increase": false,
+      "best_alert": "WATCH",
+      "best_info": [
+        1,
+        "2026-06-23",
+        -8.47,
+        5.48,
+        0.27,
+        0.295
+      ],
+      "all_days": [
+        {
+          "offset": 1,
+          "date": "2026-06-23",
+          "jump": -8.47,
+          "vol_ratio": 5.48,
+          "close": 0.27,
+          "alert": "WATCH"
+        }
+      ],
+      "ann_close": 0.295
+    },
+    {
+      "code": "06939",
+      "name": "MEGAIN",
+      "ann_date": "2026-06-22",
+      "typeLabel": "\u914d\u80a1 / \u6536\u8cfc/\u8981\u7d04",
+      "is_placement": true,
+      "is_rights": false,
+      "is_increase": false,
+      "best_alert": null,
+      "best_info": null,
+      "all_days": [
+        {
+          "offset": 1,
+          "date": "2026-06-23",
+          "jump": 1.43,
+          "vol_ratio": 0.73,
+          "close": 2.13,
+          "alert": "-"
+        }
+      ],
+      "ann_close": 2.1
+    },
     {
       "code": "01792",
       "name": "CMON",
@@ -26,6 +208,14 @@
           "vol_ratio": 0.07,
           "close": 1.06,
           "alert": "WATCH"
+        },
+        {
+          "offset": 2,
+          "date": "2026-06-23",
+          "jump": 1.02,
+          "vol_ratio": 0.08,
+          "close": 0.99,
+          "alert": "WATCH"
         }
       ],
       "ann_close": 0.98
@@ -48,6 +238,14 @@
           "vol_ratio": 0.78,
           "close": 23.3,
           "alert": "-"
+        },
+        {
+          "offset": 2,
+          "date": "2026-06-23",
+          "jump": -6.39,
+          "vol_ratio": 0.89,
+          "close": 22.26,
+          "alert": "-"
         }
       ],
       "ann_close": 23.78
@@ -67,8 +265,16 @@
           "offset": 1,
           "date": "2026-06-22",
           "jump": -1.94,
-          "vol_ratio": 0.19,
+          "vol_ratio": 0.17,
           "close": 20.26,
+          "alert": "-"
+        },
+        {
+          "offset": 2,
+          "date": "2026-06-23",
+          "jump": -6.68,
+          "vol_ratio": 0.5,
+          "close": 19.28,
           "alert": "-"
         }
       ],
@@ -99,9 +305,54 @@
           "vol_ratio": 1.12,
           "close": 25.5,
           "alert": "WATCH"
+        },
+        {
+          "offset": 2,
+          "date": "2026-06-23",
+          "jump": -7.05,
+          "vol_ratio": 1.16,
+          "close": 24.8,
+          "alert": "WATCH"
         }
       ],
       "ann_close": 26.68
+    },
+    {
+      "code": "02349",
+      "name": "CH CITY INFRA",
+      "ann_date": "2026-06-18",
+      "typeLabel": "\u914d\u80a1 / \u5fa9\u724c",
+      "is_placement": true,
+      "is_rights": false,
+      "is_increase": false,
+      "best_alert": "WATCH",
+      "best_info": [
+        1,
+        "2026-06-22",
+        -2.99,
+        2.65,
+        0.065,
+        0.067
+      ],
+      "all_days": [
+        {
+          "offset": 1,
+          "date": "2026-06-22",
+          "jump": -2.99,
+          "vol_ratio": 2.65,
+          "close": 0.065,
+          "alert": "WATCH"
+        },
+        {
+          "offset": 2,
+          "date": "2026-06-23",
+          "jump": -8.96,
+          "vol_ratio": 58.7,
+          "close": 0.061,
+          "alert": "WATCH"
+        }
+      ],
+      "ann_close": 0.067
     },
     {
       "code": "02623",
@@ -120,6 +371,14 @@
           "jump": -0.43,
           "vol_ratio": 0.57,
           "close": 4.68,
+          "alert": "-"
+        },
+        {
+          "offset": 2,
+          "date": "2026-06-23",
+          "jump": -4.26,
+          "vol_ratio": 0.63,
+          "close": 4.5,
           "alert": "-"
         }
       ],
@@ -150,6 +409,14 @@
           "vol_ratio": 10.84,
           "close": 0.097,
           "alert": "WATCH"
+        },
+        {
+          "offset": 2,
+          "date": "2026-06-23",
+          "jump": -6.06,
+          "vol_ratio": 1.45,
+          "close": 0.093,
+          "alert": "-"
         }
       ],
       "ann_close": 0.099
@@ -171,6 +438,14 @@
           "jump": -2.56,
           "vol_ratio": 0.64,
           "close": 1.14,
+          "alert": "-"
+        },
+        {
+          "offset": 2,
+          "date": "2026-06-23",
+          "jump": -5.13,
+          "vol_ratio": 0.33,
+          "close": 1.11,
           "alert": "-"
         }
       ],
@@ -223,6 +498,14 @@
           "vol_ratio": 1.13,
           "close": 4.53,
           "alert": "-"
+        },
+        {
+          "offset": 2,
+          "date": "2026-06-23",
+          "jump": -4.45,
+          "vol_ratio": 0.36,
+          "close": 4.51,
+          "alert": "-"
         }
       ],
       "ann_close": 4.72
@@ -251,6 +534,14 @@
           "jump": 0.0,
           "vol_ratio": 4.46,
           "close": 0.137,
+          "alert": "WATCH"
+        },
+        {
+          "offset": 2,
+          "date": "2026-06-23",
+          "jump": -8.76,
+          "vol_ratio": 1.91,
+          "close": 0.125,
           "alert": "WATCH"
         }
       ],
@@ -281,6 +572,14 @@
           "vol_ratio": 2.31,
           "close": 165.9,
           "alert": "WATCH"
+        },
+        {
+          "offset": 2,
+          "date": "2026-06-23",
+          "jump": -28.04,
+          "vol_ratio": 0.72,
+          "close": 134.5,
+          "alert": "WATCH"
         }
       ],
       "ann_close": 186.9
@@ -302,6 +601,14 @@
           "jump": 6.4,
           "vol_ratio": 0.93,
           "close": 43.88,
+          "alert": "-"
+        },
+        {
+          "offset": 2,
+          "date": "2026-06-23",
+          "jump": 4.95,
+          "vol_ratio": 0.3,
+          "close": 43.28,
           "alert": "-"
         }
       ],
@@ -362,6 +669,14 @@
           "vol_ratio": 0.28,
           "close": 0.021,
           "alert": "-"
+        },
+        {
+          "offset": 3,
+          "date": "2026-06-23",
+          "jump": -12.5,
+          "vol_ratio": 0.14,
+          "close": 0.021,
+          "alert": "-"
         }
       ],
       "ann_close": 0.024
@@ -398,6 +713,14 @@
           "jump": -20.25,
           "vol_ratio": 0.32,
           "close": 0.63,
+          "alert": "-"
+        },
+        {
+          "offset": 3,
+          "date": "2026-06-23",
+          "jump": -22.78,
+          "vol_ratio": 0.24,
+          "close": 0.61,
           "alert": "-"
         }
       ],
@@ -436,6 +759,14 @@
           "vol_ratio": 2.65,
           "close": 0.065,
           "alert": "WATCH"
+        },
+        {
+          "offset": 3,
+          "date": "2026-06-23",
+          "jump": -12.86,
+          "vol_ratio": 58.7,
+          "close": 0.061,
+          "alert": "WATCH"
         }
       ],
       "ann_close": 0.07
@@ -465,6 +796,14 @@
           "jump": -0.95,
           "vol_ratio": 0.72,
           "close": 0.104,
+          "alert": "-"
+        },
+        {
+          "offset": 3,
+          "date": "2026-06-23",
+          "jump": -3.81,
+          "vol_ratio": 1.1,
+          "close": 0.101,
           "alert": "-"
         }
       ],
@@ -503,6 +842,14 @@
           "vol_ratio": 2.0,
           "close": 4.92,
           "alert": "WATCH"
+        },
+        {
+          "offset": 3,
+          "date": "2026-06-23",
+          "jump": -3.0,
+          "vol_ratio": 1.54,
+          "close": 5.17,
+          "alert": "WATCH"
         }
       ],
       "ann_close": 5.33
@@ -539,6 +886,14 @@
           "jump": -6.52,
           "vol_ratio": 1.77,
           "close": 0.43,
+          "alert": "WATCH"
+        },
+        {
+          "offset": 3,
+          "date": "2026-06-23",
+          "jump": -13.04,
+          "vol_ratio": 2.46,
+          "close": 0.4,
           "alert": "WATCH"
         }
       ],
@@ -606,6 +961,22 @@
           "vol_ratio": 0.76,
           "close": 0.186,
           "alert": "WATCH"
+        },
+        {
+          "offset": 2,
+          "date": "2026-06-22",
+          "jump": 0.54,
+          "vol_ratio": 0.0,
+          "close": 0.186,
+          "alert": "WATCH"
+        },
+        {
+          "offset": 3,
+          "date": "2026-06-23",
+          "jump": 2.16,
+          "vol_ratio": 0.53,
+          "close": 0.189,
+          "alert": "WATCH"
         }
       ],
       "ann_close": 0.185
@@ -636,6 +1007,14 @@
           "vol_ratio": 0.78,
           "close": 23.3,
           "alert": "-"
+        },
+        {
+          "offset": 3,
+          "date": "2026-06-23",
+          "jump": -10.53,
+          "vol_ratio": 0.89,
+          "close": 22.26,
+          "alert": "-"
         }
       ],
       "ann_close": 24.88
@@ -663,8 +1042,16 @@
           "offset": 2,
           "date": "2026-06-22",
           "jump": -5.06,
-          "vol_ratio": 0.19,
+          "vol_ratio": 0.17,
           "close": 20.26,
+          "alert": "-"
+        },
+        {
+          "offset": 3,
+          "date": "2026-06-23",
+          "jump": -9.65,
+          "vol_ratio": 0.5,
+          "close": 19.28,
           "alert": "-"
         }
       ],
@@ -700,7 +1087,15 @@
           "offset": 2,
           "date": "2026-06-22",
           "jump": -40.0,
-          "vol_ratio": 11.65,
+          "vol_ratio": 11.53,
+          "close": 0.018,
+          "alert": "WATCH"
+        },
+        {
+          "offset": 3,
+          "date": "2026-06-23",
+          "jump": -40.0,
+          "vol_ratio": 1.1,
           "close": 0.018,
           "alert": "WATCH"
         }
@@ -721,6 +1116,14 @@
         {
           "offset": 1,
           "date": "2026-06-18",
+          "jump": 0.0,
+          "vol_ratio": 0,
+          "close": 0.156,
+          "alert": "-"
+        },
+        {
+          "offset": 2,
+          "date": "2026-06-22",
           "jump": 0.0,
           "vol_ratio": 0,
           "close": 0.156,
@@ -754,6 +1157,14 @@
           "jump": -0.49,
           "vol_ratio": 0.68,
           "close": 0.203,
+          "alert": "-"
+        },
+        {
+          "offset": 3,
+          "date": "2026-06-23",
+          "jump": -3.43,
+          "vol_ratio": 0.87,
+          "close": 0.197,
           "alert": "-"
         }
       ],
@@ -792,6 +1203,14 @@
           "vol_ratio": 2.31,
           "close": 165.9,
           "alert": "WATCH"
+        },
+        {
+          "offset": 3,
+          "date": "2026-06-23",
+          "jump": -24.23,
+          "vol_ratio": 0.72,
+          "close": 134.5,
+          "alert": "-"
         }
       ],
       "ann_close": 177.5
@@ -829,6 +1248,14 @@
           "vol_ratio": 1.34,
           "close": 141.1,
           "alert": "WATCH"
+        },
+        {
+          "offset": 3,
+          "date": "2026-06-23",
+          "jump": 8.84,
+          "vol_ratio": 0.88,
+          "close": 126.8,
+          "alert": "WATCH"
         }
       ],
       "ann_close": 116.5
@@ -858,6 +1285,14 @@
           "jump": 3.84,
           "vol_ratio": 0.65,
           "close": 91.95,
+          "alert": "-"
+        },
+        {
+          "offset": 3,
+          "date": "2026-06-23",
+          "jump": -3.5,
+          "vol_ratio": 0.52,
+          "close": 85.45,
           "alert": "-"
         }
       ],
@@ -896,6 +1331,14 @@
           "vol_ratio": 1.81,
           "close": 13.53,
           "alert": "WATCH"
+        },
+        {
+          "offset": 3,
+          "date": "2026-06-23",
+          "jump": -3.01,
+          "vol_ratio": 1.25,
+          "close": 13.23,
+          "alert": "-"
         }
       ],
       "ann_close": 13.64
@@ -933,6 +1376,14 @@
           "jump": -3.61,
           "vol_ratio": 0.51,
           "close": 8.27,
+          "alert": "-"
+        },
+        {
+          "offset": 4,
+          "date": "2026-06-23",
+          "jump": -10.96,
+          "vol_ratio": 0.56,
+          "close": 7.64,
           "alert": "-"
         }
       ],
@@ -976,8 +1427,16 @@
           "offset": 3,
           "date": "2026-06-22",
           "jump": -22.26,
-          "vol_ratio": 0.56,
+          "vol_ratio": 0.55,
           "close": 0.241,
+          "alert": "WATCH"
+        },
+        {
+          "offset": 4,
+          "date": "2026-06-23",
+          "jump": -21.61,
+          "vol_ratio": 0.14,
+          "close": 0.243,
           "alert": "WATCH"
         }
       ],
@@ -1023,7 +1482,15 @@
           "jump": 31.25,
           "vol_ratio": 1.5,
           "close": 0.42,
-          "alert": "RED"
+          "alert": "WATCH"
+        },
+        {
+          "offset": 4,
+          "date": "2026-06-23",
+          "jump": 15.63,
+          "vol_ratio": 1.1,
+          "close": 0.37,
+          "alert": "WATCH"
         }
       ],
       "ann_close": 0.32
@@ -1066,8 +1533,16 @@
           "offset": 3,
           "date": "2026-06-22",
           "jump": 34.07,
-          "vol_ratio": 0.3,
+          "vol_ratio": 0.29,
           "close": 0.122,
+          "alert": "WATCH"
+        },
+        {
+          "offset": 4,
+          "date": "2026-06-23",
+          "jump": 25.27,
+          "vol_ratio": 0.26,
+          "close": 0.114,
           "alert": "WATCH"
         }
       ],
@@ -1095,6 +1570,14 @@
         {
           "offset": 2,
           "date": "2026-06-18",
+          "jump": 0.0,
+          "vol_ratio": 0,
+          "close": 0.012,
+          "alert": "-"
+        },
+        {
+          "offset": 3,
+          "date": "2026-06-22",
           "jump": 0.0,
           "vol_ratio": 0,
           "close": 0.012,
@@ -1137,6 +1620,14 @@
           "vol_ratio": 0.11,
           "close": 2.31,
           "alert": "-"
+        },
+        {
+          "offset": 4,
+          "date": "2026-06-23",
+          "jump": 1.27,
+          "vol_ratio": 0.55,
+          "close": 2.4,
+          "alert": "-"
         }
       ],
       "ann_close": 2.37
@@ -1174,6 +1665,14 @@
           "jump": -6.01,
           "vol_ratio": 0.58,
           "close": 8.29,
+          "alert": "-"
+        },
+        {
+          "offset": 4,
+          "date": "2026-06-23",
+          "jump": -9.75,
+          "vol_ratio": 0.38,
+          "close": 7.96,
           "alert": "-"
         }
       ],
@@ -1217,8 +1716,16 @@
           "offset": 3,
           "date": "2026-06-22",
           "jump": -2.78,
-          "vol_ratio": 1.29,
+          "vol_ratio": 1.27,
           "close": 2.8,
+          "alert": "-"
+        },
+        {
+          "offset": 4,
+          "date": "2026-06-23",
+          "jump": -3.47,
+          "vol_ratio": 0.85,
+          "close": 2.78,
           "alert": "-"
         }
       ],
@@ -1265,6 +1772,14 @@
           "vol_ratio": 1.24,
           "close": 3.26,
           "alert": "WATCH"
+        },
+        {
+          "offset": 4,
+          "date": "2026-06-23",
+          "jump": -4.15,
+          "vol_ratio": 0.65,
+          "close": 3.23,
+          "alert": "WATCH"
         }
       ],
       "ann_close": 3.37
@@ -1310,278 +1825,74 @@
           "vol_ratio": 0.32,
           "close": 0.63,
           "alert": "-"
+        },
+        {
+          "offset": 4,
+          "date": "2026-06-23",
+          "jump": -8.96,
+          "vol_ratio": 0.24,
+          "close": 0.61,
+          "alert": "-"
         }
       ],
       "ann_close": 0.67
     },
     {
-      "code": "03908",
-      "name": "CICC",
-      "ann_date": "2026-06-15",
-      "typeLabel": "\u914d\u80a1",
-      "is_placement": true,
-      "is_rights": false,
-      "is_increase": false,
-      "best_alert": "WATCH",
-      "best_info": [
-        4,
-        "2026-06-22",
-        4.42,
-        1.83,
-        21.72,
-        20.8
-      ],
-      "all_days": [
-        {
-          "offset": 1,
-          "date": "2026-06-16",
-          "jump": 1.54,
-          "vol_ratio": 1.26,
-          "close": 21.12,
-          "alert": "-"
-        },
-        {
-          "offset": 2,
-          "date": "2026-06-17",
-          "jump": -0.87,
-          "vol_ratio": 0.54,
-          "close": 20.62,
-          "alert": "-"
-        },
-        {
-          "offset": 3,
-          "date": "2026-06-18",
-          "jump": -3.17,
-          "vol_ratio": 0.59,
-          "close": 20.14,
-          "alert": "-"
-        },
-        {
-          "offset": 4,
-          "date": "2026-06-22",
-          "jump": 4.42,
-          "vol_ratio": 1.83,
-          "close": 21.72,
-          "alert": "WATCH"
-        }
-      ],
-      "ann_close": 20.8
-    },
-    {
       "code": "01920",
       "name": "JUNWEA GROUP",
-      "ann_date": "2026-06-15",
-      "typeLabel": "\u914d\u80a1",
+      "ann_date": "2026-06-16",
+      "typeLabel": "\u914d\u80a1 / \u5fa9\u724c",
       "is_placement": true,
       "is_rights": false,
       "is_increase": false,
       "best_alert": "RED",
       "best_info": [
         1,
-        "2026-06-16",
-        34.0,
-        11.41,
-        0.67,
-        0.5
+        "2026-06-17",
+        17.91,
+        3.64,
+        0.79,
+        0.67
       ],
       "all_days": [
         {
           "offset": 1,
-          "date": "2026-06-16",
-          "jump": 34.0,
-          "vol_ratio": 11.41,
-          "close": 0.67,
-          "alert": "RED"
-        },
-        {
-          "offset": 2,
           "date": "2026-06-17",
-          "jump": 58.0,
+          "jump": 17.91,
           "vol_ratio": 3.64,
           "close": 0.79,
           "alert": "RED"
         },
         {
-          "offset": 3,
+          "offset": 2,
           "date": "2026-06-18",
-          "jump": 34.0,
+          "jump": 0.0,
           "vol_ratio": 1.71,
           "close": 0.67,
-          "alert": "RED"
+          "alert": "WATCH"
         },
         {
-          "offset": 4,
+          "offset": 3,
           "date": "2026-06-22",
-          "jump": 26.0,
+          "jump": -5.97,
           "vol_ratio": 0.32,
           "close": 0.63,
-          "alert": "WATCH"
-        }
-      ],
-      "ann_close": 0.5
-    },
-    {
-      "code": "00073",
-      "name": "ASIAN CITRUS",
-      "ann_date": "2026-06-15",
-      "typeLabel": "\u4f9b\u80a1",
-      "is_placement": false,
-      "is_rights": true,
-      "is_increase": false,
-      "best_alert": "WATCH",
-      "best_info": [
-        1,
-        "2026-06-16",
-        -0.52,
-        18.17,
-        1.91,
-        1.92
-      ],
-      "all_days": [
-        {
-          "offset": 1,
-          "date": "2026-06-16",
-          "jump": -0.52,
-          "vol_ratio": 18.17,
-          "close": 1.91,
-          "alert": "WATCH"
-        },
-        {
-          "offset": 2,
-          "date": "2026-06-17",
-          "jump": -1.04,
-          "vol_ratio": 0.0,
-          "close": 1.9,
-          "alert": "WATCH"
-        },
-        {
-          "offset": 3,
-          "date": "2026-06-18",
-          "jump": 4.17,
-          "vol_ratio": 0.06,
-          "close": 2.0,
-          "alert": "WATCH"
-        },
-        {
-          "offset": 4,
-          "date": "2026-06-22",
-          "jump": 4.17,
-          "vol_ratio": 0.17,
-          "close": 2.0,
-          "alert": "WATCH"
-        }
-      ],
-      "ann_close": 1.92
-    },
-    {
-      "code": "00328",
-      "name": "ALCO HOLDINGS",
-      "ann_date": "2026-06-15",
-      "typeLabel": "\u4f9b\u80a1",
-      "is_placement": false,
-      "is_rights": true,
-      "is_increase": false,
-      "best_alert": "WATCH",
-      "best_info": [
-        1,
-        "2026-06-16",
-        11.67,
-        4.06,
-        0.67,
-        0.6
-      ],
-      "all_days": [
-        {
-          "offset": 1,
-          "date": "2026-06-16",
-          "jump": 11.67,
-          "vol_ratio": 4.06,
-          "close": 0.67,
-          "alert": "WATCH"
-        },
-        {
-          "offset": 2,
-          "date": "2026-06-17",
-          "jump": 5.0,
-          "vol_ratio": 0.56,
-          "close": 0.63,
-          "alert": "WATCH"
-        },
-        {
-          "offset": 3,
-          "date": "2026-06-18",
-          "jump": 5.0,
-          "vol_ratio": 0.2,
-          "close": 0.63,
-          "alert": "WATCH"
-        },
-        {
-          "offset": 4,
-          "date": "2026-06-22",
-          "jump": 0.0,
-          "vol_ratio": 0.23,
-          "close": 0.6,
-          "alert": "WATCH"
-        }
-      ],
-      "ann_close": 0.6
-    },
-    {
-      "code": "01159",
-      "name": "SMART DIGI TECH",
-      "ann_date": "2026-06-15",
-      "typeLabel": "\u914d\u80a1",
-      "is_placement": true,
-      "is_rights": false,
-      "is_increase": false,
-      "best_alert": "WATCH",
-      "best_info": [
-        2,
-        "2026-06-17",
-        1.74,
-        1.56,
-        2.93,
-        2.88
-      ],
-      "all_days": [
-        {
-          "offset": 1,
-          "date": "2026-06-16",
-          "jump": 0.0,
-          "vol_ratio": 1.2,
-          "close": 2.88,
-          "alert": "-"
-        },
-        {
-          "offset": 2,
-          "date": "2026-06-17",
-          "jump": 1.74,
-          "vol_ratio": 1.56,
-          "close": 2.93,
-          "alert": "WATCH"
-        },
-        {
-          "offset": 3,
-          "date": "2026-06-18",
-          "jump": 1.39,
-          "vol_ratio": 0.83,
-          "close": 2.92,
           "alert": "-"
         },
         {
           "offset": 4,
-          "date": "2026-06-22",
-          "jump": -2.78,
-          "vol_ratio": 1.29,
-          "close": 2.8,
+          "date": "2026-06-23",
+          "jump": -8.96,
+          "vol_ratio": 0.24,
+          "close": 0.61,
           "alert": "-"
         }
       ],
-      "ann_close": 2.88
+      "ann_close": 0.67
     }
   ],
   "errors": [],
   "reds": 5,
   "watches": 23,
-  "no_trigger": 17
+  "no_trigger": 20
 }

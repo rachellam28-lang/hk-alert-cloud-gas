@@ -1,7 +1,99 @@
 {
-  "updated": "2026-06-22 15:04 UTC",
-  "count": 140,
+  "updated": "2026-06-23 22:37 UTC",
+  "count": 144,
   "alerts": [
+    {
+      "source": "hkexnews",
+      "category": "corp_action",
+      "code": "02362",
+      "symbol": "2362.HK",
+      "name": "JINCHUAN INTL",
+      "signal": "披露易公告 - 收購/要約",
+      "timeframe": "公告",
+      "message": "公司公告：DESPATCH OF RESPONSE DOCUMENT RELATING TO UNCONDITIONAL VOLUNTARY CASH PAR…",
+      "title_original": "公司公告：DESPATCH OF RESPONSE DOCUMENT RELATING TO UNCONDITIONAL VOLUNTARY CASH PAR…",
+      "strategy": "HKEXnews Corp Action",
+      "chart_url": "",
+      "source_url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0623/2026062300099.pdf",
+      "announcement_date": "2026-06-23",
+      "release_time": "23/06/2026 06:47",
+      "tags": [
+        "公告",
+        "收購/要約"
+      ],
+      "priority": 3,
+      "raw": "{\"code\": \"02362\", \"name\": \"JINCHUAN INTL\", \"types\": [\"收購/要約\"], \"title\": \"公司公告：DESPATCH OF RESPONSE DOCUMENT RELATING TO UNCONDITIONAL VOLUNTARY CASH PAR…\", \"title_en\": \"DESPATCH OF RESPONSE DOCUMENT RELATING TO\\nUNCONDITIONAL VOLUNTARY CASH PARTIAL OFFER\", \"release_time\": \"23/06/2026 06:47\", \"release_date\": \"2026-06-23\", \"url\": \"https://www.hkexnews.hk/listedco/listconews/sehk/2026/0623/2026062300099.pdf\"}",
+      "created_at": "2026-06-23T15:04:19"
+    },
+    {
+      "source": "hkexnews",
+      "category": "corp_action",
+      "code": "02650",
+      "symbol": "2650.HK",
+      "name": "ZHIDA TECH",
+      "signal": "觀察·配股",
+      "timeframe": "公告",
+      "message": "公司公告：ANNOUNCEMENT PLACING OF NEW H SHARES UNDER THE GENERAL MANDATE",
+      "strategy": "HKEXnews Corp Action (觀察)",
+      "chart_url": "",
+      "source_url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0623/2026062300145.pdf",
+      "announcement_date": "2026-06-23",
+      "release_time": "23/06/2026 07:41",
+      "tags": [
+        "公告",
+        "觀察",
+        "配股"
+      ],
+      "priority": 0,
+      "raw": "{\"code\": \"02650\", \"name\": \"ZHIDA TECH\", \"types\": [\"配股\"], \"title\": \"公司公告：ANNOUNCEMENT PLACING OF NEW H SHARES UNDER THE GENERAL MANDATE\", \"title_en\": \"ANNOUNCEMENT PLACING OF NEW H SHARES UNDER THE GENERAL MANDATE\", \"release_time\": \"23/06/2026 07:41\", \"release_date\": \"2026-06-23\", \"url\": \"https://www.hkexnews.hk/listedco/listconews/sehk/2026/0623/2026062300145.pdf\"}"
+    },
+    {
+      "source": "hkexnews",
+      "category": "corp_action",
+      "code": "01657",
+      "symbol": "1657.HK",
+      "name": "SG GROUP HLDGS",
+      "signal": "披露易公告 - 收購/要約 / 聯合公告",
+      "timeframe": "公告",
+      "message": "公司公告：JOINT ANNOUNCEMENT (1) COMPLETION OF THE SHARE PURCHASE AGREEMENT BETWEEN …",
+      "title_original": "公司公告：JOINT ANNOUNCEMENT (1) COMPLETION OF THE SHARE PURCHASE AGREEMENT BETWEEN …",
+      "strategy": "HKEXnews Corp Action",
+      "chart_url": "",
+      "source_url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0623/2026062300327.pdf",
+      "announcement_date": "2026-06-23",
+      "release_time": "23/06/2026 12:03",
+      "tags": [
+        "公告",
+        "收購/要約",
+        "聯合公告"
+      ],
+      "priority": 3,
+      "raw": "{\"code\": \"01657\", \"name\": \"SG GROUP HLDGS\", \"types\": [\"收購/要約\", \"聯合公告\"], \"title\": \"公司公告：JOINT ANNOUNCEMENT (1) COMPLETION OF THE SHARE PURCHASE AGREEMENT BETWEEN …\", \"title_en\": \"JOINT ANNOUNCEMENT (1) COMPLETION OF THE SHARE PURCHASE AGREEMENT BETWEEN THE OFFEROR AND THE SELLERS IN RELATION TO APPROXIMATELY 74.91% OF THE TOTAL ISSUED SHARES OF THE COMPANY; AND (2) UNCONDITIONAL MANDATORY CASH OFFER BY DL SECURITIES (HK) LIMITED FOR AND ON BEHALF OF THE\\nOFFEROR TO ACQUIRE ALL THE ISSUED SHARES OF THE COMPANY (OTHER THAN THOSE ALREADY OWNED AND/OR AGREED TO BE ACQUIRED BY THE OFFEROR AND THE OFFEROR CONCERT PARTIES)\", \"release_time\": \"23/06/2026 12:03\", \"release_date\": \"2026-06-23\", \"url\": \"https://www.hkexnews.hk/listedco/listconews/sehk/2026/0623/2026062300327.pdf\"}",
+      "created_at": "2026-06-23T15:04:15"
+    },
+    {
+      "source": "hkexnews",
+      "category": "corp_action",
+      "code": "00776",
+      "symbol": "0776.HK",
+      "name": "IMPERIUM TEC GP",
+      "signal": "觀察·供股 / 配股",
+      "timeframe": "公告",
+      "message": "公司公告：(1) PROPOSED RIGHTS ISSUE ON THE BASIS OF ONE (1) RIGHTS SHARE FOR EVERY T…",
+      "strategy": "HKEXnews Corp Action (觀察)",
+      "chart_url": "",
+      "source_url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0623/2026062300151.pdf",
+      "announcement_date": "2026-06-23",
+      "release_time": "23/06/2026 08:12",
+      "tags": [
+        "公告",
+        "觀察",
+        "供股",
+        "配股"
+      ],
+      "priority": 0,
+      "raw": "{\"code\": \"00776\", \"name\": \"IMPERIUM TEC GP\", \"types\": [\"供股\", \"配股\"], \"title\": \"公司公告：(1) PROPOSED RIGHTS ISSUE ON THE BASIS OF ONE (1) RIGHTS SHARE FOR EVERY T…\", \"title_en\": \"(1) PROPOSED RIGHTS ISSUE ON THE BASIS OF ONE (1) RIGHTS SHARE FOR EVERY TWO (2) EXISTING SHARES HELD ON THE RECORD DATE ON A NON-UNDERWRITTEN BASIS; (2) POSSIBLE ADJUSTMENTS TO THE SHARE OPTIONS UNDER\\nTHE SHARE OPTION SCHEMES; (3) CHANGE IN BOARD LOT SIZE; AND (4) CLOSURE OF REGISTER OF MEMBERS\", \"release_time\": \"23/06/2026 08:12\", \"release_date\": \"2026-06-23\", \"url\": \"https://www.hkexnews.hk/listedco/listconews/sehk/2026/0623/2026062300151.pdf\"}"
+    },
     {
       "source": "hkexnews",
       "category": "corp_action",

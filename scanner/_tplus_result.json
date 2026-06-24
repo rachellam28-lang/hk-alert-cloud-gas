@@ -1,163 +1,92 @@
-{
-  "run_time": "2026-06-22T17:03:38.525543",
-  "targets_checked": 15,
-  "red_alerts": [
-    {
-      "code": "01736",
-      "name": "PARENTING NET",
-      "date": "2026-06-17",
-      "vol_ratio": 1.67,
-      "pct_change": 11.11,
-      "cur_price": 0.45,
-      "t_days": "~2",
-      "title": "認購新股（一般授權）"
-    },
-    {
-      "code": "00148",
-      "name": "KINGBOARD HLDG",
-      "date": "2026-06-17",
-      "vol_ratio": 1.82,
-      "pct_change": 21.12,
-      "cur_price": 141.1,
-      "t_days": "~2",
-      "title": "公司公告：DISCLOSEABLE TRANSACTION - PLACING OF SHARES IN KINGBOARD LAMINATES HOLDIN…"
-    }
-  ],
-  "all_results": [
-    {
-      "code": "01920",
-      "name": "JUNWEA GROUP",
-      "date": "2026-06-15",
-      "vol_ratio": 0.55,
-      "pct_change": 26.0,
-      "status": "ok",
-      "t_days": "~4"
-    },
-    {
-      "code": "00943",
-      "name": "ZHONGZHENG INTL",
-      "date": "2026-06-15",
-      "vol_ratio": 2.54,
-      "pct_change": 1.78,
-      "status": "ok",
-      "t_days": "~4"
-    },
-    {
-      "code": "01208",
-      "name": "MMG",
-      "date": "2026-06-16",
-      "vol_ratio": 0.92,
-      "pct_change": -3.61,
-      "status": "ok",
-      "t_days": "~3"
-    },
-    {
-      "code": "01869",
-      "name": "KAFELAKU COFFEE",
-      "date": "2026-06-16",
-      "vol_ratio": 1.0,
-      "pct_change": 34.07,
-      "status": "ok",
-      "t_days": "~3"
-    },
-    {
-      "code": "02349",
-      "name": "CH CITY INFRA",
-      "date": "2026-06-17",
-      "vol_ratio": 0.24,
-      "pct_change": -7.14,
-      "status": "ok",
-      "t_days": "~2"
-    },
-    {
-      "code": "01736",
-      "name": "PARENTING NET",
-      "date": "2026-06-17",
-      "vol_ratio": 1.67,
-      "pct_change": 11.11,
-      "status": "ok",
-      "t_days": "~2"
-    },
-    {
-      "code": "02889",
-      "name": "PATEO",
-      "date": "2026-06-17",
-      "vol_ratio": 1.53,
-      "pct_change": -6.54,
-      "status": "ok",
-      "t_days": "~2"
-    },
-    {
-      "code": "00148",
-      "name": "KINGBOARD HLDG",
-      "date": "2026-06-17",
-      "vol_ratio": 1.82,
-      "pct_change": 21.12,
-      "status": "ok",
-      "t_days": "~2"
-    },
-    {
-      "code": "01888",
-      "name": "KB LAMINATES",
-      "date": "2026-06-17",
-      "vol_ratio": 0.97,
-      "pct_change": 3.84,
-      "status": "ok",
-      "t_days": "~2"
-    },
-    {
-      "code": "02465",
-      "name": "LOPAL TECH",
-      "date": "2026-06-17",
-      "vol_ratio": 2.38,
-      "pct_change": -0.81,
-      "status": "ok",
-      "t_days": "~2"
-    },
-    {
-      "code": "02623",
-      "name": "HK GOLD IND GP",
-      "date": "2026-06-18",
-      "vol_ratio": 0.63,
-      "pct_change": -0.43,
-      "status": "ok",
-      "t_days": "~1"
-    },
-    {
-      "code": "09982",
-      "name": "CENTRALCHINA MT",
-      "date": "2026-06-18",
-      "vol_ratio": 3.67,
-      "pct_change": -2.02,
-      "status": "ok",
-      "t_days": "~1"
-    },
-    {
-      "code": "02592",
-      "name": "CLOUDBREAK-B",
-      "date": "2026-06-18",
-      "vol_ratio": 0.38,
-      "pct_change": -2.56,
-      "status": "ok",
-      "t_days": "~1"
-    },
-    {
-      "code": "06190",
-      "name": "BANKOFJIUJIANG",
-      "date": "2026-06-18",
-      "vol_ratio": 1.75,
-      "pct_change": -2.17,
-      "status": "ok",
-      "t_days": "~1"
-    },
-    {
-      "code": "00107",
-      "name": "SICHUAN EXPRESS",
-      "date": "2026-06-18",
-      "vol_ratio": 1.05,
-      "pct_change": -4.03,
-      "status": "ok",
-      "t_days": "~1"
-    }
-  ]
-}
+[
+  {
+    "code": "09982",
+    "name": "CENTRALCHINA MT",
+    "ann_date": "2026-06-18",
+    "best": "WATCH",
+    "t_offset": 1,
+    "jump": -2.0201985993660987,
+    "vol_ratio": 4.197885653420281,
+    "ann_close": 0.0989999994635582
+  },
+  {
+    "code": "06190",
+    "name": "BANKOFJIUJIANG",
+    "ann_date": "2026-06-18",
+    "best": "WATCH",
+    "t_offset": 1,
+    "jump": -2.1739110153428576,
+    "vol_ratio": 1.7998075072184792,
+    "ann_close": 2.299999952316284
+  },
+  {
+    "code": "01736",
+    "name": "PARENTING NET",
+    "ann_date": "2026-06-17",
+    "best": "RED",
+    "t_offset": 1,
+    "jump": 25.925923200519225,
+    "vol_ratio": 46.24,
+    "ann_close": 0.4050000011920929
+  },
+  {
+    "code": "02889",
+    "name": "PATEO",
+    "ann_date": "2026-06-17",
+    "best": "WATCH",
+    "t_offset": 2,
+    "jump": -6.535214706205986,
+    "vol_ratio": 1.5140746254885624,
+    "ann_close": 177.5
+  },
+  {
+    "code": "00148",
+    "name": "KINGBOARD HLDG",
+    "ann_date": "2026-06-17",
+    "best": "RED",
+    "t_offset": 1,
+    "jump": 8.669526587228408,
+    "vol_ratio": 1.5893272784420591,
+    "ann_close": 116.5
+  },
+  {
+    "code": "02465",
+    "name": "LOPAL TECH",
+    "ann_date": "2026-06-17",
+    "best": "WATCH",
+    "t_offset": 2,
+    "jump": -0.8064560673226929,
+    "vol_ratio": 2.623167954152154,
+    "ann_close": 13.640000343322754
+  },
+  {
+    "code": "01208",
+    "name": "MMG",
+    "ann_date": "2026-06-16",
+    "best": "WATCH",
+    "t_offset": 1,
+    "jump": -0.11655278520697734,
+    "vol_ratio": 1.9106843582058046,
+    "ann_close": 8.579999923706055
+  },
+  {
+    "code": "01869",
+    "name": "KAFELAKU COFFEE",
+    "ann_date": "2026-06-16",
+    "best": "RED",
+    "t_offset": 1,
+    "jump": 23.076929374962592,
+    "vol_ratio": 90.16823444283646,
+    "ann_close": 0.09099999815225601
+  },
+  {
+    "code": "01920",
+    "name": "JUNWEA GROUP",
+    "ann_date": "2026-06-16",
+    "best": "RED",
+    "t_offset": 1,
+    "jump": 17.910448026752697,
+    "vol_ratio": 3.90058155635558,
+    "ann_close": 0.6700000166893005
+  }
+]

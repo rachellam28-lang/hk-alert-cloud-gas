@@ -197,7 +197,7 @@ def _forward_to_gas(payload: dict[str, Any]) -> None:
             if r.get("ok"):
                 print(f"[gas] forwarded: {payload.get('code')}")
     except Exception as e:
-        logger.warning("GAS forward failed: %s", e)  # best-effort but log the failure
+        print(f"[gas] GAS forward failed: {e}")  # best-effort but log the failure
 
 
 # ── Watchlist Store ─────────────────────────────────────────────────────────────

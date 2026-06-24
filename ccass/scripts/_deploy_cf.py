@@ -24,15 +24,19 @@ DEPLOY_FILES = [
 
 
 def load_env():
-    """Load CLOUDFLARE_API_TOKEN from .env in cwd or parent."""
+    """Load CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID from .env in cwd or parent."""
+    token = None
+    account_id = None
     for d in [Path.cwd(), Path.cwd().parent]:
         env_file = d / ".env"
         if env_file.exists():
             for line in env_file.read_text().splitlines():
                 line = line.strip()
                 if line.startswith("CLOUDFLARE_API_TOKEN="):
-                    return line.split("=", 1)[1].strip()
-    return None
+                    token = line.split("=", 1)[1].strip()
+                elif line.startswith("CLOUDFLARE_ACCOUNT_ID="):
+                    account_id = line.split("=", 1)[1].strip()
+    return token, account_id
 
 
 def main():
@@ -48,9 +52,13 @@ def main():
         print(f"ERROR: {src} not found")
         sys.exit(1)
 
-    token = load_env()
+    token, account_id = load_env()
     if not token:
         print("ERROR: CLOUDFLARE_API_TOKEN not found in .env")
+        sys.exit(1)
+
+    if not account_id:
+        print("ERROR: CLOUDFLARE_ACCOUNT_ID not found in .env")
         sys.exit(1)
 
     # Check required files exist
@@ -80,12 +88,7 @@ def main():
 
         env = os.environ.copy()
         env["CLOUDFLARE_API_TOKEN"] = token
-        env["CLOUDFLARE_ACCOUNT_ID"] = env.get(
-            "CLOUDFLARE_ACCOUNT_ID", os.getenv("CLOUDFLARE_ACCOUNT_ID", "")
-        )
-        if not env["CLOUDFLARE_ACCOUNT_ID"]:
-            print("ERROR: CLOUDFLARE_ACCOUNT_ID not set in .env")
-            sys.exit(1)
+        env["CLOUDFLARE_ACCOUNT_ID"] = account_id
 
         r = subprocess.run(
             [

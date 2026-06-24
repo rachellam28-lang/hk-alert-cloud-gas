@@ -2,13 +2,21 @@
 Minimal launcher for hk_cloud_scanner.py that avoids import-system hangs
 and correctly sets __file__ for export functions.
 
-Usage: python _run_scanner_exec.py corp|ipo|poc|year_open|all
+Lives at PROJECT ROOT (not scanner/). Usage:
+  python _run_scanner_exec.py corp|ipo|poc|year_open|all
 
-Placed at project ROOT — adjusts paths accordingly.
+Why exec instead of import:
+- `import hk_cloud_scanner` triggers module-level initialization
+  (yfinance, matplotlib, TelegramPusher, local_alert_store init)
+  which can hang on Windows/git-bash.
+- `exec()` loads and runs the script directly, bypassing the import system.
+- Must set `__file__` in exec globals — otherwise export_breakthroughs_json()
+  and _update_announcements_json() crash with NameError.
 """
 import sys, os
 
 # ── Setup ──────────────────────────────────────────────────────────────────
+# This launcher lives at PROJECT ROOT. Adjust paths accordingly.
 proj_dir = os.path.dirname(os.path.abspath(__file__))
 scanner_dir = os.path.join(proj_dir, 'scanner')
 sys.path.insert(0, scanner_dir)
