@@ -1,6 +1,136 @@
 {
-  "scan_date": "2026-06-23",
+  "scan_date": "2026-06-24",
   "results": [
+    {
+      "code": "00776",
+      "name": "IMPERIUM TEC GP",
+      "ann_date": "2026-06-23",
+      "typeLabel": "\u4f9b\u80a1 / \u914d\u80a1",
+      "is_placement": false,
+      "is_rights": true,
+      "is_increase": false,
+      "best_alert": null,
+      "best_info": null,
+      "all_days": [],
+      "ann_close": 0.51
+    },
+    {
+      "code": "02650",
+      "name": "ZHIDA TECH",
+      "ann_date": "2026-06-23",
+      "typeLabel": "\u914d\u80a1",
+      "is_placement": true,
+      "is_rights": false,
+      "is_increase": false,
+      "best_alert": null,
+      "best_info": null,
+      "all_days": [],
+      "ann_close": 11.38
+    },
+    {
+      "code": "00527",
+      "name": "RUIFENG RENEW",
+      "ann_date": "2026-06-23",
+      "typeLabel": "\u914d\u80a1",
+      "is_placement": true,
+      "is_rights": false,
+      "is_increase": false,
+      "best_alert": null,
+      "best_info": null,
+      "all_days": [],
+      "ann_close": 0.65
+    },
+    {
+      "code": "00632",
+      "name": "CHK OIL",
+      "ann_date": "2026-06-23",
+      "typeLabel": "\u914d\u80a1",
+      "is_placement": true,
+      "is_rights": false,
+      "is_increase": false,
+      "best_alert": null,
+      "best_info": null,
+      "all_days": [],
+      "ann_close": 0.255
+    },
+    {
+      "code": "01682",
+      "name": "HP LIVING TECH",
+      "ann_date": "2026-06-23",
+      "typeLabel": "\u4f9b\u80a1 / \u914d\u80a1",
+      "is_placement": false,
+      "is_rights": true,
+      "is_increase": false,
+      "best_alert": null,
+      "best_info": null,
+      "all_days": [],
+      "ann_close": 0.228
+    },
+    {
+      "code": "00377",
+      "name": "CHINA HUAJUN GP",
+      "ann_date": "2026-06-23",
+      "typeLabel": "\u914d\u80a1",
+      "is_placement": true,
+      "is_rights": false,
+      "is_increase": false,
+      "best_alert": null,
+      "best_info": null,
+      "all_days": [],
+      "ann_close": 1.28
+    },
+    {
+      "code": "00721",
+      "name": "C FIN INT I-NEW",
+      "ann_date": "2026-06-23",
+      "typeLabel": "\u914d\u80a1",
+      "is_placement": true,
+      "is_rights": false,
+      "is_increase": false,
+      "best_alert": null,
+      "best_info": null,
+      "all_days": [],
+      "ann_close": 0.17
+    },
+    {
+      "code": "03708",
+      "name": "WORLD DIGI ECON",
+      "ann_date": "2026-06-23",
+      "typeLabel": "\u914d\u80a1",
+      "is_placement": true,
+      "is_rights": false,
+      "is_increase": false,
+      "best_alert": null,
+      "best_info": null,
+      "all_days": [],
+      "ann_close": 0.192
+    },
+    {
+      "code": "01372",
+      "name": "C CARBONNEUTRAL",
+      "ann_date": "2026-06-23",
+      "typeLabel": "\u80a1\u6771\u589e\u6301",
+      "is_placement": false,
+      "is_rights": false,
+      "is_increase": true,
+      "best_alert": null,
+      "best_info": null,
+      "all_days": [],
+      "ann_close": 0.9
+    },
+    {
+      "code": "01364",
+      "name": "GUMING",
+      "ann_date": "2026-06-23",
+      "typeLabel": "\u914d\u80a1",
+      "is_placement": true,
+      "is_rights": false,
+      "is_increase": false,
+      "best_alert": null,
+      "best_info": null,
+      "all_days": [],
+      "ann_close": 20.38
+    },
     {
       "code": "01025",
       "name": "KNT HOLDINGS",
@@ -15,9 +145,9 @@
         {
           "offset": 1,
           "date": "2026-06-23",
-          "jump": -7.08,
-          "vol_ratio": 0.11,
-          "close": 0.21,
+          "jump": -10.62,
+          "vol_ratio": 0.16,
+          "close": 0.202,
           "alert": "-"
         }
       ],
@@ -35,18 +165,18 @@
       "best_info": [
         1,
         "2026-06-23",
-        24.08,
-        1.72,
-        4.38,
+        24.93,
+        1.96,
+        4.41,
         3.53
       ],
       "all_days": [
         {
           "offset": 1,
           "date": "2026-06-23",
-          "jump": 24.08,
-          "vol_ratio": 1.72,
-          "close": 4.38,
+          "jump": 24.93,
+          "vol_ratio": 1.96,
+          "close": 4.41,
           "alert": "RED"
         }
       ],
@@ -64,18 +194,18 @@
       "best_info": [
         1,
         "2026-06-23",
-        -18.93,
-        0.72,
-        134.5,
+        -8.98,
+        1.55,
+        151.0,
         165.9
       ],
       "all_days": [
         {
           "offset": 1,
           "date": "2026-06-23",
-          "jump": -18.93,
-          "vol_ratio": 0.72,
-          "close": 134.5,
+          "jump": -8.98,
+          "vol_ratio": 1.55,
+          "close": 151.0,
           "alert": "WATCH"
         }
       ],
@@ -95,9 +225,9 @@
         {
           "offset": 1,
           "date": "2026-06-23",
-          "jump": -0.68,
-          "vol_ratio": 0.75,
-          "close": 1.45,
+          "jump": 4.79,
+          "vol_ratio": 1.02,
+          "close": 1.53,
           "alert": "-"
         }
       ],
@@ -111,23 +241,16 @@
       "is_placement": true,
       "is_rights": false,
       "is_increase": false,
-      "best_alert": "WATCH",
-      "best_info": [
-        1,
-        "2026-06-23",
-        8.47,
-        0.83,
-        0.205,
-        0.189
-      ],
+      "best_alert": null,
+      "best_info": null,
       "all_days": [
         {
           "offset": 1,
           "date": "2026-06-23",
-          "jump": 8.47,
-          "vol_ratio": 0.83,
-          "close": 0.205,
-          "alert": "WATCH"
+          "jump": 1.59,
+          "vol_ratio": 0.99,
+          "close": 0.192,
+          "alert": "-"
         }
       ],
       "ann_close": 0.189
@@ -144,18 +267,18 @@
       "best_info": [
         1,
         "2026-06-23",
-        -8.47,
-        5.48,
-        0.27,
+        -6.78,
+        5.81,
+        0.275,
         0.295
       ],
       "all_days": [
         {
           "offset": 1,
           "date": "2026-06-23",
-          "jump": -8.47,
-          "vol_ratio": 5.48,
-          "close": 0.27,
+          "jump": -6.78,
+          "vol_ratio": 5.81,
+          "close": 0.275,
           "alert": "WATCH"
         }
       ],
@@ -175,9 +298,9 @@
         {
           "offset": 1,
           "date": "2026-06-23",
-          "jump": 1.43,
-          "vol_ratio": 0.73,
-          "close": 2.13,
+          "jump": -0.95,
+          "vol_ratio": 1.44,
+          "close": 2.08,
           "alert": "-"
         }
       ],
@@ -213,7 +336,7 @@
           "offset": 2,
           "date": "2026-06-23",
           "jump": 1.02,
-          "vol_ratio": 0.08,
+          "vol_ratio": 0.1,
           "close": 0.99,
           "alert": "WATCH"
         }
@@ -242,9 +365,9 @@
         {
           "offset": 2,
           "date": "2026-06-23",
-          "jump": -6.39,
-          "vol_ratio": 0.89,
-          "close": 22.26,
+          "jump": -6.31,
+          "vol_ratio": 1.18,
+          "close": 22.28,
           "alert": "-"
         }
       ],
@@ -272,9 +395,9 @@
         {
           "offset": 2,
           "date": "2026-06-23",
-          "jump": -6.68,
-          "vol_ratio": 0.5,
-          "close": 19.28,
+          "jump": -7.07,
+          "vol_ratio": 0.62,
+          "close": 19.2,
           "alert": "-"
         }
       ],
@@ -309,9 +432,9 @@
         {
           "offset": 2,
           "date": "2026-06-23",
-          "jump": -7.05,
-          "vol_ratio": 1.16,
-          "close": 24.8,
+          "jump": -5.32,
+          "vol_ratio": 1.32,
+          "close": 25.26,
           "alert": "WATCH"
         }
       ],
@@ -377,7 +500,7 @@
           "offset": 2,
           "date": "2026-06-23",
           "jump": -4.26,
-          "vol_ratio": 0.63,
+          "vol_ratio": 1.05,
           "close": 4.5,
           "alert": "-"
         }
@@ -413,10 +536,10 @@
         {
           "offset": 2,
           "date": "2026-06-23",
-          "jump": -6.06,
-          "vol_ratio": 1.45,
-          "close": 0.093,
-          "alert": "-"
+          "jump": -5.05,
+          "vol_ratio": 1.62,
+          "close": 0.094,
+          "alert": "WATCH"
         }
       ],
       "ann_close": 0.099
@@ -443,9 +566,9 @@
         {
           "offset": 2,
           "date": "2026-06-23",
-          "jump": -5.13,
-          "vol_ratio": 0.33,
-          "close": 1.11,
+          "jump": -3.42,
+          "vol_ratio": 0.47,
+          "close": 1.13,
           "alert": "-"
         }
       ],
@@ -476,6 +599,14 @@
           "vol_ratio": 1.59,
           "close": 2.25,
           "alert": "WATCH"
+        },
+        {
+          "offset": 2,
+          "date": "2026-06-23",
+          "jump": 0.0,
+          "vol_ratio": 1.56,
+          "close": 2.3,
+          "alert": "WATCH"
         }
       ],
       "ann_close": 2.3
@@ -502,9 +633,9 @@
         {
           "offset": 2,
           "date": "2026-06-23",
-          "jump": -4.45,
-          "vol_ratio": 0.36,
-          "close": 4.51,
+          "jump": -2.97,
+          "vol_ratio": 0.95,
+          "close": 4.58,
           "alert": "-"
         }
       ],
@@ -539,9 +670,9 @@
         {
           "offset": 2,
           "date": "2026-06-23",
-          "jump": -8.76,
-          "vol_ratio": 1.91,
-          "close": 0.125,
+          "jump": -5.84,
+          "vol_ratio": 1.98,
+          "close": 0.129,
           "alert": "WATCH"
         }
       ],
@@ -576,9 +707,9 @@
         {
           "offset": 2,
           "date": "2026-06-23",
-          "jump": -28.04,
-          "vol_ratio": 0.72,
-          "close": 134.5,
+          "jump": -19.21,
+          "vol_ratio": 1.55,
+          "close": 151.0,
           "alert": "WATCH"
         }
       ],
@@ -606,9 +737,9 @@
         {
           "offset": 2,
           "date": "2026-06-23",
-          "jump": 4.95,
-          "vol_ratio": 0.3,
-          "close": 43.28,
+          "jump": 4.32,
+          "vol_ratio": 0.45,
+          "close": 43.02,
           "alert": "-"
         }
       ],
@@ -630,6 +761,14 @@
           "date": "2026-06-22",
           "jump": -11.76,
           "vol_ratio": 0.61,
+          "close": 0.45,
+          "alert": "-"
+        },
+        {
+          "offset": 2,
+          "date": "2026-06-23",
+          "jump": -11.76,
+          "vol_ratio": 0.0,
           "close": 0.45,
           "alert": "-"
         }
@@ -674,7 +813,7 @@
           "offset": 3,
           "date": "2026-06-23",
           "jump": -12.5,
-          "vol_ratio": 0.14,
+          "vol_ratio": 0.19,
           "close": 0.021,
           "alert": "-"
         }
@@ -718,9 +857,9 @@
         {
           "offset": 3,
           "date": "2026-06-23",
-          "jump": -22.78,
-          "vol_ratio": 0.24,
-          "close": 0.61,
+          "jump": -25.32,
+          "vol_ratio": 0.3,
+          "close": 0.59,
           "alert": "-"
         }
       ],
@@ -801,9 +940,9 @@
         {
           "offset": 3,
           "date": "2026-06-23",
-          "jump": -3.81,
-          "vol_ratio": 1.1,
-          "close": 0.101,
+          "jump": -4.76,
+          "vol_ratio": 1.48,
+          "close": 0.1,
           "alert": "-"
         }
       ],
@@ -846,9 +985,9 @@
         {
           "offset": 3,
           "date": "2026-06-23",
-          "jump": -3.0,
-          "vol_ratio": 1.54,
-          "close": 5.17,
+          "jump": -2.25,
+          "vol_ratio": 1.75,
+          "close": 5.21,
           "alert": "WATCH"
         }
       ],
@@ -891,9 +1030,9 @@
         {
           "offset": 3,
           "date": "2026-06-23",
-          "jump": -13.04,
-          "vol_ratio": 2.46,
-          "close": 0.4,
+          "jump": -21.74,
+          "vol_ratio": 3.32,
+          "close": 0.36,
           "alert": "WATCH"
         }
       ],
@@ -930,6 +1069,14 @@
           "date": "2026-06-22",
           "jump": 11.11,
           "vol_ratio": 0.61,
+          "close": 0.45,
+          "alert": "WATCH"
+        },
+        {
+          "offset": 3,
+          "date": "2026-06-23",
+          "jump": 11.11,
+          "vol_ratio": 0.0,
           "close": 0.45,
           "alert": "WATCH"
         }
@@ -973,9 +1120,9 @@
         {
           "offset": 3,
           "date": "2026-06-23",
-          "jump": 2.16,
-          "vol_ratio": 0.53,
-          "close": 0.189,
+          "jump": -5.95,
+          "vol_ratio": 0.69,
+          "close": 0.174,
           "alert": "WATCH"
         }
       ],
@@ -1011,9 +1158,9 @@
         {
           "offset": 3,
           "date": "2026-06-23",
-          "jump": -10.53,
-          "vol_ratio": 0.89,
-          "close": 22.26,
+          "jump": -10.45,
+          "vol_ratio": 1.18,
+          "close": 22.28,
           "alert": "-"
         }
       ],
@@ -1049,9 +1196,9 @@
         {
           "offset": 3,
           "date": "2026-06-23",
-          "jump": -9.65,
-          "vol_ratio": 0.5,
-          "close": 19.28,
+          "jump": -10.03,
+          "vol_ratio": 0.62,
+          "close": 19.2,
           "alert": "-"
         }
       ],
@@ -1095,7 +1242,7 @@
           "offset": 3,
           "date": "2026-06-23",
           "jump": -40.0,
-          "vol_ratio": 1.1,
+          "vol_ratio": 1.12,
           "close": 0.018,
           "alert": "WATCH"
         }
@@ -1124,6 +1271,14 @@
         {
           "offset": 2,
           "date": "2026-06-22",
+          "jump": 0.0,
+          "vol_ratio": 0,
+          "close": 0.156,
+          "alert": "-"
+        },
+        {
+          "offset": 3,
+          "date": "2026-06-23",
           "jump": 0.0,
           "vol_ratio": 0,
           "close": 0.156,
@@ -1163,7 +1318,7 @@
           "offset": 3,
           "date": "2026-06-23",
           "jump": -3.43,
-          "vol_ratio": 0.87,
+          "vol_ratio": 0.94,
           "close": 0.197,
           "alert": "-"
         }
@@ -1207,10 +1362,10 @@
         {
           "offset": 3,
           "date": "2026-06-23",
-          "jump": -24.23,
-          "vol_ratio": 0.72,
-          "close": 134.5,
-          "alert": "-"
+          "jump": -14.93,
+          "vol_ratio": 1.55,
+          "close": 151.0,
+          "alert": "WATCH"
         }
       ],
       "ann_close": 177.5
@@ -1252,9 +1407,9 @@
         {
           "offset": 3,
           "date": "2026-06-23",
-          "jump": 8.84,
-          "vol_ratio": 0.88,
-          "close": 126.8,
+          "jump": 9.7,
+          "vol_ratio": 1.06,
+          "close": 127.8,
           "alert": "WATCH"
         }
       ],
@@ -1290,9 +1445,9 @@
         {
           "offset": 3,
           "date": "2026-06-23",
-          "jump": -3.5,
-          "vol_ratio": 0.52,
-          "close": 85.45,
+          "jump": -1.47,
+          "vol_ratio": 0.65,
+          "close": 87.25,
           "alert": "-"
         }
       ],
@@ -1335,564 +1490,17 @@
         {
           "offset": 3,
           "date": "2026-06-23",
-          "jump": -3.01,
-          "vol_ratio": 1.25,
-          "close": 13.23,
+          "jump": -3.89,
+          "vol_ratio": 1.38,
+          "close": 13.11,
           "alert": "-"
         }
       ],
       "ann_close": 13.64
-    },
-    {
-      "code": "01208",
-      "name": "MMG",
-      "ann_date": "2026-06-16",
-      "typeLabel": "\u914d\u80a1",
-      "is_placement": true,
-      "is_rights": false,
-      "is_increase": false,
-      "best_alert": null,
-      "best_info": null,
-      "all_days": [
-        {
-          "offset": 1,
-          "date": "2026-06-17",
-          "jump": -0.12,
-          "vol_ratio": 0.98,
-          "close": 8.57,
-          "alert": "-"
-        },
-        {
-          "offset": 2,
-          "date": "2026-06-18",
-          "jump": -3.85,
-          "vol_ratio": 0.87,
-          "close": 8.25,
-          "alert": "-"
-        },
-        {
-          "offset": 3,
-          "date": "2026-06-22",
-          "jump": -3.61,
-          "vol_ratio": 0.51,
-          "close": 8.27,
-          "alert": "-"
-        },
-        {
-          "offset": 4,
-          "date": "2026-06-23",
-          "jump": -10.96,
-          "vol_ratio": 0.56,
-          "close": 7.64,
-          "alert": "-"
-        }
-      ],
-      "ann_close": 8.58
-    },
-    {
-      "code": "01069",
-      "name": "CN HEALTH TECH",
-      "ann_date": "2026-06-16",
-      "typeLabel": "\u4f9b\u80a1 / \u914d\u80a1",
-      "is_placement": false,
-      "is_rights": true,
-      "is_increase": false,
-      "best_alert": "WATCH",
-      "best_info": [
-        1,
-        "2026-06-17",
-        -3.23,
-        1.04,
-        0.3,
-        0.31
-      ],
-      "all_days": [
-        {
-          "offset": 1,
-          "date": "2026-06-17",
-          "jump": -3.23,
-          "vol_ratio": 1.04,
-          "close": 0.3,
-          "alert": "WATCH"
-        },
-        {
-          "offset": 2,
-          "date": "2026-06-18",
-          "jump": -25.16,
-          "vol_ratio": 4.07,
-          "close": 0.232,
-          "alert": "WATCH"
-        },
-        {
-          "offset": 3,
-          "date": "2026-06-22",
-          "jump": -22.26,
-          "vol_ratio": 0.55,
-          "close": 0.241,
-          "alert": "WATCH"
-        },
-        {
-          "offset": 4,
-          "date": "2026-06-23",
-          "jump": -21.61,
-          "vol_ratio": 0.14,
-          "close": 0.243,
-          "alert": "WATCH"
-        }
-      ],
-      "ann_close": 0.31
-    },
-    {
-      "code": "01152",
-      "name": "MOMENTUM FIN",
-      "ann_date": "2026-06-16",
-      "typeLabel": "\u914d\u80a1",
-      "is_placement": true,
-      "is_rights": false,
-      "is_increase": false,
-      "best_alert": "RED",
-      "best_info": [
-        2,
-        "2026-06-18",
-        21.87,
-        2.3,
-        0.39,
-        0.32
-      ],
-      "all_days": [
-        {
-          "offset": 1,
-          "date": "2026-06-17",
-          "jump": -3.12,
-          "vol_ratio": 0.86,
-          "close": 0.31,
-          "alert": "-"
-        },
-        {
-          "offset": 2,
-          "date": "2026-06-18",
-          "jump": 21.87,
-          "vol_ratio": 2.3,
-          "close": 0.39,
-          "alert": "RED"
-        },
-        {
-          "offset": 3,
-          "date": "2026-06-22",
-          "jump": 31.25,
-          "vol_ratio": 1.5,
-          "close": 0.42,
-          "alert": "WATCH"
-        },
-        {
-          "offset": 4,
-          "date": "2026-06-23",
-          "jump": 15.63,
-          "vol_ratio": 1.1,
-          "close": 0.37,
-          "alert": "WATCH"
-        }
-      ],
-      "ann_close": 0.32
-    },
-    {
-      "code": "01869",
-      "name": "KAFELAKU COFFEE",
-      "ann_date": "2026-06-16",
-      "typeLabel": "\u914d\u80a1",
-      "is_placement": true,
-      "is_rights": false,
-      "is_increase": false,
-      "best_alert": "RED",
-      "best_info": [
-        1,
-        "2026-06-17",
-        23.08,
-        122.17,
-        0.112,
-        0.091
-      ],
-      "all_days": [
-        {
-          "offset": 1,
-          "date": "2026-06-17",
-          "jump": 23.08,
-          "vol_ratio": 122.17,
-          "close": 0.112,
-          "alert": "RED"
-        },
-        {
-          "offset": 2,
-          "date": "2026-06-18",
-          "jump": 36.26,
-          "vol_ratio": 1.49,
-          "close": 0.124,
-          "alert": "WATCH"
-        },
-        {
-          "offset": 3,
-          "date": "2026-06-22",
-          "jump": 34.07,
-          "vol_ratio": 0.29,
-          "close": 0.122,
-          "alert": "WATCH"
-        },
-        {
-          "offset": 4,
-          "date": "2026-06-23",
-          "jump": 25.27,
-          "vol_ratio": 0.26,
-          "close": 0.114,
-          "alert": "WATCH"
-        }
-      ],
-      "ann_close": 0.091
-    },
-    {
-      "code": "01188",
-      "name": "HYBRID KINETIC",
-      "ann_date": "2026-06-16",
-      "typeLabel": "\u914d\u80a1",
-      "is_placement": true,
-      "is_rights": false,
-      "is_increase": false,
-      "best_alert": null,
-      "best_info": null,
-      "all_days": [
-        {
-          "offset": 1,
-          "date": "2026-06-17",
-          "jump": 0.0,
-          "vol_ratio": 0,
-          "close": 0.012,
-          "alert": "-"
-        },
-        {
-          "offset": 2,
-          "date": "2026-06-18",
-          "jump": 0.0,
-          "vol_ratio": 0,
-          "close": 0.012,
-          "alert": "-"
-        },
-        {
-          "offset": 3,
-          "date": "2026-06-22",
-          "jump": 0.0,
-          "vol_ratio": 0,
-          "close": 0.012,
-          "alert": "-"
-        }
-      ],
-      "ann_close": 0.012
-    },
-    {
-      "code": "01846",
-      "name": "EUROEYES",
-      "ann_date": "2026-06-16",
-      "typeLabel": "\u914d\u80a1",
-      "is_placement": true,
-      "is_rights": false,
-      "is_increase": false,
-      "best_alert": null,
-      "best_info": null,
-      "all_days": [
-        {
-          "offset": 1,
-          "date": "2026-06-17",
-          "jump": 0.0,
-          "vol_ratio": 1.29,
-          "close": 2.37,
-          "alert": "-"
-        },
-        {
-          "offset": 2,
-          "date": "2026-06-18",
-          "jump": -2.53,
-          "vol_ratio": 1.38,
-          "close": 2.31,
-          "alert": "-"
-        },
-        {
-          "offset": 3,
-          "date": "2026-06-22",
-          "jump": -2.53,
-          "vol_ratio": 0.11,
-          "close": 2.31,
-          "alert": "-"
-        },
-        {
-          "offset": 4,
-          "date": "2026-06-23",
-          "jump": 1.27,
-          "vol_ratio": 0.55,
-          "close": 2.4,
-          "alert": "-"
-        }
-      ],
-      "ann_close": 2.37
-    },
-    {
-      "code": "02039",
-      "name": "CIMC",
-      "ann_date": "2026-06-16",
-      "typeLabel": "\u914d\u80a1",
-      "is_placement": true,
-      "is_rights": false,
-      "is_increase": false,
-      "best_alert": null,
-      "best_info": null,
-      "all_days": [
-        {
-          "offset": 1,
-          "date": "2026-06-17",
-          "jump": 1.59,
-          "vol_ratio": 0.3,
-          "close": 8.96,
-          "alert": "-"
-        },
-        {
-          "offset": 2,
-          "date": "2026-06-18",
-          "jump": -5.56,
-          "vol_ratio": 1.2,
-          "close": 8.33,
-          "alert": "-"
-        },
-        {
-          "offset": 3,
-          "date": "2026-06-22",
-          "jump": -6.01,
-          "vol_ratio": 0.58,
-          "close": 8.29,
-          "alert": "-"
-        },
-        {
-          "offset": 4,
-          "date": "2026-06-23",
-          "jump": -9.75,
-          "vol_ratio": 0.38,
-          "close": 7.96,
-          "alert": "-"
-        }
-      ],
-      "ann_close": 8.82
-    },
-    {
-      "code": "01159",
-      "name": "SMART DIGI TECH",
-      "ann_date": "2026-06-16",
-      "typeLabel": "\u914d\u80a1",
-      "is_placement": true,
-      "is_rights": false,
-      "is_increase": false,
-      "best_alert": "WATCH",
-      "best_info": [
-        1,
-        "2026-06-17",
-        1.74,
-        1.56,
-        2.93,
-        2.88
-      ],
-      "all_days": [
-        {
-          "offset": 1,
-          "date": "2026-06-17",
-          "jump": 1.74,
-          "vol_ratio": 1.56,
-          "close": 2.93,
-          "alert": "WATCH"
-        },
-        {
-          "offset": 2,
-          "date": "2026-06-18",
-          "jump": 1.39,
-          "vol_ratio": 0.83,
-          "close": 2.92,
-          "alert": "-"
-        },
-        {
-          "offset": 3,
-          "date": "2026-06-22",
-          "jump": -2.78,
-          "vol_ratio": 1.27,
-          "close": 2.8,
-          "alert": "-"
-        },
-        {
-          "offset": 4,
-          "date": "2026-06-23",
-          "jump": -3.47,
-          "vol_ratio": 0.85,
-          "close": 2.78,
-          "alert": "-"
-        }
-      ],
-      "ann_close": 2.88
-    },
-    {
-      "code": "00956",
-      "name": "CHINA SUNTIEN",
-      "ann_date": "2026-06-16",
-      "typeLabel": "\u80a1\u6771\u589e\u6301",
-      "is_placement": false,
-      "is_rights": false,
-      "is_increase": true,
-      "best_alert": "WATCH",
-      "best_info": [
-        1,
-        "2026-06-17",
-        -0.3,
-        1.04,
-        3.36,
-        3.37
-      ],
-      "all_days": [
-        {
-          "offset": 1,
-          "date": "2026-06-17",
-          "jump": -0.3,
-          "vol_ratio": 1.04,
-          "close": 3.36,
-          "alert": "WATCH"
-        },
-        {
-          "offset": 2,
-          "date": "2026-06-18",
-          "jump": -2.37,
-          "vol_ratio": 2.13,
-          "close": 3.29,
-          "alert": "WATCH"
-        },
-        {
-          "offset": 3,
-          "date": "2026-06-22",
-          "jump": -3.26,
-          "vol_ratio": 1.24,
-          "close": 3.26,
-          "alert": "WATCH"
-        },
-        {
-          "offset": 4,
-          "date": "2026-06-23",
-          "jump": -4.15,
-          "vol_ratio": 0.65,
-          "close": 3.23,
-          "alert": "WATCH"
-        }
-      ],
-      "ann_close": 3.37
-    },
-    {
-      "code": "01920",
-      "name": "JUNWEA GROUP",
-      "ann_date": "2026-06-16",
-      "typeLabel": "\u914d\u80a1",
-      "is_placement": true,
-      "is_rights": false,
-      "is_increase": false,
-      "best_alert": "RED",
-      "best_info": [
-        1,
-        "2026-06-17",
-        17.91,
-        3.64,
-        0.79,
-        0.67
-      ],
-      "all_days": [
-        {
-          "offset": 1,
-          "date": "2026-06-17",
-          "jump": 17.91,
-          "vol_ratio": 3.64,
-          "close": 0.79,
-          "alert": "RED"
-        },
-        {
-          "offset": 2,
-          "date": "2026-06-18",
-          "jump": 0.0,
-          "vol_ratio": 1.71,
-          "close": 0.67,
-          "alert": "WATCH"
-        },
-        {
-          "offset": 3,
-          "date": "2026-06-22",
-          "jump": -5.97,
-          "vol_ratio": 0.32,
-          "close": 0.63,
-          "alert": "-"
-        },
-        {
-          "offset": 4,
-          "date": "2026-06-23",
-          "jump": -8.96,
-          "vol_ratio": 0.24,
-          "close": 0.61,
-          "alert": "-"
-        }
-      ],
-      "ann_close": 0.67
-    },
-    {
-      "code": "01920",
-      "name": "JUNWEA GROUP",
-      "ann_date": "2026-06-16",
-      "typeLabel": "\u914d\u80a1 / \u5fa9\u724c",
-      "is_placement": true,
-      "is_rights": false,
-      "is_increase": false,
-      "best_alert": "RED",
-      "best_info": [
-        1,
-        "2026-06-17",
-        17.91,
-        3.64,
-        0.79,
-        0.67
-      ],
-      "all_days": [
-        {
-          "offset": 1,
-          "date": "2026-06-17",
-          "jump": 17.91,
-          "vol_ratio": 3.64,
-          "close": 0.79,
-          "alert": "RED"
-        },
-        {
-          "offset": 2,
-          "date": "2026-06-18",
-          "jump": 0.0,
-          "vol_ratio": 1.71,
-          "close": 0.67,
-          "alert": "WATCH"
-        },
-        {
-          "offset": 3,
-          "date": "2026-06-22",
-          "jump": -5.97,
-          "vol_ratio": 0.32,
-          "close": 0.63,
-          "alert": "-"
-        },
-        {
-          "offset": 4,
-          "date": "2026-06-23",
-          "jump": -8.96,
-          "vol_ratio": 0.24,
-          "close": 0.61,
-          "alert": "-"
-        }
-      ],
-      "ann_close": 0.67
     }
   ],
   "errors": [],
-  "reds": 5,
-  "watches": 23,
-  "no_trigger": 20
+  "reds": 2,
+  "watches": 19,
+  "no_trigger": 27
 }

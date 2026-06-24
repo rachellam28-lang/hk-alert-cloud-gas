@@ -1,7 +1,34 @@
 {
   "ok": true,
-  "total": 144,
+  "total": 145,
   "days": [
+    {
+      "date": "2026-06-24",
+      "alerts": [
+        {
+          "source": "hkexnews",
+          "category": "corp_action",
+          "code": "01364",
+          "symbol": "1364.HK",
+          "name": "GUMING",
+          "signal": "觀察·配股",
+          "timeframe": "公告",
+          "message": "公司公告：PROPOSED OFFERING OF HK$1,960 MILLION ZERO COUPON GUARANTEED CONVERTIBLE B…",
+          "strategy": "HKEXnews Corp Action (觀察)",
+          "chart_url": "",
+          "source_url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0624/2026062400045.pdf",
+          "announcement_date": "2026-06-24",
+          "release_time": "24/06/2026 07:48",
+          "tags": [
+            "公告",
+            "觀察",
+            "配股"
+          ],
+          "priority": 0,
+          "raw": "{\"code\": \"01364\", \"name\": \"GUMING\", \"types\": [\"配股\"], \"title\": \"公司公告：PROPOSED OFFERING OF HK$1,960 MILLION ZERO COUPON GUARANTEED CONVERTIBLE B…\", \"title_en\": \"PROPOSED OFFERING OF HK$1,960 MILLION ZERO COUPON GUARANTEED CONVERTIBLE BONDS AND CONCURRENT SHARE REPURCHASE\", \"release_time\": \"24/06/2026 07:48\", \"release_date\": \"2026-06-24\", \"url\": \"https://www.hkexnews.hk/listedco/listconews/sehk/2026/0624/2026062400045.pdf\"}"
+        }
+      ]
+    },
     {
       "date": "2026-06-23",
       "alerts": [

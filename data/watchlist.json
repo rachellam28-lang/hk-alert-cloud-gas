@@ -1,7 +1,15 @@
 {
-  "updated": "2026-06-23 22:37 UTC",
+  "updated": "2026-06-24 00:37 UTC",
   "count": 32,
   "watchlist": [
+    {
+      "code": "01364",
+      "name": "GUMING",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-06-23"
+    },
     {
       "code": "02362",
       "name": "JINCHUAN INTL",
@@ -42,14 +50,6 @@
       "types": [
         "收購/要約",
         "聯合公告"
-      ],
-      "ann_date": "2026-06-23"
-    },
-    {
-      "code": "01364",
-      "name": "GUMING",
-      "types": [
-        "配股"
       ],
       "ann_date": "2026-06-23"
     },

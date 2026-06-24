@@ -40,7 +40,7 @@ logger = logging.getLogger("direct_backfill")
 
 # Edit this list to target specific dates
 # When adding new dates, put newest first
-DATES = ["2026-06-19"]
+DATES = ["2026-06-23", "2026-06-22", "2026-06-19"]
 
 
 def get_conn():
