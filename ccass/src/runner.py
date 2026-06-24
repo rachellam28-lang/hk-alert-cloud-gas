@@ -115,6 +115,7 @@ def load_config() -> dict:
 def _apply_runtime_tuning(config: dict) -> dict:
     """Apply env-driven runtime tuning without mutating the base config file."""
     sc_cfg = config.setdefault("scraping", {})
+    provider = os.environ.get("HOLDINGS_PROVIDER", "hkex").lower()
     fast = os.environ.get("HOLDINGS_FAST", "0") == "1"
     ultra_fast = os.environ.get("HOLDINGS_ULTRA_FAST", "0") == "1"
     backfill_fast = os.environ.get("HOLDINGS_BACKFILL_FAST", "0") == "1"
@@ -123,7 +124,7 @@ def _apply_runtime_tuning(config: dict) -> dict:
     if fast:
         sc_cfg["delay_min_seconds"] = min(float(sc_cfg.get("delay_min_seconds", 4.0)), 1.0)
         sc_cfg["delay_max_seconds"] = min(float(sc_cfg.get("delay_max_seconds", 10.0)), 2.0)
-        sc_cfg["parallel_workers"] = max(int(sc_cfg.get("parallel_workers", 1)), 8)
+        sc_cfg["parallel_workers"] = 1 if provider == "hkex" else max(int(sc_cfg.get("parallel_workers", 1)), 8)
         sc_cfg["timeout_seconds"] = min(int(sc_cfg.get("timeout_seconds", 30)), 24)
         sc_cfg["max_retries"] = min(int(sc_cfg.get("max_retries", 3)), 2)
         skip_mc = True
@@ -131,7 +132,7 @@ def _apply_runtime_tuning(config: dict) -> dict:
     if ultra_fast:
         sc_cfg["delay_min_seconds"] = min(float(sc_cfg.get("delay_min_seconds", 4.0)), 0.15)
         sc_cfg["delay_max_seconds"] = min(float(sc_cfg.get("delay_max_seconds", 10.0)), 0.5)
-        sc_cfg["parallel_workers"] = max(int(sc_cfg.get("parallel_workers", 1)), 16)
+        sc_cfg["parallel_workers"] = 1 if provider == "hkex" else max(int(sc_cfg.get("parallel_workers", 1)), 16)
         sc_cfg["timeout_seconds"] = min(int(sc_cfg.get("timeout_seconds", 30)), 18)
         sc_cfg["max_retries"] = min(int(sc_cfg.get("max_retries", 3)), 1)
         skip_mc = True
@@ -149,6 +150,13 @@ def _apply_runtime_tuning(config: dict) -> dict:
         sc_cfg["max_retries"] = min(int(sc_cfg.get("max_retries", 3)), 1)
         skip_mc = True
         config["_runtime_backfill_fast_mode"] = True
+
+    if provider == "hkex" and int(sc_cfg.get("parallel_workers", 1)) != 1:
+        logger.warning(
+            "Capping parallel_workers to 1 for HKEX provider (was %s)",
+            sc_cfg.get("parallel_workers"),
+        )
+        sc_cfg["parallel_workers"] = 1
 
     sc_cfg["skip_market_cap_fetch"] = skip_mc
     config["_runtime_fast_mode"] = fast
