@@ -42,6 +42,20 @@ flowchart LR
 - **display**：網站頁面只讀已發佈資料
 - **notify**：Telegram 同 health check 都要讀同一份 bundle
 
+### 超短版
+
+```text
+source
+  ↓
+compute
+  ↓
+publish_bundle.json
+  ↓
+pages / health_check / telegram / daily note
+  ↓
+Cloudflare Pages + Hermes/Cron bots
+```
+
 ---
 
 ## 2. 原始資料層
