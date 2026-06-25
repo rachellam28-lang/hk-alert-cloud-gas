@@ -29,20 +29,26 @@ If these disagree with chat history, prefer the file state and current repo stat
   - `ccass/scripts/generate_prices_json.py`
   - `ccass/scripts/generate_signals_json.py`
   - `ccass/scripts/regenerate_json.py`
+- Daily refresh is now bounded by `HOLDINGS_DAILY_MAX_MINUTES` and should stop instead of lingering on slow tail stocks.
+- Separate resume job:
+  - `ccass/scripts/resume_incomplete_dates.py`
+  - `ccass/scripts/resume_backfill_range.py`
+  - Keep the daily job quick; let resume mop up missing coverage later.
 - Longbridge is for holdings backfill, not full-site refresh.
 - Standalone US dashboard page was removed; keep only `美股P/E` and `美股 breadth` on main pages.
 - Main pages currently restored:
   - `index.html`
   - `signals.html`
   - Both show `美股P/E` and `美股 breadth`
-- A Cloudflare Cron Trigger path is being added to trigger the GitHub refresh workflow.
+- A Cloudflare Cron Trigger path is being added to trigger the GitHub refresh workflows.
+- Cloudflare cron should split into bounded daily refresh + separate resume/backfill dispatch, not one endless job.
 - GitHub workflow push may fail if PAT lacks `workflow` scope.
 - `data/publish_bundle.json` is the shared publish metadata layer for Telegram / dashboard / Daily / health check.
 
 ## Cloudflare / GitHub
 
 - Main site deploys from GitHub `main` to Cloudflare Pages.
-- Cloudflare schedule should trigger GitHub `workflow_dispatch` for refresh.
+- Cloudflare schedule should trigger GitHub `workflow_dispatch` for refresh/resume depending on cron slot.
 - If GitHub workflow push fails, check PAT `workflow` scope first.
 - CCASS events cron should use its own Telegram bot/chat secrets, not the Hermes bot.
 - Major source-of-truth changes should be synced to Hermes via Telegram so the human-visible side stays aligned.

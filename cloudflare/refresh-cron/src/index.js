@@ -1,13 +1,24 @@
 export default {
   async scheduled(event, env, ctx) {
-    ctx.waitUntil(dispatchRefresh(env));
+    ctx.waitUntil(dispatchByCron(event, env));
   },
 };
 
-async function dispatchRefresh(env) {
+async function dispatchByCron(event, env) {
+  const cron = event?.cron || "";
+  const workflow = env.GITHUB_WORKFLOW || pickWorkflow(cron);
+  return dispatchRefresh(env, workflow);
+}
+
+function pickWorkflow(cron) {
+  if (cron === "30 23 * * 0-4") return "ccass_refresh.yml";
+  if (cron === "0 7 * * 1-5") return "ccass_resume.yml";
+  return "ccass_refresh.yml";
+}
+
+async function dispatchRefresh(env, workflow) {
   const owner = env.GITHUB_OWNER;
   const repo = env.GITHUB_REPO;
-  const workflow = env.GITHUB_WORKFLOW || "ccass_refresh.yml";
   const ref = env.GITHUB_REF || "main";
   const token = env.GITHUB_TOKEN;
 

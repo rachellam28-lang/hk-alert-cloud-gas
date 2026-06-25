@@ -64,8 +64,9 @@ def run(start: date, end: date, max_batches: int) -> int:
             print(f"BATCH_START {trade_date} batch={batch}", flush=True)
             env = os.environ.copy()
             env["PYTHONPATH"] = "."
-            env["HOLDINGS_PROVIDER"] = "longbridge"
-            env["FILL_MISSING_WORKERS"] = env.get("FILL_MISSING_WORKERS", "4")
+            env["HOLDINGS_PROVIDER"] = env.get("HOLDINGS_PROVIDER", "hkex")
+            env["HOLDINGS_BACKFILL_FAST"] = env.get("HOLDINGS_BACKFILL_FAST", "1")
+            env["FILL_MISSING_WORKERS"] = env.get("FILL_MISSING_WORKERS", "1")
             proc = subprocess.run(
                 [
                     sys.executable,

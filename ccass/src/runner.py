@@ -107,6 +107,23 @@ def _reliable_trend_windows(target_date: date, windows: list[int]) -> list[int]:
     return reliable
 
 
+def _daily_budget_deadline() -> float | None:
+    """Return a monotonic deadline for bounded daily runs.
+
+    Daily cron runs should stop after a fixed budget and hand remaining
+    work to the separate resume job. Set HOLDINGS_DAILY_MAX_MINUTES=0 to
+    disable the cutoff.
+    """
+    raw = os.environ.get("HOLDINGS_DAILY_MAX_MINUTES", "0")
+    try:
+        minutes = float(raw)
+    except Exception:
+        return None
+    if minutes <= 0:
+        return None
+    return time.monotonic() + (minutes * 60.0)
+
+
 def load_config() -> dict:
     with open(CONFIG_PATH, encoding="utf-8") as f:
         return yaml.safe_load(f)
@@ -466,6 +483,9 @@ def run_daily(
             )
             run_id = cur.lastrowid
 
+    daily_budget_deadline = _daily_budget_deadline()
+    daily_budget_hit = False
+
     failed_stocks: list[str] = []
     succeeded = 0
     attempted = 0
@@ -566,6 +586,13 @@ def run_daily(
                         "scrape_batch.py",
                     )
                     for batch_no, batch in enumerate(_chunks(stocks, batch_size), 1):
+                        if daily_budget_deadline is not None and time.monotonic() >= daily_budget_deadline:
+                            daily_budget_hit = True
+                            logger.warning(
+                                "Daily HOLDINGS budget reached before batch %d; stopping early",
+                                batch_no,
+                            )
+                            break
                         attempted += len(batch)
                         done = min(batch_no * batch_size, len(stocks))
                         if done % 48 == 0 or done >= len(stocks):
@@ -621,6 +648,13 @@ def run_daily(
                             failed_stocks.extend(batch)
                 else:
                     for i, code in enumerate(stocks, 1):
+                        if daily_budget_deadline is not None and time.monotonic() >= daily_budget_deadline:
+                            daily_budget_hit = True
+                            logger.warning(
+                                "Daily HOLDINGS budget reached before stock %d/%d; stopping early",
+                                i, len(stocks),
+                            )
+                            break
                         attempted += 1
                         if i % 50 == 0:
                             logger.info("Progress: %d/%d (%.1f%%)", i, len(stocks), 100 * i / len(stocks))
@@ -659,6 +693,11 @@ def run_daily(
                             logger.exception("Unexpected error on %s", code)
                             failed_stocks.append(code)
 
+        if daily_budget_hit:
+            logger.warning(
+                "Daily HOLDINGS budget hit; scrape phase ended early and will resume later"
+            )
+
         # Shard output mode: write artifact JSON + early return.
         # Trends / alerts / events / holdings.json are handled by the merge phase.
         if out_path:
@@ -680,6 +719,12 @@ def run_daily(
         if date_coverage < MIN_SUCCESS_COVERAGE:
             if run_id is not None:
                 finished_iso = datetime.utcnow().isoformat()
+                error_summary = (
+                    f"daily budget exceeded; date coverage {date_count}/{active_total} "
+                    f"({date_coverage * 100:.1f}%)"
+                    if daily_budget_hit
+                    else f"date coverage {date_count}/{active_total} ({date_coverage * 100:.1f}%)"
+                )
                 with get_conn() as conn:
                     conn.execute(
                         """UPDATE scrape_runs SET
@@ -694,10 +739,7 @@ def run_daily(
                             succeeded,
                             len(failed_stocks),
                             "partial",
-                            (
-                                f"date coverage {date_count}/{active_total} "
-                                f"({date_coverage * 100:.1f}%)"
-                            ),
+                            error_summary,
                             run_id,
                         ),
                     )

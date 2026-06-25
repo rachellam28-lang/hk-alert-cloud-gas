@@ -83,7 +83,8 @@ Cloudflare Pages + Hermes/Cron bots
 ### 主 refresh pipeline
 
 - `ccass/scripts/daily_refresh.sh`
-  - 主 refresh orchestrator
+  - **bounded daily refresh orchestrator**
+  - 只做當日主流程；遇到 time budget / partial coverage 就停止，唔再死追尾 stock
   - 依序做：
     1. `src.runner`
     2. `daily_lp_futu.py`
@@ -95,6 +96,10 @@ Cloudflare Pages + Hermes/Cron bots
     8. `cleanup_logs.py`
     9. `audit_gate.py`
     10. commit / push
+- `ccass/scripts/resume_incomplete_dates.py`
+  - **separate resume job**
+  - 自動檢查最近 incomplete trade dates
+  - 用 `resume_backfill_range.py` 補返尾段缺口，唔阻塞日常 refresh
 
 ### 重要計算模組
 
@@ -252,7 +257,10 @@ Cloudflare Pages + Hermes/Cron bots
 
 - `cloudflare/refresh-cron/`
   - Cron Trigger 觸發 GitHub workflow dispatch
-  - 目標係令主 refresh pipeline 自動化
+  - 分兩條 workflow：
+    - `ccass_refresh.yml`：bounded daily refresh
+    - `ccass_resume.yml`：resume / mop up incomplete dates
+  - 目標係令主 refresh pipeline 自動化，但唔好俾尾段慢 stock 拖死日常 job
 
 ### 注意
 

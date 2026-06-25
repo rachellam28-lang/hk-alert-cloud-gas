@@ -1,5 +1,6 @@
 #!/bin/bash
-# Single HOLDINGS cron: scrape, refresh prices/suspended, regenerate, verify, deploy.
+# Single HOLDINGS cron: bounded daily scrape, refresh prices/suspended, regenerate,
+# verify, deploy. Slow tail stocks are handled by the separate resume job.
 # Lock handled by Python (src/runner.py → backfill._acquire_lock) — no bash noclobber.
 set -euo pipefail
 
@@ -10,6 +11,7 @@ REPO_ROOT="$(cd "$CCASS_DIR/.." && pwd)"
 cd "$CCASS_DIR"
 
 export HOLDINGS_FAST="${HOLDINGS_FAST:-1}"
+export HOLDINGS_DAILY_MAX_MINUTES="${HOLDINGS_DAILY_MAX_MINUTES:-120}"
 export HOLDINGS_SKIP_MARKET_CAP_FETCH="${HOLDINGS_SKIP_MARKET_CAP_FETCH:-1}"
 PYTHON_BIN="$REPO_ROOT/.venv/bin/python"
 if [[ ! -x "$PYTHON_BIN" ]]; then
@@ -17,28 +19,17 @@ if [[ ! -x "$PYTHON_BIN" ]]; then
 fi
 
 echo "=== $(date) ==="
-echo "1/5 Run HOLDINGS scrape..."
-RUNNER_ATTEMPTS="${HOLDINGS_RUNNER_ATTEMPTS:-3}"
-runner_rc=1
-for attempt in $(seq 1 "$RUNNER_ATTEMPTS"); do
-    echo "  attempt $attempt/$RUNNER_ATTEMPTS"
-    "$PYTHON_BIN" -m src.runner
-    runner_rc=$?
-    if [[ "$runner_rc" -eq 0 ]]; then
-        break
-    fi
-    if [[ "$runner_rc" -ne 1 ]]; then
-        echo "ERROR: HOLDINGS scrape failed (rc=$runner_rc)"
-        exit "$runner_rc"
-    fi
-    if [[ "$attempt" -lt "$RUNNER_ATTEMPTS" ]]; then
-        echo "  partial run; retrying resume mode..."
-        sleep 5
-    fi
-done
-if [[ "$runner_rc" -ne 0 ]]; then
-    echo "ERROR: HOLDINGS scrape remained partial after $RUNNER_ATTEMPTS attempts"
+echo "1/5 Run HOLDINGS scrape (bounded daily mode)..."
+set +e
+"$PYTHON_BIN" -m src.runner
+runner_rc=$?
+set -e
+if [[ "$runner_rc" -eq 1 ]]; then
+    echo "WARN: HOLDINGS scrape returned partial coverage; resume job will continue later"
     exit 1
+elif [[ "$runner_rc" -ne 0 ]]; then
+    echo "ERROR: HOLDINGS scrape failed (rc=$runner_rc)"
+    exit "$runner_rc"
 fi
 
 echo "2/5 Refresh prices + suspended (Futu)..."

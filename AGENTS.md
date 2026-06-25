@@ -119,6 +119,10 @@
   6. Report: success/fail + 異常變動 summary
 - **失敗處理**: ping Telegram with error detail
 - **約束**: 遵守所有 FATAL rules，尤其 FATAL-001（alert summary only）
+- **分流**:
+  - `ccass/scripts/daily_refresh.sh` 只做 bounded daily refresh，唔好等尾段慢 stock 拖死
+  - `ccass/scripts/resume_incomplete_dates.py` / `resume_backfill_range.py` 負責補缺口
+  - Telegram / dashboard / notes 只接受同一套 canonical publish bundle
 
 ---
 

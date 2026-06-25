@@ -3,10 +3,12 @@ main = "src/index.js"
 compatibility_date = "2026-06-23"
 
 [triggers]
-crons = ["30 23 * * 0-4"] # 07:30 HKT Mon-Fri
+crons = [
+  "30 23 * * 0-4", # 07:30 HKT Mon-Fri — daily refresh
+  "0 7 * * 1-5",   # 15:00 HKT Mon-Fri — resume job
+]
 
 [vars]
 GITHUB_OWNER = "rachellam28-lang"
 GITHUB_REPO = "hk-alert-cloud-gas"
-GITHUB_WORKFLOW = "ccass_refresh.yml"
 GITHUB_REF = "main"
