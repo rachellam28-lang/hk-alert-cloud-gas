@@ -20,7 +20,6 @@ import argparse
 import json
 import os
 import sys
-import sqlite3
 import time
 from datetime import datetime, date, timezone, timedelta
 from pathlib import Path
@@ -94,22 +93,9 @@ def load_stock_prices() -> dict:
         return json.load(f)
 
 
-def load_db_trends(lookback_days: int = 30) -> list[dict]:
-    """Load recent alerts/trends from holdings.db if populated."""
-    try:
-        conn = sqlite3.connect(DB_PATH)
-        conn.row_factory = sqlite3.Row
-        # Try ccass_trends
-        cur = conn.execute(
-            "SELECT stock_code, trade_date, delta_5d_pct, delta_20d_pct, "
-            "consecutive_increase_days, consecutive_decrease_days "
-            "FROM ccass_trends ORDER BY trade_date DESC LIMIT 500"
-        )
-        rows = [dict(r) for r in cur.fetchall()]
-        conn.close()
-        return rows
-    except sqlite3.OperationalError:
-        return []
+def load_db_activity(lookback_days: int = 30) -> list[dict]:
+    """Trend pipeline disabled. Return no trend rows."""
+    return []
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -234,7 +220,6 @@ def _make_signal_dashboard(s: dict) -> dict:
     code = s["c"]
     name = s.get("n", "")
     vr = s.get("vr", 0) or 0
-    d5 = s.get("d5")
     chg = s.get("chg", 0) or 0
     lp = s.get("lp", 0)
     py_pct = s.get("py_pct", 0)
@@ -247,8 +232,6 @@ def _make_signal_dashboard(s: dict) -> dict:
     parts = []
     if vr and abs(vr) > 1.5:
         parts.append(f"VR爆量 {vr:.1f}x")
-    if d5 is not None and abs(d5) > 1:
-        parts.append(f"CCASS Δ5d: {d5:+.2f}%")
     if abs(chg) > 1:
         parts.append(f"股價變動: {chg:+.2f}%")
     if py_pct:
@@ -262,7 +245,6 @@ def _make_signal_dashboard(s: dict) -> dict:
     context = json.dumps({
         "ccass_total_pct": tp,
         "ccass_top5_pct": t5,
-        "ccass_delta_5d": d5,
         "price_last": lp,
         "price_ytd_pct": py_pct,
         "price_change_pct": chg,

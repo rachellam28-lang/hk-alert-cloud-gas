@@ -1,6 +1,6 @@
 """
 enrich_ccass.py — API-only enrichment (NO scraping)
-Reads CCASS from DB, enriches with Futu prices + westock deltas + FCF.
+Reads CCASS from DB, enriches with Futu prices + FCF.
 Generates holdings.json for the dashboard.
 """
 import json, sys, os, argparse
@@ -83,7 +83,7 @@ def load_futu_prices():
 
 
 def load_westock_deltas():
-    """Load delta data from westock cache."""
+    """Load non-trend price metadata from westock cache."""
     prices_path = PROJ / "data" / "prices.json"
     if not prices_path.exists():
         logger.warning("No prices.json found")
@@ -96,9 +96,7 @@ def load_westock_deltas():
         stocks = {}
         for g in data["groups"]:
             code = g.get("code", "").zfill(5)
-            stocks[code] = {
-                "d5": g.get("d5"),
-                "d20": g.get("d20"),
+        stocks[code] = {
                 "lp": g.get("latestPrice"),
                 "mc": g.get("marketCap"),
                 "chg": g.get("changePercent"),
@@ -216,7 +214,6 @@ def build_ccass_json():
               AND stock_code NOT LIKE '8%'
         """, (latest_date,)).fetchall()
         
-        # Get trends (5d delta from previous dates)
         stocks = {}
         for r in rows:
             code = r["stock_code"]
@@ -230,31 +227,8 @@ def build_ccass_json():
             }
         
         logger.info("DB stocks: %d", len(stocks))
-        
-        # Trend: compare with previous trading day
-        prev_date = conn.execute(
-            "SELECT trade_date FROM ccass_daily WHERE trade_date < ? ORDER BY trade_date DESC LIMIT 1",
-            (latest_date,)
-        ).fetchone()
-        
-        if prev_date:
-            prev = prev_date["trade_date"]
-            prev_rows = conn.execute(
-                "SELECT stock_code, top5_pct FROM ccass_daily WHERE trade_date = ?",
-                (prev,)
-            ).fetchall()
-            prev_map = {r["stock_code"]: r["top5_pct"] for r in prev_rows}
-            
-            for code in stocks:
-                if code in prev_map and prev_map[code] and stocks[code]["t5"]:
-                    # NOTE: Do NOT overwrite su/sd here. su/sd are set by runner.py
-                    # as consecutive_increase_days / consecutive_decrease_days.
-                    # Previously this was incorrectly overwriting su with t5 delta.
-                    pass
-            
-            logger.info("Trend computed against %s", prev)
-    
-    # 2. Enrich with Futu prices + westock deltas
+
+    # 2. Enrich with Futu prices + non-trend price metadata
     price_data = load_westock_deltas()
     # Also load Futu prices (stock_prices.json) — primary source for lp,chg,mc,yo,py
     futu_prices = load_futu_prices()

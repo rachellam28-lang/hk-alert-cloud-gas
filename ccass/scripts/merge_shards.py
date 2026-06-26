@@ -4,7 +4,7 @@
     python -m scripts.merge_shards --date 2026-05-23
 
 Expects holdings-shard-0.json through holdings-shard-{SHARD_TOTAL-1}.json in repo root.
-Validates all shards, merges into DB, computes trends, sends alerts,
+Validates all shards, merges into DB, sends alerts,
 and updates holdings.json for the dashboard.
 """
 from __future__ import annotations
@@ -182,19 +182,6 @@ def update_holdings_json(target_date: date) -> None:
         WHERE cd.trade_date = ? AND {exclude_where}
     """, (target_date.strftime("%Y-%m-%d"), *exclude_params)).fetchall()
     
-    # Get trends for this date (with streak)
-    trends = {}
-    for row in db.execute("""
-        SELECT stock_code, delta_5d_pct, delta_20d_pct, delta_60d_pct, delta_120d_pct,
-               consecutive_increase_days, consecutive_decrease_days
-        FROM ccass_trends
-        WHERE trade_date = ?
-    """, (target_date.strftime("%Y-%m-%d"),)).fetchall():
-        trends[row[0]] = {
-            'd5': row[1], 'd20': row[2], 'd60': row[3], 'd120': row[4],
-            'su': row[5] or 0, 'sd': row[6] or 0
-        }
-    
     # Market cap — try dated first, fallback to legacy
     mc_map = {}
     try:
@@ -241,7 +228,6 @@ def update_holdings_json(target_date: date) -> None:
         fp = round(row[10], 2) if row[10] is not None else None      # futu_pct
         a5 = round(row[11], 2) if row[11] is not None else None      # a00005_pct
 
-        tr = trends.get(sc, {})
         mc = mc_map.get(sc)
         pr = price_map.get(sc, {})
 
@@ -251,12 +237,6 @@ def update_holdings_json(target_date: date) -> None:
             'tp': tp,
             't5': t5,
             't10': t10,
-            'd5': round(tr.get('d5'), 2) if tr.get('d5') is not None else None,
-            'd20': round(tr.get('d20'), 2) if tr.get('d20') is not None else None,
-            'd60': round(tr.get('d60'), 2) if tr.get('d60') is not None else None,
-            'd120': round(tr.get('d120'), 2) if tr.get('d120') is not None else None,
-            'su': tr.get('su', 0),
-            'sd': tr.get('sd', 0),
             'np': np_val,
             'mc': mc,
             # Year-open + latest price
@@ -286,13 +266,9 @@ def update_holdings_json(target_date: date) -> None:
 
     total_participants = sum(s['np'] for s in stocks)
 
-    # Top increase / decrease (by 5-day delta)
-    sorted_up = sorted([s for s in stocks if s['d5'] is not None and s['d5'] > 0],
-                       key=lambda s: -s['d5'])[:5]
-    sorted_dn = sorted([s for s in stocks if s['d5'] is not None and s['d5'] < 0],
-                       key=lambda s: s['d5'])[:5]
-    top_increase = [{'c': s['c'], 'n': s['n'], 'd5': s['d5']} for s in sorted_up]
-    top_decrease = [{'c': s['c'], 'n': s['n'], 'd5': s['d5']} for s in sorted_dn]
+    # Trend pipeline disabled: do not publish derived movers.
+    top_increase: list[dict] = []
+    top_decrease: list[dict] = []
 
     # First date in DB
     first_row = db.execute("SELECT MIN(trade_date) FROM holdings_daily").fetchone()
@@ -414,7 +390,7 @@ def main():
             tmp_path.replace(db_path)
             print(f"Restored holdings.db: {db_path.stat().st_size} bytes")
         else:
-            print("WARNING: holdings.db.gz not found — trends will be empty")
+            print("WARNING: holdings.db.gz not found — export will continue without legacy DB restore")
 
     # Validate
     print("Validating shards...")
@@ -429,18 +405,10 @@ def main():
     written = merge_into_db(all_payloads)
     print(f"Merged: {written} snapshots ({total_failed} failures)")
 
-    # Compute trends
-    print("Computing trends...")
-    try:
-        sys.path.insert(0, str(PROJECT_ROOT))
-        from src.trend import compute_trends_for_date
-        target_date = datetime.strptime(date_str, "%Y-%m-%d").date()
-        n_trends = compute_trends_for_date(target_date)
-        print(f"Trends computed: {n_trends} stocks")
-    except Exception as e:
-        print(f"WARN Trends failed: {e}")
+    # Trend pipeline disabled.
+    target_date = datetime.strptime(date_str, "%Y-%m-%d").date()
 
-    # Update holdings.json (after trends so deltas are included)
+    # Update holdings.json
     print("Updating holdings.json...")
     update_holdings_json(target_date)
 

@@ -4,10 +4,9 @@ Workflow:
 1. Check 今日係咪 trading day。如果唔係，exit。
 2. 攞 universe (refresh weekly)
 3. Scrape 全部股票
-4. Compute trends
-5. Detect alerts → Telegram
-6. Detect HOLDINGS events (deposit/transfer) → Telegram
-7. Log run metadata
+4. Detect alerts → Telegram
+5. Detect HOLDINGS events (deposit/transfer) → Telegram
+6. Log run metadata
 """
 from __future__ import annotations
 
@@ -34,10 +33,9 @@ except Exception:  # pragma: no cover - fallback for older runtimes
 
 from src.db import init_db, get_conn
 from src.logger import setup_logger
-from src.trading_calendar import today_hk, is_trading_day, previous_trading_day, last_n_trading_days
+from src.trading_calendar import today_hk, is_trading_day, previous_trading_day
 from src.universe import refresh_universe, get_active_stocks
 from src.scraper import HOLDINGSScraper, save_snapshot, HKEXBlockedError
-from src.trend import compute_trends_for_date
 from src.alerts import detect_alerts, send_alerts, send_admin_alert, send_event_alerts
 
 # scanner/events_detector.py lives at project root (not inside holdings/),
@@ -83,28 +81,6 @@ def _date_coverage(date_str: str) -> tuple[int, int, float]:
         date_count = date_row["n"] if date_row else 0
     coverage = date_count / active_total if active_total else 0.0
     return date_count, active_total, coverage
-
-
-def _reliable_trend_windows(target_date: date, windows: list[int]) -> list[int]:
-    """Only compute trend windows whose reference date has complete data."""
-    if not windows:
-        return []
-    max_window = max(windows)
-    all_tdays = last_n_trading_days(target_date, max_window + 1)
-    reliable: list[int] = []
-    for w in windows:
-        if len(all_tdays) <= w:
-            continue
-        ref_date = all_tdays[-(w + 1)].strftime("%Y-%m-%d")
-        ref_count, ref_total, ref_cov = _date_coverage(ref_date)
-        if ref_total and ref_cov >= MIN_SUCCESS_COVERAGE:
-            reliable.append(w)
-        else:
-            logger.warning(
-                "Trend %sd skipped for %s: ref %s coverage %.1f%% (%d/%d)",
-                w, target_date, ref_date, ref_cov * 100, ref_count, ref_total,
-            )
-    return reliable
 
 
 def _daily_budget_deadline() -> float | None:
@@ -554,7 +530,7 @@ def run_daily(
                     )
                 if not stocks:
                     logger.info(
-                        "Resume mode: all %d stocks already scraped for %s; continuing to trends/export",
+                        "Resume mode: all %d stocks already scraped for %s; continuing to export",
                         existing_rows, query_date,
                     )
 
@@ -744,7 +720,7 @@ def run_daily(
                         ),
                     )
             logger.error(
-                "Date coverage %.1f%% (%d/%d) < %.1f%%; skipping trends/alerts/export for %s",
+                "Date coverage %.1f%% (%d/%d) < %.1f%%; skipping alerts/export for %s",
                 date_coverage * 100,
                 date_count,
                 active_total,
@@ -753,41 +729,7 @@ def run_daily(
             )
             return 1
 
-        # 4. Trends
-        trend_windows = _reliable_trend_windows(query_date, config["trend_windows"])
-        if not trend_windows:
-            if run_id is not None:
-                finished_iso = datetime.utcnow().isoformat()
-                with get_conn() as conn:
-                    conn.execute(
-                        """UPDATE scrape_runs SET
-                             finished_at = ?, stocks_attempted = ?,
-                             stocks_succeeded = ?, stocks_failed = ?,
-                             status = ?,
-                             error_summary = ?
-                           WHERE id = ?""",
-                        (
-                            finished_iso,
-                            attempted,
-                            succeeded,
-                            len(failed_stocks),
-                            "partial",
-                            "no complete trend reference dates",
-                            run_id,
-                        ),
-                    )
-            logger.error(
-                "No complete trend reference dates for %s; skipping alerts/export",
-                date_str,
-            )
-            return 1
-        try:
-            compute_trends_for_date(query_date, trend_windows)
-        except Exception as e:
-            logger.exception("Trend computation failed")
-            send_admin_alert(f"Trend computation 失敗: {e}")
-
-        # 5. Alerts
+        # 4. Alerts
         if not skip_alerts:
             alert_cfg = config["alerts"]
             alerts_found = detect_alerts(
@@ -805,7 +747,7 @@ def run_daily(
             )
             logger.info("Sent %d alert(s)", sent)
 
-        # 5.5. HOLDINGS Events (Deposit / Transfer)
+        # 5. HOLDINGS Events (Deposit / Transfer)
         try:
             yesterday_date = previous_trading_day(query_date)
             events_logged = _detect_and_log_events(query_date, yesterday_date)
@@ -974,24 +916,19 @@ def _export_json(query_date: date, alerts_today: int) -> bool:
 
     try:
         with get_conn() as conn:
-            # P3: Query from holdings_daily first (not holdings_trends) so stocks without trends still appear.
-            # This matches the merge_shards.py update_holdings_json behavior.
             rows = conn.execute(
                 """SELECT cd.stock_code, u.stock_name,
                           cd.total_pct, cd.top5_pct, cd.top10_pct, cd.num_participants,
                           cd.adj_hhi, cd.broker_top5_pct, cd.top_broker_id,
                           cd.top_broker_name, cd.top_broker_pct,
-                          cd.futu_pct, cd.a00005_pct,
-                          t.delta_5d_pct, t.delta_20d_pct, t.delta_60d_pct, t.delta_120d_pct,
-                          t.consecutive_increase_days, t.consecutive_decrease_days
+                          cd.futu_pct, cd.a00005_pct
                    FROM holdings_daily cd
                    LEFT JOIN stock_universe u ON u.stock_code = cd.stock_code
-                   LEFT JOIN holdings_trends t ON t.stock_code = cd.stock_code AND t.trade_date = cd.trade_date
                    WHERE cd.trade_date = ? AND cd.validation_failed = 0
                      AND cd.stock_code NOT LIKE '029%'
                      AND cd.stock_code NOT LIKE '04%'
                      AND cd.stock_code NOT LIKE '8%'
-                   ORDER BY t.delta_5d_pct DESC""",
+                   ORDER BY cd.total_pct DESC, cd.top5_pct DESC""",
                 (date_str,),
             ).fetchall()
 
@@ -1011,12 +948,6 @@ def _export_json(query_date: date, alerts_today: int) -> bool:
                 "tp": tp_val,
                 "t5": t5_val,
                 "t10": t10_val,
-                "d5": round(r["delta_5d_pct"], 2) if r["delta_5d_pct"] is not None else None,
-                "d20": round(r["delta_20d_pct"], 2) if r["delta_20d_pct"] is not None else None,
-                "d60": round(r["delta_60d_pct"], 2) if r["delta_60d_pct"] is not None else None,
-                "d120": round(r["delta_120d_pct"], 2) if r["delta_120d_pct"] is not None else None,
-                "su": r["consecutive_increase_days"] or 0,
-                "sd": r["consecutive_decrease_days"] or 0,
                 "np": np_val,
                 # Sentinel Option A (compact keys)
                 "ah": round(r["adj_hhi"], 1) if r["adj_hhi"] is not None else None,
@@ -1027,27 +958,6 @@ def _export_json(query_date: date, alerts_today: int) -> bool:
                 "fp": round(r["futu_pct"], 2) if r["futu_pct"] is not None else None,
                 "a5": round(r["a00005_pct"], 2) if r["a00005_pct"] is not None else None,
             })
-            # Backward compat top_increase/top_decrease
-            entry = {
-                "code": r["stock_code"],
-                "name": r["stock_name"] or r["stock_code"],
-                "delta_5d": round(r["delta_5d_pct"], 2) if r["delta_5d_pct"] is not None else 0,
-                "delta_20d": round(r["delta_20d_pct"] or 0, 2) if r["delta_20d_pct"] is not None else 0,
-                "delta_60d": round(r["delta_60d_pct"], 2) if r["delta_60d_pct"] is not None else 0,
-                "delta_120d": round(r["delta_120d_pct"], 2) if r["delta_120d_pct"] is not None else 0,
-                "total_pct": round(r["total_pct"] or 0, 2),
-                "top5_pct": round(r["top5_pct"] or 0, 2),
-                "top10_pct": round(r["top10_pct"] or 0, 2),
-                "streak_up": r["consecutive_increase_days"] or 0,
-                "streak_dn": r["consecutive_decrease_days"] or 0,
-            }
-            delta = r["delta_5d_pct"]
-            if delta is not None and delta > 0:
-                top_increase.append(entry)
-            elif delta is not None and delta < 0:
-                top_decrease.append(entry)
-            # P1-3 fix: skip NULL and zero delta — don't pollute top_decrease
-
         # Enrich stocks with market cap from Yahoo Finance
         try:
             mc_map = _fetch_market_caps(
@@ -1070,8 +980,10 @@ def _export_json(query_date: date, alerts_today: int) -> bool:
                 if s.get(key) is None and extra.get(key) is not None:
                     s[key] = extra[key]
 
-        top_increase = top_increase[:10]
-        top_decrease = sorted(top_decrease, key=lambda x: x["delta_5d"])[:10]
+        # Trend pipeline disabled: keep top mover slots empty rather than
+        # publishing stale or synthetic delta values.
+        top_increase = []
+        top_decrease = []
 
         # Aggregate stats for the standalone page
         total_participants = sum(s["np"] for s in stocks) if stocks else 0

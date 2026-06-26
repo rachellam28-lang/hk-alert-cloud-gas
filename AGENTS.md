@@ -72,7 +72,8 @@
 
 ### GUIDELINE-007：Telegram / dashboard / notes must share the same source of truth
 - 所有對外 update（Telegram、health_check、daily note、dashboard summary）必須同一套口徑
-- 優先級：`holdings.db` / `ccass_trends` / `holdings.json` / `ccass.json` / `data/*.json`
+- 優先級：`holdings.db` / `holdings.json` / `ccass.json` / `data/*.json`
+- Trend pipeline 已停用；唔好再將 `ccass_trends` 當作日常 publish source
 - 唔可以 Telegram 講 updated，但頁面/notes 用舊 cache
 - 當有 cache / fallback / legacy duplicate（例如 `data/prices.json` vs `data/stock_prices.json`）時，要明確揀一個 primary source，其他只可作 fallback 並標示
 - 如果發現 Telegram 同頁面唔一致，先修 source / export path，再修文案

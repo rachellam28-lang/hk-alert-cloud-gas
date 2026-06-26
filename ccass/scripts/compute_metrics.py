@@ -1,13 +1,13 @@
 """
-Compute BOTH concentration metrics + trend deltas for dates with missing data.
+Compute concentration metrics for dates with missing data.
 Uses holdings_holdings raw data — NO re-scraping needed.
+Trend computation is intentionally disabled.
 """
 from __future__ import annotations
 import sys, os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from datetime import date
 from src.db import get_conn, init_db, DB_PATH
-from src.trend import compute_trends_for_date
 from src.logger import setup_logger
 import sqlite3
 

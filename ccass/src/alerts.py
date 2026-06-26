@@ -136,91 +136,13 @@ def detect_alerts(
     consecutive_days: Optional[int] = None,
     consecutive_min_daily_pct: float = 1.0,
 ) -> list[dict]:
-    """偵測異常並回傳 alert list（未 send）。
+    """Trend alerts disabled.
 
-    當 spike_threshold_pct 或 consecutive_days 為 None 時，
-    自動從 data/dopamine.json 讀取市場自適應門檻。
+    We keep the function as a no-op so daily refresh / Telegram wiring can stay
+    intact while the trend pipeline is retired.
     """
-    # Auto-load dopamine thresholds if not explicitly provided
-    if spike_threshold_pct is None or consecutive_days is None:
-        d_spike, d_cons = load_dopamine_thresholds()
-        if spike_threshold_pct is None:
-            spike_threshold_pct = d_spike
-        if consecutive_days is None:
-            consecutive_days = d_cons
-
-    date_str = target_date.strftime("%Y-%m-%d")
-
-    with get_conn() as conn:
-        # Spike detection
-        spikes = conn.execute(
-            """SELECT t.stock_code, t.delta_5d_pct, t.delta_20d_pct,
-                      u.stock_name, d.total_pct
-               FROM holdings_trends t
-               LEFT JOIN stock_universe u ON u.stock_code = t.stock_code
-               LEFT JOIN holdings_daily d ON d.stock_code = t.stock_code AND d.trade_date = t.trade_date
-               WHERE t.trade_date = ?
-                 AND ABS(t.delta_5d_pct) >= ?""",
-            (date_str, spike_threshold_pct),
-        ).fetchall()
-
-        consecutive = conn.execute(
-            """SELECT t.stock_code, t.consecutive_increase_days, t.consecutive_decrease_days,
-                      t.delta_5d_pct, u.stock_name, d.total_pct
-               FROM holdings_trends t
-               LEFT JOIN stock_universe u ON u.stock_code = t.stock_code
-               LEFT JOIN holdings_daily d ON d.stock_code = t.stock_code AND d.trade_date = t.trade_date
-               WHERE t.trade_date = ?
-                 AND (t.consecutive_increase_days >= ? OR t.consecutive_decrease_days >= ?)""",
-            (date_str, consecutive_days, consecutive_days),
-        ).fetchall()
-
-        # Dedup: 已 send 過今日嘅就 skip
-        already_sent = {
-            (r["stock_code"], r["alert_type"])
-            for r in conn.execute(
-                "SELECT stock_code, alert_type FROM alerts_sent WHERE trade_date = ?",
-                (date_str,),
-            ).fetchall()
-        }
-
-    alerts = []
-    for s in spikes:
-        atype = "spike_up" if s["delta_5d_pct"] > 0 else "spike_down"
-        if (s["stock_code"], atype) in already_sent:
-            continue
-        alerts.append(
-            {
-                "stock_code": s["stock_code"],
-                "stock_name": s["stock_name"] or "",
-                "alert_type": atype,
-                "delta_5d_pct": s["delta_5d_pct"],
-                "delta_20d_pct": s["delta_20d_pct"],
-                "total_pct": s["total_pct"],
-            }
-        )
-
-    for c in consecutive:
-        if c["consecutive_increase_days"] >= consecutive_days:
-            atype = "consecutive_buy"
-            streak = c["consecutive_increase_days"]
-        else:
-            atype = "consecutive_sell"
-            streak = c["consecutive_decrease_days"]
-        if (c["stock_code"], atype) in already_sent:
-            continue
-        alerts.append(
-            {
-                "stock_code": c["stock_code"],
-                "stock_name": c["stock_name"] or "",
-                "alert_type": atype,
-                "streak_days": streak,
-                "delta_5d_pct": c["delta_5d_pct"],
-                "total_pct": c["total_pct"],
-            }
-        )
-
-    return alerts
+    logger.info("Trend alerts disabled — returning no alerts for %s", target_date)
+    return []
 
 
 def format_alert(a: dict) -> str:

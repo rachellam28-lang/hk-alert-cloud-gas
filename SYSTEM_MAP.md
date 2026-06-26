@@ -116,7 +116,7 @@ Cloudflare Pages + Hermes/Cron bots
 
 ### 趨勢 / 回測
 
-- `ccass_trends`
+- `ccass_trends`（legacy，日常 trend pipeline 已停用）
   - CCASS 持倉 trend 主來源
   - `d5 / d20 / d60 / d120` 由持倉歷史計出
 - `data/vqc_backtest.json`
@@ -242,6 +242,14 @@ Cloudflare Pages + Hermes/Cron bots
   - 係 Telegram / dashboard / notes 嘅 freshness gate
   - 優先讀 `publish_bundle.json`
   - 同步核對 holdings / signals / alerts / publish status
+
+### DeerFlow 接入
+
+- `scripts/deerflow_ccass.sh`
+  - 以 `ccass` 做 project root 啟動 DeerFlow
+  - 使用 `deerflow/config.example.yaml` 作模板，`deerflow/config.yaml` 只留本機
+  - runtime state 走 `ccass/.deer-flow/`
+  - skills 由 `/root/deer-flow/skills` 提供，避免同 ccass repo 混埋一齊
 
 ---
 

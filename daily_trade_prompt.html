@@ -143,8 +143,6 @@ a { color:inherit; text-decoration:none; }
             <th style="padding:8px 10px">名稱</th>
             <th style="padding:8px 10px">現價</th>
             <th style="padding:8px 10px">Market%</th>
-            <th style="padding:8px 10px">5D</th>
-            <th style="padding:8px 10px">20D</th>
             <th style="padding:8px 10px">訊號 / 可炒</th>
             <th style="padding:8px 10px">公告拆解</th>
             <th style="padding:8px 10px">今日原因</th>
@@ -414,8 +412,6 @@ function renderWatchlistPrompt() {
       <td style="padding:8px 10px">${x.name || h.name || s.name || ''}</td>
       <td style="padding:8px 10px">${h.lp == null ? '—' : Number(h.lp).toFixed(3)}</td>
       <td style="padding:8px 10px">${h.tp == null ? '—' : Number(h.tp).toFixed(1) + '%'}</td>
-      <td style="padding:8px 10px;color:${(h.chg ?? 0) >= 0 ? 'var(--green)' : 'var(--red)'}">${h.chg == null ? '—' : (h.chg >= 0 ? '+' : '') + Number(h.chg).toFixed(2) + '%'}</td>
-      <td style="padding:8px 10px">${h.t10 == null ? '—' : Number(h.t10).toFixed(1) + '%'}</td>
       <td style="padding:8px 10px">${badge}</td>
       <td style="padding:8px 10px">${issuerStack((x.signal && x.signal.issuer) || (x.tradeable && x.tradeable.issuer) || null)}</td>
       <td style="padding:8px 10px;max-width:360px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${x.reason}${hkex ? ` · ${hkex}` : ''}</td>
@@ -424,24 +420,17 @@ function renderWatchlistPrompt() {
 }
 
 function renderCcassLesson() {
-  const stocks = Object.values(HOLDINGS || {});
-  const valid = stocks.filter(s => s && typeof s.d5 === 'number');
-  const gainers = valid
-    .filter(s => (s.d5 || 0) > 0)
-    .sort((a, b) => (b.d5 || 0) - (a.d5 || 0));
-  const losers = valid
-    .filter(s => (s.d5 || 0) < 0)
-    .sort((a, b) => (a.d5 || 0) - (b.d5 || 0));
-  const strongBuy = gainers.find(s => (s.su || 0) > 0) || gainers[0];
-  const strongSell = losers.find(s => (s.sd || 0) > 0) || losers[0];
-  const accCount = valid.filter(s => (s.d5 || 0) > 0 && (s.su || 0) > 0).length;
-  const distCount = valid.filter(s => (s.d5 || 0) < 0 && (s.sd || 0) > 0).length;
+  const publish = (PUBLISH_BUNDLE && PUBLISH_BUNDLE.publish) || {};
+  const latestDbDate = publish.latest_db_date || '—';
+  const latestDbCount = publish.latest_db_stock_count ?? '—';
+  const latestDbCov = publish.latest_db_coverage_pct ?? '—';
+  const holdingsUpdated = publish.holdings_updated || (PUBLISH_BUNDLE && PUBLISH_BUNDLE.holdings && PUBLISH_BUNDLE.holdings.updated) || '—';
 
   const cards = [
-    ['增持/收集', accCount, 'd5 > 0 且 su = 1'],
-    ['減持/派發', distCount, 'd5 < 0 且 sd = 1'],
-    ['最強增持', strongBuy ? `${strongBuy.c}` : '—', strongBuy ? `${strongBuy.n} · ${fmtPct(strongBuy.d5)}` : '暫無'],
-    ['最強減持', strongSell ? `${strongSell.c}` : '—', strongSell ? `${strongSell.n} · ${fmtPct(strongSell.d5)}` : '暫無'],
+    ['最新完整 publish', holdingsUpdated, publish.status || '—'],
+    ['最新 partial DB', latestDbDate, `${latestDbCount}/${latestDbCov}%`],
+    ['資料口徑', publish.status === 'PASS' ? '一致' : '未完整', '只信 complete publish'],
+    ['CCASS 狀態', '已停用', '唔再計 d5 / d20 / d60 / d120'],
   ];
   document.getElementById('ccassCards').innerHTML = cards.map(([k,v,s]) => `
     <div class="mini">
@@ -451,14 +440,13 @@ function renderCcassLesson() {
     </div>`).join('');
 
   const hints = [];
-  if (strongBuy && strongBuy.d5 >= 10) {
-    hints.push(`例子：${strongBuy.c} ${strongBuy.n} 近 5 日 +${strongBuy.d5.toFixed(2)}%，可當「收集窗」示範。`);
+  if (publish.status === 'PASS') {
+    hints.push(`最新完整 publish：${holdingsUpdated}。`);
+  } else {
+    hints.push(`最新完整 publish 仍是 ${holdingsUpdated}；partial DB 係 ${latestDbDate}（${latestDbCount}/${latestDbCov}%）。`);
   }
-  if (strongSell && strongSell.d5 <= -10) {
-    hints.push(`例子：${strongSell.c} ${strongSell.n} 近 5 日 ${strongSell.d5.toFixed(2)}%，可當「派發窗」示範。`);
-  }
-  hints.push('教學重點：CCASS 睇的是「席位變化」，唔係即日方向；要配合股價、成交量、公告先解讀。');
-  hints.push('你系統入面可以把呢頁當成「日常解讀層」，而唔係硬訊號。');
+  hints.push('CCASS 已停用趨勢欄位，唔再計 5D / 20D / 60D / 120D。');
+  hints.push('如果要睇個股，請用 holdings / signals / watchlist / 公告拆解。');
   document.getElementById('ccassNote').textContent = hints.join(' ');
 }
 

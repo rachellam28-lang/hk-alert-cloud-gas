@@ -18,7 +18,7 @@ scraping:
   user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
   parallel_workers: 1   # FATAL-003: direct in-process parallel scraping disabled
 
-trend_windows: [5, 20, 60, 120]
+trend_windows: []  # trend disabled
 
 alerts:
   spike_threshold_pct: 5.0       # 5日 total_pct 變化 ≥ 呢個 trigger
