@@ -14,6 +14,7 @@ from pathlib import Path
 
 # Project root (where market.json lives)
 PROJECT = Path(__file__).resolve().parent.parent
+DATA_DIR = PROJECT / "data"
 
 # ── Step 1: Run v5 Futu dopamine ──
 print("[dopamine_refresh] Running v5 Futu dopamine...", file=sys.stderr)
@@ -66,10 +67,12 @@ if "components" in dopa_result:
 market["updated_at"] = datetime.now(timezone.utc).isoformat()
 
 # ── Step 4: Save market.json ──
-with open(market_path, "w", encoding="utf-8") as f:
-    json.dump(market, f, ensure_ascii=False, indent=2)
-
-print(f"[dopamine_refresh] market.json written ({market_path.stat().st_size} bytes)", file=sys.stderr)
+DATA_DIR.mkdir(parents=True, exist_ok=True)
+data_market_path = DATA_DIR / "market.json"
+for path in (market_path, data_market_path):
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(market, f, ensure_ascii=False, indent=2)
+    print(f"[dopamine_refresh] market.json written -> {path} ({path.stat().st_size} bytes)", file=sys.stderr)
 
 # ── Summary ──
 print(json.dumps({

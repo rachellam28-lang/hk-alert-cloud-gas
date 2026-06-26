@@ -41,6 +41,9 @@ echo "2.5/5 Generate prices.json for dashboard fallback..."
 echo "2.6/5 Generate signals.json for dashboard fallback..."
 "$PYTHON_BIN" scripts/generate_signals_json.py || { echo "ERROR: signals.json generation failed"; exit 1; }
 
+echo "2.7/5 Refresh market.json (dopamine)..."
+"$PYTHON_BIN" scripts/dopamine_refresh.py || { echo "ERROR: market.json refresh failed"; exit 1; }
+
 echo "3/5 Regenerate holdings.json..."
 "$PYTHON_BIN" scripts/regenerate_json.py || { echo "ERROR: holdings.json regeneration failed"; exit 1; }
 
@@ -58,7 +61,7 @@ echo "4/5 Audit gate..."
 
 echo "5/5 Deploy to GitHub..."
 cd "$REPO_ROOT"
-git add holdings.json data/holdings.json ccass.json data/stock_prices.json data/suspended_stocks.json data/prices.json data/signals.json data/publish_bundle.json daily_trade_prompt.html
+git add holdings.json data/holdings.json ccass.json market.json data/market.json data/stock_prices.json data/suspended_stocks.json data/prices.json data/signals.json data/publish_bundle.json daily_trade_prompt.html
 if git commit -m "daily: holdings refresh $(date +%Y-%m-%d)"; then
     git push || { echo "ERROR: git push failed"; exit 1; }
 else

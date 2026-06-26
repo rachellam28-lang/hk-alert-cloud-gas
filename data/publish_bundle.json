@@ -1,6 +1,6 @@
 {
   "schema_v": 1,
-  "generated_at": "2026-06-26T22:20:32",
+  "generated_at": "2026-06-26T23:53:36",
   "source_of_truth": {
     "db": "ccass/holdings.db",
     "primary_holdings": "holdings.json",
@@ -39,9 +39,9 @@
     },
     "market": {
       "path": "data/market.json",
-      "updated": null,
+      "updated": "2026-06-26T15:48:17.951145+00:00",
       "source": "market breadth / fear-greed cache",
-      "keys": 0
+      "keys": 13
     },
     "vqc_backtest": {
       "path": "data/vqc_backtest.json",
