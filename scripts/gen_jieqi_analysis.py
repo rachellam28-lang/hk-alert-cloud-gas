@@ -36,6 +36,7 @@ def load_data() -> dict:
 DATA = load_data()
 PAGE_DATA = {
     "updated": DATA.get("updated", ""),
+    "calendar": DATA.get("calendar", {}),
     "years": DATA.get("years", 0),
     "terms_total": DATA.get("terms_total", 0),
     "sample_total": DATA.get("sample_total", 0),
@@ -252,7 +253,16 @@ function renderCycleRail() {
   })).filter(x => x.date).sort((a, b) => dateTs(a.date) - dateTs(b.date));
   const host = document.getElementById('calendarCycle');
   if (!terms.length) {
-    host.innerHTML = '<div class="note">暫時冇 calendar data。</div>';
+    const fallback = (DATA.term_stats || []).slice(0, 24);
+    if (!fallback.length) {
+      host.innerHTML = '<div class="note">暫時冇 calendar data。</div>';
+      return;
+    }
+    host.innerHTML = `
+      <div class="note">calendar 未載入，先用統計節氣名單做 fallback。</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+        ${fallback.map(r => `<span style="padding:6px 10px;border:1px solid #24304a;border-radius:999px;background:#10192b;font-size:11px">${esc(r.term_name || '—')}</span>`).join('')}
+      </div>`;
     return;
   }
   const w = 1600;
