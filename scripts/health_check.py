@@ -269,6 +269,8 @@ def check_ccass_publish():
         signals = files.get("signals", {}) or {}
         alerts = files.get("alerts", {}) or {}
         latest_db = publish.get("latest_db_date", "—")
+        latest_db_count = publish.get("latest_db_stock_count", "—")
+        latest_db_cov = publish.get("latest_db_coverage_pct", "—")
         holdings_updated = publish.get("holdings_updated") or holdings.get("updated", "—")
         coverage_pct = publish.get("coverage_pct")
         verify_data_obj = publish.get("verify_data", {}) or {}
@@ -277,7 +279,8 @@ def check_ccass_publish():
         verify_dash = verify_dash_obj.get("status") or ("WARN" if verify_dash_obj.get("warnings") else "PASS")
         detail = (
             f"bundle {bundle.get('generated_at', '—')[:19].replace('T', ' ')} | "
-            f"DB {latest_db} | publish {holdings_updated} | coverage {coverage_pct}% "
+            f"DB {latest_db} rows={latest_db_count} cov={latest_db_cov}% | "
+            f"publish {holdings_updated} | coverage {coverage_pct}% "
             f"| signals {signals.get('updated', '—')} | alerts {alerts.get('updated', '—')} "
             f"| verify_data {verify_data} | verify_dashboard {verify_dash}"
         )
@@ -306,6 +309,8 @@ def check_ccass_publish():
         data = json.loads(stdout)
         status = data.get("status", "FAIL")
         latest_db = data.get("latest_db_date", "—")
+        latest_db_count = data.get("latest_db_stock_count", "—")
+        latest_db_cov = data.get("latest_db_coverage_pct", "—")
         holdings_updated = data.get("holdings_updated", "—")
         coverage_pct = data.get("coverage_pct", "—")
         verify_data_obj = data.get("verify_data", {}) or {}
@@ -313,7 +318,8 @@ def check_ccass_publish():
         verify_data = verify_data_obj.get("status") or ("WARN" if verify_data_obj.get("warnings") else "PASS")
         verify_dash = verify_dash_obj.get("status") or ("WARN" if verify_dash_obj.get("warnings") else "PASS")
         detail = (
-            f"DB {latest_db} | publish {holdings_updated} | coverage {coverage_pct}% "
+            f"DB {latest_db} rows={latest_db_count} cov={latest_db_cov}% | "
+            f"publish {holdings_updated} | coverage {coverage_pct}% "
             f"| verify_data {verify_data} | verify_dashboard {verify_dash}"
         )
         if status == "PASS":

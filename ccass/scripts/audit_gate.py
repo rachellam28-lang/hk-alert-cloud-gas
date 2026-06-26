@@ -51,6 +51,31 @@ def _latest_db_date(conn: sqlite3.Connection) -> str | None:
     return row[0] if row and row[0] else None
 
 
+def _latest_db_coverage(conn: sqlite3.Connection, trade_date: str) -> tuple[int, int, float | None]:
+    count_row = conn.execute(
+        """
+        SELECT COUNT(DISTINCT stock_code)
+        FROM ccass_daily
+        WHERE trade_date = ? AND validation_failed = 0
+        """,
+        (trade_date,),
+    ).fetchone()
+    total_row = conn.execute(
+        """
+        SELECT COUNT(*)
+        FROM stock_universe
+        WHERE is_active=1
+          AND stock_code NOT LIKE '029%'
+          AND stock_code NOT LIKE '04%'
+          AND stock_code NOT LIKE '8%'
+        """
+    ).fetchone()
+    count = int(count_row[0] or 0)
+    total = int(total_row[0] or 0)
+    pct = round((count / total) * 100, 1) if total else None
+    return count, total, pct
+
+
 def _date_set(conn: sqlite3.Connection) -> set[str]:
     rows = conn.execute(
         """
@@ -110,6 +135,10 @@ def main() -> int:
     conn = sqlite3.connect(str(DB_PATH))
     try:
         latest_db = _latest_db_date(conn)
+        latest_db_stock_count = None
+        latest_db_coverage_pct = None
+        if latest_db:
+            latest_db_stock_count, _, latest_db_coverage_pct = _latest_db_coverage(conn, latest_db)
         present_dates = _date_set(conn)
     finally:
         conn.close()
@@ -165,6 +194,8 @@ def main() -> int:
     report = {
         "status": "FAIL" if errors else ("WARN" if warnings else "PASS"),
         "latest_db_date": latest_db,
+        "latest_db_stock_count": latest_db_stock_count,
+        "latest_db_coverage_pct": latest_db_coverage_pct,
         "holdings_updated": holdings_updated,
         "coverage_pct": coverage_pct,
         "stock_count": stock_count,

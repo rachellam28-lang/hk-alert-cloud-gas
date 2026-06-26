@@ -119,6 +119,8 @@ def run_audit_gate():
         return {
             "status": data.get("status", "FAIL"),
             "latest_db_date": data.get("latest_db_date"),
+            "latest_db_stock_count": data.get("latest_db_stock_count"),
+            "latest_db_coverage_pct": data.get("latest_db_coverage_pct"),
             "holdings_updated": data.get("holdings_updated"),
             "coverage_pct": data.get("coverage_pct"),
             "verify_data": data.get("verify_data") or {},
@@ -164,6 +166,9 @@ def main():
     }
     bundle["headline"] = {
         "holdings_updated": bundle["files"]["holdings"]["updated"],
+        "latest_db_date": bundle["publish"].get("latest_db_date"),
+        "latest_db_stock_count": bundle["publish"].get("latest_db_stock_count"),
+        "latest_db_coverage_pct": bundle["publish"].get("latest_db_coverage_pct"),
         "signals_updated": bundle["files"]["signals"]["updated"],
         "alerts_updated": bundle["files"]["alerts"]["updated"],
         "prices_updated": bundle["files"]["prices"]["updated"],
@@ -177,6 +182,8 @@ def main():
         "summary": (
             f"publish={bundle['publish'].get('status', '—')} | "
             f"holdings={bundle['files']['holdings']['updated'] or '—'} | "
+            f"latest_db={bundle['publish'].get('latest_db_date') or '—'} "
+            f"({bundle['publish'].get('latest_db_coverage_pct') or '—'}%) | "
             f"signals={bundle['files']['signals']['updated'] or '—'} | "
             f"alerts={bundle['files']['alerts']['updated'] or '—'}"
         )

@@ -430,6 +430,7 @@ function renderSummary() {
   const vs = VQC.summary || {};
   const edge = VQC.edge || {};
   const hk = getBench('hk').summary || {};
+  const publish = PUBLISH_BUNDLE.publish || {};
   const hkState = hk.current_market_state || 'healthy';
   const marketScore = clamp(Math.round(stateScore(hkState)), 0, 100);
   const vqcBase = (vs.overall_rate_2d ?? 50) - (vs.baseline_overall_rate_2d ?? 50);
@@ -437,10 +438,15 @@ function renderSummary() {
   const vqcScore = clamp(Math.round(50 + vqcBase * 1.8 + vqcEdge * 2.2), 0, 100);
   const combined = clamp(Math.round(marketScore * 0.55 + vqcScore * 0.45), 0, 100);
   const [action, cls] = verdict(combined);
+  const latestDbDate = publish.latest_db_date || '—';
+  const latestDbCount = publish.latest_db_stock_count ?? '—';
+  const latestDbCov = publish.latest_db_coverage_pct ?? '—';
+  const holdingsUpdated = publish.holdings_updated || '—';
   const cards = [
     ['今日判斷', action, `score ${combined}/100`],
     ['市場濾網', stateLabel(hkState), `HK ${hk.current_dd_count_25d ?? '—'}D`],
     ['VQC 信號', vs.overall_rate_2d == null ? '—' : vs.overall_rate_2d.toFixed(1) + '%', `edge ${vqcEdge >= 0 ? '+' : ''}${vqcEdge.toFixed(1)}pt`],
+    ['資料狀態', publish.status || '—', `完整 ${holdingsUpdated} · partial ${latestDbDate} (${latestDbCount}/${latestDbCov}%)`],
     ['環境基調', marketScore >= 70 ? '偏好' : marketScore >= 50 ? '中性' : '偏弱', `市場 ${marketScore} / VQC ${vqcScore}`],
   ];
   document.getElementById('summaryCards').innerHTML = cards.map(([k,v,s]) => `
@@ -462,6 +468,11 @@ function renderSummary() {
   else notes.push('大市環境正常，VQC 有機會先值得跟。');
   if ((vs.overall_rate_2d ?? 0) < (vs.baseline_overall_rate_2d ?? 0)) notes.push('VQC 回測未見 edge，信號只作觀察。');
   else notes.push('VQC 數字對 baseline 有優勢，可作 timing 參考。');
+  if (publish.status === 'PASS') {
+    notes.push(`資料已完整 publish：${holdingsUpdated}。`);
+  } else {
+    notes.push(`最新完整 publish 仍是 ${holdingsUpdated}；DB 最新 partial 係 ${latestDbDate}（${latestDbCount}/${latestDbCov}%）。`);
+  }
   document.getElementById('decisionNote').textContent = notes.join(' ');
 
   const bundleUpdated = PUBLISH_BUNDLE.generated_at || new Date().toISOString().slice(0, 19);
