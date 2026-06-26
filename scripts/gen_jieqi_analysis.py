@@ -135,6 +135,7 @@ tr:hover td { background:rgba(39,49,74,.22); }
         24 節氣係固定 calendar anchor。呢頁唔係講神秘力量，而係量化節氣附近有冇可重複嘅時間窗口。
         由節氣正日擴展到前後 2 個交易日，睇窗口命中率、最佳 offset、同 baseline all-days 有冇 edge。
       </div>
+      <div class="note" style="margin-top:10px;color:#b7cdf1;font-size:12px"><b>新版時間軸</b>：第一屏會先見到 24 節氣時間軸，再睇統計表。</div>
     </div>
     <div class="hero-meta">
       更新：<b id="updatedAt">__UPDATED__</b><br>
@@ -142,8 +143,6 @@ tr:hover td { background:rgba(39,49,74,.22); }
       樣本：<b id="sampleSpan">__SAMPLE__</b>
     </div>
   </section>
-
-  <section class="cards" id="summaryCards"></section>
 
   <section class="panel">
     <div class="panel-title">24 節氣時間軸</div>
@@ -160,6 +159,8 @@ tr:hover td { background:rgba(39,49,74,.22); }
       <span class="cycle-tag"><i class="cycle-dot" style="background:#22c55e"></i>下一個窗口</span>
     </div>
   </section>
+
+  <section class="cards" id="summaryCards"></section>
 
   <section class="panel">
     <div class="panel-title">市場 vs 股票樣本</div>
