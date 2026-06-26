@@ -55,6 +55,11 @@ a { color:inherit; text-decoration:none; }
 .rule-grid { display:grid; grid-template-columns:1.2fr .8fr; gap:12px; }
 .rule-list { color:var(--muted); font-size:13px; line-height:1.68; }
 .note { color:var(--muted); font-size:11px; margin-top:10px; line-height:1.5; }
+.chart-shell { background:#0f172a; border:1px solid #24304a; border-radius:14px; padding:12px; }
+.chart-scroll { overflow-x:auto; overflow-y:hidden; }
+.legend { display:flex; flex-wrap:wrap; gap:8px 12px; margin-top:10px; color:var(--muted); font-size:11px; }
+.legend-item { display:flex; align-items:center; gap:6px; white-space:nowrap; }
+.legend-dot { width:10px; height:10px; border-radius:999px; display:inline-block; }
 .link-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
 .btn { display:inline-block; border:1px solid #24304a; background:#10192b; color:var(--text); border-radius:999px; padding:8px 12px; font-size:12px; }
 .btn.blue { border-color:#3d6fb2; background:#17315a; }
@@ -106,6 +111,20 @@ a { color:inherit; text-decoration:none; }
   </section>
 
   <section class="cards" id="summaryCards"></section>
+
+  <section class="panel">
+    <div class="panel-title">市場時間週期圖</div>
+    <div class="note">以 HSI proxy 的時間序列畫出節奏，而唔係再用回測表堆數字。色帶代表大市狀態，線條代表指數路徑。</div>
+    <div class="chart-shell">
+      <div class="chart-scroll" id="cycleChart"></div>
+    </div>
+    <div class="legend">
+      <span class="legend-item"><i class="legend-dot" style="background:#3bd17f"></i>healthy</span>
+      <span class="legend-item"><i class="legend-dot" style="background:#e4b83a"></i>caution</span>
+      <span class="legend-item"><i class="legend-dot" style="background:#ff706d"></i>under pressure</span>
+      <span class="legend-item"><i class="legend-dot" style="background:#60a5fa"></i>correction</span>
+    </div>
+  </section>
 
   <section class="panel">
     <div class="panel-title">點樣一齊用</div>
@@ -178,6 +197,102 @@ function stateLabel(s) {
   if (s === 'under_pressure') return 'under pressure';
   if (s === 'caution') return 'caution';
   return 'healthy';
+}
+function stateColor(s) {
+  if (s === 'correction') return '#60a5fa';
+  if (s === 'under_pressure') return '#ff706d';
+  if (s === 'caution') return '#e4b83a';
+  return '#3bd17f';
+}
+function dateTs(d) {
+  return new Date(String(d) + 'T00:00:00Z').getTime();
+}
+function esc(s) {
+  return String(s).replace(/[&<>"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+}
+
+function renderCycleChart() {
+  const series = (((DD.benchmarks || [])[0] || {}).signals || [])
+    .filter(r => r && r.date && Number.isFinite(Number(r.close)))
+    .map(r => ({
+      date: r.date,
+      close: Number(r.close),
+      state: r.market_state || 'healthy',
+      count: Number(r.dd_count_25d || 0),
+    }))
+    .sort((a, b) => dateTs(a.date) - dateTs(b.date));
+  const host = document.getElementById('cycleChart');
+  if (!series.length) {
+    host.innerHTML = '<div class="note">暫時冇足夠 data 畫週期圖。</div>';
+    return;
+  }
+  const w = Math.max(1160, series.length * 18);
+  const h = 390;
+  const pad = { l: 54, r: 28, t: 20, b: 54 };
+  const plotW = w - pad.l - pad.r;
+  const plotH = h - pad.t - pad.b;
+  const minX = dateTs(series[0].date);
+  const maxX = dateTs(series[series.length - 1].date);
+  let minY = Math.min(...series.map(d => d.close));
+  let maxY = Math.max(...series.map(d => d.close));
+  const yPad = Math.max(1, (maxY - minY) * 0.09);
+  minY -= yPad;
+  maxY += yPad;
+  const sx = x => pad.l + ((dateTs(x) - minX) / Math.max(1, maxX - minX)) * plotW;
+  const sy = y => pad.t + (1 - (y - minY) / Math.max(1, maxY - minY)) * plotH;
+  const gridYs = 5;
+  const grid = [];
+  for (let i = 0; i <= gridYs; i++) {
+    const v = minY + (maxY - minY) * (i / gridYs);
+    const yy = sy(v);
+    grid.push(`<line x1="${pad.l}" y1="${yy}" x2="${w - pad.r}" y2="${yy}" stroke="#24304a" stroke-width="1"/>`);
+    grid.push(`<text x="${pad.l - 8}" y="${yy + 4}" text-anchor="end" fill="#8ea0bf" font-size="10">${v.toFixed(0)}</text>`);
+  }
+  const bands = [];
+  let segStart = 0;
+  for (let i = 1; i <= series.length; i++) {
+    if (i === series.length || series[i].state !== series[segStart].state) {
+      const a = series[segStart];
+      const b = series[Math.min(series.length - 1, i - 1)];
+      const x1 = sx(a.date);
+      const x2 = sx(b.date);
+      bands.push(`<rect x="${Math.min(x1, x2)}" y="${pad.t}" width="${Math.max(2, Math.abs(x2 - x1))}" height="${plotH}" fill="${stateColor(a.state)}" opacity="0.06"></rect>`);
+      segStart = i;
+    }
+  }
+  let path = '';
+  series.forEach((d, idx) => {
+    const x = sx(d.date), y = sy(d.close);
+    path += `${idx === 0 ? 'M' : 'L'} ${x.toFixed(2)} ${y.toFixed(2)} `;
+  });
+  const dots = series.map((d, idx) => {
+    if (idx % 2 !== 0 && idx !== series.length - 1) return '';
+    const x = sx(d.date), y = sy(d.close);
+    return `<circle cx="${x}" cy="${y}" r="${idx === series.length - 1 ? 4 : 2.4}" fill="${stateColor(d.state)}" stroke="#0b1220" stroke-width="1.2"/>`;
+  }).join('');
+  const hi = series.reduce((a, b) => a.close > b.close ? a : b);
+  const lo = series.reduce((a, b) => a.close < b.close ? a : b);
+  const last = series[series.length - 1];
+  const labels = [
+    {d: hi, txt: `高位 ${hi.close.toFixed(0)}`},
+    {d: lo, txt: `低位 ${lo.close.toFixed(0)}`},
+    {d: last, txt: `最新 ${last.close.toFixed(0)}`},
+  ].map((o, idx) => {
+    const x = sx(o.d.date), y = sy(o.d.close);
+    const dy = idx === 0 ? -10 : 16;
+    return `<text x="${x + 6}" y="${Math.max(12, Math.min(h - 10, y + dy))}" fill="#e5edf8" font-size="10" font-weight="700">${esc(o.txt)} · ${esc(o.d.date)}</text>`;
+  }).join('');
+  host.innerHTML = `
+    <svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" role="img" aria-label="市場時間週期圖">
+      <rect x="0" y="0" width="${w}" height="${h}" rx="14" fill="#10192b" stroke="#24304a"/>
+      ${grid.join('')}
+      ${bands.join('')}
+      <path d="${path.trim()}" fill="none" stroke="#7dd3fc" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
+      ${dots}
+      <line x1="${pad.l}" y1="${pad.t}" x2="${pad.l}" y2="${h - pad.b}" stroke="#385070" stroke-width="1"/>
+      <line x1="${pad.l}" y1="${h - pad.b}" x2="${w - pad.r}" y2="${h - pad.b}" stroke="#385070" stroke-width="1"/>
+      ${labels}
+    </svg>`;
 }
 
 function renderSummary() {
@@ -283,6 +398,7 @@ document.getElementById('updatedAt').textContent = new Date().toISOString().slic
 document.getElementById('vqcUpdated').textContent = VQC.updated || '—';
 document.getElementById('ddUpdated').textContent = DD.updated || '—';
 renderSummary();
+renderCycleChart();
 renderVQC();
 renderDD();
 renderBench();

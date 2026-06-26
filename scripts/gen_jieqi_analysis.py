@@ -89,6 +89,11 @@ a { color:inherit; text-decoration:none; }
 .mini { background:#10192b; border:1px solid #24304a; border-radius:14px; padding:12px; }
 .mini .lab { color:var(--muted); font-size:11px; }
 .mini .val { font-size:24px; font-weight:900; margin-top:5px; }
+.cycle-shell { background:#0f172a; border:1px solid #24304a; border-radius:14px; padding:12px; }
+.cycle-scroll { overflow-x:auto; overflow-y:hidden; }
+.cycle-legend { display:flex; flex-wrap:wrap; gap:8px 12px; margin-top:10px; color:var(--muted); font-size:11px; }
+.cycle-tag { display:flex; align-items:center; gap:6px; white-space:nowrap; }
+.cycle-dot { width:10px; height:10px; border-radius:999px; display:inline-block; }
 .table-wrap { overflow-x:auto; margin-top:8px; }
 table { width:100%; border-collapse:collapse; min-width:1050px; }
 th, td { text-align:left; padding:8px 10px; border-bottom:1px solid #1f2a40; font-size:12px; white-space:nowrap; }
@@ -139,6 +144,22 @@ tr:hover td { background:rgba(39,49,74,.22); }
   </section>
 
   <section class="cards" id="summaryCards"></section>
+
+  <section class="panel">
+    <div class="panel-title">24 節氣時間軸</div>
+    <div class="foot" style="font-size:13px;color:var(--text);line-height:1.7">
+      呢張圖只想你一眼見到周期：一年 24 個節氣點由左到右排開，唔係先睇回測表。
+      你可以當佢係日曆上的節奏線，配合 CCASS、公告同價格行為去用。
+    </div>
+    <div class="cycle-shell">
+      <div class="cycle-scroll" id="calendarCycle"></div>
+    </div>
+    <div class="cycle-legend">
+      <span class="cycle-tag"><i class="cycle-dot" style="background:#60a5fa"></i>節氣點</span>
+      <span class="cycle-tag"><i class="cycle-dot" style="background:#f59e0b"></i>月份分隔</span>
+      <span class="cycle-tag"><i class="cycle-dot" style="background:#22c55e"></i>下一個窗口</span>
+    </div>
+  </section>
 
   <section class="panel">
     <div class="panel-title">市場 vs 股票樣本</div>
@@ -210,6 +231,69 @@ const DATA = __DATA_JSON__;
 function fmtPct(v) {
   if (v == null || Number.isNaN(v)) return '—';
   return (v >= 0 ? '+' : '') + Number(v).toFixed(1) + '%';
+}
+function esc(v) {
+  return String(v).replace(/[&<>"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+}
+function dateTs(d) {
+  return new Date(String(d) + 'T00:00:00Z').getTime();
+}
+
+function renderCycleRail() {
+  const years = (DATA.calendar && DATA.calendar.years) || {};
+  const yearKeys = Object.keys(years).sort();
+  const latestYearKey = yearKeys[yearKeys.length - 1];
+  const latestYear = years[latestYearKey] || {};
+  const terms = Object.entries(latestYear).map(([id, item]) => ({
+    id: Number(id),
+    name: item.name,
+    date: item.date,
+  })).filter(x => x.date).sort((a, b) => dateTs(a.date) - dateTs(b.date));
+  const host = document.getElementById('calendarCycle');
+  if (!terms.length) {
+    host.innerHTML = '<div class="note">暫時冇 calendar data。</div>';
+    return;
+  }
+  const w = 1600;
+  const h = 210;
+  const pad = { l: 56, r: 18, t: 24, b: 40 };
+  const plotW = w - pad.l - pad.r;
+  const minX = dateTs(`${latestYearKey}-01-01`);
+  const maxX = dateTs(`${latestYearKey}-12-31`);
+  const sx = d => pad.l + ((dateTs(d) - minX) / Math.max(1, maxX - minX)) * plotW;
+  const monthTicks = [];
+  for (let m = 1; m <= 12; m++) {
+    const d = `${latestYearKey}-${String(m).padStart(2,'0')}-01`;
+    const x = sx(d);
+    monthTicks.push(`<line x1="${x}" y1="${pad.t}" x2="${x}" y2="${h - pad.b}" stroke="#24304a" stroke-width="1"/>`);
+    monthTicks.push(`<text x="${x + 2}" y="${h - 12}" fill="#8ea0bf" font-size="10">${m}月</text>`);
+  }
+  const termNodes = terms.map((t, idx) => {
+    const x = sx(t.date);
+    const y = idx % 2 === 0 ? 62 : 116;
+    const labelY = idx % 2 === 0 ? 48 : 130;
+    return `
+      <line x1="${x}" y1="${pad.t}" x2="${x}" y2="${h - pad.b}" stroke="#60a5fa" stroke-opacity=".18" stroke-dasharray="3 4" stroke-width="1"/>
+      <circle cx="${x}" cy="${y}" r="5" fill="#60a5fa" stroke="#0b1220" stroke-width="1.5"/>
+      <path d="M ${x} ${y + (idx % 2 === 0 ? 5 : -5)} L ${x} ${labelY - 10}" stroke="#93c5fd" stroke-width="1.2" fill="none"/>
+      <text x="${x + 6}" y="${labelY}" fill="#e5edf8" font-size="10" font-weight="700">${esc(t.name)}</text>
+      <text x="${x + 6}" y="${labelY + 11}" fill="#8ea0bf" font-size="9">${esc(t.date)}</text>`;
+  }).join('');
+  const currentDate = new Date();
+  const currentYear = String(currentDate.getUTCFullYear());
+  const currentYearData = years[currentYear] || latestYear;
+  const currentTerm = Object.values(currentYearData).find(item => item.date === currentDate.toISOString().slice(0,10));
+  const currentX = sx(`${latestYearKey}-${String(currentDate.getUTCMonth()+1).padStart(2,'0')}-${String(currentDate.getUTCDate()).padStart(2,'0')}`);
+  host.innerHTML = `
+    <svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" role="img" aria-label="24節氣時間軸">
+      <rect x="0" y="0" width="${w}" height="${h}" rx="14" fill="#10192b" stroke="#24304a"/>
+      ${monthTicks.join('')}
+      <line x1="${pad.l}" y1="${h - 28}" x2="${w - pad.r}" y2="${h - 28}" stroke="#3b4a67" stroke-width="2"/>
+      ${termNodes}
+      <line x1="${currentX}" y1="${pad.t}" x2="${currentX}" y2="${h - pad.b}" stroke="#22c55e" stroke-width="2"/>
+      <text x="${currentX + 8}" y="${pad.t + 14}" fill="#86efac" font-size="11" font-weight="800">今日</text>
+      ${currentTerm ? `<text x="${currentX + 8}" y="${pad.t + 28}" fill="#c7f9d4" font-size="10">${esc(currentTerm.name)}</text>` : ''}
+    </svg>`;
 }
 
 function renderSummary() {
@@ -292,6 +376,7 @@ function renderTable() {
 }
 
 renderSummary();
+renderCycleRail();
 renderCompare();
 renderTopTerms();
 renderOffsetTable();
