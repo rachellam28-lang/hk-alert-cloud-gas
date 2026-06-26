@@ -29,6 +29,7 @@ a { color:inherit; text-decoration:none; }
 .card .s { color:var(--muted); font-size:11px; margin-top:6px; line-height:1.35; }
 .panel { background:rgba(15,23,42,.85); border:1px solid var(--line); border-radius:18px; padding:14px 16px; box-shadow:0 18px 35px rgba(0,0,0,.14); margin-top:12px; }
 .panel-title { font-size:14px; font-weight:800; margin-bottom:10px; }
+.backtest-hide { display:none !important; }
 .bench-grid { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:10px; }
 .bench-card { background:#10192b; border:1px solid #24304a; border-radius:14px; padding:12px; }
 .bench-head { display:flex; justify-content:space-between; gap:8px; margin-bottom:8px; }
@@ -106,14 +107,14 @@ tr:hover td { background:rgba(39,49,74,.22); }
     </div>
   </section>
 
-  <section class="cards" id="summaryCards"></section>
+  <section class="cards backtest-hide" id="summaryCards"></section>
 
-  <section class="panel">
+  <section class="panel backtest-hide">
     <div class="panel-title">Benchmark 狀態</div>
     <div class="bench-grid" id="benchGrid"></div>
   </section>
 
-  <section class="panel">
+  <section class="panel backtest-hide">
     <div class="panel-title">Rolling 壓力分布</div>
     <div class="bar-wrap" id="stateBars"></div>
   </section>

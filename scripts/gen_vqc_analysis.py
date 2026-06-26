@@ -82,6 +82,7 @@ a {{ color: inherit; text-decoration: none; }}
 .violet {{ color: var(--violet); }}
 .panel {{ background: rgba(15,23,42,.85); border:1px solid var(--line); border-radius: 18px; padding: 14px 16px; box-shadow: 0 18px 35px rgba(0,0,0,.14); margin-top: 12px; }}
 .panel-title {{ font-size: 14px; font-weight: 800; margin-bottom: 10px; }}
+.backtest-hide {{ display:none !important; }}
 .rule-grid {{ display:grid; grid-template-columns: 1.25fr .75fr; gap: 10px; }}
 .rule-list {{ color: var(--muted); font-size: 13px; line-height: 1.65; }}
 .bars {{ display:grid; gap: 10px; }}
@@ -170,19 +171,19 @@ tr:hover td {{ background: rgba(39,49,74,.22); }}
     </div>
   </section>
 
-  <section class="cards" id="summaryCards"></section>
+  <section class="cards backtest-hide" id="summaryCards"></section>
 
-  <section class="panel">
+  <section class="panel backtest-hide">
     <div class="panel-title">圖片例子 vs 全港股抽樣</div>
     <div class="compare-grid" id="imageComparison"></div>
   </section>
 
-  <section class="panel">
+  <section class="panel backtest-hide">
     <div class="panel-title">指定標的示例</div>
     <div class="ref-grid" id="referenceExamples"></div>
   </section>
 
-  <section class="panel">
+  <section class="panel backtest-hide">
     <div class="panel-title">策略定義</div>
     <div class="rule-grid">
       <div class="rule-list">
@@ -201,7 +202,7 @@ tr:hover td {{ background: rgba(39,49,74,.22); }}
     </div>
   </section>
 
-  <div class="grid-2">
+  <div class="grid-2 backtest-hide">
     <section class="panel">
       <div class="panel-title">市場基準 / Edge</div>
       <div class="mini-grid" id="edgeGrid"></div>
@@ -212,7 +213,7 @@ tr:hover td {{ background: rgba(39,49,74,.22); }}
     </section>
   </div>
 
-  <section class="panel">
+  <section class="panel backtest-hide">
     <div class="panel-title">市值分層</div>
     <div class="bars" id="mcBars"></div>
   </section>

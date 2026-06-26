@@ -174,6 +174,7 @@ a { color:inherit; text-decoration:none; }
 .card .s { color:var(--muted); font-size:11px; margin-top:6px; line-height:1.35; }
 .panel { background:rgba(15,23,42,.85); border:1px solid var(--line); border-radius:18px; padding:14px 16px; box-shadow:0 18px 35px rgba(0,0,0,.14); margin-top:12px; }
 .panel-title { font-size:14px; font-weight:800; margin-bottom:10px; }
+.backtest-hide { display:none !important; }
 .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
 .mini-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
 .mini { background:#10192b; border:1px solid #24304a; border-radius:14px; padding:12px; }
@@ -242,11 +243,11 @@ a { color:inherit; text-decoration:none; }
     </div>
   </section>
 
-  <section class="cards" id="summaryCards"></section>
+  <section class="cards backtest-hide" id="summaryCards"></section>
 
   <section class="panel">
     <div class="panel-title">今日節氣窗口</div>
-    <div class="mini-grid" id="jieqiCards"></div>
+    <div class="mini-grid backtest-hide" id="jieqiCards"></div>
     <div class="note" id="jieqiNote"></div>
     <div class="link-row">
       <a class="btn teal" href="jieqi_analysis.html">開節氣窗口</a>
@@ -255,7 +256,7 @@ a { color:inherit; text-decoration:none; }
 
   <section class="panel">
     <div class="panel-title">今日總結</div>
-    <div class="mini-grid" id="decisionGrid"></div>
+    <div class="mini-grid backtest-hide" id="decisionGrid"></div>
     <div class="note" id="decisionNote"></div>
     <div class="link-row">
       <a class="btn blue" href="timing_analysis.html">開時間窗口</a>
@@ -300,16 +301,16 @@ a { color:inherit; text-decoration:none; }
   </section>
 
   <div class="grid-2">
-    <section class="panel">
-      <div class="panel-title">市場濾網</div>
-      <div class="bars" id="marketBars"></div>
-      <div class="note" id="marketNote"></div>
-    </section>
-    <section class="panel">
-      <div class="panel-title">時間窗口 trigger</div>
-      <div class="bars" id="triggerBars"></div>
-      <div class="note" id="triggerNote"></div>
-    </section>
+  <section class="panel">
+    <div class="panel-title">市場濾網</div>
+    <div class="bars backtest-hide" id="marketBars"></div>
+    <div class="note" id="marketNote"></div>
+  </section>
+  <section class="panel">
+    <div class="panel-title">時間窗口 trigger</div>
+    <div class="bars backtest-hide" id="triggerBars"></div>
+    <div class="note" id="triggerNote"></div>
+  </section>
   </div>
 
   <section class="panel">
@@ -322,7 +323,7 @@ a { color:inherit; text-decoration:none; }
   </div>
   <div class="foot" id="tradePromptFoot">
     更新於：載入中…<br>
-    數據來源：data/vqc_backtest.json · data/distribution_day_backtest.json · holdings.json · localStorage（hk_watchlist_v1）
+    數據來源：publish_bundle.json · holdings.json · localStorage（hk_watchlist_v1）
   </div>
 </div>
 
@@ -466,8 +467,7 @@ function renderSummary() {
   else if (hkState === 'under_pressure') notes.push('HK 市況受壓，只做最強 trigger。');
   else if (hkState === 'caution') notes.push('大市偏緊，要收窄出手條件。');
   else notes.push('大市環境正常，VQC 有機會先值得跟。');
-  if ((vs.overall_rate_2d ?? 0) < (vs.baseline_overall_rate_2d ?? 0)) notes.push('VQC 回測未見 edge，信號只作觀察。');
-  else notes.push('VQC 數字對 baseline 有優勢，可作 timing 參考。');
+  notes.push('VQC / 分佈日回測數字已收起，只保留 timing 提示。');
   if (publish.status === 'PASS') {
     notes.push(`資料已完整 publish：${holdingsUpdated}。`);
   } else {
@@ -499,11 +499,10 @@ function renderJieqi() {
 
   const notes = [];
   if (s.window_rate_any == null) {
-    notes.push('節氣窗口暫時未有足夠回測資料。');
+    notes.push('節氣窗口暫時只當日曆參考。');
   } else {
-    notes.push(`節氣以 ±${s.window_span_days ?? 2} 個交易日窗口去睇，唔再只睇正日。`);
-    notes.push(`目前最佳 offset 係 ${s.best_offset == null ? '—' : (s.best_offset > 0 ? '+' : '') + s.best_offset + 'D'}。`);
-    notes.push('如果窗口 edge 無明顯高過 baseline，就只當 calendar anchor。');
+    notes.push(`節氣以 ±${s.window_span_days ?? 2} 個交易日窗口去睇。`);
+    notes.push('如果窗口唔明顯，就只當 calendar anchor。');
   }
   document.getElementById('jieqiNote').textContent = notes.join(' ');
 }

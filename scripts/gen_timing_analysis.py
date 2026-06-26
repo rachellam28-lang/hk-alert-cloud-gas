@@ -77,6 +77,7 @@ a { color:inherit; text-decoration:none; }
 .card .s { color:var(--muted); font-size:11px; margin-top:6px; line-height:1.35; }
 .panel { background:rgba(15,23,42,.85); border:1px solid var(--line); border-radius:18px; padding:14px 16px; box-shadow:0 18px 35px rgba(0,0,0,.14); margin-top:12px; }
 .panel-title { font-size:14px; font-weight:800; margin-bottom:10px; }
+.backtest-hide { display:none !important; }
 .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
 .mini-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
 .mini { background:#10192b; border:1px solid #24304a; border-radius:14px; padding:12px; }
@@ -103,8 +104,11 @@ a { color:inherit; text-decoration:none; }
 .rule-grid { display:grid; grid-template-columns:1.2fr .8fr; gap:12px; }
 .rule-list { color:var(--muted); font-size:13px; line-height:1.68; }
 .note { color:var(--muted); font-size:11px; margin-top:10px; line-height:1.5; }
-.chart-shell { background:#0f172a; border:1px solid #24304a; border-radius:14px; padding:12px; }
-.chart-scroll { overflow-x:auto; overflow-y:hidden; }
+.table-wrap { overflow-x:auto; margin-top:8px; }
+table { width:100%; border-collapse:collapse; min-width:860px; }
+th, td { text-align:left; padding:8px 10px; border-bottom:1px solid #1f2a40; font-size:12px; white-space:nowrap; }
+th { color:var(--muted); font-weight:700; position:sticky; top:0; background:rgba(15,23,42,.96); }
+tr:hover td { background:rgba(39,49,74,.22); }
 .legend { display:flex; flex-wrap:wrap; gap:8px 12px; margin-top:10px; color:var(--muted); font-size:11px; }
 .legend-item { display:flex; align-items:center; gap:6px; white-space:nowrap; }
 .legend-dot { width:10px; height:10px; border-radius:999px; display:inline-block; }
@@ -150,7 +154,7 @@ a { color:inherit; text-decoration:none; }
         呢頁將 <b>成交轉勢日</b> 同 <b>Distribution Day 分佈日</b> 放喺同一個工作台。
         前者係搵個股 / 標的嘅高成交時間窗口，後者係睇大市壓力；兩套概念唔一樣，所以保持獨立展示，方便你一眼睇到節奏同環境。
       </div>
-      <div class="note" style="margin-top:10px;color:#b7cdf1;font-size:12px"><b>新版週期圖</b>：唔再主打回測表，第一屏直接顯示市場時間週期圖。</div>
+      <div class="note" style="margin-top:10px;color:#b7cdf1;font-size:12px"><b>新版週期表</b>：唔再主打回測表，第一屏直接顯示市場時間週期表。</div>
     </div>
     <div class="hero-meta">
       更新：<b id="updatedAt">__UPDATED__</b><br>
@@ -160,10 +164,20 @@ a { color:inherit; text-decoration:none; }
   </section>
 
   <section class="panel">
-    <div class="panel-title">市場時間週期圖</div>
+    <div class="panel-title">市場時間週期表</div>
     <div class="note">以 HSI proxy 的時間序列畫出節奏，而唔係再用回測表堆數字。色帶代表大市狀態，線條代表指數路徑。</div>
-    <div class="chart-shell">
-      <div class="chart-scroll" id="cycleChart"></div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>日期</th>
+            <th>收市</th>
+            <th>狀態</th>
+            <th>25D Count</th>
+          </tr>
+        </thead>
+        <tbody id="cycleTable"></tbody>
+      </table>
     </div>
     <div class="legend">
       <span class="legend-item"><i class="legend-dot" style="background:#3bd17f"></i>healthy</span>
@@ -173,7 +187,7 @@ a { color:inherit; text-decoration:none; }
     </div>
   </section>
 
-  <section class="cards" id="summaryCards"></section>
+  <section class="cards backtest-hide" id="summaryCards"></section>
 
   <section class="panel">
     <div class="panel-title">點樣一齊用</div>
@@ -200,7 +214,7 @@ a { color:inherit; text-decoration:none; }
     </div>
   </section>
 
-  <div class="grid-2">
+  <div class="grid-2 backtest-hide">
     <section class="panel">
       <div class="panel-title">成交轉勢日</div>
       <div class="mini-grid" id="vqcCards"></div>
@@ -213,12 +227,12 @@ a { color:inherit; text-decoration:none; }
     </section>
   </div>
 
-  <section class="panel">
+  <section class="panel backtest-hide">
     <div class="panel-title">分佈日 Benchmark 狀態</div>
     <div class="bench-grid" id="benchGrid"></div>
   </section>
 
-  <section class="panel">
+  <section class="panel backtest-hide">
     <div class="panel-title">分佈日 壓力分布</div>
     <div class="bar-wrap" id="stateBars"></div>
   </section>
@@ -260,7 +274,7 @@ function esc(s) {
   return String(s).replace(/[&<>"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
 }
 
-function renderCycleChart() {
+function renderCycleTable() {
   const series = (((DD.benchmarks || [])[0] || {}).signals || [])
     .filter(r => r && r.date && Number.isFinite(Number(r.close)))
     .map(r => ({
@@ -270,78 +284,19 @@ function renderCycleChart() {
       count: Number(r.dd_count_25d || 0),
     }))
     .sort((a, b) => dateTs(a.date) - dateTs(b.date));
-  const host = document.getElementById('cycleChart');
+  const host = document.getElementById('cycleTable');
   if (!series.length) {
-    host.innerHTML = '<div class="note">暫時冇足夠 data 畫週期圖。</div>';
+    host.innerHTML = '<div class="note">暫時冇足夠 data 顯示週期表。</div>';
     return;
   }
-  const w = Math.max(1160, series.length * 18);
-  const h = 390;
-  const pad = { l: 54, r: 28, t: 20, b: 54 };
-  const plotW = w - pad.l - pad.r;
-  const plotH = h - pad.t - pad.b;
-  const minX = dateTs(series[0].date);
-  const maxX = dateTs(series[series.length - 1].date);
-  let minY = Math.min(...series.map(d => d.close));
-  let maxY = Math.max(...series.map(d => d.close));
-  const yPad = Math.max(1, (maxY - minY) * 0.09);
-  minY -= yPad;
-  maxY += yPad;
-  const sx = x => pad.l + ((dateTs(x) - minX) / Math.max(1, maxX - minX)) * plotW;
-  const sy = y => pad.t + (1 - (y - minY) / Math.max(1, maxY - minY)) * plotH;
-  const gridYs = 5;
-  const grid = [];
-  for (let i = 0; i <= gridYs; i++) {
-    const v = minY + (maxY - minY) * (i / gridYs);
-    const yy = sy(v);
-    grid.push(`<line x1="${pad.l}" y1="${yy}" x2="${w - pad.r}" y2="${yy}" stroke="#24304a" stroke-width="1"/>`);
-    grid.push(`<text x="${pad.l - 8}" y="${yy + 4}" text-anchor="end" fill="#8ea0bf" font-size="10">${v.toFixed(0)}</text>`);
-  }
-  const bands = [];
-  let segStart = 0;
-  for (let i = 1; i <= series.length; i++) {
-    if (i === series.length || series[i].state !== series[segStart].state) {
-      const a = series[segStart];
-      const b = series[Math.min(series.length - 1, i - 1)];
-      const x1 = sx(a.date);
-      const x2 = sx(b.date);
-      bands.push(`<rect x="${Math.min(x1, x2)}" y="${pad.t}" width="${Math.max(2, Math.abs(x2 - x1))}" height="${plotH}" fill="${stateColor(a.state)}" opacity="0.06"></rect>`);
-      segStart = i;
-    }
-  }
-  let path = '';
-  series.forEach((d, idx) => {
-    const x = sx(d.date), y = sy(d.close);
-    path += `${idx === 0 ? 'M' : 'L'} ${x.toFixed(2)} ${y.toFixed(2)} `;
-  });
-  const dots = series.map((d, idx) => {
-    if (idx % 2 !== 0 && idx !== series.length - 1) return '';
-    const x = sx(d.date), y = sy(d.close);
-    return `<circle cx="${x}" cy="${y}" r="${idx === series.length - 1 ? 4 : 2.4}" fill="${stateColor(d.state)}" stroke="#0b1220" stroke-width="1.2"/>`;
-  }).join('');
-  const hi = series.reduce((a, b) => a.close > b.close ? a : b);
-  const lo = series.reduce((a, b) => a.close < b.close ? a : b);
-  const last = series[series.length - 1];
-  const labels = [
-    {d: hi, txt: `高位 ${hi.close.toFixed(0)}`},
-    {d: lo, txt: `低位 ${lo.close.toFixed(0)}`},
-    {d: last, txt: `最新 ${last.close.toFixed(0)}`},
-  ].map((o, idx) => {
-    const x = sx(o.d.date), y = sy(o.d.close);
-    const dy = idx === 0 ? -10 : 16;
-    return `<text x="${x + 6}" y="${Math.max(12, Math.min(h - 10, y + dy))}" fill="#e5edf8" font-size="10" font-weight="700">${esc(o.txt)} · ${esc(o.d.date)}</text>`;
-  }).join('');
-  host.innerHTML = `
-    <svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" role="img" aria-label="市場時間週期圖">
-      <rect x="0" y="0" width="${w}" height="${h}" rx="14" fill="#10192b" stroke="#24304a"/>
-      ${grid.join('')}
-      ${bands.join('')}
-      <path d="${path.trim()}" fill="none" stroke="#7dd3fc" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
-      ${dots}
-      <line x1="${pad.l}" y1="${pad.t}" x2="${pad.l}" y2="${h - pad.b}" stroke="#385070" stroke-width="1"/>
-      <line x1="${pad.l}" y1="${h - pad.b}" x2="${w - pad.r}" y2="${h - pad.b}" stroke="#385070" stroke-width="1"/>
-      ${labels}
-    </svg>`;
+  const stateText = s => stateLabel(s).replace('_', ' ');
+  host.innerHTML = series.map((d, idx) => `
+    <tr>
+      <td>${esc(d.date)}</td>
+      <td>${d.close.toFixed(0)}</td>
+      <td><span class="pill ${d.state === 'correction' ? 'bad' : d.state === 'under_pressure' ? 'bad' : d.state === 'caution' ? 'warn' : 'good'}">${esc(stateText(d.state))}</span></td>
+      <td>${d.count}</td>
+    </tr>`).join('');
 }
 
 function renderSummary() {
@@ -447,7 +402,7 @@ document.getElementById('updatedAt').textContent = new Date().toISOString().slic
 document.getElementById('vqcUpdated').textContent = VQC.updated || '—';
 document.getElementById('ddUpdated').textContent = DD.updated || '—';
 renderSummary();
-renderCycleChart();
+renderCycleTable();
 renderVQC();
 renderDD();
 renderBench();

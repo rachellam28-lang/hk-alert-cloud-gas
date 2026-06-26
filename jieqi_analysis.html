@@ -29,14 +29,18 @@ a { color:inherit; text-decoration:none; }
 .card .s { color:var(--muted); font-size:11px; margin-top:6px; line-height:1.35; }
 .panel { background:rgba(15,23,42,.85); border:1px solid var(--line); border-radius:18px; padding:14px 16px; box-shadow:0 18px 35px rgba(0,0,0,.14); margin-top:12px; }
 .panel-title { font-size:14px; font-weight:800; margin-bottom:10px; }
+.backtest-hide { display:none !important; }
 .grid-3 { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:12px; }
 .mini-grid { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:10px; }
 .mini-grid.wide { grid-template-columns:repeat(5,minmax(0,1fr)); }
 .mini { background:#10192b; border:1px solid #24304a; border-radius:14px; padding:12px; }
 .mini .lab { color:var(--muted); font-size:11px; }
 .mini .val { font-size:24px; font-weight:900; margin-top:5px; }
-.cycle-shell { background:#0f172a; border:1px solid #24304a; border-radius:14px; padding:12px; }
-.cycle-scroll { overflow-x:auto; overflow-y:hidden; }
+.table-wrap { overflow-x:auto; margin-top:8px; }
+table { width:100%; border-collapse:collapse; min-width:860px; }
+th, td { text-align:left; padding:8px 10px; border-bottom:1px solid #1f2a40; font-size:12px; white-space:nowrap; }
+th { color:var(--muted); font-weight:700; position:sticky; top:0; background:rgba(15,23,42,.96); }
+tr:hover td { background:rgba(39,49,74,.22); }
 .cycle-legend { display:flex; flex-wrap:wrap; gap:8px 12px; margin-top:10px; color:var(--muted); font-size:11px; }
 .cycle-tag { display:flex; align-items:center; gap:6px; white-space:nowrap; }
 .cycle-dot { width:10px; height:10px; border-radius:999px; display:inline-block; }
@@ -81,7 +85,7 @@ tr:hover td { background:rgba(39,49,74,.22); }
         24 節氣係固定 calendar anchor。呢頁唔係講神秘力量，而係量化節氣附近有冇可重複嘅時間窗口。
         由節氣正日擴展到前後 2 個交易日，睇窗口命中率、最佳 offset、同 baseline all-days 有冇 edge。
       </div>
-      <div class="note" style="margin-top:10px;color:#b7cdf1;font-size:12px"><b>新版時間軸</b>：第一屏會先見到 24 節氣時間軸，再睇統計表。</div>
+      <div class="note" style="margin-top:10px;color:#b7cdf1;font-size:12px"><b>新版節氣表</b>：第一屏會先見到 24 節氣日期表，再睇統計表。</div>
     </div>
     <div class="hero-meta">
       更新：<b id="updatedAt">__UPDATED__</b><br>
@@ -91,13 +95,23 @@ tr:hover td { background:rgba(39,49,74,.22); }
   </section>
 
   <section class="panel">
-    <div class="panel-title">24 節氣時間軸</div>
+    <div class="panel-title">24 節氣日期表</div>
     <div class="foot" style="font-size:13px;color:var(--text);line-height:1.7">
-      呢張圖只想你一眼見到周期：一年 24 個節氣點由左到右排開，唔係先睇回測表。
+      呢頁改成數字表，只保留 24 節氣日期同所在月份，唔再用回測圖。
       你可以當佢係日曆上的節奏線，配合 CCASS、公告同價格行為去用。
     </div>
-    <div class="cycle-shell">
-      <div class="cycle-scroll" id="calendarCycle"></div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>序號</th>
+            <th>節氣</th>
+            <th>日期</th>
+            <th>月份</th>
+          </tr>
+        </thead>
+        <tbody id="calendarCycle"></tbody>
+      </table>
     </div>
     <div class="cycle-legend">
       <span class="cycle-tag"><i class="cycle-dot" style="background:#60a5fa"></i>節氣點</span>
@@ -106,19 +120,19 @@ tr:hover td { background:rgba(39,49,74,.22); }
     </div>
   </section>
 
-  <section class="cards" id="summaryCards"></section>
+  <section class="cards backtest-hide" id="summaryCards"></section>
 
-  <section class="panel">
+  <section class="panel backtest-hide">
     <div class="panel-title">市場 vs 股票樣本</div>
     <div class="grid-3" id="compareGrid"></div>
   </section>
 
-  <section class="panel">
+  <section class="panel backtest-hide">
     <div class="panel-title">節氣熱度 / Edge 排名</div>
     <div class="mini-grid" id="topTermGrid"></div>
   </section>
 
-  <section class="panel">
+  <section class="panel backtest-hide">
     <div class="panel-title">±2 日窗口分解</div>
     <div class="table-wrap">
       <table>
@@ -137,7 +151,7 @@ tr:hover td { background:rgba(39,49,74,.22); }
     </div>
   </section>
 
-  <section class="panel">
+  <section class="panel backtest-hide">
     <div class="panel-title">24 節氣統計表</div>
     <div class="table-wrap">
       <table>
@@ -200,56 +214,25 @@ function renderCycleRail() {
   if (!terms.length) {
     const fallback = (DATA.term_stats || []).slice(0, 24);
     if (!fallback.length) {
-      host.innerHTML = '<div class="note">暫時冇 calendar data。</div>';
+      host.innerHTML = '<tr><td colspan="4" class="note">暫時冇 calendar data。</td></tr>';
       return;
     }
-    host.innerHTML = `
-      <div class="note">calendar 未載入，先用統計節氣名單做 fallback。</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
-        ${fallback.map(r => `<span style="padding:6px 10px;border:1px solid #24304a;border-radius:999px;background:#10192b;font-size:11px">${esc(r.term_name || '—')}</span>`).join('')}
-      </div>`;
+    host.innerHTML = fallback.map((r, idx) => `
+      <tr>
+        <td>${idx + 1}</td>
+        <td>${esc(r.term_name || '—')}</td>
+        <td>—</td>
+        <td>—</td>
+      </tr>`).join('');
     return;
   }
-  const w = 1600;
-  const h = 210;
-  const pad = { l: 56, r: 18, t: 24, b: 40 };
-  const plotW = w - pad.l - pad.r;
-  const minX = dateTs(`${latestYearKey}-01-01`);
-  const maxX = dateTs(`${latestYearKey}-12-31`);
-  const sx = d => pad.l + ((dateTs(d) - minX) / Math.max(1, maxX - minX)) * plotW;
-  const monthTicks = [];
-  for (let m = 1; m <= 12; m++) {
-    const d = `${latestYearKey}-${String(m).padStart(2,'0')}-01`;
-    const x = sx(d);
-    monthTicks.push(`<line x1="${x}" y1="${pad.t}" x2="${x}" y2="${h - pad.b}" stroke="#24304a" stroke-width="1"/>`);
-    monthTicks.push(`<text x="${x + 2}" y="${h - 12}" fill="#8ea0bf" font-size="10">${m}月</text>`);
-  }
-  const termNodes = terms.map((t, idx) => {
-    const x = sx(t.date);
-    const y = idx % 2 === 0 ? 62 : 116;
-    const labelY = idx % 2 === 0 ? 48 : 130;
-    return `
-      <line x1="${x}" y1="${pad.t}" x2="${x}" y2="${h - pad.b}" stroke="#60a5fa" stroke-opacity=".18" stroke-dasharray="3 4" stroke-width="1"/>
-      <circle cx="${x}" cy="${y}" r="5" fill="#60a5fa" stroke="#0b1220" stroke-width="1.5"/>
-      <path d="M ${x} ${y + (idx % 2 === 0 ? 5 : -5)} L ${x} ${labelY - 10}" stroke="#93c5fd" stroke-width="1.2" fill="none"/>
-      <text x="${x + 6}" y="${labelY}" fill="#e5edf8" font-size="10" font-weight="700">${esc(t.name)}</text>
-      <text x="${x + 6}" y="${labelY + 11}" fill="#8ea0bf" font-size="9">${esc(t.date)}</text>`;
-  }).join('');
-  const currentDate = new Date();
-  const currentYear = String(currentDate.getUTCFullYear());
-  const currentYearData = years[currentYear] || latestYear;
-  const currentTerm = Object.values(currentYearData).find(item => item.date === currentDate.toISOString().slice(0,10));
-  const currentX = sx(`${latestYearKey}-${String(currentDate.getUTCMonth()+1).padStart(2,'0')}-${String(currentDate.getUTCDate()).padStart(2,'0')}`);
-  host.innerHTML = `
-    <svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" role="img" aria-label="24節氣時間軸">
-      <rect x="0" y="0" width="${w}" height="${h}" rx="14" fill="#10192b" stroke="#24304a"/>
-      ${monthTicks.join('')}
-      <line x1="${pad.l}" y1="${h - 28}" x2="${w - pad.r}" y2="${h - 28}" stroke="#3b4a67" stroke-width="2"/>
-      ${termNodes}
-      <line x1="${currentX}" y1="${pad.t}" x2="${currentX}" y2="${h - pad.b}" stroke="#22c55e" stroke-width="2"/>
-      <text x="${currentX + 8}" y="${pad.t + 14}" fill="#86efac" font-size="11" font-weight="800">今日</text>
-      ${currentTerm ? `<text x="${currentX + 8}" y="${pad.t + 28}" fill="#c7f9d4" font-size="10">${esc(currentTerm.name)}</text>` : ''}
-    </svg>`;
+  host.innerHTML = terms.map((t, idx) => `
+    <tr>
+      <td>${idx + 1}</td>
+      <td>${esc(t.name)}</td>
+      <td>${esc(t.date)}</td>
+      <td>${t.date.slice(5, 7)}月</td>
+    </tr>`).join('');
 }
 
 function renderSummary() {
