@@ -12,7 +12,6 @@ async function dispatchByCron(event, env) {
 
 function pickWorkflow(cron) {
   if (cron === "30 23 * * 0-4") return "ccass_refresh.yml";
-  if (cron === "0 7 * * 1-5") return "ccass_resume.yml";
   return "ccass_refresh.yml";
 }
 

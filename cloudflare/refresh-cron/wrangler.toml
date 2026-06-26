@@ -4,8 +4,7 @@ compatibility_date = "2026-06-23"
 
 [triggers]
 crons = [
-  "30 23 * * 0-4", # 07:30 HKT Mon-Fri — daily refresh
-  "0 7 * * 1-5",   # 15:00 HKT Mon-Fri — resume job
+  "30 23 * * 0-4", # 07:30 HKT Mon-Fri — bounded daily refresh only
 ]
 
 [vars]
