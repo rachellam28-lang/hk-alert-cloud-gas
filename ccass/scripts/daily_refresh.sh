@@ -53,6 +53,9 @@ echo "3.5/5 Build publish bundle..."
 echo "3.6/5 Regenerate daily trade prompt..."
 "$PYTHON_BIN" scripts/gen_daily_trade_prompt.py || { echo "ERROR: daily trade prompt generation failed"; exit 1; }
 
+echo "3.65/5 Regenerate rights_analysis.html..."
+"$PYTHON_BIN" scripts/gen_rights_page.py || { echo "ERROR: rights page generation failed"; exit 1; }
+
 echo "3.7/5 Cleanup logs..."
 "$PYTHON_BIN" scripts/cleanup_logs.py || { echo "ERROR: log cleanup failed"; exit 1; }
 
@@ -61,7 +64,7 @@ echo "4/5 Audit gate..."
 
 echo "5/5 Deploy to GitHub..."
 cd "$REPO_ROOT"
-git add holdings.json data/holdings.json ccass.json market.json data/market.json data/stock_prices.json data/suspended_stocks.json data/prices.json data/signals.json data/publish_bundle.json daily_trade_prompt.html
+git add holdings.json data/holdings.json ccass.json market.json data/market.json data/stock_prices.json data/suspended_stocks.json data/prices.json data/signals.json data/publish_bundle.json daily_trade_prompt.html rights_analysis.html
 if git commit -m "daily: holdings refresh $(date +%Y-%m-%d)"; then
     git push || { echo "ERROR: git push failed"; exit 1; }
 else
