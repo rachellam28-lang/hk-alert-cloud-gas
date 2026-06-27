@@ -409,6 +409,13 @@ function render(rows) {{
     // Return
     let ret = d.manual_return_pct != null ? d.manual_return_pct : (d.current_return_pct != null ? d.current_return_pct : null);
     
+    let advice = '觀察';
+    let adviceCls = 'issuer-neutral';
+    if (js === 'jumped') {{ advice = '只宜短炒'; adviceCls = 'issuer-high'; }}
+    else if (js === 'waiting') {{ advice = '觀察'; adviceCls = 'issuer-neutral'; }}
+    else if (js === 'no_jump') {{ advice = '避'; adviceCls = 'issuer-low'; }}
+    else {{ advice = '觀察'; adviceCls = 'issuer-neutral'; }}
+
     let risks = (t.risks||[]).map(r => '<div class="risk">'+r+'</div>').join('');
     
     return `<tr>
@@ -423,7 +430,8 @@ function render(rows) {{
       <td>${{d.pct_num > 0 ? d.pct_num.toFixed(1)+'%' : '-'}}</td>
       <td><span class="signal ${{t.sig_class||''}}">${{t.signal||'➖'}}</span></td>
       <td>
-        <div class="issuer-stack" title="公告條款代理分數，唔係內部意圖；高分＝對發行方更有利／對股東短期壓力更大；公告後價格反應＝歷史 price reaction">
+        <div class="issuer-stack" title="公告條款代理分數，唔係內部意圖；高分＝對發行方更有利／對股東短期壓力更大；公告後價格反應＝歷史 price reaction；交易建議＝避免誤當買入提示">
+          <span class="issuer-badge ${{adviceCls}}">交易建議 ${{advice}}</span>
           <span class="issuer-badge ${{issuer.cls}}">發行方有利度 ${{issuer.label}} ${{issuer.score}}</span>
           <span class="issuer-badge ${{shareholder.cls}}">股東短期壓力 ${{shareholder.label}} ${{shareholder.score}}</span>
           <span class="issuer-badge ${{reaction.cls}}">公告後價格反應 ${{reactionPct}} ${{reaction.label}}</span>
