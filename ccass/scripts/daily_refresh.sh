@@ -26,7 +26,6 @@ runner_rc=$?
 set -e
 if [[ "$runner_rc" -eq 1 ]]; then
     echo "WARN: HOLDINGS scrape returned partial coverage; resume job will continue later"
-    exit 1
 elif [[ "$runner_rc" -ne 0 ]]; then
     echo "ERROR: HOLDINGS scrape failed (rc=$runner_rc)"
     exit "$runner_rc"

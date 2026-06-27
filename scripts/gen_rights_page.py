@@ -461,8 +461,7 @@ function render(rows) {{
     if (d.manual_return_pct != null) {{
       ret = d.manual_return_pct;
     }} else {{
-      const latest = latest_close(d.code);
-      const latestPx = latest[0];
+      const latestPx = d.latest_price;
       if (latestPx != null && d.price_num > 0) {{
         ret = (latestPx / d.price_num - 1) * 100;
       }} else if (d.current_return_pct != null) {{
