@@ -1,33 +1,35 @@
 {
   "hsi": {
-    "value": 24312.16,
-    "change": 0.0,
-    "changePct": 0.0,
-    "stale": false
+    "value": 22671.86,
+    "change": -405.05,
+    "changePct": -1.76,
+    "stale": false,
+    "source": "longbridge:quote",
+    "updated": "2026-06-26T08:08:32Z"
   },
   "dow": {
     "value": 50786.01,
     "change": -80.77,
     "changePct": -0.16,
-    "stale": false
+    "stale": true
   },
   "spx": {
     "value": 7405.73,
     "change": 21.99,
     "changePct": 0.3,
-    "stale": false
+    "stale": true
   },
   "dxy": {
     "value": 99.7,
     "change": -0.27,
     "changePct": -0.28,
-    "stale": false
+    "stale": true
   },
   "vix": {
     "value": 18.05,
     "change": -0.87,
     "changePct": -4.6,
-    "stale": false,
+    "stale": true,
     "eval": {
       "label": "正常",
       "color": "neutral"
@@ -46,7 +48,7 @@
       "label": "貴",
       "color": "red"
     },
-    "stale": false
+    "stale": true
   },
   "spx_pe": {
     "value": 26.14,
@@ -61,7 +63,7 @@
       "label": "偏貴",
       "color": "orange"
     },
-    "stale": false
+    "stale": true
   },
   "spx_m2": {
     "value": 346.1,
@@ -70,7 +72,7 @@
       "label": "昂貴",
       "color": "red"
     },
-    "stale": false
+    "stale": true
   },
   "fear_greed": {
     "value": 39.4,
@@ -79,7 +81,7 @@
       "color": "green"
     },
     "changePct": -1.85,
-    "stale": false
+    "stale": true
   },
   "breadth": {
     "hk": {
@@ -101,11 +103,11 @@
       "count": 108
     }
   },
-  "updated_at": "2026-06-26T15:48:17.951145+00:00",
+  "updated_at": "2026-06-26T08:08:32Z",
   "hsi_m2": {
     "value": 1163.6,
     "m2": 21112.0,
-    "stale": false,
+    "stale": true,
     "eval": {
       "label": "合理",
       "color": "gray"
@@ -118,8 +120,11 @@
     "level_desc": "",
     "version": 5,
     "source": "futu",
-    "updated": "2026-06-26T15:48:17.951079+00:00",
+    "updated": "2026-06-27T09:14:37.468128+00:00",
+    "stale": true,
     "breadth_pct": null,
     "stocks_sampled": null
-  }
+  },
+  "market_partial": true,
+  "market_note": "Longbridge refreshed HSI only; other market chips may be stale."
 }

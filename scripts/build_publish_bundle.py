@@ -93,6 +93,7 @@ def summarize_market():
         "updated": data.get("updated_at") or data.get("updated"),
         "source": "market breadth / fear-greed cache",
         "keys": len(data) if isinstance(data, dict) else None,
+        "stale": bool((data.get("dopamine") or {}).get("stale")) if isinstance(data, dict) else None,
     }
 
 
@@ -176,6 +177,8 @@ def main():
         "signals_updated": bundle["files"]["signals"]["updated"],
         "alerts_updated": bundle["files"]["alerts"]["updated"],
         "prices_updated": bundle["files"]["prices"]["updated"],
+        "market_updated": bundle["files"]["market"]["updated"],
+        "market_stale": bundle["files"]["market"].get("stale"),
         "backtests_updated": {
             "vqc": bundle["files"]["vqc_backtest"]["updated"],
             "distribution_day": bundle["files"]["distribution_day_backtest"]["updated"],
@@ -189,7 +192,8 @@ def main():
             f"latest_db={bundle['publish'].get('latest_db_date') or '—'} "
             f"({bundle['publish'].get('latest_db_coverage_pct') or '—'}%) | "
             f"signals={bundle['files']['signals']['updated'] or '—'} | "
-            f"alerts={bundle['files']['alerts']['updated'] or '—'}"
+            f"alerts={bundle['files']['alerts']['updated'] or '—'} | "
+            f"market={bundle['files']['market']['updated'] or '—'}"
         )
     }
 

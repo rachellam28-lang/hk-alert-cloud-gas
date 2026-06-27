@@ -141,6 +141,8 @@ tbody tr{cursor:pointer}
 .lnk:hover{border-color:var(--violet-border);background:var(--violet-soft);color:var(--violet);text-decoration:none}
 /* Market indicator bar */
 .mbar{display:flex;gap:6px;flex-wrap:nowrap;padding:6px 0 10px;margin-bottom:4px;overflow-x:auto}
+.mkt-meta{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:0 0 10px;font-size:11px;color:var(--mute);flex-wrap:wrap}
+.mkt-meta .stale{color:var(--down);font-weight:700}
 .mchip{display:flex;flex-direction:column;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;min-width:80px;flex:1 1 0;gap:2px}
 .mchip-label{font-size:9px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.1em;white-space:nowrap}
 .mchip-val{font-size:14px;font-weight:700;color:var(--text);text-align:center;white-space:nowrap}
@@ -543,6 +545,7 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
 
 <main class="wrap">
   <div class="mbar" id="mbar"></div>
+  <div class="mkt-meta" id="mktMeta" style="display:none"><span id="mktMetaLeft"></span><span id="mktMetaRight"></span></div>
   <div class="legend-line">紫框=高集中度（Market%≥80）｜紫底=有訊號｜紫標=供股公告／雙向訊號</div>
   <div class="breadth-card" id="breadthCard" style="display:none"><div class="breadth-head">市場寬度 · 52周高低位分布</div><div id="breadthRows"></div></div>
 
@@ -1909,6 +1912,17 @@ function renderMarket(snap){
     chip('SPX/M2', sm.value, null, sm.stale, 0, sm.eval),
     chip('恐懼貪婪', fg.value, fg.changePct, fg.stale, 0, fg.eval),
   ].join('');
+  const meta=document.getElementById('mktMeta');
+  const left=document.getElementById('mktMetaLeft');
+  const right=document.getElementById('mktMetaRight');
+  if(meta&&left&&right){
+    const updated=snap.updated_at ? String(snap.updated_at).replace('T',' ').slice(0,19) : '—';
+    const stale=!!(snap.dopamine && snap.dopamine.stale);
+    left.textContent='市場卡更新於 '+updated;
+    right.textContent=stale ? '⚠ Futu/market stale' : '✅ fresh';
+    right.className=stale ? 'stale' : '';
+    meta.style.display='';
+  }
 }
 function renderBreadth(snap){
   const card=document.getElementById('breadthCard');

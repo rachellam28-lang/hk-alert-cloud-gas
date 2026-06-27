@@ -1,6 +1,6 @@
 {
   "schema_v": 1,
-  "generated_at": "2026-06-27T10:49:20",
+  "generated_at": "2026-06-27T21:36:14",
   "source_of_truth": {
     "db": "ccass/holdings.db",
     "primary_holdings": "holdings.json",
@@ -39,9 +39,10 @@
     },
     "market": {
       "path": "data/market.json",
-      "updated": "2026-06-26T15:48:17.951145+00:00",
+      "updated": "2026-06-26T08:08:32Z",
       "source": "market breadth / fear-greed cache",
-      "keys": 13
+      "keys": 15,
+      "stale": true
     },
     "vqc_backtest": {
       "path": "data/vqc_backtest.json",
@@ -128,6 +129,8 @@
     "signals_updated": "2026-06-27T09:14:24.106718",
     "alerts_updated": "2026-06-24 00:37 UTC",
     "prices_updated": "2026-06-23T23:20:00",
+    "market_updated": "2026-06-26T08:08:32Z",
+    "market_stale": true,
     "backtests_updated": {
       "vqc": "2026-06-17T09:56:21",
       "distribution_day": "2026-06-23T21:08:35",
@@ -135,6 +138,6 @@
     }
   },
   "telegram": {
-    "summary": "publish=FAIL | holdings=2026-06-19 | latest_db=2026-06-23 (63.0%) | signals=2026-06-27T09:14:24.106718 | alerts=2026-06-24 00:37 UTC"
+    "summary": "publish=FAIL | holdings=2026-06-19 | latest_db=2026-06-23 (63.0%) | signals=2026-06-27T09:14:24.106718 | alerts=2026-06-24 00:37 UTC | market=2026-06-26T08:08:32Z"
   }
 }
