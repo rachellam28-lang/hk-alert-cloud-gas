@@ -21,6 +21,8 @@ Threshold mapping:
 from __future__ import annotations
 
 import json
+import os
+import socket
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -28,14 +30,33 @@ from pathlib import Path
 import numpy as np
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
+ROOT = Path(__file__).resolve().parent.parent.parent
 
 # ── Futu connection ──
-_FUTU_HOST = "127.0.0.1"
-_FUTU_PORT = 11111
+def _load_env():
+    env_path = ROOT / ".env"
+    if not env_path.exists():
+        return
+    for line in env_path.read_text(encoding="utf-8").splitlines():
+        if not line or line.lstrip().startswith("#") or "=" not in line:
+            continue
+        key, val = line.split("=", 1)
+        os.environ.setdefault(key.strip(), val.strip().strip('"').strip("'"))
+
+
+_load_env()
+_FUTU_HOST = os.environ.get("FUTU_HOST", "127.0.0.1")
+_FUTU_PORT = int(os.environ.get("FUTU_PORT", "11111"))
 
 
 def _get_quote_ctx():
     """Get a fresh OpenQuoteContext. Caller must close it."""
+    probe = socket.socket()
+    probe.settimeout(float(os.environ.get("FUTU_CONNECT_TIMEOUT", "2")))
+    try:
+        probe.connect((_FUTU_HOST, _FUTU_PORT))
+    finally:
+        probe.close()
     from futu import OpenQuoteContext
     return OpenQuoteContext(_FUTU_HOST, _FUTU_PORT)
 

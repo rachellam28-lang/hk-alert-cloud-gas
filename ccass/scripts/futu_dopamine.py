@@ -2,24 +2,42 @@
 富途牛牛人氣數據接入 — Futu OpenD gateway.
 散戶最愛平台，關注度/熱度數據比長橋更準。
 """
-import json, sys
+import json, os, socket, sys
 from pathlib import Path
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
+ROOT = Path(__file__).resolve().parent.parent.parent
 
-HOST = "127.0.0.1"
-PORT = 11111
+
+def _load_env():
+    env_path = ROOT / ".env"
+    if not env_path.exists():
+        return
+    for line in env_path.read_text(encoding="utf-8").splitlines():
+        if not line or line.lstrip().startswith("#") or "=" not in line:
+            continue
+        key, val = line.split("=", 1)
+        os.environ.setdefault(key.strip(), val.strip().strip('"').strip("'"))
+
+
+_load_env()
+HOST = os.environ.get("FUTU_HOST", "127.0.0.1")
+PORT = int(os.environ.get("FUTU_PORT", "11111"))
 
 
 def check_opend_running():
     """Check if FutuOpenD is running and accessible."""
     try:
+        probe = socket.socket()
+        probe.settimeout(float(os.environ.get("FUTU_CONNECT_TIMEOUT", "2")))
+        probe.connect((HOST, PORT))
+        probe.close()
         from futu import OpenQuoteContext
         ctx = OpenQuoteContext(host=HOST, port=PORT)
         ctx.close()
         return True
     except Exception as e:
-        print("[futu] OpenD not accessible: {}".format(e), file=sys.stderr)
+        print("[futu] OpenD not accessible at {}:{}: {}".format(HOST, PORT, e), file=sys.stderr)
         return False
 
 
@@ -146,6 +164,7 @@ if __name__ == "__main__":
 
     if not check_opend_running():
         print("\n❌ FutuOpenD 未運行")
+        print(f"目前嘗試連接: {HOST}:{PORT}")
         print("請先下載並啟動 FutuOpenD:")
         print("  https://www.futunn.com/en/download/OpenAPI")
         print("\n啟動後再執行此 script")

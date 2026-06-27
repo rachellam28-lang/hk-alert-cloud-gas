@@ -1,20 +1,48 @@
 """Daily: fetch ALL market data from Futu OpenD — lp, mc, hi52, lo52, pe, vol, chg, vr.
-Run after HK market close (~5pm HKT). Requires Futu gateway on 127.0.0.1:11111.
+Run after HK market close (~5pm HKT). Requires Futu gateway.
 """
-import json, time, math
+import json, os, socket, sys, time, math
 from pathlib import Path
-from futu import OpenQuoteContext, RET_OK
 
 ROOT = Path(__file__).parent.parent.parent  # holdings-debug/
 PRICES = ROOT / "data" / "stock_prices.json"
 HOLDINGS = ROOT / "holdings.json"
 SUSPENDED = ROOT / "data" / "suspended_stocks.json"
 
+
+def _load_env():
+    env_path = ROOT / ".env"
+    if not env_path.exists():
+        return
+    for line in env_path.read_text(encoding="utf-8").splitlines():
+        if not line or line.lstrip().startswith("#") or "=" not in line:
+            continue
+        key, val = line.split("=", 1)
+        os.environ.setdefault(key.strip(), val.strip().strip('"').strip("'"))
+
+
+_load_env()
+FUTU_HOST = os.environ.get("FUTU_HOST", "127.0.0.1")
+FUTU_PORT = int(os.environ.get("FUTU_PORT", "11111"))
+
+probe = socket.socket()
+probe.settimeout(float(os.environ.get("FUTU_CONNECT_TIMEOUT", "2")))
+try:
+    probe.connect((FUTU_HOST, FUTU_PORT))
+except OSError as exc:
+    print(f"ERROR: FutuOpenD not reachable at {FUTU_HOST}:{FUTU_PORT}: {exc}", file=sys.stderr)
+    sys.exit(2)
+finally:
+    probe.close()
+
 prices = json.loads(PRICES.read_text(encoding='utf-8'))
 codes = sorted(k for k,v in prices.items() if v.get('yo'))
 print(f"Daily Futu update for {len(codes)} stocks...")
+print(f"Using FutuOpenD {FUTU_HOST}:{FUTU_PORT}")
 
-q = OpenQuoteContext('127.0.0.1', 11111)
+from futu import OpenQuoteContext, RET_OK
+
+q = OpenQuoteContext(FUTU_HOST, FUTU_PORT)
 BATCH = 200
 counts = {'lp':0,'mc':0,'hi52':0,'lo52':0,'pe':0,'vol':0,'chg':0,'vr':0}
 suspended: dict[str, str] = {}
