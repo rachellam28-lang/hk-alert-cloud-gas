@@ -40,12 +40,12 @@ def issuer_pressure_score(d: Dict[str, Any]) -> Dict[str, Any]:
     discount = _num(d.get("discount_pct"))
     dilution = _num(d.get("pct_num"))
     amount = _num(d.get("amount_num"))
-    reaction_pct = _num(d.get("current_return_pct"))
+    # Reaction must be measured against the ex-rights / completion date when available.
+    # We do NOT use announcement-date-to-now as a proxy because that can be misleading
+    # for rights issues and placings with a later ex-date / completion date.
+    reaction_pct = _num(d.get("post_ex_date_return_pct"))
     if reaction_pct is None:
-        latest = _num(d.get("latest_price") or d.get("latestPrice"))
-        issue_px = _num(d.get("price_num") or d.get("price"))
-        if latest is not None and issue_px not in (None, 0):
-            reaction_pct = (latest / issue_px - 1) * 100
+        reaction_pct = _num(d.get("current_return_pct")) if d.get("manual_finished_date") else None
 
     if cat == "先舊後新":
         score += 12

@@ -421,7 +421,7 @@ function issuerStack(issuer) {
     <div style="display:flex;flex-direction:column;gap:3px">
       <span class="pill ${issuer.cls || 'warn'}">發行方有利度 ${issuer.label || '中性'} ${issuer.score ?? '—'}</span>
       <span class="pill ${shareholder.cls || 'warn'}">股東短期壓力 ${shareholder.label || '中性'} ${shareholder.score ?? '—'}</span>
-      <span class="pill ${reaction.cls || 'warn'}">公告後價格反應 ${reactionPct} ${reaction.label || '未足夠數據'}</span>
+      <span class="pill ${reaction.cls || 'warn'}">除權/完成後價格反應 ${reactionPct} ${reaction.label || '未足夠數據'}</span>
     </div>`;
 }
 

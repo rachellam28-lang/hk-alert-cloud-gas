@@ -47,6 +47,9 @@ echo "2.7/5 Refresh market.json (dopamine)..."
 echo "3/5 Regenerate holdings.json..."
 "$PYTHON_BIN" scripts/regenerate_json.py || { echo "ERROR: holdings.json regeneration failed"; exit 1; }
 
+echo "3.45/5 Refresh placement returns..."
+"$PYTHON_BIN" scripts/refresh_placement_returns.py || { echo "ERROR: placement returns refresh failed"; exit 1; }
+
 echo "3.5/5 Build publish bundle..."
 "$PYTHON_BIN" scripts/build_publish_bundle.py || { echo "ERROR: publish bundle build failed"; exit 1; }
 

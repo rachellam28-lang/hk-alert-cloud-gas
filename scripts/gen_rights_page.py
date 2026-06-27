@@ -35,6 +35,17 @@ def load_raw_prices():
 PRICE_HIST = load_raw_prices()
 print(f"Loaded raw/ prices for {len(PRICE_HIST)} stocks")
 
+def latest_close(code):
+    """Latest raw close from raw/prices_*.json, if available."""
+    pxs = PRICE_HIST.get(str(code).zfill(5))
+    if not pxs:
+        return None, None
+    dates = sorted(pxs.keys())
+    if not dates:
+        return None, None
+    last_day = dates[-1]
+    return pxs[last_day], last_day
+
 def compute_jump(code, ann_date_str):
     """(jump_pct, status): jumped|waiting|no_jump|no_data"""
     from datetime import datetime
@@ -328,7 +339,7 @@ tr:hover td {{ background: #161b22; }}
   <th onclick="sortTable(8)">攤薄</th>
   <th onclick="sortTable(9)">訊號</th>
   <th onclick="sortTable(10)">公告拆解</th>
-  <th onclick="sortTable(11)">事後%</th>
+  <th onclick="sortTable(11)">最新價對發行價</th>
   <th>邏輯</th>
 </tr>
 </thead>
@@ -406,8 +417,19 @@ function render(rows) {{
     const reaction = issuer.reaction || {{pct: null, label: '未足夠數據', cls: 'issuer-react-neutral'}};
     const reactionPct = reaction.pct != null ? (reaction.pct >= 0 ? '+' : '') + reaction.pct.toFixed(1) + '%' : '—';
     
-    // Return
-    let ret = d.manual_return_pct != null ? d.manual_return_pct : (d.current_return_pct != null ? d.current_return_pct : null);
+    // Return = latest raw close vs issue price (not stale placements_enriched current_return_pct)
+    let ret = null;
+    if (d.manual_return_pct != null) {{
+      ret = d.manual_return_pct;
+    }} else {{
+      const latest = latest_close(d.code);
+      const latestPx = latest[0];
+      if (latestPx != null && d.price_num > 0) {{
+        ret = (latestPx / d.price_num - 1) * 100;
+      }} else if (d.current_return_pct != null) {{
+        ret = d.current_return_pct;
+      }}
+    }}
     
     let advice = '觀察';
     let adviceCls = 'issuer-neutral';
@@ -430,7 +452,7 @@ function render(rows) {{
       <td>${{d.pct_num > 0 ? d.pct_num.toFixed(1)+'%' : '-'}}</td>
       <td><span class="signal ${{t.sig_class||''}}">${{t.signal||'➖'}}</span></td>
       <td>
-        <div class="issuer-stack" title="公告條款代理分數，唔係內部意圖；高分＝對發行方更有利／對股東短期壓力更大；公告後價格反應＝歷史 price reaction；交易建議＝避免誤當買入提示">
+        <div class="issuer-stack" title="公告條款代理分數，唔係內部意圖；高分＝對發行方更有利／對股東短期壓力更大；除權/完成後價格反應＝歷史 price reaction；未有除權日就只顯示未足夠數據；交易建議＝避免誤當買入提示">
           <span class="issuer-badge ${{adviceCls}}">交易建議 ${{advice}}</span>
           <span class="issuer-badge ${{issuer.cls}}">發行方有利度 ${{issuer.label}} ${{issuer.score}}</span>
           <span class="issuer-badge ${{shareholder.cls}}">股東短期壓力 ${{shareholder.label}} ${{shareholder.score}}</span>
