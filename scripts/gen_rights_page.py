@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Generate rights_analysis.html — v4: 8120 pattern. Rating = jump status, not discount."""
 import json, re, os, glob
+from datetime import datetime, timezone
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data')
 RAW_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'raw')
@@ -179,6 +180,7 @@ for p in data:
     p['trade'] = trade_signal(p)
     p['jump_8d_pct'] = p['trade'].get('jump_8d_pct')
     p['issuer'] = issuer_pressure_score(p)
+    p['announcement_return_pct'] = announcement_return(p.get('code'), p.get('date_parsed'))
 
 signals = {}
 for p in data:
@@ -234,7 +236,11 @@ for d in data:
 print(f"Agent resolve: filled {filled} previously null agents")
 
 # ====== GENERATE HTML ======
-data_json = json.dumps(data, ensure_ascii=False)
+rights_json_path = os.path.join(DATA_DIR, 'rights_analysis.json')
+with open(rights_json_path, 'w', encoding='utf-8') as f:
+    json.dump(data, f, ensure_ascii=False, separators=(',', ':'))
+print(f"Wrote rights_analysis.json ({len(data)} rows)")
+build_stamp = datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')
 
 cats = {}
 for d in data:
@@ -372,7 +378,7 @@ tr:hover td {{ background: #161b22; }}
   <th>邏輯</th>
 </tr>
 </thead>
-<tbody id="tableBody"></tbody>
+<tbody id="tableBody"><tr><td colspan="14" style="padding:18px;color:#8b949e">⏳ 載入數據中…</td></tr></tbody>
 </table>
 </div>
 
@@ -381,7 +387,9 @@ tr:hover td {{ background: #161b22; }}
 </div>
 
 <script>
-const DATA = {data_json};
+let DATA = [];
+let DATA_READY = false;
+const DATA_URL = 'data/rights_analysis.json?v={build_stamp}';
 
 function fmtAmt(n) {{
   if (n >= 1e8) return (n/1e8).toFixed(1)+'億';
@@ -445,7 +453,7 @@ function render(rows) {{
     const shareholder = issuer.shareholder_pressure || {{score: issuer.score || 50, label: issuer.label || '中性', cls: issuer.cls || 'issuer-neutral'}};
     const reaction = issuer.reaction || {{pct: null, label: '未足夠數據', cls: 'issuer-react-neutral'}};
     const reactionPct = reaction.pct != null ? (reaction.pct >= 0 ? '+' : '') + reaction.pct.toFixed(1) + '%' : '—';
-    const annRet = announcement_return(d.code, d.date_parsed);
+    const annRet = d.announcement_return_pct != null ? d.announcement_return_pct : null;
     const annRetPct = annRet != null ? (annRet >= 0 ? '+' : '') + annRet.toFixed(1) + '%' : '—';
     
     // 現價對發行價 = latest raw close vs issue price (not stale placements_enriched current_return_pct)
@@ -523,12 +531,17 @@ function getFilteredRows() {{
   return rows;
 }}
 
-function doSearch(el) {{ searchTerm = el.value.trim(); render(getFilteredRows()); }}
+function doSearch(el) {{
+  searchTerm = el.value.trim();
+  if (!DATA_READY) return;
+  render(getFilteredRows());
+}}
 
 function filter(cat) {{
   currentFilter = cat;
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   event.target.classList.add('active');
+  if (!DATA_READY) return;
   render(getFilteredRows());
 }}
 
@@ -536,14 +549,24 @@ let sortCol = 7; let sortAsc = false;
 function sortTable(col) {{
   sortAsc = sortCol === col ? !sortAsc : false;
   sortCol = col;
+  if (!DATA_READY) return;
   let rows = getFilteredRows();
-  const keys = ['date_parsed','code','name','category','price_num','market_price','discount_pct','jump_8d_pct','pct_num'];
+  const keys = ['date_parsed','code','name','category','price_num','market_price','discount_pct','jump_8d_pct','pct_num','trade.signal','issuer.score','current_return_pct','announcement_return_pct'];
   rows.sort((a,b) => {{
     let va, vb;
     if (col === 7) {{ va = a.jump_8d_pct != null ? a.jump_8d_pct : (a.trade||{{}}).jump_status==='waiting' ? 999 : -999; vb = b.jump_8d_pct != null ? b.jump_8d_pct : (b.trade||{{}}).jump_status==='waiting' ? 999 : -999; }}
     else if (col === 6) {{ va = a.discount_pct != null ? a.discount_pct : 999; vb = b.discount_pct != null ? b.discount_pct : 999; }}
     else if (col === 10) {{ va = (a.issuer || {{score: 50}}).score; vb = (b.issuer || {{score: 50}}).score; }}
     else if (col === 5) {{ va = a.market_price||0; vb = b.market_price||0; }}
+    else if (col === 9) {{
+      const order = {{'🟢 跟!': 0, '🟢 跟': 0, '🟡 等': 1, '🔴 避': 2, '💀 走': 3, '—': 4, '': 4}};
+      const as = (a.trade||{{}}).signal || '—';
+      const bs = (b.trade||{{}}).signal || '—';
+      va = order[as] != null ? order[as] : 4;
+      vb = order[bs] != null ? order[bs] : 4;
+    }}
+    else if (col === 11) {{ va = a.current_return_pct != null ? a.current_return_pct : -999; vb = b.current_return_pct != null ? b.current_return_pct : -999; }}
+    else if (col === 12) {{ va = a.announcement_return_pct != null ? a.announcement_return_pct : -999; vb = b.announcement_return_pct != null ? b.announcement_return_pct : -999; }}
     else {{ va = a[keys[col]]||''; vb = b[keys[col]]||''; }}
     if (typeof va === 'number') return sortAsc ? va - vb : vb - va;
     return sortAsc ? String(va).localeCompare(String(vb)) : String(vb).localeCompare(String(va));
@@ -551,7 +574,20 @@ function sortTable(col) {{
   render(rows);
 }}
 
-render(DATA);
+async function loadData() {{
+  try {{
+    const res = await fetch(DATA_URL, {{cache: 'no-store'}});
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    DATA = await res.json();
+    DATA_READY = true;
+    render(DATA);
+  }} catch (err) {{
+    const body = document.getElementById('tableBody');
+    if (body) body.innerHTML = '<tr><td colspan="14" style="padding:18px;color:#f85149">載入失敗：' + err.message + '</td></tr>';
+  }}
+}}
+
+loadData();
 </script>
 </body>
 </html>'''
