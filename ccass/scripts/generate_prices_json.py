@@ -13,7 +13,6 @@ Usage:
 """
 import json, sqlite3
 from pathlib import Path
-from datetime import datetime
 
 PROJECT = Path(__file__).parent.parent
 DB = PROJECT / "holdings.db"
@@ -72,9 +71,13 @@ def generate():
             prices[code] = {"lp": round(float(lp), 3)}
         print(f"  (read {len(prices)} prices from DB fallback)")
 
+    meta = prices.get("_meta") if isinstance(prices, dict) else {}
+    updated_at = (meta or {}).get("updated_at")
+    provider = (meta or {}).get("source")
+
     # Build GAS-compatible groups
     groups = []
-    for code in sorted(prices.keys()):
+    for code in sorted(k for k in prices.keys() if str(k).isdigit() and len(str(k)) == 5):
         entry = prices[code]
         lp = entry.get("lp")
         if lp is None or lp <= 0:
@@ -92,8 +95,9 @@ def generate():
         "ok": True,
         "groups": groups,
         "recentCorps": [],
-        "updatedAt": datetime.now().isoformat(),
+        "updatedAt": updated_at,
         "source": "Futu/Longbridge cache (via stock_prices.json)",
+        "provider": provider,
         "totalStocks": len(groups),
     }
 

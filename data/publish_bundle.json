@@ -1,6 +1,6 @@
 {
   "schema_v": 1,
-  "generated_at": "2026-06-27T21:36:14",
+  "generated_at": "2026-06-27T21:57:28",
   "source_of_truth": {
     "db": "ccass/holdings.db",
     "primary_holdings": "holdings.json",
@@ -33,9 +33,10 @@
     },
     "prices": {
       "path": "data/stock_prices.json",
-      "updated": "2026-06-23T23:20:00",
+      "updated": "2026-06-26T08:08:31Z",
       "source": "Futu / Longbridge cache",
-      "count": 2782
+      "count": 2782,
+      "provider": "longbridge:quote"
     },
     "market": {
       "path": "data/market.json",
@@ -118,7 +119,7 @@
     "verify_dashboard": {
       "status": "WARN",
       "errors": 0,
-      "warnings": 2505
+      "warnings": 2493
     }
   },
   "headline": {
@@ -128,7 +129,7 @@
     "latest_db_coverage_pct": 63.0,
     "signals_updated": "2026-06-27T09:14:24.106718",
     "alerts_updated": "2026-06-24 00:37 UTC",
-    "prices_updated": "2026-06-23T23:20:00",
+    "prices_updated": "2026-06-26T08:08:31Z",
     "market_updated": "2026-06-26T08:08:32Z",
     "market_stale": true,
     "backtests_updated": {

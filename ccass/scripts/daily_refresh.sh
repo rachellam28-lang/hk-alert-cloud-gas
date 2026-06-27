@@ -32,7 +32,14 @@ elif [[ "$runner_rc" -ne 0 ]]; then
 fi
 
 echo "2/5 Refresh prices + suspended (Futu)..."
-"$PYTHON_BIN" scripts/daily_lp_futu.py || { echo "ERROR: price refresh failed"; exit 1; }
+set +e
+timeout "${FUTU_PRICE_TIMEOUT_SECONDS:-180}" "$PYTHON_BIN" scripts/daily_lp_futu.py
+futu_price_rc=$?
+set -e
+if [[ "$futu_price_rc" -ne 0 ]]; then
+    echo "WARN: Futu price refresh failed/timed out (rc=$futu_price_rc); trying Longbridge quote fallback"
+    "$PYTHON_BIN" scripts/daily_lp_longbridge.py || { echo "ERROR: Longbridge price fallback failed"; exit 1; }
+fi
 
 echo "2.5/5 Generate prices.json for dashboard fallback..."
 "$PYTHON_BIN" scripts/generate_prices_json.py || { echo "ERROR: prices.json generation failed"; exit 1; }

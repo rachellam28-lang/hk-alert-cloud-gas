@@ -75,14 +75,16 @@ def summarize_alerts():
 def summarize_prices():
     data = load_json(DATA / "stock_prices.json", {})
     prices_path = DATA / "stock_prices.json"
-    updated = None
-    if prices_path.exists():
+    meta = data.get("_meta") if isinstance(data, dict) else {}
+    updated = (meta or {}).get("updated_at")
+    if not updated and prices_path.exists():
         updated = datetime.fromtimestamp(prices_path.stat().st_mtime).isoformat(timespec="seconds")
     return {
         "path": "data/stock_prices.json",
         "updated": updated,
         "source": "Futu / Longbridge cache",
-        "count": len(data) if isinstance(data, dict) else None,
+        "count": len([k for k in data if str(k).isdigit() and len(str(k)) == 5]) if isinstance(data, dict) else None,
+        "provider": (meta or {}).get("source"),
     }
 
 

@@ -1,0 +1,187 @@
+"""Daily price fallback via Longbridge quote.
+
+Futu OpenD is the richer source, but it is a local gateway and can be down.
+This script updates the core price fields from Longbridge so dashboard prices
+do not freeze when Futu is unavailable.
+"""
+from __future__ import annotations
+
+import json
+import os
+import subprocess
+import sys
+import time
+from datetime import datetime, timezone
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parent.parent.parent
+PRICES = ROOT / "data" / "stock_prices.json"
+HOLDINGS = ROOT / "holdings.json"
+SUSPENDED = ROOT / "data" / "suspended_stocks.json"
+
+
+def load_token() -> str:
+    token = os.environ.get("LONGBRIDGE_ACCESS_TOKEN")
+    if token:
+        return token
+    for path in [ROOT / ".env", Path.home() / "Desktop" / "automatic" / "holdings-debug" / ".env"]:
+        if not path.exists():
+            continue
+        for line in path.read_text(encoding="utf-8").splitlines():
+            if line.startswith("LONGBRIDGE_ACCESS_TOKEN="):
+                return line.split("=", 1)[1].strip()
+    raise RuntimeError("LONGBRIDGE_ACCESS_TOKEN not found")
+
+
+def lb_mcp(tool: str, args: dict) -> list[dict] | dict:
+    body = {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "tools/call",
+        "params": {"name": tool, "arguments": args},
+    }
+    proc = subprocess.run(
+        [
+            "curl",
+            "-sS",
+            "-X",
+            "POST",
+            "https://mcp.longbridge.com",
+            "-H",
+            "Content-Type: application/json",
+            "-H",
+            "Accept: application/json, text/event-stream",
+            "-H",
+            "Authorization: Bearer " + load_token(),
+            "-d",
+            json.dumps(body),
+        ],
+        capture_output=True,
+        text=True,
+        timeout=45,
+        check=False,
+    )
+    if proc.returncode != 0:
+        raise RuntimeError((proc.stderr or "Longbridge MCP failed").strip())
+    raw = proc.stdout.strip()
+    if raw.startswith("data: "):
+        raw = raw[6:]
+    res = json.loads(raw)
+    if "error" in res:
+        raise RuntimeError(res["error"].get("message", str(res["error"])))
+    content = res.get("result", {}).get("content", [])
+    if not content:
+        return []
+    return json.loads(content[0]["text"])
+
+
+def to_float(value):
+    try:
+        if value in (None, ""):
+            return None
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def atomic_write_json(path: Path, obj) -> None:
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp.write_text(json.dumps(obj, ensure_ascii=False, indent=2), encoding="utf-8")
+    tmp.replace(path)
+
+
+def main() -> int:
+    prices = json.loads(PRICES.read_text(encoding="utf-8"))
+    codes = sorted(k for k in prices.keys() if str(k).isdigit() and len(str(k)) == 5)
+    print(f"Daily Longbridge price fallback for {len(codes)} stocks...")
+
+    updated = 0
+    suspended: dict[str, str] = {}
+    latest_ts = None
+    batch_size = 200
+
+    for i in range(0, len(codes), batch_size):
+        batch_codes = codes[i : i + batch_size]
+        symbols = [f"{code}.HK" for code in batch_codes]
+        try:
+            data = lb_mcp("quote", {"symbols": symbols})
+            items = data if isinstance(data, list) else data.get("items", data.get("lists", []))
+        except Exception as exc:
+            print(f"  batch {i // batch_size + 1} failed: {exc}", file=sys.stderr)
+            for code in batch_codes:
+                suspended.setdefault(code, "longbridge_batch_error")
+            continue
+
+        seen: set[str] = set()
+        for item in items:
+            symbol = str(item.get("symbol") or "")
+            code = symbol.replace(".HK", "").zfill(5)
+            if code not in prices:
+                continue
+            seen.add(code)
+            entry = prices.get(code, {})
+            changed = False
+            lp = to_float(item.get("last_done"))
+            prev = to_float(item.get("prev_close"))
+            vol = to_float(item.get("volume"))
+            turnover = to_float(item.get("turnover"))
+            if lp and lp > 0 and entry.get("lp") != round(lp, 3):
+                entry["lp"] = round(lp, 3)
+                changed = True
+            if prev and prev > 0:
+                entry["prev_close"] = round(prev, 3)
+                chg = round((lp / prev - 1) * 100, 2) if lp else None
+                if chg is not None:
+                    entry["chg"] = chg
+                changed = True
+            if vol is not None:
+                entry["vol"] = int(vol)
+                changed = True
+            if turnover is not None:
+                entry["turnover"] = round(turnover, 2)
+                changed = True
+            if entry.get("lp") and entry.get("hi52") and entry.get("lo52") and entry["hi52"] > entry["lo52"]:
+                entry["p52"] = round((entry["lp"] - entry["lo52"]) / (entry["hi52"] - entry["lo52"]) * 100, 1)
+            if entry.get("lp") and entry.get("py") and entry["py"] > 0:
+                entry["py_pct"] = round((entry["lp"] - entry["py"]) / entry["py"] * 100, 2)
+            entry["price_source"] = "longbridge"
+            ts = item.get("timestamp")
+            if ts:
+                entry["price_updated_at"] = ts
+                latest_ts = max(latest_ts or ts, ts)
+            if changed:
+                prices[code] = entry
+                updated += 1
+
+        for code in batch_codes:
+            if code not in seen:
+                suspended.setdefault(code, "longbridge_missing_quote")
+
+        print(f"  {min(i + batch_size, len(codes))}/{len(codes)} updated={updated}")
+        time.sleep(0.2)
+
+    prices["_meta"] = {
+        "source": "longbridge:quote",
+        "updated_at": latest_ts or datetime.now(timezone.utc).isoformat(),
+        "updated_count": updated,
+    }
+    atomic_write_json(PRICES, prices)
+    atomic_write_json(SUSPENDED, suspended)
+
+    if HOLDINGS.exists():
+        holdings = json.loads(HOLDINGS.read_text(encoding="utf-8"))
+        for stock in holdings.get("stocks", []):
+            code = stock.get("c")
+            entry = prices.get(code, {})
+            for key in ["lp", "vol", "chg", "p52", "py_pct"]:
+                if entry.get(key) is not None:
+                    stock[key] = entry[key]
+        atomic_write_json(HOLDINGS, holdings)
+
+    print(f"Done Longbridge fallback: updated={updated}, suspended={len(suspended)}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
