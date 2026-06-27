@@ -86,6 +86,34 @@ def compute_jump(code, ann_date_str):
         return pct, 'jumped'
     return (pct, 'no_jump') if len(fwd) >= 5 else (pct, 'waiting')
 
+def announcement_return(code, ann_date_str):
+    """Return announcement-date-to-latest return using raw history.
+
+    Uses the first available raw close on/after the announcement date as base,
+    and the latest raw close in the history as the end point.
+    """
+    from datetime import datetime
+    pxs = PRICE_HIST.get(str(code).zfill(5))
+    if not pxs or not ann_date_str:
+        return None
+    dates = sorted(pxs.keys())
+    base_day = None
+    for d in dates:
+      if d >= ann_date_str:
+        base_day = d
+        break
+    if base_day is None:
+        return None
+    gap = (datetime.strptime(base_day, '%Y-%m-%d') -
+           datetime.strptime(ann_date_str, '%Y-%m-%d')).days
+    if gap > 1:
+        return None
+    base = pxs[base_day]
+    latest = pxs[dates[-1]]
+    if base <= 0:
+        return None
+    return round((latest / base - 1) * 100, 1)
+
 # ====== V4: 8120 pattern rating ======
 def trade_signal(p):
     """Rating = jump status. Discount is NOT used for rating (no evidence)."""
@@ -340,6 +368,7 @@ tr:hover td {{ background: #161b22; }}
   <th onclick="sortTable(9)">訊號</th>
   <th onclick="sortTable(10)">公告拆解</th>
   <th onclick="sortTable(11)">現價對發行價</th>
+  <th>公告日至今</th>
   <th>邏輯</th>
 </tr>
 </thead>
@@ -416,6 +445,8 @@ function render(rows) {{
     const shareholder = issuer.shareholder_pressure || {{score: issuer.score || 50, label: issuer.label || '中性', cls: issuer.cls || 'issuer-neutral'}};
     const reaction = issuer.reaction || {{pct: null, label: '未足夠數據', cls: 'issuer-react-neutral'}};
     const reactionPct = reaction.pct != null ? (reaction.pct >= 0 ? '+' : '') + reaction.pct.toFixed(1) + '%' : '—';
+    const annRet = announcement_return(d.code, d.date_parsed);
+    const annRetPct = annRet != null ? (annRet >= 0 ? '+' : '') + annRet.toFixed(1) + '%' : '—';
     
     // 現價對發行價 = latest raw close vs issue price (not stale placements_enriched current_return_pct)
     let ret = null;
@@ -452,7 +483,7 @@ function render(rows) {{
       <td>${{d.pct_num > 0 ? d.pct_num.toFixed(1)+'%' : '-'}}</td>
       <td><span class="signal ${{t.sig_class||''}}">${{t.signal||'➖'}}</span></td>
       <td>
-        <div class="issuer-stack" title="公告條款代理分數，唔係內部意圖；高分＝對發行方更有利／對股東短期壓力更大；現價對發行價＝最新 raw close vs 發行價；公告後價格反應＝只計除權/完成後歷史 reaction；未有除權/完成日就顯示未足夠數據；交易建議＝避免誤當買入提示">
+        <div class="issuer-stack" title="公告條款代理分數，唔係內部意圖；高分＝對發行方更有利／對股東短期壓力更大；現價對發行價＝最新 raw close vs 發行價；公告日至今＝由公告日第一個可用 raw close 到最新 raw close；公告後價格反應＝只計除權/完成後歷史 reaction；未有除權/完成日就顯示未足夠數據；交易建議＝避免誤當買入提示">
           <span class="issuer-badge ${{adviceCls}}">交易建議 ${{advice}}</span>
           <span class="issuer-badge ${{issuer.cls}}">發行方有利度 ${{issuer.label}} ${{issuer.score}}</span>
           <span class="issuer-badge ${{shareholder.cls}}">股東短期壓力 ${{shareholder.label}} ${{shareholder.score}}</span>
@@ -460,6 +491,7 @@ function render(rows) {{
         </div>
       </td>
       <td style="color:${{(ret||0) >= 0 ? '#3fb950' : '#f85149'}};font-weight:${{Math.abs(ret||0) > 20 ? 'bold' : 'normal'}}">${{ret != null ? (ret >= 0 ? '+' : '') + ret.toFixed(1) + '%' : '-'}}</td>
+      <td style="color:${{(annRet||0) >= 0 ? '#3fb950' : '#f85149'}};font-weight:${{Math.abs(annRet||0) > 20 ? 'bold' : 'normal'}}">${{annRet != null ? annRetPct : '-'}}</td>
       <td>
         <div class="thesis">${{t.thesis||''}}</div>
         ${{risks}}
