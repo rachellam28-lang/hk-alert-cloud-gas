@@ -862,6 +862,19 @@ function esc(s){
   d.appendChild(document.createTextNode(v));
   return d.innerHTML;
 }
+function numOrNull(v){
+  const n=Number(v);
+  return Number.isFinite(n)?n:null;
+}
+function isTechnicalAlert(a,sig,p){
+  const category=String((a&&a.category)||(p&&p.category)||'').toLowerCase();
+  const source=String((a&&a.source)||(p&&p.source)||'').toLowerCase();
+  const label=cleanText((sig&&(sig.type||sig.label))||(a&&a.signal)||'');
+  if(category==='corp_action'||source==='hkexnews'||label.indexOf('披露易')>=0)return false;
+  const hasMetric=numOrNull(sig&&sig.gap_pct)!=null||numOrNull(sig&&sig.fvg_pct)!=null||numOrNull(sig&&sig.breakout_pct)!=null||numOrNull(sig&&sig.poc)!=null;
+  const techLabel=/POC|FVG|IPO|gap|breakout|year|跳空|年開/i.test(label);
+  return hasMetric||techLabel;
+}
 
 function fmtPct(v){if(v==null)return'—';return (v>0?'+':'')+v.toFixed(2)+'%';}
 function fmtStreak(su,sd){
@@ -2268,13 +2281,15 @@ async function loadData(){
             .then(ad=>{
               if(ad&&ad.alerts){
                 ad.alerts.forEach(function(a){
-                  var p=typeof a.payload==='string'?JSON.parse(a.payload):(a.payload||{});
+                  var p={};
+                  try{p=typeof a.payload==='string'?JSON.parse(a.payload):(a.payload||{});}catch(e){p={};}
                   var code=String(p.code||a.code||'').padStart(5,'0');
                   if(!stockByCode.has(code))return;
                   // Normalize both schemas: Schema A (FVG/POC) = a.signal object; Schema B (cloud_scanner) = a.signal is raw string
                   var sig=typeof a.signal==='string'
                     ? {type:a.signal,date:(a.created_at||'').slice(0,10)}
                     :(p.signal||a.signal||{});
+                  if(!isTechnicalAlert(a,sig,p))return;
                   var existing=techSignalMap.get(code)||[];
                   existing.push({label:sig.type||'',date:sig.date||(a.created_at||'').slice(0,10),gap_pct:sig.gap_pct,fvg_pct:sig.fvg_pct,breakout_pct:sig.breakout_pct,poc:sig.poc});
                   techSignalMap.set(code,existing);

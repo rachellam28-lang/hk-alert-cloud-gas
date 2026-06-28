@@ -7,6 +7,11 @@ on:
         description: Dispatch source
         required: false
         default: manual
+  schedule:
+    # UTC 23:30 Sun-Thu = HKT 07:30 Mon-Fri. This is the GitHub fallback
+    # for the Cloudflare cron dispatcher, so stale data does not depend on
+    # one external trigger.
+    - cron: "30 23 * * 0-4"
 
 permissions:
   contents: write

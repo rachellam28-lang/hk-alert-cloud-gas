@@ -291,6 +291,19 @@ function cleanText(s){
 function esc(s){
   return cleanText(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
 }
+function numOrNull(v){
+  const n=Number(v);
+  return Number.isFinite(n)?n:null;
+}
+function isTechnicalAlert(a,sig,p){
+  const category=String((a&&a.category)||(p&&p.category)||'').toLowerCase();
+  const source=String((a&&a.source)||(p&&p.source)||'').toLowerCase();
+  const label=cleanText((sig&&(sig.type||sig.label))||(a&&a.signal)||'');
+  if(category==='corp_action'||source==='hkexnews'||label.indexOf('披露易')>=0)return false;
+  const hasMetric=numOrNull(sig&&sig.gap_pct)!=null||numOrNull(sig&&sig.fvg_pct)!=null||numOrNull(sig&&sig.breakout_pct)!=null||numOrNull(sig&&sig.poc)!=null;
+  const techLabel=/POC|FVG|IPO|gap|breakout|year|跳空|年開/i.test(label);
+  return hasMetric||techLabel;
+}
 function fmtTime(s){ const v=cleanText(s); if(!v)return'—'; try{ const d=new Date(v);if(isNaN(d))return v;const p=n=>n<10?'0'+n:''+n;return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes()); }catch(e){return v;} }
 function fmtDate(s){ const v=cleanText(s); if(!v)return'—'; try{ const d=new Date(v);if(isNaN(d))return v;const p=n=>n<10?'0'+n:''+n;return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate()); }catch(e){return v;} }
 
@@ -554,12 +567,14 @@ async function mergeAndRender(hkGroups, recentCorps){
     if(ad&&ad.alerts){
       var alertByCode={};
       ad.alerts.forEach(function(a){
-        var p=typeof a.payload==='string'?JSON.parse(a.payload):(a.payload||{});
+        var p={};
+        try{p=typeof a.payload==='string'?JSON.parse(a.payload):(a.payload||{});}catch(e){p={};}
         var code=String(p.code||a.code||'').padStart(5,'0');
         // Normalize both schemas: Schema A (FVG/POC) = a.signal object with .type; Schema B (cloud_scanner) = a.signal is raw string
         var sig=typeof a.signal==='string'
           ? {type:a.signal,date:(a.created_at||'').slice(0,10)}
           :(p.signal||a.signal||{});
+        if(!isTechnicalAlert(a,sig,p))return;
         if(!alertByCode[code])alertByCode[code]=[];
         alertByCode[code].push({label:sig.type||'',date:sig.date||(a.created_at||'').slice(0,10)});
       });

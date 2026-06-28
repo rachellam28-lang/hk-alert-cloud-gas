@@ -139,6 +139,15 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 
 ## Latest Deploy Notes
 
+### 2026-06-29 stale refresh and 02889 undefined POC fix
+
+- Live warning "data stale 67 hours" was a backend freshness problem, not a page rendering problem.
+- Root cause found: `.github/workflows/ccass_refresh.yml` only had `workflow_dispatch`; the scheduled run depended entirely on Cloudflare cron dispatch.
+- Fix: add a GitHub Actions schedule fallback at `30 23 * * 0-4` (HKT 07:30 Monday-Friday).
+- `02889` showed `+undefined%` / `POC undefined -> undefined` because HKEX corp-action alerts from `data/alerts.json` were merged into the technical-signal map.
+- Fix: `index.html` and `signals.html` now filter alert merges with `isTechnicalAlert`; `source=hkexnews` / `category=corp_action` stays in announcement/corp paths only.
+- Local verification: embedded JS parsed successfully and real `data/alerts.json` filtering leaves `02889` with zero technical alerts.
+
 ### 2026-06-29 page data unification
 
 - Commit pushed: `452a40b fix: unify signal data and timing tables`.
