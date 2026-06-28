@@ -5,7 +5,7 @@ build_events_v2.py — 配股供股啟動雷達 數據管線
 
 現代兼容版：
   - 仍然輸出 docs/ccass_events.json，畀 ccass-warroom / Telegram workflow 用
-  - 只用 TradingView / tvdatafeed，唔再落 yfinance fallback
+  - 只用 TradingView / tvdatafeed，唔再落 legacy quote fallback
   - CCASS 資料改用 ccass/holdings.db
 
 跑法:

@@ -44,7 +44,7 @@ print(f"=== HK Corp Graded Scan === {today} ===", flush=True)
 print("[1] Importing scanner modules...", flush=True)
 from hk_cloud_scanner import (
     fetch_corp_action_announcements,
-    hk_code_to_yahoo,
+    hk_code_to_hk_symbol,
     get_daily_history,
     compute_volume_ratio,
     VOLUME_MULTIPLIER,
@@ -219,7 +219,7 @@ for i, ann in enumerate(same_day):
                 "source": "hkexnews",
                 "category": "corp_action_8120",
                 "code": code,
-                "symbol": hk_code_to_yahoo(code),
+                "symbol": hk_code_to_hk_symbol(code),
                 "name": name,
                 "signal": f"8120·{types_str}",
                 "timeframe": "T+{days_after}D",

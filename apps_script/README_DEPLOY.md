@@ -35,7 +35,7 @@
 
 ## Dashboard 功能
 
-- 頂部 KPI cards：HSI、HSI PE、DXY、VIX，全部用 Yahoo Finance 即時資料（HSI PE 用 worldperatio.com）
+- Top KPI cards: HSI, HSI PE, DXY, VIX read the published `data/market.json` snapshot from the Cloudflare site.
 - 分類 tabs：全部 / 技術信號 / 披露易 / 配股 / 增持 / 供股
 - 搜尋框：按代號或名稱即時 filter
 - Table 按股票 code grouping。**走勢圖**欄顯示同 Telegram 一模一樣嘅真實 OHLC chart 縮圖（matplotlib + 本地快取資料），如果未有圖則 fallback 用 20 日 close sparkline
@@ -43,12 +43,12 @@
 
 ## 速度優化（手機 Chrome 開得到）
 
-舊版 `doGet` 對每隻股票都打一次 Yahoo Finance（過百個 HTTP request 串行行），手機 Chrome 30 秒前未行完就 timeout。新版做咗以下優化，目標係手機首屏 ~10 秒以內：
+Old `doGet` versions made per-stock server-side quote HTTP requests and could time out on mobile Chrome before first paint. The current version keeps first paint bounded:
 
-- **CacheService HTML cache（90 秒）**：第一個 request 渲染好之後 cache 整頁 HTML，之後 90 秒內所有 request 即時返回，唔再讀 Sheet 唔再 fetch Yahoo。
-- **Market snapshot cache（5 分鐘）**：HSI / HSI PE / DXY / VIX 用 `UrlFetchApp.fetchAll` 並行抓，再 cache 5 分鐘，唔再因 worldperatio.com 慢就拖死成個頁。
+- **CacheService HTML cache (10 minutes)**: first request renders and caches the full HTML; repeated requests return quickly without rereading Sheet data.
+- **Market snapshot cache (5 minutes)**: HSI / HSI PE / DXY / VIX come from the site-published `data/market.json` snapshot.
 - **限制初始 row 數**：每次只取 sheet 尾 600 條 alert，group by code 後最多顯示 120 隻最新股票。Sheet 全部歷史照樣保留，只係首屏唔會 dump 出嚟。
-- **走勢圖優先用 scanner 已存嘅 chart_image_url**：如果某隻股有 Drive 上嘅真實 chart 縮圖（由 `doPost` 寫入），就直接 `<img loading="lazy">` lazy load，唔會 server-side 再 fetch Yahoo。只有冇圖嘅股先 fallback Yahoo（最多 25 隻）。
+- **Chart images first**: scanner-saved `chart_image_url` renders directly with lazy-loaded images; rows without saved charts render placeholders instead of server-side quote fetches.
 - **圖片 fallback**：`<img onerror>` 處理 Drive 權限失敗 / 圖檔被刪 / 機構政策 block link sharing 等情況——會即時換成「—」placeholder，唔會塞死 layout。
 - **固定 `<img width/height>` + `loading="lazy"` + `decoding="async"`**：減少 reflow 同 main-thread block。
 

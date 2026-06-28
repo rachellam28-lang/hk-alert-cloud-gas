@@ -18,7 +18,6 @@ from datetime import datetime, timezone
 from typing import Any
 
 import pandas as pd
-import yfinance as yf
 
 # ── Config ────────────────────────────────────────────────────────────────────
 NEAR_PCT     = float(os.getenv("FVG_NEAR_PCT", "0.01"))   # 1% above FVG top = "near" (was 3%, too noisy)
@@ -111,52 +110,16 @@ def _proximity(fvg: dict) -> str | None:
 
 
 def scan_ticker(ticker: str, name: str = "", market: str = "HK") -> list[dict]:
-    alerts = []
-    for tf, (period, interval) in _TF_PARAMS.items():
-        try:
-            time.sleep(RATE_SLEEP)
-            df = yf.download(ticker, period=period, interval=interval,
-                             progress=False, auto_adjust=True, multi_level_index=False)
-            if df is None or df.empty or len(df) < 3:
-                continue
-            # Only care about FVGs formed on the LATEST candle
-            last_date = str(df.index[-1].date())
-            fvgs = _find_fresh_bullish_fvgs(df)
-            for fvg in fvgs:
-                if fvg["date"] != last_date:
-                    continue  # skip old FVGs
-                prox = _proximity(fvg)
-                if prox:
-                    alerts.append({
-                        "ticker":    ticker,
-                        "name":      name or ticker,
-                        "market":    market,
-                        "timeframe": tf,
-                        "tf_short":  _TF_LABEL[tf],
-                        "gap_low":   fvg["gap_low"],
-                        "gap_high":  fvg["gap_high"],
-                        "current":   fvg["current"],
-                        "fvg_date":  fvg["date"],
-                        "status":    prox,
-                    })
-        except Exception as e:
-            print(f"[FVG] {ticker} {tf}: {e}")
-    return alerts
+    # No canonical OHLC cache is available for this legacy scanner yet.
+    # Fail closed instead of mixing an extra external price source into alerts.
+    return []
 
 
 # ── Name lookup ───────────────────────────────────────────────────────────────
 
 def _build_name_map(tickers: list[str]) -> dict[str, str]:
-    """Batch-fetch short names via yfinance fast_info (best-effort)."""
-    names: dict[str, str] = {}
-    for t in tickers:
-        try:
-            info = yf.Ticker(t).fast_info
-            names[t] = getattr(info, "display_name", None) or t
-        except Exception:
-            names[t] = t
-        time.sleep(0.05)
-    return names
+    """Return best-effort names without external quote lookups."""
+    return {t: t for t in tickers}
 
 
 # ── Telegram + GAS ────────────────────────────────────────────────────────────

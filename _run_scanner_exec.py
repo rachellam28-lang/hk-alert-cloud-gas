@@ -7,7 +7,7 @@ Lives at PROJECT ROOT (not scanner/). Usage:
 
 Why exec instead of import:
 - `import hk_cloud_scanner` triggers module-level initialization
-  (yfinance, matplotlib, TelegramPusher, local_alert_store init)
+  (matplotlib, TelegramPusher, local_alert_store init)
   which can hang on Windows/git-bash.
 - `exec()` loads and runs the script directly, bypassing the import system.
 - Must set `__file__` in exec globals — otherwise export_breakthroughs_json()

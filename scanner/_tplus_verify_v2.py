@@ -1,11 +1,13 @@
-"""Precise T+1~T+5 close-to-close verification using raw price snapshots (NO yfinance).
+"""Precise T+1~T+5 close-to-close verification using raw price snapshots.
 Handles both legacy (float=close) and new (dict={close,vol,...}) formats."""
 import json
 import os
 import glob
 from datetime import datetime, timedelta
+from pathlib import Path
 
-BASE = r"C:\Users\Administrator\Desktop\automatic\ccass-debug\raw"
+ROOT = Path(__file__).resolve().parent.parent
+BASE = ROOT / "raw"
 
 candidates = [
     ("00700", "騰訊", "2026-06-05", "配售", None),
@@ -20,7 +22,7 @@ candidates = [
 
 def load_all_prices():
     prices = {}
-    for f in sorted(glob.glob(os.path.join(BASE, "prices_*.json"))):
+    for f in sorted(glob.glob(str(BASE / "prices_*.json"))):
         fn = os.path.basename(f)
         date_str = fn.replace("prices_", "").replace(".json", "")
         dt = datetime.strptime(date_str, "%Y%m%d")
@@ -197,7 +199,7 @@ for r in results:
     level = "🔴 RED" if r['is_red'] else "🟡 WATCH"
     print(f"  {r['code']} {r['name']}: {level} | {r.get('skip_reason','?')}")
 
-outpath = r"C:\Users\Administrator\Desktop\automatic\ccass-debug\scanner\_tplus_verify_v2.json"
+outpath = Path(__file__).resolve().parent / "_tplus_verify_v2.json"
 with open(outpath, 'w', encoding='utf-8') as f:
     json.dump(results, f, ensure_ascii=False, indent=2, default=str)
 print(f"\nSaved to _tplus_verify_v2.json")

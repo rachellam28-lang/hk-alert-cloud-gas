@@ -6,7 +6,6 @@ Placement/Rights Price Breakthrough Detector.
 from __future__ import annotations
 
 import json
-import os
 import re
 import sys
 from datetime import datetime, date, timezone
@@ -16,7 +15,7 @@ from typing import Any
 HKT_TZ = timezone(__import__("datetime").timedelta(hours=8))
 DATA_DIR = Path(__file__).parent.parent / "data"
 PRICE_CACHE = DATA_DIR / "breakthrough_prices.json"
-ALLOW_YFINANCE = os.getenv("ALLOW_YFINANCE", "").lower() in {"1", "true", "yes"}
+STOCK_PRICE_CACHE = DATA_DIR / "stock_prices.json"
 
 # Regex patterns for extracting offer prices from HKEX announcement titles
 PRICE_PATTERNS = [
@@ -66,6 +65,16 @@ def load_price_cache() -> dict:
 def save_price_cache(cache: dict) -> None:
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     PRICE_CACHE.write_text(json.dumps(cache, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def load_stock_price_cache() -> dict:
+    if STOCK_PRICE_CACHE.exists():
+        try:
+            data = json.loads(STOCK_PRICE_CACHE.read_text(encoding="utf-8"))
+            return data if isinstance(data, dict) else {}
+        except Exception:
+            return {}
+    return {}
 
 
 def add_prices_from_announcements(announcements: list[dict]) -> int:
@@ -132,25 +141,12 @@ def check_breakthrough(stock_code: str) -> dict[str, Any] | None:
     if today.weekday() >= 5:
         return None
 
-    # Legacy Yahoo/yfinance path is disabled by default. The dashboard price
-    # source of truth is Futu/Longbridge cache; callers that still need this
-    # legacy check must explicitly opt in with ALLOW_YFINANCE=1.
-    if not ALLOW_YFINANCE:
-        return None
-
-    # Get current price from Yahoo Finance.
+    prices = load_stock_price_cache()
+    row = prices.get(stock_code) or prices.get(str(stock_code).zfill(5)) or {}
     try:
-        import yfinance as yf
-
-        n = int(stock_code)
-        symbol = f"{n:04d}.HK" if n < 10000 else f"{stock_code}.HK"
-        ticker = yf.Ticker(symbol)
-        hist = ticker.history(period="5d")
-        if hist.empty:
-            return None
-        cur_price = float(hist.iloc[-1]["Close"])
-        prev_price = float(hist.iloc[-2]["Close"]) if len(hist) >= 2 else cur_price
-    except Exception:
+        cur_price = float(row.get("lp"))
+        prev_price = float(row.get("prev_close") or cur_price)
+    except (TypeError, ValueError):
         return None
 
     for entry in entries:

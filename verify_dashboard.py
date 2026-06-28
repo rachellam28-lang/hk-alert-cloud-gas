@@ -4,6 +4,10 @@ Run after regenerate. Exits 0=OK, 1=FAIL.
 import json, sys, math
 from pathlib import Path
 
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
 PROJECT = Path(__file__).parent
 CCASS_JSON = PROJECT / "holdings.json"
 

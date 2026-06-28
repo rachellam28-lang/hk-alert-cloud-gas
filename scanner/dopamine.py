@@ -16,7 +16,6 @@ Threshold effects:
 - Daily alert cap: base 50 → dopamine高時 100, 低時 20
 """
 
-import yfinance as yf
 import pandas as pd
 import numpy as np
 import json
@@ -28,18 +27,8 @@ DOPAMINE_FILE = PROJECT / "data" / "dopamine.json"
 
 
 def fetch_hsi_data(days: int = 120) -> pd.DataFrame | None:
-    """Fetch HSI daily OHLCV from yfinance."""
-    try:
-        df = yf.download("^HSI", period=f"{days+10}d", progress=False)
-        if df.empty:
-            return None
-        if isinstance(df.columns, pd.MultiIndex):
-            df.columns = df.columns.get_level_values(0)
-        # lowercase columns
-        df.columns = [c.lower() for c in df.columns]
-        return df.tail(days)
-    except Exception:
-        return None
+    """Return None unless the caller supplies a canonical HSI dataframe."""
+    return None
 
 
 def compute_dopamine(df: pd.DataFrame | None = None) -> dict:

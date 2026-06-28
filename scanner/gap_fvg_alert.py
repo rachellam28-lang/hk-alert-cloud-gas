@@ -7,7 +7,6 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
-import yfinance as yf
 import pandas as pd
 
 # local dopamine system
@@ -109,19 +108,8 @@ def detect_bullish_fvgs(df) -> list[dict]:
     return fvgs
 
 def fetch_stock_data(code: str, days: int = 20) -> Any:
-    """Fetch daily OHLCV from yfinance. Returns DataFrame or None."""
-    try:
-        # yfinance HK format: strip leading zeros (1128.HK not 01128.HK)
-        ticker = f"{int(code)}.HK"
-        df = yf.download(ticker, period=f"{days+5}d", progress=False)
-        if df.empty:
-            return None
-        # flatten multi-level columns if auto_adjust
-        if isinstance(df.columns, pd.MultiIndex):
-            df.columns = df.columns.get_level_values(0)
-        return df.tail(days)
-    except Exception:
-        return None
+    """No canonical OHLC cache is available for this legacy scanner."""
+    return None
 
 def save_alert(code: str, name: str, signal: dict, corp_type: str = ""):
     """Save alert to scanner_alerts table. Dedup by date."""
@@ -181,9 +169,10 @@ def export_alerts_json(dopamine_cap: int = 50):
 
 def detect_poc_12m_breakout(code: str) -> list[dict]:
     """Check if stock broke above its 12-month POC. Returns list of POC signals."""
+    return []
     try:
         ticker = f"{int(code)}.HK"
-        df = yf.download(ticker, period=f"{POC_LOOKBACK_12M + 30}d", progress=False)
+        df = pd.DataFrame()
         if df.empty or len(df) < 60:
             return []
         if isinstance(df.columns, pd.MultiIndex):

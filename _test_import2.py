@@ -30,7 +30,6 @@ log('[2] path set')
 log('[3] importing tools...')
 import requests; log('  requests ok')
 import pandas; log('  pandas ok')
-import yfinance; log('  yfinance ok')
 
 log('[4] importing telegram_pusher...')
 from telegram_pusher import TelegramPusher

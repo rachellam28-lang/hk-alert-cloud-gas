@@ -56,8 +56,17 @@ echo "2.7/5 Refresh Futu dopamine (best-effort)..."
 echo "3.45/5 Refresh placement returns..."
 "$PYTHON_BIN" scripts/refresh_placement_returns.py || { echo "ERROR: placement returns refresh failed"; exit 1; }
 
+echo "3.48/5 Sync publish aliases..."
+"$PYTHON_BIN" "$REPO_ROOT/scripts/sync_publish_aliases.py" || { echo "ERROR: publish alias sync failed"; exit 1; }
+
 echo "3.5/5 Build publish bundle..."
 "$PYTHON_BIN" scripts/build_publish_bundle.py || { echo "ERROR: publish bundle build failed"; exit 1; }
+
+echo "3.55/5 Regenerate timing analysis pages..."
+"$PYTHON_BIN" scripts/gen_vqc_analysis.py || { echo "ERROR: VQC analysis page generation failed"; exit 1; }
+"$PYTHON_BIN" scripts/gen_distribution_day_analysis.py || { echo "ERROR: distribution day page generation failed"; exit 1; }
+"$PYTHON_BIN" scripts/gen_jieqi_analysis.py || { echo "ERROR: jieqi page generation failed"; exit 1; }
+"$PYTHON_BIN" scripts/gen_timing_analysis.py || { echo "ERROR: timing analysis page generation failed"; exit 1; }
 
 echo "3.6/5 Regenerate daily trade prompt..."
 "$PYTHON_BIN" scripts/gen_daily_trade_prompt.py || { echo "ERROR: daily trade prompt generation failed"; exit 1; }
@@ -73,7 +82,7 @@ echo "4/5 Audit gate..."
 
 echo "5/5 Deploy to GitHub..."
 cd "$REPO_ROOT"
-git add holdings.json data/holdings.json ccass.json market.json data/market.json data/stock_prices.json data/suspended_stocks.json data/prices.json data/signals.json data/publish_bundle.json daily_trade_prompt.html rights_analysis.html
+git add holdings.json data/holdings.json ccass.json data/ccass.json market.json data/market.json data/stock_prices.json data/suspended_stocks.json data/prices.json data/signals.json data/publish_bundle.json daily_trade_prompt.html timing_analysis.html vqc_analysis.html distribution_day.html jieqi_analysis.html rights_analysis.html
 if git commit -m "daily: holdings refresh $(date +%Y-%m-%d)"; then
     git push || { echo "ERROR: git push failed"; exit 1; }
 else

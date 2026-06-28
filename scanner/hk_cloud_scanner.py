@@ -40,17 +40,6 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 
-ALLOW_YFINANCE = os.getenv("ALLOW_YFINANCE", "").lower() in {"1", "true", "yes"}
-
-try:
-    if not ALLOW_YFINANCE:
-        raise ImportError("disabled by ALLOW_YFINANCE default")
-    import yfinance as yf
-except Exception as _yf_exc:  # pragma: no cover
-    yf = None  # type: ignore[assignment]
-    if ALLOW_YFINANCE:
-        print(f"[yfinance] unavailable: {_yf_exc}")
-
 warnings.filterwarnings("ignore")
 
 # ── Local alert store (replaces GAS) ────────────────────────────────────────
@@ -100,13 +89,10 @@ ANNOUNCEMENT_RANGE_DAYS = int(os.getenv("ANNOUNCEMENT_RANGE_DAYS", "7"))
 SLEEP_SEC = float(os.getenv("SLEEP_SEC", "0.0"))
 RETRY_COUNT = int(os.getenv("RETRY_COUNT", "1"))
 RETRY_SLEEP = int(os.getenv("RETRY_SLEEP", "2"))
-# Per-HTTP-request timeout for yfinance calls. Caps how long any one ticker can hang.
-YF_HTTP_TIMEOUT = float(os.getenv("YF_HTTP_TIMEOUT", "10"))
-YF_IPO_PERIOD = os.getenv("YF_IPO_PERIOD", "max")
-YF_POC_PERIOD = os.getenv("YF_POC_PERIOD", "4y")
-# Legacy yfinance batch knobs. Ignored unless ALLOW_YFINANCE=1.
-YF_BATCH_SIZE = int(os.getenv("YF_BATCH_SIZE", "60"))
-YF_BATCH_THREADS = int(os.getenv("YF_BATCH_THREADS", "8"))
+PRICE_IPO_PERIOD = os.getenv("PRICE_IPO_PERIOD", "max")
+PRICE_POC_PERIOD = os.getenv("PRICE_POC_PERIOD", "4y")
+PRICE_BATCH_SIZE = int(os.getenv("PRICE_BATCH_SIZE", "60"))
+PRICE_BATCH_THREADS = int(os.getenv("PRICE_BATCH_THREADS", "8"))
 # Hard wall-clock budget for the POC scan (seconds). 0 = no budget.
 POC_TIME_BUDGET_SEC = int(os.getenv("POC_TIME_BUDGET_SEC", "1500"))
 CHART_LOOKBACK_DAYS = int(os.getenv("CHART_LOOKBACK_DAYS", "180"))
@@ -131,8 +117,7 @@ VOLUME_MULTIPLIER = float(os.getenv("VOLUME_MULTIPLIER", "1.5"))
 VOLUME_AVG_DAYS = int(os.getenv("VOLUME_AVG_DAYS", "20"))
 
 # ── Futu OpenD settings ────────────────────────────────────────────────────────
-# Set USE_FUTU=true to use FutuOpenD as primary data source. yfinance fallback
-# is disabled by default; opt in only with ALLOW_YFINANCE=1.
+# Set USE_FUTU=true to use FutuOpenD as primary price-history source.
 # FutuOpenD must be running at FUTU_HOST:FUTU_PORT.  Default: localhost:11111.
 USE_FUTU = os.getenv("USE_FUTU", "false").lower() in ("1", "true", "yes")
 FUTU_HOST = os.getenv("FUTU_HOST", "127.0.0.1")
@@ -164,13 +149,13 @@ _CORP_TYPE_PRIORITY: dict[str, int] = {
 }
 
 
-def hk_code_to_yahoo(code: str) -> str:
+def hk_code_to_hk_symbol(code: str) -> str:
     code = str(code).strip().zfill(5)
     return f"{code[-4:]}.HK"
 
 
 def tradingview_url(code: str) -> str:
-    symbol = hk_code_to_yahoo(code).replace(".HK", "")
+    symbol = hk_code_to_hk_symbol(code).replace(".HK", "")
     return f"https://www.tradingview.com/chart/?symbol=HKEX%3A{symbol}"
 
 
@@ -1189,7 +1174,7 @@ def run_corp_actions() -> None:
                 "source": "hkexnews",
                 "category": "corp_action",
                 "code": code,
-                "symbol": hk_code_to_yahoo(code),
+                "symbol": hk_code_to_hk_symbol(code),
                 "name": ann["name"],
                 "signal": f"觀察·{types}",
                 "timeframe": "公告",
@@ -1212,7 +1197,7 @@ def run_corp_actions() -> None:
             "source": "hkexnews",
             "category": "corp_action",
             "code": code,
-            "symbol": hk_code_to_yahoo(code),
+            "symbol": hk_code_to_hk_symbol(code),
             "name": ann["name"],
             "signal": f"披露易公告 - {types}",
             "timeframe": "公告",
@@ -1368,7 +1353,7 @@ def get_hk_stock_list() -> pd.DataFrame:
     return out
 
 
-def normalize_yfinance_df(df: pd.DataFrame) -> pd.DataFrame:
+def normalize_ohlcv_df(df: pd.DataFrame) -> pd.DataFrame:
     if df.empty:
         return pd.DataFrame()
     if isinstance(df.columns, pd.MultiIndex):
@@ -1388,7 +1373,7 @@ def normalize_yfinance_df(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def _period_to_years(period: str) -> int:
-    """Convert yfinance period string ('4y', 'max', '1y') to integer years for Futu."""
+    """Convert a compact period string ('4y', 'max', '1y') to integer years for Futu."""
     p = str(period).lower().strip()
     if p == "max":
         return 20
@@ -1425,7 +1410,7 @@ def _normalize_futu_df(df: pd.DataFrame) -> pd.DataFrame:
 def get_daily_history_futu(code: str, years: int = 4) -> pd.DataFrame:
     """Fetch daily OHLCV from Futu OpenD.  Requires FutuOpenD running locally.
 
-    Returns empty DataFrame on any error so callers can fall back to yfinance.
+    Returns empty DataFrame on any error so callers fail closed.
     """
     if not _FUTU_AVAILABLE or not USE_FUTU:
         return pd.DataFrame()
@@ -1462,7 +1447,7 @@ def _get_daily_history_batch_futu(codes: list[str], years: int) -> dict[str, pd.
     OpenQuoteContext (Futu recommends one context per thread)."""
     if not _FUTU_AVAILABLE or not USE_FUTU or not codes:
         return {}
-    workers = min(YF_BATCH_THREADS, len(codes), 4)  # cap at 4 to avoid API throttling
+    workers = min(PRICE_BATCH_THREADS, len(codes), 4)  # cap at 4 to avoid API throttling
 
     def _fetch(code: str) -> tuple[str, pd.DataFrame]:
         return code, get_daily_history_futu(code, years)
@@ -1476,67 +1461,22 @@ def _get_daily_history_batch_futu(codes: list[str], years: int) -> dict[str, pd.
 
 
 def get_daily_history(code: str, period: str) -> pd.DataFrame:
-    # Futu first (if enabled). Legacy yfinance fallback requires
-    # ALLOW_YFINANCE=1 and is disabled in production by default.
     if USE_FUTU and _FUTU_AVAILABLE:
         df = get_daily_history_futu(code, _period_to_years(period))
         if not df.empty:
             return df
-    if yf is None:
-        return pd.DataFrame()
-    ticker = hk_code_to_yahoo(code)
-    for attempt in range(1, RETRY_COUNT + 1):
-        try:
-            raw = yf.download(
-                ticker,
-                period=period,
-                interval="1d",
-                auto_adjust=False,
-                progress=False,
-                threads=False,
-                timeout=YF_HTTP_TIMEOUT,
-            )
-            df = normalize_yfinance_df(raw)
-            if not df.empty:
-                return df
-        except Exception as exc:
-            print(f"{code} {ticker} yfinance failed {attempt}/{RETRY_COUNT}: {exc}")
-        if attempt < RETRY_COUNT:
-            time.sleep(RETRY_SLEEP)
     return pd.DataFrame()
 
 
 def get_weekly_history(code: str, period: str = "2y") -> pd.DataFrame:
-    """Download weekly OHLC (interval=1wk) for chart rendering."""
-    if yf is None:
-        return pd.DataFrame()
-    ticker = hk_code_to_yahoo(code)
-    for attempt in range(1, RETRY_COUNT + 1):
-        try:
-            raw = yf.download(
-                ticker,
-                period=period,
-                interval="1wk",
-                auto_adjust=False,
-                progress=False,
-                threads=False,
-                timeout=YF_HTTP_TIMEOUT,
-            )
-            df = normalize_yfinance_df(raw)
-            if not df.empty:
-                return df
-        except Exception as exc:
-            print(f"{code} {ticker} weekly yfinance failed {attempt}/{RETRY_COUNT}: {exc}")
-        if attempt < RETRY_COUNT:
-            time.sleep(RETRY_SLEEP)
+    """Weekly OHLC is unavailable without a configured local provider."""
     return pd.DataFrame()
 
 
 def get_daily_history_batch(codes: list[str], period: str) -> dict[str, pd.DataFrame]:
     """Download daily OHLC for many tickers.
 
-    Uses Futu OpenD parallel batch if USE_FUTU=true. Legacy yfinance bulk
-    download is disabled unless ALLOW_YFINANCE=1.
+    Uses Futu OpenD parallel batch if USE_FUTU=true.
     Tickers with no data are omitted from the result map.
     """
     if not codes:
@@ -1545,47 +1485,7 @@ def get_daily_history_batch(codes: list[str], period: str) -> dict[str, pd.DataF
         result = _get_daily_history_batch_futu(codes, _period_to_years(period))
         if result:
             return result
-        # If Futu returned nothing, fail closed unless legacy yfinance was
-        # explicitly enabled.
-    if yf is None:
-        return {}
-    ticker_map = {hk_code_to_yahoo(c): c for c in codes}
-    tickers = list(ticker_map.keys())
-    out: dict[str, pd.DataFrame] = {}
-    try:
-        raw = yf.download(
-            tickers=tickers,
-            period=period,
-            interval="1d",
-            auto_adjust=False,
-            progress=False,
-            threads=YF_BATCH_THREADS,
-            group_by="ticker",
-            timeout=YF_HTTP_TIMEOUT,
-        )
-    except Exception as exc:
-        print(f"[batch] yfinance batch of {len(tickers)} failed: {exc}")
-        return out
-    if raw is None or raw.empty:
-        return out
-    # Single ticker: yfinance returns a flat frame (no top-level ticker index).
-    if not isinstance(raw.columns, pd.MultiIndex):
-        only_code = ticker_map[tickers[0]]
-        df = normalize_yfinance_df(raw)
-        if not df.empty:
-            out[only_code] = df
-        return out
-    for ticker in tickers:
-        try:
-            sub = raw[ticker]
-        except KeyError:
-            continue
-        if sub is None or sub.dropna(how="all").empty:
-            continue
-        df = normalize_yfinance_df(sub.copy())
-        if not df.empty:
-            out[ticker_map[ticker]] = df
-    return out
+    return {}
 
 
 def calculate_poc(profile_df: pd.DataFrame) -> float | None:
@@ -1614,7 +1514,7 @@ def check_ipo_breakout(
 ) -> tuple[dict[str, Any], pd.DataFrame] | None:
     """Check for IPO first-day HIGH breakout.  Pass pre-fetched df to avoid double fetch."""
     if df is None:
-        df = get_daily_history(code, YF_IPO_PERIOD)
+        df = get_daily_history(code, PRICE_IPO_PERIOD)
     if df.empty or len(df) < MIN_LISTING_DAYS:
         return None
     listing_days = len(df)
@@ -1689,7 +1589,7 @@ def check_poc_breakout(
     df: pd.DataFrame | None = None,
 ) -> tuple[dict[str, Any], pd.DataFrame] | None:
     if df is None:
-        df = get_daily_history(code, YF_POC_PERIOD)
+        df = get_daily_history(code, PRICE_POC_PERIOD)
     if df.empty or len(df) < POC_LOOKBACK_DAYS_6M + 2:
         return None
     field = BREAKOUT_FIELD if BREAKOUT_FIELD in ["high", "close"] else "high"
@@ -1765,7 +1665,7 @@ def _emit_ipo_high_hit(result: dict[str, Any], df: pd.DataFrame, wl_entry: dict 
         "source": "cloud_scanner",
         "category": "ipo",
         "code": code,
-        "symbol": hk_code_to_yahoo(code),
+        "symbol": hk_code_to_hk_symbol(code),
         "name": result["Name"],
         "signal": "IPO首日高突破",
         "timeframe": "1D",
@@ -1829,7 +1729,7 @@ def _emit_ipo_open_hit(result: dict[str, Any], df: pd.DataFrame, wl_entry: dict 
         "source": "cloud_scanner",
         "category": "ipo",
         "code": code,
-        "symbol": hk_code_to_yahoo(code),
+            "symbol": hk_code_to_hk_symbol(code),
         "name": result["Name"],
         "signal": "IPO首日開突破",
         "timeframe": "1D",
@@ -1893,7 +1793,7 @@ def run_ipo() -> None:
             print(f"IPO progress {n}/{total} hits={hits} rate={rate:.1f}/s", flush=True)
         code, name = row["code"], row["name"]
         # Fetch once, share df across both checks.
-        df = get_daily_history(code, YF_IPO_PERIOD)
+        df = get_daily_history(code, PRICE_IPO_PERIOD)
         if df.empty:
             time.sleep(SLEEP_SEC)
             continue
@@ -1981,7 +1881,7 @@ def _emit_poc_hit(
         "source": "cloud_scanner",
         "category": "poc",
         "code": code,
-        "symbol": hk_code_to_yahoo(code),
+            "symbol": hk_code_to_hk_symbol(code),
         "name": result["Name"],
         "signal": result["Signal"],
         "timeframe": "1D",
@@ -2096,18 +1996,18 @@ def run_poc() -> None:
     processed = 0
     aborted = False
     started = time.monotonic()
-    print(f"POC scan starting: shard={shard_label} stocks={total} batch={YF_BATCH_SIZE} threads={YF_BATCH_THREADS} period={YF_POC_PERIOD}")
+    print(f"POC scan starting: shard={shard_label} stocks={total} batch={PRICE_BATCH_SIZE} threads={PRICE_BATCH_THREADS} period={PRICE_POC_PERIOD}")
 
-    for batch_start in range(0, total, YF_BATCH_SIZE):
+    for batch_start in range(0, total, PRICE_BATCH_SIZE):
         if POC_TIME_BUDGET_SEC and (time.monotonic() - started) > POC_TIME_BUDGET_SEC:
             print(f"POC time budget exceeded at {processed}/{total}, stopping early")
             aborted = True
             break
-        chunk = records[batch_start: batch_start + YF_BATCH_SIZE]
+        chunk = records[batch_start: batch_start + PRICE_BATCH_SIZE]
         chunk_codes = [row["code"] for row in chunk]
         t0 = time.monotonic()
         try:
-            data = get_daily_history_batch(chunk_codes, YF_POC_PERIOD)
+            data = get_daily_history_batch(chunk_codes, PRICE_POC_PERIOD)
         except Exception as exc:
             print(f"[batch] {batch_start}-{batch_start + len(chunk)} crashed: {exc}; skipping")
             data = {}
@@ -2225,8 +2125,8 @@ def run_year_open_breakout() -> None:
     processed = 0
     started = time.monotonic()
 
-    for batch_start in range(0, total, YF_BATCH_SIZE):
-        chunk = records[batch_start: batch_start + YF_BATCH_SIZE]
+    for batch_start in range(0, total, PRICE_BATCH_SIZE):
+        chunk = records[batch_start: batch_start + PRICE_BATCH_SIZE]
         chunk_codes = [r["code"] for r in chunk]
         try:
             data = get_daily_history_batch(chunk_codes, "1y")
@@ -2267,7 +2167,7 @@ def run_year_open_breakout() -> None:
                 "source": "cloud_scanner",
                 "category": "year_open",
                 "code": code,
-                "symbol": hk_code_to_yahoo(code),
+                "symbol": hk_code_to_hk_symbol(code),
                 "name": result["Name"],
                 "signal": "年開突破",
                 "timeframe": "1D",
@@ -2309,7 +2209,7 @@ def run_year_open_breakout() -> None:
             emit_alert(payload, caption, chart_path, reply_markup=build_inline_keyboard_([("📊 走勢圖", tv_url)]))
         elapsed = time.monotonic() - started
         rate = processed / elapsed if elapsed > 0 else 0
-        if batch_start % (YF_BATCH_SIZE * 5) == 0:
+        if batch_start % (PRICE_BATCH_SIZE * 5) == 0:
             print(f"年開突破 {processed}/{total} hits={hits} rate={rate:.1f}/s", flush=True)
         if SLEEP_SEC > 0:
             time.sleep(SLEEP_SEC)
@@ -2338,8 +2238,8 @@ def run_watchlist_year_open_breakout() -> None:
     hits = 0
     started = time.monotonic()
 
-    for batch_start in range(0, total, YF_BATCH_SIZE):
-        chunk = codes[batch_start: batch_start + YF_BATCH_SIZE]
+    for batch_start in range(0, total, PRICE_BATCH_SIZE):
+        chunk = codes[batch_start: batch_start + PRICE_BATCH_SIZE]
         try:
             data = get_daily_history_batch(chunk, "1y")
         except Exception as exc:
@@ -2367,7 +2267,7 @@ def run_watchlist_year_open_breakout() -> None:
                 "source": "cloud_scanner",
                 "category": "year_open_watchlist",
                 "code": code,
-                "symbol": hk_code_to_yahoo(code),
+                "symbol": hk_code_to_hk_symbol(code),
                 "name": result["Name"],
                 "signal": "年開突破（觀察名單）",
                 "timeframe": "1D",
@@ -2429,8 +2329,8 @@ def run_vqc_turn_date() -> None:
     processed = 0
     started = time.monotonic()
 
-    for batch_start in range(0, total, YF_BATCH_SIZE):
-        chunk = records[batch_start: batch_start + YF_BATCH_SIZE]
+    for batch_start in range(0, total, PRICE_BATCH_SIZE):
+        chunk = records[batch_start: batch_start + PRICE_BATCH_SIZE]
         chunk_codes = [r["code"] for r in chunk]
         try:
             data = get_daily_history_batch(chunk_codes, "2y")
@@ -2458,7 +2358,7 @@ def run_vqc_turn_date() -> None:
                 "source": "cloud_scanner",
                 "category": "vqc_turn_date",
                 "code": code,
-                "symbol": hk_code_to_yahoo(code),
+                "symbol": hk_code_to_hk_symbol(code),
                 "name": result["Name"],
                 "signal": "VQC 轉勢日",
                 "timeframe": "1M",
@@ -2502,7 +2402,7 @@ def run_vqc_turn_date() -> None:
 
         elapsed = time.monotonic() - started
         rate = processed / elapsed if elapsed > 0 else 0
-        if batch_start % (YF_BATCH_SIZE * 5) == 0:
+        if batch_start % (PRICE_BATCH_SIZE * 5) == 0:
             print(f"VQC 轉勢日 {processed}/{total} hits={hits} rate={rate:.1f}/s", flush=True)
         if SLEEP_SEC > 0:
             time.sleep(SLEEP_SEC)

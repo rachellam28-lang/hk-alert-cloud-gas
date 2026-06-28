@@ -20,7 +20,7 @@ from scanner.hk_cloud_scanner import (
     get_prev_week_low,
     sl_yr_line,
     tradingview_url,
-    hk_code_to_yahoo,
+    hk_code_to_hk_symbol,
     hkt_today_str,
 )
 

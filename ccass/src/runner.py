@@ -958,7 +958,7 @@ def _export_json(query_date: date, alerts_today: int) -> bool:
                 "fp": round(r["futu_pct"], 2) if r["futu_pct"] is not None else None,
                 "a5": round(r["a00005_pct"], 2) if r["a00005_pct"] is not None else None,
             })
-        # Enrich stocks with market cap from Yahoo Finance
+        # Enrich stocks with market cap from the local Futu / Longbridge cache.
         try:
             mc_map = _fetch_market_caps(
                 [s["c"] for s in stocks],

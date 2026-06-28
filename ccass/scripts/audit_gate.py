@@ -105,6 +105,14 @@ def _date_set(conn: sqlite3.Connection) -> set[str]:
     return {r[0] for r in rows if r and r[0]}
 
 
+def _table_exists(conn: sqlite3.Connection, table: str) -> bool:
+    row = conn.execute(
+        "SELECT 1 FROM sqlite_master WHERE type IN ('table', 'view') AND name = ?",
+        (table,),
+    ).fetchone()
+    return bool(row)
+
+
 def _missing_trading_days(start_iso: str, end_iso: str, present: set[str]) -> list[str]:
     from src.trading_calendar import is_trading_day
 
@@ -116,6 +124,45 @@ def _missing_trading_days(start_iso: str, end_iso: str, present: set[str]) -> li
             missing.append(cur.isoformat())
         cur += timedelta(days=1)
     return missing
+
+
+def _load_json_file(path: Path) -> dict:
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except FileNotFoundError as exc:
+        raise RuntimeError(f"missing file: {path.relative_to(PROJECT_ROOT)}") from exc
+    except json.JSONDecodeError as exc:
+        raise RuntimeError(f"invalid JSON: {path.relative_to(PROJECT_ROOT)}: {exc}") from exc
+    if not isinstance(data, dict):
+        raise RuntimeError(f"expected object JSON: {path.relative_to(PROJECT_ROOT)}")
+    return data
+
+
+def _alias_meta(data: dict, fields: tuple[str, ...]) -> dict:
+    out = {field: data.get(field) for field in fields}
+    stocks = data.get("stocks")
+    if isinstance(stocks, list):
+        out["stocks_len"] = len(stocks)
+    return out
+
+
+def _check_publish_aliases(errors: list[str]) -> None:
+    pairs = [
+        ("holdings.json", "data/holdings.json", ("updated", "stock_count", "coverage_pct")),
+        ("ccass.json", "data/ccass.json", ("updated", "stock_count", "coverage_pct")),
+        ("market.json", "data/market.json", ("updated_at",)),
+    ]
+    for src_rel, dst_rel, fields in pairs:
+        try:
+            src = _load_json_file(PROJECT_ROOT / src_rel)
+            dst = _load_json_file(PROJECT_ROOT / dst_rel)
+        except RuntimeError as exc:
+            errors.append(str(exc))
+            continue
+        src_meta = _alias_meta(src, fields)
+        dst_meta = _alias_meta(dst, fields)
+        if src_meta != dst_meta:
+            errors.append(f"{dst_rel} metadata mismatch {dst_meta} != {src_rel} {src_meta}")
 
 
 def main() -> int:
@@ -149,15 +196,25 @@ def main() -> int:
             errors.append(f"Failed to parse ccass.json: {exc}")
             ccass = {}
 
+    latest_db = None
+    latest_db_stock_count = None
+    latest_db_coverage_pct = None
+    publishable_db = None
+    publishable_count = None
+    publishable_coverage_pct = None
+    present_dates: set[str] = set()
     conn = sqlite3.connect(str(DB_PATH))
     try:
-        latest_db = _latest_db_date(conn)
-        latest_db_stock_count = None
-        latest_db_coverage_pct = None
-        if latest_db:
-            latest_db_stock_count, _, latest_db_coverage_pct = _latest_db_coverage(conn, latest_db)
-        publishable_db, publishable_count, publishable_coverage_pct = _latest_publishable_db_date(conn, args.min_coverage)
-        present_dates = _date_set(conn)
+        if not _table_exists(conn, "ccass_daily") or not _table_exists(conn, "stock_universe"):
+            errors.append(f"Database schema missing at {DB_PATH}")
+        else:
+            latest_db = _latest_db_date(conn)
+            if latest_db:
+                latest_db_stock_count, _, latest_db_coverage_pct = _latest_db_coverage(conn, latest_db)
+            publishable_db, publishable_count, publishable_coverage_pct = _latest_publishable_db_date(conn, args.min_coverage)
+            present_dates = _date_set(conn)
+    except sqlite3.Error as exc:
+        errors.append(f"Database audit failed: {exc}")
     finally:
         conn.close()
 
@@ -182,6 +239,7 @@ def main() -> int:
         errors.append(f"ccass.json.updated={ccass['updated']} != holdings.json.updated={holdings_updated}")
     if ccass.get("stock_count") is not None and stock_count is not None and ccass["stock_count"] != stock_count:
         errors.append(f"ccass.json.stock_count={ccass['stock_count']} != holdings.json.stock_count={stock_count}")
+    _check_publish_aliases(errors)
 
     if coverage_pct is None:
         errors.append("holdings.json missing coverage_pct")
@@ -212,8 +270,16 @@ def main() -> int:
                 )
 
     # Run the existing verifiers.
-    data_report, data_rc, _, _ = _run_json_script("scripts/verify_data.py", "--json")
-    dash_report, dash_rc, _, _ = _run_json_script("scripts/verify_dashboard.py")
+    try:
+        data_report, data_rc, _, _ = _run_json_script("scripts/verify_data.py", "--json")
+    except Exception as exc:
+        data_report, data_rc = {"status": "FAIL", "errors": [str(exc)], "warnings": []}, 1
+        errors.append(f"verify_data failed to run: {exc}")
+    try:
+        dash_report, dash_rc, _, _ = _run_json_script("scripts/verify_dashboard.py")
+    except Exception as exc:
+        dash_report, dash_rc = {"status": "FAIL", "errors": [str(exc)], "warnings": []}, 1
+        errors.append(f"verify_dashboard failed to run: {exc}")
 
     if data_report.get("errors"):
         errors.append(f"verify_data errors={len(data_report['errors'])}")

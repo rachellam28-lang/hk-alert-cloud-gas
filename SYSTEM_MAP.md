@@ -91,11 +91,14 @@ Cloudflare Pages + Hermes/Cron bots
     3. `generate_prices_json.py`
     4. `generate_signals_json.py`
     5. `regenerate_json.py`
-    6. `build_publish_bundle.py`
-    7. `gen_daily_trade_prompt.py`
-    8. `cleanup_logs.py`
-    9. `audit_gate.py`
-    10. commit / push
+    6. `sync_publish_aliases.py`
+    7. `build_publish_bundle.py`
+    8. `gen_vqc_analysis.py` / `gen_distribution_day_analysis.py` / `gen_jieqi_analysis.py` / `gen_timing_analysis.py`
+    9. `gen_daily_trade_prompt.py`
+    10. `gen_rights_page.py`
+    11. `cleanup_logs.py`
+    12. `audit_gate.py`
+    13. commit / push
 - `ccass/scripts/resume_incomplete_dates.py`
   - **separate resume job**
   - 自動檢查最近 incomplete trade dates
@@ -107,6 +110,9 @@ Cloudflare Pages + Hermes/Cron bots
   - scrape / enrich / regenerate 的核心 runner
 - `scripts/build_publish_bundle.py`
   - 生成 shared metadata bundle
+- `scripts/sync_publish_aliases.py`
+  - 將 root canonical JSON 同 `data/*.json` alias 對齊
+  - `audit_gate.py` 會檢查 alias metadata，分叉就 fail deploy
 - `scripts/gen_daily_trade_prompt.py`
   - 生成 `daily_trade_prompt.html`
 - `scripts/health_check.py`

@@ -26,7 +26,7 @@ HKT_TZ = __import__('datetime', fromlist=['timezone']).timezone(timedelta(hours=
 import pandas as pd
 from hk_cloud_scanner import (
     fetch_corp_action_announcements,
-    hk_code_to_yahoo,
+    hk_code_to_hk_symbol,
     get_daily_history,
     compute_volume_ratio,
     VOLUME_MULTIPLIER,

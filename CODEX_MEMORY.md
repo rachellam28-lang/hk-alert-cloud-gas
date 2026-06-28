@@ -1,6 +1,6 @@
 # Codex Persistent Memory
 
-Last updated: 2026-06-24
+Last updated: 2026-06-29
 
 ## Always load first
 
@@ -15,6 +15,11 @@ If these disagree with chat history, prefer the file state and current repo stat
 
 - Telegram, dashboard, and notes must use the same source of truth.
 - If cache / fallback / legacy duplicate exists, pick one primary source and label any fallback.
+- Do not use any legacy noncanonical quote Python provider or portal fallback in this project. Use Futu, Longbridge, TradingView/tvdatafeed, or existing local JSON snapshots.
+- Root publish JSON and `data/*.json` aliases must be synchronized before bundle/page generation:
+  `holdings.json -> data/holdings.json`, `ccass.json -> data/ccass.json`, `market.json -> data/market.json`.
+- Static generated pages must be regenerated after `data/publish_bundle.json` / backtest JSON changes:
+  `daily_trade_prompt.html`, `timing_analysis.html`, `vqc_analysis.html`, `distribution_day.html`, `jieqi_analysis.html`, `rights_analysis.html`.
 - Prefer structural fixes over band-aids.
 - Keep small-cap data priority high.
 - Keep explanations short; act first, explain after.
@@ -34,6 +39,8 @@ If these disagree with chat history, prefer the file state and current repo stat
   - `ccass/scripts/resume_incomplete_dates.py`
   - `ccass/scripts/resume_backfill_range.py`
   - Keep the daily job quick; let resume mop up missing coverage later.
+- Daily refresh now runs `scripts/sync_publish_aliases.py` before `build_publish_bundle.py`, and `audit_gate.py` fails if root/data aliases diverge.
+- Cloudflare cron dispatches `.github/workflows/ccass_refresh.yml`, which runs `ccass/scripts/daily_refresh.sh`.
 - Longbridge is for holdings backfill, not full-site refresh.
 - Standalone US dashboard page was removed; keep only `美股P/E` and `美股 breadth` on main pages.
 - Main pages currently restored:
@@ -70,6 +77,6 @@ If these disagree with chat history, prefer the file state and current repo stat
 
 ## Latest open items
 
-- Finish Cloudflare Cron → GitHub refresh workflow push by adding GitHub `workflow` scope.
 - Keep `Telegram / dashboard / notes` fully aligned on freshness and source.
 - Continue auditing pages for shared data consistency after any change.
+- If local `ccass/holdings.db` is 0 bytes, audit gate should report structured FAIL instead of traceback; use GitHub refresh or restore DB before full DB verification.

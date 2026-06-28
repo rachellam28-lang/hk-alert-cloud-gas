@@ -274,7 +274,7 @@ def update_holdings_json(target_date: date) -> None:
             'lp': pr.get('lp'),
             'py': pr.get('apy', pr.get('py')),
             'py_pct': pr.get('apy_pct', pr.get('py_pct')),
-            # YFinance live fields (compact keys)
+            # Cached live quote fields (compact keys)
             'chg': pr.get('chg'),            # 今日變幅%
             'vol': pr.get('vol'),            # 成交額
             'hi52': pr.get('hi52'),          # 52週高

@@ -346,14 +346,10 @@ const DASHBOARD_MAX_GROUPS = 120;
 // 600 rows * (≤4 alerts per code) gives a comfortable headroom for ~120 groups.
 const DASHBOARD_MAX_ALERTS = 600;
 // Cache TTLs (seconds). HTML cache absorbs repeat loads; snapshot cache shields
-// us from upstream Yahoo / worldperatio latency on every page load.
+// us from reading the published market snapshot on every page load.
 const HTML_CACHE_TTL_SECONDS = 600;      // 10 min — prevents UrlFetch quota burn
 const SNAPSHOT_CACHE_TTL_SECONDS = 600;  // 10 min — HSI/DXY/VIX snapshot
-// Yahoo batch fallback is DISABLED (0) because:
-// 1. Scanner already saves prices in alert rows → g.latestPrice is preferred
-// 2. Each Yahoo call counts against the 20k/day UrlFetch quota
-// 3. The auto-reload loop was exhausting the quota within one day
-const YAHOO_FALLBACK_MAX_CODES = 0;
+const MARKET_JSON_URL = 'https://hk-alert-cloud-gas.pages.dev/data/market.json';
 // 最近公告 list size — the N most recent HKEXnews corp-action alerts shown on
 // the dashboard with date + label + HKEX link only (no long titles).
 const RECENT_CORPS_LIMIT = 20;
@@ -420,116 +416,39 @@ function getAlerts_() {
 
 // Batch-fetch closing series for many HK stock symbols in one parallel call.
 // Returns map: code -> { value, changePct, series }. Missing/failed symbols are omitted.
-function fetchYahooBatch_(codes) {
-  if (!codes || !codes.length) return {};
-  const symbols = codes.map(function (c) {
-    const num = String(c || '').replace(/[^0-9]/g, '');
-    if (!num) return null;
-    const padded = ('0000' + num).slice(-4);
-    return { code: c, symbol: padded + '.HK' };
-  }).filter(function (x) { return !!x; });
-  const requests = symbols.map(function (s) {
-    return {
-      url: 'https://query1.finance.yahoo.com/v8/finance/chart/' + encodeURIComponent(s.symbol) + '?interval=1d&range=30d',
-      muteHttpExceptions: true
-    };
-  });
-  const out = {};
-  if (!requests.length) return out;
-  let responses;
-  try {
-    responses = UrlFetchApp.fetchAll(requests);
-  } catch (err) {
-    return out;
-  }
-  for (let i = 0; i < responses.length; i++) {
-    const s = symbols[i];
-    try {
-      const j = JSON.parse(responses[i].getContentText());
-      const r = j.chart && j.chart.result && j.chart.result[0];
-      if (!r) continue;
-      const meta = r.meta || {};
-      const last = meta.regularMarketPrice;
-      const prev = meta.chartPreviousClose || meta.previousClose;
-      const changePct = (last != null && prev) ? (last - prev) / prev * 100 : null;
-      let series = [];
-      const closes = r.indicators && r.indicators.quote && r.indicators.quote[0] && r.indicators.quote[0].close;
-      if (Array.isArray(closes)) {
-        series = closes.filter(function (v) { return v != null && !isNaN(v); }).slice(-20);
-      }
-      out[s.code] = { value: last == null ? null : Number(last), changePct: changePct, series: series, symbol: s.symbol };
-    } catch (e) {
-      // skip; row will render without sparkline
-    }
-  }
-  return out;
+function emptyMarketItem_(source) {
+  return { value: null, change: null, changePct: null, source: source || 'data/market.json', stale: true, series: [] };
 }
 
-function getMarketSnapshot_() {
-  // Run the four upstream calls in parallel via fetchAll so a slow source
-  // (notably worldperatio.com) cannot serialize doGet latency.
-  const yahooReqs = [
-    { url: 'https://query1.finance.yahoo.com/v8/finance/chart/' + encodeURIComponent('^HSI') + '?interval=1d&range=30d', muteHttpExceptions: true },
-    { url: 'https://query1.finance.yahoo.com/v8/finance/chart/' + encodeURIComponent('DX-Y.NYB') + '?interval=1d&range=30d', muteHttpExceptions: true },
-    { url: 'https://query1.finance.yahoo.com/v8/finance/chart/' + encodeURIComponent('^VIX') + '?interval=1d&range=30d', muteHttpExceptions: true },
-    { url: 'https://worldperatio.com/area/hong-kong/', muteHttpExceptions: true },
-    { url: 'https://worldperatio.com/area/usa/', muteHttpExceptions: true }
-  ];
-  let responses = [];
-  try { responses = UrlFetchApp.fetchAll(yahooReqs); } catch (e) { responses = []; }
+function marketItem_(item, source) {
+  if (!item || typeof item !== 'object') return emptyMarketItem_(source);
   return {
-    hsi: parseYahooResp_(responses[0], '^HSI'),
-    dxy: parseYahooResp_(responses[1], 'DX-Y.NYB'),
-    vix: parseYahooResp_(responses[2], '^VIX'),
-    hsi_pe: parseHsiPeResp_(responses[3]),
-    spx_pe: parseWorldPeResp_(responses[4], 'United States'),
-    updated_at: new Date().toISOString()
+    value: item.value == null ? null : Number(item.value),
+    change: item.change == null ? null : Number(item.change),
+    changePct: item.changePct == null ? null : Number(item.changePct),
+    source: item.source || source || 'data/market.json',
+    stale: !!item.stale,
+    series: Array.isArray(item.series) ? item.series : []
   };
 }
 
-function parseYahooResp_(resp, symbol) {
+function getMarketSnapshot_() {
   try {
-    if (!resp) return { value: null, change: null, changePct: null, source: 'Yahoo (' + symbol + ')', stale: true, series: [] };
-    const j = JSON.parse(resp.getContentText());
-    const r = j.chart && j.chart.result && j.chart.result[0];
-    if (!r) return { value: null, change: null, changePct: null, source: 'Yahoo (' + symbol + ')', stale: true, series: [] };
-    const meta = r.meta || {};
-    const last = meta.regularMarketPrice;
-    const prev = meta.chartPreviousClose || meta.previousClose;
-    const change = (last != null && prev) ? last - prev : null;
-    const changePct = (change != null && prev) ? change / prev * 100 : null;
-    let series = [];
-    const closes = r.indicators && r.indicators.quote && r.indicators.quote[0] && r.indicators.quote[0].close;
-    if (Array.isArray(closes)) {
-      series = closes.filter(function (v) { return v != null && !isNaN(v); }).slice(-20);
-    }
-    return { value: last, change: change, changePct: changePct, source: 'Yahoo (' + symbol + ')', stale: false, series: series };
+    const resp = UrlFetchApp.fetch(MARKET_JSON_URL, { muteHttpExceptions: true });
+    if (!resp || resp.getResponseCode() >= 400) throw new Error('market snapshot unavailable');
+    const market = JSON.parse(resp.getContentText());
+    const updated = market.updated_at || (market.hsi && market.hsi.updated) || new Date().toISOString();
+    return {
+      hsi: marketItem_(market.hsi, 'data/market.json hsi'),
+      dxy: marketItem_(market.dxy, 'data/market.json dxy'),
+      vix: marketItem_(market.vix, 'data/market.json vix'),
+      hsi_pe: marketItem_(market.hsi_pe, 'data/market.json hsi_pe'),
+      spx_pe: marketItem_(market.spx_pe, 'data/market.json spx_pe'),
+      updated_at: updated
+    };
   } catch (e) {
-    return { value: null, change: null, changePct: null, source: 'Yahoo (' + symbol + ')', stale: true, series: [] };
-  }
-}
-
-function parseHsiPeResp_(resp) {
-  try {
-    if (!resp) return { value: null, change: null, changePct: null, source: 'World PE Ratio', stale: true, series: [] };
-    const html = resp.getContentText();
-    const m = html.match(/Hong Kong Stock Market[\s\S]{0,600}?P\/E Ratio[\s\S]{0,300}?(\d{1,3}\.\d{1,2})/i)
-      || html.match(/Hong Kong Stock Market[\s\S]{0,600}?(\d{1,3}\.\d{1,2})/i)
-      || html.match(/P\/E Ratio[\s\S]{0,300}?(\d{1,3}\.\d{1,2})/i);
-    return { value: m ? Number(m[1]) : null, change: null, changePct: null, source: 'World PE Ratio', stale: !m, series: [] };
-  } catch (e) {
-    return { value: null, change: null, changePct: null, source: 'World PE Ratio', stale: true, series: [] };
-  }
-}
-
-function parseWorldPeResp_(resp, marketName) {
-  try {
-    if (!resp) return { value: null, change: null, changePct: null, source: 'World PE Ratio', stale: true, series: [] };
-    const html = resp.getContentText();
-    const m = html.match(/P\/E Ratio[\s\S]{0,400}?(\d{1,3}\.\d{1,2})/i);
-    return { value: m ? Number(m[1]) : null, change: null, changePct: null, source: 'World PE Ratio', stale: !m, series: [] };
-  } catch (e) {
-    return { value: null, change: null, changePct: null, source: 'World PE Ratio', stale: true, series: [] };
+    const e_ = emptyMarketItem_('data/market.json');
+    return { hsi: e_, dxy: e_, vix: e_, hsi_pe: e_, spx_pe: e_, updated_at: new Date().toISOString() };
   }
 }
 
@@ -806,21 +725,17 @@ function render_(alerts, snap) {
     if (g.corpTypes.block) cntBlock += g.corpTypes.block.count;
   });
 
-  // Only fall back to Yahoo for codes that have no scanner-saved chart image.
+  // External quote fallback is disabled for codes without scanner-saved charts.
   // Skipping codes with chart_image_url avoids hundreds of HTTP requests on
   // page load — the dominant cause of the previous mobile timeout.
-  const codesNeedingPrice = [];
-  groups.forEach(function (g) {
-    if (!g.chartImageUrl && g.code) codesNeedingPrice.push(g.code);
-  });
-  const priceMap = fetchYahooBatch_(codesNeedingPrice.slice(0, YAHOO_FALLBACK_MAX_CODES));
+  const priceMap = {};
 
   const rows = groups.map(function (g) {
     const codeStr = String(g.code || '').trim();
     const codeNum = codeStr.replace(/^0+/, '');
     const hkexHref = g.hkexLink || '';
 
-    // Real price + chart from Yahoo batch (if available).
+    // Optional cached mini-series (normally empty; scanner chart image is primary).
     const p = priceMap[codeStr];
     let chartHtml = '<span class="nochart">—</span>';
     let priceHtml = '';
@@ -841,14 +756,14 @@ function render_(alerts, snap) {
       chartHtml = '<span class="nochart">單點</span>';
     }
     // Use alert payload price (scanner-verified, same as Telegram) as primary source.
-    // Fall back to Yahoo Finance value only if no alert price is available.
+    // Use cached value only if no alert price is available.
     const alertPrice = g.latestPrice;
     if (alertPrice != null && alertPrice > 0) {
       priceHtml = '<div class="price flat">'
         + '<span class="pv">' + n_(alertPrice, (alertPrice < 1 ? 3 : 2)) + '</span>'
         + '</div>';
     } else if (p && p.value != null) {
-      // Sanity-check Yahoo % change — values > 30% are almost certainly stale/wrong data.
+      // Sanity-check cached % change — values > 30% are almost certainly stale/wrong data.
       const pct = (p.changePct == null || Math.abs(p.changePct) > 30) ? null : p.changePct;
       const dir = pct == null ? 'flat' : (pct >= 0 ? 'up' : 'down');
       const pctStr = pct == null ? '' : (pct >= 0 ? '+' : '') + n_(pct, 2) + '%';
