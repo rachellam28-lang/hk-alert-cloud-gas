@@ -40,6 +40,7 @@ PATHS = {
     "announcements": os.path.join(BASE, "data", "announcements.json"),
     "alerts":        os.path.join(BASE, "data", "alerts.json"),
     "placements":    os.path.join(BASE, "data", "placements_enriched.json"),
+    "rights_analysis": os.path.join(BASE, "data", "rights_analysis.json"),
     "holdings":      os.path.join(BASE, "holdings.json"),
     "events":        os.path.join(BASE, "events.json"),
     "signals_out":   os.path.join(BASE, "data", "signals.json"),
@@ -134,25 +135,34 @@ def merge_events(existing, new):
     return sorted(by_id.values(), key=lambda x: (x["alert_date"], x["code"]))
 
 
-def build_issuer_map(placements):
-    """placements_enriched.json → {code: issuer_score_payload} using latest row per code."""
+def build_issuer_map(placements, rights_analysis=None):
+    """Build {code: issuer_score_payload}; rights_analysis.json is authoritative when present."""
     issuer_map = {}
-    for p in placements or []:
-        code = str(p.get("code", "")).strip().lstrip("0").zfill(5)
+    def add_payload(row, prefer_existing_payload=False):
+        code = str(row.get("code", "")).strip().lstrip("0").zfill(5)
         if not code or code == "00000":
-            continue
-        date = str(p.get("date_parsed") or p.get("date") or "")[:10]
+            return
+        date = str(row.get("date_parsed") or row.get("date") or "")[:10]
         if not date:
-            continue
+            return
         cur = issuer_map.get(code)
-        payload = issuer_pressure_score(p)
+        payload = row.get("issuer") if prefer_existing_payload and isinstance(row.get("issuer"), dict) else None
+        if payload:
+            payload = dict(payload)
+        else:
+            payload = issuer_pressure_score(row)
         payload.update({
             "date": date,
-            "category": p.get("category"),
-            "method": p.get("method"),
+            "category": row.get("category"),
+            "method": row.get("method"),
         })
         if cur is None or date > cur.get("date", ""):
             issuer_map[code] = payload
+
+    for p in placements or []:
+        add_payload(p)
+    for r in rights_analysis or []:
+        add_payload(r, prefer_existing_payload=True)
     return issuer_map
 
 
@@ -246,6 +256,7 @@ def main():
     announcements = load_json(PATHS["announcements"], default=[])
     alerts_doc = load_json(PATHS["alerts"], default={})
     placements = load_json(PATHS["placements"], default=[])
+    rights_analysis = load_json(PATHS["rights_analysis"], default=[])
     holdings = load_json(PATHS["holdings"], default={})
     existing_events = load_json(PATHS["events"], default=[])
     if isinstance(existing_events, dict):
@@ -262,7 +273,7 @@ def main():
     all_events = merge_events(existing_events, new_events)
 
     print("[4/4] build signals.json")
-    issuer_map = build_issuer_map(placements)
+    issuer_map = build_issuer_map(placements, rights_analysis)
     signals = build_signals_json(holdings, all_events, corp_map, issuer_map)
 
     if args.dry_run:

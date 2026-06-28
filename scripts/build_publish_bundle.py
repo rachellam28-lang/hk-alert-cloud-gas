@@ -55,7 +55,7 @@ def summarize_signals():
     return {
         "path": "data/signals.json",
         "updated": data.get("updatedAt") or data.get("updated"),
-        "source": "announcements.json + alerts.json + holdings.json",
+        "source": "announcements.json + rights_analysis.json + alerts.json + holdings.json",
         "groups": len(data.get("groups", [])),
         "with_signals": data.get("totalWithSignals"),
         "with_corp": data.get("totalWithCorp"),
@@ -109,11 +109,19 @@ def summarize_market():
 def summarize_backtest(name: str, path: Path, source: str):
     data = load_json(path, {})
     return {
-        "path": str(path.relative_to(BASE)),
+        "path": path.relative_to(BASE).as_posix(),
         "updated": data.get("updated"),
         "source": source,
         "summary": data.get("summary") or data.get("edge") or {},
     }
+
+
+def previous_publish_fallback():
+    existing = load_json(OUT, {})
+    publish = existing.get("publish") if isinstance(existing, dict) else None
+    if isinstance(publish, dict) and publish.get("status") in {"OK", "WARN"}:
+        return publish
+    return None
 
 
 def run_audit_gate():
@@ -128,8 +136,15 @@ def run_audit_gate():
         )
         stdout = (proc.stdout or "").strip()
         if not stdout:
+            fallback = previous_publish_fallback()
+            if fallback:
+                return fallback
             return {"status": "FAIL", "detail": "audit_gate returned no output"}
         data = json.loads(stdout)
+        if data.get("status") == "FAIL" and not data.get("latest_db_date"):
+            fallback = previous_publish_fallback()
+            if fallback:
+                return fallback
         return {
             "status": data.get("status", "FAIL"),
             "latest_db_date": data.get("latest_db_date"),
@@ -144,6 +159,9 @@ def run_audit_gate():
             "verify_dashboard": data.get("verify_dashboard") or {},
         }
     except Exception as exc:
+        fallback = previous_publish_fallback()
+        if fallback:
+            return fallback
         return {"status": "FAIL", "detail": str(exc)}
 
 

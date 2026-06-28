@@ -47,35 +47,35 @@ fi
 echo "2.5/5 Generate prices.json for dashboard fallback..."
 "$PYTHON_BIN" scripts/generate_prices_json.py || { echo "ERROR: prices.json generation failed"; exit 1; }
 
-echo "2.6/5 Generate signals.json for dashboard fallback..."
-"$PYTHON_BIN" "$REPO_ROOT/scripts/build_signals.py" || { echo "ERROR: signals.json generation failed"; exit 1; }
-
 echo "2.7/5 Refresh Futu dopamine (best-effort)..."
 "$PYTHON_BIN" "$REPO_ROOT/scripts/dopamine_refresh.py" || echo "WARN: market sentiment refresh unavailable; keeping existing market cache"
 
 echo "3.45/5 Refresh placement returns..."
-"$PYTHON_BIN" scripts/refresh_placement_returns.py || { echo "ERROR: placement returns refresh failed"; exit 1; }
+"$PYTHON_BIN" "$REPO_ROOT/scripts/refresh_placement_returns.py" || { echo "ERROR: placement returns refresh failed"; exit 1; }
+
+echo "3.46/5 Regenerate rights_analysis source..."
+"$PYTHON_BIN" "$REPO_ROOT/scripts/gen_rights_page.py" || { echo "ERROR: rights page generation failed"; exit 1; }
+
+echo "3.47/5 Generate signals.json for dashboard fallback..."
+"$PYTHON_BIN" "$REPO_ROOT/scripts/build_signals.py" || { echo "ERROR: signals.json generation failed"; exit 1; }
 
 echo "3.48/5 Sync publish aliases..."
 "$PYTHON_BIN" "$REPO_ROOT/scripts/sync_publish_aliases.py" || { echo "ERROR: publish alias sync failed"; exit 1; }
 
 echo "3.5/5 Build publish bundle..."
-"$PYTHON_BIN" scripts/build_publish_bundle.py || { echo "ERROR: publish bundle build failed"; exit 1; }
+"$PYTHON_BIN" "$REPO_ROOT/scripts/build_publish_bundle.py" || { echo "ERROR: publish bundle build failed"; exit 1; }
 
 echo "3.55/5 Regenerate timing analysis pages..."
-"$PYTHON_BIN" scripts/gen_vqc_analysis.py || { echo "ERROR: VQC analysis page generation failed"; exit 1; }
-"$PYTHON_BIN" scripts/gen_distribution_day_analysis.py || { echo "ERROR: distribution day page generation failed"; exit 1; }
-"$PYTHON_BIN" scripts/gen_jieqi_analysis.py || { echo "ERROR: jieqi page generation failed"; exit 1; }
-"$PYTHON_BIN" scripts/gen_timing_analysis.py || { echo "ERROR: timing analysis page generation failed"; exit 1; }
+"$PYTHON_BIN" "$REPO_ROOT/scripts/gen_vqc_analysis.py" || { echo "ERROR: VQC analysis page generation failed"; exit 1; }
+"$PYTHON_BIN" "$REPO_ROOT/scripts/gen_distribution_day_analysis.py" || { echo "ERROR: distribution day page generation failed"; exit 1; }
+"$PYTHON_BIN" "$REPO_ROOT/scripts/gen_jieqi_analysis.py" || { echo "ERROR: jieqi page generation failed"; exit 1; }
+"$PYTHON_BIN" "$REPO_ROOT/scripts/gen_timing_analysis.py" || { echo "ERROR: timing analysis page generation failed"; exit 1; }
 
 echo "3.6/5 Regenerate daily trade prompt..."
-"$PYTHON_BIN" scripts/gen_daily_trade_prompt.py || { echo "ERROR: daily trade prompt generation failed"; exit 1; }
-
-echo "3.65/5 Regenerate rights_analysis.html..."
-"$PYTHON_BIN" scripts/gen_rights_page.py || { echo "ERROR: rights page generation failed"; exit 1; }
+"$PYTHON_BIN" "$REPO_ROOT/scripts/gen_daily_trade_prompt.py" || { echo "ERROR: daily trade prompt generation failed"; exit 1; }
 
 echo "3.7/5 Cleanup logs..."
-"$PYTHON_BIN" scripts/cleanup_logs.py || { echo "ERROR: log cleanup failed"; exit 1; }
+"$PYTHON_BIN" "$REPO_ROOT/scripts/cleanup_logs.py" || { echo "ERROR: log cleanup failed"; exit 1; }
 
 echo "4/5 Audit gate..."
 "$PYTHON_BIN" scripts/audit_gate.py --min-coverage "${AUDIT_MIN_COVERAGE:-99.0}" || { echo "ERROR: audit gate failed"; exit 1; }

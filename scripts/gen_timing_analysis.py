@@ -1,416 +1,294 @@
 #!/usr/bin/env python3
-"""Generate a combined timing page for 成交轉勢日 + Distribution Day."""
+"""Generate combined timing signal table."""
 
 from __future__ import annotations
 
+import html
 import json
+import math
+from collections import defaultdict
+from datetime import date
 from pathlib import Path
+
 
 BASE = Path(__file__).resolve().parent.parent
 VQC_PATH = BASE / "data" / "vqc_backtest.json"
 DD_PATH = BASE / "data" / "distribution_day_backtest.json"
+JIEQI_PATH = BASE / "data" / "jieqi_backtest.json"
 OUT_PATH = BASE / "timing_analysis.html"
 
 
 def load_json(path: Path, default: dict) -> dict:
     if path.exists():
-        return json.load(open(path, encoding="utf-8"))
+        return json.loads(path.read_text(encoding="utf-8"))
     return default
 
 
-VQC = load_json(
-    VQC_PATH,
-    {
-        "updated": "",
-        "summary": {},
-        "edge": {},
-        "sample_total": 0,
-        "universe_total": 0,
-        "events_total": 0,
-        "signal_label": "成交轉勢日",
-    },
-)
-DD = load_json(
-    DD_PATH,
-    {
-        "updated": "",
-        "signals_total": 0,
-        "benchmarks_with_data": 0,
-        "benchmarks": [],
-        "window_days": 25,
-        "drop_pct": 0.2,
-        "signal_label": "Distribution Day",
-    },
-)
+def esc(value) -> str:
+    return html.escape("" if value is None else str(value), quote=True)
 
-VQC_JSON = json.dumps(VQC, ensure_ascii=False)
-DD_JSON = json.dumps(DD, ensure_ascii=False)
 
-html = """<!DOCTYPE html>
+def parse_day(value: str) -> date | None:
+    try:
+        return date.fromisoformat(str(value)[:10])
+    except (TypeError, ValueError):
+        return None
+
+
+def fmt_pct(value) -> str:
+    try:
+        if value is None:
+            return "—"
+        return f"{float(value):+.2f}%"
+    except (TypeError, ValueError):
+        return "—"
+
+
+def log_width(value, max_value) -> int:
+    try:
+        v = max(float(value or 0), 0.0)
+        mx = max(float(max_value or 0), 0.0)
+    except (TypeError, ValueError):
+        return 0
+    if mx <= 0 or v <= 0:
+        return 0
+    return max(8, round(math.log1p(v) / math.log1p(mx) * 100))
+
+
+def count_cell(value, max_value) -> str:
+    width = log_width(value, max_value)
+    return (
+        '<div class="count-cell">'
+        f'<span class="count-num">{esc(value if value is not None else "—")}</span>'
+        '<span class="log-track">'
+        f'<span class="log-fill" style="width:{width}%"></span>'
+        "</span></div>"
+    )
+
+
+def state_label(value) -> str:
+    if value == "under_pressure":
+        return "under pressure"
+    return str(value or "—")
+
+
+def distance_label(signal_date: date | None, today: date) -> tuple[str, str]:
+    if not signal_date:
+        return "—", "state-gray"
+    delta = (signal_date - today).days
+    if delta == 0:
+        return "今日", "state-green"
+    if delta > 0:
+        return f"D+{delta}", "state-blue"
+    return f"D{delta}", "state-gray"
+
+
+def nav(active: str) -> str:
+    items = [
+        ("index.html", "🇭🇰 港股牌"),
+        ("signals.html", "🔂 信號"),
+        ("watchlist.html", "⭐ 自選"),
+        ("history.html", "🕰 歷史"),
+        ("gap_fvg.html", "🦅 Gap/FVG"),
+        ("fundflow.html", "💵 資金"),
+        ("rights_analysis.html", "📋 供配股"),
+        ("daily_trade_prompt.html", "🚦 每日提示"),
+        ("timing_analysis.html", "⏱ 時間窗口"),
+        ("jieqi_analysis.html", "🧭 節氣窗口"),
+        ("distribution_day.html", "📉 分佈日"),
+        ("vqc_analysis.html", "📈 成交轉勢日"),
+        ("docs/ccass-warroom.html", "⚔ 戰情室"),
+        ("guide.html", "📉 說明書"),
+    ]
+    links = []
+    for href, label in items:
+        cls = ' class="active"' if href == active else ""
+        links.append(f'<a href="{href}"{cls}>{label}</a>')
+    return "\n".join(links)
+
+
+STYLE = """
+:root{--bg:#0b1220;--panel:#111a2c;--line:#27314a;--text:#e5edf8;--muted:#8ea0bf;--green:#2ec27e;--blue:#57a6ff;--red:#ef5350;--amber:#d8a327}
+*{box-sizing:border-box}body{margin:0;background:#0b1220;color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif}a{color:inherit;text-decoration:none}
+.site-nav{display:flex;gap:6px 12px;flex-wrap:wrap;padding:8px 12px;background:#0f172a;border-bottom:1px solid #1e293b;font-size:13px;position:sticky;top:0;z-index:40}.site-nav a{color:#94a3b8;white-space:nowrap}.site-nav a.active{color:#38bdf8;font-weight:700}
+.wrap{width:min(1260px,calc(100vw - 24px));margin:0 auto;padding:14px 0 28px}.hero{display:flex;justify-content:space-between;gap:14px;align-items:flex-end;padding:18px 16px;background:#10192b;border:1px solid var(--line);border-radius:8px}
+.eyebrow{color:var(--blue);font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:800}.title{font-size:30px;font-weight:900;margin-top:4px}.subtitle{color:var(--muted);margin-top:8px;line-height:1.55;max-width:880px;font-size:13px}.hero-meta{text-align:right;color:var(--muted);font-size:12px;min-width:180px}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:12px}.card{background:#10192b;border:1px solid var(--line);border-radius:8px;padding:12px 14px}.card .k{color:var(--muted);font-size:11px}.card .v{font-size:24px;font-weight:900;margin-top:4px}.card .s{color:var(--muted);font-size:11px;margin-top:5px}
+.panel{background:#0f172a;border:1px solid var(--line);border-radius:8px;padding:14px 16px;margin-top:12px}.panel-title{font-size:14px;font-weight:800;margin-bottom:10px}.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:1020px}th,td{text-align:left;padding:9px 10px;border-bottom:1px solid #1f2a40;font-size:12px;white-space:nowrap}th{color:var(--muted);font-weight:800}tr.future td{background:rgba(87,166,255,.06)}
+.pill{display:inline-block;padding:3px 8px;border-radius:999px;font-size:11px;font-weight:800}.kind-jieqi{background:rgba(87,166,255,.13);color:#8ec1ff}.kind-dd{background:rgba(239,83,80,.13);color:#ff9a98}.kind-vqc{background:rgba(46,194,126,.12);color:#6fe3a4}
+.state-green{background:rgba(46,194,126,.12);color:#6fe3a4}.state-blue{background:rgba(87,166,255,.13);color:#8ec1ff}.state-gray{background:rgba(148,163,184,.12);color:#cbd5e1}
+.count-cell{display:grid;grid-template-columns:42px 120px;gap:8px;align-items:center}.count-num{font-weight:900}.log-track{height:10px;border:1px solid #24304a;background:#17233a;border-radius:999px;overflow:hidden}.log-fill{display:block;height:100%;background:linear-gradient(90deg,#57a6ff,#2ec27e)}
+.note{color:var(--muted);max-width:420px;overflow:hidden;text-overflow:ellipsis}.foot{color:var(--muted);font-size:11px;margin-top:12px;line-height:1.5}
+@media(max-width:900px){.wrap{width:auto;padding:12px}.hero{flex-direction:column;align-items:flex-start}.hero-meta{text-align:left}.cards{grid-template-columns:1fr 1fr}}
+"""
+
+
+def jieqi_rows(data: dict, today: date) -> list[dict]:
+    calendar = ((data.get("calendar") or {}).get("years") or {})
+    term_stats = data.get("term_stats") or []
+    stats_by_id = {i + 1: stat for i, stat in enumerate(term_stats[:24])}
+    entries = []
+    for year, terms in calendar.items():
+        if not isinstance(terms, dict):
+            continue
+        for raw_id, item in terms.items():
+            try:
+                term_id = int(raw_id)
+            except (TypeError, ValueError):
+                continue
+            d = parse_day(item.get("date"))
+            if not d:
+                continue
+            if d < today:
+                continue
+            stat = stats_by_id.get(term_id, {})
+            count = stat.get("window_count") or stat.get("count") or 0
+            entries.append(
+                {
+                    "date": d,
+                    "date_text": d.isoformat(),
+                    "kind": "節氣窗口",
+                    "kind_class": "kind-jieqi",
+                    "signal": item.get("name", ""),
+                    "scope": "±2 交易日",
+                    "count": count,
+                    "note": f"序號 {term_id}",
+                    "future": True,
+                }
+            )
+    entries.sort(key=lambda r: r["date"])
+    return entries[:8]
+
+
+def distribution_rows(data: dict) -> list[dict]:
+    rows = []
+    for bench in data.get("benchmarks", []) or []:
+        label = bench.get("label") or bench.get("name") or bench.get("symbol") or bench.get("key")
+        for signal in bench.get("signals", []) or []:
+            d = parse_day(signal.get("date"))
+            if not d:
+                continue
+            rows.append(
+                {
+                    "date": d,
+                    "date_text": d.isoformat(),
+                    "kind": "分佈日",
+                    "kind_class": "kind-dd",
+                    "signal": f"{label} · {state_label(signal.get('market_state'))}",
+                    "scope": f"{signal.get('dd_count_25d', '—')} / 25D",
+                    "count": signal.get("dd_count_25d"),
+                    "note": f"{fmt_pct(signal.get('pct_change'))} · 量比 {signal.get('volume_ratio', '—')}",
+                    "future": False,
+                }
+            )
+    rows.sort(key=lambda r: r["date"], reverse=True)
+    return rows[:10]
+
+
+def vqc_rows(data: dict) -> list[dict]:
+    by_date: dict[date, list[dict]] = defaultdict(list)
+    for event in data.get("events", []) or []:
+        d = parse_day(event.get("signal_date"))
+        if d:
+            by_date[d].append(event)
+    rows = []
+    for d, events in by_date.items():
+        codes = ", ".join(str(e.get("code", "")) for e in events[:8])
+        rows.append(
+            {
+                "date": d,
+                "date_text": d.isoformat(),
+                "kind": "成交轉勢日",
+                "kind_class": "kind-vqc",
+                "signal": f"{len(events)} 隻股票",
+                "scope": "個股高成交窗口",
+                "count": len(events),
+                "note": codes,
+                "future": False,
+            }
+        )
+    rows.sort(key=lambda r: r["date"], reverse=True)
+    return rows[:10]
+
+
+def render_table(rows: list[dict], today: date) -> str:
+    max_count = max([r.get("count") or 0 for r in rows] or [0])
+    out = []
+    for row in rows:
+        dist, dist_cls = distance_label(row.get("date"), today)
+        tr_cls = ' class="future"' if row.get("future") else ""
+        out.append(
+            f"<tr{tr_cls}>"
+            f"<td>{esc(row['date_text'])}</td>"
+            f"<td><span class=\"pill {row['kind_class']}\">{esc(row['kind'])}</span></td>"
+            f"<td>{esc(row['signal'])}</td>"
+            f"<td><span class=\"pill {dist_cls}\">{esc(dist)}</span></td>"
+            f"<td>{esc(row['scope'])}</td>"
+            f"<td>{count_cell(row.get('count'), max_count)}</td>"
+            f"<td class=\"note\">{esc(row.get('note'))}</td>"
+            "</tr>"
+        )
+    return "\n".join(out) or '<tr><td colspan="7">暫無訊號</td></tr>'
+
+
+def main() -> None:
+    today = date.today()
+    vqc = load_json(VQC_PATH, {"events": [], "updated": ""})
+    dd = load_json(DD_PATH, {"benchmarks": [], "updated": ""})
+    jieqi = load_json(JIEQI_PATH, {"calendar": {"years": {}}, "term_stats": [], "updated": ""})
+
+    future_rows = jieqi_rows(jieqi, today)
+    recent_dd = distribution_rows(dd)
+    recent_vqc = vqc_rows(vqc)
+    rows = future_rows + recent_dd + recent_vqc
+    latest_dd = recent_dd[0] if recent_dd else {}
+    latest_vqc = recent_vqc[0] if recent_vqc else {}
+    next_signal = future_rows[0] if future_rows else {}
+
+    html_out = f"""<!DOCTYPE html>
 <html lang="zh-HK">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
 <meta name="robots" content="noindex,nofollow">
-<title>時間窗口總覽</title>
-<style>
-:root {
-  --bg:#09101b; --panel:#10192b; --line:#26314a; --text:#e5edf8; --muted:#8ea0bf;
-  --green:#2ec27e; --red:#ef5350; --amber:#d8a327; --blue:#57a6ff; --violet:#b18cff;
-}
-* { box-sizing:border-box; }
-body { margin:0; background:radial-gradient(circle at top,#101a30 0%,#0b1220 44%,#09101b 100%); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif; }
-a { color:inherit; text-decoration:none; }
-.site-nav { display:flex; gap:6px 12px; flex-wrap:wrap; padding:8px 12px; background:#0f172a; border-bottom:1px solid #1e293b; font-size:13px; position:sticky; top:0; z-index:40; }
-.site-nav a { color:#94a3b8; white-space:nowrap; }
-.site-nav a.active { color:#38bdf8; font-weight:700; }
-.wrap { width:min(1320px, calc(100vw - 24px)); margin:0 auto; padding:14px 0 28px; }
-.hero { display:flex; justify-content:space-between; gap:14px; align-items:flex-end; padding:18px 16px; background:linear-gradient(180deg, rgba(17,26,44,.95), rgba(11,18,32,.95)); border:1px solid var(--line); border-radius:18px; box-shadow:0 20px 55px rgba(0,0,0,.24); }
-.eyebrow { color:var(--blue); font-size:12px; letter-spacing:.18em; text-transform:uppercase; font-weight:800; }
-.title { font-size:32px; font-weight:900; margin-top:4px; line-height:1.08; }
-.subtitle { color:var(--muted); margin-top:8px; line-height:1.55; max-width:980px; font-size:13px; }
-.hero-meta { text-align:right; color:var(--muted); font-size:12px; min-width:220px; }
-.cards { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:10px; margin-top:12px; }
-.card { background:linear-gradient(180deg, rgba(17,26,44,.97), rgba(12,19,33,.97)); border:1px solid var(--line); border-radius:16px; padding:12px 14px; box-shadow:0 14px 32px rgba(0,0,0,.14); min-height:88px; }
-.card .k { color:var(--muted); font-size:11px; letter-spacing:.04em; }
-.card .v { font-size:28px; font-weight:900; margin-top:4px; line-height:1.0; }
-.card .s { color:var(--muted); font-size:11px; margin-top:6px; line-height:1.35; }
-.panel { background:rgba(15,23,42,.85); border:1px solid var(--line); border-radius:18px; padding:14px 16px; box-shadow:0 18px 35px rgba(0,0,0,.14); margin-top:12px; }
-.panel-title { font-size:14px; font-weight:800; margin-bottom:10px; }
-.backtest-hide { display:none !important; }
-.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-.mini-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
-.mini { background:#10192b; border:1px solid #24304a; border-radius:14px; padding:12px; }
-.mini .lab { color:var(--muted); font-size:11px; }
-.mini .val { font-size:24px; font-weight:900; margin-top:5px; }
-.bars { display:grid; gap:10px; }
-.bar-row { display:grid; grid-template-columns: 118px 1fr 74px; gap:10px; align-items:center; }
-.bar-label { font-weight:700; }
-.bar-track { height:14px; background:#18233a; border-radius:999px; overflow:hidden; border:1px solid #24304a; display:flex; }
-.bar-fill-green { background:linear-gradient(90deg,#26a269,#3bd17f); }
-.bar-fill-amber { background:linear-gradient(90deg,#a77e14,#e4b83a); }
-.bar-fill-red { background:linear-gradient(90deg,#c63a36,#ff706d); }
-.bar-fill-blue { background:linear-gradient(90deg,#2563eb,#60a5fa); }
-.bar-num { text-align:right; color:var(--muted); font-size:12px; }
-.bench-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
-.bench-card { background:#10192b; border:1px solid #24304a; border-radius:14px; padding:12px; }
-.bench-head { display:flex; justify-content:space-between; gap:8px; margin-bottom:8px; }
-.bench-name { font-size:13px; font-weight:900; }
-.bench-state { font-size:11px; font-weight:800; padding:2px 8px; border-radius:999px; }
-.state-healthy { background:rgba(46,194,126,.12); color:#6fe3a4; }
-.state-caution { background:rgba(216,163,39,.12); color:#edcb63; }
-.state-pressure { background:rgba(239,83,80,.12); color:#ff9a98; }
-.bar-wrap { display:grid; gap:8px; margin-top:10px; }
-.rule-grid { display:grid; grid-template-columns:1.2fr .8fr; gap:12px; }
-.rule-list { color:var(--muted); font-size:13px; line-height:1.68; }
-.note { color:var(--muted); font-size:11px; margin-top:10px; line-height:1.5; }
-.table-wrap { overflow-x:auto; margin-top:8px; }
-table { width:100%; border-collapse:collapse; min-width:860px; }
-th, td { text-align:left; padding:8px 10px; border-bottom:1px solid #1f2a40; font-size:12px; white-space:nowrap; }
-th { color:var(--muted); font-weight:700; position:sticky; top:0; background:rgba(15,23,42,.96); }
-tr:hover td { background:rgba(39,49,74,.22); }
-.legend { display:flex; flex-wrap:wrap; gap:8px 12px; margin-top:10px; color:var(--muted); font-size:11px; }
-.legend-item { display:flex; align-items:center; gap:6px; white-space:nowrap; }
-.legend-dot { width:10px; height:10px; border-radius:999px; display:inline-block; }
-.link-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
-.btn { display:inline-block; border:1px solid #24304a; background:#10192b; color:var(--text); border-radius:999px; padding:8px 12px; font-size:12px; }
-.btn.blue { border-color:#3d6fb2; background:#17315a; }
-.btn.gold { border-color:#fde68a; color:#f5d06f; }
-.btn.teal { border-color:#5eead4; color:#9df0e6; }
-.foot { color:var(--muted); font-size:11px; margin-top:12px; line-height:1.5; }
-@media (max-width: 900px) {
-  .wrap { width:auto; padding:12px; }
-  .hero { flex-direction:column; align-items:flex-start; }
-  .hero-meta { text-align:left; min-width:0; }
-  .cards, .grid-2, .rule-grid, .bench-grid, .mini-grid { grid-template-columns:1fr; }
-  .bar-row { grid-template-columns: 96px 1fr 60px; }
-}
-</style>
+<title>時間窗口訊號表</title>
+<style>{STYLE}</style>
 </head>
 <body>
-<nav class="site-nav">
-  <a href="index.html">🇭🇰 港股版</a>
-  <a href="signals.html">🔔 訊號</a>
-  <a href="watchlist.html">⭐ 自選</a>
-  <a href="history.html">🕐 歷史</a>
-  <a href="gap_fvg.html">⤴ Gap/FVG</a>
-  <a href="fundflow.html">💰 資金</a>
-  <a href="rights_analysis.html">📋 供配股</a>
-  <a href="daily_trade_prompt.html">🚦 每日提示</a>
-  <a class="active" href="timing_analysis.html">⏱ 時間窗口</a>
-  <a href="jieqi_analysis.html">🧭 節氣窗口</a>
-  <a href="distribution_day.html">📉 分佈日</a>
-  <a href="vqc_analysis.html">📈 成交轉勢日</a>
-  <a href="docs/ccass-warroom.html">⚡ 戰情室</a>
-  <a href="guide.html">📖 說明書</a>
-</nav>
-
-<div class="wrap">
+<nav class="site-nav">{nav("timing_analysis.html")}</nav>
+<main class="wrap">
   <section class="hero">
     <div>
-      <div class="eyebrow">TIMING OVERVIEW</div>
-      <div class="title">時間窗口總覽</div>
-      <div class="subtitle">
-        呢頁將 <b>成交轉勢日</b> 同 <b>Distribution Day 分佈日</b> 放喺同一個工作台。
-        前者係搵個股 / 標的嘅高成交時間窗口，後者係睇大市壓力；兩套概念唔一樣，所以保持獨立展示，方便你一眼睇到節奏同環境。
-      </div>
-      <div class="note" style="margin-top:10px;color:#b7cdf1;font-size:12px"><b>新版週期表</b>：唔再主打回測表，第一屏直接顯示市場時間週期表。</div>
+      <div class="eyebrow">TIMING SIGNALS</div>
+      <div class="title">⏱ 時間窗口訊號表</div>
+      <div class="subtitle">將節氣窗口、分佈日、成交轉勢日放成同一張日期表；重點係「幾時出現訊號」，唔再用第一屏堆統計圖。</div>
     </div>
-    <div class="hero-meta">
-      更新：<b id="updatedAt">__UPDATED__</b><br>
-      VQC：<b id="vqcUpdated">__VQC_UPDATED__</b><br>
-      分佈日：<b id="ddUpdated">__DD_UPDATED__</b>
-    </div>
+    <div class="hero-meta">今日：<b>{esc(today.isoformat())}</b><br>VQC：<b>{esc(str(vqc.get("updated", ""))[:10])}</b><br>DD/Jieqi：<b>{esc(str(dd.get("updated", ""))[:10])} / {esc(str(jieqi.get("updated", ""))[:10])}</b></div>
   </section>
-
+  <section class="cards">
+    <div class="card"><div class="k">下一個窗口</div><div class="v">{esc(next_signal.get("date_text", "—"))}</div><div class="s">{esc(next_signal.get("signal", "—"))}</div></div>
+    <div class="card"><div class="k">最近分佈日</div><div class="v">{esc(latest_dd.get("date_text", "—"))}</div><div class="s">{esc(latest_dd.get("signal", "—"))}</div></div>
+    <div class="card"><div class="k">最近成交轉勢</div><div class="v">{esc(latest_vqc.get("date_text", "—"))}</div><div class="s">{esc(latest_vqc.get("signal", "—"))}</div></div>
+    <div class="card"><div class="k">顯示行數</div><div class="v">{len(rows)}</div><div class="s">Count bar 用 log1p</div></div>
+  </section>
   <section class="panel">
-    <div class="panel-title">市場時間週期表</div>
-    <div class="note">以 HSI proxy 的時間序列畫出節奏，而唔係再用回測表堆數字。色帶代表大市狀態，線條代表指數路徑。</div>
+    <div class="panel-title">下一批 / 最近訊號</div>
     <div class="table-wrap">
       <table>
-        <thead>
-          <tr>
-            <th>日期</th>
-            <th>收市</th>
-            <th>狀態</th>
-            <th>25D Count</th>
-          </tr>
-        </thead>
-        <tbody id="cycleTable"></tbody>
+        <thead><tr><th>日期</th><th>類型</th><th>訊號</th><th>距離</th><th>窗口/範圍</th><th>Count (log)</th><th>備註</th></tr></thead>
+        <tbody>{render_table(rows, today)}</tbody>
       </table>
     </div>
-    <div class="legend">
-      <span class="legend-item"><i class="legend-dot" style="background:#3bd17f"></i>healthy</span>
-      <span class="legend-item"><i class="legend-dot" style="background:#e4b83a"></i>caution</span>
-      <span class="legend-item"><i class="legend-dot" style="background:#ff706d"></i>under pressure</span>
-      <span class="legend-item"><i class="legend-dot" style="background:#60a5fa"></i>correction</span>
-    </div>
   </section>
-
-  <section class="cards backtest-hide" id="summaryCards"></section>
-
-  <section class="panel">
-    <div class="panel-title">點樣一齊用</div>
-    <div class="rule-grid">
-      <div class="rule-list">
-        1. 先用 <b>分佈日</b> 睇大市環境：healthy / caution / under pressure / correction。<br>
-        2. 再用 <b>成交轉勢日</b> 睇個股 / 標的是否進入高成交時間窗口。<br>
-        3. 若大市處於 correction，VQC 窗口仍可保留但只當觀察，不當成強追擊信號。<br>
-        4. 若大市 healthy，而 VQC 窗口出現，優先加權跟進。<br>
-        5. 兩者都係概率工具，唔係預言。
-      </div>
-      <div class="rule-list">
-        - 統一原則：先看環境，再看時間，再看價格反應。<br>
-        - 呢頁只做總覽，個別回測細節仍然喺原頁。<br>
-        - 如要落地執行，建議以原頁數字為準。
-      </div>
-    </div>
-    <div class="link-row">
-      <a class="btn red" href="daily_trade_prompt.html">開每日提示</a>
-      <a class="btn blue" href="vqc_analysis.html">開成交轉勢日</a>
-      <a class="btn teal" href="jieqi_analysis.html">開節氣窗口</a>
-      <a class="btn gold" href="distribution_day.html">開分佈日</a>
-      <a class="btn teal" href="guide.html">開說明書</a>
-    </div>
-  </section>
-
-  <div class="grid-2 backtest-hide">
-    <section class="panel">
-      <div class="panel-title">成交轉勢日</div>
-      <div class="mini-grid" id="vqcCards"></div>
-      <div class="note" id="vqcNote"></div>
-    </section>
-    <section class="panel">
-      <div class="panel-title">分佈日</div>
-      <div class="mini-grid" id="ddCards"></div>
-      <div class="note" id="ddNote"></div>
-    </section>
-  </div>
-
-  <section class="panel backtest-hide">
-    <div class="panel-title">分佈日 Benchmark 狀態</div>
-    <div class="bench-grid" id="benchGrid"></div>
-  </section>
-
-  <section class="panel backtest-hide">
-    <div class="panel-title">分佈日 壓力分布</div>
-    <div class="bar-wrap" id="stateBars"></div>
-  </section>
-
-  <div class="foot">
-    來源：`data/vqc_backtest.json` + `data/distribution_day_backtest.json`。<br>
-    這頁只做 timing workflow 總覽，不將兩套方法合成同一個數值。
-  </div>
-</div>
-
-<script>
-const VQC = __VQC_JSON__;
-const DD = __DD_JSON__;
-
-function fmtPct(v) {
-  if (v == null || Number.isNaN(v)) return '—';
-  return (v >= 0 ? '+' : '') + Number(v).toFixed(1) + '%';
-}
-function fmtNum(v, d=2) {
-  if (v == null || Number.isNaN(v)) return '—';
-  return Number(v).toFixed(d);
-}
-function stateLabel(s) {
-  if (s === 'correction') return 'correction';
-  if (s === 'under_pressure') return 'under pressure';
-  if (s === 'caution') return 'caution';
-  return 'healthy';
-}
-function stateColor(s) {
-  if (s === 'correction') return '#60a5fa';
-  if (s === 'under_pressure') return '#ff706d';
-  if (s === 'caution') return '#e4b83a';
-  return '#3bd17f';
-}
-function dateTs(d) {
-  return new Date(String(d) + 'T00:00:00Z').getTime();
-}
-function esc(s) {
-  return String(s).replace(/[&<>"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
-}
-
-function renderCycleTable() {
-  const series = (((DD.benchmarks || [])[0] || {}).signals || [])
-    .filter(r => r && r.date && Number.isFinite(Number(r.close)))
-    .map(r => ({
-      date: r.date,
-      close: Number(r.close),
-      state: r.market_state || 'healthy',
-      count: Number(r.dd_count_25d || 0),
-    }))
-    .sort((a, b) => dateTs(a.date) - dateTs(b.date));
-  const host = document.getElementById('cycleTable');
-  if (!series.length) {
-    host.innerHTML = '<div class="note">暫時冇足夠 data 顯示週期表。</div>';
-    return;
-  }
-  const stateText = s => stateLabel(s).replace('_', ' ');
-  host.innerHTML = series.map((d, idx) => `
-    <tr>
-      <td>${esc(d.date)}</td>
-      <td>${d.close.toFixed(0)}</td>
-      <td><span class="pill ${d.state === 'correction' ? 'bad' : d.state === 'under_pressure' ? 'bad' : d.state === 'caution' ? 'warn' : 'good'}">${esc(stateText(d.state))}</span></td>
-      <td>${d.count}</td>
-    </tr>`).join('');
-}
-
-function renderSummary() {
-  const vs = VQC.summary || {};
-  const ds = (DD.benchmarks || []).map(b => b.summary || {});
-  const hk = ds[0] || {};
-  const cards = [
-    ['成交轉勢日訊號', VQC.events_total ?? 0, `sample ${VQC.sample_total ?? 0} / universe ${VQC.universe_total ?? 0}`],
-    ['成交轉勢日2D', vs.overall_rate_2d == null ? '—' : vs.overall_rate_2d.toFixed(1) + '%', `edge ${VQC.edge?.edge_turn_2d == null ? '—' : (VQC.edge.edge_turn_2d >= 0 ? '+' : '') + VQC.edge.edge_turn_2d.toFixed(1) + 'pt'}`],
-    ['分佈日訊號', DD.signals_total ?? 0, `benchmarks ${DD.benchmarks_with_data ?? 0}`],
-    ['當前大市狀態', stateLabel(hk.current_market_state), `HK ${hk.current_dd_count_25d ?? '—'}D`],
-  ];
-  document.getElementById('summaryCards').innerHTML = cards.map(([k,v,s]) => `
-    <div class="card">
-      <div class="k">${k}</div>
-      <div class="v">${v}</div>
-      <div class="s">${s}</div>
-    </div>`).join('');
-}
-
-function renderVQC() {
-  const s = VQC.summary || {};
-  const e = VQC.edge || {};
-  const items = [
-    ['2D 窗口', s.overall_rate_2d == null ? null : s.overall_rate_2d.toFixed(1) + '%'],
-    ['Baseline 2D', s.baseline_overall_rate_2d == null ? null : s.baseline_overall_rate_2d.toFixed(1) + '%'],
-    ['Edge 20D', e.edge_20d == null ? null : (e.edge_20d >= 0 ? '+' : '') + e.edge_20d.toFixed(2) + 'pt'],
-    ['樣本股數', VQC.sample_total ?? 0],
-    ['訊號數', VQC.events_total ?? 0],
-    ['中位 20D', s.signal_median_20d == null ? null : s.signal_median_20d.toFixed(2) + '%'],
-  ];
-  document.getElementById('vqcCards').innerHTML = items.map(([k,v]) => `
-    <div class="mini">
-      <div class="lab">${k}</div>
-      <div class="val">${v == null ? '—' : v}</div>
-    </div>`).join('');
-  document.getElementById('vqcNote').textContent =
-    `更新：${VQC.updated || '—'} · 你可以當佢係「時間窗口」而唔係方向預言。`;
-}
-
-function renderDD() {
-  const bms = DD.benchmarks || [];
-  const hk = (bms[0] && bms[0].summary) || {};
-  const items = [
-    ['HK 現況', (hk.current_dd_count_25d ?? '—') + 'D'],
-    ['總訊號', DD.signals_total ?? 0],
-    ['窗口', DD.window_days ?? 25],
-    ['跌幅門檻', (DD.drop_pct ?? 0).toFixed(1) + '%'],
-    ['最新狀態', stateLabel(hk.current_market_state)],
-  ];
-  document.getElementById('ddCards').innerHTML = items.map(([k,v]) => `
-    <div class="mini">
-      <div class="lab">${k}</div>
-      <div class="val">${v}</div>
-    </div>`).join('');
-  document.getElementById('ddNote').textContent =
-    `更新：${DD.updated || '—'} · proxy = HSI1! · 主要看大市壓力是否支持你出手。`;
-}
-
-function renderBench() {
-  const bms = DD.benchmarks || [];
-  document.getElementById('benchGrid').innerHTML = bms.map(b => {
-    const s = b.summary || {};
-    const state = s.current_market_state || 'healthy';
-    const cls = state === 'caution' ? 'state-caution' : state === 'under_pressure' || state === 'correction' ? 'state-pressure' : 'state-healthy';
-    return `<div class="bench-card">
-      <div class="bench-head">
-        <div class="bench-name">${b.code} ${b.name}</div>
-        <div class="bench-state ${cls}">${stateLabel(state)}</div>
-      </div>
-      <div class="mini-grid">
-        <div class="mini"><div class="lab">25D Count</div><div class="val">${s.current_dd_count_25d ?? '—'}</div></div>
-        <div class="mini"><div class="lab">Signal 數</div><div class="val">${s.signal_count ?? 0}</div></div>
-        <div class="mini"><div class="lab">Pressure 日</div><div class="val">${s.pressure_days ?? 0}</div></div>
-      </div>
-      <div class="note">最新：${s.current_date || '—'}</div>
-    </div>`;
-  }).join('');
-}
-
-function renderBars() {
-  const totals = {healthy:0, caution:0, under_pressure:0, correction:0};
-  for (const b of (DD.benchmarks || [])) {
-    const sc = (b.summary && b.summary.state_counts) || {};
-    for (const k in totals) totals[k] += sc[k] || 0;
-  }
-  const total = Object.values(totals).reduce((a,b)=>a+b,0) || 1;
-  const rows = [
-    ['healthy', totals.healthy, 'bar-fill-green'],
-    ['caution', totals.caution, 'bar-fill-amber'],
-    ['under pressure', totals.under_pressure, 'bar-fill-red'],
-    ['correction', totals.correction, 'bar-fill-blue'],
-  ];
-  document.getElementById('stateBars').innerHTML = rows.map(([label,count,cls]) => `
-    <div class="bar-row">
-      <div class="bar-label">${label} <span style="display:inline-block;padding:3px 8px;border-radius:999px;background:rgba(87,166,255,.12);color:#8ec1ff;font-size:11px;font-weight:800">${count}</span></div>
-      <div class="bar-track"><div class="${cls}" style="width:${Math.max(3, count/total*100)}%"></div></div>
-      <div class="bar-num">${(count/total*100).toFixed(1)}%</div>
-    </div>`).join('');
-}
-
-document.getElementById('updatedAt').textContent = new Date().toISOString().slice(0, 19).replace('T', ' ');
-document.getElementById('vqcUpdated').textContent = VQC.updated || '—';
-document.getElementById('ddUpdated').textContent = DD.updated || '—';
-renderSummary();
-renderCycleTable();
-renderVQC();
-renderDD();
-renderBench();
-renderBars();
-</script>
+  <div class="foot">來源：VQC、Distribution Day、節氣 calendar JSON。Count bar 使用 log1p 比例，真實數字仍顯示在左邊。</div>
+</main>
 </body>
-</html>"""
+</html>
+"""
+    OUT_PATH.write_text(html_out, encoding="utf-8")
+    print(f"Generated {OUT_PATH.name} ({len(html_out)} bytes, {len(rows)} rows)")
 
-html = html.replace("__VQC_JSON__", VQC_JSON).replace("__DD_JSON__", DD_JSON)
-OUT_PATH.write_text(html, encoding="utf-8")
-print(f"Generated {OUT_PATH} ({len(html)} bytes)")
+
+if __name__ == "__main__":
+    main()

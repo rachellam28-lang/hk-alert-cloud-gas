@@ -4,287 +4,171 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
 <meta name="robots" content="noindex,nofollow">
-<title>Distribution Day 分佈日</title>
+<title>分佈日訊號表</title>
 <style>
-:root {
-  --bg:#0b1220; --panel:#111a2c; --line:#27314a; --text:#e5edf8; --muted:#8ea0bf;
-  --green:#2ec27e; --red:#ef5350; --amber:#d8a327; --blue:#57a6ff; --violet:#b18cff;
-}
-* { box-sizing:border-box; }
-body { margin:0; background:radial-gradient(circle at top,#101a30 0%,#0b1220 44%,#09101b 100%); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif; }
-a { color:inherit; text-decoration:none; }
-.site-nav { display:flex; gap:6px 12px; flex-wrap:wrap; padding:8px 12px; background:#0f172a; border-bottom:1px solid #1e293b; font-size:13px; position:sticky; top:0; z-index:40; }
-.site-nav a { color:#94a3b8; white-space:nowrap; }
-.site-nav a.active { color:#38bdf8; font-weight:600; }
-.wrap { width:min(1280px, calc(100vw - 24px)); margin:0 auto; padding:14px 0 28px; }
-.hero { display:flex; justify-content:space-between; gap:14px; align-items:flex-end; padding:18px 16px; background:linear-gradient(180deg, rgba(17,26,44,.95), rgba(11,18,32,.95)); border:1px solid var(--line); border-radius:18px; box-shadow:0 20px 55px rgba(0,0,0,.24); }
-.eyebrow { color:var(--blue); font-size:12px; letter-spacing:.18em; text-transform:uppercase; font-weight:800; }
-.title { font-size:32px; font-weight:900; margin-top:4px; line-height:1.08; }
-.subtitle { color:var(--muted); margin-top:8px; line-height:1.5; max-width:920px; font-size:13px; }
-.hero-meta { text-align:right; color:var(--muted); font-size:12px; min-width:180px; }
-.cards { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:10px; margin-top:12px; }
-.card { background:linear-gradient(180deg, rgba(17,26,44,.97), rgba(12,19,33,.97)); border:1px solid var(--line); border-radius:16px; padding:12px 14px; box-shadow:0 14px 32px rgba(0,0,0,.14); min-height:84px; }
-.card .k { color:var(--muted); font-size:11px; letter-spacing:.04em; }
-.card .v { font-size:28px; font-weight:900; margin-top:4px; line-height:1.0; }
-.card .s { color:var(--muted); font-size:11px; margin-top:6px; line-height:1.35; }
-.panel { background:rgba(15,23,42,.85); border:1px solid var(--line); border-radius:18px; padding:14px 16px; box-shadow:0 18px 35px rgba(0,0,0,.14); margin-top:12px; }
-.panel-title { font-size:14px; font-weight:800; margin-bottom:10px; }
-.backtest-hide { display:none !important; }
-.bench-grid { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:10px; }
-.bench-card { background:#10192b; border:1px solid #24304a; border-radius:14px; padding:12px; }
-.bench-head { display:flex; justify-content:space-between; gap:8px; margin-bottom:8px; }
-.bench-name { font-size:13px; font-weight:900; }
-.bench-state { font-size:11px; font-weight:800; padding:2px 8px; border-radius:999px; }
-.state-healthy { background:rgba(46,194,126,.12); color:#6fe3a4; }
-.state-caution { background:rgba(216,163,39,.12); color:#edcb63; }
-.state-pressure { background:rgba(239,83,80,.12); color:#ff9a98; }
-.mini-grid { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:8px; }
-.mini { background:#0f1727; border:1px solid #24304a; border-radius:12px; padding:10px; }
-.mini .lab { color:var(--muted); font-size:10px; }
-.mini .val { font-size:20px; font-weight:900; margin-top:4px; }
-.bar-wrap { display:grid; gap:8px; margin-top:10px; }
-.bar-row { display:grid; grid-template-columns:96px 1fr 72px; gap:10px; align-items:center; }
-.bar-label { font-weight:700; }
-.bar-track { height:14px; background:#18233a; border-radius:999px; overflow:hidden; border:1px solid #24304a; display:flex; }
-.bar-fill-green { background:linear-gradient(90deg,#26a269,#3bd17f); }
-.bar-fill-amber { background:linear-gradient(90deg,#a77e14,#e4b83a); }
-.bar-fill-red { background:linear-gradient(90deg,#c63a36,#ff706d); }
-.bar-fill-blue { background:linear-gradient(90deg,#2563eb,#60a5fa); }
-.bar-num { text-align:right; color:var(--muted); font-size:12px; }
-.table-wrap { overflow-x:auto; margin-top:8px; }
-table { width:100%; border-collapse:collapse; min-width:1050px; }
-th, td { text-align:left; padding:8px 10px; border-bottom:1px solid #1f2a40; font-size:12px; white-space:nowrap; }
-th { color:var(--muted); font-weight:700; position:sticky; top:0; background:rgba(15,23,42,.96); }
-tr:hover td { background:rgba(39,49,74,.22); }
-.pill { display:inline-block; padding:3px 8px; border-radius:999px; font-size:11px; font-weight:800; }
-.pill.dd { background:rgba(239,83,80,.12); color:#ff9a98; }
-.pill.state { background:rgba(87,166,255,.12); color:#8ec1ff; }
-.search-row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
-.search-row input { background:#0e1627; color:var(--text); border:1px solid #24304a; border-radius:12px; padding:10px 12px; min-width:220px; }
-.btn { border:1px solid #24304a; background:#10192b; color:var(--text); border-radius:999px; padding:8px 12px; font-size:12px; cursor:pointer; }
-.btn.active { background:#17315a; border-color:#3d6fb2; color:#dcecff; }
-.foot { color:var(--muted); font-size:11px; margin-top:12px; line-height:1.5; }
-@media (max-width: 900px) {
-  .wrap { width:auto; padding:12px; }
-  .hero { flex-direction:column; align-items:flex-start; }
-  .hero-meta { text-align:left; min-width:0; }
-  .cards, .bench-grid { grid-template-columns:1fr; }
-  .mini-grid { grid-template-columns:1fr; }
-  .bar-row { grid-template-columns:88px 1fr 60px; }
-}
+:root{--bg:#0b1220;--panel:#111a2c;--line:#27314a;--text:#e5edf8;--muted:#8ea0bf;--green:#2ec27e;--red:#ef5350;--amber:#d8a327;--blue:#57a6ff;--orange:#fb923c}
+*{box-sizing:border-box}
+body{margin:0;background:#0b1220;color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif}
+a{color:inherit;text-decoration:none}
+.site-nav{display:flex;gap:6px 12px;flex-wrap:wrap;padding:8px 12px;background:#0f172a;border-bottom:1px solid #1e293b;font-size:13px;position:sticky;top:0;z-index:40}
+.site-nav a{color:#94a3b8;white-space:nowrap}.site-nav a.active{color:#38bdf8;font-weight:700}
+.wrap{width:min(1220px,calc(100vw - 24px));margin:0 auto;padding:14px 0 28px}
+.hero{display:flex;justify-content:space-between;gap:14px;align-items:flex-end;padding:18px 16px;background:#10192b;border:1px solid var(--line);border-radius:8px}
+.eyebrow{color:var(--blue);font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:800}.title{font-size:30px;font-weight:900;margin-top:4px}
+.subtitle{color:var(--muted);margin-top:8px;line-height:1.55;max-width:860px;font-size:13px}.hero-meta{text-align:right;color:var(--muted);font-size:12px;min-width:180px}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:12px}.card{background:#10192b;border:1px solid var(--line);border-radius:8px;padding:12px 14px}.card .k{color:var(--muted);font-size:11px}.card .v{font-size:26px;font-weight:900;margin-top:4px}.card .s{color:var(--muted);font-size:11px;margin-top:5px}
+.panel{background:#0f172a;border:1px solid var(--line);border-radius:8px;padding:14px 16px;margin-top:12px}.panel-title{font-size:14px;font-weight:800;margin-bottom:10px}
+.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:920px}th,td{text-align:left;padding:9px 10px;border-bottom:1px solid #1f2a40;font-size:12px;white-space:nowrap}th{color:var(--muted);font-weight:800}tr:hover td{background:rgba(39,49,74,.22)}
+.pill{display:inline-block;padding:3px 8px;border-radius:999px;font-size:11px;font-weight:800}.state-green{background:rgba(46,194,126,.12);color:#6fe3a4}.state-amber{background:rgba(216,163,39,.13);color:#edcb63}.state-orange{background:rgba(251,146,60,.13);color:#fdba74}.state-red{background:rgba(239,83,80,.13);color:#ff9a98}
+.count-cell{display:grid;grid-template-columns:42px 120px;gap:8px;align-items:center}.count-num{font-weight:900}.log-track{height:10px;border:1px solid #24304a;background:#17233a;border-radius:999px;overflow:hidden}.log-fill{display:block;height:100%;background:linear-gradient(90deg,#3b82f6,#2ec27e)}
+.foot{color:var(--muted);font-size:11px;margin-top:12px;line-height:1.5}
+@media(max-width:900px){.wrap{width:auto;padding:12px}.hero{flex-direction:column;align-items:flex-start}.hero-meta{text-align:left}.cards{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
-<nav class="site-nav">
-  <a href="index.html">🇭🇰 港股版</a>
-  <a href="watchlist.html">⭐ 自選</a>
-  <a href="history.html">🕐 歷史</a>
-  <a href="gap_fvg.html">⤴ Gap/FVG</a>
-  <a href="fundflow.html">💰 資金</a>
-  <a href="rights_analysis.html">📋 供配股</a>
-  <a href="daily_trade_prompt.html">🚦 每日提示</a>
-  <a href="timing_analysis.html">⏱ 時間窗口</a>
-  <a class="active" href="distribution_day.html">📉 Distribution Day</a>
-  <a href="vqc_analysis.html">📈 成交轉勢日</a>
-  <a href="docs/ccass-warroom.html">⚡ 戰情室</a>
-  <a href="guide.html">📖 說明書</a>
-</nav>
-
-<div class="wrap">
+<nav class="site-nav"><a href="index.html">🇭🇰 港股牌</a>
+<a href="signals.html">🔂 信號</a>
+<a href="watchlist.html">⭐ 自選</a>
+<a href="history.html">🕰 歷史</a>
+<a href="gap_fvg.html">🦅 Gap/FVG</a>
+<a href="fundflow.html">💵 資金</a>
+<a href="rights_analysis.html">📋 供配股</a>
+<a href="daily_trade_prompt.html">🚦 每日提示</a>
+<a href="timing_analysis.html">⏱ 時間窗口</a>
+<a href="jieqi_analysis.html">🧭 節氣窗口</a>
+<a href="distribution_day.html" class="active">📉 分佈日</a>
+<a href="vqc_analysis.html">📈 成交轉勢日</a>
+<a href="docs/ccass-warroom.html">⚔ 戰情室</a>
+<a href="guide.html">📉 說明書</a></nav>
+<main class="wrap">
   <section class="hero">
     <div>
-      <div class="eyebrow">MARK MINERVINI</div>
-      <div class="title">Distribution Day 分佈日</div>
-      <div class="subtitle">
-        分佈日係市場壓力訊號：benchmark / index / ETF 收低，而且成交量高過上一日。呢頁用 HSI1! 做 proxy，
-        以 25 個交易日 rolling count 去睇市場係 healthy、caution、under pressure 定 correction。
-      </div>
+      <div class="eyebrow">DISTRIBUTION DAY</div>
+      <div class="title">📉 分佈日訊號表</div>
+      <div class="subtitle">用 HSI proxy 記錄市場壓力日期；表格直接顯示最近訊號、25D count 同狀態，唔再將第一屏放成績統計。</div>
     </div>
-    <div class="hero-meta">
-      更新：<b id="updatedAt">2026-06-23T21:08:35</b><br>
-      25日窗口：<b>25</b><br>
-      跌幅門檻：<b>0.2%</b>
-    </div>
+    <div class="hero-meta">更新：<b>2026-06-23 21:08</b><br>窗口：<b>25D</b><br>跌幅門檻：<b>0.2%</b></div>
   </section>
-
-  <section class="cards backtest-hide" id="summaryCards"></section>
-
-  <section class="panel backtest-hide">
-    <div class="panel-title">Benchmark 狀態</div>
-    <div class="bench-grid" id="benchGrid"></div>
+  <section class="cards">
+    <div class="card"><div class="k">最新訊號</div><div class="v">2026-06-22</div><div class="s">correction</div></div>
+    <div class="card"><div class="k">25D Count</div><div class="v">8</div><div class="s">log bar 以此欄計</div></div>
+    <div class="card"><div class="k">總訊號</div><div class="v">105</div><div class="s">benchmarks 1</div></div>
+    <div class="card"><div class="k">最近收市</div><div class="v">23325</div><div class="s">-1.83%</div></div>
   </section>
-
-  <section class="panel backtest-hide">
-    <div class="panel-title">Rolling 壓力分布</div>
-    <div class="bar-wrap" id="stateBars"></div>
-  </section>
-
   <section class="panel">
-    <div class="panel-title">分佈日訊號表</div>
-    <div class="search-row">
-      <input id="search" type="text" placeholder="搜尋 benchmark / 日期…" oninput="renderTable()" />
-      <button class="btn active" data-filter="all" onclick="setFilter('all')">全部</button>
-      <button class="btn" data-filter="hk" onclick="setFilter('hk')">HK</button>
-      <button class="btn" data-filter="pressure" onclick="setFilter('pressure')">壓力日</button>
-    </div>
+    <div class="panel-title">最近分佈日</div>
     <div class="table-wrap">
       <table>
-        <thead>
-          <tr>
-            <th>日期</th>
-            <th>Benchmark</th>
-            <th>收市</th>
-            <th>前收</th>
-            <th>跌幅</th>
-            <th>量比</th>
-            <th>25D Count</th>
-            <th>State</th>
-            <th>5D</th>
-            <th>20D</th>
-            <th>60D</th>
-          </tr>
-        </thead>
-        <tbody id="tableBody"></tbody>
+        <thead><tr><th>日期</th><th>Benchmark</th><th>收市</th><th>跌幅</th><th>量比</th><th>Count (log)</th><th>狀態</th></tr></thead>
+        <tbody><tr><td>2026-06-22</td><td>HK proxy</td><td>23325</td><td class="neg">-1.83%</td><td>1.14x</td><td><div class="count-cell"><span class="count-num">8</span><span class="log-track"><span class="log-fill" style="width:92%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2026-06-17</td><td>HK proxy</td><td>23892</td><td class="neg">-1.53%</td><td>1.54x</td><td><div class="count-cell"><span class="count-num">7</span><span class="log-track"><span class="log-fill" style="width:87%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2026-06-15</td><td>HK proxy</td><td>24484</td><td class="neg">-1.40%</td><td>1.01x</td><td><div class="count-cell"><span class="count-num">6</span><span class="log-track"><span class="log-fill" style="width:81%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2026-06-09</td><td>HK proxy</td><td>24278</td><td class="neg">-1.40%</td><td>1.06x</td><td><div class="count-cell"><span class="count-num">6</span><span class="log-track"><span class="log-fill" style="width:81%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2026-06-05</td><td>HK proxy</td><td>24564</td><td class="neg">-1.30%</td><td>1.28x</td><td><div class="count-cell"><span class="count-num">5</span><span class="log-track"><span class="log-fill" style="width:75%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2026-06-04</td><td>HK proxy</td><td>24888</td><td class="neg">-0.81%</td><td>1.09x</td><td><div class="count-cell"><span class="count-num">4</span><span class="log-track"><span class="log-fill" style="width:67%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2026-05-27</td><td>HK proxy</td><td>24845</td><td class="neg">-1.66%</td><td>1.15x</td><td><div class="count-cell"><span class="count-num">4</span><span class="log-track"><span class="log-fill" style="width:67%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2026-05-20</td><td>HK proxy</td><td>25392</td><td class="neg">-0.71%</td><td>1.35x</td><td><div class="count-cell"><span class="count-num">4</span><span class="log-track"><span class="log-fill" style="width:67%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2026-05-11</td><td>HK proxy</td><td>26255</td><td class="neg">-0.26%</td><td>1.18x</td><td><div class="count-cell"><span class="count-num">3</span><span class="log-track"><span class="log-fill" style="width:58%"></span></span></div></td><td><span class="pill state-amber">caution</span></td></tr>
+<tr><td>2026-04-22</td><td>HK proxy</td><td>25921</td><td class="neg">-0.92%</td><td>1.15x</td><td><div class="count-cell"><span class="count-num">6</span><span class="log-track"><span class="log-fill" style="width:81%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2026-04-21</td><td>HK proxy</td><td>26161</td><td class="neg">-1.25%</td><td>1.23x</td><td><div class="count-cell"><span class="count-num">5</span><span class="log-track"><span class="log-fill" style="width:75%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2026-03-27</td><td>HK proxy</td><td>24744</td><td class="neg">-0.43%</td><td>1.07x</td><td><div class="count-cell"><span class="count-num">9</span><span class="log-track"><span class="log-fill" style="width:96%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2026-03-20</td><td>HK proxy</td><td>24347</td><td class="neg">-3.58%</td><td>1.33x</td><td><div class="count-cell"><span class="count-num">10</span><span class="log-track"><span class="log-fill" style="width:100%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2026-03-19</td><td>HK proxy</td><td>25250</td><td class="neg">-0.84%</td><td>1.03x</td><td><div class="count-cell"><span class="count-num">10</span><span class="log-track"><span class="log-fill" style="width:100%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2026-03-18</td><td>HK proxy</td><td>25463</td><td class="neg">-1.97%</td><td>1.42x</td><td><div class="count-cell"><span class="count-num">9</span><span class="log-track"><span class="log-fill" style="width:96%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2026-03-11</td><td>HK proxy</td><td>25700</td><td class="neg">-0.46%</td><td>1.02x</td><td><div class="count-cell"><span class="count-num">8</span><span class="log-track"><span class="log-fill" style="width:92%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2026-03-06</td><td>HK proxy</td><td>25267</td><td class="neg">-1.27%</td><td>1.37x</td><td><div class="count-cell"><span class="count-num">9</span><span class="log-track"><span class="log-fill" style="width:96%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2026-03-03</td><td>HK proxy</td><td>25132</td><td class="neg">-2.04%</td><td>1.45x</td><td><div class="count-cell"><span class="count-num">8</span><span class="log-track"><span class="log-fill" style="width:92%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2026-02-27</td><td>HK proxy</td><td>25887</td><td class="neg">-2.71%</td><td>1.36x</td><td><div class="count-cell"><span class="count-num">7</span><span class="log-track"><span class="log-fill" style="width:87%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2026-02-25</td><td>HK proxy</td><td>26367</td><td class="neg">-1.46%</td><td>1.04x</td><td><div class="count-cell"><span class="count-num">6</span><span class="log-track"><span class="log-fill" style="width:81%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2026-02-20</td><td>HK proxy</td><td>26412</td><td class="neg">-1.45%</td><td>1.38x</td><td><div class="count-cell"><span class="count-num">6</span><span class="log-track"><span class="log-fill" style="width:81%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2026-02-12</td><td>HK proxy</td><td>26530</td><td class="neg">-1.69%</td><td>1.30x</td><td><div class="count-cell"><span class="count-num">5</span><span class="log-track"><span class="log-fill" style="width:75%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2026-02-11</td><td>HK proxy</td><td>26986</td><td class="neg">-0.88%</td><td>1.18x</td><td><div class="count-cell"><span class="count-num">4</span><span class="log-track"><span class="log-fill" style="width:67%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2026-01-30</td><td>HK proxy</td><td>26785</td><td class="neg">-2.60%</td><td>1.11x</td><td><div class="count-cell"><span class="count-num">5</span><span class="log-track"><span class="log-fill" style="width:75%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2026-01-29</td><td>HK proxy</td><td>27500</td><td class="neg">-1.98%</td><td>1.06x</td><td><div class="count-cell"><span class="count-num">5</span><span class="log-track"><span class="log-fill" style="width:75%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2026-01-19</td><td>HK proxy</td><td>26462</td><td class="neg">-0.47%</td><td>1.07x</td><td><div class="count-cell"><span class="count-num">5</span><span class="log-track"><span class="log-fill" style="width:75%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2026-01-07</td><td>HK proxy</td><td>26141</td><td class="neg">-1.25%</td><td>1.03x</td><td><div class="count-cell"><span class="count-num">5</span><span class="log-track"><span class="log-fill" style="width:75%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2026-01-02</td><td>HK proxy</td><td>26374</td><td class="neg">-0.21%</td><td>1.08x</td><td><div class="count-cell"><span class="count-num">4</span><span class="log-track"><span class="log-fill" style="width:67%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2025-12-29</td><td>HK proxy</td><td>25635</td><td class="neg">-0.68%</td><td>1.70x</td><td><div class="count-cell"><span class="count-num">3</span><span class="log-track"><span class="log-fill" style="width:58%"></span></span></div></td><td><span class="pill state-amber">caution</span></td></tr>
+<tr><td>2025-12-15</td><td>HK proxy</td><td>25251</td><td class="neg">-1.57%</td><td>1.31x</td><td><div class="count-cell"><span class="count-num">4</span><span class="log-track"><span class="log-fill" style="width:67%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2025-12-05</td><td>HK proxy</td><td>25777</td><td class="neg">-1.42%</td><td>1.08x</td><td><div class="count-cell"><span class="count-num">3</span><span class="log-track"><span class="log-fill" style="width:58%"></span></span></div></td><td><span class="pill state-amber">caution</span></td></tr>
+<tr><td>2025-11-20</td><td>HK proxy</td><td>25233</td><td class="neg">-2.38%</td><td>1.23x</td><td><div class="count-cell"><span class="count-num">3</span><span class="log-track"><span class="log-fill" style="width:58%"></span></span></div></td><td><span class="pill state-amber">caution</span></td></tr>
+<tr><td>2025-11-14</td><td>HK proxy</td><td>26367</td><td class="neg">-0.83%</td><td>1.10x</td><td><div class="count-cell"><span class="count-num">3</span><span class="log-track"><span class="log-fill" style="width:58%"></span></span></div></td><td><span class="pill state-amber">caution</span></td></tr>
+<tr><td>2025-11-03</td><td>HK proxy</td><td>25908</td><td class="neg">-0.94%</td><td>1.05x</td><td><div class="count-cell"><span class="count-num">5</span><span class="log-track"><span class="log-fill" style="width:75%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2025-10-16</td><td>HK proxy</td><td>25225</td><td class="neg">-2.62%</td><td>1.25x</td><td><div class="count-cell"><span class="count-num">6</span><span class="log-track"><span class="log-fill" style="width:81%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2025-10-10</td><td>HK proxy</td><td>25809</td><td class="neg">-1.80%</td><td>1.93x</td><td><div class="count-cell"><span class="count-num">6</span><span class="log-track"><span class="log-fill" style="width:81%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2025-10-08</td><td>HK proxy</td><td>26766</td><td class="neg">-0.29%</td><td>1.24x</td><td><div class="count-cell"><span class="count-num">5</span><span class="log-track"><span class="log-fill" style="width:75%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2025-10-06</td><td>HK proxy</td><td>26843</td><td class="neg">-0.57%</td><td>1.41x</td><td><div class="count-cell"><span class="count-num">5</span><span class="log-track"><span class="log-fill" style="width:75%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2025-09-22</td><td>HK proxy</td><td>26202</td><td class="neg">-0.75%</td><td>1.23x</td><td><div class="count-cell"><span class="count-num">6</span><span class="log-track"><span class="log-fill" style="width:81%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2025-09-17</td><td>HK proxy</td><td>26545</td><td class="neg">-1.36%</td><td>1.30x</td><td><div class="count-cell"><span class="count-num">5</span><span class="log-track"><span class="log-fill" style="width:75%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2025-09-10</td><td>HK proxy</td><td>26098</td><td class="neg">-0.35%</td><td>1.05x</td><td><div class="count-cell"><span class="count-num">5</span><span class="log-track"><span class="log-fill" style="width:75%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2025-09-02</td><td>HK proxy</td><td>25325</td><td class="neg">-0.33%</td><td>1.13x</td><td><div class="count-cell"><span class="count-num">4</span><span class="log-track"><span class="log-fill" style="width:67%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2025-08-27</td><td>HK proxy</td><td>24906</td><td class="neg">-1.13%</td><td>1.14x</td><td><div class="count-cell"><span class="count-num">4</span><span class="log-track"><span class="log-fill" style="width:67%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2025-08-25</td><td>HK proxy</td><td>25574</td><td class="neg">-1.12%</td><td>1.10x</td><td><div class="count-cell"><span class="count-num">4</span><span class="log-track"><span class="log-fill" style="width:67%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2025-08-14</td><td>HK proxy</td><td>25235</td><td class="neg">-1.30%</td><td>1.17x</td><td><div class="count-cell"><span class="count-num">3</span><span class="log-track"><span class="log-fill" style="width:58%"></span></span></div></td><td><span class="pill state-amber">caution</span></td></tr>
+<tr><td>2025-07-29</td><td>HK proxy</td><td>25178</td><td class="neg">-1.14%</td><td>1.11x</td><td><div class="count-cell"><span class="count-num">4</span><span class="log-track"><span class="log-fill" style="width:67%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2025-07-24</td><td>HK proxy</td><td>25362</td><td class="neg">-1.25%</td><td>1.24x</td><td><div class="count-cell"><span class="count-num">3</span><span class="log-track"><span class="log-fill" style="width:58%"></span></span></div></td><td><span class="pill state-amber">caution</span></td></tr>
+<tr><td>2025-07-03</td><td>HK proxy</td><td>23918</td><td class="neg">-0.56%</td><td>1.32x</td><td><div class="count-cell"><span class="count-num">6</span><span class="log-track"><span class="log-fill" style="width:81%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2025-06-26</td><td>HK proxy</td><td>24249</td><td class="neg">-0.40%</td><td>1.09x</td><td><div class="count-cell"><span class="count-num">5</span><span class="log-track"><span class="log-fill" style="width:75%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2025-06-18</td><td>HK proxy</td><td>23229</td><td class="neg">-1.79%</td><td>1.20x</td><td><div class="count-cell"><span class="count-num">5</span><span class="log-track"><span class="log-fill" style="width:75%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2025-06-16</td><td>HK proxy</td><td>23975</td><td class="neg">-0.33%</td><td>1.02x</td><td><div class="count-cell"><span class="count-num">4</span><span class="log-track"><span class="log-fill" style="width:67%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2025-06-12</td><td>HK proxy</td><td>23853</td><td class="neg">-0.81%</td><td>1.18x</td><td><div class="count-cell"><span class="count-num">3</span><span class="log-track"><span class="log-fill" style="width:58%"></span></span></div></td><td><span class="pill state-amber">caution</span></td></tr>
+<tr><td>2025-05-30</td><td>HK proxy</td><td>23019</td><td class="neg">-0.72%</td><td>1.34x</td><td><div class="count-cell"><span class="count-num">2</span><span class="log-track"><span class="log-fill" style="width:46%"></span></span></div></td><td><span class="pill state-green">healthy</span></td></tr>
+<tr><td>2025-05-23</td><td>HK proxy</td><td>23200</td><td class="neg">-1.48%</td><td>1.42x</td><td><div class="count-cell"><span class="count-num">1</span><span class="log-track"><span class="log-fill" style="width:29%"></span></span></div></td><td><span class="pill state-green">healthy</span></td></tr>
+<tr><td>2025-04-15</td><td>HK proxy</td><td>21229</td><td class="neg">-1.20%</td><td>1.12x</td><td><div class="count-cell"><span class="count-num">8</span><span class="log-track"><span class="log-fill" style="width:92%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2025-04-03</td><td>HK proxy</td><td>19780</td><td class="neg">-13.24%</td><td>2.04x</td><td><div class="count-cell"><span class="count-num">8</span><span class="log-track"><span class="log-fill" style="width:92%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2025-04-02</td><td>HK proxy</td><td>22798</td><td class="neg">-1.77%</td><td>1.34x</td><td><div class="count-cell"><span class="count-num">7</span><span class="log-track"><span class="log-fill" style="width:87%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2025-03-28</td><td>HK proxy</td><td>23162</td><td class="neg">-1.14%</td><td>1.06x</td><td><div class="count-cell"><span class="count-num">8</span><span class="log-track"><span class="log-fill" style="width:92%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2025-03-27</td><td>HK proxy</td><td>23430</td><td class="neg">-0.80%</td><td>1.03x</td><td><div class="count-cell"><span class="count-num">8</span><span class="log-track"><span class="log-fill" style="width:92%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2025-03-24</td><td>HK proxy</td><td>23344</td><td class="neg">-2.60%</td><td>1.26x</td><td><div class="count-cell"><span class="count-num">9</span><span class="log-track"><span class="log-fill" style="width:96%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2025-03-20</td><td>HK proxy</td><td>23602</td><td class="neg">-2.44%</td><td>1.22x</td><td><div class="count-cell"><span class="count-num">8</span><span class="log-track"><span class="log-fill" style="width:92%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2025-03-19</td><td>HK proxy</td><td>24193</td><td class="neg">-2.19%</td><td>1.06x</td><td><div class="count-cell"><span class="count-num">7</span><span class="log-track"><span class="log-fill" style="width:87%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2025-03-06</td><td>HK proxy</td><td>24238</td><td class="neg">-0.69%</td><td>1.07x</td><td><div class="count-cell"><span class="count-num">6</span><span class="log-track"><span class="log-fill" style="width:81%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2025-02-27</td><td>HK proxy</td><td>22967</td><td class="neg">-3.01%</td><td>1.03x</td><td><div class="count-cell"><span class="count-num">6</span><span class="log-track"><span class="log-fill" style="width:81%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2025-02-26</td><td>HK proxy</td><td>23679</td><td class="neg">-0.29%</td><td>1.17x</td><td><div class="count-cell"><span class="count-num">6</span><span class="log-track"><span class="log-fill" style="width:81%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2025-02-24</td><td>HK proxy</td><td>23008</td><td class="neg">-1.38%</td><td>1.05x</td><td><div class="count-cell"><span class="count-num">5</span><span class="log-track"><span class="log-fill" style="width:75%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2025-02-21</td><td>HK proxy</td><td>23329</td><td class="neg">-0.56%</td><td>1.03x</td><td><div class="count-cell"><span class="count-num">4</span><span class="log-track"><span class="log-fill" style="width:67%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2025-02-19</td><td>HK proxy</td><td>22602</td><td class="neg">-1.42%</td><td>1.25x</td><td><div class="count-cell"><span class="count-num">3</span><span class="log-track"><span class="log-fill" style="width:58%"></span></span></div></td><td><span class="pill state-amber">caution</span></td></tr>
+<tr><td>2025-01-22</td><td>HK proxy</td><td>19734</td><td class="neg">-0.56%</td><td>1.05x</td><td><div class="count-cell"><span class="count-num">9</span><span class="log-track"><span class="log-fill" style="width:96%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2025-01-21</td><td>HK proxy</td><td>19846</td><td class="neg">-1.56%</td><td>1.17x</td><td><div class="count-cell"><span class="count-num">9</span><span class="log-track"><span class="log-fill" style="width:96%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2025-01-10</td><td>HK proxy</td><td>18902</td><td class="neg">-1.11%</td><td>1.21x</td><td><div class="count-cell"><span class="count-num">10</span><span class="log-track"><span class="log-fill" style="width:100%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2025-01-09</td><td>HK proxy</td><td>19115</td><td class="neg">-0.99%</td><td>1.15x</td><td><div class="count-cell"><span class="count-num">9</span><span class="log-track"><span class="log-fill" style="width:96%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2025-01-06</td><td>HK proxy</td><td>19490</td><td class="neg">-1.25%</td><td>1.84x</td><td><div class="count-cell"><span class="count-num">8</span><span class="log-track"><span class="log-fill" style="width:92%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2025-01-02</td><td>HK proxy</td><td>19620</td><td class="neg">-2.32%</td><td>2.46x</td><td><div class="count-cell"><span class="count-num">7</span><span class="log-track"><span class="log-fill" style="width:87%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2024-12-27</td><td>HK proxy</td><td>20073</td><td class="neg">-0.28%</td><td>1.07x</td><td><div class="count-cell"><span class="count-num">8</span><span class="log-track"><span class="log-fill" style="width:92%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2024-12-19</td><td>HK proxy</td><td>19683</td><td class="neg">-0.52%</td><td>1.14x</td><td><div class="count-cell"><span class="count-num">7</span><span class="log-track"><span class="log-fill" style="width:87%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2024-12-18</td><td>HK proxy</td><td>19785</td><td class="neg">-0.48%</td><td>1.37x</td><td><div class="count-cell"><span class="count-num">6</span><span class="log-track"><span class="log-fill" style="width:81%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2024-12-16</td><td>HK proxy</td><td>19747</td><td class="neg">-0.37%</td><td>1.15x</td><td><div class="count-cell"><span class="count-num">5</span><span class="log-track"><span class="log-fill" style="width:75%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2024-12-12</td><td>HK proxy</td><td>20022</td><td class="neg">-2.19%</td><td>1.04x</td><td><div class="count-cell"><span class="count-num">5</span><span class="log-track"><span class="log-fill" style="width:75%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2024-12-09</td><td>HK proxy</td><td>20436</td><td class="neg">-1.04%</td><td>1.41x</td><td><div class="count-cell"><span class="count-num">5</span><span class="log-track"><span class="log-fill" style="width:75%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2024-11-22</td><td>HK proxy</td><td>19132</td><td class="neg">-0.42%</td><td>1.19x</td><td><div class="count-cell"><span class="count-num">5</span><span class="log-track"><span class="log-fill" style="width:75%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2024-11-21</td><td>HK proxy</td><td>19212</td><td class="neg">-1.92%</td><td>1.54x</td><td><div class="count-cell"><span class="count-num">4</span><span class="log-track"><span class="log-fill" style="width:67%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2024-11-11</td><td>HK proxy</td><td>19894</td><td class="neg">-2.69%</td><td>1.06x</td><td><div class="count-cell"><span class="count-num">4</span><span class="log-track"><span class="log-fill" style="width:67%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2024-11-07</td><td>HK proxy</td><td>20588</td><td class="neg">-2.25%</td><td>1.24x</td><td><div class="count-cell"><span class="count-num">4</span><span class="log-track"><span class="log-fill" style="width:67%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2024-11-05</td><td>HK proxy</td><td>20613</td><td class="neg">-1.82%</td><td>1.40x</td><td><div class="count-cell"><span class="count-num">3</span><span class="log-track"><span class="log-fill" style="width:58%"></span></span></div></td><td><span class="pill state-amber">caution</span></td></tr>
+<tr><td>2024-10-14</td><td>HK proxy</td><td>20361</td><td class="neg">-3.43%</td><td>1.06x</td><td><div class="count-cell"><span class="count-num">4</span><span class="log-track"><span class="log-fill" style="width:67%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2024-10-07</td><td>HK proxy</td><td>20782</td><td class="neg">-10.40%</td><td>1.78x</td><td><div class="count-cell"><span class="count-num">4</span><span class="log-track"><span class="log-fill" style="width:67%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2024-09-10</td><td>HK proxy</td><td>17087</td><td class="neg">-0.60%</td><td>1.28x</td><td><div class="count-cell"><span class="count-num">4</span><span class="log-track"><span class="log-fill" style="width:67%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2024-09-06</td><td>HK proxy</td><td>17154</td><td class="neg">-1.66%</td><td>45.71x</td><td><div class="count-cell"><span class="count-num">3</span><span class="log-track"><span class="log-fill" style="width:58%"></span></span></div></td><td><span class="pill state-amber">caution</span></td></tr>
+<tr><td>2024-09-03</td><td>HK proxy</td><td>17438</td><td class="neg">-0.90%</td><td>1.56x</td><td><div class="count-cell"><span class="count-num">4</span><span class="log-track"><span class="log-fill" style="width:67%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2024-08-20</td><td>HK proxy</td><td>17375</td><td class="neg">-0.90%</td><td>1.22x</td><td><div class="count-cell"><span class="count-num">6</span><span class="log-track"><span class="log-fill" style="width:81%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2024-08-02</td><td>HK proxy</td><td>16742</td><td class="neg">-1.33%</td><td>1.45x</td><td><div class="count-cell"><span class="count-num">7</span><span class="log-track"><span class="log-fill" style="width:87%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2024-08-01</td><td>HK proxy</td><td>16967</td><td class="neg">-2.00%</td><td>1.24x</td><td><div class="count-cell"><span class="count-num">6</span><span class="log-track"><span class="log-fill" style="width:81%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2024-07-24</td><td>HK proxy</td><td>17030</td><td class="neg">-1.83%</td><td>1.56x</td><td><div class="count-cell"><span class="count-num">6</span><span class="log-track"><span class="log-fill" style="width:81%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2024-07-23</td><td>HK proxy</td><td>17348</td><td class="neg">-0.87%</td><td>1.09x</td><td><div class="count-cell"><span class="count-num">5</span><span class="log-track"><span class="log-fill" style="width:75%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2024-07-18</td><td>HK proxy</td><td>17437</td><td class="neg">-2.09%</td><td>1.14x</td><td><div class="count-cell"><span class="count-num">4</span><span class="log-track"><span class="log-fill" style="width:67%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2024-07-08</td><td>HK proxy</td><td>17531</td><td class="neg">-0.29%</td><td>1.04x</td><td><div class="count-cell"><span class="count-num">5</span><span class="log-track"><span class="log-fill" style="width:75%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2024-07-05</td><td>HK proxy</td><td>17582</td><td class="neg">-0.94%</td><td>1.05x</td><td><div class="count-cell"><span class="count-num">4</span><span class="log-track"><span class="log-fill" style="width:67%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2024-06-20</td><td>HK proxy</td><td>18018</td><td class="neg">-1.52%</td><td>1.23x</td><td><div class="count-cell"><span class="count-num">7</span><span class="log-track"><span class="log-fill" style="width:87%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2024-06-13</td><td>HK proxy</td><td>17916</td><td class="neg">-0.97%</td><td>1.10x</td><td><div class="count-cell"><span class="count-num">6</span><span class="log-track"><span class="log-fill" style="width:81%"></span></span></div></td><td><span class="pill state-red">correction</span></td></tr>
+<tr><td>2024-06-07</td><td>HK proxy</td><td>18117</td><td class="neg">-0.85%</td><td>1.21x</td><td><div class="count-cell"><span class="count-num">5</span><span class="log-track"><span class="log-fill" style="width:75%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2024-05-30</td><td>HK proxy</td><td>18009</td><td class="neg">-0.65%</td><td>1.05x</td><td><div class="count-cell"><span class="count-num">4</span><span class="log-track"><span class="log-fill" style="width:67%"></span></span></div></td><td><span class="pill state-orange">under pressure</span></td></tr>
+<tr><td>2024-05-23</td><td>HK proxy</td><td>18578</td><td class="neg">-1.62%</td><td>1.12x</td><td><div class="count-cell"><span class="count-num">3</span><span class="log-track"><span class="log-fill" style="width:58%"></span></span></div></td><td><span class="pill state-amber">caution</span></td></tr>
+<tr><td>2024-05-22</td><td>HK proxy</td><td>18883</td><td class="neg">-1.50%</td><td>1.31x</td><td><div class="count-cell"><span class="count-num">2</span><span class="log-track"><span class="log-fill" style="width:46%"></span></span></div></td><td><span class="pill state-green">healthy</span></td></tr>
+<tr><td>2024-05-20</td><td>HK proxy</td><td>19200</td><td class="neg">-2.22%</td><td>1.16x</td><td><div class="count-cell"><span class="count-num">1</span><span class="log-track"><span class="log-fill" style="width:29%"></span></span></div></td><td><span class="pill state-green">healthy</span></td></tr></tbody>
       </table>
     </div>
   </section>
-
-  <div class="foot">
-    定義：收市低過前一日，兼成交量高過前一日，且跌幅至少 0.2%。
-    這裡用 benchmark proxy 做市場層面回測，不當成個股訊號。
-  </div>
-</div>
-
-<script>
-const DATA = {"schema_v": 1, "signal_label": "Distribution Day", "updated": "2026-06-23T21:08:35", "window_days": 25, "drop_pct": 0.2, "benchmarks": [{"key": "hk", "code": "HSI1!", "symbol": "HSI1!", "exchange": "HKEX", "name": "Hang Seng Proxy", "label": "HK proxy", "bars": 520, "signals": [{"date": "2024-05-20", "close": 19200.0, "volume": 119681, "prev_close": 19636.0, "pct_change": -2.22, "volume_ratio": 1.16, "dd_count_25d": 1, "market_state": "healthy", "fwd_5d": -0.0214, "fwd_20d": -0.0402, "fwd_60d": -0.1079, "max_gain_20d": -0.0015, "max_drawdown_20d": -0.068}, {"date": "2024-05-22", "close": 18883.0, "volume": 122783, "prev_close": 19171.0, "pct_change": -1.5, "volume_ratio": 1.31, "dd_count_25d": 2, "market_state": "healthy", "fwd_5d": -0.0401, "fwd_20d": -0.0458, "fwd_60d": -0.0675, "max_gain_20d": -0.0042, "max_drawdown_20d": -0.0523}, {"date": "2024-05-23", "close": 18578.0, "volume": 138113, "prev_close": 18883.0, "pct_change": -1.62, "volume_ratio": 1.12, "dd_count_25d": 3, "market_state": "caution", "fwd_5d": -0.0306, "fwd_20d": -0.0278, "fwd_60d": -0.0562, "max_gain_20d": 0.0121, "max_drawdown_20d": -0.0368}, {"date": "2024-05-30", "close": 18009.0, "volume": 136485, "prev_close": 18126.0, "pct_change": -0.65, "volume_ratio": 1.05, "dd_count_25d": 4, "market_state": "under_pressure", "fwd_5d": 0.0147, "fwd_20d": -0.0183, "fwd_60d": -0.0053, "max_gain_20d": 0.0233, "max_drawdown_20d": -0.0222}, {"date": "2024-06-07", "close": 18117.0, "volume": 125668, "prev_close": 18273.0, "pct_change": -0.85, "volume_ratio": 1.21, "dd_count_25d": 5, "market_state": "under_pressure", "fwd_5d": -0.0123, "fwd_20d": -0.0338, "fwd_60d": -0.0375, "max_gain_20d": 0.0172, "max_drawdown_20d": -0.0338}, {"date": "2024-06-13", "close": 17916.0, "volume": 110569, "prev_close": 18091.0, "pct_change": -0.97, "volume_ratio": 1.1, "dd_count_25d": 6, "market_state": "correction", "fwd_5d": 0.0057, "fwd_20d": 0.008, "fwd_60d": -0.0425, "max_gain_20d": 0.0286, "max_drawdown_20d": -0.0229}, {"date": "2024-06-20", "close": 18018.0, "volume": 119055, "prev_close": 18297.0, "pct_change": -1.52, "volume_ratio": 1.23, "dd_count_25d": 7, "market_state": "correction", "fwd_5d": -0.0215, "fwd_20d": -0.0196, "fwd_60d": -0.0315, "max_gain_20d": 0.0193, "max_drawdown_20d": -0.0322}, {"date": "2024-07-05", "close": 17582.0, "volume": 95018, "prev_close": 17748.0, "pct_change": -0.94, "volume_ratio": 1.05, "dd_count_25d": 4, "market_state": "under_pressure", "fwd_5d": 0.0271, "fwd_20d": -0.0478, "fwd_60d": 0.2774, "max_gain_20d": 0.0446, "max_drawdown_20d": -0.0478}, {"date": "2024-07-08", "close": 17531.0, "volume": 99185, "prev_close": 17582.0, "pct_change": -0.29, "volume_ratio": 1.04, "dd_count_25d": 5, "market_state": "under_pressure", "fwd_5d": 0.0122, "fwd_20d": -0.0524, "fwd_60d": 0.2639, "max_gain_20d": 0.0476, "max_drawdown_20d": -0.0524}, {"date": "2024-07-18", "close": 17437.0, "volume": 111872, "prev_close": 17809.0, "pct_change": -2.09, "volume_ratio": 1.14, "dd_count_25d": 4, "market_state": "under_pressure", "fwd_5d": -0.0238, "fwd_20d": -0.0007, "fwd_60d": 0.1632, "max_gain_20d": 0.0131, "max_drawdown_20d": -0.0473}, {"date": "2024-07-23", "close": 17348.0, "volume": 97086, "prev_close": 17501.0, "pct_change": -0.87, "volume_ratio": 1.09, "dd_count_25d": 5, "market_state": "under_pressure", "fwd_5d": 0.0001, "fwd_20d": 0.0016, "fwd_60d": 0.1797, "max_gain_20d": 0.015, "max_drawdown_20d": -0.0424}, {"date": "2024-07-24", "close": 17030.0, "volume": 151357, "prev_close": 17348.0, "pct_change": -1.83, "volume_ratio": 1.56, "dd_count_25d": 6, "market_state": "correction", "fwd_5d": 0.0166, "fwd_20d": 0.0371, "fwd_60d": 0.2029, "max_gain_20d": 0.0371, "max_drawdown_20d": -0.0245}, {"date": "2024-08-01", "close": 16967.0, "volume": 112847, "prev_close": 17313.0, "pct_change": -2.0, "volume_ratio": 1.24, "dd_count_25d": 6, "market_state": "correction", "fwd_5d": 0.0066, "fwd_20d": 0.0579, "fwd_60d": 0.2047, "max_gain_20d": 0.0579, "max_drawdown_20d": -0.0209}, {"date": "2024-08-02", "close": 16742.0, "volume": 163686, "prev_close": 16967.0, "pct_change": -1.33, "volume_ratio": 1.45, "dd_count_25d": 7, "market_state": "correction", "fwd_5d": 0.02, "fwd_20d": 0.0542, "fwd_60d": 0.2155, "max_gain_20d": 0.0722, "max_drawdown_20d": -0.0078}, {"date": "2024-08-20", "close": 17375.0, "volume": 94008, "prev_close": 17533.0, "pct_change": -0.9, "volume_ratio": 1.22, "dd_count_25d": 6, "market_state": "correction", "fwd_5d": 0.0192, "fwd_20d": 0.0394, "fwd_60d": 0.1284, "max_gain_20d": 0.0394, "max_drawdown_20d": -0.0166}, {"date": "2024-09-03", "close": 17438.0, "volume": 105583, "prev_close": 17596.0, "pct_change": -0.9, "volume_ratio": 1.56, "dd_count_25d": 4, "market_state": "under_pressure", "fwd_5d": -0.0201, "fwd_20d": 0.3117, "fwd_60d": 0.1252, "max_gain_20d": 0.3117, "max_drawdown_20d": -0.0201}, {"date": "2024-09-06", "close": 17154.0, "volume": 85477, "prev_close": 17443.0, "pct_change": -1.66, "volume_ratio": 45.71, "dd_count_25d": 3, "market_state": "caution", "fwd_5d": 0.0173, "fwd_20d": 0.2025, "fwd_60d": 0.1457, "max_gain_20d": 0.3521, "max_drawdown_20d": -0.0039}, {"date": "2024-09-10", "close": 17087.0, "volume": 99458, "prev_close": 17191.0, "pct_change": -0.6, "volume_ratio": 1.28, "dd_count_25d": 4, "market_state": "under_pressure", "fwd_5d": 0.0569, "fwd_20d": 0.2339, "fwd_60d": 0.2085, "max_gain_20d": 0.3574, "max_drawdown_20d": 0.0097}, {"date": "2024-10-07", "close": 20782.0, "volume": 322990, "prev_close": 23194.0, "pct_change": -10.4, "volume_ratio": 1.78, "dd_count_25d": 4, "market_state": "under_pressure", "fwd_5d": -0.024, "fwd_20d": -0.0081, "fwd_60d": -0.0503, "max_gain_20d": 0.0235, "max_drawdown_20d": -0.0358}, {"date": "2024-10-14", "close": 20361.0, "volume": 159830, "prev_close": 21084.0, "pct_change": -3.43, "volume_ratio": 1.06, "dd_count_25d": 4, "market_state": "under_pressure", "fwd_5d": 0.0061, "fwd_20d": -0.0229, "fwd_60d": -0.0612, "max_gain_20d": 0.0344, "max_drawdown_20d": -0.0229}, {"date": "2024-11-05", "close": 20613.0, "volume": 152871, "prev_close": 20995.0, "pct_change": -1.82, "volume_ratio": 1.4, "dd_count_25d": 3, "market_state": "caution", "fwd_5d": -0.0391, "fwd_20d": -0.0401, "fwd_60d": 0.0157, "max_gain_20d": 0.0218, "max_drawdown_20d": -0.0718}, {"date": "2024-11-07", "close": 20588.0, "volume": 166387, "prev_close": 21062.0, "pct_change": -2.25, "volume_ratio": 1.24, "dd_count_25d": 4, "market_state": "under_pressure", "fwd_5d": -0.0568, "fwd_20d": -0.0318, "fwd_60d": 0.0476, "max_gain_20d": -0.007, "max_drawdown_20d": -0.0707}, {"date": "2024-11-11", "close": 19894.0, "volume": 140220, "prev_close": 20444.0, "pct_change": -2.69, "volume_ratio": 1.06, "dd_count_25d": 4, "market_state": "under_pressure", "fwd_5d": -0.0103, "fwd_20d": 0.0272, "fwd_60d": 0.099, "max_gain_20d": 0.038, "max_drawdown_20d": -0.0383}, {"date": "2024-11-21", "close": 19212.0, "volume": 113402, "prev_close": 19589.0, "pct_change": -1.92, "volume_ratio": 1.54, "dd_count_25d": 4, "market_state": "under_pressure", "fwd_5d": 0.0153, "fwd_20d": 0.0245, "fwd_60d": 0.2143, "max_gain_20d": 0.0748, "max_drawdown_20d": -0.0042}, {"date": "2024-11-22", "close": 19132.0, "volume": 135290, "prev_close": 19212.0, "pct_change": -0.42, "volume_ratio": 1.19, "dd_count_25d": 5, "market_state": "under_pressure", "fwd_5d": 0.0256, "fwd_20d": 0.0399, "fwd_60d": 0.2026, "max_gain_20d": 0.0793, "max_drawdown_20d": 0.0017}, {"date": "2024-12-09", "close": 20436.0, "volume": 182370, "prev_close": 20650.0, "pct_change": -1.04, "volume_ratio": 1.41, "dd_count_25d": 5, "market_state": "under_pressure", "fwd_5d": -0.0337, "fwd_20d": -0.0646, "fwd_60d": 0.1567, "max_gain_20d": 0.0017, "max_drawdown_20d": -0.0646}, {"date": "2024-12-12", "close": 20022.0, "volume": 106010, "prev_close": 20470.0, "pct_change": -2.19, "volume_ratio": 1.04, "dd_count_25d": 5, "market_state": "under_pressure", "fwd_5d": -0.0169, "fwd_20d": -0.0355, "fwd_60d": 0.208, "max_gain_20d": 0.0054, "max_drawdown_20d": -0.0559}, {"date": "2024-12-16", "close": 19747.0, "volume": 89712, "prev_close": 19821.0, "pct_change": -0.37, "volume_ratio": 1.15, "dd_count_25d": 5, "market_state": "under_pressure", "fwd_5d": 0.0194, "fwd_20d": -0.0076, "fwd_60d": 0.2525, "max_gain_20d": 0.0194, "max_drawdown_20d": -0.0428}, {"date": "2024-12-18", "close": 19785.0, "volume": 84037, "prev_close": 19881.0, "pct_change": -0.48, "volume_ratio": 1.37, "dd_count_25d": 6, "market_state": "correction", "fwd_5d": 0.0117, "fwd_20d": 0.019, "fwd_60d": 0.1929, "max_gain_20d": 0.019, "max_drawdown_20d": -0.0446}, {"date": "2024-12-19", "close": 19683.0, "volume": 95721, "prev_close": 19785.0, "pct_change": -0.52, "volume_ratio": 1.14, "dd_count_25d": 7, "market_state": "correction", "fwd_5d": 0.0205, "fwd_20d": 0.0083, "fwd_60d": 0.2177, "max_gain_20d": 0.0242, "max_drawdown_20d": -0.0397}, {"date": "2024-12-27", "close": 20073.0, "volume": 74149, "prev_close": 20130.0, "pct_change": -0.28, "volume_ratio": 1.07, "dd_count_25d": 8, "market_state": "correction", "fwd_5d": -0.0167, "fwd_20d": 0.0095, "fwd_60d": 0.1766, "max_gain_20d": 0.0095, "max_drawdown_20d": -0.0583}, {"date": "2025-01-02", "close": 19620.0, "volume": 102366, "prev_close": 20087.0, "pct_change": -2.32, "volume_ratio": 2.46, "dd_count_25d": 7, "market_state": "correction", "fwd_5d": -0.016, "fwd_20d": 0.0622, "fwd_60d": 0.1852, "max_gain_20d": 0.0622, "max_drawdown_20d": -0.0366}, {"date": "2025-01-06", "close": 19490.0, "volume": 134735, "prev_close": 19737.0, "pct_change": -1.25, "volume_ratio": 1.84, "dd_count_25d": 8, "market_state": "correction", "fwd_5d": -0.0122, "fwd_20d": 0.0888, "fwd_60d": 0.0149, "max_gain_20d": 0.0888, "max_drawdown_20d": -0.0302}, {"date": "2025-01-09", "close": 19115.0, "volume": 80941, "prev_close": 19306.0, "pct_change": -0.99, "volume_ratio": 1.15, "dd_count_25d": 9, "market_state": "correction", "fwd_5d": 0.0252, "fwd_20d": 0.1438, "fwd_60d": 0.0827, "max_gain_20d": 0.1438, "max_drawdown_20d": -0.0111}, {"date": "2025-01-10", "close": 18902.0, "volume": 97828, "prev_close": 19115.0, "pct_change": -1.11, "volume_ratio": 1.21, "dd_count_25d": 10, "market_state": "correction", "fwd_5d": 0.0561, "fwd_20d": 0.1564, "fwd_60d": 0.1034, "max_gain_20d": 0.1567, "max_drawdown_20d": 0.0185}, {"date": "2025-01-21", "close": 19846.0, "volume": 136695, "prev_close": 20160.0, "pct_change": -1.56, "volume_ratio": 1.17, "dd_count_25d": 9, "market_state": "correction", "fwd_5d": 0.024, "fwd_20d": 0.1755, "fwd_60d": 0.104, "max_gain_20d": 0.1822, "max_drawdown_20d": -0.0056}, {"date": "2025-01-22", "close": 19734.0, "volume": 143298, "prev_close": 19846.0, "pct_change": -0.56, "volume_ratio": 1.05, "dd_count_25d": 9, "market_state": "correction", "fwd_5d": 0.056, "fwd_20d": 0.1659, "fwd_60d": 0.1153, "max_gain_20d": 0.1889, "max_drawdown_20d": 0.0187}, {"date": "2025-02-19", "close": 22602.0, "volume": 144620, "prev_close": 22927.0, "pct_change": -1.42, "volume_ratio": 1.25, "dd_count_25d": 3, "market_state": "caution", "fwd_5d": 0.0477, "fwd_20d": 0.0704, "fwd_60d": 0.0398, "max_gain_20d": 0.097, "max_drawdown_20d": 0.0127}, {"date": "2025-02-21", "close": 23329.0, "volume": 195164, "prev_close": 23461.0, "pct_change": -0.56, "volume_ratio": 1.03, "dd_count_25d": 4, "market_state": "under_pressure", "fwd_5d": -0.0158, "fwd_20d": 0.0274, "fwd_60d": -0.0055, "max_gain_20d": 0.0628, "max_drawdown_20d": -0.0189}, {"date": "2025-02-24", "close": 23008.0, "volume": 204999, "prev_close": 23329.0, "pct_change": -1.38, "volume_ratio": 1.05, "dd_count_25d": 5, "market_state": "under_pressure", "fwd_5d": -0.0052, "fwd_20d": 0.0146, "fwd_60d": 0.0117, "max_gain_20d": 0.0777, "max_drawdown_20d": -0.0052}, {"date": "2025-02-26", "close": 23679.0, "volume": 177338, "prev_close": 23747.0, "pct_change": -0.29, "volume_ratio": 1.17, "dd_count_25d": 6, "market_state": "correction", "fwd_5d": 0.0307, "fwd_20d": -0.0026, "fwd_60d": -0.0135, "max_gain_20d": 0.0471, "max_drawdown_20d": -0.0334}, {"date": "2025-02-27", "close": 22967.0, "volume": 183151, "prev_close": 23679.0, "pct_change": -3.01, "volume_ratio": 1.03, "dd_count_25d": 6, "market_state": "correction", "fwd_5d": 0.0553, "fwd_20d": 0.0202, "fwd_60d": 0.0095, "max_gain_20d": 0.0796, "max_drawdown_20d": -0.0034}, {"date": "2025-03-06", "close": 24238.0, "volume": 155915, "prev_close": 24406.0, "pct_change": -0.69, "volume_ratio": 1.07, "dd_count_25d": 6, "market_state": "correction", "fwd_5d": -0.007, "fwd_20d": -0.1839, "fwd_60d": -0.0212, "max_gain_20d": 0.023, "max_drawdown_20d": -0.1839}, {"date": "2025-03-19", "close": 24193.0, "volume": 117144, "prev_close": 24734.0, "pct_change": -2.19, "volume_ratio": 1.06, "dd_count_25d": 7, "market_state": "correction", "fwd_5d": -0.0238, "fwd_20d": -0.1075, "fwd_60d": -0.0398, "max_gain_20d": -0.0093, "max_drawdown_20d": -0.1824}, {"date": "2025-03-20", "close": 23602.0, "volume": 142387, "prev_close": 24193.0, "pct_change": -2.44, "volume_ratio": 1.22, "dd_count_25d": 8, "market_state": "correction", "fwd_5d": -0.0073, "fwd_20d": -0.0605, "fwd_60d": -0.0034, "max_gain_20d": 0.0155, "max_drawdown_20d": -0.1619}, {"date": "2025-03-24", "close": 23344.0, "volume": 151634, "prev_close": 23968.0, "pct_change": -2.6, "volume_ratio": 1.26, "dd_count_25d": 9, "market_state": "correction", "fwd_5d": -0.0039, "fwd_20d": -0.0572, "fwd_60d": 0.0347, "max_gain_20d": 0.0117, "max_drawdown_20d": -0.1527}, {"date": "2025-03-27", "close": 23430.0, "volume": 119615, "prev_close": 23618.0, "pct_change": -0.8, "volume_ratio": 1.03, "dd_count_25d": 8, "market_state": "correction", "fwd_5d": -0.1558, "fwd_20d": -0.0574, "fwd_60d": 0.035, "max_gain_20d": -0.0076, "max_drawdown_20d": -0.1558}, {"date": "2025-03-28", "close": 23162.0, "volume": 127320, "prev_close": 23430.0, "pct_change": -1.14, "volume_ratio": 1.06, "dd_count_25d": 8, "market_state": "correction", "fwd_5d": -0.1401, "fwd_20d": -0.0319, "fwd_60d": 0.0398, "max_gain_20d": 0.0039, "max_drawdown_20d": -0.146}, {"date": "2025-04-02", "close": 22798.0, "volume": 143483, "prev_close": 23209.0, "pct_change": -1.77, "volume_ratio": 1.34, "dd_count_25d": 7, "market_state": "correction", "fwd_5d": -0.0852, "fwd_20d": -0.0021, "fwd_60d": 0.0491, "max_gain_20d": -0.0021, "max_drawdown_20d": -0.1324}, {"date": "2025-04-03", "close": 19780.0, "volume": 292088, "prev_close": 22798.0, "pct_change": -13.24, "volume_ratio": 2.04, "dd_count_25d": 8, "market_state": "correction", "fwd_5d": 0.0827, "fwd_20d": 0.152, "fwd_60d": 0.2065, "max_gain_20d": 0.152, "max_drawdown_20d": 0.007}, {"date": "2025-04-15", "close": 21229.0, "volume": 95957, "prev_close": 21487.0, "pct_change": -1.2, "volume_ratio": 1.12, "dd_count_25d": 8, "market_state": "correction", "fwd_5d": 0.0367, "fwd_20d": 0.1126, "fwd_60d": 0.1559, "max_gain_20d": 0.1126, "max_drawdown_20d": 0.0093}, {"date": "2025-05-23", "close": 23200.0, "volume": 133596, "prev_close": 23549.0, "pct_change": -1.48, "volume_ratio": 1.42, "dd_count_25d": 1, "market_state": "healthy", "fwd_5d": -0.0078, "fwd_20d": 0.0197, "fwd_60d": 0.0828, "max_gain_20d": 0.0493, "max_drawdown_20d": -0.0078}, {"date": "2025-05-30", "close": 23019.0, "volume": 123152, "prev_close": 23186.0, "pct_change": -0.72, "volume_ratio": 1.34, "dd_count_25d": 2, "market_state": "healthy", "fwd_5d": 0.0453, "fwd_20d": 0.0463, "fwd_60d": 0.111, "max_gain_20d": 0.063, "max_drawdown_20d": 0.0091}, {"date": "2025-06-12", "close": 23853.0, "volume": 101738, "prev_close": 24048.0, "pct_change": -0.81, "volume_ratio": 1.18, "dd_count_25d": 3, "market_state": "caution", "fwd_5d": -0.0139, "fwd_20d": 0.0139, "fwd_60d": 0.0725, "max_gain_20d": 0.0259, "max_drawdown_20d": -0.0262}, {"date": "2025-06-16", "close": 23975.0, "volume": 74639, "prev_close": 24055.0, "pct_change": -0.33, "volume_ratio": 1.02, "dd_count_25d": 4, "market_state": "under_pressure", "fwd_5d": 0.0074, "fwd_20d": 0.0235, "fwd_60d": 0.0924, "max_gain_20d": 0.0235, "max_drawdown_20d": -0.0311}, {"date": "2025-06-18", "close": 23229.0, "volume": 89858, "prev_close": 23652.0, "pct_change": -1.79, "volume_ratio": 1.2, "dd_count_25d": 5, "market_state": "under_pressure", "fwd_5d": 0.0481, "fwd_20d": 0.07, "fwd_60d": 0.136, "max_gain_20d": 0.07, "max_drawdown_20d": 0.0126}, {"date": "2025-06-26", "close": 24249.0, "volume": 87898, "prev_close": 24346.0, "pct_change": -0.4, "volume_ratio": 1.09, "dd_count_25d": 5, "market_state": "under_pressure", "fwd_5d": -0.0158, "fwd_20d": 0.0518, "fwd_60d": 0.0887, "max_gain_20d": 0.0591, "max_drawdown_20d": -0.0158}, {"date": "2025-07-03", "close": 23918.0, "volume": 98145, "prev_close": 24052.0, "pct_change": -0.56, "volume_ratio": 1.32, "dd_count_25d": 6, "market_state": "correction", "fwd_5d": 0.0101, "fwd_20d": 0.0222, "fwd_60d": 0.0926, "max_gain_20d": 0.0738, "max_drawdown_20d": -0.0022}, {"date": "2025-07-24", "close": 25362.0, "volume": 138149, "prev_close": 25683.0, "pct_change": -1.25, "volume_ratio": 1.24, "dd_count_25d": 3, "market_state": "caution", "fwd_5d": -0.036, "fwd_20d": -0.0004, "fwd_60d": 0.0256, "max_gain_20d": 0.0106, "max_drawdown_20d": -0.036}, {"date": "2025-07-29", "close": 25178.0, "volume": 121437, "prev_close": 25469.0, "pct_change": -1.14, "volume_ratio": 1.11, "dd_count_25d": 4, "market_state": "under_pressure", "fwd_5d": -0.0137, "fwd_20d": 0.0005, "fwd_60d": 0.039, "max_gain_20d": 0.0272, "max_drawdown_20d": -0.0289}, {"date": "2025-08-14", "close": 25235.0, "volume": 114428, "prev_close": 25567.0, "pct_change": -1.3, "volume_ratio": 1.17, "dd_count_25d": 3, "market_state": "caution", "fwd_5d": 0.0046, "fwd_20d": 0.0457, "fwd_60d": 0.0687, "max_gain_20d": 0.0457, "max_drawdown_20d": -0.013}, {"date": "2025-08-25", "close": 25574.0, "volume": 183054, "prev_close": 25864.0, "pct_change": -1.12, "volume_ratio": 1.1, "dd_count_25d": 4, "market_state": "under_pressure", "fwd_5d": -0.0065, "fwd_20d": 0.0246, "fwd_60d": -0.0133, "max_gain_20d": 0.0523, "max_drawdown_20d": -0.0261}, {"date": "2025-08-27", "close": 24906.0, "volume": 141142, "prev_close": 25190.0, "pct_change": -1.13, "volume_ratio": 1.14, "dd_count_25d": 4, "market_state": "under_pressure", "fwd_5d": 0.0027, "fwd_20d": 0.0654, "fwd_60d": 0.0404, "max_gain_20d": 0.0805, "max_drawdown_20d": 0.0027}, {"date": "2025-09-02", "close": 25325.0, "volume": 114216, "prev_close": 25409.0, "pct_change": -0.33, "volume_ratio": 1.13, "dd_count_25d": 4, "market_state": "under_pressure", "fwd_5d": 0.0342, "fwd_20d": 0.0812, "fwd_60d": 0.0289, "max_gain_20d": 0.0812, "max_drawdown_20d": -0.0139}, {"date": "2025-09-10", "close": 26098.0, "volume": 111724, "prev_close": 26190.0, "pct_change": -0.35, "volume_ratio": 1.05, "dd_count_25d": 5, "market_state": "under_pressure", "fwd_5d": 0.0171, "fwd_20d": -0.0111, "fwd_60d": -0.0252, "max_gain_20d": 0.0492, "max_drawdown_20d": -0.0111}, {"date": "2025-09-17", "close": 26545.0, "volume": 145080, "prev_close": 26912.0, "pct_change": -1.36, "volume_ratio": 1.3, "dd_count_25d": 5, "market_state": "under_pressure", "fwd_5d": -0.0004, "fwd_20d": -0.0257, "fwd_60d": -0.0487, "max_gain_20d": 0.0315, "max_drawdown_20d": -0.0497}, {"date": "2025-09-22", "close": 26202.0, "volume": 130400, "prev_close": 26399.0, "pct_change": -0.75, "volume_ratio": 1.23, "dd_count_25d": 6, "market_state": "correction", "fwd_5d": 0.0271, "fwd_20d": -0.0094, "fwd_60d": -0.0182, "max_gain_20d": 0.045, "max_drawdown_20d": -0.0373}, {"date": "2025-10-06", "close": 26843.0, "volume": 101068, "prev_close": 26996.0, "pct_change": -0.57, "volume_ratio": 1.41, "dd_count_25d": 5, "market_state": "under_pressure", "fwd_5d": -0.0352, "fwd_20d": -0.0115, "fwd_60d": -0.0046, "max_gain_20d": -0.0029, "max_drawdown_20d": -0.0603}, {"date": "2025-10-08", "close": 26766.0, "volume": 125176, "prev_close": 26843.0, "pct_change": -0.29, "volume_ratio": 1.24, "dd_count_25d": 5, "market_state": "under_pressure", "fwd_5d": -0.0322, "fwd_20d": -0.0214, "fwd_60d": -0.0109, "max_gain_20d": -0.0087, "max_drawdown_20d": -0.0576}, {"date": "2025-10-10", "close": 25809.0, "volume": 233950, "prev_close": 26282.0, "pct_change": -1.8, "volume_ratio": 1.93, "dd_count_25d": 6, "market_state": "correction", "fwd_5d": 0.0021, "fwd_20d": 0.0364, "fwd_60d": 0.0167, "max_gain_20d": 0.0364, "max_drawdown_20d": -0.0226}, {"date": "2025-10-16", "close": 25225.0, "volume": 136505, "prev_close": 25905.0, "pct_change": -2.62, "volume_ratio": 1.25, "dd_count_25d": 6, "market_state": "correction", "fwd_5d": 0.0371, "fwd_20d": 0.0453, "fwd_60d": 0.0677, "max_gain_20d": 0.074, "max_drawdown_20d": 0.0205}, {"date": "2025-11-03", "close": 25908.0, "volume": 96528, "prev_close": 26155.0, "pct_change": -0.94, "volume_ratio": 1.05, "dd_count_25d": 5, "market_state": "under_pressure", "fwd_5d": 0.0325, "fwd_20d": 0.0068, "fwd_60d": 0.0614, "max_gain_20d": 0.0457, "max_drawdown_20d": -0.0261}, {"date": "2025-11-14", "close": 26367.0, "volume": 112719, "prev_close": 26589.0, "pct_change": -0.83, "volume_ratio": 1.1, "dd_count_25d": 3, "market_state": "caution", "fwd_5d": -0.0248, "fwd_20d": -0.0271, "fwd_60d": 0.0235, "max_gain_20d": -0.0083, "max_drawdown_20d": -0.043}, {"date": "2025-11-20", "close": 25233.0, "volume": 141795, "prev_close": 25848.0, "pct_change": -2.38, "volume_ratio": 1.23, "dd_count_25d": 3, "market_state": "caution", "fwd_5d": 0.0262, "fwd_20d": 0.0195, "fwd_60d": 0.0728, "max_gain_20d": 0.0362, "max_drawdown_20d": 0.0007}, {"date": "2025-12-05", "close": 25777.0, "volume": 86980, "prev_close": 26147.0, "pct_change": -1.42, "volume_ratio": 1.08, "dd_count_25d": 3, "market_state": "caution", "fwd_5d": -0.0048, "fwd_20d": 0.0141, "fwd_60d": 0.0052, "max_gain_20d": 0.0365, "max_drawdown_20d": -0.0204}, {"date": "2025-12-15", "close": 25251.0, "volume": 98687, "prev_close": 25653.0, "pct_change": -1.57, "volume_ratio": 1.31, "dd_count_25d": 4, "market_state": "under_pressure", "fwd_5d": 0.0213, "fwd_20d": 0.0625, "fwd_60d": 0.0287, "max_gain_20d": 0.0682, "max_drawdown_20d": 0.0078}, {"date": "2025-12-29", "close": 25635.0, "volume": 88451, "prev_close": 25810.0, "pct_change": -0.68, "volume_ratio": 1.7, "dd_count_25d": 3, "market_state": "caution", "fwd_5d": 0.0423, "fwd_20d": 0.0559, "fwd_60d": -0.0306, "max_gain_20d": 0.0559, "max_drawdown_20d": 0.0005}, {"date": "2026-01-02", "close": 26374.0, "volume": 99970, "prev_close": 26429.0, "pct_change": -0.21, "volume_ratio": 1.08, "dd_count_25d": 4, "market_state": "under_pressure", "fwd_5d": 0.0085, "fwd_20d": 0.0156, "fwd_60d": -0.0488, "max_gain_20d": 0.0637, "max_drawdown_20d": -0.0088}, {"date": "2026-01-07", "close": 26141.0, "volume": 104625, "prev_close": 26473.0, "pct_change": -1.25, "volume_ratio": 1.03, "dd_count_25d": 5, "market_state": "under_pressure", "fwd_5d": 0.0303, "fwd_20d": 0.0283, "fwd_60d": -0.0083, "max_gain_20d": 0.0732, "max_drawdown_20d": 0.0038}, {"date": "2026-01-19", "close": 26462.0, "volume": 92387, "prev_close": 26588.0, "pct_change": -0.47, "volume_ratio": 1.07, "dd_count_25d": 5, "market_state": "under_pressure", "fwd_5d": 0.0229, "fwd_20d": -0.0019, "fwd_60d": -0.0114, "max_gain_20d": 0.0602, "max_drawdown_20d": -0.0019}, {"date": "2026-01-29", "close": 27500.0, "volume": 136801, "prev_close": 28055.0, "pct_change": -1.98, "volume_ratio": 1.06, "dd_count_25d": 5, "market_state": "under_pressure", "fwd_5d": -0.0337, "fwd_20d": -0.0861, "fwd_60d": -0.0613, "max_gain_20d": -0.01, "max_drawdown_20d": -0.0861}, {"date": "2026-01-30", "close": 26785.0, "volume": 151311, "prev_close": 27500.0, "pct_change": -2.6, "volume_ratio": 1.11, "dd_count_25d": 5, "market_state": "under_pressure", "fwd_5d": 0.01, "fwd_20d": -0.0597, "fwd_60d": -0.0245, "max_gain_20d": 0.0165, "max_drawdown_20d": -0.0617}, {"date": "2026-02-11", "close": 26986.0, "volume": 80481, "prev_close": 27226.0, "pct_change": -0.88, "volume_ratio": 1.18, "dd_count_25d": 4, "market_state": "under_pressure", "fwd_5d": -0.0158, "fwd_20d": -0.0407, "fwd_60d": -0.0509, "max_gain_20d": 0.0031, "max_drawdown_20d": -0.0687}, {"date": "2026-02-12", "close": 26530.0, "volume": 104648, "prev_close": 26986.0, "pct_change": -1.69, "volume_ratio": 1.3, "dd_count_25d": 5, "market_state": "under_pressure", "fwd_5d": 0.0086, "fwd_20d": -0.0209, "fwd_60d": -0.0311, "max_gain_20d": 0.0204, "max_drawdown_20d": -0.0527}, {"date": "2026-02-20", "close": 26412.0, "volume": 94298, "prev_close": 26800.0, "pct_change": -1.45, "volume_ratio": 1.38, "dd_count_25d": 6, "market_state": "correction", "fwd_5d": 0.0074, "fwd_20d": -0.044, "fwd_60d": -0.0386, "max_gain_20d": 0.025, "max_drawdown_20d": -0.0485}, {"date": "2026-02-25", "close": 26367.0, "volume": 107939, "prev_close": 26758.0, "pct_change": -1.46, "volume_ratio": 1.04, "dd_count_25d": 6, "market_state": "correction", "fwd_5d": -0.0448, "fwd_20d": -0.0598, "fwd_60d": -0.0577, "max_gain_20d": 0.0091, "max_drawdown_20d": -0.0766}, {"date": "2026-02-27", "close": 25887.0, "volume": 148308, "prev_close": 26608.0, "pct_change": -2.71, "volume_ratio": 1.36, "dd_count_25d": 7, "market_state": "correction", "fwd_5d": -0.024, "fwd_20d": -0.0442, "fwd_60d": -0.0248, "max_gain_20d": 0.0034, "max_drawdown_20d": -0.0595}, {"date": "2026-03-03", "close": 25132.0, "volume": 196717, "prev_close": 25655.0, "pct_change": -2.04, "volume_ratio": 1.45, "dd_count_25d": 8, "market_state": "correction", "fwd_5d": 0.0274, "fwd_20d": 0.0066, "fwd_60d": 0.0143, "max_gain_20d": 0.0335, "max_drawdown_20d": -0.0312}, {"date": "2026-03-06", "close": 25267.0, "volume": 180510, "prev_close": 25591.0, "pct_change": -1.27, "volume_ratio": 1.37, "dd_count_25d": 9, "market_state": "correction", "fwd_5d": 0.0192, "fwd_20d": 0.0179, "fwd_60d": -0.0278, "max_gain_20d": 0.028, "max_drawdown_20d": -0.0364}, {"date": "2026-03-11", "close": 25700.0, "volume": 109715, "prev_close": 25820.0, "pct_change": -0.46, "volume_ratio": 1.02, "dd_count_25d": 8, "market_state": "correction", "fwd_5d": -0.0092, "fwd_20d": 0.0084, "fwd_60d": -0.0598, "max_gain_20d": 0.0107, "max_drawdown_20d": -0.0526}, {"date": "2026-03-18", "close": 25463.0, "volume": 132237, "prev_close": 25975.0, "pct_change": -1.97, "volume_ratio": 1.42, "dd_count_25d": 9, "market_state": "correction", "fwd_5d": -0.0264, "fwd_20d": 0.0404, "fwd_60d": -0.0617, "max_gain_20d": 0.0404, "max_drawdown_20d": -0.0438}, {"date": "2026-03-19", "close": 25250.0, "volume": 135950, "prev_close": 25463.0, "pct_change": -0.84, "volume_ratio": 1.03, "dd_count_25d": 10, "market_state": "correction", "fwd_5d": -0.0158, "fwd_20d": 0.0361, "fwd_60d": -0.059, "max_gain_20d": 0.0492, "max_drawdown_20d": -0.0358}, {"date": "2026-03-20", "close": 24347.0, "volume": 180658, "prev_close": 25250.0, "pct_change": -3.58, "volume_ratio": 1.33, "dd_count_25d": 10, "market_state": "correction", "fwd_5d": 0.0163, "fwd_20d": 0.0646, "fwd_60d": -0.042, "max_gain_20d": 0.0881, "max_drawdown_20d": 0.0163}, {"date": "2026-03-27", "close": 24744.0, "volume": 121350, "prev_close": 24851.0, "pct_change": -0.43, "volume_ratio": 1.07, "dd_count_25d": 9, "market_state": "correction", "fwd_5d": 0.0394, "fwd_20d": 0.0356, "fwd_60d": null, "max_gain_20d": 0.0706, "max_drawdown_20d": 0.0004}, {"date": "2026-04-21", "close": 26161.0, "volume": 96672, "prev_close": 26492.0, "pct_change": -1.25, "volume_ratio": 1.23, "dd_count_25d": 5, "market_state": "under_pressure", "fwd_5d": -0.0084, "fwd_20d": -0.0294, "fwd_60d": null, "max_gain_20d": 0.0135, "max_drawdown_20d": -0.0294}, {"date": "2026-04-22", "close": 25921.0, "volume": 110805, "prev_close": 26161.0, "pct_change": -0.92, "volume_ratio": 1.15, "dd_count_25d": 6, "market_state": "correction", "fwd_5d": -0.0115, "fwd_20d": -0.0142, "fwd_60d": null, "max_gain_20d": 0.0229, "max_drawdown_20d": -0.0204}, {"date": "2026-05-11", "close": 26255.0, "volume": 92863, "prev_close": 26323.0, "pct_change": -0.26, "volume_ratio": 1.18, "dd_count_25d": 3, "market_state": "caution", "fwd_5d": -0.0209, "fwd_20d": -0.0753, "fwd_60d": null, "max_gain_20d": 0.0031, "max_drawdown_20d": -0.0753}, {"date": "2026-05-20", "close": 25392.0, "volume": 122643, "prev_close": 25574.0, "pct_change": -0.71, "volume_ratio": 1.35, "dd_count_25d": 4, "market_state": "under_pressure", "fwd_5d": -0.0159, "fwd_20d": -0.0642, "fwd_60d": null, "max_gain_20d": 0.0219, "max_drawdown_20d": -0.0642}, {"date": "2026-05-27", "close": 24845.0, "volume": 138738, "prev_close": 25265.0, "pct_change": -1.66, "volume_ratio": 1.15, "dd_count_25d": 4, "market_state": "under_pressure", "fwd_5d": 0.0099, "fwd_20d": null, "fwd_60d": null, "max_gain_20d": 0.0444, "max_drawdown_20d": -0.0612}, {"date": "2026-06-04", "close": 24888.0, "volume": 98466, "prev_close": 25091.0, "pct_change": -0.81, "volume_ratio": 1.09, "dd_count_25d": 4, "market_state": "under_pressure", "fwd_5d": -0.0075, "fwd_20d": null, "fwd_60d": null, "max_gain_20d": -0.0023, "max_drawdown_20d": -0.0628}, {"date": "2026-06-05", "close": 24564.0, "volume": 125578, "prev_close": 24888.0, "pct_change": -1.3, "volume_ratio": 1.28, "dd_count_25d": 5, "market_state": "under_pressure", "fwd_5d": 0.0109, "fwd_20d": null, "fwd_60d": null, "max_gain_20d": 0.0109, "max_drawdown_20d": -0.0504}, {"date": "2026-06-09", "close": 24278.0, "volume": 129656, "prev_close": 24623.0, "pct_change": -1.4, "volume_ratio": 1.06, "dd_count_25d": 6, "market_state": "correction", "fwd_5d": -0.0006, "fwd_20d": null, "fwd_60d": null, "max_gain_20d": 0.0228, "max_drawdown_20d": -0.0393}, {"date": "2026-06-15", "close": 24484.0, "volume": 89983, "prev_close": 24832.0, "pct_change": -1.4, "volume_ratio": 1.01, "dd_count_25d": 6, "market_state": "correction", "fwd_5d": -0.0431, "fwd_20d": null, "fwd_60d": null, "max_gain_20d": -0.009, "max_drawdown_20d": -0.0473}, {"date": "2026-06-17", "close": 23892.0, "volume": 120210, "prev_close": 24263.0, "pct_change": -1.53, "volume_ratio": 1.54, "dd_count_25d": 7, "market_state": "correction", "fwd_5d": null, "fwd_20d": null, "fwd_60d": null, "max_gain_20d": -0.0055, "max_drawdown_20d": -0.0237}, {"date": "2026-06-22", "close": 23325.0, "volume": 126694, "prev_close": 23761.0, "pct_change": -1.83, "volume_ratio": 1.14, "dd_count_25d": 8, "market_state": "correction", "fwd_5d": null, "fwd_20d": null, "fwd_60d": null, "max_gain_20d": 0.0045, "max_drawdown_20d": 0.0045}], "summary": {"signal_count": 105, "signal_negative_5d": 48.5, "signal_negative_20d": 43.9, "signal_negative_60d": 38.7, "baseline_negative_5d": 47.3, "baseline_negative_20d": 44.5, "baseline_negative_60d": 35.3, "signal_median_20d": 0.83, "baseline_median_20d": 0.8, "current_dd_count_25d": 8, "current_market_state": "correction", "current_date": "2026-06-23", "avg_dd_count_25d": 4.66, "max_dd_count_25d": 10, "state_counts": {"healthy": 54, "caution": 105, "under_pressure": 213, "correction": 147}, "pressure_days": 360, "pressure_negative_20d": 43.9}}], "signals_total": 105, "benchmarks_with_data": 1};
-let currentFilter = 'all';
-
-function fmtPct(v) {
-  if (v == null || Number.isNaN(v)) return '—';
-  return (v >= 0 ? '+' : '') + v.toFixed(2) + '%';
-}
-function fmtNum(v, digits=2) {
-  if (v == null || Number.isNaN(v)) return '—';
-  return Number(v).toFixed(digits);
-}
-function setFilter(next) {
-  currentFilter = next;
-  document.querySelectorAll('.btn[data-filter]').forEach(btn => btn.classList.toggle('active', btn.dataset.filter === next));
-  renderTable();
-}
-function stateLabel(s) {
-  if (s === 'correction') return 'correction';
-  if (s === 'under_pressure') return 'under pressure';
-  if (s === 'caution') return 'caution';
-  return 'healthy';
-}
-
-function renderCards() {
-  const benchmarks = DATA.benchmarks || [];
-  const cards = [
-    ['Benchmark 數', benchmarks.length, `有數據：${DATA.benchmarks_with_data ?? 0}`],
-    ['分佈日總數', DATA.signals_total ?? 0, `window ${DATA.window_days ?? 25}`],
-    ['HK 現況', (benchmarks[0]?.summary?.current_dd_count_25d ?? 0) + 'D', stateLabel(benchmarks[0]?.summary?.current_market_state)],
-  ];
-  document.getElementById('summaryCards').innerHTML = cards.map(([k,v,s]) => `
-    <div class="card">
-      <div class="k">${k}</div>
-      <div class="v">${v}</div>
-      <div class="s">${s}</div>
-    </div>`).join('');
-}
-
-function renderBench() {
-  const bms = DATA.benchmarks || [];
-  document.getElementById('benchGrid').innerHTML = bms.map(b => {
-    const s = b.summary || {};
-    const state = s.current_market_state || 'healthy';
-    const cls = state === 'caution' ? 'state-caution' : state === 'under_pressure' || state === 'correction' ? 'state-pressure' : 'state-healthy';
-    const err = b.error ? `<div class="foot" style="margin-top:8px;color:#ff9a98">❗ ${b.error}</div>` : '';
-    return `<div class="bench-card">
-      <div class="bench-head">
-        <div class="bench-name">${b.code} ${b.name} <span class="pill state">${b.label}</span></div>
-        <div class="bench-state ${cls}">${stateLabel(state)}</div>
-      </div>
-      <div class="mini-grid">
-        <div class="mini"><div class="lab">現時 25D Count</div><div class="val">${s.current_dd_count_25d ?? '—'}</div></div>
-        <div class="mini"><div class="lab">Signal 數</div><div class="val">${s.signal_count ?? 0}</div></div>
-        <div class="mini"><div class="lab">Pressure 日</div><div class="val">${s.pressure_days ?? 0}</div></div>
-      </div>
-      <div class="mini-grid" style="margin-top:8px">
-        <div class="mini"><div class="lab">Signal 20D 下跌率</div><div class="val">${s.signal_negative_20d == null ? '—' : s.signal_negative_20d.toFixed(1)+'%'}</div></div>
-        <div class="mini"><div class="lab">Baseline 20D 下跌率</div><div class="val">${s.baseline_negative_20d == null ? '—' : s.baseline_negative_20d.toFixed(1)+'%'}</div></div>
-        <div class="mini"><div class="lab">Pressure 20D 下跌率</div><div class="val">${s.pressure_negative_20d == null ? '—' : s.pressure_negative_20d.toFixed(1)+'%'}</div></div>
-      </div>
-      ${err}
-      <div class="foot">最新：${s.current_date || '—'} · rolling 25D</div>
-    </div>`;
-  }).join('');
-}
-
-function renderBars() {
-  const totals = {healthy:0, caution:0, under_pressure:0, correction:0};
-  for (const b of (DATA.benchmarks || [])) {
-    const sc = (b.summary && b.summary.state_counts) || {};
-    for (const k in totals) totals[k] += sc[k] || 0;
-  }
-  const total = Object.values(totals).reduce((a,b)=>a+b,0) || 1;
-  const rows = [
-    ['healthy', totals.healthy, 'bar-fill-green'],
-    ['caution', totals.caution, 'bar-fill-amber'],
-    ['under pressure', totals.under_pressure, 'bar-fill-red'],
-    ['correction', totals.correction, 'bar-fill-blue'],
-  ];
-  document.getElementById('stateBars').innerHTML = rows.map(([label,count,cls]) => `
-    <div class="bar-row">
-      <div class="bar-label">${label} <span class="pill state">${count}</span></div>
-      <div class="bar-track"><div class="${cls}" style="width:${Math.max(3, count/total*100)}%"></div></div>
-      <div class="bar-num">${(count/total*100).toFixed(1)}%</div>
-    </div>`).join('');
-}
-
-function matchesFilter(row) {
-  if (currentFilter === 'all') return true;
-  if (currentFilter === 'hk') return row.benchmark === 'HK';
-  if (currentFilter === 'pressure') return row.dd_count_25d >= 4;
-  return true;
-}
-
-function renderTable() {
-  const q = (document.getElementById('search').value || '').trim().toLowerCase();
-  const rows = [];
-  for (const b of (DATA.benchmarks || [])) {
-    const bench = 'HK';
-    for (const r of (b.signals || [])) {
-      rows.push({...r, benchmark: bench, bench_name: b.code + ' ' + b.name});
-    }
-  }
-  const filtered = rows.filter(r => {
-    if (!matchesFilter(r)) return false;
-    if (!q) return true;
-    return String(r.date || '').includes(q) || String(r.benchmark || '').toLowerCase().includes(q) || String(r.bench_name || '').toLowerCase().includes(q);
-  });
-  filtered.sort((a,b) => b.date.localeCompare(a.date));
-  document.getElementById('tableBody').innerHTML = filtered.map(r => `
-    <tr>
-      <td>${r.date}</td>
-      <td>${r.bench_name}</td>
-      <td>${fmtNum(r.close, 2)}</td>
-      <td>${fmtNum(r.prev_close, 2)}</td>
-      <td style="color:${r.pct_change <= -DATA.drop_pct ? '#ff9a98' : '#6fe3a4'}">${fmtPct(r.pct_change)}</td>
-      <td>${r.volume_ratio == null ? '—' : r.volume_ratio.toFixed(2)+'x'}</td>
-      <td><span class="pill dd">${r.dd_count_25d}</span></td>
-      <td><span class="pill state">${r.market_state.replace('_', ' ')}</span></td>
-      <td style="color:${(r.fwd_5d ?? 0) < 0 ? '#ff9a98' : '#6fe3a4'}">${fmtPct(r.fwd_5d == null ? null : r.fwd_5d*100)}</td>
-      <td style="color:${(r.fwd_20d ?? 0) < 0 ? '#ff9a98' : '#6fe3a4'}">${fmtPct(r.fwd_20d == null ? null : r.fwd_20d*100)}</td>
-      <td style="color:${(r.fwd_60d ?? 0) < 0 ? '#ff9a98' : '#6fe3a4'}">${fmtPct(r.fwd_60d == null ? null : r.fwd_60d*100)}</td>
-    </tr>`).join('');
-}
-
-renderCards();
-renderBench();
-renderBars();
-renderTable();
-</script>
+  <div class="foot">來源：分佈日訊號 JSON。Count bar 使用 log1p 比例，真實數字仍顯示在左邊。</div>
+</main>
 </body>
 </html>
