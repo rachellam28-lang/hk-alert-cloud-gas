@@ -52,27 +52,30 @@ def _lb_quote(symbols: list[str]) -> list[dict]:
         "method": "tools/call",
         "params": {"name": "quote", "arguments": {"symbols": symbols}},
     }
-    proc = subprocess.run(
-        [
-            "curl",
-            "-sS",
-            "-X",
-            "POST",
-            "https://mcp.longbridge.com",
-            "-H",
-            "Content-Type: application/json",
-            "-H",
-            "Accept: application/json, text/event-stream",
-            "-H",
-            "Authorization: Bearer " + token,
-            "-d",
-            json.dumps(body),
-        ],
-        capture_output=True,
-        text=True,
-        timeout=30,
-        check=False,
-    )
+    try:
+        proc = subprocess.run(
+            [
+                "curl",
+                "-sS",
+                "-X",
+                "POST",
+                "https://mcp.longbridge.com",
+                "-H",
+                "Content-Type: application/json",
+                "-H",
+                "Accept: application/json, text/event-stream",
+                "-H",
+                "Authorization: Bearer " + token,
+                "-d",
+                json.dumps(body),
+            ],
+            capture_output=True,
+            text=True,
+            timeout=float(os.environ.get("LONGBRIDGE_MARKET_TIMEOUT_SECONDS", "30")),
+            check=False,
+        )
+    except subprocess.TimeoutExpired as exc:
+        raise RuntimeError(f"Longbridge quote timeout after {exc.timeout}s") from exc
     if proc.returncode != 0:
         raise RuntimeError((proc.stderr or "Longbridge quote failed").strip())
     raw = proc.stdout.strip()

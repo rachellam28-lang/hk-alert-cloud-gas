@@ -150,6 +150,7 @@ tbody tr{cursor:pointer}
 .mchip-sub{font-size:9px;margin-top:1px;display:flex;align-items:center;gap:4px}
 .mchip-chg{font-size:10px;line-height:1.1}
 .mchip-avg{color:var(--mute)}
+.mchip-avg.stale{color:var(--down);font-weight:700}
 .ev-green{background:var(--up-soft);color:var(--up);border:1px solid var(--up-border);border-radius:4px;padding:1px 5px;font-weight:600}
 .ev-neutral{background:var(--surface-soft);color:var(--mute);border:1px solid var(--line);border-radius:4px;padding:1px 5px;font-weight:600}
 .ev-orange{background:var(--amber-soft);color:var(--amber);border:1px solid var(--amber-border);border-radius:4px;padding:1px 5px;font-weight:600}
@@ -1896,9 +1897,10 @@ function renderMarket(snap){
   function evBadge(ev){if(!ev)return '';return '<span class="ev-'+ev.color+'">'+ev.label+'</span>';}
   function avgHtml(avg){if(avg==null)return '';return '<span class="mchip-avg">均'+fmtNum(avg,2)+'</span>';}
   function chip(label,val,chgPct,stale,dp,ev,avg5y){
-    const valStr=fmtNum(val,dp??2);
-    const sub=(evBadge(ev)||avgHtml(avg5y))?'<span class="mchip-sub">'+evBadge(ev)+avgHtml(avg5y)+'</span>':'';
-    return '<div class="mchip"><span class="mchip-label">'+label+'</span><span class="mchip-val'+(stale?' stale':'')+'">'+valStr+'</span><span class="mchip-chg">'+chgHtml(chgPct)+'</span>'+sub+'</div>';
+    const valStr=stale?'—':fmtNum(val,dp??2);
+    const staleTag=stale?'<span class="mchip-avg stale">舊</span>':'';
+    const sub=(staleTag||evBadge(ev)||avgHtml(avg5y))?'<span class="mchip-sub">'+staleTag+(stale?'':evBadge(ev)+avgHtml(avg5y))+'</span>':'';
+    return '<div class="mchip"><span class="mchip-label">'+label+'</span><span class="mchip-val'+(stale?' stale':'')+'">'+valStr+'</span><span class="mchip-chg">'+(stale?'':chgHtml(chgPct))+'</span>'+sub+'</div>';
   }
   const h=snap.hsi||{},dow=snap.dow||{},d=snap.dxy||{},v=snap.vix||{},hp=snap.hsi_pe||{},hm=snap.hsi_m2||{},sp=snap.spx_pe||{},sm=snap.spx_m2||{},fg=snap.fear_greed||{};
   bar.innerHTML=[

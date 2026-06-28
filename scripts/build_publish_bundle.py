@@ -90,12 +90,19 @@ def summarize_prices():
 
 def summarize_market():
     data = load_json(DATA / "market.json", {})
+    stale_keys = []
+    for key in ("hsi", "dow", "spx", "dxy", "vix", "hsi_pe", "hsi_m2", "spx_pe", "spx_m2", "fear_greed", "dopamine"):
+        value = data.get(key) if isinstance(data, dict) else None
+        if isinstance(value, dict) and value.get("stale"):
+            stale_keys.append(key)
     return {
         "path": "data/market.json",
         "updated": data.get("updated_at") or data.get("updated"),
         "source": "market breadth / fear-greed cache",
         "keys": len(data) if isinstance(data, dict) else None,
-        "stale": bool((data.get("dopamine") or {}).get("stale")) if isinstance(data, dict) else None,
+        "stale": bool(stale_keys or data.get("market_partial")) if isinstance(data, dict) else None,
+        "stale_keys": stale_keys,
+        "partial": bool(data.get("market_partial")) if isinstance(data, dict) else None,
     }
 
 
