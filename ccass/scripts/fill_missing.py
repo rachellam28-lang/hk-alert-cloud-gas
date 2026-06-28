@@ -169,6 +169,7 @@ def _save_snapshot(db: sqlite3.Connection, data: dict) -> None:
 
 def fill_missing(target_date: str, max_stocks: int = 3000):
     sc_cfg = _load_scraping_config()
+    provider = os.environ.get("HOLDINGS_PROVIDER", "hkex").lower()
     workers = max(1, int(os.environ.get("FILL_MISSING_WORKERS", "1")))
     db = sqlite3.connect(str(DB))
     db.execute("PRAGMA journal_mode=WAL")
@@ -237,7 +238,8 @@ def fill_missing(target_date: str, max_stocks: int = 3000):
 
             if i % 50 == 0:
                 print(f"  Progress: {i}/{len(missing)} ({100*i/len(missing):.1f}%), succeeded={succeeded}, failed={len(failed)}")
-            time.sleep(random.uniform(sc_cfg["delay_min_seconds"], sc_cfg["delay_max_seconds"]))
+            if provider != "longbridge":
+                time.sleep(random.uniform(sc_cfg["delay_min_seconds"], sc_cfg["delay_max_seconds"]))
     
     db.close()
     print(f"\nDone: {succeeded} succeeded, {len(failed)} failed")

@@ -128,6 +128,9 @@ def run_audit_gate():
             "latest_db_date": data.get("latest_db_date"),
             "latest_db_stock_count": data.get("latest_db_stock_count"),
             "latest_db_coverage_pct": data.get("latest_db_coverage_pct"),
+            "latest_publishable_date": data.get("latest_publishable_date"),
+            "latest_publishable_stock_count": data.get("latest_publishable_stock_count"),
+            "latest_publishable_coverage_pct": data.get("latest_publishable_coverage_pct"),
             "holdings_updated": data.get("holdings_updated"),
             "coverage_pct": data.get("coverage_pct"),
             "verify_data": data.get("verify_data") or {},
@@ -176,6 +179,9 @@ def main():
         "latest_db_date": bundle["publish"].get("latest_db_date"),
         "latest_db_stock_count": bundle["publish"].get("latest_db_stock_count"),
         "latest_db_coverage_pct": bundle["publish"].get("latest_db_coverage_pct"),
+        "latest_publishable_date": bundle["publish"].get("latest_publishable_date"),
+        "latest_publishable_stock_count": bundle["publish"].get("latest_publishable_stock_count"),
+        "latest_publishable_coverage_pct": bundle["publish"].get("latest_publishable_coverage_pct"),
         "signals_updated": bundle["files"]["signals"]["updated"],
         "alerts_updated": bundle["files"]["alerts"]["updated"],
         "prices_updated": bundle["files"]["prices"]["updated"],
@@ -193,6 +199,7 @@ def main():
             f"holdings={bundle['files']['holdings']['updated'] or '—'} | "
             f"latest_db={bundle['publish'].get('latest_db_date') or '—'} "
             f"({bundle['publish'].get('latest_db_coverage_pct') or '—'}%) | "
+            f"publishable={bundle['publish'].get('latest_publishable_date') or '—'} | "
             f"signals={bundle['files']['signals']['updated'] or '—'} | "
             f"alerts={bundle['files']['alerts']['updated'] or '—'} | "
             f"market={bundle['files']['market']['updated'] or '—'}"

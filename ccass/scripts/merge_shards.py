@@ -212,6 +212,35 @@ def update_holdings_json(target_date: date) -> None:
     except Exception:
         pass
 
+    # FCF enrichment is maintained by a separate pipeline. Preserve it across
+    # CCASS rewrites so regenerate_json does not wipe the 5Y bar-chart data.
+    fcf_map = {}
+    try:
+        fcf5y_path = PROJECT_ROOT.parent / "data" / "fcf5y.json"
+        fcf_path = PROJECT_ROOT.parent / "data" / "fcf.json"
+        fcf5y_data = _json.loads(fcf5y_path.read_text(encoding="utf-8")) if fcf5y_path.exists() else {}
+        fcf_data = _json.loads(fcf_path.read_text(encoding="utf-8")) if fcf_path.exists() else {}
+        if isinstance(fcf5y_data, dict):
+            for code, val in fcf5y_data.items():
+                code5 = str(code).strip().zfill(5)
+                if isinstance(val, list) and val:
+                    fcf_map.setdefault(code5, {})["fcf5y"] = val
+                    last = val[-1]
+                    if isinstance(last, dict) and last.get("fcf") is not None:
+                        fcf_map.setdefault(code5, {})["fcf"] = last.get("fcf")
+                        first = next((x for x in val if isinstance(x, dict) and x.get("fcf") is not None), None)
+                        if first and first.get("fcf") is not None and last.get("fcf") is not None:
+                            fcf_map.setdefault(code5, {})["fcf_trend"] = 1 if last.get("fcf") >= first.get("fcf") else -1
+        if isinstance(fcf_data, dict):
+            for code, val in fcf_data.items():
+                code5 = str(code).strip().zfill(5)
+                if isinstance(val, dict):
+                    fcf_map.setdefault(code5, {}).update({k: v for k, v in val.items() if k in ("fcf", "fcf5y", "fcf_trend")})
+                elif isinstance(val, (int, float)):
+                    fcf_map.setdefault(code5, {})["fcf"] = val
+    except Exception:
+        pass
+
     stocks = []
     for row in rows:
         sc = row[0]
@@ -230,8 +259,9 @@ def update_holdings_json(target_date: date) -> None:
 
         mc = mc_map.get(sc)
         pr = price_map.get(sc, {})
+        fcf = fcf_map.get(sc, {})
 
-        stocks.append({
+        stock = {
             'c': sc,
             'n': names.get(sc, sc),
             'tp': tp,
@@ -262,7 +292,11 @@ def update_holdings_json(target_date: date) -> None:
             'tbp': tbp,
             'fp': fp,
             'a5': a5,
-        })
+        }
+        for key in ("fcf", "fcf5y", "fcf_trend"):
+            if fcf.get(key) is not None:
+                stock[key] = fcf[key]
+        stocks.append(stock)
 
     total_participants = sum(s['np'] for s in stocks)
 

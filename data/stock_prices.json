@@ -39693,7 +39693,7 @@
     "vol": 0,
     "turnover": 0.0,
     "price_source": "longbridge",
-    "price_updated_at": "2026-05-27T08:09:08Z"
+    "price_updated_at": "2026-06-10T08:08:00Z"
   },
   "02944": {
     "yo": null,
@@ -39706,7 +39706,7 @@
     "vol": 0,
     "turnover": 0.0,
     "price_source": "longbridge",
-    "price_updated_at": "2026-06-01T08:08:00Z"
+    "price_updated_at": "2026-06-10T08:08:00Z"
   },
   "02946": {
     "yo": null,
@@ -39723,7 +39723,7 @@
     "prev_close": 0.64,
     "turnover": 0.0,
     "price_source": "longbridge",
-    "price_updated_at": "2026-06-05T08:09:12Z"
+    "price_updated_at": "2026-06-10T08:08:00Z"
   },
   "02950": {
     "yo": null,
@@ -39770,7 +39770,7 @@
     "vol": 0,
     "turnover": 0.0,
     "price_source": "longbridge",
-    "price_updated_at": "2026-05-29T08:08:26Z"
+    "price_updated_at": "2026-06-10T08:08:00Z"
   },
   "03200": {
     "yo": null,
@@ -55324,7 +55324,7 @@
     "vol": 0,
     "turnover": 0.0,
     "price_source": "longbridge",
-    "price_updated_at": "2026-06-04T08:08:00Z"
+    "price_updated_at": "2026-06-10T08:08:00Z"
   },
   "08556": {
     "yo": null,
@@ -55341,6 +55341,6 @@
   "_meta": {
     "source": "longbridge:quote",
     "updated_at": "2026-06-26T08:08:31Z",
-    "updated_count": 2777
+    "updated_count": 2677
   }
 }

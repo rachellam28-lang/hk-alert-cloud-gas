@@ -28,8 +28,9 @@ if _parsed.hostname not in ALLOWED_MCP_HOSTS:
         f"LONGBRIDGE_MCP_URL hostname {_parsed.hostname!r} not in allowlist: {ALLOWED_MCP_HOSTS}"
     )
 BASE = _raw
-MAX_RETRIES = 2
-RETRY_DELAY = 3.0  # seconds base
+MAX_RETRIES = int(os.environ.get("LONGBRIDGE_MCP_MAX_RETRIES", "2"))
+RETRY_DELAY = float(os.environ.get("LONGBRIDGE_MCP_RETRY_DELAY_SECONDS", "3.0"))
+MCP_TIMEOUT_SECONDS = float(os.environ.get("LONGBRIDGE_MCP_TIMEOUT_SECONDS", "30"))
 
 # --- Token loading ---
 
@@ -79,7 +80,7 @@ class LongbridgeMCPClient:
 
         for attempt in range(MAX_RETRIES):
             try:
-                r = requests.post(BASE, headers=self.headers, json=body, timeout=30)
+                r = requests.post(BASE, headers=self.headers, json=body, timeout=MCP_TIMEOUT_SECONDS)
                 if r.status_code == 401:
                     logger.warning("Longbridge token expired (401), reloading...")
                     self.token = _load_token()

@@ -31,7 +31,10 @@ elif [[ "$runner_rc" -ne 0 ]]; then
     exit "$runner_rc"
 fi
 
-echo "2/5 Refresh prices + suspended (Futu)..."
+echo "2/5 Regenerate holdings.json..."
+"$PYTHON_BIN" scripts/regenerate_json.py --min-coverage "${AUDIT_MIN_COVERAGE:-99.0}" || { echo "ERROR: holdings.json regeneration failed"; exit 1; }
+
+echo "2.2/5 Refresh prices + suspended (Futu)..."
 set +e
 timeout "${FUTU_PRICE_TIMEOUT_SECONDS:-180}" "$PYTHON_BIN" scripts/daily_lp_futu.py
 futu_price_rc=$?
@@ -45,13 +48,10 @@ echo "2.5/5 Generate prices.json for dashboard fallback..."
 "$PYTHON_BIN" scripts/generate_prices_json.py || { echo "ERROR: prices.json generation failed"; exit 1; }
 
 echo "2.6/5 Generate signals.json for dashboard fallback..."
-"$PYTHON_BIN" scripts/generate_signals_json.py || { echo "ERROR: signals.json generation failed"; exit 1; }
+"$PYTHON_BIN" "$REPO_ROOT/scripts/build_signals.py" || { echo "ERROR: signals.json generation failed"; exit 1; }
 
-echo "2.7/5 Refresh market.json (dopamine)..."
-"$PYTHON_BIN" scripts/dopamine_refresh.py || { echo "ERROR: market.json refresh failed"; exit 1; }
-
-echo "3/5 Regenerate holdings.json..."
-"$PYTHON_BIN" scripts/regenerate_json.py || { echo "ERROR: holdings.json regeneration failed"; exit 1; }
+echo "2.7/5 Refresh Futu dopamine (best-effort)..."
+"$PYTHON_BIN" scripts/futu_dopamine.py || echo "WARN: Futu dopamine unavailable; keeping existing market sentiment cache"
 
 echo "3.45/5 Refresh placement returns..."
 "$PYTHON_BIN" scripts/refresh_placement_returns.py || { echo "ERROR: placement returns refresh failed"; exit 1; }

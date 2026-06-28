@@ -76,6 +76,23 @@ def _latest_db_coverage(conn: sqlite3.Connection, trade_date: str) -> tuple[int,
     return count, total, pct
 
 
+def _latest_publishable_db_date(conn: sqlite3.Connection, min_coverage: float) -> tuple[str | None, int | None, float | None]:
+    rows = conn.execute(
+        """
+        SELECT trade_date, COUNT(DISTINCT stock_code) AS stock_count
+        FROM ccass_daily
+        WHERE validation_failed = 0
+        GROUP BY trade_date
+        ORDER BY trade_date DESC
+        """
+    ).fetchall()
+    for trade_date, _ in rows:
+        count, _, pct = _latest_db_coverage(conn, trade_date)
+        if pct is not None and pct >= min_coverage:
+            return trade_date, count, pct
+    return None, None, None
+
+
 def _date_set(conn: sqlite3.Connection) -> set[str]:
     rows = conn.execute(
         """
@@ -139,6 +156,7 @@ def main() -> int:
         latest_db_coverage_pct = None
         if latest_db:
             latest_db_stock_count, _, latest_db_coverage_pct = _latest_db_coverage(conn, latest_db)
+        publishable_db, publishable_count, publishable_coverage_pct = _latest_publishable_db_date(conn, args.min_coverage)
         present_dates = _date_set(conn)
     finally:
         conn.close()
@@ -151,8 +169,15 @@ def main() -> int:
     # Freshness checks
     if not latest_db:
         errors.append("Database has no validated trading dates")
-    if holdings_updated and latest_db and holdings_updated != latest_db:
-        errors.append(f"holdings.json.updated={holdings_updated} != latest DB date {latest_db}")
+    if not publishable_db:
+        errors.append(f"No DB date reaches publish coverage threshold {args.min_coverage}")
+    if holdings_updated and publishable_db and holdings_updated != publishable_db:
+        errors.append(f"holdings.json.updated={holdings_updated} != latest publishable DB date {publishable_db}")
+    if latest_db and publishable_db and latest_db != publishable_db:
+        warnings.append(
+            f"latest DB date {latest_db} is partial ({latest_db_coverage_pct}%), "
+            f"publishing latest complete date {publishable_db}"
+        )
     if ccass.get("updated") and holdings_updated and ccass["updated"] != holdings_updated:
         errors.append(f"ccass.json.updated={ccass['updated']} != holdings.json.updated={holdings_updated}")
     if ccass.get("stock_count") is not None and stock_count is not None and ccass["stock_count"] != stock_count:
@@ -168,7 +193,7 @@ def main() -> int:
     # Timeline continuity check across the current DB range.
     if present_dates:
         start_db = min(present_dates)
-        end_db = max(present_dates)
+        end_db = publishable_db or max(present_dates)
         missing_days = _missing_trading_days(start_db, end_db, present_dates)
         if missing_days:
             errors.append(
@@ -176,6 +201,15 @@ def main() -> int:
                 + ", ".join(missing_days[:12])
                 + (" ..." if len(missing_days) > 12 else "")
             )
+        if publishable_db and latest_db and publishable_db != latest_db:
+            tail_missing = _missing_trading_days(publishable_db, latest_db, present_dates)
+            tail_missing = [d for d in tail_missing if d != publishable_db]
+            if tail_missing:
+                warnings.append(
+                    f"Incomplete tail after publishable date {publishable_db}: "
+                    + ", ".join(tail_missing[:12])
+                    + (" ..." if len(tail_missing) > 12 else "")
+                )
 
     # Run the existing verifiers.
     data_report, data_rc, _, _ = _run_json_script("scripts/verify_data.py", "--json")
@@ -196,6 +230,9 @@ def main() -> int:
         "latest_db_date": latest_db,
         "latest_db_stock_count": latest_db_stock_count,
         "latest_db_coverage_pct": latest_db_coverage_pct,
+        "latest_publishable_date": publishable_db,
+        "latest_publishable_stock_count": publishable_count,
+        "latest_publishable_coverage_pct": publishable_coverage_pct,
         "holdings_updated": holdings_updated,
         "coverage_pct": coverage_pct,
         "stock_count": stock_count,

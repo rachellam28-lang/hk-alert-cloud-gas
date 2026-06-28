@@ -18,6 +18,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent.parent
 PRICES = ROOT / "data" / "stock_prices.json"
 HOLDINGS = ROOT / "holdings.json"
+DATA_HOLDINGS = ROOT / "data" / "holdings.json"
+CCASS_JSON = ROOT / "ccass.json"
 SUSPENDED = ROOT / "data" / "suspended_stocks.json"
 
 
@@ -41,27 +43,30 @@ def lb_mcp(tool: str, args: dict) -> list[dict] | dict:
         "method": "tools/call",
         "params": {"name": tool, "arguments": args},
     }
-    proc = subprocess.run(
-        [
-            "curl",
-            "-sS",
-            "-X",
-            "POST",
-            "https://mcp.longbridge.com",
-            "-H",
-            "Content-Type: application/json",
-            "-H",
-            "Accept: application/json, text/event-stream",
-            "-H",
-            "Authorization: Bearer " + load_token(),
-            "-d",
-            json.dumps(body),
-        ],
-        capture_output=True,
-        text=True,
-        timeout=45,
-        check=False,
-    )
+    try:
+        proc = subprocess.run(
+            [
+                "curl",
+                "-sS",
+                "-X",
+                "POST",
+                "https://mcp.longbridge.com",
+                "-H",
+                "Content-Type: application/json",
+                "-H",
+                "Accept: application/json, text/event-stream",
+                "-H",
+                "Authorization: Bearer " + load_token(),
+                "-d",
+                json.dumps(body),
+            ],
+            capture_output=True,
+            text=True,
+            timeout=float(os.environ.get("LONGBRIDGE_QUOTE_TIMEOUT_SECONDS", "45")),
+            check=False,
+        )
+    except subprocess.TimeoutExpired as exc:
+        raise RuntimeError(f"Longbridge MCP {tool} timeout after {exc.timeout}s") from exc
     if proc.returncode != 0:
         raise RuntimeError((proc.stderr or "Longbridge MCP failed").strip())
     raw = proc.stdout.strip()
@@ -99,7 +104,7 @@ def main() -> int:
     updated = 0
     suspended: dict[str, str] = {}
     latest_ts = None
-    batch_size = 200
+    batch_size = int(os.environ.get("LONGBRIDGE_QUOTE_BATCH_SIZE", "100"))
 
     for i in range(0, len(codes), batch_size):
         batch_codes = codes[i : i + batch_size]
@@ -109,8 +114,8 @@ def main() -> int:
             items = data if isinstance(data, list) else data.get("items", data.get("lists", []))
         except Exception as exc:
             print(f"  batch {i // batch_size + 1} failed: {exc}", file=sys.stderr)
-            for code in batch_codes:
-                suspended.setdefault(code, "longbridge_batch_error")
+            # Preserve existing prices on transient batch failure. Do not mark the
+            # whole batch as suspended; that creates false suspended signals.
             continue
 
         seen: set[str] = set()
@@ -174,10 +179,22 @@ def main() -> int:
         for stock in holdings.get("stocks", []):
             code = stock.get("c")
             entry = prices.get(code, {})
-            for key in ["lp", "vol", "chg", "p52", "py_pct"]:
+            for key in ["lp", "vol", "chg", "p52", "py_pct", "prev_close", "turnover"]:
                 if entry.get(key) is not None:
                     stock[key] = entry[key]
+            if entry.get("price_source"):
+                stock["price_source"] = entry["price_source"]
+            if entry.get("price_updated_at"):
+                stock["price_updated_at"] = entry["price_updated_at"]
         atomic_write_json(HOLDINGS, holdings)
+        atomic_write_json(DATA_HOLDINGS, holdings)
+        if CCASS_JSON.exists():
+            ccass = json.loads(CCASS_JSON.read_text(encoding="utf-8"))
+            ccass["stocks"] = holdings.get("stocks", [])
+            for key in ["updated", "stock_count", "coverage", "coverage_total", "coverage_pct", "is_complete"]:
+                if key in holdings:
+                    ccass[key] = holdings[key]
+            atomic_write_json(CCASS_JSON, ccass)
 
     print(f"Done Longbridge fallback: updated={updated}, suspended={len(suspended)}")
     return 0
