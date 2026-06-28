@@ -51,7 +51,7 @@ echo "2.6/5 Generate signals.json for dashboard fallback..."
 "$PYTHON_BIN" "$REPO_ROOT/scripts/build_signals.py" || { echo "ERROR: signals.json generation failed"; exit 1; }
 
 echo "2.7/5 Refresh Futu dopamine (best-effort)..."
-"$PYTHON_BIN" scripts/futu_dopamine.py || echo "WARN: Futu dopamine unavailable; keeping existing market sentiment cache"
+"$PYTHON_BIN" "$REPO_ROOT/scripts/dopamine_refresh.py" || echo "WARN: market sentiment refresh unavailable; keeping existing market cache"
 
 echo "3.45/5 Refresh placement returns..."
 "$PYTHON_BIN" scripts/refresh_placement_returns.py || { echo "ERROR: placement returns refresh failed"; exit 1; }
