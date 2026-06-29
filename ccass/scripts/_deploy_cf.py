@@ -46,6 +46,7 @@ ROOT_DEPLOY_FILES = [
     "events_watchlist.json",
     "fvg.json",
     "robots.txt",
+    "_headers",
     "service-worker.js",
     "shared-nav.js",
 ]

@@ -26,6 +26,7 @@ If this file disagrees with chat memory, trust the current repo state.
 - Avoid vague memory. Read local files before changing the system.
 - Keep Telegram, dashboard, Cloudflare pages, and memory aligned.
 - User does not want `yfinance` for this project.
+- User does not want `gh` CLI and does not want project internals searchable.
 
 ## Scope
 
@@ -125,6 +126,8 @@ Keep the daily refresh bounded; let resume jobs mop up incomplete coverage.
 - GitHub Actions workflow files may remain for manual fallback, but schedules should stay disabled.
 - Cloudflare cron Worker should stay no-op unless a non-GitHub refresh path is implemented.
 - CCASS events cron should use its own Telegram bot/chat secrets, not the Hermes bot.
+- Cloudflare Pages output should include `_headers` with `X-Robots-Tag: noindex, nofollow, noarchive, nosnippet, noimageindex`.
+- `robots.txt` and `_headers` reduce search indexing for the live site, but they do not make a public GitHub repository private.
 
 Cloudflare cron Worker note:
 
@@ -164,6 +167,7 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - Fix: disable GitHub schedules in `ccass_refresh.yml` and `ccass_events.yml`.
 - Fix: change Cloudflare Worker `ccass-refresh-cron` to no-op; it must not call GitHub API or dispatch workflows.
 - Direct Cloudflare deploy remains the active path.
+- Public exposure note: unauthenticated HTTP to `https://github.com/rachellam28-lang/hk-alert-cloud-gas` returns 200, so GitHub repo visibility must be changed to private separately if the user wants repository contents not searchable.
 
 ### 2026-06-29 stale refresh and 02889 undefined POC fix
 
