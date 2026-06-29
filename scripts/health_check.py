@@ -77,7 +77,7 @@ def check_freshness():
         if not os.path.exists(cfg["path"]):
             rows.append({"name": name, "status": "⚪", "detail": "file missing"})
             continue
-        if name == "holdings.json":
+        if name in ("holdings.json", "data/holdings.json"):
             data = load_json(cfg["path"], default={}) or {}
             updated = data.get("updated", "—")
             coverage = data.get("coverage_pct")

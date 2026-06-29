@@ -168,6 +168,8 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - `.env` exists as an ignored local template, but the CLI token is stored by Longbridge under the user profile; do not print or commit tokens.
 - `ccass/scripts/daily_lp_longbridge.py` now uses the authenticated Longbridge CLI for quote fallback before trying MCP bearer token.
 - `scripts/dopamine_refresh.py` now uses Longbridge CLI for HSI fallback before trying MCP bearer token; this refreshed `market.json` and `data/market.json` to `2026-06-29T15:19:01Z` with `market_partial=true`.
+- On 2026-06-29, live HKEX HOLDINGS probe returned no data for `00700` on `2026-06-29` but valid participant data for `2026-06-26`; dashboard should label this as `CCASS持倉日`, not a whole-system stale date.
+- `scripts/health_check.py` treats both `holdings.json` and `data/holdings.json` as publish-date/coverage checks instead of file-mtime freshness, so weekend/T-1 CCASS lag does not create false stale alerts.
 
 ### 2026-06-29 page data audit and transfer freshness guard
 

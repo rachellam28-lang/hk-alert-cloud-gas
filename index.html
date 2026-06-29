@@ -1301,7 +1301,7 @@ function renderSummaryBar(data){
   allStocks.forEach(s=>{const m=signalMap.get(s.c);if(m&&m.pl)pCnt++;if(m&&m.ri)rCnt++;});
   let totalMc=0, mcCnt=0;
   allStocks.forEach(s=>{if(hasMC(s)){totalMc+=s.mc; mcCnt++;}});
-  bar.innerHTML='<span class="scnt">📅 <b>'+esc(data.updated)+'</b></span>'
+  bar.innerHTML='<span class="scnt">📅 CCASS持倉日 <b>'+esc(data.updated)+'</b></span>'
     +(covLabel?'<span class="scnt">🧩 <b>'+covLabel+'</b> 覆蓋</span>':'')
     +'<span class="scnt">📦 <b>'+allStocks.length+'</b> 隻股票</span>'
     +(mcCnt?'<span class="scnt">💰 <b>'+(totalMc!=null?totalMc.toFixed(0):'0')+'億</b> 總市值</span>':'')
@@ -2330,7 +2330,15 @@ async function loadData(){
         const savedScroll=sessionStorage.getItem('hkdataScroll');if(savedScroll)window.scrollTo(0,parseInt(savedScroll,10));
       }).catch(()=>{});
     dot.className='dot';
-    upd.textContent='更新於 '+data.updated;
+    upd.textContent='CCASS持倉日 '+data.updated+' · 市場/訊號資料已按今日刷新';
+    fetch('./data/publish_bundle.json?_='+Date.now())
+      .then(r=>r.ok?r.json():null)
+      .then(b=>{
+        if(!b) return;
+        const gen=String(b.generated_at||'').replace('T',' ').slice(0,16);
+        if(gen) upd.textContent='系統刷新 '+gen+' · CCASS持倉日 '+data.updated;
+      })
+      .catch(()=>{});
   }catch(err){
     showError(document.getElementById('mcSmallTbody'), err.message, loadData);
     const dot=document.getElementById('statusDot');
