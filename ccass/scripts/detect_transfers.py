@@ -79,6 +79,47 @@ def has_date(conn: sqlite3.Connection, table: str, trade_date: str) -> bool:
     return bool(row)
 
 
+def coverage(conn: sqlite3.Connection, table: str, trade_date: str) -> tuple[int, int, float]:
+    active_row = conn.execute(
+        """
+        SELECT COUNT(*)
+        FROM stock_universe
+        WHERE is_active=1
+          AND stock_code NOT LIKE '029%'
+          AND stock_code NOT LIKE '04%'
+          AND stock_code NOT LIKE '8%'
+        """
+    ).fetchone()
+    total = int(active_row[0] or 0) if active_row else 0
+    count_row = conn.execute(
+        f"""
+        SELECT COUNT(DISTINCT stock_code)
+        FROM {table}
+        WHERE trade_date = ?
+          AND stock_code NOT LIKE '029%'
+          AND stock_code NOT LIKE '04%'
+          AND stock_code NOT LIKE '8%'
+        """,
+        (trade_date,),
+    ).fetchone()
+    count = int(count_row[0] or 0) if count_row else 0
+    pct = count / total if total else 0.0
+    return count, total, pct
+
+
+def unavailable_payload(target_date: str, reason: str, previous: str | None = None) -> dict:
+    return {
+        "ok": False,
+        "status": "backfill_required",
+        "updated": f"{target_date} transfer backfill required",
+        "date": target_date,
+        "previous_date": previous,
+        "count": 0,
+        "transfers": [],
+        "message": reason,
+    }
+
+
 def build_transfers(conn: sqlite3.Connection, table: str, d1: str, d2: str, min_change: int, limit: int) -> dict:
     changes = conn.execute(
         f"""
@@ -175,6 +216,8 @@ def main() -> int:
     parser.add_argument("--date", help="Target trade date. Defaults to holdings.json.updated")
     parser.add_argument("--min-change", type=int, default=100_000, help="Minimum participant share change")
     parser.add_argument("--limit", type=int, default=50, help="Number of transfer records to publish")
+    parser.add_argument("--min-coverage", type=float, default=0.95, help="Minimum participant date coverage required")
+    parser.add_argument("--allow-unavailable", action="store_true", help="Write an explicit unavailable snapshot instead of failing")
     args = parser.parse_args()
 
     if not DB_PATH.exists() or DB_PATH.stat().st_size == 0:
@@ -192,11 +235,43 @@ def main() -> int:
             print("ERROR: DB missing ccass_daily or stock_universe", file=sys.stderr)
             return 1
         if not has_date(conn, table, target_date):
-            print(f"ERROR: target date {target_date} not found in {table}", file=sys.stderr)
+            msg = f"target date {target_date} not found in {table}"
+            if args.allow_unavailable:
+                output = unavailable_payload(target_date, msg)
+                atomic_write_json(CCASS_OUT, output)
+                REPO_OUT.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(CCASS_OUT, REPO_OUT)
+                print(f"Saved unavailable transfer snapshot: {msg}")
+                return 0
+            print(f"ERROR: {msg}", file=sys.stderr)
             return 1
         prev_date = previous_date(conn, table, target_date)
         if not prev_date:
-            print(f"ERROR: no previous date before {target_date} in {table}", file=sys.stderr)
+            msg = f"no previous date before {target_date} in {table}"
+            if args.allow_unavailable:
+                output = unavailable_payload(target_date, msg)
+                atomic_write_json(CCASS_OUT, output)
+                REPO_OUT.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(CCASS_OUT, REPO_OUT)
+                print(f"Saved unavailable transfer snapshot: {msg}")
+                return 0
+            print(f"ERROR: {msg}", file=sys.stderr)
+            return 1
+
+        count, total, pct = coverage(conn, table, target_date)
+        if pct < args.min_coverage:
+            msg = (
+                f"participant holdings coverage {count}/{total} "
+                f"({pct * 100:.1f}%) below {args.min_coverage * 100:.1f}%"
+            )
+            if args.allow_unavailable:
+                output = unavailable_payload(target_date, msg, prev_date)
+                atomic_write_json(CCASS_OUT, output)
+                REPO_OUT.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(CCASS_OUT, REPO_OUT)
+                print(f"Saved unavailable transfer snapshot: {msg}")
+                return 0
+            print(f"ERROR: {msg}", file=sys.stderr)
             return 1
 
         output = build_transfers(conn, table, target_date, prev_date, args.min_change, args.limit)

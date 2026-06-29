@@ -143,6 +143,23 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 
 ## Latest Deploy Notes
 
+### 2026-06-29 live data refresh and no-GitHub deploy
+
+- User asked whether data was actually updated; refresh/deploy must stay direct Cloudflare and must not use `gh`.
+- Added `scripts/fetch_fundflow.py` as a Windows-safe fund-flow refresh path using `westock-data-clawhub`; it writes `data/fundflow.json` directly.
+- `ccass/scripts/daily_refresh.sh` now runs the fund-flow refresh before building `data/publish_bundle.json` and stages `data/fundflow.json`.
+- Current refreshed publish data:
+  - `data/fundflow.json`: `2026-06-29`, 500 symbols.
+  - `data/signals.json`: generated `2026-06-29`, 2731 symbols.
+  - `data/alerts.json` / `data/watchlist.json`: exported `2026-06-29 05:13 UTC`.
+  - `data/breakthroughs.json`: generated `2026-06-29`, 41 signals.
+  - `data/announcements.json`: 728 HKEX announcement items.
+  - `holdings.json` and `data/holdings.json`: `2026-06-26`, 2731 symbols, 99.5% coverage.
+- Market quote cache is still `2026-06-26T08:08:32Z` because Futu timed out and Longbridge token is expired.
+- Participant-level transfer DB is not complete for `2026-06-26`; full HKEX participant backfill was too slow and only wrote 24/2759 rows before being stopped.
+- Transfer publish output now truthfully uses `ok:false`, `status:"backfill_required"`, date `2026-06-26`; pages must not show stale `2026-06-05` transfer signals.
+- `ccass/scripts/audit_gate.py --min-coverage 99.0` still fails on local participant DB backfill mismatch; do not fake PASS. Deploy corrected publish JSON with the backfill status clearly labelled.
+
 ### 2026-06-29 page data audit and transfer freshness guard
 
 - Read `AGENTS.md` and `CODEX_MEMORY.md` before touching the system.

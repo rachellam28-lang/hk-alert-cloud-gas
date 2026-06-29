@@ -3,7 +3,7 @@
     "value": 22671.86,
     "change": -405.05,
     "changePct": -1.76,
-    "stale": false,
+    "stale": true,
     "source": "longbridge:quote",
     "updated": "2026-06-26T08:08:32Z"
   },

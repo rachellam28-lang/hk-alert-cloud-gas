@@ -90,6 +90,9 @@ def summarize_transfers():
         "source": "ccass participant holdings transfer monitor",
         "count": data.get("count") if isinstance(data, dict) else None,
         "published_count": len(transfers) if isinstance(transfers, list) else None,
+        "ok": data.get("ok") if isinstance(data, dict) else None,
+        "status": data.get("status") if isinstance(data, dict) else None,
+        "message": data.get("message") if isinstance(data, dict) else None,
     }
 
 
