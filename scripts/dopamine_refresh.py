@@ -10,6 +10,7 @@ from __future__ import annotations
 import json
 import os
 import signal
+import shutil
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -38,11 +39,53 @@ def _load_longbridge_token() -> str | None:
             continue
         for line in path.read_text(encoding="utf-8").splitlines():
             if line.startswith("LONGBRIDGE_ACCESS_TOKEN="):
-                return line.split("=", 1)[1].strip()
+                token = line.split("=", 1)[1].strip()
+                if token:
+                    return token
     return None
 
 
+def _longbridge_cli() -> str | None:
+    configured = os.environ.get("LONGBRIDGE_CLI")
+    if configured and Path(configured).exists():
+        return configured
+    found = shutil.which("longbridge")
+    if found:
+        return found
+    local = os.environ.get("LOCALAPPDATA")
+    if local:
+        exe = Path(local) / "Programs" / "longbridge" / "longbridge.exe"
+        if exe.exists():
+            return str(exe)
+    return None
+
+
+def _lb_cli_quote(symbols: list[str]) -> list[dict]:
+    exe = _longbridge_cli()
+    if not exe:
+        raise RuntimeError("Longbridge CLI not found")
+    try:
+        proc = subprocess.run(
+            [exe, "quote", *symbols, "--format", "json"],
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=float(os.environ.get("LONGBRIDGE_MARKET_TIMEOUT_SECONDS", "30")),
+            check=False,
+        )
+    except subprocess.TimeoutExpired as exc:
+        raise RuntimeError(f"Longbridge CLI quote timeout after {exc.timeout}s") from exc
+    if proc.returncode != 0:
+        raise RuntimeError((proc.stderr or proc.stdout or "Longbridge CLI quote failed").strip())
+    return json.loads(proc.stdout.strip() or "[]")
+
+
 def _lb_quote(symbols: list[str]) -> list[dict]:
+    try:
+        return _lb_cli_quote(symbols)
+    except Exception as cli_exc:
+        print(f"[dopamine_refresh] Longbridge CLI unavailable: {cli_exc}; trying MCP token", file=sys.stderr)
     token = _load_longbridge_token()
     if not token:
         raise RuntimeError("LONGBRIDGE_ACCESS_TOKEN not found")
@@ -122,7 +165,7 @@ def _apply_longbridge_market_fallback(market: dict) -> bool:
     hsi = by_symbol.get("HSI.HK")
     if not hsi:
         return False
-    last_done = float(hsi.get("last_done") or 0)
+    last_done = float(hsi.get("last_done") or hsi.get("last") or 0)
     prev_close = float(hsi.get("prev_close") or 0)
     if not last_done:
         return False

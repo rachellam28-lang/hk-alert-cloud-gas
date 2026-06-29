@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import os
+import shutil
 import subprocess
 import sys
 import time
@@ -32,8 +33,46 @@ def load_token() -> str:
             continue
         for line in path.read_text(encoding="utf-8").splitlines():
             if line.startswith("LONGBRIDGE_ACCESS_TOKEN="):
-                return line.split("=", 1)[1].strip()
+                token = line.split("=", 1)[1].strip()
+                if token:
+                    return token
     raise RuntimeError("LONGBRIDGE_ACCESS_TOKEN not found")
+
+
+def longbridge_cli() -> str | None:
+    configured = os.environ.get("LONGBRIDGE_CLI")
+    if configured and Path(configured).exists():
+        return configured
+    found = shutil.which("longbridge")
+    if found:
+        return found
+    local = os.environ.get("LOCALAPPDATA")
+    if local:
+        exe = Path(local) / "Programs" / "longbridge" / "longbridge.exe"
+        if exe.exists():
+            return str(exe)
+    return None
+
+
+def lb_cli_quote(symbols: list[str]) -> list[dict]:
+    exe = longbridge_cli()
+    if not exe:
+        raise RuntimeError("Longbridge CLI not found")
+    try:
+        proc = subprocess.run(
+            [exe, "quote", *symbols, "--format", "json"],
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=float(os.environ.get("LONGBRIDGE_QUOTE_TIMEOUT_SECONDS", "45")),
+            check=False,
+        )
+    except subprocess.TimeoutExpired as exc:
+        raise RuntimeError(f"Longbridge CLI quote timeout after {exc.timeout}s") from exc
+    if proc.returncode != 0:
+        raise RuntimeError((proc.stderr or proc.stdout or "Longbridge CLI quote failed").strip())
+    return json.loads(proc.stdout.strip() or "[]")
 
 
 def lb_mcp(tool: str, args: dict) -> list[dict] | dict:
@@ -81,6 +120,15 @@ def lb_mcp(tool: str, args: dict) -> list[dict] | dict:
     return json.loads(content[0]["text"])
 
 
+def lb_quote(symbols: list[str]) -> list[dict]:
+    try:
+        return lb_cli_quote(symbols)
+    except Exception as cli_exc:
+        print(f"  Longbridge CLI quote unavailable: {cli_exc}; trying MCP token", file=sys.stderr)
+    data = lb_mcp("quote", {"symbols": symbols})
+    return data if isinstance(data, list) else data.get("items", data.get("lists", []))
+
+
 def to_float(value):
     try:
         if value in (None, ""):
@@ -110,8 +158,7 @@ def main() -> int:
         batch_codes = codes[i : i + batch_size]
         symbols = [f"{code}.HK" for code in batch_codes]
         try:
-            data = lb_mcp("quote", {"symbols": symbols})
-            items = data if isinstance(data, list) else data.get("items", data.get("lists", []))
+            items = lb_quote(symbols)
         except Exception as exc:
             print(f"  batch {i // batch_size + 1} failed: {exc}", file=sys.stderr)
             # Preserve existing prices on transient batch failure. Do not mark the
@@ -127,7 +174,7 @@ def main() -> int:
             seen.add(code)
             entry = prices.get(code, {})
             changed = False
-            lp = to_float(item.get("last_done"))
+            lp = to_float(item.get("last_done") or item.get("last"))
             prev = to_float(item.get("prev_close"))
             vol = to_float(item.get("volume"))
             turnover = to_float(item.get("turnover"))
@@ -150,8 +197,8 @@ def main() -> int:
                 entry["p52"] = round((entry["lp"] - entry["lo52"]) / (entry["hi52"] - entry["lo52"]) * 100, 1)
             if entry.get("lp") and entry.get("py") and entry["py"] > 0:
                 entry["py_pct"] = round((entry["lp"] - entry["py"]) / entry["py"] * 100, 2)
-            entry["price_source"] = "longbridge"
-            ts = item.get("timestamp")
+            entry["price_source"] = "longbridge:cli" if "last" in item else "longbridge:mcp"
+            ts = item.get("timestamp") or item.get("updated")
             if ts:
                 entry["price_updated_at"] = ts
                 latest_ts = max(latest_ts or ts, ts)

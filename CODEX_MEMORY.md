@@ -160,6 +160,15 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - Transfer publish output now truthfully uses `ok:false`, `status:"backfill_required"`, date `2026-06-26`; pages must not show stale `2026-06-05` transfer signals.
 - `ccass/scripts/audit_gate.py --min-coverage 99.0` still fails on local participant DB backfill mismatch; do not fake PASS. Deploy corrected publish JSON with the backfill status clearly labelled.
 
+### 2026-06-29 Longbridge CLI auth and market fallback
+
+- User supplied a one-time Longbridge auth code; redeemed it with Longbridge CLI, then installed the Codex plugin `longbridge@longbridge-skills`.
+- Longbridge CLI installed at `%LOCALAPPDATA%\Programs\longbridge\longbridge.exe`, version `0.24.0`, auth status valid.
+- Verification quotes succeeded for `NVDA.US` and `00700.HK`.
+- `.env` exists as an ignored local template, but the CLI token is stored by Longbridge under the user profile; do not print or commit tokens.
+- `ccass/scripts/daily_lp_longbridge.py` now uses the authenticated Longbridge CLI for quote fallback before trying MCP bearer token.
+- `scripts/dopamine_refresh.py` now uses Longbridge CLI for HSI fallback before trying MCP bearer token; this refreshed `market.json` and `data/market.json` to `2026-06-29T15:19:01Z` with `market_partial=true`.
+
 ### 2026-06-29 page data audit and transfer freshness guard
 
 - Read `AGENTS.md` and `CODEX_MEMORY.md` before touching the system.

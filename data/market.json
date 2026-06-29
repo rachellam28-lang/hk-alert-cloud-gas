@@ -1,11 +1,11 @@
 {
   "hsi": {
-    "value": 22671.86,
-    "change": -405.05,
-    "changePct": -1.76,
-    "stale": true,
+    "value": 23026.68,
+    "change": 354.82,
+    "changePct": 1.57,
+    "stale": false,
     "source": "longbridge:quote",
-    "updated": "2026-06-26T08:08:32Z"
+    "updated": "2026-06-29T15:19:01.034671+00:00"
   },
   "dow": {
     "value": 50786.01,
@@ -103,7 +103,7 @@
       "count": 108
     }
   },
-  "updated_at": "2026-06-26T08:08:32Z",
+  "updated_at": "2026-06-29T15:19:01.034671+00:00",
   "hsi_m2": {
     "value": 1163.6,
     "m2": 21112.0,
