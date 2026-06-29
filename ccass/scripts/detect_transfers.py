@@ -1,125 +1,216 @@
+#!/usr/bin/env python3
+"""Generate warehouse-transfer monitor JSON from CCASS participant holdings.
+
+Default target date is the current publishable date in repo-root
+``holdings.json``. That keeps ``data/transfers.json`` aligned with the
+dashboard's holdings snapshot instead of using a partial latest DB tail day.
 """
-Detect HOLDINGS 轉倉 (warehouse transfers) between last 2 trading days.
-Output: data/transfers.json — list of significant position changes.
-"""
-import sqlite3, json, os
+
+from __future__ import annotations
+
+import argparse
+import json
+import shutil
+import sqlite3
+import sys
+from collections import defaultdict
 from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).parent.parent
-DB_PATH = PROJECT_ROOT / "holdings.db"
-OUT_PATH = PROJECT_ROOT / "data" / "transfers.json"
+
+CCASS_DIR = Path(__file__).resolve().parent.parent
+REPO_ROOT = CCASS_DIR.parent
+DB_PATH = CCASS_DIR / "holdings.db"
+CCASS_OUT = CCASS_DIR / "data" / "transfers.json"
+REPO_OUT = REPO_ROOT / "data" / "transfers.json"
 
 
-def atomic_write_json(path, obj):
+def load_json(path: Path, default):
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return default
+
+
+def atomic_write_json(path: Path, obj: dict) -> None:
     tmp = path.with_suffix(path.suffix + ".tmp")
     tmp.parent.mkdir(parents=True, exist_ok=True)
-    tmp.write_text(json.dumps(obj, ensure_ascii=False), encoding="utf-8")
+    tmp.write_text(json.dumps(obj, ensure_ascii=False, indent=2), encoding="utf-8")
     tmp.replace(path)
 
-db = sqlite3.connect(str(DB_PATH))
 
-# Get last 2 dates with actual data
-dates = [r[0] for r in db.execute(
-    "SELECT DISTINCT trade_date FROM holdings_holdings ORDER BY trade_date DESC LIMIT 5"
-).fetchall()]
-if len(dates) < 2:
-    print("ERROR: Not enough dates in holdings_holdings")
-    db.close()
-    exit(1)
-d1, d2 = dates[0], dates[1]
-print(f"Comparing {d1} vs {d2}...")
+def table_exists(conn: sqlite3.Connection, name: str) -> bool:
+    row = conn.execute(
+        "SELECT 1 FROM sqlite_master WHERE type IN ('table', 'view') AND name = ?",
+        (name,),
+    ).fetchone()
+    return bool(row)
 
-# Get all participants with >500K share change per stock (indexed query)
-changes = db.execute("""
-    SELECT h1.stock_code, h1.participant_id, h1.participant_name,
-           h1.shares - h2.shares AS share_chg,
-           ROUND(h1.pct_of_issued - h2.pct_of_issued, 4) AS pct_chg,
-           h1.shares AS today_shares
-    FROM holdings_holdings h1
-    JOIN holdings_holdings h2 
-      ON h1.stock_code = h2.stock_code 
-     AND h1.participant_id = h2.participant_id
-    WHERE h1.trade_date = ? AND h2.trade_date = ?
-      AND ABS(h1.shares - h2.shares) > 100000  -- >100K shares for transfer signal
-    ORDER BY ABS(h1.shares - h2.shares) DESC
-    LIMIT 500
-""", (d1, d2)).fetchall()
 
-# Group by stock to detect transfers
-from collections import defaultdict
-stock_changes = defaultdict(list)
-for r in changes:
-    stock_changes[r[0]].append({
-        'pid': r[1],
-        'pname': r[2],
-        'chg': r[3],
-        'pct_chg': r[4],
-        'shares': r[5]
-    })
+def pick_holdings_table(conn: sqlite3.Connection) -> str:
+    if table_exists(conn, "ccass_holdings"):
+        return "ccass_holdings"
+    if table_exists(conn, "holdings_holdings"):
+        return "holdings_holdings"
+    raise RuntimeError("No ccass_holdings/holdings_holdings table found")
 
-# Detect transfers: stock has both big increase AND big decrease participants
-transfers = []
-for code, items in stock_changes.items():
-    ins = [i for i in items if i['chg'] > 0]
-    outs = [i for i in items if i['chg'] < 0]
-    if ins and outs:
-        # Get stock name and total HOLDINGS shares
-        name_row = db.execute(
-            "SELECT stock_name FROM stock_universe WHERE stock_code=?", (code,)
+
+def default_target_date() -> str | None:
+    holdings = load_json(REPO_ROOT / "holdings.json", {})
+    return holdings.get("updated") if isinstance(holdings, dict) else None
+
+
+def previous_date(conn: sqlite3.Connection, table: str, target_date: str) -> str | None:
+    row = conn.execute(
+        f"""
+        SELECT MAX(trade_date)
+        FROM {table}
+        WHERE trade_date < ?
+        """,
+        (target_date,),
+    ).fetchone()
+    return row[0] if row and row[0] else None
+
+
+def has_date(conn: sqlite3.Connection, table: str, trade_date: str) -> bool:
+    row = conn.execute(
+        f"SELECT 1 FROM {table} WHERE trade_date = ? LIMIT 1",
+        (trade_date,),
+    ).fetchone()
+    return bool(row)
+
+
+def build_transfers(conn: sqlite3.Connection, table: str, d1: str, d2: str, min_change: int, limit: int) -> dict:
+    changes = conn.execute(
+        f"""
+        SELECT h1.stock_code,
+               h1.participant_id,
+               h1.participant_name,
+               h1.shares - h2.shares AS share_chg,
+               ROUND(COALESCE(h1.pct_of_issued, 0) - COALESCE(h2.pct_of_issued, 0), 4) AS pct_chg,
+               h1.shares AS today_shares
+        FROM {table} h1
+        JOIN {table} h2
+          ON h1.stock_code = h2.stock_code
+         AND h1.participant_id = h2.participant_id
+        WHERE h1.trade_date = ?
+          AND h2.trade_date = ?
+          AND ABS(h1.shares - h2.shares) > ?
+        ORDER BY ABS(h1.shares - h2.shares) DESC
+        LIMIT 2000
+        """,
+        (d1, d2, min_change),
+    ).fetchall()
+
+    stock_changes: dict[str, list[dict]] = defaultdict(list)
+    for code, pid, pname, chg, pct_chg, shares in changes:
+        stock_changes[code].append(
+            {
+                "pid": pid,
+                "pname": pname,
+                "chg": chg,
+                "pct_chg": pct_chg,
+                "shares": shares,
+            }
+        )
+
+    transfers: list[dict] = []
+    for code, items in stock_changes.items():
+        ins = [item for item in items if item["chg"] > 0]
+        outs = [item for item in items if item["chg"] < 0]
+        if not ins or not outs:
+            continue
+
+        name_row = conn.execute(
+            "SELECT stock_name FROM stock_universe WHERE stock_code = ?",
+            (code,),
         ).fetchone()
-        name = name_row[0] if name_row else code
-        
-        # Get total HOLDINGS shares on latest date
-        total_shares_row = db.execute(
-            "SELECT SUM(shares) FROM holdings_holdings WHERE stock_code=? AND trade_date=?",
-            (code, d1)
+        name = name_row[0] if name_row and name_row[0] else code
+
+        total_row = conn.execute(
+            f"SELECT SUM(shares) FROM {table} WHERE stock_code = ? AND trade_date = ?",
+            (code, d1),
         ).fetchone()
-        total_shares = total_shares_row[0] if total_shares_row[0] else 0
+        total_shares = int(total_row[0] or 0)
 
-        # Compute outstanding/issued shares from holdings_daily (total_pct)
-        outstanding_shares = total_shares  # fallback
-        daily_row = db.execute(
-            "SELECT total_shares, total_pct FROM holdings_daily WHERE stock_code=? AND trade_date=?",
-            (code, d1)
+        outstanding_shares = total_shares
+        daily_row = conn.execute(
+            """
+            SELECT total_shares, total_pct
+            FROM ccass_daily
+            WHERE stock_code = ? AND trade_date = ?
+            """,
+            (code, d1),
         ).fetchone()
-        if daily_row and daily_row[1] and daily_row[1] > 0:
-            outstanding_shares = daily_row[0] / (daily_row[1] / 100)
-        
-        total_in = sum(i['chg'] for i in ins)
-        total_out = sum(abs(i['chg']) for i in outs)
-        
-        transfers.append({
-            'code': code,
-            'name': name,
-            'total_in': total_in,
-            'total_out': total_out,
-            'total_shares': total_shares,
-            'outstanding_shares': int(outstanding_shares),
-            'ins': sorted(ins, key=lambda x: -x['chg']),
-            'outs': sorted(outs, key=lambda x: x['chg']),
-        })
+        if daily_row and daily_row[0] and daily_row[1] and daily_row[1] > 0:
+            outstanding_shares = int(daily_row[0] / (daily_row[1] / 100))
 
-# Sort by total volume
-transfers.sort(key=lambda x: -(x['total_in'] + x['total_out']))
+        total_in = int(sum(item["chg"] for item in ins))
+        total_out = int(sum(abs(item["chg"]) for item in outs))
 
-print(f"Found {len(transfers)} stocks with transfers (top 50)")
-for t in transfers[:20]:
-    print(f"  {t['code']} {t['name']}: in={t['total_in']:,.0f} out={t['total_out']:,.0f} from {len(t['ins'])}/{len(t['outs'])} participants")
+        transfers.append(
+            {
+                "code": code,
+                "name": name,
+                "total_in": total_in,
+                "total_out": total_out,
+                "total_shares": total_shares,
+                "outstanding_shares": int(outstanding_shares),
+                "ins": sorted(ins, key=lambda item: -item["chg"]),
+                "outs": sorted(outs, key=lambda item: item["chg"]),
+            }
+        )
 
-# Save to both holdings/data/ (source) and repo data/ (dashboard)
-os.makedirs(OUT_PATH.parent, exist_ok=True)
-atomic_write_json(OUT_PATH, {
-    'updated': f'{d1} vs {d2}',
-    'count': len(transfers),
-    'transfers': transfers[:50]  # Top 50
-})
+    transfers.sort(key=lambda item: -(item["total_in"] + item["total_out"]))
+    return {
+        "updated": f"{d1} vs {d2}",
+        "date": d1,
+        "previous_date": d2,
+        "count": len(transfers),
+        "transfers": transfers[:limit],
+    }
 
-print(f"\nSaved {min(len(transfers), 50)} transfers to {OUT_PATH}")
 
-# Also copy to repo data/ folder for dashboard
-import shutil
-REPO_DATA = PROJECT_ROOT.parent / "data" / "transfers.json"
-shutil.copyfile(OUT_PATH, REPO_DATA)
-print(f"Copied to {REPO_DATA}")
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Generate data/transfers.json")
+    parser.add_argument("--date", help="Target trade date. Defaults to holdings.json.updated")
+    parser.add_argument("--min-change", type=int, default=100_000, help="Minimum participant share change")
+    parser.add_argument("--limit", type=int, default=50, help="Number of transfer records to publish")
+    args = parser.parse_args()
 
-db.close()
+    if not DB_PATH.exists() or DB_PATH.stat().st_size == 0:
+        print(f"ERROR: DB missing or empty: {DB_PATH}", file=sys.stderr)
+        return 1
+
+    target_date = args.date or default_target_date()
+    if not target_date:
+        print("ERROR: missing target date and holdings.json.updated unavailable", file=sys.stderr)
+        return 1
+
+    with sqlite3.connect(str(DB_PATH)) as conn:
+        table = pick_holdings_table(conn)
+        if not table_exists(conn, "ccass_daily") or not table_exists(conn, "stock_universe"):
+            print("ERROR: DB missing ccass_daily or stock_universe", file=sys.stderr)
+            return 1
+        if not has_date(conn, table, target_date):
+            print(f"ERROR: target date {target_date} not found in {table}", file=sys.stderr)
+            return 1
+        prev_date = previous_date(conn, table, target_date)
+        if not prev_date:
+            print(f"ERROR: no previous date before {target_date} in {table}", file=sys.stderr)
+            return 1
+
+        output = build_transfers(conn, table, target_date, prev_date, args.min_change, args.limit)
+
+    atomic_write_json(CCASS_OUT, output)
+    REPO_OUT.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(CCASS_OUT, REPO_OUT)
+
+    print(
+        f"Saved {len(output['transfers'])}/{output['count']} transfers "
+        f"for {output['updated']} to {REPO_OUT}"
+    )
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

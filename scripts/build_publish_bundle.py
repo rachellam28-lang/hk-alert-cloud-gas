@@ -72,6 +72,27 @@ def summarize_alerts():
     }
 
 
+def summarize_transfers():
+    data = load_json(DATA / "transfers.json", {})
+    transfers = data.get("transfers") if isinstance(data, dict) else []
+    updated = data.get("updated") if isinstance(data, dict) else None
+    date_value = data.get("date") if isinstance(data, dict) else None
+    previous_date = data.get("previous_date") if isinstance(data, dict) else None
+    if isinstance(updated, str) and " vs " in updated:
+        left, right = updated.split(" vs ", 1)
+        date_value = date_value or left[:10]
+        previous_date = previous_date or right[:10]
+    return {
+        "path": "data/transfers.json",
+        "updated": updated,
+        "date": date_value,
+        "previous_date": previous_date,
+        "source": "ccass participant holdings transfer monitor",
+        "count": data.get("count") if isinstance(data, dict) else None,
+        "published_count": len(transfers) if isinstance(transfers, list) else None,
+    }
+
+
 def summarize_prices():
     data = load_json(DATA / "stock_prices.json", {})
     prices_path = DATA / "stock_prices.json"
@@ -179,6 +200,7 @@ def main():
             "holdings": summarize_holdings(),
             "signals": summarize_signals(),
             "alerts": summarize_alerts(),
+            "transfers": summarize_transfers(),
             "prices": summarize_prices(),
             "market": summarize_market(),
             "vqc_backtest": summarize_backtest(
@@ -209,6 +231,8 @@ def main():
         "latest_publishable_coverage_pct": bundle["publish"].get("latest_publishable_coverage_pct"),
         "signals_updated": bundle["files"]["signals"]["updated"],
         "alerts_updated": bundle["files"]["alerts"]["updated"],
+        "transfers_updated": bundle["files"]["transfers"]["updated"],
+        "transfers_date": bundle["files"]["transfers"].get("date"),
         "prices_updated": bundle["files"]["prices"]["updated"],
         "market_updated": bundle["files"]["market"]["updated"],
         "market_stale": bundle["files"]["market"].get("stale"),
@@ -230,6 +254,11 @@ def main():
             f"market={bundle['files']['market']['updated'] or '—'}"
         )
     }
+
+    bundle["telegram"]["summary"] = bundle["telegram"]["summary"].replace(
+        " | market=",
+        f" | transfers={bundle['files']['transfers']['updated'] or 'n/a'} | market=",
+    )
 
     OUT.write_text(json.dumps(bundle, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"Wrote {OUT}")

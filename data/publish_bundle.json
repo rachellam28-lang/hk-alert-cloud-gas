@@ -1,6 +1,6 @@
 {
   "schema_v": 1,
-  "generated_at": "2026-06-29T02:38:45",
+  "generated_at": "2026-06-29T09:51:38",
   "source_of_truth": {
     "db": "ccass/holdings.db",
     "primary_holdings": "holdings.json",
@@ -30,6 +30,15 @@
       "updated": "2026-06-24 00:37 UTC",
       "source": "scanner / holdings events",
       "count": 145
+    },
+    "transfers": {
+      "path": "data/transfers.json",
+      "updated": "2026-06-05 vs 2026-06-04",
+      "date": "2026-06-05",
+      "previous_date": "2026-06-04",
+      "source": "ccass participant holdings transfer monitor",
+      "count": 134,
+      "published_count": 50
     },
     "prices": {
       "path": "data/stock_prices.json",
@@ -148,6 +157,8 @@
     "latest_publishable_coverage_pct": 99.5,
     "signals_updated": "2026-06-29T02:33:35.438406",
     "alerts_updated": "2026-06-24 00:37 UTC",
+    "transfers_updated": "2026-06-05 vs 2026-06-04",
+    "transfers_date": "2026-06-05",
     "prices_updated": "2026-06-26T08:08:31Z",
     "market_updated": "2026-06-26T08:08:32Z",
     "market_stale": true,
@@ -158,6 +169,6 @@
     }
   },
   "telegram": {
-    "summary": "publish=WARN | holdings=2026-06-26 | latest_db=2026-06-26 (99.5%) | publishable=2026-06-26 | signals=2026-06-29T02:33:35.438406 | alerts=2026-06-24 00:37 UTC | market=2026-06-26T08:08:32Z"
+    "summary": "publish=WARN | holdings=2026-06-26 | latest_db=2026-06-26 (99.5%) | publishable=2026-06-26 | signals=2026-06-29T02:33:35.438406 | alerts=2026-06-24 00:37 UTC | transfers=2026-06-05 vs 2026-06-04 | market=2026-06-26T08:08:32Z"
   }
 }

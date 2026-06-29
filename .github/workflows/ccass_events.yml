@@ -1,7 +1,6 @@
 name: ccass-events
 on:
-  schedule:
-    - cron: "30 9 * * 1-5"   # UTC 09:30 = HKT 17:30 收市後
+  # schedule disabled: do not auto-run/push through GitHub Actions.
   workflow_dispatch:
 
 permissions:

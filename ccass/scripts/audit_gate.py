@@ -165,6 +165,44 @@ def _check_publish_aliases(errors: list[str]) -> None:
             errors.append(f"{dst_rel} metadata mismatch {dst_meta} != {src_rel} {src_meta}")
 
 
+def _transfer_snapshot_date(data: dict) -> str | None:
+    date_value = data.get("date")
+    if date_value:
+        return str(date_value)[:10]
+    updated = data.get("updated")
+    if isinstance(updated, str) and " vs " in updated:
+        return updated.split(" vs ", 1)[0][:10]
+    if isinstance(updated, str) and len(updated) >= 10:
+        return updated[:10]
+    return None
+
+
+def _check_transfer_freshness(holdings_updated: str | None, errors: list[str]) -> None:
+    try:
+        root = _load_json_file(PROJECT_ROOT / "data" / "transfers.json")
+        ccass = _load_json_file(PROJECT_ROOT / "ccass" / "data" / "transfers.json")
+    except RuntimeError as exc:
+        errors.append(str(exc))
+        return
+
+    root_meta = {
+        "updated": root.get("updated"),
+        "date": _transfer_snapshot_date(root),
+        "count": root.get("count"),
+    }
+    ccass_meta = {
+        "updated": ccass.get("updated"),
+        "date": _transfer_snapshot_date(ccass),
+        "count": ccass.get("count"),
+    }
+    if root_meta != ccass_meta:
+        errors.append(f"ccass/data/transfers.json metadata mismatch {ccass_meta} != data/transfers.json {root_meta}")
+
+    transfer_date = root_meta["date"]
+    if holdings_updated and transfer_date != str(holdings_updated)[:10]:
+        errors.append(f"data/transfers.json date={transfer_date} != holdings.json.updated={holdings_updated}")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Unified audit gate for publish/deploy")
     parser.add_argument("--strict", action="store_true", help="Fail on warnings too")
@@ -240,6 +278,7 @@ def main() -> int:
     if ccass.get("stock_count") is not None and stock_count is not None and ccass["stock_count"] != stock_count:
         errors.append(f"ccass.json.stock_count={ccass['stock_count']} != holdings.json.stock_count={stock_count}")
     _check_publish_aliases(errors)
+    _check_transfer_freshness(holdings_updated, errors)
 
     if coverage_pct is None:
         errors.append("holdings.json missing coverage_pct")

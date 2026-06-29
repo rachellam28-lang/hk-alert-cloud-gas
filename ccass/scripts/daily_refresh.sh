@@ -34,6 +34,9 @@ fi
 echo "2/5 Regenerate holdings.json..."
 "$PYTHON_BIN" scripts/regenerate_json.py --min-coverage "${AUDIT_MIN_COVERAGE:-99.0}" || { echo "ERROR: holdings.json regeneration failed"; exit 1; }
 
+echo "2.1/5 Detect deposit/transfer monitor..."
+"$PYTHON_BIN" scripts/detect_transfers.py || { echo "ERROR: transfer monitor generation failed"; exit 1; }
+
 echo "2.2/5 Refresh prices + suspended (Futu)..."
 set +e
 timeout "${FUTU_PRICE_TIMEOUT_SECONDS:-180}" "$PYTHON_BIN" scripts/daily_lp_futu.py
@@ -82,7 +85,7 @@ echo "4/5 Audit gate..."
 
 echo "5/5 Deploy to GitHub..."
 cd "$REPO_ROOT"
-git add holdings.json data/holdings.json ccass.json data/ccass.json market.json data/market.json data/stock_prices.json data/suspended_stocks.json data/prices.json data/signals.json data/publish_bundle.json daily_trade_prompt.html timing_analysis.html vqc_analysis.html distribution_day.html jieqi_analysis.html rights_analysis.html
+git add holdings.json data/holdings.json ccass.json data/ccass.json market.json data/market.json data/stock_prices.json data/suspended_stocks.json data/prices.json data/signals.json data/transfers.json ccass/data/transfers.json data/publish_bundle.json daily_trade_prompt.html timing_analysis.html vqc_analysis.html distribution_day.html jieqi_analysis.html rights_analysis.html
 if git commit -m "daily: holdings refresh $(date +%Y-%m-%d)"; then
     git push || { echo "ERROR: git push failed"; exit 1; }
 else

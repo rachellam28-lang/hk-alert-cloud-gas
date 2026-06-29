@@ -250,7 +250,11 @@ async function main(){
     window._hkdataStocks = hkdata.stocks||[];
     var ranked = (hkdata.stocks||[]).filter(function(s){return s.vr!=null&&s.vr>=2;}).sort(function(a,b){return b.vr-a.vr;}).slice(0,40);
     var tdata = r3.ok ? await r3.json() : {transfers:[]};
-    var transfers = tdata.transfers || [];
+    var allTransfers = tdata.transfers || [];
+    var holdingsDate = String(hkdata.updated || '').slice(0,10);
+    var transferDate = String(tdata.date || String(tdata.updated || '').split(' vs ')[0] || '').slice(0,10);
+    var transferFresh = !!holdingsDate && !!transferDate && holdingsDate === transferDate;
+    var transfers = transferFresh ? allTransfers : [];
     var totalGap = alerts.filter(function(a){
       var p = (typeof a.payload==='string'?JSON.parse(a.payload):a.payload) || {};
       var sig = (p.signal && typeof p.signal==='object') ? p.signal : ((typeof a.signal==='object'&&a.signal!==null)?a.signal:{type:a.signal||''});
@@ -271,7 +275,7 @@ async function main(){
     html += '<div class="summary-item"><div class="summary-label">⤴ Gap/FVG/POC</div><div class="summary-val">'+alerts.length+'</div></div>';
     html += '<div class="summary-item"><div class="summary-label">🔼 跳空缺口</div><div class="summary-val" style="color:var(--up)">'+totalGap+'</div></div>';
     html += '<div class="summary-item"><div class="summary-label">📊 量比≥2</div><div class="summary-val" style="color:var(--amber)">'+ranked.length+'</div></div>';
-    html += '<div class="summary-item"><div class="summary-label">📦 轉倉</div><div class="summary-val" style="color:var(--primary)">'+transfers.length+'</div></div>';
+    html += '<div class="summary-item"><div class="summary-label">📦 轉倉</div><div class="summary-val" style="color:'+(transferFresh?'var(--primary)':'var(--mute)')+'">'+transfers.length+'</div></div>';
     html += '</div><div class="alert-layout"><main>';
 
     html += '<div class="sec"><div class="sec-title">⤴ Gap / FVG / POC 警報</div>';
@@ -352,10 +356,15 @@ async function main(){
     // ─── 3. 存倉轉倉 ───
     if(r3.ok){
       html += '<div class="sec"><div class="sec-title">📦 存倉轉倉監測</div>';
-      html += '<div class="sec-sub">'+E(tdata.updated||'')+' · '+transfers.length+'項</div>';
-      if(!transfers.length){
-        html += '<div class="empty">暫無存倉轉倉</div>';
+      if(!transferFresh){
+        html += '<div class="sec-sub" style="color:var(--down)">轉倉資料未同步 · holdings '+E(holdingsDate||'--')+' · transfers '+E(tdata.updated||'--')+'</div>';
+        html += '<div class="empty">後台未產生同 holdings 日期一致的轉倉 JSON，舊轉倉不作今日訊號顯示。</div>';
       } else {
+        html += '<div class="sec-sub">'+E(tdata.updated||'')+' · '+transfers.length+'項</div>';
+      }
+      if(transferFresh && !transfers.length){
+        html += '<div class="empty">暫無存倉轉倉</div>';
+      } else if(transferFresh) {
         var priceMap = {};
         (hkdata.stocks||[]).forEach(function(s){ priceMap[s.c] = s.lp; });
         // Compute totalVal, sort by $ value descending
