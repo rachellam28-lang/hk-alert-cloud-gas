@@ -528,7 +528,7 @@ def classify_supply_intent(p, jump_pct, jump_status):
 def build_comment(p, jump_pct, jump_status):
     stage = announcement_stage(p)
     supply = classify_supply_intent(p, jump_pct, jump_status)
-    parts = [f"圈股判斷：{supply['label']}", f"{p.get('category') or '公告'}・{stage}"]
+    parts = [f"圈股判斷：{supply['label']}"]
     risks = []
 
     if stage == '已終止/取消':
@@ -542,10 +542,6 @@ def build_comment(p, jump_pct, jump_status):
 
     if supply.get('basis') and stage != '已終止/取消':
         parts.append(supply['basis'])
-
-    issuer = p.get('issuer') or {}
-    if issuer.get('score') is not None:
-        parts.append(f"發行方有利度 {issuer.get('score')} {issuer.get('label') or ''}".strip())
 
     terms_bits = []
     discount = _safe_num(p.get('discount_pct'))
@@ -781,10 +777,13 @@ tr:hover td {{ background: #161b22; }}
 .year-open-down {{ background: #3a1111; color: #f85149; border: 1px solid #f85149; }}
 .year-open-mixed {{ background: #1f2937; color: #d2a8ff; border: 1px solid #6e40c9; }}
 .year-open-missing {{ background: #21262d; color: #8b949e; border: 1px solid #30363d; }}
-.year-open-detail {{ display:block; font-size:10px; line-height:1.35; color:#8b949e; white-space:normal; }}
-.year-open-detail .up {{ color:#3fb950; }}
-.year-open-detail .dn {{ color:#f85149; }}
-.year-open-detail .missing {{ color:#8b949e; }}
+.year-open-col {{ min-width:74px; line-height:1.25; white-space:normal; font-size:10px; }}
+.year-open-col .year {{ display:block; color:#8b949e; }}
+.year-open-col .price {{ display:block; color:#c9d1d9; }}
+.year-open-col .dist {{ display:block; font-weight:700; }}
+.year-open-col .up {{ color:#3fb950; }}
+.year-open-col .dn {{ color:#f85149; }}
+.year-open-col .missing {{ color:#8b949e; }}
 .thesis {{ max-width: 280px; overflow: hidden; text-overflow: ellipsis; color: #8b949e; font-size: 10px; white-space: normal; }}
 .risk {{ color: #f85149; font-size: 10px; }}
 .jump-green {{ color: #3fb950; font-weight: bold; }}
@@ -849,12 +848,14 @@ tr:hover td {{ background: #161b22; }}
   <th onclick="sortTable(8)">攤薄</th>
   <th onclick="sortTable(9)">訊號</th>
   <th onclick="sortTable(10)">公告拆解</th>
-  <th onclick="sortTable(11)">現價對發行價</th>
-  <th>公告日至今</th>
+  <th onclick="sortTable(11)">YO</th>
+  <th onclick="sortTable(12)">PY</th>
+  <th onclick="sortTable(13)">現價對發行價</th>
+  <th onclick="sortTable(14)">公告日至今</th>
   <th>邏輯</th>
 </tr>
 </thead>
-<tbody id="tableBody"><tr><td colspan="14" style="padding:18px;color:#8b949e">⏳ 載入數據中…</td></tr></tbody>
+<tbody id="tableBody"><tr><td colspan="16" style="padding:18px;color:#8b949e">⏳ 載入數據中…</td></tr></tbody>
 </table>
 </div>
 
@@ -899,26 +900,41 @@ function fmtOpenPrice(v) {{
   return n < 1 ? n.toFixed(3) : n.toFixed(2);
 }}
 
-function formatYearOpenDetail(yearOpen) {{
+function getYearOpenLevel(yearOpen, idx) {{
   const levels = Array.isArray(yearOpen && yearOpen.levels) ? yearOpen.levels : [];
   const targets = Array.isArray(yearOpen && yearOpen.target_years) ? yearOpen.target_years : [];
+  const targetYear = targets.length ? Number(targets[idx]) : Number(levels[idx] && levels[idx].year);
   const byYear = new Map();
   levels.forEach(level => {{
     const year = Number(level && level.year);
     if (Number.isFinite(year)) byYear.set(year, level);
   }});
-  const years = targets.length ? targets.slice(0, 2) : levels.slice(0, 2).map(level => level.year);
-  const labels = ['YO', 'PY'];
-  if (!years.length) return '<span class="missing">YO -- / PY --</span>';
-  return years.map((year, idx) => {{
-    const label = labels[idx] || String(year);
-    const level = byYear.get(Number(year));
-    if (!level) return '<span class="missing">' + label + ' --</span>';
-    const dist = Number(level.distance_pct);
-    const distText = Number.isFinite(dist) ? ' ' + (dist > 0 ? '+' : '') + dist.toFixed(1) + '%' : '';
-    const cls = level.status === 'above' ? 'up' : (level.status === 'below' ? 'dn' : 'missing');
-    return '<span class="' + cls + '">' + label + ' ' + fmtOpenPrice(level.open) + distText + '</span>';
-  }}).join(' / ');
+  if (Number.isFinite(targetYear)) return byYear.get(targetYear) || null;
+  return levels[idx] || null;
+}}
+
+function formatSignedPct(v) {{
+  const n = Number(v);
+  if (!Number.isFinite(n)) return '--';
+  return (n > 0 ? '+' : '') + n.toFixed(1) + '%';
+}}
+
+function formatYearOpenCell(yearOpen, idx) {{
+  const label = idx === 0 ? 'YO' : 'PY';
+  const level = getYearOpenLevel(yearOpen, idx);
+  if (!level) return '<span class="missing">' + label + '<br>--</span>';
+  const cls = level.status === 'above' ? 'up' : (level.status === 'below' ? 'dn' : 'missing');
+  return '<span class="year">' + label + ' ' + esc(level.year || '') + '</span>' +
+    '<span class="price">' + fmtOpenPrice(level.open) + '</span>' +
+    '<span class="dist ' + cls + '">' + formatSignedPct(level.distance_pct) + '</span>';
+}}
+
+function yearOpenDistance(row, idx) {{
+  const trade = row.trade || {{}};
+  const supply = row.supply || trade.supply || {{}};
+  const level = getYearOpenLevel(supply.year_open || null, idx);
+  const dist = Number(level && level.distance_pct);
+  return Number.isFinite(dist) ? dist : null;
 }}
 
 function updateRightsSummary(rows) {{
@@ -964,7 +980,8 @@ function render(rows) {{
     const reaction = issuer.reaction || {{pct: null, label: '未足夠數據', cls: 'issuer-react-neutral'}};
     const supply = d.supply || t.supply || {{label: '待確認', cls: 'supply-watch', basis: '未有足夠除淨/完成後證據'}};
     const yearOpen = supply.year_open || {{badge: '不足', cls: 'year-open-missing', summary: '今年/前年年開線不足'}};
-    const yearOpenDetail = formatYearOpenDetail(yearOpen);
+    const yoCell = formatYearOpenCell(yearOpen, 0);
+    const pyCell = formatYearOpenCell(yearOpen, 1);
     const reactionPct = reaction.pct != null ? (reaction.pct >= 0 ? '+' : '') + reaction.pct.toFixed(1) + '%' : '—';
     const annRet = d.announcement_return_pct != null ? d.announcement_return_pct : null;
     const annRetPct = annRet != null ? (annRet >= 0 ? '+' : '') + annRet.toFixed(1) + '%' : '—';
@@ -982,20 +999,11 @@ function render(rows) {{
       }}
     }}
     
-    let advice = '觀察';
-    let adviceCls = 'issuer-neutral';
-    const supplyLabel = String(supply.label || '');
-    if (supplyLabel.includes('終止')) {{ advice = '停'; adviceCls = 'issuer-neutral'; }}
-    else if (supplyLabel.includes('圈錢')) {{ advice = '避'; adviceCls = 'issuer-high'; }}
-    else if (supplyLabel.includes('待確認')) {{ advice = '等除淨/條款'; adviceCls = 'issuer-neutral'; }}
-    else if (supplyLabel.includes('圈股') && js === 'jumped') {{ advice = '只宜短炒'; adviceCls = 'issuer-low'; }}
-    else if (supplyLabel.includes('圈股')) {{ advice = '觀察炒味'; adviceCls = 'issuer-low'; }}
-    else if (js === 'no_jump') {{ advice = '避'; adviceCls = 'issuer-high'; }}
-    else {{ advice = '觀察'; adviceCls = 'issuer-neutral'; }}
-
     let risks = (t.risks||[]).map(r => '<div class="risk">'+esc(r)+'</div>').join('');
     let comment = t.comment || t.thesis || '';
     const categoryText = d.category_display || d.category || '';
+    const stageText = d.announcement_stage || '未分類';
+    const termsSource = d.terms_source_date ? '<span class="issuer-badge issuer-neutral">條款 ' + esc(d.terms_source_date) + '</span>' : '';
     
     return `<tr>
       <td>${{d.date}}</td>
@@ -1009,16 +1017,16 @@ function render(rows) {{
       <td>${{d.pct_num > 0 ? d.pct_num.toFixed(1)+'%' : '-'}}</td>
       <td><span class="signal ${{t.sig_class||''}}">${{t.signal||'➖'}}</span></td>
       <td>
-        <div class="issuer-stack" title="公告條款代理分數，唔係內部意圖；高分＝對發行方更有利／對股東短期壓力更大；現價對發行價＝最新 raw close vs 發行價；公告日至今＝由公告日第一個可用 raw close 到最新 raw close；公告後價格反應＝只計除權/完成後歷史 reaction；未有除權/完成日就顯示未足夠數據；交易建議＝避免誤當買入提示">
-           <span class="issuer-badge ${{adviceCls}}">交易建議 ${{advice}}</span>
-           <span class="issuer-badge ${{supply.cls || 'supply-watch'}}" title="${{esc(supply.basis || '')}}">圈股判斷 ${{esc(supply.label || '待確認')}}</span>
-           <span class="issuer-badge ${{yearOpen.cls || 'year-open-missing'}}" title="${{esc(yearOpen.summary || '')}}">年開線 ${{esc(yearOpen.badge || '不足')}}</span>
-           <span class="year-open-detail" title="${{esc(yearOpen.summary || '')}}">${{yearOpenDetail}}</span>
-           <span class="issuer-badge ${{issuer.cls}}">發行方有利度 ${{issuer.label}} ${{issuer.score}}</span>
+        <div class="issuer-stack" title="公告拆解只顯示階段與分數；圈股/圈錢原因放右邊邏輯欄；YO/PY 另外用獨立欄排序">
+          <span class="issuer-badge issuer-neutral">階段 ${{esc(stageText)}}</span>
+          ${{termsSource}}
+          <span class="issuer-badge ${{issuer.cls}}">發行方有利度 ${{issuer.label}} ${{issuer.score}}</span>
           <span class="issuer-badge ${{shareholder.cls}}">股東短期壓力 ${{shareholder.label}} ${{shareholder.score}}</span>
           <span class="issuer-badge ${{reaction.cls}}">公告後價格反應 ${{reactionPct}} ${{reaction.label}}</span>
         </div>
       </td>
+      <td class="year-open-col" title="${{esc(yearOpen.summary || '')}}">${{yoCell}}</td>
+      <td class="year-open-col" title="${{esc(yearOpen.summary || '')}}">${{pyCell}}</td>
       <td style="color:${{(ret||0) >= 0 ? '#3fb950' : '#f85149'}};font-weight:${{Math.abs(ret||0) > 20 ? 'bold' : 'normal'}}">${{ret != null ? (ret >= 0 ? '+' : '') + ret.toFixed(1) + '%' : '-'}}</td>
       <td style="color:${{(annRet||0) >= 0 ? '#3fb950' : '#f85149'}};font-weight:${{Math.abs(annRet||0) > 20 ? 'bold' : 'normal'}}">${{annRet != null ? annRetPct : '-'}}</td>
       <td>
@@ -1067,17 +1075,28 @@ function filter(cat) {{
 }}
 
 let sortCol = 7; let sortAsc = false;
+function compareNumberMissingLast(va, vb) {{
+  const aOk = Number.isFinite(va);
+  const bOk = Number.isFinite(vb);
+  if (!aOk && !bOk) return 0;
+  if (!aOk) return 1;
+  if (!bOk) return -1;
+  return sortAsc ? va - vb : vb - va;
+}}
+
 function sortTable(col) {{
   sortAsc = sortCol === col ? !sortAsc : false;
   sortCol = col;
   if (!DATA_READY) return;
   let rows = getFilteredRows();
-  const keys = ['date_parsed','code','name','category','price_num','market_price','discount_pct','jump_8d_pct','pct_num','trade.signal','issuer.score','current_return_pct','announcement_return_pct'];
+  const keys = ['date_parsed','code','name','category','price_num','market_price','discount_pct','jump_8d_pct','pct_num','trade.signal','issuer.score','yo_distance','py_distance','current_return_pct','announcement_return_pct'];
   rows.sort((a,b) => {{
     let va, vb;
     if (col === 7) {{ va = a.jump_8d_pct != null ? a.jump_8d_pct : (a.trade||{{}}).jump_status==='waiting' ? 999 : -999; vb = b.jump_8d_pct != null ? b.jump_8d_pct : (b.trade||{{}}).jump_status==='waiting' ? 999 : -999; }}
     else if (col === 6) {{ va = a.discount_pct != null ? a.discount_pct : 999; vb = b.discount_pct != null ? b.discount_pct : 999; }}
     else if (col === 10) {{ va = (a.issuer || {{score: 50}}).score; vb = (b.issuer || {{score: 50}}).score; }}
+    else if (col === 11) {{ return compareNumberMissingLast(yearOpenDistance(a, 0), yearOpenDistance(b, 0)); }}
+    else if (col === 12) {{ return compareNumberMissingLast(yearOpenDistance(a, 1), yearOpenDistance(b, 1)); }}
     else if (col === 5) {{ va = a.market_price||0; vb = b.market_price||0; }}
     else if (col === 9) {{
       const order = {{'🟢 跟!': 0, '🟢 跟': 0, '🟡 等': 1, '🔴 避': 2, '💀 走': 3, '—': 4, '': 4}};
@@ -1086,8 +1105,8 @@ function sortTable(col) {{
       va = order[as] != null ? order[as] : 4;
       vb = order[bs] != null ? order[bs] : 4;
     }}
-    else if (col === 11) {{ va = a.current_return_pct != null ? a.current_return_pct : -999; vb = b.current_return_pct != null ? b.current_return_pct : -999; }}
-    else if (col === 12) {{ va = a.announcement_return_pct != null ? a.announcement_return_pct : -999; vb = b.announcement_return_pct != null ? b.announcement_return_pct : -999; }}
+    else if (col === 13) {{ va = a.current_return_pct != null ? a.current_return_pct : -999; vb = b.current_return_pct != null ? b.current_return_pct : -999; }}
+    else if (col === 14) {{ va = a.announcement_return_pct != null ? a.announcement_return_pct : -999; vb = b.announcement_return_pct != null ? b.announcement_return_pct : -999; }}
     else {{ va = a[keys[col]]||''; vb = b[keys[col]]||''; }}
     if (typeof va === 'number') return sortAsc ? va - vb : vb - va;
     return sortAsc ? String(va).localeCompare(String(vb)) : String(vb).localeCompare(String(va));
@@ -1104,7 +1123,7 @@ async function loadData() {{
     render(DATA);
   }} catch (err) {{
     const body = document.getElementById('tableBody');
-    if (body) body.innerHTML = '<tr><td colspan="14" style="padding:18px;color:#f85149">載入失敗：' + err.message + '</td></tr>';
+    if (body) body.innerHTML = '<tr><td colspan="16" style="padding:18px;color:#f85149">載入失敗：' + err.message + '</td></tr>';
   }}
 }}
 
