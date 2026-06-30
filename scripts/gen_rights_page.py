@@ -537,11 +537,18 @@ def build_comment(p, jump_pct, jump_status):
     elif p.get('terms_carry_forward') and p.get('terms_source_date'):
         parts.append(f"條款沿用 {p.get('terms_source_date')}")
     elif p.get('source') == 'announcement' and not has_extracted_terms(p):
-        parts.append('只得公告標題，價格/攤薄未抽齊')
+        parts.append('只得公告標題，價格未抽齊')
         risks.append('條款未抽齊')
 
     if supply.get('basis') and stage != '已終止/取消':
-        parts.append(supply['basis'])
+        basis_parts = []
+        for bit in str(supply['basis']).split('；'):
+            if bit == '價格/攤薄條款未抽齊':
+                basis_parts.append('價格條款未抽齊')
+            elif '攤薄' not in bit:
+                basis_parts.append(bit)
+        if basis_parts:
+            parts.append('；'.join(basis_parts))
 
     terms_bits = []
     discount = _safe_num(p.get('discount_pct'))
@@ -555,13 +562,6 @@ def build_comment(p, jump_pct, jump_status):
         else:
             terms_bits.append('平價發行')
 
-    dilution = _safe_num(p.get('pct_num'))
-    if dilution and dilution > 0:
-        terms_bits.append(f"攤薄 {dilution:.1f}%")
-        if dilution >= 50:
-            risks.append(f"大攤薄 {dilution:.1f}%")
-        elif dilution >= 20:
-            risks.append(f"攤薄偏高 {dilution:.1f}%")
     if terms_bits:
         parts.append('條款：' + '／'.join(terms_bits[:3]))
 
