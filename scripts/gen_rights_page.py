@@ -121,71 +121,162 @@ def announcement_return(code, ann_date_str):
     return round((latest / base - 1) * 100, 1)
 
 # ====== V4: 8120 pattern rating ======
+TERMINAL_RE = re.compile(r"(TERMINATION|TERMINATED|CANCELLATION|CANCELLED|LAPSE|LAPSED|WITHDRAW|終止|取消|失效)", re.I)
+COMPLETE_RE = re.compile(r"(COMPLETION|RESULTS?|ALLOTMENT|完成|結果)", re.I)
+SUPPLEMENT_RE = re.compile(r"(SUPPLEMENT|EXTENSION|REVISED|補充|延期|修訂)", re.I)
+
+def _safe_num(v):
+    try:
+        n = float(v)
+    except Exception:
+        return None
+    return n if n == n else None
+
+def fmt_pct(v, signed=False):
+    n = _safe_num(v)
+    if n is None:
+        return None
+    prefix = '+' if signed and n > 0 else ''
+    return f'{prefix}{n:.1f}%'
+
+def has_extracted_terms(p):
+    return any((_safe_num(p.get(k)) or 0) > 0 for k in ('price_num', 'amount_num', 'pct_num'))
+
+def announcement_stage(p):
+    text = f"{p.get('title') or ''} {p.get('method') or ''}"
+    if TERMINAL_RE.search(text):
+        return '已終止/取消'
+    if SUPPLEMENT_RE.search(text):
+        return '補充/延期'
+    if COMPLETE_RE.search(text):
+        return '完成/結果'
+    if p.get('source') == 'announcement':
+        return '新公告'
+    return '原始條款'
+
+def build_comment(p, jump_pct, jump_status):
+    stage = announcement_stage(p)
+    parts = [f"{p.get('category') or '公告'}・{stage}"]
+    risks = []
+
+    if stage == '已終止/取消':
+        parts.append('唔再當新供股/配股壓力')
+        risks.append('已終止/取消')
+    elif p.get('terms_carry_forward') and p.get('terms_source_date'):
+        parts.append(f"條款沿用 {p.get('terms_source_date')}")
+    elif p.get('source') == 'announcement' and not has_extracted_terms(p):
+        parts.append('只得公告標題，價格/攤薄未抽齊')
+        risks.append('條款未抽齊')
+
+    issuer = p.get('issuer') or {}
+    if issuer.get('score') is not None:
+        parts.append(f"發行方有利度 {issuer.get('score')} {issuer.get('label') or ''}".strip())
+
+    discount = _safe_num(p.get('discount_pct'))
+    if discount is not None:
+        if discount < 0:
+            parts.append(f"折讓 {abs(discount):.1f}%")
+            if discount <= -15:
+                risks.append(f"深折讓 {abs(discount):.1f}%")
+        elif discount > 0:
+            parts.append(f"溢價 {discount:.1f}%")
+        else:
+            parts.append('平價發行')
+
+    dilution = _safe_num(p.get('pct_num'))
+    if dilution and dilution > 0:
+        parts.append(f"攤薄 {dilution:.1f}%")
+        if dilution >= 50:
+            risks.append(f"大攤薄 {dilution:.1f}%")
+        elif dilution >= 20:
+            risks.append(f"攤薄偏高 {dilution:.1f}%")
+
+    ann_ret = _safe_num(p.get('announcement_return_pct'))
+    if ann_ret is not None:
+        parts.append(f"公告至今 {fmt_pct(ann_ret, signed=True)}")
+        if ann_ret <= -10:
+            risks.append(f"公告後偏弱 {fmt_pct(ann_ret, signed=True)}")
+
+    current_ret = _safe_num(p.get('current_return_pct'))
+    if current_ret is not None and p.get('price_num'):
+        parts.append(f"現價對發行價 {fmt_pct(current_ret, signed=True)}")
+
+    if jump_status == 'jumped':
+        parts.append(f"T+5最高 {fmt_pct(jump_pct, signed=True)}，有短線反應")
+    elif jump_status == 'waiting':
+        if jump_pct is None:
+            parts.append('T+5資料未齊')
+        else:
+            parts.append(f"T+5資料未齊，暫時最高 {fmt_pct(jump_pct, signed=True)}")
+    elif jump_status == 'no_jump':
+        parts.append(f"T+5最高 {fmt_pct(jump_pct, signed=True)}，未過 +8% 門檻")
+    else:
+        parts.append('價量 raw 未覆蓋，唔作短線判斷')
+
+    if '貸款資本化' in p.get('method', '') or 'DEBT CAPITALISATION' in (p.get('title') or '').upper():
+        risks.append('債務資本化')
+
+    # Keep the cell short enough for table scanning, but still explain the call.
+    return '；'.join(parts[:8]), risks[:4]
+
 def trade_signal(p):
     """Rating = jump status. Discount is NOT used for rating (no evidence)."""
     jump_pct, jump_status = compute_jump(p.get('code', ''), p.get('date_parsed', ''))
     
-    pct = p['pct_num']
-    thesis = []
-    risks = []
+    pct = _safe_num(p.get('pct_num')) or 0
+    thesis, risks = build_comment(p, jump_pct, jump_status)
+    stage = announcement_stage(p)
     
     # Jump-based rating
-    if jump_status == 'jumped':
+    if stage == '已終止/取消':
+        conviction = 0
+        signal = '—'
+        sig_class = 'trade-wait'
+        verdict_text = '已終止/取消'
+    elif jump_status == 'jumped':
         conviction = 3
         signal = '🟢 跟!'
         sig_class = 'trade-buy'
         verdict_text = '跳升確認'
-        thesis.append(f'🚀 T+5內跳升+{jump_pct}%→跟!')
     elif jump_status == 'waiting':
         conviction = 1
         signal = '🟡 等'
         sig_class = 'trade-wait'
         verdict_text = '等跳升'
-        if jump_pct is not None:
-            thesis.append(f'⏳ T+5窗口: best +{jump_pct}% (<8%)')
-        else:
-            thesis.append('⏳ 等緊T+5數據')
     elif jump_status == 'no_jump':
         conviction = -1
         signal = '🔴 避'
         sig_class = 'trade-avoid'
         verdict_text = '冇跳升'
-        thesis.append(f'✗ 5日最高+{jump_pct}% (<8%門檻)=避')
     else:
-        # no_data: old placements before raw/ history — honest gap
         conviction = 0
         signal = '—'
         sig_class = 'trade-wait'
         verdict_text = '數據不足'
-        thesis.append('📜 歷史記錄 (raw/未覆蓋)')
     
-    # Risk factors (still valid regardless of jump)
     if pct > 50:
         conviction -= 1
-        risks.append(f'攤薄{pct}%')
-    elif pct > 30:
-        risks.append(f'攤薄{pct}%')
     
     if '貸款資本化' in p.get('method', ''):
         conviction -= 1
-        risks.append('債轉股')
     
     return {
         'conviction': conviction,
         'signal': signal,
         'sig_class': sig_class,
         'verdict_text': verdict_text,
-        'thesis': ' | '.join(thesis),
+        'thesis': thesis,
+        'comment': thesis,
         'risks': risks[:3],
         'jump_8d_pct': jump_pct,
         'jump_status': jump_status,
     }
 
 for p in data:
-    p['trade'] = trade_signal(p)
-    p['jump_8d_pct'] = p['trade'].get('jump_8d_pct')
     p['issuer'] = issuer_pressure_score(p)
     p['announcement_return_pct'] = announcement_return(p.get('code'), p.get('date_parsed'))
+    p['trade'] = trade_signal(p)
+    p['jump_8d_pct'] = p['trade'].get('jump_8d_pct')
 
 signals = {}
 for p in data:
@@ -416,6 +507,12 @@ function extractAgentFromName(text) {{
   return null;
 }}
 
+function esc(v) {{
+  return String(v ?? '').replace(/[&<>"']/g, ch => ({{
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }}[ch]));
+}}
+
 function updateRightsSummary(rows) {{
   let follow = 0, wait = 0, avoid = 0;
   rows.forEach(r => {{
@@ -481,7 +578,8 @@ function render(rows) {{
     else if (js === 'no_jump') {{ advice = '避'; adviceCls = 'issuer-low'; }}
     else {{ advice = '觀察'; adviceCls = 'issuer-neutral'; }}
 
-    let risks = (t.risks||[]).map(r => '<div class="risk">'+r+'</div>').join('');
+    let risks = (t.risks||[]).map(r => '<div class="risk">'+esc(r)+'</div>').join('');
+    let comment = t.comment || t.thesis || '';
     
     return `<tr>
       <td>${{d.date}}</td>
@@ -505,7 +603,7 @@ function render(rows) {{
       <td style="color:${{(ret||0) >= 0 ? '#3fb950' : '#f85149'}};font-weight:${{Math.abs(ret||0) > 20 ? 'bold' : 'normal'}}">${{ret != null ? (ret >= 0 ? '+' : '') + ret.toFixed(1) + '%' : '-'}}</td>
       <td style="color:${{(annRet||0) >= 0 ? '#3fb950' : '#f85149'}};font-weight:${{Math.abs(annRet||0) > 20 ? 'bold' : 'normal'}}">${{annRet != null ? annRetPct : '-'}}</td>
       <td>
-        <div class="thesis">${{t.thesis||''}}</div>
+        <div class="thesis">${{esc(comment)}}</div>
         ${{risks}}
       </td>
     </tr>`;
