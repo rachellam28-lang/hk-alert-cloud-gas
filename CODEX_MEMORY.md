@@ -153,6 +153,7 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
   - below both supports `圈錢`;
   - one missing line is labelled as insufficient instead of faking confidence.
 - `rights_analysis.html` now shows a `年開線` badge inside the issuer stack, with tooltip details like current price versus the two year-open lines.
+- Rights/placement lifecycle rows should not look like duplicate new deals. Keep canonical `category` for filtering, but use `category_display` on the page, e.g. `供股結果` for a results/completion announcement that carries terms from the original `供股` row.
 - Do not add `data/year_open_cache.json`; no separate westock/yfinance cache is needed for this judgement.
 - Page-source audit found exact duplicate public aliases: `holdings.json == data/holdings.json`, `ccass.json == data/ccass.json`, and `market.json == data/market.json`. Public pages use the root versions, not the `data/*` aliases.
 - `ccass/scripts/_deploy_cf.py` now skips deploying `data/holdings.json`, `data/ccass.json`, and `data/market.json` to Cloudflare Pages while keeping them in the worktree for local pipeline/audit compatibility.

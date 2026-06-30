@@ -141,7 +141,7 @@ tr:hover td { background: #161b22; }
 <script>
 let DATA = [];
 let DATA_READY = false;
-const DATA_URL = 'data/rights_analysis.json?v=20260630035558';
+const DATA_URL = 'data/rights_analysis.json?v=20260630040927';
 
 function fmtAmt(n) {
   if (n >= 1e8) return (n/1e8).toFixed(1)+'億';
@@ -242,12 +242,13 @@ function render(rows) {
 
     let risks = (t.risks||[]).map(r => '<div class="risk">'+esc(r)+'</div>').join('');
     let comment = t.comment || t.thesis || '';
+    const categoryText = d.category_display || d.category || '';
     
     return `<tr>
       <td>${d.date}</td>
       <td>${d.code}</td>
       <td>${d.name}</td>
-      <td><span class="badge badge-${d.category}">${d.category}</span></td>
+      <td><span class="badge badge-${d.category}">${esc(categoryText)}</span></td>
       <td>${d.price}</td>
       <td>${mp}</td>
       <td style="${discStyle}">${disc}</td>

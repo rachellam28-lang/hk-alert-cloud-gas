@@ -300,6 +300,17 @@ def announcement_stage(p):
         return '新公告'
     return '原始條款'
 
+def display_category(p):
+    cat = p.get('category') or '其他'
+    stage = announcement_stage(p)
+    if stage == '已終止/取消':
+        return '已終止'
+    if stage == '完成/結果' and cat in ('供股', '配售', '先舊後新'):
+        return f'{cat}結果'
+    if stage == '補充/延期' and cat in ('供股', '配售', '先舊後新'):
+        return f'{cat}更新'
+    return cat
+
 def classify_supply_intent(p, jump_pct, jump_status):
     """Classify whether the issue looks like share-cornering or cash-raising.
 
@@ -582,6 +593,8 @@ def trade_signal(p):
     }
 
 for p in data:
+    p['announcement_stage'] = announcement_stage(p)
+    p['category_display'] = display_category(p)
     p['issuer'] = issuer_pressure_score(p)
     p['announcement_return_pct'] = announcement_return(p.get('code'), p.get('date_parsed'))
     p['trade'] = trade_signal(p)
@@ -904,12 +917,13 @@ function render(rows) {{
 
     let risks = (t.risks||[]).map(r => '<div class="risk">'+esc(r)+'</div>').join('');
     let comment = t.comment || t.thesis || '';
+    const categoryText = d.category_display || d.category || '';
     
     return `<tr>
       <td>${{d.date}}</td>
       <td>${{d.code}}</td>
       <td>${{d.name}}</td>
-      <td><span class="badge badge-${{d.category}}">${{d.category}}</span></td>
+      <td><span class="badge badge-${{d.category}}">${{esc(categoryText)}}</span></td>
       <td>${{d.price}}</td>
       <td>${{mp}}</td>
       <td style="${{discStyle}}">${{disc}}</td>
