@@ -16,6 +16,16 @@ from issuer_score import issuer_pressure_score
 with open(os.path.join(DATA_DIR, 'placements_enriched.json'), 'r', encoding='utf-8') as f:
     data = json.load(f)
 
+def load_json_file(path, default):
+    try:
+        with open(path, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except Exception:
+        return default
+
+STOCK_PRICE_CACHE = load_json_file(os.path.join(DATA_DIR, 'stock_prices.json'), {})
+SYSTEM_YEAR = datetime.now().year
+
 # ====== Load raw/ price history ======
 def load_raw_prices():
     hist = {}
@@ -139,6 +149,142 @@ def fmt_pct(v, signed=False):
     prefix = '+' if signed and n > 0 else ''
     return f'{prefix}{n:.1f}%'
 
+def fmt_price(v):
+    n = _safe_num(v)
+    if n is None:
+        return '-'
+    return f'{n:.3f}' if n < 1 else f'{n:.2f}'
+
+def stock_price_year_lines(code):
+    code5 = str(code or '').zfill(5)
+    entry = STOCK_PRICE_CACHE.get(code5) if isinstance(STOCK_PRICE_CACHE, dict) else None
+    if not isinstance(entry, dict):
+        return {}
+    lines = {}
+    yo = _safe_num(entry.get('yo'))
+    if yo is not None and yo > 0:
+        year = SYSTEM_YEAR
+        yo_date = entry.get('yo_date')
+        if isinstance(yo_date, str) and re.match(r'^\d{4}-\d{2}-\d{2}$', yo_date):
+            year = int(yo_date[:4])
+        lines[year] = {
+            'year': year,
+            'date': yo_date or f'{year}-year-open',
+            'open': yo,
+            'source': 'stock_prices.yo',
+        }
+    py = _safe_num(entry.get('py'))
+    if py is not None and py > 0:
+        year = int(entry.get('py_year') or (SYSTEM_YEAR - 2))
+        lines.setdefault(year, {
+            'year': year,
+            'date': entry.get('py_date') or f'{year}-year-open',
+            'open': py,
+            'source': 'stock_prices.py',
+        })
+    return lines
+
+def current_price_anchor(p):
+    code = str(p.get('code') or '').zfill(5)
+    for key in ('latest_price', 'manual_latest_price'):
+        px = _safe_num(p.get(key))
+        if px is not None and px > 0:
+            return px, p.get('latest_date') or 'latest raw'
+    px, d = latest_close(code)
+    if px is not None and px > 0:
+        return px, d
+    entry = STOCK_PRICE_CACHE.get(code) if isinstance(STOCK_PRICE_CACHE, dict) else None
+    if isinstance(entry, dict):
+        px = _safe_num(entry.get('lp'))
+        if px is not None and px > 0:
+            return px, entry.get('lp_time') or entry.get('price_updated_at') or 'stock_prices'
+    px = _safe_num(p.get('market_price'))
+    if px is not None and px > 0:
+        return px, 'announcement market price'
+    return None, None
+
+def year_open_profile(p):
+    code = str(p.get('code') or '').zfill(5)
+    target = [SYSTEM_YEAR, SYSTEM_YEAR - 2]
+    lines = stock_price_year_lines(code)
+    ordered = [lines[y] for y in target if y in lines]
+    px, px_date = current_price_anchor(p)
+    profile = {
+        'available': len(ordered),
+        'target_years': target,
+        'above': 0,
+        'below': 0,
+        'anchor': px,
+        'anchor_date': px_date,
+        'levels': [],
+        'badge': '不足',
+        'cls': 'year-open-missing',
+        'summary': '今年/前年年開線不足',
+        'score_delta': 0,
+        'basis_text': '年開線不足',
+    }
+    if px is None or px <= 0:
+        profile['summary'] = '缺最新價，未能比較今年/前年年開線'
+        return profile
+    if not ordered:
+        return profile
+
+    above = below = 0
+    parts = []
+    for row in ordered:
+        opened = _safe_num(row.get('open'))
+        if opened is None or opened <= 0:
+            continue
+        dist = (px / opened - 1) * 100
+        status = 'above' if px >= opened else 'below'
+        if status == 'above':
+            above += 1
+        else:
+            below += 1
+        item = {
+            'year': row.get('year'),
+            'date': row.get('date'),
+            'open': opened,
+            'source': row.get('source'),
+            'status': status,
+            'distance_pct': round(dist, 1),
+        }
+        profile['levels'].append(item)
+        sign = '+' if dist > 0 else ''
+        parts.append(f"{row.get('year')} {fmt_price(opened)} ({sign}{dist:.1f}%)")
+
+    available = len(profile['levels'])
+    profile['available'] = available
+    profile['above'] = above
+    profile['below'] = below
+    profile['summary'] = f"現價 {fmt_price(px)}；" + '；'.join(parts)
+
+    if available < len(target):
+        if available == 1 and below == 1:
+            profile['badge'] = f"{below}/{len(target)} 下方"
+            profile['cls'] = 'year-open-down'
+        elif available == 1 and above == 1:
+            profile['badge'] = f"{above}/{len(target)} 上方"
+            profile['cls'] = 'year-open-up'
+        profile['basis_text'] = f"年開線不足 {available}/{len(target)}"
+        return profile
+
+    if available >= 2 and above >= 2:
+        profile['score_delta'] = 2
+        profile['badge'] = f"{above}/{available} 上方"
+        profile['cls'] = 'year-open-up'
+        profile['basis_text'] = f"企上 {above}/{available} 條年開線"
+    elif available >= 2 and below >= 2:
+        profile['score_delta'] = -2
+        profile['badge'] = f"{below}/{available} 下方"
+        profile['cls'] = 'year-open-down'
+        profile['basis_text'] = f"跌穿 {below}/{available} 條年開線"
+    else:
+        profile['badge'] = f"{above}/{available} 上方"
+        profile['cls'] = 'year-open-mixed'
+        profile['basis_text'] = f"年開線好淡混合 {above}/{available} 上方"
+    return profile
+
 def has_extracted_terms(p):
     return any((_safe_num(p.get(k)) or 0) > 0 for k in ('price_num', 'amount_num', 'pct_num'))
 
@@ -162,6 +308,7 @@ def classify_supply_intent(p, jump_pct, jump_status):
     conservative and mark it as pending.
     """
     stage = announcement_stage(p)
+    year_open = year_open_profile(p)
     if stage == '已終止/取消':
         return {
             'label': '已終止',
@@ -169,6 +316,7 @@ def classify_supply_intent(p, jump_pct, jump_status):
             'score': 0,
             'basis': '公告已終止/取消，唔再當新供股/配股壓力',
             'tradable': False,
+            'year_open': year_open,
         }
 
     score = 0
@@ -222,6 +370,16 @@ def classify_supply_intent(p, jump_pct, jump_status):
         else:
             score -= 1
             negative.append(f"公告後偏弱 {fmt_pct(ann_ret, signed=True)}")
+
+    yo_delta = _safe_num(year_open.get('score_delta')) or 0
+    if yo_delta > 0:
+        score += yo_delta
+        positive.append(year_open.get('basis_text') or '企上年開線')
+    elif yo_delta < 0:
+        score += yo_delta
+        negative.append(year_open.get('basis_text') or '跌穿年開線')
+    elif year_open.get('available', 0) <= 1:
+        pending.append(year_open.get('basis_text') or '年開線不足')
 
     if jump_status == 'jumped':
         score += 2
@@ -293,9 +451,9 @@ def classify_supply_intent(p, jump_pct, jump_status):
         tradable = False
 
     if score >= 2:
-        basis_parts = positive[:4] + negative[:3] + pending[:2]
+        basis_parts = positive[:5] + negative[:3] + pending[:2]
     elif score <= -2:
-        basis_parts = negative[:4] + positive[:2] + pending[:2]
+        basis_parts = negative[:5] + positive[:2] + pending[:2]
     else:
         basis_parts = positive[:3] + negative[:3] + pending[:2]
     basis = '；'.join(basis_parts) if basis_parts else '未有足夠除淨/完成後證據'
@@ -305,9 +463,10 @@ def classify_supply_intent(p, jump_pct, jump_status):
         'score': score,
         'basis': basis,
         'tradable': tradable,
-        'positive': positive[:4],
-        'negative': negative[:4],
+        'positive': positive[:5],
+        'negative': negative[:5],
         'pending': pending[:3],
+        'year_open': year_open,
     }
 
 def build_comment(p, jump_pct, jump_status):
@@ -560,6 +719,10 @@ tr:hover td {{ background: #161b22; }}
 .supply-cash {{ background: #3a1111; color: #f85149; border: 1px solid #f85149; }}
 .supply-watch {{ background: #3a2e0a; color: #d2991d; border: 1px solid #d2991d; }}
 .supply-ended {{ background: #21262d; color: #8b949e; border: 1px solid #30363d; }}
+.year-open-up {{ background: #122b18; color: #3fb950; border: 1px solid #3fb950; }}
+.year-open-down {{ background: #3a1111; color: #f85149; border: 1px solid #f85149; }}
+.year-open-mixed {{ background: #1f2937; color: #d2a8ff; border: 1px solid #6e40c9; }}
+.year-open-missing {{ background: #21262d; color: #8b949e; border: 1px solid #30363d; }}
 .thesis {{ max-width: 280px; overflow: hidden; text-overflow: ellipsis; color: #8b949e; font-size: 10px; white-space: normal; }}
 .risk {{ color: #f85149; font-size: 10px; }}
 .jump-green {{ color: #3fb950; font-weight: bold; }}
@@ -710,6 +873,7 @@ function render(rows) {{
     const shareholder = issuer.shareholder_pressure || {{score: issuer.score || 50, label: issuer.label || '中性', cls: issuer.cls || 'issuer-neutral'}};
     const reaction = issuer.reaction || {{pct: null, label: '未足夠數據', cls: 'issuer-react-neutral'}};
     const supply = d.supply || t.supply || {{label: '待確認', cls: 'supply-watch', basis: '未有足夠除淨/完成後證據'}};
+    const yearOpen = supply.year_open || {{badge: '不足', cls: 'year-open-missing', summary: '今年/前年年開線不足'}};
     const reactionPct = reaction.pct != null ? (reaction.pct >= 0 ? '+' : '') + reaction.pct.toFixed(1) + '%' : '—';
     const annRet = d.announcement_return_pct != null ? d.announcement_return_pct : null;
     const annRetPct = annRet != null ? (annRet >= 0 ? '+' : '') + annRet.toFixed(1) + '%' : '—';
@@ -754,9 +918,10 @@ function render(rows) {{
       <td><span class="signal ${{t.sig_class||''}}">${{t.signal||'➖'}}</span></td>
       <td>
         <div class="issuer-stack" title="公告條款代理分數，唔係內部意圖；高分＝對發行方更有利／對股東短期壓力更大；現價對發行價＝最新 raw close vs 發行價；公告日至今＝由公告日第一個可用 raw close 到最新 raw close；公告後價格反應＝只計除權/完成後歷史 reaction；未有除權/完成日就顯示未足夠數據；交易建議＝避免誤當買入提示">
-          <span class="issuer-badge ${{adviceCls}}">交易建議 ${{advice}}</span>
-          <span class="issuer-badge ${{supply.cls || 'supply-watch'}}" title="${{esc(supply.basis || '')}}">圈股判斷 ${{esc(supply.label || '待確認')}}</span>
-          <span class="issuer-badge ${{issuer.cls}}">發行方有利度 ${{issuer.label}} ${{issuer.score}}</span>
+           <span class="issuer-badge ${{adviceCls}}">交易建議 ${{advice}}</span>
+           <span class="issuer-badge ${{supply.cls || 'supply-watch'}}" title="${{esc(supply.basis || '')}}">圈股判斷 ${{esc(supply.label || '待確認')}}</span>
+           <span class="issuer-badge ${{yearOpen.cls || 'year-open-missing'}}" title="${{esc(yearOpen.summary || '')}}">年開線 ${{esc(yearOpen.badge || '不足')}}</span>
+           <span class="issuer-badge ${{issuer.cls}}">發行方有利度 ${{issuer.label}} ${{issuer.score}}</span>
           <span class="issuer-badge ${{shareholder.cls}}">股東短期壓力 ${{shareholder.label}} ${{shareholder.score}}</span>
           <span class="issuer-badge ${{reaction.cls}}">公告後價格反應 ${{reactionPct}} ${{reaction.label}}</span>
         </div>

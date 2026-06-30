@@ -145,6 +145,18 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 
 ## Latest Deploy Notes
 
+### 2026-06-30 rights year-open judgement and deploy slimming
+
+- User clarified not to add another 2025/year-open JSON. Rights supply judgement must use the same dashboard price cache only: `data/stock_prices.json` fields `yo` (current year open) and `py` (dashboard "前年" open).
+- `scripts/gen_rights_page.py` now adds `supply.year_open` from `stock_prices.json` and uses it in `圈股/圈錢` scoring:
+  - above both `yo` and `py` supports `圈股`;
+  - below both supports `圈錢`;
+  - one missing line is labelled as insufficient instead of faking confidence.
+- `rights_analysis.html` now shows a `年開線` badge inside the issuer stack, with tooltip details like current price versus the two year-open lines.
+- Do not add `data/year_open_cache.json`; no separate westock/yfinance cache is needed for this judgement.
+- Page-source audit found exact duplicate public aliases: `holdings.json == data/holdings.json`, `ccass.json == data/ccass.json`, and `market.json == data/market.json`. Public pages use the root versions, not the `data/*` aliases.
+- `ccass/scripts/_deploy_cf.py` now skips deploying `data/holdings.json`, `data/ccass.json`, and `data/market.json` to Cloudflare Pages while keeping them in the worktree for local pipeline/audit compatibility.
+
 ### 2026-06-30 daily page refresh rule and rights feed sync
 
 - User explicitly requires every page to update daily, not only selected cards or root JSON. Keep this as a standing rule for future work.

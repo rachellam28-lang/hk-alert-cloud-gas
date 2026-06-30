@@ -51,6 +51,12 @@ ROOT_DEPLOY_FILES = [
     "shared-nav.js",
 ]
 
+DATA_DEPLOY_SKIP = {
+    Path("data/holdings.json"),
+    Path("data/ccass.json"),
+    Path("data/market.json"),
+}
+
 
 def load_env():
     """Load optional Cloudflare API env; Wrangler OAuth cache also works."""
@@ -87,6 +93,8 @@ def copy_site_files(src: Path, tmp: Path) -> int:
             if not src_file.is_file():
                 continue
             rel = src_file.relative_to(src)
+            if rel in DATA_DEPLOY_SKIP:
+                continue
             if rel.suffix.lower() not in {".html", ".json", ".png", ".webp", ".jpg", ".jpeg", ".svg", ".ico", ".txt"}:
                 continue
             if ".bak" in src_file.name or src_file.name == "scanner.db":
