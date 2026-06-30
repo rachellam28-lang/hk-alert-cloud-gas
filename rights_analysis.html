@@ -83,19 +83,19 @@ tr:hover td { background: #161b22; }
 </div>
 
 <div class="summary" id="rightsSummary">
-  <div class="card buy"><div class="label">🟢 跟</div><div class="value">7</div></div>
-  <div class="card wait"><div class="label">🟡 等</div><div class="value">0</div></div>
-  <div class="card avoid"><div class="label">🔴 避</div><div class="value">20</div></div>
+  <div class="card buy"><div class="label">🟢 跟</div><div class="value">25</div></div>
+  <div class="card wait"><div class="label">🟡 等</div><div class="value">24</div></div>
+  <div class="card avoid"><div class="label">🔴 避</div><div class="value">37</div></div>
   <div class="card"><div class="label">💡 核心理念</div><div class="value" style="font-size:10px;color:#58a6ff;line-height:1.5">配售本體 -EV (median -11.8%, 62%輸錢)<br>唯一實證: 配售後5日內收市升穿+8%=跳升確認<br>跳升組 16% 60日內翻倍, 係冇跳組 2.4x</div></div>
 </div>
 
 <div class="tabs">
-  <div class="tab active" onclick="filter('all')">全部<span class="count">402</span></div>
-  <div class="tab" onclick="filter('🟢')">🟢 跟<span class="count">7</span></div>
-  <div class="tab" onclick="filter('🟡')">🟡 等<span class="count">0</span></div>
-  <div class="tab" onclick="filter('🔴')">🔴 避<span class="count">20</span></div>
-  <div class="tab" onclick="filter('供股')">供股<span class="count">40</span></div>
-  <div class="tab" onclick="filter('先舊後新')">先舊後新<span class="count">18</span></div>
+  <div class="tab active" onclick="filter('all')">全部<span class="count">481</span></div>
+  <div class="tab" onclick="filter('🟢')">🟢 跟<span class="count">25</span></div>
+  <div class="tab" onclick="filter('🟡')">🟡 等<span class="count">24</span></div>
+  <div class="tab" onclick="filter('🔴')">🔴 避<span class="count">37</span></div>
+  <div class="tab" onclick="filter('供股')">供股<span class="count">50</span></div>
+  <div class="tab" onclick="filter('先舊後新')">先舊後新<span class="count">20</span></div>
 </div>
 
 <div class="search-box">
@@ -133,7 +133,7 @@ tr:hover td { background: #161b22; }
 <script>
 let DATA = [];
 let DATA_READY = false;
-const DATA_URL = 'data/rights_analysis.json?v=20260629051506';
+const DATA_URL = 'data/rights_analysis.json?v=20260630025906';
 
 function fmtAmt(n) {
   if (n >= 1e8) return (n/1e8).toFixed(1)+'億';

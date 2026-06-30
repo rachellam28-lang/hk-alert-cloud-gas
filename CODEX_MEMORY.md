@@ -76,6 +76,7 @@ Primary layers:
 - `data/publish_bundle.json` is the shared freshness/status layer for dashboard, Telegram, health checks, and memory.
 - If duplicate/cache/fallback sources exist, choose one primary source and label fallback use clearly.
 - Page mismatch means fix source/export first, then page logic, then docs.
+- Every public page must be refreshed every daily run, together with the JSON files it reads. If a page has no new domain event that day, still rebuild the page/cache stamp and publish freshness metadata so it cannot remain on an old snapshot.
 
 ## Current Refresh Pipeline
 
@@ -91,14 +92,15 @@ Expected sequence:
 1. `ccass/src/runner.py`
 2. `ccass/scripts/daily_lp_futu.py`
 3. `ccass/scripts/generate_prices_json.py`
-4. Generate `rights_analysis.json/html`
-5. `ccass/scripts/generate_signals_json.py`
-6. `ccass/scripts/regenerate_json.py`
-7. `scripts/sync_publish_aliases.py`
-8. `scripts/build_publish_bundle.py`
-9. Generate static analysis pages
-10. `scripts/audit_gate.py`
-11. Commit locally and direct deploy to Cloudflare Pages
+4. `scripts/sync_rights_from_announcements.py`
+5. Generate `rights_analysis.json/html`
+6. `ccass/scripts/generate_signals_json.py`
+7. `ccass/scripts/regenerate_json.py`
+8. `scripts/sync_publish_aliases.py`
+9. `scripts/build_publish_bundle.py`
+10. Generate static analysis pages
+11. `scripts/audit_gate.py`
+12. Commit locally and direct deploy to Cloudflare Pages
 
 `audit_gate.py` should fail if root/data aliases diverge.
 
@@ -142,6 +144,15 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - Sheet schema should upgrade without destroying existing rows.
 
 ## Latest Deploy Notes
+
+### 2026-06-30 daily page refresh rule and rights feed sync
+
+- User explicitly requires every page to update daily, not only selected cards or root JSON. Keep this as a standing rule for future work.
+- Root cause of the stale supply/placement page: `rights_analysis.html` reads `data/rights_analysis.json`, but that JSON was generated only from stale `data/placements_enriched.json`; latest `data/announcements.json` already had newer placement/rights announcements.
+- Fix: `scripts/sync_rights_from_announcements.py` bridges `data/announcements.json` into `data/placements_enriched.json` before `scripts/gen_rights_page.py`, so the rights page and main issuer badges share the same current announcement feed.
+- `ccass/scripts/daily_refresh.sh` runs the rights announcement sync before placement return refresh and stages `data/announcements.json`, `data/placements_enriched.json`, and `data/rights_analysis.json` with the rest of the refreshed site files.
+- Current regenerated supply/placement data has 481 rows and latest announcement date `2026-06-28`; examples verified: `01069` latest rights row `2026-06-16` score 100, `09982` row `2026-06-18`.
+- Windows-safe stdout/stderr encoding was added to `scripts/gen_rights_page.py` and `scripts/build_signals.py`; daily refresh must not fail merely because console output contains emoji or Chinese labels.
 
 ### 2026-06-30 market card partial-refresh UI
 

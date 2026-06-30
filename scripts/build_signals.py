@@ -26,6 +26,11 @@ import os
 import sys
 from datetime import datetime, timedelta
 
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
 # Import from same directory
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from schema import (

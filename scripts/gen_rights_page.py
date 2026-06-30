@@ -1,7 +1,12 @@
 #!/usr/bin/env python3
 """Generate rights_analysis.html — v4: 8120 pattern. Rating = jump status, not discount."""
-import json, re, os, glob
+import json, re, os, glob, sys
 from datetime import datetime, timezone
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data')
 RAW_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'raw')

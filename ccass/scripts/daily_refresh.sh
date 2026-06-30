@@ -59,6 +59,9 @@ echo "2.7/5 Refresh Futu dopamine (best-effort)..."
 echo "2.8/5 Refresh HK fund flow (best-effort)..."
 "$PYTHON_BIN" "$REPO_ROOT/scripts/fetch_fundflow.py" || echo "WARN: fund flow refresh unavailable; keeping existing fundflow cache"
 
+echo "3.44/5 Sync placement/rights announcements..."
+"$PYTHON_BIN" "$REPO_ROOT/scripts/sync_rights_from_announcements.py" || { echo "ERROR: rights announcement sync failed"; exit 1; }
+
 echo "3.45/5 Refresh placement returns..."
 "$PYTHON_BIN" "$REPO_ROOT/scripts/refresh_placement_returns.py" || { echo "ERROR: placement returns refresh failed"; exit 1; }
 
@@ -91,7 +94,7 @@ echo "4/5 Audit gate..."
 
 echo "5/5 Stage refreshed files..."
 cd "$REPO_ROOT"
-git add holdings.json data/holdings.json ccass.json data/ccass.json market.json data/market.json data/stock_prices.json data/suspended_stocks.json data/prices.json data/fundflow.json data/signals.json data/transfers.json ccass/data/transfers.json data/publish_bundle.json daily_trade_prompt.html timing_analysis.html vqc_analysis.html distribution_day.html jieqi_analysis.html rights_analysis.html
+git add holdings.json data/holdings.json ccass.json data/ccass.json market.json data/market.json data/stock_prices.json data/suspended_stocks.json data/prices.json data/fundflow.json data/announcements.json data/placements_enriched.json data/rights_analysis.json data/signals.json data/transfers.json ccass/data/transfers.json data/publish_bundle.json raw/prices_*.json daily_trade_prompt.html timing_analysis.html vqc_analysis.html distribution_day.html jieqi_analysis.html rights_analysis.html
 echo "Refreshed files staged. Commit/deploy should be handled explicitly; no GitHub push from daily_refresh.sh."
 
 echo "Done!"
