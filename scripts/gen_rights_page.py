@@ -248,6 +248,23 @@ def current_price_anchor(p):
         return px, 'announcement market price'
     return None, None
 
+def display_price_anchor(p):
+    """Latest display price for the table; never falls back to stale announcement price."""
+    code = str(p.get('code') or '').zfill(5)
+    for key in ('latest_price', 'manual_latest_price'):
+        px = _safe_num(p.get(key))
+        if px is not None and px > 0:
+            return px, p.get('latest_date') or 'latest raw'
+    px, d = latest_close(code)
+    if px is not None and px > 0:
+        return px, d
+    entry = STOCK_PRICE_CACHE.get(code) if isinstance(STOCK_PRICE_CACHE, dict) else None
+    if isinstance(entry, dict):
+        px = _safe_num(entry.get('lp'))
+        if px is not None and px > 0:
+            return px, entry.get('lp_time') or entry.get('price_updated_at') or 'stock_prices'
+    return None, None
+
 def year_open_profile(p):
     code = str(p.get('code') or '').zfill(5)
     target = [SYSTEM_YEAR, SYSTEM_YEAR - 2]
@@ -636,6 +653,10 @@ def trade_signal(p):
 for p in data:
     p['announcement_stage'] = announcement_stage(p)
     p['category_display'] = display_category(p)
+    p['announcement_market_price'] = p.get('market_price')
+    display_px, display_px_date = display_price_anchor(p)
+    p['display_market_price'] = round(display_px, 4) if display_px is not None else None
+    p['display_market_date'] = display_px_date
     p['issuer'] = issuer_pressure_score(p)
     p['announcement_return_pct'] = announcement_return(p.get('code'), p.get('date_parsed'))
     p['trade'] = trade_signal(p)
@@ -900,6 +921,11 @@ function fmtOpenPrice(v) {{
   return n < 1 ? n.toFixed(3) : n.toFixed(2);
 }}
 
+function rowDisplayMarketPrice(row) {{
+  const n = Number(row && row.display_market_price);
+  return Number.isFinite(n) && n > 0 ? n : null;
+}}
+
 function getYearOpenLevel(yearOpen, idx) {{
   const levels = Array.isArray(yearOpen && yearOpen.levels) ? yearOpen.levels : [];
   const targets = Array.isArray(yearOpen && yearOpen.target_years) ? yearOpen.target_years : [];
@@ -958,7 +984,9 @@ function updateRightsSummary(rows) {{
 function render(rows) {{
   document.getElementById('tableBody').innerHTML = rows.map(d => {{
     let t = d.trade || {{}};
-    let mp = d.market_price > 0 ? d.market_price.toFixed(2) : '-';
+    const displayMarketPrice = rowDisplayMarketPrice(d);
+    let mp = displayMarketPrice != null ? fmtOpenPrice(displayMarketPrice) : '-';
+    const mpTitle = d.display_market_date ? '最新市價 ' + mp + ' @ ' + d.display_market_date : '最新市價不足';
     let disc = d.discount_pct != null ? (d.discount_pct <= 0 ? d.discount_pct+'%' : '+'+d.discount_pct+'%') : '-';
     let discStyle = '';
     if (d.discount_pct != null) {{
@@ -1011,7 +1039,7 @@ function render(rows) {{
       <td>${{d.name}}</td>
       <td><span class="badge badge-${{d.category}}">${{esc(categoryText)}}</span></td>
       <td>${{d.price}}</td>
-      <td>${{mp}}</td>
+      <td title="${{esc(mpTitle)}}">${{mp}}</td>
       <td style="${{discStyle}}">${{disc}}</td>
       <td>${{jumpHtml}}</td>
       <td>${{d.pct_num > 0 ? d.pct_num.toFixed(1)+'%' : '-'}}</td>
@@ -1089,7 +1117,7 @@ function sortTable(col) {{
   sortCol = col;
   if (!DATA_READY) return;
   let rows = getFilteredRows();
-  const keys = ['date_parsed','code','name','category','price_num','market_price','discount_pct','jump_8d_pct','pct_num','trade.signal','issuer.score','yo_distance','py_distance','current_return_pct','announcement_return_pct'];
+  const keys = ['date_parsed','code','name','category','price_num','display_market_price','discount_pct','jump_8d_pct','pct_num','trade.signal','issuer.score','yo_distance','py_distance','current_return_pct','announcement_return_pct'];
   rows.sort((a,b) => {{
     let va, vb;
     if (col === 7) {{ va = a.jump_8d_pct != null ? a.jump_8d_pct : (a.trade||{{}}).jump_status==='waiting' ? 999 : -999; vb = b.jump_8d_pct != null ? b.jump_8d_pct : (b.trade||{{}}).jump_status==='waiting' ? 999 : -999; }}
@@ -1097,7 +1125,7 @@ function sortTable(col) {{
     else if (col === 10) {{ va = (a.issuer || {{score: 50}}).score; vb = (b.issuer || {{score: 50}}).score; }}
     else if (col === 11) {{ return compareNumberMissingLast(yearOpenDistance(a, 0), yearOpenDistance(b, 0)); }}
     else if (col === 12) {{ return compareNumberMissingLast(yearOpenDistance(a, 1), yearOpenDistance(b, 1)); }}
-    else if (col === 5) {{ va = a.market_price||0; vb = b.market_price||0; }}
+    else if (col === 5) {{ return compareNumberMissingLast(rowDisplayMarketPrice(a), rowDisplayMarketPrice(b)); }}
     else if (col === 9) {{
       const order = {{'🟢 跟!': 0, '🟢 跟': 0, '🟡 等': 1, '🔴 避': 2, '💀 走': 3, '—': 4, '': 4}};
       const as = (a.trade||{{}}).signal || '—';
