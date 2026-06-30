@@ -25,6 +25,7 @@ If this file disagrees with chat memory, trust the current repo state.
 - The site should stay HK-focused, except main pages may show US P/E and US breadth.
 - Avoid vague memory. Read local files before changing the system.
 - Keep Telegram, dashboard, Cloudflare pages, and memory aligned.
+- Remember the Telegram Hermes bot as part of the system wiring for dashboard/status/health-style notifications; do not print or commit its token/chat secrets.
 - User does not want `yfinance` for this project.
 - User does not want `gh` CLI and does not want project internals searchable.
 
@@ -128,7 +129,7 @@ Keep the daily refresh bounded; let resume jobs mop up incomplete coverage.
 - Avoid GitHub/`gh` for refresh/deploy unless the user explicitly asks.
 - GitHub Actions workflow files may remain for manual fallback, but schedules should stay disabled.
 - Cloudflare cron Worker should stay no-op unless a non-GitHub refresh path is implemented.
-- CCASS events cron should use its own Telegram bot/chat secrets, not the Hermes bot.
+- Telegram Hermes bot is for general dashboard/status/health summaries. CCASS events cron should use its own Telegram bot/chat secrets, not the Hermes bot, unless the user explicitly asks to merge them.
 - Cloudflare Pages output should include `_headers` with `X-Robots-Tag: noindex, nofollow, noarchive, nosnippet, noimageindex`.
 - `robots.txt` and `_headers` reduce search indexing for the live site, but they do not make a public GitHub repository private.
 
@@ -145,6 +146,21 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - Sheet schema should upgrade without destroying existing rows.
 
 ## Latest Deploy Notes
+
+### 2026-06-30 main signal badge and theme/sector heatmaps
+
+- Main page corporate-action signal badges were changed from the old issuer-favourability wording to `圈股判斷`, sourced from `data/signals.json.groups[].supply`, which is copied from the canonical `data/rights_analysis.json` supply/cash judgement.
+- `data/signals.json` still keeps `issuer` for audit/backward compatibility, but visible main-page badges must not show `發行方有利度`.
+- Verified live `01069` reads `supply.label = 圈錢` with basis: current price below issue price, weak post-announcement return, below both year-open lines, T+5 below threshold, and large dilution.
+- Main page added `主題選股` and `板塊選股` selectors. They save/restore through presets, reset, and URL state.
+- Main page added theme/sector heatmaps using only existing in-page data: holdings, signalMap, techSignalMap, and lightweight stock-name keyword grouping. Do not add a heavy sector/theme JSON unless a canonical sector source is introduced.
+- Heatmaps are in their own `section.card heatmap-card`, separate from the toolbar/table-control card. Clicking a heatmap tile applies the matching selector; clear buttons reset theme or sector.
+- Keep Telegram Hermes bot summaries aligned with the same dashboard/publish metadata after these main-page UI/data changes; never store Hermes bot secrets in tracked files.
+- Relevant commits:
+  - `ef6d6bf fix(main): show supply judgement badges`
+  - `c8052b1 feat(main): add theme sector heatmaps`
+  - `8712084 fix(main): split heatmap into card`
+- Deployed directly to Cloudflare Pages with `ccass/scripts/_deploy_cf.py`; no GitHub/`gh` route was used.
 
 ### 2026-06-30 rights year-open judgement and deploy slimming
 
