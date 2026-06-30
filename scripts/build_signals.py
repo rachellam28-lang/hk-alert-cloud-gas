@@ -172,7 +172,63 @@ def build_issuer_map(placements, rights_analysis=None):
     return issuer_map
 
 
-def build_signals_json(holdings, events, corp_map, issuer_map):
+def compact_supply_payload(row):
+    supply = row.get("supply")
+    if not isinstance(supply, dict):
+        trade = row.get("trade") if isinstance(row.get("trade"), dict) else {}
+        supply = trade.get("supply") if isinstance(trade.get("supply"), dict) else None
+    if not isinstance(supply, dict):
+        return None
+
+    payload = {
+        "label": supply.get("label"),
+        "cls": supply.get("cls"),
+        "score": supply.get("score"),
+        "basis": supply.get("basis"),
+        "tradable": supply.get("tradable"),
+        "positive": (supply.get("positive") or [])[:4],
+        "negative": (supply.get("negative") or [])[:4],
+        "pending": (supply.get("pending") or [])[:4],
+        "date": str(row.get("date_parsed") or row.get("date") or "")[:10],
+        "category": row.get("category"),
+        "category_display": row.get("category_display"),
+        "method": row.get("method"),
+    }
+    trade = row.get("trade") if isinstance(row.get("trade"), dict) else {}
+    if trade:
+        payload["trade_signal"] = trade.get("signal")
+        payload["trade_verdict"] = trade.get("verdict_text")
+    year_open = supply.get("year_open") if isinstance(supply.get("year_open"), dict) else None
+    if year_open:
+        payload["year_open"] = {
+            "badge": year_open.get("badge"),
+            "cls": year_open.get("cls"),
+            "summary": year_open.get("summary"),
+            "basis_text": year_open.get("basis_text"),
+        }
+    return {k: v for k, v in payload.items() if v not in (None, "", [])}
+
+
+def build_supply_map(rights_analysis=None):
+    """Build {code: compact supply/cash judgement}; rights_analysis.json is authoritative."""
+    supply_map = {}
+    for row in rights_analysis or []:
+        code = str(row.get("code", "")).strip().lstrip("0").zfill(5)
+        if not code or code == "00000":
+            continue
+        date = str(row.get("date_parsed") or row.get("date") or "")[:10]
+        if not date:
+            continue
+        payload = compact_supply_payload(row)
+        if not payload:
+            continue
+        cur = supply_map.get(code)
+        if cur is None or date > cur.get("date", ""):
+            supply_map[code] = payload
+    return supply_map
+
+
+def build_signals_json(holdings, events, corp_map, issuer_map, supply_map):
     """Generate frontend signals.json with corpTypes from announcements.json."""
     stocks = holdings.get("stocks", []) if holdings else []
 
@@ -211,6 +267,7 @@ def build_signals_json(holdings, events, corp_map, issuer_map):
             "signals": sigs,
             "corpTypes": corp_types,
             "issuer": issuer_map.get(code),
+            "supply": supply_map.get(code),
             "hkexLink": hkex_link,
         })
 
@@ -302,7 +359,8 @@ def main():
 
     print("[4/4] build signals.json")
     issuer_map = build_issuer_map(placements, rights_analysis)
-    signals = build_signals_json(holdings, all_events, corp_map, issuer_map)
+    supply_map = build_supply_map(rights_analysis)
+    signals = build_signals_json(holdings, all_events, corp_map, issuer_map, supply_map)
 
     if args.dry_run:
         print("\nDRY RUN — nothing written")

@@ -113,9 +113,9 @@ Keep the daily refresh bounded; let resume jobs mop up incomplete coverage.
 
 ## Page Data Consistency
 
-- Main page issuer badges must use `data/signals.json.groups[].issuer`.
-- `data/signals.json` should reuse the canonical issuer payload from `data/rights_analysis.json` when available.
-- `rights_analysis.html` and the main signal badges must show the same issuer score/label.
+- Main page corporate-action badges must show `data/signals.json.groups[].supply` as `圈股判斷` (`圈股` / `圈錢` / `待確認`), not `發行方有利度`.
+- `data/signals.json` should still keep the canonical issuer payload from `data/rights_analysis.json` for audit/backward compatibility, but the visible main-page badge should use the canonical supply/cash judgement from `data/rights_analysis.json`.
+- `rights_analysis.html` and the main signal badges must use the same supply/cash label and basis.
 - `timing_analysis.html`, `jieqi_analysis.html`, and `distribution_day.html` are signal-date tables, not first-screen backtest dashboards.
 - Main page should not expose old `5d`, `20d`, or `60d` delta columns.
 - Old URL/custom preset sorts using `d5`, `d20`, or `d60` should sanitize back to `vr`.

@@ -74,6 +74,10 @@ tbody tr{cursor:pointer}
 .issuer-high{background:#2a103f;color:#c4b5fd;border-color:#7c3aed}
 .issuer-mid{background:#1f2937;color:#ddd6fe;border-color:#8b5cf6}
 .issuer-low{background:#10281d;color:#86efac;border-color:#22c55e}
+.supply-stock{background:#10281d;color:#86efac;border-color:#22c55e}
+.supply-cash{background:var(--down-soft);color:var(--down);border-color:var(--down-border)}
+.supply-watch{background:var(--amber-soft);color:var(--amber);border-color:var(--amber-border)}
+.supply-ended{background:#1f2937;color:var(--mute);border-color:var(--border)}
 .cpill-increase{background:var(--up-soft);color:var(--up);border-color:var(--up-border)}
 .cpill-decrease{background:var(--down-soft);color:var(--down);border-color:var(--down-border)}
 .cpill-buyback{background:var(--primary-soft);color:var(--primary);border-color:var(--primary-border)}
@@ -930,24 +934,23 @@ function shortLabel(lbl){
   return lbl.replace('IPO首日高突破','🚀高破').replace('IPO首日開突破','🚀開破').replace('半年POC','半POC').replace('3年POC','3yPOC').replace('12月POC','12mPOC').replace('向上跳空缺口','🔼跳空').replace('向上FVG','📈FVG').replace('上破POC 12M','🎯POC12M');
 }
 function issuerFavorBadge(sig){
-  if(!sig || (!sig.pl && !sig.ri && !sig.issuer)) return '';
-  var issuer = sig.issuer || null;
-  var score = issuer && issuer.score != null ? issuer.score : 50;
-  if(!issuer){
-    if(sig.pl) score += 8;
-    if(sig.ri) score += 15;
-    if(sig.pl && sig.ri) score += 7;
-  }
-  score = Math.max(0, Math.min(100, Math.round(score)));
-  var label = issuer && issuer.label ? issuer.label : (score >= 80 ? '有利度高' : (score >= 60 ? '偏發行方' : (score >= 40 ? '中性' : (score >= 20 ? '偏股東' : '股東友好'))));
-  var cls = issuer && issuer.cls ? issuer.cls : (score >= 60 ? 'issuer-high' : (score >= 40 ? 'issuer-mid' : 'issuer-low'));
-  var pressure = issuer && issuer.shareholder_pressure ? issuer.shareholder_pressure : null;
-  var reaction = issuer && issuer.reaction ? issuer.reaction : null;
-  var tip = '公告條款代理分數，唔係內部意圖';
-  tip += '\n發行方有利度：' + label + ' ' + score;
-  tip += '\n股東短期壓力：' + ((pressure && pressure.label) ? pressure.label : label) + ' ' + (pressure && pressure.score != null ? pressure.score : score);
-  tip += '\n公告後價格反應：' + (reaction && reaction.pct != null ? (reaction.pct >= 0 ? '+' : '') + reaction.pct.toFixed(1) + '%' : '—') + ' ' + (reaction && reaction.label ? reaction.label : '未足夠數據');
-  return '<span class="cpill cpill-issuer '+cls+'" title="'+tip+'">發行方有利度 '+label+' '+score+'</span>';
+  if(!sig || (!sig.pl && !sig.ri && !sig.supply)) return '';
+  var supply = sig.supply || null;
+  var label = supply && supply.label ? supply.label : '待確認';
+  var cls = supply && supply.cls ? supply.cls : 'supply-watch';
+  var score = supply && supply.score != null ? Math.round(Number(supply.score)) : null;
+  var tip = '圈股/圈錢判斷：' + label;
+  if(score != null && isFinite(score)) tip += '\n判斷分數：' + score;
+  if(supply && supply.date) tip += '\n公告日期：' + supply.date;
+  if(supply && supply.category_display) tip += '\n類別：' + supply.category_display;
+  else if(supply && supply.category) tip += '\n類別：' + supply.category;
+  if(supply && supply.basis) tip += '\n原因：' + supply.basis;
+  if(supply && supply.year_open && supply.year_open.summary) tip += '\n年開線：' + supply.year_open.summary;
+  if(supply && supply.trade_signal) tip += '\n交易信號：' + supply.trade_signal + (supply.trade_verdict ? ' ' + supply.trade_verdict : '');
+  if(supply && supply.positive && supply.positive.length) tip += '\n正面：' + supply.positive.join('；');
+  if(supply && supply.negative && supply.negative.length) tip += '\n負面：' + supply.negative.join('；');
+  if(supply && supply.pending && supply.pending.length) tip += '\n待確認：' + supply.pending.join('；');
+  return '<span class="cpill cpill-issuer '+cls+'" title="'+esc(tip)+'">圈股判斷 '+esc(label)+'</span>';
 }
 // P2: Composite score 0-10
 function calcScore(s){
@@ -2265,7 +2268,8 @@ async function loadData(){
               pl:!!ct.placement,ri:!!ct.rights,inc:!!ct.increase,              plDate:e.placement?.date||null,riDate:e.rights?.date||null,
               plCount:e.placement?.count||0,riCount:e.rights?.count||0,
               incCount:e.increase?.count||0,
-              issuer:g.issuer||null,            });
+              issuer:g.issuer||null,
+              supply:g.supply||null,            });
             // New Maps
             newPriceMap.set(code, g.latestPrice);
             newHkexLinkMap.set(code, g.hkexLink||'');
@@ -2279,7 +2283,8 @@ async function loadData(){
                 pl:!!e.placement,ri:!!e.rights,inc:!!e.increase,                plDate:e.placement?.date||null,riDate:e.rights?.date||null,
                 plCount:e.placement?.count||0,riCount:e.rights?.count||0,
                 incCount:e.increase?.count||0,
-                issuer:null,              });
+                issuer:null,
+                supply:null,              });
             }
           });
           // Atomic swap
