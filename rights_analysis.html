@@ -53,6 +53,10 @@ tr:hover td { background: #161b22; }
 .issuer-react-up { background: #122b18; color: #3fb950; border: 1px solid #3fb950; }
 .issuer-react-neutral { background: #21262d; color: #c9d1d9; border: 1px solid #30363d; }
 .issuer-react-down { background: #3a1111; color: #f85149; border: 1px solid #f85149; }
+.supply-stock { background: #122b18; color: #3fb950; border: 1px solid #3fb950; }
+.supply-cash { background: #3a1111; color: #f85149; border: 1px solid #f85149; }
+.supply-watch { background: #3a2e0a; color: #d2991d; border: 1px solid #d2991d; }
+.supply-ended { background: #21262d; color: #8b949e; border: 1px solid #30363d; }
 .thesis { max-width: 280px; overflow: hidden; text-overflow: ellipsis; color: #8b949e; font-size: 10px; white-space: normal; }
 .risk { color: #f85149; font-size: 10px; }
 .jump-green { color: #3fb950; font-weight: bold; }
@@ -133,7 +137,7 @@ tr:hover td { background: #161b22; }
 <script>
 let DATA = [];
 let DATA_READY = false;
-const DATA_URL = 'data/rights_analysis.json?v=20260630032850';
+const DATA_URL = 'data/rights_analysis.json?v=20260630033502';
 
 function fmtAmt(n) {
   if (n >= 1e8) return (n/1e8).toFixed(1)+'億';
@@ -202,6 +206,7 @@ function render(rows) {
     const issuer = d.issuer || {score: 50, label: '中性', cls: 'issuer-neutral', shareholder_pressure: {score: 50, label: '中性', cls: 'issuer-neutral'}, reaction: {pct: null, label: '未足夠數據', cls: 'issuer-react-neutral'}};
     const shareholder = issuer.shareholder_pressure || {score: issuer.score || 50, label: issuer.label || '中性', cls: issuer.cls || 'issuer-neutral'};
     const reaction = issuer.reaction || {pct: null, label: '未足夠數據', cls: 'issuer-react-neutral'};
+    const supply = d.supply || t.supply || {label: '待確認', cls: 'supply-watch', basis: '未有足夠除淨/完成後證據'};
     const reactionPct = reaction.pct != null ? (reaction.pct >= 0 ? '+' : '') + reaction.pct.toFixed(1) + '%' : '—';
     const annRet = d.announcement_return_pct != null ? d.announcement_return_pct : null;
     const annRetPct = annRet != null ? (annRet >= 0 ? '+' : '') + annRet.toFixed(1) + '%' : '—';
@@ -221,9 +226,13 @@ function render(rows) {
     
     let advice = '觀察';
     let adviceCls = 'issuer-neutral';
-    if (js === 'jumped') { advice = '只宜短炒'; adviceCls = 'issuer-high'; }
-    else if (js === 'waiting') { advice = '觀察'; adviceCls = 'issuer-neutral'; }
-    else if (js === 'no_jump') { advice = '避'; adviceCls = 'issuer-low'; }
+    const supplyLabel = String(supply.label || '');
+    if (supplyLabel.includes('終止')) { advice = '停'; adviceCls = 'issuer-neutral'; }
+    else if (supplyLabel.includes('圈錢')) { advice = '避'; adviceCls = 'issuer-high'; }
+    else if (supplyLabel.includes('待確認')) { advice = '等除淨/條款'; adviceCls = 'issuer-neutral'; }
+    else if (supplyLabel.includes('圈股') && js === 'jumped') { advice = '只宜短炒'; adviceCls = 'issuer-low'; }
+    else if (supplyLabel.includes('圈股')) { advice = '觀察炒味'; adviceCls = 'issuer-low'; }
+    else if (js === 'no_jump') { advice = '避'; adviceCls = 'issuer-high'; }
     else { advice = '觀察'; adviceCls = 'issuer-neutral'; }
 
     let risks = (t.risks||[]).map(r => '<div class="risk">'+esc(r)+'</div>').join('');
@@ -243,6 +252,7 @@ function render(rows) {
       <td>
         <div class="issuer-stack" title="公告條款代理分數，唔係內部意圖；高分＝對發行方更有利／對股東短期壓力更大；現價對發行價＝最新 raw close vs 發行價；公告日至今＝由公告日第一個可用 raw close 到最新 raw close；公告後價格反應＝只計除權/完成後歷史 reaction；未有除權/完成日就顯示未足夠數據；交易建議＝避免誤當買入提示">
           <span class="issuer-badge ${adviceCls}">交易建議 ${advice}</span>
+          <span class="issuer-badge ${supply.cls || 'supply-watch'}" title="${esc(supply.basis || '')}">圈股判斷 ${esc(supply.label || '待確認')}</span>
           <span class="issuer-badge ${issuer.cls}">發行方有利度 ${issuer.label} ${issuer.score}</span>
           <span class="issuer-badge ${shareholder.cls}">股東短期壓力 ${shareholder.label} ${shareholder.score}</span>
           <span class="issuer-badge ${reaction.cls}">公告後價格反應 ${reactionPct} ${reaction.label}</span>

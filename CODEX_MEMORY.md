@@ -155,6 +155,8 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - Windows-safe stdout/stderr encoding was added to `scripts/gen_rights_page.py` and `scripts/build_signals.py`; daily refresh must not fail merely because console output contains emoji or Chinese labels.
 - Rights page comment text was improved after user feedback. `scripts/gen_rights_page.py` now builds a human-readable comment from announcement stage, carried-forward terms, issuer score, discount, dilution, announcement-to-now return, issue-price return, and T+5 reaction, instead of only showing old T+5/jump wording.
 - Terminal/cancelled rights or placement announcements show `已終止/取消` and are not treated as fresh supply pressure in the comment.
+- User's intended distinction: `圈股` means new/rights shares appear absorbed or locked after ex-rights/completion, so it may have tradable supply-squeeze potential; `圈錢` means the deal is mainly cash-raising/dilution pressure and should not be treated as a buy setup.
+- Rights page `圈股判斷` uses ex-rights/completion evidence first: price versus issue/rights price after completion/ex-rights, announcement-to-now return, T+5 as auxiliary evidence, discount, dilution, and use of proceeds. If terms or completion/ex-rights anchor are missing, label `待確認` rather than pretending to know.
 
 ### 2026-06-30 market card partial-refresh UI
 

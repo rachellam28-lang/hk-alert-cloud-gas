@@ -154,9 +154,166 @@ def announcement_stage(p):
         return '新公告'
     return '原始條款'
 
+def classify_supply_intent(p, jump_pct, jump_status):
+    """Classify whether the issue looks like share-cornering or cash-raising.
+
+    This is an evidence label, not an intent claim. Ex-rights/completion price
+    behaviour is preferred; if terms or completion data are missing, stay
+    conservative and mark it as pending.
+    """
+    stage = announcement_stage(p)
+    if stage == '已終止/取消':
+        return {
+            'label': '已終止',
+            'cls': 'supply-ended',
+            'score': 0,
+            'basis': '公告已終止/取消，唔再當新供股/配股壓力',
+            'tradable': False,
+        }
+
+    score = 0
+    positive = []
+    negative = []
+    pending = []
+
+    terms_ok = has_extracted_terms(p)
+    has_completion_anchor = bool(
+        p.get('manual_finished_date')
+        or _safe_num(p.get('post_ex_date_return_pct')) is not None
+        or stage == '完成/結果'
+    )
+    current_ret = _safe_num(p.get('post_ex_date_return_pct'))
+    if current_ret is None:
+        current_ret = _safe_num(p.get('current_return_pct'))
+    ann_ret = _safe_num(p.get('announcement_return_pct'))
+    discount = _safe_num(p.get('discount_pct'))
+    dilution = _safe_num(p.get('pct_num'))
+    text = f"{p.get('purpose') or ''} {p.get('method') or ''} {p.get('title') or ''}"
+
+    if not terms_ok:
+        pending.append('價格/攤薄條款未抽齊')
+    if not has_completion_anchor:
+        pending.append('未有明確除淨/完成錨點')
+
+    if current_ret is not None and (has_completion_anchor or p.get('price_num')):
+        if current_ret >= 10:
+            score += 4
+            positive.append(f"現價高過發行價 {fmt_pct(current_ret, signed=True)}")
+        elif current_ret >= 0:
+            score += 2
+            positive.append(f"現價守住發行價 {fmt_pct(current_ret, signed=True)}")
+        elif current_ret <= -8:
+            score -= 3
+            negative.append(f"現價低過發行價 {fmt_pct(current_ret, signed=True)}")
+        else:
+            score -= 1
+            negative.append(f"現價略低過發行價 {fmt_pct(current_ret, signed=True)}")
+
+    if ann_ret is not None:
+        if ann_ret >= 8:
+            score += 2
+            positive.append(f"公告至今轉強 {fmt_pct(ann_ret, signed=True)}")
+        elif ann_ret >= 0:
+            score += 1
+            positive.append(f"公告至今未跌穿 {fmt_pct(ann_ret, signed=True)}")
+        elif ann_ret <= -10:
+            score -= 2
+            negative.append(f"公告後轉弱 {fmt_pct(ann_ret, signed=True)}")
+        else:
+            score -= 1
+            negative.append(f"公告後偏弱 {fmt_pct(ann_ret, signed=True)}")
+
+    if jump_status == 'jumped':
+        score += 2
+        positive.append(f"T+5有炒味 {fmt_pct(jump_pct, signed=True)}")
+    elif jump_status == 'no_jump':
+        score -= 1
+        negative.append(f"T+5未過 +8% 門檻 {fmt_pct(jump_pct, signed=True)}")
+
+    if discount is not None:
+        if discount <= -20:
+            score -= 2
+            negative.append(f"深折讓 {abs(discount):.1f}%")
+        elif discount <= -10:
+            score -= 1
+            negative.append(f"折讓 {abs(discount):.1f}%")
+        elif discount >= 0:
+            score += 1
+            positive.append('無折讓壓價')
+
+    if dilution and dilution > 0:
+        if dilution >= 100:
+            score -= 3
+            negative.append(f"超大攤薄 {dilution:.1f}%")
+        elif dilution >= 50:
+            score -= 2
+            negative.append(f"大攤薄 {dilution:.1f}%")
+        elif dilution >= 20:
+            score -= 1
+            negative.append(f"攤薄偏高 {dilution:.1f}%")
+        elif dilution <= 3:
+            score += 1
+            positive.append(f"攤薄細 {dilution:.1f}%")
+
+    if re.search(r"(償還債務|營運資金|working capital|debt repayment|refinanc|DEBT CAPITALISATION)", text, re.I):
+        score -= 1
+        negative.append('用途偏補錢/償債')
+    if re.search(r"(specific subscriber|strategic|策略|特定認購人|控股股東|connected)", text, re.I):
+        score += 1
+        positive.append('有特定/策略認購味')
+
+    if not terms_ok and not has_completion_anchor:
+        label = '待確認'
+        cls = 'supply-watch'
+        tradable = False
+    elif score >= 4:
+        label = '圈股'
+        cls = 'supply-stock'
+        tradable = True
+    elif score >= 2:
+        label = '偏圈股'
+        cls = 'supply-stock'
+        tradable = True
+    elif score <= -4:
+        label = '圈錢'
+        cls = 'supply-cash'
+        tradable = False
+    elif score <= -2:
+        label = '偏圈錢'
+        cls = 'supply-cash'
+        tradable = False
+    else:
+        label = '待確認'
+        cls = 'supply-watch'
+        tradable = False
+
+    if label in ('圈股', '偏圈股') and pending:
+        label = '待確認'
+        cls = 'supply-watch'
+        tradable = False
+
+    if score >= 2:
+        basis_parts = positive[:4] + negative[:3] + pending[:2]
+    elif score <= -2:
+        basis_parts = negative[:4] + positive[:2] + pending[:2]
+    else:
+        basis_parts = positive[:3] + negative[:3] + pending[:2]
+    basis = '；'.join(basis_parts) if basis_parts else '未有足夠除淨/完成後證據'
+    return {
+        'label': label,
+        'cls': cls,
+        'score': score,
+        'basis': basis,
+        'tradable': tradable,
+        'positive': positive[:4],
+        'negative': negative[:4],
+        'pending': pending[:3],
+    }
+
 def build_comment(p, jump_pct, jump_status):
     stage = announcement_stage(p)
-    parts = [f"{p.get('category') or '公告'}・{stage}"]
+    supply = classify_supply_intent(p, jump_pct, jump_status)
+    parts = [f"圈股判斷：{supply['label']}", f"{p.get('category') or '公告'}・{stage}"]
     risks = []
 
     if stage == '已終止/取消':
@@ -168,63 +325,55 @@ def build_comment(p, jump_pct, jump_status):
         parts.append('只得公告標題，價格/攤薄未抽齊')
         risks.append('條款未抽齊')
 
+    if supply.get('basis') and stage != '已終止/取消':
+        parts.append(supply['basis'])
+
     issuer = p.get('issuer') or {}
     if issuer.get('score') is not None:
         parts.append(f"發行方有利度 {issuer.get('score')} {issuer.get('label') or ''}".strip())
 
+    terms_bits = []
     discount = _safe_num(p.get('discount_pct'))
     if discount is not None:
         if discount < 0:
-            parts.append(f"折讓 {abs(discount):.1f}%")
+            terms_bits.append(f"折讓 {abs(discount):.1f}%")
             if discount <= -15:
                 risks.append(f"深折讓 {abs(discount):.1f}%")
         elif discount > 0:
-            parts.append(f"溢價 {discount:.1f}%")
+            terms_bits.append(f"溢價 {discount:.1f}%")
         else:
-            parts.append('平價發行')
+            terms_bits.append('平價發行')
 
     dilution = _safe_num(p.get('pct_num'))
     if dilution and dilution > 0:
-        parts.append(f"攤薄 {dilution:.1f}%")
+        terms_bits.append(f"攤薄 {dilution:.1f}%")
         if dilution >= 50:
             risks.append(f"大攤薄 {dilution:.1f}%")
         elif dilution >= 20:
             risks.append(f"攤薄偏高 {dilution:.1f}%")
+    if terms_bits:
+        parts.append('條款：' + '／'.join(terms_bits[:3]))
 
     ann_ret = _safe_num(p.get('announcement_return_pct'))
-    if ann_ret is not None:
-        parts.append(f"公告至今 {fmt_pct(ann_ret, signed=True)}")
-        if ann_ret <= -10:
-            risks.append(f"公告後偏弱 {fmt_pct(ann_ret, signed=True)}")
+    if ann_ret is not None and ann_ret <= -10:
+        risks.append(f"公告後偏弱 {fmt_pct(ann_ret, signed=True)}")
 
     current_ret = _safe_num(p.get('current_return_pct'))
-    if current_ret is not None and p.get('price_num'):
-        parts.append(f"現價對發行價 {fmt_pct(current_ret, signed=True)}")
-
-    if jump_status == 'jumped':
-        parts.append(f"T+5最高 {fmt_pct(jump_pct, signed=True)}，有短線反應")
-    elif jump_status == 'waiting':
-        if jump_pct is None:
-            parts.append('T+5資料未齊')
-        else:
-            parts.append(f"T+5資料未齊，暫時最高 {fmt_pct(jump_pct, signed=True)}")
-    elif jump_status == 'no_jump':
-        parts.append(f"T+5最高 {fmt_pct(jump_pct, signed=True)}，未過 +8% 門檻")
-    else:
+    if current_ret is None and jump_status == 'no_data':
         parts.append('價量 raw 未覆蓋，唔作短線判斷')
 
     if '貸款資本化' in p.get('method', '') or 'DEBT CAPITALISATION' in (p.get('title') or '').upper():
         risks.append('債務資本化')
 
     # Keep the cell short enough for table scanning, but still explain the call.
-    return '；'.join(parts[:8]), risks[:4]
+    return '；'.join(parts[:9]), risks[:4], supply
 
 def trade_signal(p):
     """Rating = jump status. Discount is NOT used for rating (no evidence)."""
     jump_pct, jump_status = compute_jump(p.get('code', ''), p.get('date_parsed', ''))
     
     pct = _safe_num(p.get('pct_num')) or 0
-    thesis, risks = build_comment(p, jump_pct, jump_status)
+    thesis, risks, supply = build_comment(p, jump_pct, jump_status)
     stage = announcement_stage(p)
     
     # Jump-based rating
@@ -267,6 +416,7 @@ def trade_signal(p):
         'verdict_text': verdict_text,
         'thesis': thesis,
         'comment': thesis,
+        'supply': supply,
         'risks': risks[:3],
         'jump_8d_pct': jump_pct,
         'jump_status': jump_status,
@@ -276,6 +426,7 @@ for p in data:
     p['issuer'] = issuer_pressure_score(p)
     p['announcement_return_pct'] = announcement_return(p.get('code'), p.get('date_parsed'))
     p['trade'] = trade_signal(p)
+    p['supply'] = p['trade'].get('supply')
     p['jump_8d_pct'] = p['trade'].get('jump_8d_pct')
 
 signals = {}
@@ -405,6 +556,10 @@ tr:hover td {{ background: #161b22; }}
 .issuer-react-up {{ background: #122b18; color: #3fb950; border: 1px solid #3fb950; }}
 .issuer-react-neutral {{ background: #21262d; color: #c9d1d9; border: 1px solid #30363d; }}
 .issuer-react-down {{ background: #3a1111; color: #f85149; border: 1px solid #f85149; }}
+.supply-stock {{ background: #122b18; color: #3fb950; border: 1px solid #3fb950; }}
+.supply-cash {{ background: #3a1111; color: #f85149; border: 1px solid #f85149; }}
+.supply-watch {{ background: #3a2e0a; color: #d2991d; border: 1px solid #d2991d; }}
+.supply-ended {{ background: #21262d; color: #8b949e; border: 1px solid #30363d; }}
 .thesis {{ max-width: 280px; overflow: hidden; text-overflow: ellipsis; color: #8b949e; font-size: 10px; white-space: normal; }}
 .risk {{ color: #f85149; font-size: 10px; }}
 .jump-green {{ color: #3fb950; font-weight: bold; }}
@@ -554,6 +709,7 @@ function render(rows) {{
     const issuer = d.issuer || {{score: 50, label: '中性', cls: 'issuer-neutral', shareholder_pressure: {{score: 50, label: '中性', cls: 'issuer-neutral'}}, reaction: {{pct: null, label: '未足夠數據', cls: 'issuer-react-neutral'}}}};
     const shareholder = issuer.shareholder_pressure || {{score: issuer.score || 50, label: issuer.label || '中性', cls: issuer.cls || 'issuer-neutral'}};
     const reaction = issuer.reaction || {{pct: null, label: '未足夠數據', cls: 'issuer-react-neutral'}};
+    const supply = d.supply || t.supply || {{label: '待確認', cls: 'supply-watch', basis: '未有足夠除淨/完成後證據'}};
     const reactionPct = reaction.pct != null ? (reaction.pct >= 0 ? '+' : '') + reaction.pct.toFixed(1) + '%' : '—';
     const annRet = d.announcement_return_pct != null ? d.announcement_return_pct : null;
     const annRetPct = annRet != null ? (annRet >= 0 ? '+' : '') + annRet.toFixed(1) + '%' : '—';
@@ -573,9 +729,13 @@ function render(rows) {{
     
     let advice = '觀察';
     let adviceCls = 'issuer-neutral';
-    if (js === 'jumped') {{ advice = '只宜短炒'; adviceCls = 'issuer-high'; }}
-    else if (js === 'waiting') {{ advice = '觀察'; adviceCls = 'issuer-neutral'; }}
-    else if (js === 'no_jump') {{ advice = '避'; adviceCls = 'issuer-low'; }}
+    const supplyLabel = String(supply.label || '');
+    if (supplyLabel.includes('終止')) {{ advice = '停'; adviceCls = 'issuer-neutral'; }}
+    else if (supplyLabel.includes('圈錢')) {{ advice = '避'; adviceCls = 'issuer-high'; }}
+    else if (supplyLabel.includes('待確認')) {{ advice = '等除淨/條款'; adviceCls = 'issuer-neutral'; }}
+    else if (supplyLabel.includes('圈股') && js === 'jumped') {{ advice = '只宜短炒'; adviceCls = 'issuer-low'; }}
+    else if (supplyLabel.includes('圈股')) {{ advice = '觀察炒味'; adviceCls = 'issuer-low'; }}
+    else if (js === 'no_jump') {{ advice = '避'; adviceCls = 'issuer-high'; }}
     else {{ advice = '觀察'; adviceCls = 'issuer-neutral'; }}
 
     let risks = (t.risks||[]).map(r => '<div class="risk">'+esc(r)+'</div>').join('');
@@ -595,6 +755,7 @@ function render(rows) {{
       <td>
         <div class="issuer-stack" title="公告條款代理分數，唔係內部意圖；高分＝對發行方更有利／對股東短期壓力更大；現價對發行價＝最新 raw close vs 發行價；公告日至今＝由公告日第一個可用 raw close 到最新 raw close；公告後價格反應＝只計除權/完成後歷史 reaction；未有除權/完成日就顯示未足夠數據；交易建議＝避免誤當買入提示">
           <span class="issuer-badge ${{adviceCls}}">交易建議 ${{advice}}</span>
+          <span class="issuer-badge ${{supply.cls || 'supply-watch'}}" title="${{esc(supply.basis || '')}}">圈股判斷 ${{esc(supply.label || '待確認')}}</span>
           <span class="issuer-badge ${{issuer.cls}}">發行方有利度 ${{issuer.label}} ${{issuer.score}}</span>
           <span class="issuer-badge ${{shareholder.cls}}">股東短期壓力 ${{shareholder.label}} ${{shareholder.score}}</span>
           <span class="issuer-badge ${{reaction.cls}}">公告後價格反應 ${{reactionPct}} ${{reaction.label}}</span>
