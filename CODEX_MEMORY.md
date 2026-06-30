@@ -116,7 +116,7 @@ Keep the daily refresh bounded; let resume jobs mop up incomplete coverage.
 - Main page corporate-action badges must show `data/signals.json.groups[].supply` as `圈股判斷` (`圈股` / `圈錢` / `待確認`), not `發行方有利度`.
 - `data/signals.json` should still keep the canonical issuer payload from `data/rights_analysis.json` for audit/backward compatibility, but the visible main-page badge should use the canonical supply/cash judgement from `data/rights_analysis.json`.
 - `rights_analysis.html` and the main signal badges must use the same supply/cash label and basis.
-- Main-page theme/sector selectors and heatmaps should reuse existing page data. Until a canonical sector source exists, `index.html` uses lightweight in-browser keyword sector grouping and must not add another heavy JSON source for this.
+- Main-page theme/sector selectors and heatmaps should reuse existing page data. Heatmaps live in their own main-page card, separate from the toolbar/card that holds table controls. Until a canonical sector source exists, `index.html` uses lightweight in-browser keyword sector grouping and must not add another heavy JSON source for this.
 - `timing_analysis.html`, `jieqi_analysis.html`, and `distribution_day.html` are signal-date tables, not first-screen backtest dashboards.
 - Main page should not expose old `5d`, `20d`, or `60d` delta columns.
 - Old URL/custom preset sorts using `d5`, `d20`, or `d60` should sanitize back to `vr`.
