@@ -147,6 +147,14 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 
 ## Latest Deploy Notes
 
+### 2026-06-30 main heatmap card, sector overrides, and fund-flow heatmap
+
+- Main-page heatmaps remain in their own `section.card heatmap-card`, separate from table controls, with three panels: theme, sector, and fund flow.
+- The heatmap card now has a compact header with fund-flow publish date/count metadata so it does not look stuck while data is loading.
+- Sector grouping still avoids another heavy JSON source. It now checks a lightweight `SECTOR_CODE_MAP` for common HK large caps before falling back to stock-name keyword rules, which reduces obvious wrong-sector placements.
+- Main page now fetches existing `data/fundflow.json` and builds a clickable fund-flow heatmap from `main_net`, `total_net`, and `lgt_cap_chg_daily`.
+- Fund-flow heatmap tiles cover main/total/southbound inflow and outflow; clicking a tile applies the flow filter, and presets/URL state persist the `flow` filter.
+
 ### 2026-06-30 main signal badge and theme/sector heatmaps
 
 - Main page corporate-action signal badges were changed from the old issuer-favourability wording to `圈股判斷`, sourced from `data/signals.json.groups[].supply`, which is copied from the canonical `data/rights_analysis.json` supply/cash judgement.

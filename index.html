@@ -41,7 +41,10 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .input.search-in{min-width:160px;font-size:11px}
 .input.filter-select{min-width:108px;font-size:12px}
 .heatmap-card{margin:10px 0 12px;overflow:hidden}
-.heatmap-wrap{display:grid;grid-template-columns:1fr 1fr;background:var(--surface)}
+.heatmap-card-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;border-bottom:1px solid var(--line-soft);background:var(--surface-soft)}
+.heatmap-card-title{font-size:12px;font-weight:800;color:var(--text);text-transform:uppercase;letter-spacing:0}
+.heatmap-card-sub{font-size:10px;color:var(--mute);font-weight:600}
+.heatmap-wrap{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));background:var(--surface)}
 .heatmap-panel{min-width:0;padding:8px 10px}
 .heatmap-panel+.heatmap-panel{border-left:1px solid var(--line-soft)}
 .heatmap-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;font-size:11px;font-weight:800;color:var(--text-soft);text-transform:uppercase;letter-spacing:.12em}
@@ -706,6 +709,10 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
     </div>
 
     <section class="card heatmap-card" id="heatmapWrap">
+      <div class="heatmap-card-head">
+        <span class="heatmap-card-title">Heatmap</span>
+        <span class="heatmap-card-sub" id="fundflowHeatmapMeta"></span>
+      </div>
       <div class="heatmap-wrap">
         <div class="heatmap-panel">
           <div class="heatmap-head"><span>主題 Heatmap</span><button class="heat-clear" title="清除主題" onclick="clearHeatFilter('theme')">×</button></div>
@@ -714,6 +721,10 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
         <div class="heatmap-panel">
           <div class="heatmap-head"><span>板塊 Heatmap</span><button class="heat-clear" title="清除板塊" onclick="clearHeatFilter('sector')">×</button></div>
           <div class="heatmap-grid" id="sectorHeatmap"></div>
+        </div>
+        <div class="heatmap-panel">
+          <div class="heatmap-head"><span>資金流 Heatmap</span><button class="heat-clear" title="清除資金流" onclick="clearHeatFilter('flow')">×</button></div>
+          <div class="heatmap-grid" id="flowHeatmap"></div>
         </div>
       </div>
     </section>
@@ -1032,8 +1043,28 @@ const SECTOR_HEATMAP=[
   {key:'industrial',label:'工業/製造'},
   {key:'other',label:'其他/未分類'}
 ];
+const FLOW_HEATMAP=[
+  {key:'main_in',label:'主力流入',metric:'main_net',dir:1},
+  {key:'main_out',label:'主力流出',metric:'main_net',dir:-1},
+  {key:'total_in',label:'總資金流入',metric:'total_net',dir:1},
+  {key:'total_out',label:'總資金流出',metric:'total_net',dir:-1},
+  {key:'south_in',label:'南向流入',metric:'lgt_cap_chg_daily',dir:1},
+  {key:'south_out',label:'南向流出',metric:'lgt_cap_chg_daily',dir:-1}
+];
 const THEME_LABELS=Object.fromEntries(THEME_HEATMAP.map(function(x){return [x.key,x.label];}));
 const SECTOR_LABELS=Object.fromEntries(SECTOR_HEATMAP.map(function(x){return [x.key,x.label];}));
+const SECTOR_CODE_MAP={
+  '00005':'finance','00388':'finance','00939':'finance','01299':'finance','01398':'finance','02318':'finance','02388':'finance','02628':'finance','03968':'finance','03988':'finance',
+  '00016':'property','00017':'property','00688':'property','00823':'property','01109':'property','01918':'property','02007':'property','03333':'property',
+  '00020':'tech','00241':'healthcare','00700':'tech','00981':'tech','00992':'tech','01024':'tech','01347':'tech','01810':'tech','02382':'industrial','03690':'tech','09618':'tech','09626':'tech','09888':'tech','09988':'tech','09999':'tech',
+  '00386':'energy','00836':'energy','00857':'energy','00883':'energy','01088':'energy','02899':'energy','03800':'energy',
+  '00175':'auto','01211':'auto','02015':'auto','02333':'auto','09868':'auto',
+  '00027':'consumer','00288':'consumer','01876':'consumer','02020':'consumer','02319':'consumer','02331':'consumer','09922':'consumer','09980':'consumer','09987':'consumer','09992':'consumer',
+  '02359':'healthcare','06160':'healthcare','06618':'healthcare','09885':'healthcare','09886':'healthcare','09926':'healthcare','09995':'healthcare','09996':'healthcare',
+  '00002':'infra','00003':'infra','00066':'infra','00728':'infra','00762':'infra','00788':'infra','00941':'infra','01038':'infra',
+  '02057':'shipping','01119':'shipping','01919':'shipping','02866':'shipping',
+  '00669':'industrial','01766':'industrial','02313':'industrial'
+};
 const SECTOR_RULES=[
   {key:'tech',kw:['科技','AI','人工智能','智能','軟件','软件','數據','数据','雲','云','半導體','半导体','芯片','晶片','電子','电子','網絡','网络','互聯網','互联网','商湯','騰訊','腾讯','阿里','快手','小米','美團','美团','京東','京东','百度','嗶哩','哔哩','機器人','机器人']},
   {key:'healthcare',kw:['醫藥','医药','製藥','制药','生物','醫療','医疗','健康','藥','药','康方','藥明','药明','君實','君实','百濟','百济']},
@@ -1052,7 +1083,9 @@ function textHasAny(text,words){
   return false;
 }
 function stockSector(s){
-  var text=[s&&s.n,s&&s.name,s&&s.c].filter(Boolean).join(' ');
+  var code=String(s&&s.c||s&&s.code||'').padStart(5,'0');
+  if(SECTOR_CODE_MAP[code])return SECTOR_CODE_MAP[code];
+  var text=[s&&s.n,s&&s.name,code].filter(Boolean).join(' ');
   for(var i=0;i<SECTOR_RULES.length;i++){
     if(textHasAny(text,SECTOR_RULES[i].kw))return SECTOR_RULES[i].key;
   }
@@ -1082,6 +1115,22 @@ function themeMatches(s,sig,techSig,theme){
   if(theme==='corp')return !!(sig&&(sig.pl||sig.ri||sig.inc));
   return true;
 }
+function stockFundflow(s){
+  var code=String(s&&s.c||s&&s.code||'').padStart(5,'0');
+  return fundflowMap.get(code)||null;
+}
+function flowItem(key){
+  for(var i=0;i<FLOW_HEATMAP.length;i++){if(FLOW_HEATMAP[i].key===key)return FLOW_HEATMAP[i];}
+  return null;
+}
+function flowMatches(s,key){
+  if(!key||key==='all')return true;
+  var item=flowItem(key),flow=stockFundflow(s);
+  if(!item||!flow)return false;
+  var v=Number(flow[item.metric]);
+  if(!Number.isFinite(v)||v===0)return false;
+  return item.dir>0 ? v>0 : v<0;
+}
 function heatStats(stocks,predicate){
   var stat={count:0,up:0,chgSum:0,chgN:0,vrSum:0,vrN:0,signalN:0};
   (stocks||[]).forEach(function(s){
@@ -1108,6 +1157,59 @@ function heatVisual(stat){
   var width=Math.min(100,Math.round((stat.upRate||0)*.55+abs*6+(Number.isFinite(vr)?Math.min(vr,8)*4:0)));
   return {tone:tone,alpha:alpha.toFixed(3),width:Math.max(6,width)+'%'};
 }
+function fmtFlowMoney(n){
+  if(n==null||!Number.isFinite(Number(n)))return '—';
+  n=Number(n);
+  var abs=Math.abs(n);
+  if(abs>=1e8)return (n/1e8).toFixed(2)+'億';
+  if(abs>=1e4)return (n/1e4).toFixed(0)+'萬';
+  return n.toFixed(0);
+}
+function flowMetricLabel(item){
+  if(!item)return '資金';
+  if(item.metric==='main_net')return '主力';
+  if(item.metric==='total_net')return '總資金';
+  if(item.metric==='lgt_cap_chg_daily')return '南向';
+  return '資金';
+}
+function flowStats(stocks,item){
+  var stat={count:0,netSum:0,absSum:0,pos:0,neg:0,chgSum:0,chgN:0};
+  (stocks||[]).forEach(function(s){
+    var flow=stockFundflow(s);
+    if(!flow)return;
+    var v=Number(flow[item.metric]);
+    if(!Number.isFinite(v)||v===0)return;
+    if(item.dir>0 ? v<=0 : v>=0)return;
+    stat.count++;
+    stat.netSum+=v;
+    stat.absSum+=Math.abs(v);
+    if(v>0)stat.pos++;else stat.neg++;
+    var chg=Number(s.chg);
+    if(Number.isFinite(chg)){stat.chgSum+=chg;stat.chgN++;}
+  });
+  stat.avgChg=stat.chgN?stat.chgSum/stat.chgN:null;
+  return stat;
+}
+function flowVisual(stat,item){
+  var tone=!stat.count?'flat':item.dir>0?'up':'dn';
+  var mag=Math.log10((stat.absSum||0)+1);
+  var alpha=stat.count?Math.min(.50,.08+mag/28):.04;
+  var width=Math.min(100,Math.max(6,Math.round(mag*9+stat.count*2)));
+  return {tone:tone,alpha:alpha.toFixed(3),width:width+'%'};
+}
+function flowTileHtml(item,stat,activeKey){
+  var vis=flowVisual(stat,item);
+  var active=activeKey===item.key?' active':'';
+  var empty=stat.count?'':' empty';
+  var avg=stat.avgChg==null?'—':fmtPct(stat.avgChg);
+  var tip=item.label+'｜'+stat.count+'隻｜淨額 '+fmtFlowMoney(stat.netSum)+'｜成交Δ '+avg;
+  return '<button class="heat-tile '+vis.tone+active+empty+'" style="--heat-alpha:'+vis.alpha+';--heat-width:'+vis.width+'" title="'+esc(tip)+'" onclick="setHeatFilter(\'flow\',\''+item.key+'\')">'
+    +'<div class="heat-title"><span>'+esc(item.label)+'</span><span class="heat-count">'+stat.count+'</span></div>'
+    +'<div class="heat-main '+(item.dir>0?'delta-up':'delta-dn')+'">'+fmtFlowMoney(stat.netSum)+'</div>'
+    +'<div class="heat-meta"><span>'+esc(flowMetricLabel(item))+'</span><span>Δ '+avg+'</span></div>'
+    +'<div class="heat-bar"><span></span></div>'
+    +'</button>';
+}
 function heatTileHtml(type,item,stat,activeKey){
   var vis=heatVisual(stat);
   var avg=stat.avgChg==null?'—':fmtPct(stat.avgChg);
@@ -1124,6 +1226,12 @@ function heatTileHtml(type,item,stat,activeKey){
     +'</button>';
 }
 function setHeatFilter(type,key){
+  if(type==='flow'){
+    flowFilter=(flowFilter===key)?'all':key;
+    activePreset=null;
+    applyFilters();
+    return;
+  }
   var id=type==='theme'?'themeSelect':'sectorSelect';
   var el=document.getElementById(id);
   if(!el)return;
@@ -1132,6 +1240,12 @@ function setHeatFilter(type,key){
   applyFilters();
 }
 function clearHeatFilter(type){
+  if(type==='flow'){
+    flowFilter='all';
+    activePreset=null;
+    applyFilters();
+    return;
+  }
   var id=type==='theme'?'themeSelect':'sectorSelect';
   var el=document.getElementById(id);
   if(el)el.value='all';
@@ -1142,6 +1256,8 @@ function renderHeatmaps(){
   var stocks=allStocks||[];
   var themeEl=document.getElementById('themeHeatmap');
   var sectorEl=document.getElementById('sectorHeatmap');
+  var flowEl=document.getElementById('flowHeatmap');
+  var metaEl=document.getElementById('fundflowHeatmapMeta');
   var activeTheme=document.getElementById('themeSelect')?.value||'all';
   var activeSector=document.getElementById('sectorSelect')?.value||'all';
   if(themeEl){
@@ -1155,6 +1271,15 @@ function renderHeatmaps(){
       var stat=heatStats(stocks,function(s){return stockSector(s)===item.key;});
       return heatTileHtml('sector',item,stat,activeSector);
     }).join('');
+  }
+  if(flowEl){
+    flowEl.innerHTML=FLOW_HEATMAP.map(function(item){
+      var stat=flowStats(stocks,item);
+      return flowTileHtml(item,stat,flowFilter);
+    }).join('');
+  }
+  if(metaEl){
+    metaEl.textContent=fundflowUpdated ? '資金 '+fundflowUpdated+(fundflowCount?' · '+fundflowCount:'') : (fundflowMap.size ? '資金已載入' : '資金載入中');
   }
 }
 // P2: Composite score 0-10
@@ -1180,12 +1305,16 @@ let sortDir=-1; // -1 = desc
 let searchVal='';
 let themeFilter='all';
 let sectorFilter='all';
+let flowFilter='all';
 let activeFilters=new Set();
 let page=0;let pageSmall=0,pageMid=0,pageLarge=0;
 const PAGE_SIZE=200;
 // (GAS removed — using local data/signals.json)
 let signalMap=new Map();
 let priceMap=new Map();
+let fundflowMap=new Map();
+let fundflowUpdated='';
+let fundflowCount=0;
 let hkexLinkMap=new Map();
 let techSignalMap=new Map();
 let breakthroughMap={};
@@ -1308,7 +1437,7 @@ function restoreColVisibility(){
 function savePreset(){
   var name=prompt('為呢個篩選組合命名：');
   if(!name)return;
-  var state={sortCol,sortDir,sortCol2,sortDir2,searchVal,activeFilters:Array.from(activeFilters),sigFilter:document.getElementById('sigFilter')?.value||'all',themeFilter:document.getElementById('themeSelect')?.value||'all',sectorFilter:document.getElementById('sectorSelect')?.value||'all',tpMin:getRF('rfTpMin'),tpMax:getRF('rfTpMax'),mcMin:getRF('rfMcMin'),mcMax:getRF('rfMcMax'),hidden:Array.from(hiddenCols)};
+  var state={sortCol,sortDir,sortCol2,sortDir2,searchVal,activeFilters:Array.from(activeFilters),sigFilter:document.getElementById('sigFilter')?.value||'all',themeFilter:document.getElementById('themeSelect')?.value||'all',sectorFilter:document.getElementById('sectorSelect')?.value||'all',flowFilter:flowFilter,tpMin:getRF('rfTpMin'),tpMax:getRF('rfTpMax'),mcMin:getRF('rfMcMin'),mcMax:getRF('rfMcMax'),hidden:Array.from(hiddenCols)};
   userPresets=userPresets.filter(function(p){return p.name!==name;});
   userPresets.push({name,state});
   if(userPresets.length>20)userPresets=userPresets.slice(-20);
@@ -1337,6 +1466,7 @@ function loadPreset(key){
   if(s.sigFilter){var sf=document.getElementById('sigFilter');if(sf)sf.value=s.sigFilter;}
   var tf=document.getElementById('themeSelect');if(tf)tf.value=s.themeFilter||'all';
   var secf=document.getElementById('sectorSelect');if(secf)secf.value=s.sectorFilter||'all';
+  flowFilter=s.flowFilter||'all';
   if(s.tpMin!==undefined){var e1=document.getElementById('rfTpMin');if(e1)e1.value=s.tpMin||'';}
   if(s.tpMax!==undefined){var e2=document.getElementById('rfTpMax');if(e2)e2.value=s.tpMax||'';}
   if(s.mcMin!==undefined){var e5=document.getElementById('rfMcMin');if(e5)e5.value=s.mcMin||'';}
@@ -1367,7 +1497,7 @@ function updateConFilterUI(){
   var ids={catalyst:'conBtnCat',dual:'conBtnDual',frontrun:'conBtnFr'};
   for(var k in ids){var b=document.getElementById(ids[k]);if(b)b.classList.toggle('active',conFilter===k);}
 }
-var presetData={signal:{name:'信號突破',state:{sortCol:'sig',sortDir:-1,sortCol2:'score',sortDir2:-1,searchVal:'',activeFilters:[],sigFilter:'yearopen',themeFilter:'all',sectorFilter:'all',tpMin:null,tpMax:null,mcMin:null,mcMax:null,hidden:[]}},placement:{name:'配股預警',state:{sortCol:'tp',sortDir:-1,sortCol2:'score',sortDir2:-1,searchVal:'',activeFilters:['placement'],sigFilter:'all',themeFilter:'all',sectorFilter:'all',tpMin:30,tpMax:null,mcMin:null,mcMax:null,hidden:[]}},mom:{name:'高動能',state:{sortCol:'vr',sortDir:-1,sortCol2:'score',sortDir2:-1,searchVal:'',activeFilters:[],sigFilter:'all',themeFilter:'momentum',sectorFilter:'all',tpMin:null,tpMax:null,mcMin:null,mcMax:null,hidden:[]}}};
+var presetData={signal:{name:'信號突破',state:{sortCol:'sig',sortDir:-1,sortCol2:'score',sortDir2:-1,searchVal:'',activeFilters:[],sigFilter:'yearopen',themeFilter:'all',sectorFilter:'all',flowFilter:'all',tpMin:null,tpMax:null,mcMin:null,mcMax:null,hidden:[]}},placement:{name:'配股預警',state:{sortCol:'tp',sortDir:-1,sortCol2:'score',sortDir2:-1,searchVal:'',activeFilters:['placement'],sigFilter:'all',themeFilter:'all',sectorFilter:'all',flowFilter:'all',tpMin:30,tpMax:null,mcMin:null,mcMax:null,hidden:[]}},mom:{name:'高動能',state:{sortCol:'vr',sortDir:-1,sortCol2:'score',sortDir2:-1,searchVal:'',activeFilters:[],sigFilter:'all',themeFilter:'momentum',sectorFilter:'all',flowFilter:'all',tpMin:null,tpMax:null,mcMin:null,mcMax:null,hidden:[]}}};
 function renderPresets(){
   var container=document.querySelector('.preset-group');
   if(!container||!userPresets.length)return;
@@ -1392,6 +1522,7 @@ function loadPresetCustom(i){
   if(s.sigFilter){var sf=document.getElementById('sigFilter');if(sf)sf.value=s.sigFilter;}
   var tf=document.getElementById('themeSelect');if(tf)tf.value=s.themeFilter||'all';
   var secf=document.getElementById('sectorSelect');if(secf)secf.value=s.sectorFilter||'all';
+  flowFilter=s.flowFilter||'all';
   if(s.tpMin!==undefined){var e1=document.getElementById('rfTpMin');if(e1)e1.value=s.tpMin||'';}
   if(s.tpMax!==undefined){var e2=document.getElementById('rfTpMax');if(e2)e2.value=s.tpMax||'';}
   if(s.mcMin!==undefined){var e5=document.getElementById('rfMcMin');if(e5)e5.value=s.mcMin||'';}
@@ -1440,6 +1571,7 @@ function encodeState(){
   if(theme&&theme!=='all')p.set('theme',theme);
   var sector=document.getElementById('sectorSelect')?.value;
   if(sector&&sector!=='all')p.set('sector',sector);
+  if(flowFilter&&flowFilter!=='all')p.set('flow',flowFilter);
   var tpM=getRF('rfTpMin');if(tpM!=null)p.set('tpMin',tpM);
   var tpX=getRF('rfTpMax');if(tpX!=null)p.set('tpMax',tpX);
   var mM=getRF('rfMcMin');if(mM!=null)p.set('mcMin',mM);
@@ -1462,6 +1594,7 @@ function decodeState(){
     if(p.has('sig')){var sfe=document.getElementById('sigFilter');if(sfe)sfe.value=p.get('sig');}
     if(p.has('theme')){var te=document.getElementById('themeSelect');if(te)te.value=p.get('theme');}
     if(p.has('sector')){var se=document.getElementById('sectorSelect');if(se)se.value=p.get('sector');}
+    flowFilter=p.get('flow')||'all';
     if(p.has('tpMin')){var e=document.getElementById('rfTpMin');if(e)e.value=p.get('tpMin');}
     if(p.has('tpMax')){var e=document.getElementById('rfTpMax');if(e)e.value=p.get('tpMax');}
     if(p.has('mcMin')){var e=document.getElementById('rfMcMin');if(e)e.value=p.get('mcMin');}
@@ -1756,6 +1889,7 @@ function applyFilters(){
     const pickerTech=techSignalMap.get(s.c)||[];
     if(themeFilter!=='all' && !themeMatches(s,pickerSig,pickerTech,themeFilter)) return false;
     if(sectorFilter!=='all' && stockSector(s)!==sectorFilter) return false;
+    if(flowFilter!=='all' && fundflowMap.size>0 && !flowMatches(s,flowFilter)) return false;
 
     // Multi-select AND-logic filters
     if(activeFilters.size>0){
@@ -2012,6 +2146,7 @@ function resetAllFilters(){
   var sf=document.getElementById('sigFilter');if(sf)sf.value='all';
   var tf=document.getElementById('themeSelect');if(tf)tf.value='all';
   var secf=document.getElementById('sectorSelect');if(secf)secf.value='all';
+  flowFilter='all';
   // Reset sort to default
   sortCol='vr';sortDir=-1;sortCol2='';sortDir2=1;
   var ss=document.getElementById('sortSelect');if(ss)ss.value='code';
@@ -2441,6 +2576,25 @@ async function loadData(){
       .then(r=>r.ok?r.json():null)
       .then(m=>{renderMarket(m);renderBreadth(m);})
       .catch(()=>{});
+
+    // Fetch fund-flow data for main-page flow heatmap.
+    fetch('./data/fundflow.json?_='+Date.now())
+      .then(r=>r.ok?r.json():null)
+      .then(ff=>{
+        if(!ff||!ff.all){
+          fundflowUpdated='未載入';
+          fundflowCount=0;
+          renderHeatmaps();
+          return;
+        }
+        fundflowUpdated=ff.updated||'';
+        fundflowMap=new Map(Object.entries(ff.all).map(function(pair){
+          return [String(pair[0]||'').padStart(5,'0'),pair[1]||{}];
+        }));
+        fundflowCount=fundflowMap.size;
+        applyFilters();
+      })
+      .catch(()=>{fundflowUpdated='未載入';fundflowCount=0;renderHeatmaps();});
 
     // Fetch confluence data for pattern badges in main table
     fetch('./data/confluence.json?_='+Date.now())
