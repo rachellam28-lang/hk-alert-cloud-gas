@@ -54,14 +54,18 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .heat-tile{appearance:none;position:relative;overflow:hidden;min-height:58px;border:1px solid var(--line-soft);border-radius:8px;background:var(--surface-soft);color:var(--text);padding:6px 7px;text-align:left;cursor:pointer}
 .heat-tile:before{content:"";position:absolute;inset:0;background:rgb(var(--heat-rgb));opacity:var(--heat-alpha);pointer-events:none}
 .heat-tile:hover{border-color:var(--primary-border);box-shadow:0 0 0 2px rgba(2,132,199,.08)}
+.heat-tile:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
 .heat-tile.active{border-color:var(--primary);box-shadow:0 0 0 2px rgba(2,132,199,.18)}
 .heat-tile.empty{opacity:.45}
 .heat-tile.up{--heat-rgb:21,128,61}.heat-tile.dn{--heat-rgb:185,28,28}.heat-tile.flat{--heat-rgb:100,116,139}
-.heat-title,.heat-main,.heat-meta,.heat-bar{position:relative;z-index:1}
+.heat-title,.heat-main,.heat-meta,.heat-bar,.heat-stocks{position:relative;z-index:1}
 .heat-title{display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:11px;font-weight:800;line-height:1.2}
 .heat-count{font:700 10px "JetBrains Mono",ui-monospace,monospace;color:var(--mute)}
 .heat-main{font:800 14px "JetBrains Mono",ui-monospace,monospace;margin-top:4px}
 .heat-meta{display:flex;align-items:center;justify-content:space-between;gap:4px;margin-top:2px;font-size:9.5px;color:var(--mute)}
+.heat-stocks{display:flex;flex-wrap:wrap;gap:3px;margin-top:5px}
+.heat-stock{appearance:none;border:1px solid var(--line);background:rgba(255,255,255,.54);color:var(--text-soft);border-radius:5px;padding:1px 4px;font:700 9.5px "JetBrains Mono",ui-monospace,monospace;cursor:pointer}
+.heat-stock:hover,.heat-stock:focus-visible{border-color:var(--primary-border);color:var(--primary);background:var(--primary-soft);outline:0}
 .heat-bar{height:3px;margin-top:5px;border-radius:999px;background:rgba(100,116,139,.14);overflow:hidden}
 .heat-bar span{display:block;height:100%;width:var(--heat-width);border-radius:999px;background:rgb(var(--heat-rgb))}
 .btn-ghost{appearance:none;background:transparent;border:1px solid var(--line);color:var(--text-soft);padding:3px 6px;border-radius:5px;font:500 10.5px inherit;cursor:pointer;white-space:nowrap}
@@ -541,6 +545,7 @@ tr.hl-up{background:linear-gradient(90deg,rgba(34,197,94,.06),transparent)!impor
 tr.hl-dn{background:linear-gradient(90deg,rgba(239,68,68,.06),transparent)!important}
 tr.hl-conc{outline:2px solid rgba(124,58,237,.3);outline-offset:-2px}
 tr.hl-ipo{background:linear-gradient(90deg,rgba(251,191,36,.08),transparent)!important}
+tr.heat-linked,.stock-card.heat-linked{outline:2px solid var(--primary);outline-offset:-2px;box-shadow:0 0 0 3px rgba(2,132,199,.12)}
 .hl-dot{margin-left:4px;font-size:9px}
 /* Second sort indicator on header */
 th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
@@ -1197,20 +1202,68 @@ function flowVisual(stat,item){
   var width=Math.min(100,Math.max(6,Math.round(mag*9+stat.count*2)));
   return {tone:tone,alpha:alpha.toFixed(3),width:width+'%'};
 }
-function flowTileHtml(item,stat,activeKey){
+function heatKey(ev,type,key){
+  if(ev.key==='Enter'||ev.key===' '){
+    ev.preventDefault();
+    setHeatFilter(type,key);
+  }
+}
+function heatStockScore(s){
+  var score=calcScore(s)*100;
+  var vr=Number(s.vr);
+  var chg=Number(s.chg);
+  var sig=signalMap.get(s.c),tech=techSignalMap.get(s.c)||[];
+  if(Number.isFinite(vr))score+=Math.min(vr,20)*4;
+  if(Number.isFinite(chg))score+=chg*2;
+  if(sig&&(sig.pl||sig.ri||sig.inc||sig.supply))score+=25;
+  score+=Math.min(tech.length,4)*10;
+  return score;
+}
+function heatStockChips(stocks,item){
+  var list=(stocks||[]).slice().sort(function(a,b){
+    if(item&&item.metric){
+      var fa=stockFundflow(a)||{},fb=stockFundflow(b)||{};
+      var av=Math.abs(Number(fa[item.metric])||0),bv=Math.abs(Number(fb[item.metric])||0);
+      if(bv!==av)return bv-av;
+    }
+    return heatStockScore(b)-heatStockScore(a);
+  }).slice(0,4);
+  if(!list.length)return '';
+  return '<div class="heat-stocks">'+list.map(function(s){
+    var tip=s.c+' '+(s.n||'')+(s.chg!=null?' | '+fmtPct(s.chg):'');
+    return '<button type="button" class="heat-stock" title="'+esc(tip)+'" onclick="event.stopPropagation();showDetail(\''+s.c+'\')">'+esc(s.c)+'</button>';
+  }).join('')+'</div>';
+}
+function focusHeatStocks(){
+  requestAnimationFrame(function(){
+    document.querySelectorAll('.heat-linked').forEach(function(el){el.classList.remove('heat-linked');});
+    var candidates=Array.from(document.querySelectorAll('tr[data-code],.stock-card[data-code]'));
+    var target=candidates.find(function(el){return !!(el.offsetWidth||el.offsetHeight||el.getClientRects().length);})||candidates[0];
+    if(!target){
+      var fallback=document.querySelector('.mc-section,.stock-card-section');
+      if(fallback)fallback.scrollIntoView({behavior:'smooth',block:'start'});
+      return;
+    }
+    target.classList.add('heat-linked');
+    target.scrollIntoView({behavior:'smooth',block:'center'});
+    setTimeout(function(){target.classList.remove('heat-linked');},1800);
+  });
+}
+function flowTileHtml(item,stat,activeKey,matches){
   var vis=flowVisual(stat,item);
   var active=activeKey===item.key?' active':'';
   var empty=stat.count?'':' empty';
   var avg=stat.avgChg==null?'—':fmtPct(stat.avgChg);
   var tip=item.label+'｜'+stat.count+'隻｜淨額 '+fmtFlowMoney(stat.netSum)+'｜成交Δ '+avg;
-  return '<button class="heat-tile '+vis.tone+active+empty+'" style="--heat-alpha:'+vis.alpha+';--heat-width:'+vis.width+'" title="'+esc(tip)+'" onclick="setHeatFilter(\'flow\',\''+item.key+'\')">'
+  return '<div class="heat-tile '+vis.tone+active+empty+'" role="button" tabindex="0" style="--heat-alpha:'+vis.alpha+';--heat-width:'+vis.width+'" title="'+esc(tip)+'" onclick="setHeatFilter(\'flow\',\''+item.key+'\')" onkeydown="heatKey(event,\'flow\',\''+item.key+'\')">'
     +'<div class="heat-title"><span>'+esc(item.label)+'</span><span class="heat-count">'+stat.count+'</span></div>'
     +'<div class="heat-main '+(item.dir>0?'delta-up':'delta-dn')+'">'+fmtFlowMoney(stat.netSum)+'</div>'
     +'<div class="heat-meta"><span>'+esc(flowMetricLabel(item))+'</span><span>Δ '+avg+'</span></div>'
+    +heatStockChips(matches,item)
     +'<div class="heat-bar"><span></span></div>'
-    +'</button>';
+    +'</div>';
 }
-function heatTileHtml(type,item,stat,activeKey){
+function heatTileHtml(type,item,stat,activeKey,matches){
   var vis=heatVisual(stat);
   var avg=stat.avgChg==null?'—':fmtPct(stat.avgChg);
   var up=stat.upRate==null?'—':Math.round(stat.upRate)+'%';
@@ -1218,26 +1271,31 @@ function heatTileHtml(type,item,stat,activeKey){
   var active=activeKey===item.key?' active':'';
   var empty=stat.count?'':' empty';
   var tip=item.label+'｜'+stat.count+'隻｜平均Δ '+avg+'｜升股 '+up+'｜VR '+vr+'｜訊號 '+stat.signalN;
-  return '<button class="heat-tile '+vis.tone+active+empty+'" style="--heat-alpha:'+vis.alpha+';--heat-width:'+vis.width+'" title="'+esc(tip)+'" onclick="setHeatFilter(\''+type+'\',\''+item.key+'\')">'
+  return '<div class="heat-tile '+vis.tone+active+empty+'" role="button" tabindex="0" style="--heat-alpha:'+vis.alpha+';--heat-width:'+vis.width+'" title="'+esc(tip)+'" onclick="setHeatFilter(\''+type+'\',\''+item.key+'\')" onkeydown="heatKey(event,\''+type+'\',\''+item.key+'\')">'
     +'<div class="heat-title"><span>'+esc(item.label)+'</span><span class="heat-count">'+stat.count+'</span></div>'
     +'<div class="heat-main '+deltaClass(stat.avgChg)+'">'+avg+'</div>'
     +'<div class="heat-meta"><span>升 '+up+'</span><span>VR '+vr+'</span><span>訊 '+stat.signalN+'</span></div>'
+    +heatStockChips(matches,null)
     +'<div class="heat-bar"><span></span></div>'
-    +'</button>';
+    +'</div>';
 }
 function setHeatFilter(type,key){
   if(type==='flow'){
-    flowFilter=(flowFilter===key)?'all':key;
+    var next=(flowFilter===key)?'all':key;
+    flowFilter=next;
     activePreset=null;
     applyFilters();
+    if(next!=='all')focusHeatStocks();
     return;
   }
   var id=type==='theme'?'themeSelect':'sectorSelect';
   var el=document.getElementById(id);
   if(!el)return;
-  el.value=(el.value===key)?'all':key;
+  var nextVal=(el.value===key)?'all':key;
+  el.value=nextVal;
   activePreset=null;
   applyFilters();
+  if(nextVal!=='all')focusHeatStocks();
 }
 function clearHeatFilter(type){
   if(type==='flow'){
@@ -1262,20 +1320,23 @@ function renderHeatmaps(){
   var activeSector=document.getElementById('sectorSelect')?.value||'all';
   if(themeEl){
     themeEl.innerHTML=THEME_HEATMAP.map(function(item){
-      var stat=heatStats(stocks,function(s){return themeMatches(s,signalMap.get(s.c),techSignalMap.get(s.c)||[],item.key);});
-      return heatTileHtml('theme',item,stat,activeTheme);
+      var matches=stocks.filter(function(s){return themeMatches(s,signalMap.get(s.c),techSignalMap.get(s.c)||[],item.key);});
+      var stat=heatStats(matches,function(){return true;});
+      return heatTileHtml('theme',item,stat,activeTheme,matches);
     }).join('');
   }
   if(sectorEl){
     sectorEl.innerHTML=SECTOR_HEATMAP.map(function(item){
-      var stat=heatStats(stocks,function(s){return stockSector(s)===item.key;});
-      return heatTileHtml('sector',item,stat,activeSector);
+      var matches=stocks.filter(function(s){return stockSector(s)===item.key;});
+      var stat=heatStats(matches,function(){return true;});
+      return heatTileHtml('sector',item,stat,activeSector,matches);
     }).join('');
   }
   if(flowEl){
     flowEl.innerHTML=FLOW_HEATMAP.map(function(item){
-      var stat=flowStats(stocks,item);
-      return flowTileHtml(item,stat,flowFilter);
+      var matches=stocks.filter(function(s){return flowMatches(s,item.key);});
+      var stat=flowStats(matches,item);
+      return flowTileHtml(item,stat,flowFilter,matches);
     }).join('');
   }
   if(metaEl){
@@ -1736,7 +1797,7 @@ function renderTable(){
       if(s.sd>1)hlClass+=' hl-dn';
       if(s.tp>=80)hlClass+=' hl-conc';
       if(hasIPO)hlClass+=' hl-ipo';
-      return '<tr class="'+ipoClass+hlClass+'" onclick="showDetail(\''+s.c+'\')">'
+      return '<tr data-code="'+esc(s.c)+'" class="'+ipoClass+hlClass+'" onclick="showDetail(\''+s.c+'\')">'
         +'<td class="hide-vr"><span class="num'+(s.vr&&s.vr>=2?' up':'')+'">'+(s.vr!=null?s.vr.toFixed(1):'—')+'</span></td>'
         +'<td><span class="code">'+esc(s.c)+'</span>'+(s.suspended?' <span class="suspended-badge">停牌</span>':'')+'</td>'
         +'<td><span class="name" title="'+esc(s.n)+'">'+esc(s.n)+'</span></td>'
@@ -1814,7 +1875,7 @@ function renderTable(){
     var valBadge=''; /* FCF replaces PE */ //'<span class="sc-val-expensive">昂貴</span>':(s.pe>0&&s.pe<5?'<span class="sc-val-cheap">便宜</span>':'')):'';
     var valClass=""; /* FCF replaces PE */ //' pe-expensive':(s.pe>0&&s.pe<5?' pe-cheap':'')):'';
     var ipoClass=hasIPO?' ipo-highlight':'';
-    return '<div class="stock-card'+ipoClass+valClass+'" onclick="showDetail(\''+s.c+'\')">'
+    return '<div data-code="'+esc(s.c)+'" class="stock-card'+ipoClass+valClass+'" onclick="showDetail(\''+s.c+'\')">'
       +'<div class="sc-header">'
         +'<span class="code">'+(s.lp&&s.py&&s.lp>s.py?'😻 ':'')+esc(s.c)+(s.suspended?' <span class="suspended-badge">停牌</span>':'')+'</span>'
         +(s.su>1?'<span class="sc-streak up">🔥'+s.su+'</span>':'')

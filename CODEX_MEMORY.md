@@ -154,6 +154,7 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - Sector grouping still avoids another heavy JSON source. It now checks a lightweight `SECTOR_CODE_MAP` for common HK large caps before falling back to stock-name keyword rules, which reduces obvious wrong-sector placements.
 - Main page now fetches existing `data/fundflow.json` and builds a clickable fund-flow heatmap from `main_net`, `total_net`, and `lgt_cap_chg_daily`.
 - Fund-flow heatmap tiles cover main/total/southbound inflow and outflow; clicking a tile applies the flow filter, and presets/URL state persist the `flow` filter.
+- Heatmap tiles must connect to stocks, not only show group stats. Each tile shows top stock-code chips that open the stock drawer directly, and clicking the tile filters then scrolls/highlights the first matching stock row/card.
 
 ### 2026-06-30 main signal badge and theme/sector heatmaps
 
