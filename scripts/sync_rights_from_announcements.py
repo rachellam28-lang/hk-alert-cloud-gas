@@ -87,6 +87,17 @@ CARRY_FORWARD_FIELDS = (
     "ratio",
 )
 
+EXACT_DEDUPE_FIELDS = (
+    "title",
+    "method",
+    "purpose",
+    "price",
+    "shares",
+    "amount",
+    "pct_shares",
+    "pdf_url",
+)
+
 
 def load_json(path: Path, default: Any) -> Any:
     if not path.exists():
@@ -130,6 +141,32 @@ def norm_url(value: Any) -> str:
 
 def norm_text(value: Any) -> str:
     return re.sub(r"\s+", " ", str(value or "").strip()).lower()
+
+
+def exact_row_key(row: dict[str, Any]) -> tuple[str, ...]:
+    parts = [
+        code5(row.get("code")),
+        parse_date(row.get("date_parsed") or row.get("date")),
+        norm_text(row.get("category")),
+    ]
+    for field in EXACT_DEDUPE_FIELDS:
+        value = row.get(field)
+        parts.append(norm_url(value) if field == "pdf_url" else norm_text(value))
+    return tuple(parts)
+
+
+def dedupe_exact_rows(rows: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], int]:
+    seen: set[tuple[str, ...]] = set()
+    deduped: list[dict[str, Any]] = []
+    removed = 0
+    for row in rows:
+        key = exact_row_key(row)
+        if key in seen:
+            removed += 1
+            continue
+        seen.add(key)
+        deduped.append(row)
+    return deduped, removed
 
 
 def ann_url(ann: dict[str, Any]) -> str:
@@ -307,6 +344,7 @@ def main() -> int:
     if not isinstance(placements, list):
         raise SystemExit(f"{PLACEMENTS} must be a list")
 
+    placements, removed_duplicates = dedupe_exact_rows(placements)
     existing_urls, existing_keys = build_existing_indexes(placements)
     baselines = build_baselines(placements)
     cutoff_date = latest_existing_date(placements)
@@ -341,7 +379,8 @@ def main() -> int:
     latest = max((parse_date(row.get("date_parsed") or row.get("date")) for row in placements), default="")
     print(
         f"Synced rights/placement announcements: +{len(added)} rows, "
-        f"total {len(placements)}, cutoff {cutoff_date or 'none'}, latest {latest}"
+        f"total {len(placements)}, cutoff {cutoff_date or 'none'}, latest {latest}, "
+        f"deduped {removed_duplicates}"
     )
     if added:
         sample = ", ".join(f"{row['code']}:{row['date_parsed']}" for row in added[-8:])

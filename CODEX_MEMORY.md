@@ -153,7 +153,10 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
   - below both supports `圈錢`;
   - one missing line is labelled as insufficient instead of faking confidence.
 - `rights_analysis.html` now shows a `年開線` badge inside the issuer stack, with tooltip details like current price versus the two year-open lines.
+- `rights_analysis.html` also renders YO/PY as a separate visible detail line below the year-open badge, not only in the tooltip.
 - Rights/placement lifecycle rows should not look like duplicate new deals. Keep canonical `category` for filtering, but use `category_display` on the page, e.g. `供股結果` for a results/completion announcement that carries terms from the original `供股` row.
+- 1069-style lifecycle audit: keep original terms rows and completion/update rows, but label them by `category_display` and `announcement_stage`. Current generated data has 37 carry-forward rows: 16 completion/result rows and 10 supplement/extension rows, with source dates resolved and label issues at 0.
+- Exact duplicate protection is separate from lifecycle handling. `scripts/sync_rights_from_announcements.py` and `scripts/gen_rights_page.py` dedupe only fully identical rows using code/date/category/title/method/purpose/price/shares/amount/pct/pdf, so multi-tranche same-day announcements are preserved. Current `placements_enriched.json` and `rights_analysis.json` have 480 rows and 0 exact duplicates.
 - Do not add `data/year_open_cache.json`; no separate westock/yfinance cache is needed for this judgement.
 - Page-source audit found exact duplicate public aliases: `holdings.json == data/holdings.json`, `ccass.json == data/ccass.json`, and `market.json == data/market.json`. Public pages use the root versions, not the `data/*` aliases.
 - `ccass/scripts/_deploy_cf.py` now skips deploying `data/holdings.json`, `data/ccass.json`, and `data/market.json` to Cloudflare Pages while keeping them in the worktree for local pipeline/audit compatibility.

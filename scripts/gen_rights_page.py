@@ -16,6 +16,51 @@ from issuer_score import issuer_pressure_score
 with open(os.path.join(DATA_DIR, 'placements_enriched.json'), 'r', encoding='utf-8') as f:
     data = json.load(f)
 
+EXACT_DEDUPE_FIELDS = (
+    'title',
+    'method',
+    'purpose',
+    'price',
+    'shares',
+    'amount',
+    'pct_shares',
+    'pdf_url',
+)
+
+def _norm_key_text(value):
+    return re.sub(r'\s+', ' ', str(value or '').strip()).lower()
+
+def _row_date(value):
+    text = str(value or '').strip()
+    return text[:10] if re.match(r'^\d{4}-\d{2}-\d{2}', text) else text
+
+def exact_row_key(row):
+    parts = [
+        str(row.get('code') or '').strip().lstrip('0').zfill(5),
+        _row_date(row.get('date_parsed') or row.get('date')),
+        _norm_key_text(row.get('category')),
+    ]
+    for field in EXACT_DEDUPE_FIELDS:
+        parts.append(_norm_key_text(row.get(field)))
+    return tuple(parts)
+
+def dedupe_exact_rows(rows):
+    seen = set()
+    deduped = []
+    removed = 0
+    for row in rows:
+        key = exact_row_key(row)
+        if key in seen:
+            removed += 1
+            continue
+        seen.add(key)
+        deduped.append(row)
+    return deduped, removed
+
+data, DEDUPED_EXACT_ROWS = dedupe_exact_rows(data)
+if DEDUPED_EXACT_ROWS:
+    print(f"Deduped exact placement rows: {DEDUPED_EXACT_ROWS}")
+
 def load_json_file(path, default):
     try:
         with open(path, 'r', encoding='utf-8') as f:
@@ -736,6 +781,10 @@ tr:hover td {{ background: #161b22; }}
 .year-open-down {{ background: #3a1111; color: #f85149; border: 1px solid #f85149; }}
 .year-open-mixed {{ background: #1f2937; color: #d2a8ff; border: 1px solid #6e40c9; }}
 .year-open-missing {{ background: #21262d; color: #8b949e; border: 1px solid #30363d; }}
+.year-open-detail {{ display:block; font-size:10px; line-height:1.35; color:#8b949e; white-space:normal; }}
+.year-open-detail .up {{ color:#3fb950; }}
+.year-open-detail .dn {{ color:#f85149; }}
+.year-open-detail .missing {{ color:#8b949e; }}
 .thesis {{ max-width: 280px; overflow: hidden; text-overflow: ellipsis; color: #8b949e; font-size: 10px; white-space: normal; }}
 .risk {{ color: #f85149; font-size: 10px; }}
 .jump-green {{ color: #3fb950; font-weight: bold; }}
@@ -844,6 +893,34 @@ function esc(v) {{
   }}[ch]));
 }}
 
+function fmtOpenPrice(v) {{
+  const n = Number(v);
+  if (!Number.isFinite(n) || n <= 0) return '--';
+  return n < 1 ? n.toFixed(3) : n.toFixed(2);
+}}
+
+function formatYearOpenDetail(yearOpen) {{
+  const levels = Array.isArray(yearOpen && yearOpen.levels) ? yearOpen.levels : [];
+  const targets = Array.isArray(yearOpen && yearOpen.target_years) ? yearOpen.target_years : [];
+  const byYear = new Map();
+  levels.forEach(level => {{
+    const year = Number(level && level.year);
+    if (Number.isFinite(year)) byYear.set(year, level);
+  }});
+  const years = targets.length ? targets.slice(0, 2) : levels.slice(0, 2).map(level => level.year);
+  const labels = ['YO', 'PY'];
+  if (!years.length) return '<span class="missing">YO -- / PY --</span>';
+  return years.map((year, idx) => {{
+    const label = labels[idx] || String(year);
+    const level = byYear.get(Number(year));
+    if (!level) return '<span class="missing">' + label + ' --</span>';
+    const dist = Number(level.distance_pct);
+    const distText = Number.isFinite(dist) ? ' ' + (dist > 0 ? '+' : '') + dist.toFixed(1) + '%' : '';
+    const cls = level.status === 'above' ? 'up' : (level.status === 'below' ? 'dn' : 'missing');
+    return '<span class="' + cls + '">' + label + ' ' + fmtOpenPrice(level.open) + distText + '</span>';
+  }}).join(' / ');
+}}
+
 function updateRightsSummary(rows) {{
   let follow = 0, wait = 0, avoid = 0;
   rows.forEach(r => {{
@@ -887,6 +964,7 @@ function render(rows) {{
     const reaction = issuer.reaction || {{pct: null, label: '未足夠數據', cls: 'issuer-react-neutral'}};
     const supply = d.supply || t.supply || {{label: '待確認', cls: 'supply-watch', basis: '未有足夠除淨/完成後證據'}};
     const yearOpen = supply.year_open || {{badge: '不足', cls: 'year-open-missing', summary: '今年/前年年開線不足'}};
+    const yearOpenDetail = formatYearOpenDetail(yearOpen);
     const reactionPct = reaction.pct != null ? (reaction.pct >= 0 ? '+' : '') + reaction.pct.toFixed(1) + '%' : '—';
     const annRet = d.announcement_return_pct != null ? d.announcement_return_pct : null;
     const annRetPct = annRet != null ? (annRet >= 0 ? '+' : '') + annRet.toFixed(1) + '%' : '—';
@@ -935,6 +1013,7 @@ function render(rows) {{
            <span class="issuer-badge ${{adviceCls}}">交易建議 ${{advice}}</span>
            <span class="issuer-badge ${{supply.cls || 'supply-watch'}}" title="${{esc(supply.basis || '')}}">圈股判斷 ${{esc(supply.label || '待確認')}}</span>
            <span class="issuer-badge ${{yearOpen.cls || 'year-open-missing'}}" title="${{esc(yearOpen.summary || '')}}">年開線 ${{esc(yearOpen.badge || '不足')}}</span>
+           <span class="year-open-detail" title="${{esc(yearOpen.summary || '')}}">${{yearOpenDetail}}</span>
            <span class="issuer-badge ${{issuer.cls}}">發行方有利度 ${{issuer.label}} ${{issuer.score}}</span>
           <span class="issuer-badge ${{shareholder.cls}}">股東短期壓力 ${{shareholder.label}} ${{shareholder.score}}</span>
           <span class="issuer-badge ${{reaction.cls}}">公告後價格反應 ${{reactionPct}} ${{reaction.label}}</span>
