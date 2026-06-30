@@ -1,6 +1,6 @@
 # HK Alert Cloud GAS Memory
 
-Last updated: 2026-06-29 HKT
+Last updated: 2026-06-30 HKT
 
 ## Load First
 
@@ -143,6 +143,17 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 
 ## Latest Deploy Notes
 
+### 2026-06-30 market card partial-refresh UI
+
+- User reported the market card still had not changed after Longbridge auth, and then clarified that HSI and US/HK P/E must both update.
+- `scripts/dopamine_refresh.py` now uses Longbridge CLI to refresh HSI, Dow, S&P 500, VIX, and US market temperature/fear-greed style sentiment.
+- HSI P/E and S&P 500 P/E are refreshed from WorldPERatio, not yfinance:
+  - HSI P/E source: `https://worldperatio.com/area/hong-kong/`
+  - S&P 500 P/E source: `https://worldperatio.com/index/sp-500/`
+- Current market card publish data is partial but P/E is fresh: Longbridge fields are `hsi`, `dow`, `spx`, `vix`, `fear_greed`; P/E fields are `hsi_pe`, `spx_pe`; stale fields are only `dxy`, `hsi_m2`, `spx_m2`.
+- Fix: `index.html` and `signals.html` now render partial market state from `market_longbridge_fields`, `market_pe_fields`, and `market_stale_fields` instead of hard-coding HSI-only wording. Stale chips show `舊`; fresh Longbridge chips show `LB`.
+- `signals.html` also had a missing closing `</script>` tag at EOF; fixed before deploy.
+
 ### 2026-06-29 live data refresh and no-GitHub deploy
 
 - User asked whether data was actually updated; refresh/deploy must stay direct Cloudflare and must not use `gh`.
@@ -155,7 +166,7 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
   - `data/breakthroughs.json`: generated `2026-06-29`, 41 signals.
   - `data/announcements.json`: 728 HKEX announcement items.
   - `holdings.json` and `data/holdings.json`: `2026-06-26`, 2731 symbols, 99.5% coverage.
-- Market quote cache is still `2026-06-26T08:08:32Z` because Futu timed out and Longbridge token is expired.
+- Historical note from before Longbridge auth: market quote cache was stale because Futu timed out and Longbridge auth was not yet restored. Superseded by the 2026-06-30 market refresh note.
 - Participant-level transfer DB is not complete for `2026-06-26`; full HKEX participant backfill was too slow and only wrote 24/2759 rows before being stopped.
 - Transfer publish output now truthfully uses `ok:false`, `status:"backfill_required"`, date `2026-06-26`; pages must not show stale `2026-06-05` transfer signals.
 - `ccass/scripts/audit_gate.py --min-coverage 99.0` still fails on local participant DB backfill mismatch; do not fake PASS. Deploy corrected publish JSON with the backfill status clearly labelled.
@@ -167,7 +178,7 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - Verification quotes succeeded for `NVDA.US` and `00700.HK`.
 - `.env` exists as an ignored local template, but the CLI token is stored by Longbridge under the user profile; do not print or commit tokens.
 - `ccass/scripts/daily_lp_longbridge.py` now uses the authenticated Longbridge CLI for quote fallback before trying MCP bearer token.
-- `scripts/dopamine_refresh.py` now uses Longbridge CLI for HSI fallback before trying MCP bearer token; this refreshed `market.json` and `data/market.json` to `2026-06-29T15:19:01Z` with `market_partial=true`.
+- `scripts/dopamine_refresh.py` initially used Longbridge CLI for HSI fallback before trying MCP bearer token; superseded on 2026-06-30 by multi-field Longbridge quote refresh plus WorldPERatio P/E refresh.
 - On 2026-06-29, live HKEX HOLDINGS probe returned no data for `00700` on `2026-06-29` but valid participant data for `2026-06-26`; dashboard should label this as `CCASS持倉日`, not a whole-system stale date.
 - `scripts/health_check.py` treats both `holdings.json` and `data/holdings.json` as publish-date/coverage checks instead of file-mtime freshness, so weekend/T-1 CCASS lag does not create false stale alerts.
 
@@ -221,5 +232,6 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 ## Open Items
 
 - Keep auditing page data sources when new pages or JSON files are added.
+- Audit SQL/SQLite pressure paths when time allows: look for unbounded loops, fan-out queries, missing indexes, parallel writes, retry storms, and refresh jobs that can hammer `ccass/holdings.db` or `holdings.db`.
 - If local `ccass/holdings.db` is 0 bytes, audit gate should report structured fail instead of traceback.
 - Verify Cloudflare live pages after every push that affects public files.

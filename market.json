@@ -1,23 +1,27 @@
 {
   "hsi": {
-    "value": 23026.68,
-    "change": 354.82,
-    "changePct": 1.57,
+    "value": 22691.32,
+    "change": -335.36,
+    "changePct": -1.46,
     "stale": false,
     "source": "longbridge:quote",
-    "updated": "2026-06-29T15:19:01.034671+00:00"
+    "updated": "2026-06-30T02:26:31.134711+00:00"
   },
   "dow": {
-    "value": 50786.01,
-    "change": -80.77,
-    "changePct": -0.16,
-    "stale": true
+    "value": 52182.74,
+    "change": 306.63,
+    "changePct": 0.59,
+    "stale": false,
+    "source": "longbridge:quote",
+    "updated": "2026-06-30T02:26:31.134711+00:00"
   },
   "spx": {
-    "value": 7405.73,
-    "change": 21.99,
-    "changePct": 0.3,
-    "stale": true
+    "value": 7440.43,
+    "change": 86.41,
+    "changePct": 1.18,
+    "stale": false,
+    "source": "longbridge:quote",
+    "updated": "2026-06-30T02:26:31.134711+00:00"
   },
   "dxy": {
     "value": 99.7,
@@ -26,17 +30,19 @@
     "stale": true
   },
   "vix": {
-    "value": 18.05,
-    "change": -0.87,
-    "changePct": -4.6,
-    "stale": true,
+    "value": 17.65,
+    "change": -0.76,
+    "changePct": -4.13,
+    "stale": false,
+    "source": "longbridge:quote",
+    "updated": "2026-06-30T02:26:31.134711+00:00",
     "eval": {
       "label": "正常",
       "color": "neutral"
     }
   },
   "hsi_pe": {
-    "value": 17.95,
+    "value": 17.31,
     "change": null,
     "changePct": null,
     "avg5y_mid": 15.47,
@@ -44,26 +50,42 @@
       14.3,
       16.64
     ],
-    "eval": {
-      "label": "貴",
-      "color": "red"
-    },
-    "stale": true
-  },
-  "spx_pe": {
-    "value": 26.14,
-    "change": null,
-    "changePct": null,
-    "avg5y_mid": 22.82,
-    "avg5y_range": [
-      20.22,
-      25.43
+    "std2_range": [
+      13.12,
+      17.82
     ],
     "eval": {
       "label": "偏貴",
       "color": "orange"
     },
-    "stale": true
+    "stale": false,
+    "source": "worldperatio",
+    "source_url": "https://worldperatio.com/area/hong-kong/",
+    "source_date": "29 June 2026",
+    "updated": "2026-06-30T02:26:36.803325+00:00"
+  },
+  "spx_pe": {
+    "value": 26.59,
+    "change": null,
+    "changePct": null,
+    "avg5y_mid": 23.22,
+    "avg5y_range": [
+      19.92,
+      26.52
+    ],
+    "std2_range": [
+      16.62,
+      29.82
+    ],
+    "eval": {
+      "label": "偏貴",
+      "color": "orange"
+    },
+    "stale": false,
+    "source": "worldperatio",
+    "source_url": "https://worldperatio.com/index/sp-500/",
+    "source_date": "29 June 2026",
+    "updated": "2026-06-30T02:26:36.803325+00:00"
   },
   "spx_m2": {
     "value": 346.1,
@@ -75,13 +97,18 @@
     "stale": true
   },
   "fear_greed": {
-    "value": 39.4,
+    "value": 57.0,
+    "changePct": 0.0,
+    "stale": false,
+    "source": "longbridge:market-temp",
+    "updated": "2026-06-30T02:26:31.134711+00:00",
     "eval": {
-      "label": "恐懼",
-      "color": "green"
+      "label": "貪婪",
+      "color": "orange"
     },
-    "changePct": -1.85,
-    "stale": true
+    "sentiment": 40.0,
+    "valuation": 74.0,
+    "description": "Temp Comfortable & Gradually Dropping"
   },
   "breadth": {
     "hk": {
@@ -103,7 +130,7 @@
       "count": 108
     }
   },
-  "updated_at": "2026-06-29T15:19:01.034671+00:00",
+  "updated_at": "2026-06-30T02:26:36.803325+00:00",
   "hsi_m2": {
     "value": 1163.6,
     "m2": 21112.0,
@@ -126,5 +153,21 @@
     "stocks_sampled": null
   },
   "market_partial": true,
-  "market_note": "Longbridge refreshed HSI only; other market chips may be stale."
+  "market_note": "Longbridge refreshed 5 market fields; WorldPERatio refreshed 2 P/E fields; stale fields remain: dxy, hsi_m2, spx_m2.",
+  "market_longbridge_fields": [
+    "hsi",
+    "dow",
+    "spx",
+    "vix",
+    "fear_greed"
+  ],
+  "market_stale_fields": [
+    "dxy",
+    "hsi_m2",
+    "spx_m2"
+  ],
+  "market_pe_fields": [
+    "hsi_pe",
+    "spx_pe"
+  ]
 }

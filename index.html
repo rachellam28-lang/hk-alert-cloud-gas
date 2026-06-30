@@ -143,6 +143,7 @@ tbody tr{cursor:pointer}
 .mbar{display:flex;gap:6px;flex-wrap:nowrap;padding:6px 0 10px;margin-bottom:4px;overflow-x:auto}
 .mkt-meta{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:0 0 10px;font-size:11px;color:var(--mute);flex-wrap:wrap}
 .mkt-meta .stale{color:var(--down);font-weight:700}
+.mkt-meta .partial{color:var(--amber);font-weight:700}
 .mchip{display:flex;flex-direction:column;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;min-width:80px;flex:1 1 0;gap:2px}
 .mchip-label{font-size:9px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.1em;white-space:nowrap}
 .mchip-val{font-size:14px;font-weight:700;color:var(--text);text-align:center;white-space:nowrap}
@@ -1866,23 +1867,24 @@ function renderMarket(snap){
   function chgHtml(pct){if(pct==null)return '';const s=pct>=0?'+':'';return '<span style="color:'+(pct>=0?'var(--up)':'var(--down)')+'">'+s+pct.toFixed(2)+'%</span>';}
   function evBadge(ev){if(!ev)return '';return '<span class="ev-'+ev.color+'">'+ev.label+'</span>';}
   function avgHtml(avg){if(avg==null)return '';return '<span class="mchip-avg">均'+fmtNum(avg,2)+'</span>';}
-  function chip(label,val,chgPct,stale,dp,ev,avg5y){
+  function sourceHtml(source){if(!source)return '';const s=String(source);const label=s.includes('longbridge')?'LB':(s==='worldperatio'?'PE':s);return '<span class="mchip-avg">'+label+'</span>';}
+  function chip(label,val,chgPct,stale,dp,ev,avg5y,source){
     const valStr=stale?'—':fmtNum(val,dp??2);
     const staleTag=stale?'<span class="mchip-avg stale">舊</span>':'';
-    const sub=(staleTag||evBadge(ev)||avgHtml(avg5y))?'<span class="mchip-sub">'+staleTag+(stale?'':evBadge(ev)+avgHtml(avg5y))+'</span>':'';
+    const sub=(staleTag||evBadge(ev)||avgHtml(avg5y)||sourceHtml(source))?'<span class="mchip-sub">'+staleTag+(stale?'':sourceHtml(source)+evBadge(ev)+avgHtml(avg5y))+'</span>':'';
     return '<div class="mchip"><span class="mchip-label">'+label+'</span><span class="mchip-val'+(stale?' stale':'')+'">'+valStr+'</span><span class="mchip-chg">'+(stale?'':chgHtml(chgPct))+'</span>'+sub+'</div>';
   }
   const h=snap.hsi||{},dow=snap.dow||{},d=snap.dxy||{},v=snap.vix||{},hp=snap.hsi_pe||{},hm=snap.hsi_m2||{},sp=snap.spx_pe||{},sm=snap.spx_m2||{},fg=snap.fear_greed||{};
   bar.innerHTML=[
-    chip('恒指', h.value, h.changePct, h.stale, 0),
-    chip('道指', dow.value, dow.changePct, dow.stale, 0),
-    chip('DXY', d.value, d.changePct, d.stale, 2),
-    chip('VIX', v.value, v.changePct, v.stale, 2, v.eval),
-    chip('港股P/E', hp.value, null, hp.stale, 2, hp.eval, hp.avg5y_mid),
-    chip('HSI/M2', hm.value, null, hm.stale, 1, hm.eval, null),
-    chip('美股P/E', sp.value, null, sp.stale, 2, sp.eval, sp.avg5y_mid),
-    chip('SPX/M2', sm.value, null, sm.stale, 0, sm.eval),
-    chip('恐懼貪婪', fg.value, fg.changePct, fg.stale, 0, fg.eval),
+    chip('恒指', h.value, h.changePct, h.stale, 0, null, null, h.source),
+    chip('道指', dow.value, dow.changePct, dow.stale, 0, null, null, dow.source),
+    chip('DXY', d.value, d.changePct, d.stale, 2, null, null, d.source),
+    chip('VIX', v.value, v.changePct, v.stale, 2, v.eval, null, v.source),
+    chip('港股P/E', hp.value, null, hp.stale, 2, hp.eval, hp.avg5y_mid, hp.source),
+    chip('HSI/M2', hm.value, null, hm.stale, 1, hm.eval, null, hm.source),
+    chip('美股P/E', sp.value, null, sp.stale, 2, sp.eval, sp.avg5y_mid, sp.source),
+    chip('SPX/M2', sm.value, null, sm.stale, 0, sm.eval, null, sm.source),
+    chip('恐懼貪婪', fg.value, fg.changePct, fg.stale, 0, fg.eval, null, fg.source),
   ].join('');
   const meta=document.getElementById('mktMeta');
   const left=document.getElementById('mktMetaLeft');
@@ -1890,9 +1892,16 @@ function renderMarket(snap){
   if(meta&&left&&right){
     const updated=snap.updated_at ? String(snap.updated_at).replace('T',' ').slice(0,19) : '—';
     const stale=!!(snap.dopamine && snap.dopamine.stale);
-    left.textContent='市場卡更新於 '+updated;
-    right.textContent=stale ? '⚠ Futu/market stale' : '✅ fresh';
-    right.className=stale ? 'stale' : '';
+    const chips=[h,dow,d,v,hp,hm,sp,sm,fg];
+    const staleCount=Array.isArray(snap.market_stale_fields)?snap.market_stale_fields.length:chips.filter(x=>x&&x.stale).length;
+    const lbCount=Array.isArray(snap.market_longbridge_fields)?snap.market_longbridge_fields.length:chips.filter(x=>x&&!x.stale&&String(x.source||'').includes('longbridge')).length;
+    const peCount=Array.isArray(snap.market_pe_fields)?snap.market_pe_fields.length:chips.filter(x=>x&&!x.stale&&String(x.source||'')==='worldperatio').length;
+    const lbText=lbCount?(' · '+lbCount+'格LB'):'';
+    const peText=peCount?(' · '+peCount+'格PE'):'';
+    const partial=!!snap.market_partial;
+    left.textContent=(partial?'市場卡部分刷新 ':'市場卡更新於 ')+updated;
+    right.textContent=partial ? ('⚠ partial · '+staleCount+'舊'+lbText+peText) : (stale ? '⚠ market stale' : '✅ fresh');
+    right.className=partial ? 'partial' : (stale ? 'stale' : '');
     meta.style.display='';
   }
 }
