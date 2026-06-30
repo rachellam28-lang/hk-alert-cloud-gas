@@ -13,31 +13,43 @@ RAW_DIR = BASE / "raw"
 
 
 def load_latest_prices():
-    """Load the most recent raw prices snapshot and return {code: (date, close)}."""
+    """Load latest non-stale raw close per code and return {code: (date, close)}."""
     snapshots = sorted(glob.glob(str(RAW_DIR / "prices_*.json")))
     if not snapshots:
         return {}, None
 
-    latest_fp = snapshots[-1]
-    m = re.search(r"prices_(\d{4})(\d{2})(\d{2})", os.path.basename(latest_fp))
-    snap_date = None
-    if m:
-        snap_date = f"{m.group(1)}-{m.group(2)}-{m.group(3)}"
-
-    with open(latest_fp, encoding="utf-8") as f:
-        doc = json.load(f)
-
+    latest_date = None
     out = {}
-    for code, val in doc.items():
-        code5 = str(code).zfill(5)
-        close = val.get("close", val) if isinstance(val, dict) else val
-        try:
-            close = float(close)
-        except Exception:
-            continue
-        if close > 0:
-            out[code5] = (snap_date, close)
-    return out, snap_date
+    for fp in reversed(snapshots):
+        m = re.search(r"prices_(\d{4})(\d{2})(\d{2})", os.path.basename(fp))
+        snap_date = None
+        if m:
+            snap_date = f"{m.group(1)}-{m.group(2)}-{m.group(3)}"
+
+        with open(fp, encoding="utf-8") as f:
+            doc = json.load(f)
+
+        for code, val in doc.items():
+            code5 = str(code).zfill(5)
+            if code5 in out:
+                continue
+            if isinstance(val, dict):
+                source_date = str(val.get("source_date") or "")[:10]
+                if val.get("stale") is True or (source_date and source_date != snap_date):
+                    continue
+                close = val.get("close")
+                price_date = source_date or snap_date
+            else:
+                close = val
+                price_date = snap_date
+            try:
+                close = float(close)
+            except Exception:
+                continue
+            if close > 0:
+                out[code5] = (price_date, close)
+                latest_date = max(latest_date or price_date or "", price_date or "")
+    return out, latest_date
 
 
 def main():

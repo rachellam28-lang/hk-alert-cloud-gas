@@ -23,6 +23,7 @@ Outputs:
 import argparse
 import json
 import os
+import re
 import sys
 from datetime import datetime, timedelta
 
@@ -231,18 +232,40 @@ def save_price_snapshot(holdings):
     """Save today's price snapshot to raw/prices_YYYYMMDD.json.
     Fields: lp (close), vol, hi52, lo52 — stored per code for zombie detection + future OHLC needs."""
     today = datetime.now().strftime("%Y%m%d")
+    today_dash = datetime.now().strftime("%Y-%m-%d")
     out_path = os.path.join(BASE, "raw", f"prices_{today}.json")
+    price_cache = load_json(os.path.join(BASE, "data", "stock_prices.json"), default={}) or {}
+
+    def source_date(entry):
+        for key in ("lp_time", "price_updated_at", "updated_at"):
+            val = entry.get(key) if isinstance(entry, dict) else None
+            if not val:
+                continue
+            text = str(val)
+            if re.match(r"^\d{4}-\d{2}-\d{2}", text):
+                return text[:10]
+        return None
     
     stocks = holdings.get("stocks", [])
     out = {}
     for s in stocks:
         code = str(s.get("c", "")).zfill(5)
-        out[code] = {
-            "close": s.get("lp"),
-            "vol": s.get("vol"),
-            "hi52": s.get("hi52"),
-            "lo52": s.get("lo52"),
+        cache_entry = price_cache.get(code) if isinstance(price_cache, dict) else None
+        src = cache_entry if isinstance(cache_entry, dict) else s
+        src_date = source_date(src)
+        row = {
+            "close": src.get("lp"),
+            "vol": src.get("vol"),
+            "hi52": src.get("hi52"),
+            "lo52": src.get("lo52"),
         }
+        if src_date:
+            row["source_date"] = src_date
+            if src_date != today_dash:
+                row["stale"] = True
+        if src.get("price_source"):
+            row["source"] = src.get("price_source")
+        out[code] = {k: v for k, v in row.items() if v is not None}
     
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     with open(out_path, "w", encoding="utf-8") as f:

@@ -86,7 +86,13 @@ def load_raw_prices():
             day = json.load(open(fp))
             for code, val in day.items():
                 code5 = str(code).zfill(5)
-                px = val.get('close', val) if isinstance(val, dict) else val
+                if isinstance(val, dict):
+                    source_date = str(val.get('source_date') or '')[:10]
+                    if val.get('stale') is True or (source_date and source_date != d):
+                        continue
+                    px = val.get('close')
+                else:
+                    px = val
                 if px and float(px) > 0.0001:
                     hist.setdefault(code5, {})[d] = float(px)
         except Exception:

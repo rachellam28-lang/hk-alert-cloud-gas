@@ -152,6 +152,8 @@ def main() -> int:
     updated = 0
     suspended: dict[str, str] = {}
     latest_ts = None
+    run_ts = datetime.now(timezone.utc).isoformat()
+    trade_date = datetime.now().astimezone().strftime("%Y-%m-%d")
     batch_size = int(os.environ.get("LONGBRIDGE_QUOTE_BATCH_SIZE", "100"))
 
     for i in range(0, len(codes), batch_size):
@@ -199,9 +201,9 @@ def main() -> int:
                 entry["py_pct"] = round((entry["lp"] - entry["py"]) / entry["py"] * 100, 2)
             entry["price_source"] = "longbridge:cli" if "last" in item else "longbridge:mcp"
             ts = item.get("timestamp") or item.get("updated")
-            if ts:
-                entry["price_updated_at"] = ts
-                latest_ts = max(latest_ts or ts, ts)
+            entry["lp_time"] = trade_date
+            entry["price_updated_at"] = ts or run_ts
+            latest_ts = max(latest_ts or entry["price_updated_at"], entry["price_updated_at"])
             if changed:
                 prices[code] = entry
                 updated += 1
@@ -226,7 +228,7 @@ def main() -> int:
         for stock in holdings.get("stocks", []):
             code = stock.get("c")
             entry = prices.get(code, {})
-            for key in ["lp", "vol", "chg", "p52", "py_pct", "prev_close", "turnover"]:
+            for key in ["lp", "lp_time", "vol", "chg", "p52", "py_pct", "prev_close", "turnover"]:
                 if entry.get(key) is not None:
                     stock[key] = entry[key]
             if entry.get("price_source"):
