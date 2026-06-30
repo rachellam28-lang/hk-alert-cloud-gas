@@ -150,8 +150,13 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - HSI P/E and S&P 500 P/E are refreshed from WorldPERatio, not yfinance:
   - HSI P/E source: `https://worldperatio.com/area/hong-kong/`
   - S&P 500 P/E source: `https://worldperatio.com/index/sp-500/`
-- Current market card publish data is partial but P/E is fresh: Longbridge fields are `hsi`, `dow`, `spx`, `vix`, `fear_greed`; P/E fields are `hsi_pe`, `spx_pe`; stale fields are only `dxy`, `hsi_m2`, `spx_m2`.
-- Fix: `index.html` and `signals.html` now render partial market state from `market_longbridge_fields`, `market_pe_fields`, and `market_stale_fields` instead of hard-coding HSI-only wording. Stale chips show `舊`; fresh Longbridge chips show `LB`.
+- DXY is not available from Longbridge CLI for this account (`.DXY.US` returns no quote); it is refreshed from CNBC `.DXY`.
+- HSI/M2 and S&P 500/M2 are refreshed directly from HKMA and FRED:
+  - HK M2 source: HKMA `money/supply-adjusted`, `m2_total`.
+  - US M2 source: FRED `M2SL` CSV.
+- Current market card publish data is fully fresh: Longbridge fields are `hsi`, `dow`, `spx`, `vix`, `fear_greed`; P/E fields are `hsi_pe`, `spx_pe`; CNBC field is `dxy`; M2 fields are `hsi_m2`, `spx_m2`; `market_stale_fields=[]`.
+- `scripts/build_publish_bundle.py` separates `dopamine_stale` from market-card stale status, so a Futu dopamine timeout no longer makes the market card report stale.
+- Fix: `index.html` and `signals.html` now render market state from `market_longbridge_fields`, `market_pe_fields`, `market_cnbc_fields`, `market_m2_fields`, and `market_stale_fields` instead of hard-coding HSI-only wording. Stale chips show `舊`; fresh Longbridge chips show `LB`, P/E chips show `PE`, DXY shows `CNBC`, and M2 chips show `M2`.
 - `signals.html` also had a missing closing `</script>` tag at EOF; fixed before deploy.
 
 ### 2026-06-29 live data refresh and no-GitHub deploy

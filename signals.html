@@ -532,7 +532,7 @@ function renderMarket(snap){
   function chgHtml(pct){if(pct==null)return '';const s=pct>=0?'+':'';return `<span style="font-size:10px;color:${pct>=0?'var(--up)':'var(--down)'}">${s}${pct.toFixed(2)}%</span>`;}
   function evBadge(ev){if(!ev)return '';return `<span class="ev-${ev.color}">${ev.label}</span>`;}
   function avgHtml(avg){if(avg==null)return '';return `<span class="mchip-avg">均${fmtNum(avg,2)}</span>`;}
-  function sourceHtml(source){if(!source)return '';const s=String(source);const label=s.includes('longbridge')?'LB':(s==='worldperatio'?'PE':s);return `<span class="mchip-avg">${label}</span>`;}
+  function sourceHtml(source){if(!source)return '';const s=String(source);const label=s.includes('longbridge')?'LB':(s==='worldperatio'?'PE':(s.startsWith('cnbc:')?'CNBC':(s.startsWith('hkma:')||s.startsWith('fred:')?'M2':s)));return `<span class="mchip-avg">${label}</span>`;}
   function chip(label,val,chgPct,stale,dp,ev,avg5y,source){
     const valStr=fmtNum(val,dp??2);
     const staleTag=stale?'<span class="mchip-avg stale">舊</span>':'';
@@ -555,17 +555,20 @@ function renderMarket(snap){
   const right=document.getElementById('mktMetaRight');
   if(meta&&left&&right){
     const updated=snap.updated_at ? String(snap.updated_at).replace('T',' ').slice(0,19) : '—';
-    const stale=!!(snap.dopamine && snap.dopamine.stale);
     const chips=[h,dow,d,v,hp,sp,sm,fg];
     const staleCount=Array.isArray(snap.market_stale_fields)?snap.market_stale_fields.length:chips.filter(x=>x&&x.stale).length;
     const lbCount=Array.isArray(snap.market_longbridge_fields)?snap.market_longbridge_fields.length:chips.filter(x=>x&&!x.stale&&String(x.source||'').includes('longbridge')).length;
     const peCount=Array.isArray(snap.market_pe_fields)?snap.market_pe_fields.length:chips.filter(x=>x&&!x.stale&&String(x.source||'')==='worldperatio').length;
+    const cnbcCount=Array.isArray(snap.market_cnbc_fields)?snap.market_cnbc_fields.length:chips.filter(x=>x&&!x.stale&&String(x.source||'').startsWith('cnbc:')).length;
+    const m2Count=Array.isArray(snap.market_m2_fields)?snap.market_m2_fields.length:chips.filter(x=>x&&!x.stale&&(String(x.source||'').startsWith('hkma:')||String(x.source||'').startsWith('fred:'))).length;
     const lbText=lbCount?(' · '+lbCount+'格LB'):'';
     const peText=peCount?(' · '+peCount+'格PE'):'';
-    const partial=!!snap.market_partial;
+    const cnbcText=cnbcCount?(' · '+cnbcCount+'格CNBC'):'';
+    const m2Text=m2Count?(' · '+m2Count+'格M2'):'';
+    const partial=!!snap.market_partial || staleCount>0;
     left.textContent=(partial?'市場卡部分刷新 ':'市場卡更新於 ')+updated;
-    right.textContent=partial ? ('⚠ partial · '+staleCount+'舊'+lbText+peText) : (stale ? '⚠ market stale' : '✅ fresh');
-    right.className=partial ? 'partial' : (stale ? 'stale' : '');
+    right.textContent=partial ? ('⚠ partial · '+staleCount+'舊'+lbText+peText+cnbcText+m2Text) : '✅ fresh';
+    right.className=partial ? 'partial' : '';
     meta.style.display='';
   }
 }

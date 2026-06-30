@@ -14,7 +14,9 @@ import signal
 import shutil
 import subprocess
 import sys
+from csv import DictReader
 from html import unescape
+from io import StringIO
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.request import Request, urlopen
@@ -33,6 +35,9 @@ PE_SOURCES = {
     "hsi_pe": "https://worldperatio.com/area/hong-kong/",
     "spx_pe": "https://worldperatio.com/index/sp-500/",
 }
+CNBC_DXY_URL = "https://quote.cnbc.com/quote-html-webservice/restQuote/symbolType/symbol?symbols=.DXY&output=json"
+HKMA_M2_URL = "https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/money/supply-adjusted?offset=0"
+FRED_M2SL_URL = "https://fred.stlouisfed.org/graph/fredgraph.csv?id=M2SL"
 
 
 def _parse_dt(value: str | None) -> datetime | None:
@@ -188,9 +193,20 @@ def _to_float(value) -> float | None:
     try:
         if value in (None, "", "-"):
             return None
-        return float(value)
+        return float(str(value).replace("%", "").replace(",", "").strip())
     except (TypeError, ValueError):
         return None
+
+
+def _parse_cnbc_time(value: str | None) -> str:
+    if not value:
+        return datetime.now(timezone.utc).isoformat()
+    for fmt in ("%Y-%m-%dT%H:%M:%S.%f%z", "%Y-%m-%dT%H:%M:%S%z"):
+        try:
+            return datetime.strptime(value, fmt).astimezone(timezone.utc).isoformat()
+        except ValueError:
+            continue
+    return datetime.now(timezone.utc).isoformat()
 
 
 def _eval_vix(value: float | None) -> dict:
@@ -305,17 +321,37 @@ def _refresh_market_metadata(market: dict) -> None:
         and not market[key].get("stale")
         and market[key].get("source") == "worldperatio"
     ]
+    cnbc_fields = [
+        key for key in MARKET_KEYS
+        if isinstance(market.get(key), dict)
+        and not market[key].get("stale")
+        and str(market[key].get("source") or "").startswith("cnbc:")
+    ]
+    m2_fields = [
+        key for key in MARKET_KEYS
+        if isinstance(market.get(key), dict)
+        and not market[key].get("stale")
+        and str(market[key].get("source") or "").startswith(("hkma:", "fred:"))
+    ]
     market["market_partial"] = bool(stale_keys)
     market["market_stale_fields"] = stale_keys
     market["market_longbridge_fields"] = lb_fields
     market["market_pe_fields"] = pe_fields
+    market["market_cnbc_fields"] = cnbc_fields
+    market["market_m2_fields"] = m2_fields
     lb_count = len(lb_fields)
     pe_count = len(pe_fields)
+    cnbc_count = len(cnbc_fields)
+    m2_count = len(m2_fields)
     parts = []
     if lb_count:
         parts.append(f"Longbridge refreshed {lb_count} market fields")
     if pe_count:
         parts.append(f"WorldPERatio refreshed {pe_count} P/E fields")
+    if cnbc_count:
+        parts.append(f"CNBC refreshed {cnbc_count} market fields")
+    if m2_count:
+        parts.append(f"HKMA/FRED refreshed {m2_count} M2 fields")
     if stale_keys:
         parts.append("stale fields remain: " + ", ".join(stale_keys))
     elif parts:
@@ -433,6 +469,130 @@ def _apply_worldperatio_pe_fallback(market: dict) -> bool:
         _refresh_market_metadata(market)
     return bool(refreshed)
 
+
+def _apply_cnbc_dxy_fallback(market: dict) -> bool:
+    req = Request(CNBC_DXY_URL, headers={"User-Agent": "Mozilla/5.0", "Accept": "application/json"})
+    with urlopen(req, timeout=float(os.environ.get("MARKET_DXY_TIMEOUT_SECONDS", "20"))) as res:
+        payload = json.loads(res.read().decode("utf-8", "replace"))
+    quotes = payload.get("FormattedQuoteResult", {}).get("FormattedQuote", [])
+    item = next((q for q in quotes if isinstance(q, dict) and q.get("code") == 0), None)
+    if not item:
+        raise RuntimeError("CNBC .DXY quote missing")
+    last = _to_float(item.get("last"))
+    if last is None:
+        raise RuntimeError("CNBC .DXY last price missing")
+    change = _to_float(item.get("change"))
+    change_pct = _to_float(item.get("change_pct"))
+    prev_close = _to_float(item.get("previous_day_closing"))
+    if change is None and prev_close:
+        change = round(last - prev_close, 3)
+    if change_pct is None:
+        change_pct = _pct(last, prev_close)
+    ts = _parse_cnbc_time(item.get("last_time"))
+    market["dxy"] = {
+        "value": round(last, 3),
+        "change": round(change, 3) if change is not None else None,
+        "changePct": round(change_pct, 2) if change_pct is not None else None,
+        "stale": False,
+        "source": "cnbc:.DXY",
+        "source_url": CNBC_DXY_URL,
+        "updated": ts,
+        "name": item.get("name") or item.get("onAirName") or "ICE U.S. Dollar Index",
+    }
+    market["updated_at"] = max(str(market.get("updated_at") or ts), ts)
+    _refresh_market_metadata(market)
+    return True
+
+
+def _fetch_hk_m2() -> dict:
+    req = Request(HKMA_M2_URL, headers={"User-Agent": "Mozilla/5.0", "Accept": "application/json"})
+    with urlopen(req, timeout=float(os.environ.get("MARKET_M2_TIMEOUT_SECONDS", "20"))) as res:
+        payload = json.loads(res.read().decode("utf-8", "replace"))
+    records = payload.get("result", {}).get("records") or []
+    for row in records:
+        value = _to_float(row.get("m2_total"))
+        if value is not None and value > 0:
+            return {
+                "date": row.get("end_of_month"),
+                "m2_billion": value / 1000.0,
+                "raw_m2_million": value,
+                "source_url": HKMA_M2_URL,
+            }
+    raise RuntimeError("HKMA M2 total missing")
+
+
+def _fetch_us_m2() -> dict:
+    req = Request(FRED_M2SL_URL, headers={"User-Agent": "Mozilla/5.0", "Accept": "text/csv"})
+    with urlopen(req, timeout=float(os.environ.get("MARKET_M2_TIMEOUT_SECONDS", "30"))) as res:
+        text = res.read().decode("utf-8", "replace")
+    rows = list(DictReader(StringIO(text)))
+    for row in reversed(rows):
+        value = _to_float(row.get("M2SL"))
+        if value is not None and value > 0:
+            return {
+                "date": row.get("observation_date"),
+                "m2_billion": value,
+                "source_url": FRED_M2SL_URL,
+            }
+    raise RuntimeError("FRED M2SL missing")
+
+
+def _index_m2_value(index_value: float | None, m2_billion: float | None) -> float | None:
+    if not index_value or not m2_billion:
+        return None
+    return round(index_value / m2_billion * 1000.0, 1)
+
+
+def _apply_m2_fallback(market: dict) -> bool:
+    refreshed: list[str] = []
+    fetched_at = datetime.now(timezone.utc).isoformat()
+
+    try:
+        hk = _fetch_hk_m2()
+        hsi = _to_float((market.get("hsi") or {}).get("value"))
+        value = _index_m2_value(hsi, hk["m2_billion"])
+        if value is not None:
+            prev_eval = (market.get("hsi_m2") or {}).get("eval")
+            market["hsi_m2"] = {
+                "value": value,
+                "m2": round(hk["m2_billion"], 1),
+                "m2_raw_million": round(hk["raw_m2_million"], 3),
+                "stale": False,
+                "eval": prev_eval or {"label": "合理", "color": "gray"},
+                "source": "hkma:m2_total",
+                "source_url": hk["source_url"],
+                "source_date": hk["date"],
+                "updated": fetched_at,
+            }
+            refreshed.append("hsi_m2")
+    except Exception as exc:
+        print(f"[dopamine_refresh] HKMA HSI/M2 unavailable: {exc}", file=sys.stderr)
+
+    try:
+        us = _fetch_us_m2()
+        spx = _to_float((market.get("spx") or {}).get("value"))
+        value = _index_m2_value(spx, us["m2_billion"])
+        if value is not None:
+            prev_eval = (market.get("spx_m2") or {}).get("eval")
+            market["spx_m2"] = {
+                "value": value,
+                "m2": round(us["m2_billion"], 1),
+                "stale": False,
+                "eval": prev_eval or {"label": "昂貴", "color": "red"},
+                "source": "fred:M2SL",
+                "source_url": us["source_url"],
+                "source_date": us["date"],
+                "updated": fetched_at,
+            }
+            refreshed.append("spx_m2")
+    except Exception as exc:
+        print(f"[dopamine_refresh] FRED SPX/M2 unavailable: {exc}", file=sys.stderr)
+
+    if refreshed:
+        market["updated_at"] = max(str(market.get("updated_at") or fetched_at), fetched_at)
+        _refresh_market_metadata(market)
+    return bool(refreshed)
+
 def _load_fallback_dopamine(err: str | None = None) -> dict:
     """Load last known dopamine snapshot or a neutral placeholder."""
     for f in [PROJECT / "ccass" / "data" / "dopamine.json", PROJECT / "data" / "dopamine.json"]:
@@ -534,6 +694,26 @@ try:
         )
 except Exception as e:
     print(f"[dopamine_refresh] WorldPERatio P/E fallback failed: {e}", file=sys.stderr)
+
+dxy_market_fresh = False
+try:
+    dxy_market_fresh = _apply_cnbc_dxy_fallback(market)
+    if dxy_market_fresh:
+        print("[dopamine_refresh] CNBC refreshed DXY", file=sys.stderr)
+except Exception as e:
+    print(f"[dopamine_refresh] CNBC DXY fallback failed: {e}", file=sys.stderr)
+
+m2_market_fresh = False
+try:
+    m2_market_fresh = _apply_m2_fallback(market)
+    if m2_market_fresh:
+        print(
+            "[dopamine_refresh] HKMA/FRED refreshed %d M2 fields"
+            % len(market.get("market_m2_fields", [])),
+            file=sys.stderr,
+        )
+except Exception as e:
+    print(f"[dopamine_refresh] M2 fallback failed: {e}", file=sys.stderr)
 
 # Inject dopamine data
 market["dopamine"] = {
