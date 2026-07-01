@@ -1455,15 +1455,13 @@ function setHeatFilter(type,key){
     heatMarkType=type;
     heatMarkKey=key;
   }
-  maybeRenderHeatmaps();
-  renderTable();
+  applyFilters();
 }
 function clearHeatFilter(type){
   if(!type||heatMarkType===type){
     heatMarkType='';
     heatMarkKey='';
-    maybeRenderHeatmaps();
-    renderTable();
+    applyFilters();
   }
 }
 function stockPassesFilters(s,opts){
@@ -2229,6 +2227,10 @@ function applyFilters(){
   });
   // Multi-column sort
   filtered.sort((a,b)=>{
+    if(heatMarkType&&heatMarkKey){
+      var am=heatMarkMatches(a),bm=heatMarkMatches(b);
+      if(am!==bm)return am?-1:1;
+    }
     // Primary sort
     var cmp=cmpSortVal(getSortVal(a,sortCol),getSortVal(b,sortCol),sortDir);
     if(cmp!==0)return cmp;
@@ -2240,6 +2242,9 @@ function applyFilters(){
     return 0;
   });
   page=0;
+  pageSmall=0;
+  pageMid=0;
+  pageLarge=0;
   encodeState();
   updateSortInfo();
   maybeRenderHeatmaps();
