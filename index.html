@@ -1309,8 +1309,10 @@ function activateHeatmapTarget(target,ev){
   if(stockBtn&&wrap.contains(stockBtn)){
     if(ev){ev.preventDefault();ev.stopPropagation();}
     var parentTile=stockBtn.closest('.heat-tile[data-heat-type][data-heat-key]');
-    if(parentTile&&parentTile.getAttribute('aria-disabled')!=='true'&&parentTile.getAttribute('aria-pressed')!=='true'){
+    var parentActive=parentTile&&parentTile.getAttribute('aria-pressed')==='true';
+    if(parentTile&&parentTile.getAttribute('aria-disabled')!=='true'&&!parentActive){
       setHeatFilter(parentTile.dataset.heatType,parentTile.dataset.heatKey);
+      return true;
     }
     showDetail(stockBtn.dataset.heatStock);
     return true;
@@ -1424,9 +1426,10 @@ function heatTileHtml(type,item,stat,activeKey,matches){
   var isActive=activeKey===item.key;
   var active=isActive?' active':'';
   var empty=stat.count?'':' empty';
-  var isDisabled=!stat.count&&!isActive;
+  var noMatches=!stat.count&&!isActive;
+  var isDisabled=type!=='theme'&&noMatches;
   var disabled=isDisabled?' disabled':'';
-  var tip=item.label+'｜'+stat.count+'隻｜平均Δ '+avg+'｜升股 '+up+'｜VR '+vr+'｜訊號 '+stat.signalN+(isDisabled?'｜目前範圍沒有股票':'');
+  var tip=item.label+'｜'+stat.count+'隻｜平均Δ '+avg+'｜升股 '+up+'｜VR '+vr+'｜訊號 '+stat.signalN+(noMatches?'｜目前範圍沒有股票':'');
   return '<div class="heat-tile '+vis.tone+active+empty+disabled+'"'+heatAttrs(type,item.key,isActive,isDisabled)+' style="--heat-alpha:'+vis.alpha+';--heat-width:'+vis.width+'" title="'+esc(tip)+'">'
     +'<div class="heat-title"><span>'+esc(item.label)+'</span><span class="heat-count">'+stat.count+'</span></div>'
     +'<div class="heat-main '+deltaClass(stat.avgChg)+'">'+avg+'</div>'

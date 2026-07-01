@@ -151,16 +151,17 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 
 - Main-page heatmap tiles must visibly show selection after click/tap. Active tiles now use a blue fill, stronger border/shadow, and `aria-pressed=true`.
 - Empty active tiles must not stay faded. `.heat-tile.empty` opacity only applies when the tile is not active, so zero-count theme tiles still look selected when tapped.
-- Zero-count inactive heatmap tiles are disabled and must not apply a new filter. If a zero-count tile is already active from URL/preset/old state, it stays clickable only so the user can clear that filter.
+- Zero-count inactive sector/flow heatmap tiles are disabled and must not apply a new filter. Theme heatmap tiles stay clickable even at 0 matches, so the tile can still turn active and clearly show an empty result.
 - Heatmap card audit after the zero-tile fixes:
   - DOM counts match the page's own theme/sector/flow filter functions.
   - Tile click row counts match displayed tile counts.
-  - Stock-code chips now apply their parent heatmap filter first, then open the stock drawer, so chip taps still show the active tile color.
+  - Stock-code chips now apply their parent heatmap filter first; if the parent tile is already active, the next chip tap opens the stock drawer.
   - Mobile 390px layout has no heatmap tile overflow.
   - `data/fundflow.json` was refreshed from westock to `2026-06-30` with 500 symbols; the heatmap header now shows `資金 2026-06-30 · 500`.
 - Mobile heatmap tap handling is delegated at `#heatmapWrap`, not per-tile inline `onclick`. It uses touch/click/keyboard handling plus `elementFromPoint` and tile-rect fallback because some mobile compatibility clicks report `.heatmap-panel` instead of the tile under the finger.
 - Stock-chip drawer opens only when the tap coordinate is inside the chip rect; tapping tile text/meta applies the filter only.
-- Local headless Chrome mobile audit verified: `supply_cash`, sector, and flow tile center taps become active; stock-code chip taps become active and open the drawer; clear button resets; fundflow meta is `資金 2026-06-30 · 500`; sector `其他/未分類` count is 495.
+- Latest theme audit: all six theme tiles stay clickable under a scoped sector filter, including a 0-count `supply_stock`; stock-code chip first tap selects the parent tile and second tap opens the drawer.
+- Local headless Chrome mobile audit verified: `supply_cash`, sector, and flow tile center taps become active; stock-code chip first tap selects the parent tile and second tap opens the drawer; clear button resets; fundflow meta is `資金 2026-06-30 · 500`; sector `其他/未分類` count is 495.
 
 ### 2026-06-30 main heatmap card, sector overrides, and fund-flow heatmap
 
@@ -170,7 +171,7 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - Sector grouping should not dump holding-company names into `其他/未分類`. `index.html` now has a `綜合/控股` sector for generic holding/group/development names, broader bilingual keyword rules, short English token boundary matching for `AI`/`EV`, and extra exact code overrides for obvious HK names. Local audit improved sector heatmap `other` from 1768 to about 495 stocks.
 - Main page now fetches existing `data/fundflow.json` and builds a clickable fund-flow heatmap from `main_net`, `total_net`, and `lgt_cap_chg_daily`.
 - Fund-flow heatmap tiles cover main/total/southbound inflow and outflow; clicking a tile applies the flow filter, and presets/URL state persist the `flow` filter.
-- Heatmap tiles must connect to stocks, not only show group stats. Each tile shows top stock-code chips; tapping a chip applies the parent heatmap filter and opens the stock drawer, while tapping tile text/meta filters then scrolls/highlights the first matching stock row/card.
+- Heatmap tiles must connect to stocks, not only show group stats. Each tile shows top stock-code chips; first tapping a chip applies the parent heatmap filter, a second chip tap opens the stock drawer, while tapping tile text/meta filters then scrolls/highlights the first matching stock row/card.
 - Heatmap stats/chips must use the current filter context, not raw `allStocks`. `stockPassesFilters()` is shared by table filtering and heatmap rendering; each heatmap panel skips only its own dimension (`theme`, `sector`, or `flow`) so the tile count/chips match the stocks that will appear after clicking.
 - Heatmap panel headers show the current scope label (`全市場`, `汽車/新能源內`, `大市值內`, etc.) so cross-filtered counts do not look like broken global totals after the user clicks a theme/sector/flow tile.
 - Theme heatmap wording must not look like `圈錢可炒`. The positive supply theme is labelled `圈股吸貨`; `圈錢` remains a separate avoid/dilution theme.
