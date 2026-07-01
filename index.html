@@ -57,8 +57,10 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .heat-tile:before{content:"";position:absolute;inset:0;background:rgb(var(--heat-rgb));opacity:var(--heat-alpha);pointer-events:none}
 .heat-tile:hover{border-color:var(--primary-border);box-shadow:0 0 0 2px rgba(2,132,199,.08)}
 .heat-tile:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
-.heat-tile.active{border-color:var(--primary);box-shadow:0 0 0 2px rgba(2,132,199,.18)}
-.heat-tile.empty{opacity:.45}
+.heat-tile.active{border-color:var(--primary);background:rgba(224,242,254,.88);box-shadow:0 0 0 2px rgba(2,132,199,.24),inset 0 0 0 1px rgba(2,132,199,.18)}
+.heat-tile.active:before{opacity:calc(var(--heat-alpha) + .12)}
+.heat-tile.empty:not(.active){opacity:.45}
+.heat-tile.empty.active{opacity:1}
 .heat-tile.up{--heat-rgb:21,128,61}.heat-tile.dn{--heat-rgb:185,28,28}.heat-tile.flat{--heat-rgb:100,116,139}
 .heat-title,.heat-main,.heat-meta,.heat-bar,.heat-stocks{position:relative;z-index:1}
 .heat-title{display:flex;align-items:center;justify-content:space-between;gap:5px;font-size:10px;font-weight:800;line-height:1.12}
@@ -1272,11 +1274,12 @@ function focusHeatStocks(){
 }
 function flowTileHtml(item,stat,activeKey,matches){
   var vis=flowVisual(stat,item);
-  var active=activeKey===item.key?' active':'';
+  var isActive=activeKey===item.key;
+  var active=isActive?' active':'';
   var empty=stat.count?'':' empty';
   var avg=stat.avgChg==null?'—':fmtPct(stat.avgChg);
   var tip=item.label+'｜'+stat.count+'隻｜淨額 '+fmtFlowMoney(stat.netSum)+'｜成交Δ '+avg;
-  return '<div class="heat-tile '+vis.tone+active+empty+'" role="button" tabindex="0" style="--heat-alpha:'+vis.alpha+';--heat-width:'+vis.width+'" title="'+esc(tip)+'" onclick="setHeatFilter(\'flow\',\''+item.key+'\')" onkeydown="heatKey(event,\'flow\',\''+item.key+'\')">'
+  return '<div class="heat-tile '+vis.tone+active+empty+'" role="button" tabindex="0" aria-pressed="'+(isActive?'true':'false')+'" style="--heat-alpha:'+vis.alpha+';--heat-width:'+vis.width+'" title="'+esc(tip)+'" onclick="setHeatFilter(\'flow\',\''+item.key+'\')" onkeydown="heatKey(event,\'flow\',\''+item.key+'\')">'
     +'<div class="heat-title"><span>'+esc(item.label)+'</span><span class="heat-count">'+stat.count+'</span></div>'
     +'<div class="heat-main '+(item.dir>0?'delta-up':'delta-dn')+'">'+fmtFlowMoney(stat.netSum)+'</div>'
     +'<div class="heat-meta"><span>'+esc(flowMetricLabel(item))+'</span><span>Δ '+avg+'</span></div>'
@@ -1289,10 +1292,11 @@ function heatTileHtml(type,item,stat,activeKey,matches){
   var avg=stat.avgChg==null?'—':fmtPct(stat.avgChg);
   var up=stat.upRate==null?'—':Math.round(stat.upRate)+'%';
   var vr=stat.avgVr==null?'—':stat.avgVr.toFixed(1);
-  var active=activeKey===item.key?' active':'';
+  var isActive=activeKey===item.key;
+  var active=isActive?' active':'';
   var empty=stat.count?'':' empty';
   var tip=item.label+'｜'+stat.count+'隻｜平均Δ '+avg+'｜升股 '+up+'｜VR '+vr+'｜訊號 '+stat.signalN;
-  return '<div class="heat-tile '+vis.tone+active+empty+'" role="button" tabindex="0" style="--heat-alpha:'+vis.alpha+';--heat-width:'+vis.width+'" title="'+esc(tip)+'" onclick="setHeatFilter(\''+type+'\',\''+item.key+'\')" onkeydown="heatKey(event,\''+type+'\',\''+item.key+'\')">'
+  return '<div class="heat-tile '+vis.tone+active+empty+'" role="button" tabindex="0" aria-pressed="'+(isActive?'true':'false')+'" style="--heat-alpha:'+vis.alpha+';--heat-width:'+vis.width+'" title="'+esc(tip)+'" onclick="setHeatFilter(\''+type+'\',\''+item.key+'\')" onkeydown="heatKey(event,\''+type+'\',\''+item.key+'\')">'
     +'<div class="heat-title"><span>'+esc(item.label)+'</span><span class="heat-count">'+stat.count+'</span></div>'
     +'<div class="heat-main '+deltaClass(stat.avgChg)+'">'+avg+'</div>'
     +'<div class="heat-meta"><span>升 '+up+'</span><span>VR '+vr+'</span><span>訊 '+stat.signalN+'</span></div>'

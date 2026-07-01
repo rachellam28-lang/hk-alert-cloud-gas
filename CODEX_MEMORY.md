@@ -147,6 +147,11 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 
 ## Latest Deploy Notes
 
+### 2026-07-01 heatmap active tile visibility
+
+- Main-page heatmap tiles must visibly show selection after click/tap. Active tiles now use a blue fill, stronger border/shadow, and `aria-pressed=true`.
+- Empty active tiles must not stay faded. `.heat-tile.empty` opacity only applies when the tile is not active, so zero-count theme tiles still look selected when tapped.
+
 ### 2026-06-30 main heatmap card, sector overrides, and fund-flow heatmap
 
 - Main-page heatmaps remain in their own `section.card heatmap-card`, separate from table controls, with three panels: theme, sector, and fund flow.
