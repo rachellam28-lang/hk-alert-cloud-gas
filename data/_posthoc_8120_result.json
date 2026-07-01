@@ -1,23 +1,49 @@
 {
-  "scan_date": "2026-06-24",
+  "scan_date": "2026-07-02",
   "results": [
     {
-      "code": "00776",
-      "name": "IMPERIUM TEC GP",
-      "ann_date": "2026-06-23",
-      "typeLabel": "\u4f9b\u80a1 / \u914d\u80a1",
+      "code": "01835",
+      "name": "REALWAY CAPITAL",
+      "ann_date": "2026-06-30",
+      "typeLabel": "\u914d\u80a1 / \u6536\u8cfc/\u8981\u7d04 / \u5fa9\u724c / \u806f\u5408\u516c\u544a",
+      "is_placement": true,
+      "is_rights": false,
+      "is_increase": false,
+      "best_alert": null,
+      "best_info": null,
+      "all_days": [],
+      "ann_close": 1.32
+    },
+    {
+      "code": "00493",
+      "name": "GOME RETAIL",
+      "ann_date": "2026-06-30",
+      "typeLabel": "\u914d\u80a1",
+      "is_placement": true,
+      "is_rights": false,
+      "is_increase": false,
+      "best_alert": null,
+      "best_info": null,
+      "all_days": [],
+      "ann_close": 0.01
+    },
+    {
+      "code": "01991",
+      "name": "TA YANG GROUP",
+      "ann_date": "2026-06-30",
+      "typeLabel": "\u4f9b\u80a1",
       "is_placement": false,
       "is_rights": true,
       "is_increase": false,
       "best_alert": null,
       "best_info": null,
       "all_days": [],
-      "ann_close": 0.51
+      "ann_close": 0.55
     },
     {
-      "code": "02650",
-      "name": "ZHIDA TECH",
-      "ann_date": "2026-06-23",
+      "code": "01709",
+      "name": "DL HOLDINGS GP",
+      "ann_date": "2026-06-30",
       "typeLabel": "\u914d\u80a1",
       "is_placement": true,
       "is_rights": false,
@@ -25,12 +51,12 @@
       "best_alert": null,
       "best_info": null,
       "all_days": [],
-      "ann_close": 11.38
+      "ann_close": 1.1
     },
     {
-      "code": "00527",
-      "name": "RUIFENG RENEW",
-      "ann_date": "2026-06-23",
+      "code": "01728",
+      "name": "ZHENGTONGAUTO",
+      "ann_date": "2026-06-30",
       "typeLabel": "\u914d\u80a1",
       "is_placement": true,
       "is_rights": false,
@@ -38,12 +64,12 @@
       "best_alert": null,
       "best_info": null,
       "all_days": [],
-      "ann_close": 0.65
+      "ann_close": 0.143
     },
     {
-      "code": "00632",
-      "name": "CHK OIL",
-      "ann_date": "2026-06-23",
+      "code": "01950",
+      "name": "DIWANG IND H",
+      "ann_date": "2026-06-30",
       "typeLabel": "\u914d\u80a1",
       "is_placement": true,
       "is_rights": false,
@@ -51,26 +77,39 @@
       "best_alert": null,
       "best_info": null,
       "all_days": [],
-      "ann_close": 0.255
+      "ann_close": 0.106
     },
     {
-      "code": "01682",
-      "name": "HP LIVING TECH",
-      "ann_date": "2026-06-23",
-      "typeLabel": "\u4f9b\u80a1 / \u914d\u80a1",
-      "is_placement": false,
-      "is_rights": true,
+      "code": "01566",
+      "name": "CA CULTURAL",
+      "ann_date": "2026-06-30",
+      "typeLabel": "\u914d\u80a1 / \u806f\u5408\u516c\u544a",
+      "is_placement": true,
+      "is_rights": false,
       "is_increase": false,
       "best_alert": null,
       "best_info": null,
       "all_days": [],
-      "ann_close": 0.228
+      "ann_close": 0.051
+    },
+    {
+      "code": "01842",
+      "name": "GROWN UP GROUP",
+      "ann_date": "2026-06-30",
+      "typeLabel": "\u914d\u80a1",
+      "is_placement": true,
+      "is_rights": false,
+      "is_increase": false,
+      "best_alert": null,
+      "best_info": null,
+      "all_days": [],
+      "ann_close": 0.039
     },
     {
       "code": "00377",
       "name": "CHINA HUAJUN GP",
-      "ann_date": "2026-06-23",
-      "typeLabel": "\u914d\u80a1",
+      "ann_date": "2026-06-30",
+      "typeLabel": "\u914d\u80a1 / \u6536\u8cfc/\u8981\u7d04 / \u5fa9\u724c",
       "is_placement": true,
       "is_rights": false,
       "is_increase": false,
@@ -80,9 +119,9 @@
       "ann_close": 1.28
     },
     {
-      "code": "00721",
-      "name": "C FIN INT I-NEW",
-      "ann_date": "2026-06-23",
+      "code": "00855",
+      "name": "CHINA WATER",
+      "ann_date": "2026-06-30",
       "typeLabel": "\u914d\u80a1",
       "is_placement": true,
       "is_rights": false,
@@ -90,12 +129,25 @@
       "best_alert": null,
       "best_info": null,
       "all_days": [],
-      "ann_close": 0.17
+      "ann_close": 4.38
     },
     {
-      "code": "03708",
-      "name": "WORLD DIGI ECON",
-      "ann_date": "2026-06-23",
+      "code": "00397",
+      "name": "MINERVA GROUP",
+      "ann_date": "2026-06-30",
+      "typeLabel": "\u4f9b\u80a1",
+      "is_placement": false,
+      "is_rights": true,
+      "is_increase": false,
+      "best_alert": null,
+      "best_info": null,
+      "all_days": [],
+      "ann_close": 0.036
+    },
+    {
+      "code": "01368",
+      "name": "XTEP INT'L",
+      "ann_date": "2026-06-30",
       "typeLabel": "\u914d\u80a1",
       "is_placement": true,
       "is_rights": false,
@@ -103,12 +155,12 @@
       "best_alert": null,
       "best_info": null,
       "all_days": [],
-      "ann_close": 0.192
+      "ann_close": 3.76
     },
     {
-      "code": "01372",
-      "name": "C CARBONNEUTRAL",
-      "ann_date": "2026-06-23",
+      "code": "06820",
+      "name": "FRIENDTIMES",
+      "ann_date": "2026-06-30",
       "typeLabel": "\u80a1\u6771\u589e\u6301",
       "is_placement": false,
       "is_rights": false,
@@ -116,47 +168,12 @@
       "best_alert": null,
       "best_info": null,
       "all_days": [],
-      "ann_close": 0.9
+      "ann_close": 0.43
     },
     {
-      "code": "01364",
-      "name": "GUMING",
-      "ann_date": "2026-06-23",
-      "typeLabel": "\u914d\u80a1",
-      "is_placement": true,
-      "is_rights": false,
-      "is_increase": false,
-      "best_alert": null,
-      "best_info": null,
-      "all_days": [],
-      "ann_close": 20.38
-    },
-    {
-      "code": "01025",
-      "name": "KNT HOLDINGS",
-      "ann_date": "2026-06-22",
-      "typeLabel": "\u914d\u80a1",
-      "is_placement": true,
-      "is_rights": false,
-      "is_increase": false,
-      "best_alert": null,
-      "best_info": null,
-      "all_days": [
-        {
-          "offset": 1,
-          "date": "2026-06-23",
-          "jump": -10.62,
-          "vol_ratio": 0.16,
-          "close": 0.202,
-          "alert": "-"
-        }
-      ],
-      "ann_close": 0.226
-    },
-    {
-      "code": "02166",
-      "name": "SMART-CORE",
-      "ann_date": "2026-06-22",
+      "code": "02028",
+      "name": "JOLIMARK",
+      "ann_date": "2026-06-29",
       "typeLabel": "\u914d\u80a1",
       "is_placement": true,
       "is_rights": false,
@@ -164,57 +181,181 @@
       "best_alert": "RED",
       "best_info": [
         1,
-        "2026-06-23",
-        24.93,
-        1.96,
-        4.41,
-        3.53
+        "2026-06-30",
+        23.6,
+        3.07,
+        1.1,
+        0.89
       ],
       "all_days": [
         {
           "offset": 1,
-          "date": "2026-06-23",
-          "jump": 24.93,
-          "vol_ratio": 1.96,
-          "close": 4.41,
+          "date": "2026-06-30",
+          "jump": 23.6,
+          "vol_ratio": 3.07,
+          "close": 1.1,
           "alert": "RED"
         }
       ],
-      "ann_close": 3.53
+      "ann_close": 0.89
     },
     {
-      "code": "02889",
-      "name": "PATEO",
-      "ann_date": "2026-06-22",
-      "typeLabel": "\u80a1\u6771\u589e\u6301",
+      "code": "01783",
+      "name": "ENVISION GREEN",
+      "ann_date": "2026-06-29",
+      "typeLabel": "\u914d\u80a1",
+      "is_placement": true,
+      "is_rights": false,
+      "is_increase": false,
+      "best_alert": null,
+      "best_info": null,
+      "all_days": [
+        {
+          "offset": 1,
+          "date": "2026-06-30",
+          "jump": 0.33,
+          "vol_ratio": 0.9,
+          "close": 6.07,
+          "alert": "-"
+        }
+      ],
+      "ann_close": 6.05
+    },
+    {
+      "code": "01396",
+      "name": "GBA AI COMP",
+      "ann_date": "2026-06-29",
+      "typeLabel": "\u914d\u80a1",
+      "is_placement": true,
+      "is_rights": false,
+      "is_increase": false,
+      "best_alert": null,
+      "best_info": null,
+      "all_days": [
+        {
+          "offset": 1,
+          "date": "2026-06-30",
+          "jump": -3.4,
+          "vol_ratio": 0.96,
+          "close": 13.91,
+          "alert": "-"
+        }
+      ],
+      "ann_close": 14.4
+    },
+    {
+      "code": "00632",
+      "name": "CHK OIL",
+      "ann_date": "2026-06-29",
+      "typeLabel": "\u914d\u80a1",
+      "is_placement": true,
+      "is_rights": false,
+      "is_increase": false,
+      "best_alert": null,
+      "best_info": null,
+      "all_days": [
+        {
+          "offset": 1,
+          "date": "2026-06-30",
+          "jump": -10.0,
+          "vol_ratio": 0.89,
+          "close": 0.243,
+          "alert": "-"
+        }
+      ],
+      "ann_close": 0.27
+    },
+    {
+      "code": "02863",
+      "name": "GOLDEN FAITH GP",
+      "ann_date": "2026-06-29",
+      "typeLabel": "\u914d\u80a1",
+      "is_placement": true,
+      "is_rights": false,
+      "is_increase": false,
+      "best_alert": "RED",
+      "best_info": [
+        1,
+        "2026-06-30",
+        14.29,
+        29.97,
+        0.64,
+        0.56
+      ],
+      "all_days": [
+        {
+          "offset": 1,
+          "date": "2026-06-30",
+          "jump": 14.29,
+          "vol_ratio": 29.97,
+          "close": 0.64,
+          "alert": "RED"
+        }
+      ],
+      "ann_close": 0.56
+    },
+    {
+      "code": "01662",
+      "name": "YEE HOP HLDGS",
+      "ann_date": "2026-06-29",
+      "typeLabel": "\u914d\u80a1",
+      "is_placement": true,
+      "is_rights": false,
+      "is_increase": false,
+      "best_alert": "WATCH",
+      "best_info": [
+        1,
+        "2026-06-30",
+        -23.17,
+        14.26,
+        0.63,
+        0.82
+      ],
+      "all_days": [
+        {
+          "offset": 1,
+          "date": "2026-06-30",
+          "jump": -23.17,
+          "vol_ratio": 14.26,
+          "close": 0.63,
+          "alert": "WATCH"
+        }
+      ],
+      "ann_close": 0.82
+    },
+    {
+      "code": "01104",
+      "name": "APAC RESOURCES",
+      "ann_date": "2026-06-29",
+      "typeLabel": "\u4f9b\u80a1",
       "is_placement": false,
-      "is_rights": false,
-      "is_increase": true,
+      "is_rights": true,
+      "is_increase": false,
       "best_alert": "WATCH",
       "best_info": [
         1,
-        "2026-06-23",
-        -8.98,
-        1.55,
-        151.0,
-        165.9
+        "2026-06-30",
+        3.01,
+        0.8,
+        1.37,
+        1.33
       ],
       "all_days": [
         {
           "offset": 1,
-          "date": "2026-06-23",
-          "jump": -8.98,
-          "vol_ratio": 1.55,
-          "close": 151.0,
+          "date": "2026-06-30",
+          "jump": 3.01,
+          "vol_ratio": 0.8,
+          "close": 1.37,
           "alert": "WATCH"
         }
       ],
-      "ann_close": 165.9
+      "ann_close": 1.33
     },
     {
-      "code": "03700",
-      "name": "INKEVERSE",
-      "ann_date": "2026-06-22",
+      "code": "00377",
+      "name": "CHINA HUAJUN GP",
+      "ann_date": "2026-06-29",
       "typeLabel": "\u914d\u80a1",
       "is_placement": true,
       "is_rights": false,
@@ -224,70 +365,48 @@
       "all_days": [
         {
           "offset": 1,
-          "date": "2026-06-23",
-          "jump": 4.79,
-          "vol_ratio": 1.02,
-          "close": 1.53,
+          "date": "2026-06-30",
+          "jump": 0.0,
+          "vol_ratio": 0,
+          "close": 1.28,
           "alert": "-"
         }
       ],
-      "ann_close": 1.46
+      "ann_close": 1.28
     },
     {
-      "code": "03708",
-      "name": "WORLD DIGI ECON",
-      "ann_date": "2026-06-22",
-      "typeLabel": "\u914d\u80a1",
-      "is_placement": true,
-      "is_rights": false,
-      "is_increase": false,
-      "best_alert": null,
-      "best_info": null,
-      "all_days": [
-        {
-          "offset": 1,
-          "date": "2026-06-23",
-          "jump": 1.59,
-          "vol_ratio": 0.99,
-          "close": 0.192,
-          "alert": "-"
-        }
-      ],
-      "ann_close": 0.189
-    },
-    {
-      "code": "00080",
-      "name": "CAI CORP",
-      "ann_date": "2026-06-22",
-      "typeLabel": "\u914d\u80a1",
+      "code": "00167",
+      "name": "IDT INT'L",
+      "ann_date": "2026-06-29",
+      "typeLabel": "\u914d\u80a1 / \u6536\u8cfc/\u8981\u7d04 / \u5fa9\u724c / \u806f\u5408\u516c\u544a",
       "is_placement": true,
       "is_rights": false,
       "is_increase": false,
       "best_alert": "WATCH",
       "best_info": [
         1,
-        "2026-06-23",
-        -6.78,
-        5.81,
-        0.275,
-        0.295
+        "2026-06-30",
+        14.29,
+        0,
+        8.0,
+        7.0
       ],
       "all_days": [
         {
           "offset": 1,
-          "date": "2026-06-23",
-          "jump": -6.78,
-          "vol_ratio": 5.81,
-          "close": 0.275,
+          "date": "2026-06-30",
+          "jump": 14.29,
+          "vol_ratio": 0,
+          "close": 8.0,
           "alert": "WATCH"
         }
       ],
-      "ann_close": 0.295
+      "ann_close": 7.0
     },
     {
-      "code": "06939",
-      "name": "MEGAIN",
-      "ann_date": "2026-06-22",
+      "code": "01371",
+      "name": "CHINA ECOTOUR",
+      "ann_date": "2026-06-29",
       "typeLabel": "\u914d\u80a1 / \u6536\u8cfc/\u8981\u7d04",
       "is_placement": true,
       "is_rights": false,
@@ -297,116 +416,19 @@
       "all_days": [
         {
           "offset": 1,
-          "date": "2026-06-23",
-          "jump": -0.95,
-          "vol_ratio": 1.44,
-          "close": 2.08,
+          "date": "2026-06-30",
+          "jump": -0.86,
+          "vol_ratio": 0.14,
+          "close": 1.15,
           "alert": "-"
         }
       ],
-      "ann_close": 2.1
+      "ann_close": 1.16
     },
     {
-      "code": "01792",
-      "name": "CMON",
-      "ann_date": "2026-06-18",
-      "typeLabel": "\u4f9b\u80a1 / \u914d\u80a1",
-      "is_placement": false,
-      "is_rights": true,
-      "is_increase": false,
-      "best_alert": "WATCH",
-      "best_info": [
-        1,
-        "2026-06-22",
-        8.16,
-        0.07,
-        1.06,
-        0.98
-      ],
-      "all_days": [
-        {
-          "offset": 1,
-          "date": "2026-06-22",
-          "jump": 8.16,
-          "vol_ratio": 0.07,
-          "close": 1.06,
-          "alert": "WATCH"
-        },
-        {
-          "offset": 2,
-          "date": "2026-06-23",
-          "jump": 1.02,
-          "vol_ratio": 0.1,
-          "close": 0.99,
-          "alert": "WATCH"
-        }
-      ],
-      "ann_close": 0.98
-    },
-    {
-      "code": "00992",
-      "name": "LENOVO GROUP",
-      "ann_date": "2026-06-18",
-      "typeLabel": "\u914d\u80a1",
-      "is_placement": true,
-      "is_rights": false,
-      "is_increase": false,
-      "best_alert": null,
-      "best_info": null,
-      "all_days": [
-        {
-          "offset": 1,
-          "date": "2026-06-22",
-          "jump": -2.02,
-          "vol_ratio": 0.78,
-          "close": 23.3,
-          "alert": "-"
-        },
-        {
-          "offset": 2,
-          "date": "2026-06-23",
-          "jump": -6.31,
-          "vol_ratio": 1.18,
-          "close": 22.28,
-          "alert": "-"
-        }
-      ],
-      "ann_close": 23.78
-    },
-    {
-      "code": "80992",
-      "name": "LENOVO GROUP-R",
-      "ann_date": "2026-06-18",
-      "typeLabel": "\u914d\u80a1",
-      "is_placement": true,
-      "is_rights": false,
-      "is_increase": false,
-      "best_alert": null,
-      "best_info": null,
-      "all_days": [
-        {
-          "offset": 1,
-          "date": "2026-06-22",
-          "jump": -1.94,
-          "vol_ratio": 0.17,
-          "close": 20.26,
-          "alert": "-"
-        },
-        {
-          "offset": 2,
-          "date": "2026-06-23",
-          "jump": -7.07,
-          "vol_ratio": 0.62,
-          "close": 19.2,
-          "alert": "-"
-        }
-      ],
-      "ann_close": 20.66
-    },
-    {
-      "code": "01952",
-      "name": "EVEREST MED",
-      "ann_date": "2026-06-18",
+      "code": "06820",
+      "name": "FRIENDTIMES",
+      "ann_date": "2026-06-29",
       "typeLabel": "\u80a1\u6771\u589e\u6301",
       "is_placement": false,
       "is_rights": false,
@@ -414,506 +436,65 @@
       "best_alert": "WATCH",
       "best_info": [
         1,
-        "2026-06-22",
-        -4.42,
-        1.12,
-        25.5,
-        26.68
+        "2026-06-30",
+        16.22,
+        2.43,
+        0.43,
+        0.37
       ],
       "all_days": [
         {
           "offset": 1,
-          "date": "2026-06-22",
-          "jump": -4.42,
-          "vol_ratio": 1.12,
-          "close": 25.5,
-          "alert": "WATCH"
-        },
-        {
-          "offset": 2,
-          "date": "2026-06-23",
-          "jump": -5.32,
-          "vol_ratio": 1.32,
-          "close": 25.26,
+          "date": "2026-06-30",
+          "jump": 16.22,
+          "vol_ratio": 2.43,
+          "close": 0.43,
           "alert": "WATCH"
         }
       ],
-      "ann_close": 26.68
-    },
-    {
-      "code": "02349",
-      "name": "CH CITY INFRA",
-      "ann_date": "2026-06-18",
-      "typeLabel": "\u914d\u80a1 / \u5fa9\u724c",
-      "is_placement": true,
-      "is_rights": false,
-      "is_increase": false,
-      "best_alert": "WATCH",
-      "best_info": [
-        1,
-        "2026-06-22",
-        -2.99,
-        2.65,
-        0.065,
-        0.067
-      ],
-      "all_days": [
-        {
-          "offset": 1,
-          "date": "2026-06-22",
-          "jump": -2.99,
-          "vol_ratio": 2.65,
-          "close": 0.065,
-          "alert": "WATCH"
-        },
-        {
-          "offset": 2,
-          "date": "2026-06-23",
-          "jump": -8.96,
-          "vol_ratio": 58.7,
-          "close": 0.061,
-          "alert": "WATCH"
-        }
-      ],
-      "ann_close": 0.067
-    },
-    {
-      "code": "02623",
-      "name": "HK GOLD IND GP",
-      "ann_date": "2026-06-18",
-      "typeLabel": "\u914d\u80a1",
-      "is_placement": true,
-      "is_rights": false,
-      "is_increase": false,
-      "best_alert": null,
-      "best_info": null,
-      "all_days": [
-        {
-          "offset": 1,
-          "date": "2026-06-22",
-          "jump": -0.43,
-          "vol_ratio": 0.57,
-          "close": 4.68,
-          "alert": "-"
-        },
-        {
-          "offset": 2,
-          "date": "2026-06-23",
-          "jump": -4.26,
-          "vol_ratio": 1.05,
-          "close": 4.5,
-          "alert": "-"
-        }
-      ],
-      "ann_close": 4.7
-    },
-    {
-      "code": "09982",
-      "name": "CENTRALCHINA MT",
-      "ann_date": "2026-06-18",
-      "typeLabel": "\u914d\u80a1",
-      "is_placement": true,
-      "is_rights": false,
-      "is_increase": false,
-      "best_alert": "WATCH",
-      "best_info": [
-        1,
-        "2026-06-22",
-        -2.02,
-        10.84,
-        0.097,
-        0.099
-      ],
-      "all_days": [
-        {
-          "offset": 1,
-          "date": "2026-06-22",
-          "jump": -2.02,
-          "vol_ratio": 10.84,
-          "close": 0.097,
-          "alert": "WATCH"
-        },
-        {
-          "offset": 2,
-          "date": "2026-06-23",
-          "jump": -5.05,
-          "vol_ratio": 1.62,
-          "close": 0.094,
-          "alert": "WATCH"
-        }
-      ],
-      "ann_close": 0.099
-    },
-    {
-      "code": "02592",
-      "name": "CLOUDBREAK-B",
-      "ann_date": "2026-06-18",
-      "typeLabel": "\u914d\u80a1",
-      "is_placement": true,
-      "is_rights": false,
-      "is_increase": false,
-      "best_alert": null,
-      "best_info": null,
-      "all_days": [
-        {
-          "offset": 1,
-          "date": "2026-06-22",
-          "jump": -2.56,
-          "vol_ratio": 0.64,
-          "close": 1.14,
-          "alert": "-"
-        },
-        {
-          "offset": 2,
-          "date": "2026-06-23",
-          "jump": -3.42,
-          "vol_ratio": 0.47,
-          "close": 1.13,
-          "alert": "-"
-        }
-      ],
-      "ann_close": 1.17
-    },
-    {
-      "code": "06190",
-      "name": "BANKOFJIUJIANG",
-      "ann_date": "2026-06-18",
-      "typeLabel": "\u914d\u80a1",
-      "is_placement": true,
-      "is_rights": false,
-      "is_increase": false,
-      "best_alert": "WATCH",
-      "best_info": [
-        1,
-        "2026-06-22",
-        -2.17,
-        1.59,
-        2.25,
-        2.3
-      ],
-      "all_days": [
-        {
-          "offset": 1,
-          "date": "2026-06-22",
-          "jump": -2.17,
-          "vol_ratio": 1.59,
-          "close": 2.25,
-          "alert": "WATCH"
-        },
-        {
-          "offset": 2,
-          "date": "2026-06-23",
-          "jump": 0.0,
-          "vol_ratio": 1.56,
-          "close": 2.3,
-          "alert": "WATCH"
-        }
-      ],
-      "ann_close": 2.3
-    },
-    {
-      "code": "00107",
-      "name": "SICHUAN EXPRESS",
-      "ann_date": "2026-06-18",
-      "typeLabel": "\u914d\u80a1",
-      "is_placement": true,
-      "is_rights": false,
-      "is_increase": false,
-      "best_alert": null,
-      "best_info": null,
-      "all_days": [
-        {
-          "offset": 1,
-          "date": "2026-06-22",
-          "jump": -4.03,
-          "vol_ratio": 1.13,
-          "close": 4.53,
-          "alert": "-"
-        },
-        {
-          "offset": 2,
-          "date": "2026-06-23",
-          "jump": -2.97,
-          "vol_ratio": 0.95,
-          "close": 4.58,
-          "alert": "-"
-        }
-      ],
-      "ann_close": 4.72
-    },
-    {
-      "code": "01822",
-      "name": "CHINA WOOD INT",
-      "ann_date": "2026-06-18",
-      "typeLabel": "\u4f9b\u80a1 / \u914d\u80a1",
-      "is_placement": false,
-      "is_rights": true,
-      "is_increase": false,
-      "best_alert": "WATCH",
-      "best_info": [
-        1,
-        "2026-06-22",
-        0.0,
-        4.46,
-        0.137,
-        0.137
-      ],
-      "all_days": [
-        {
-          "offset": 1,
-          "date": "2026-06-22",
-          "jump": 0.0,
-          "vol_ratio": 4.46,
-          "close": 0.137,
-          "alert": "WATCH"
-        },
-        {
-          "offset": 2,
-          "date": "2026-06-23",
-          "jump": -5.84,
-          "vol_ratio": 1.98,
-          "close": 0.129,
-          "alert": "WATCH"
-        }
-      ],
-      "ann_close": 0.137
-    },
-    {
-      "code": "02889",
-      "name": "PATEO",
-      "ann_date": "2026-06-18",
-      "typeLabel": "\u80a1\u6771\u589e\u6301",
-      "is_placement": false,
-      "is_rights": false,
-      "is_increase": true,
-      "best_alert": "WATCH",
-      "best_info": [
-        1,
-        "2026-06-22",
-        -11.24,
-        2.31,
-        165.9,
-        186.9
-      ],
-      "all_days": [
-        {
-          "offset": 1,
-          "date": "2026-06-22",
-          "jump": -11.24,
-          "vol_ratio": 2.31,
-          "close": 165.9,
-          "alert": "WATCH"
-        },
-        {
-          "offset": 2,
-          "date": "2026-06-23",
-          "jump": -19.21,
-          "vol_ratio": 1.55,
-          "close": 151.0,
-          "alert": "WATCH"
-        }
-      ],
-      "ann_close": 186.9
-    },
-    {
-      "code": "02495",
-      "name": "VOICECOMM",
-      "ann_date": "2026-06-18",
-      "typeLabel": "\u914d\u80a1",
-      "is_placement": true,
-      "is_rights": false,
-      "is_increase": false,
-      "best_alert": null,
-      "best_info": null,
-      "all_days": [
-        {
-          "offset": 1,
-          "date": "2026-06-22",
-          "jump": 6.4,
-          "vol_ratio": 0.93,
-          "close": 43.88,
-          "alert": "-"
-        },
-        {
-          "offset": 2,
-          "date": "2026-06-23",
-          "jump": 4.32,
-          "vol_ratio": 0.45,
-          "close": 43.02,
-          "alert": "-"
-        }
-      ],
-      "ann_close": 41.24
-    },
-    {
-      "code": "01736",
-      "name": "PARENTING NET",
-      "ann_date": "2026-06-18",
-      "typeLabel": "\u914d\u80a1",
-      "is_placement": true,
-      "is_rights": false,
-      "is_increase": false,
-      "best_alert": null,
-      "best_info": null,
-      "all_days": [
-        {
-          "offset": 1,
-          "date": "2026-06-22",
-          "jump": -11.76,
-          "vol_ratio": 0.61,
-          "close": 0.45,
-          "alert": "-"
-        },
-        {
-          "offset": 2,
-          "date": "2026-06-23",
-          "jump": -11.76,
-          "vol_ratio": 0.0,
-          "close": 0.45,
-          "alert": "-"
-        }
-      ],
-      "ann_close": 0.51
-    },
-    {
-      "code": "02728",
-      "name": "JINTAI ENERGY H",
-      "ann_date": "2026-06-17",
-      "typeLabel": "\u914d\u80a1",
-      "is_placement": true,
-      "is_rights": false,
-      "is_increase": false,
-      "best_alert": "WATCH",
-      "best_info": [
-        1,
-        "2026-06-18",
-        -12.5,
-        1.71,
-        0.021,
-        0.024
-      ],
-      "all_days": [
-        {
-          "offset": 1,
-          "date": "2026-06-18",
-          "jump": -12.5,
-          "vol_ratio": 1.71,
-          "close": 0.021,
-          "alert": "WATCH"
-        },
-        {
-          "offset": 2,
-          "date": "2026-06-22",
-          "jump": -12.5,
-          "vol_ratio": 0.28,
-          "close": 0.021,
-          "alert": "-"
-        },
-        {
-          "offset": 3,
-          "date": "2026-06-23",
-          "jump": -12.5,
-          "vol_ratio": 0.19,
-          "close": 0.021,
-          "alert": "-"
-        }
-      ],
-      "ann_close": 0.024
-    },
-    {
-      "code": "01920",
-      "name": "JUNWEA GROUP",
-      "ann_date": "2026-06-17",
-      "typeLabel": "\u914d\u80a1",
-      "is_placement": true,
-      "is_rights": false,
-      "is_increase": false,
-      "best_alert": "WATCH",
-      "best_info": [
-        1,
-        "2026-06-18",
-        -15.19,
-        1.71,
-        0.67,
-        0.79
-      ],
-      "all_days": [
-        {
-          "offset": 1,
-          "date": "2026-06-18",
-          "jump": -15.19,
-          "vol_ratio": 1.71,
-          "close": 0.67,
-          "alert": "WATCH"
-        },
-        {
-          "offset": 2,
-          "date": "2026-06-22",
-          "jump": -20.25,
-          "vol_ratio": 0.32,
-          "close": 0.63,
-          "alert": "-"
-        },
-        {
-          "offset": 3,
-          "date": "2026-06-23",
-          "jump": -25.32,
-          "vol_ratio": 0.3,
-          "close": 0.59,
-          "alert": "-"
-        }
-      ],
-      "ann_close": 0.79
-    },
-    {
-      "code": "02349",
-      "name": "CH CITY INFRA",
-      "ann_date": "2026-06-17",
-      "typeLabel": "\u914d\u80a1",
-      "is_placement": true,
-      "is_rights": false,
-      "is_increase": false,
-      "best_alert": "WATCH",
-      "best_info": [
-        2,
-        "2026-06-22",
-        -7.14,
-        2.65,
-        0.065,
-        0.07
-      ],
-      "all_days": [
-        {
-          "offset": 1,
-          "date": "2026-06-18",
-          "jump": -4.29,
-          "vol_ratio": 0.55,
-          "close": 0.067,
-          "alert": "-"
-        },
-        {
-          "offset": 2,
-          "date": "2026-06-22",
-          "jump": -7.14,
-          "vol_ratio": 2.65,
-          "close": 0.065,
-          "alert": "WATCH"
-        },
-        {
-          "offset": 3,
-          "date": "2026-06-23",
-          "jump": -12.86,
-          "vol_ratio": 58.7,
-          "close": 0.061,
-          "alert": "WATCH"
-        }
-      ],
-      "ann_close": 0.07
+      "ann_close": 0.37
     },
     {
       "code": "00381",
       "name": "AOM INT'L",
-      "ann_date": "2026-06-17",
+      "ann_date": "2026-06-26",
+      "typeLabel": "\u914d\u80a1",
+      "is_placement": true,
+      "is_rights": false,
+      "is_increase": false,
+      "best_alert": "WATCH",
+      "best_info": [
+        2,
+        "2026-06-30",
+        -0.98,
+        2.46,
+        0.101,
+        0.102
+      ],
+      "all_days": [
+        {
+          "offset": 1,
+          "date": "2026-06-29",
+          "jump": -1.96,
+          "vol_ratio": 0.62,
+          "close": 0.1,
+          "alert": "-"
+        },
+        {
+          "offset": 2,
+          "date": "2026-06-30",
+          "jump": -0.98,
+          "vol_ratio": 2.46,
+          "close": 0.101,
+          "alert": "WATCH"
+        }
+      ],
+      "ann_close": 0.102
+    },
+    {
+      "code": "00377",
+      "name": "CHINA HUAJUN GP",
+      "ann_date": "2026-06-26",
       "typeLabel": "\u914d\u80a1",
       "is_placement": true,
       "is_rights": false,
@@ -923,80 +504,27 @@
       "all_days": [
         {
           "offset": 1,
-          "date": "2026-06-18",
-          "jump": 0.95,
-          "vol_ratio": 0.66,
-          "close": 0.106,
+          "date": "2026-06-29",
+          "jump": 0.0,
+          "vol_ratio": 0,
+          "close": 1.28,
           "alert": "-"
         },
         {
           "offset": 2,
-          "date": "2026-06-22",
-          "jump": -0.95,
-          "vol_ratio": 0.72,
-          "close": 0.104,
-          "alert": "-"
-        },
-        {
-          "offset": 3,
-          "date": "2026-06-23",
-          "jump": -4.76,
-          "vol_ratio": 1.48,
-          "close": 0.1,
+          "date": "2026-06-30",
+          "jump": 0.0,
+          "vol_ratio": 0,
+          "close": 1.28,
           "alert": "-"
         }
       ],
-      "ann_close": 0.105
+      "ann_close": 1.28
     },
     {
-      "code": "06608",
-      "name": "BAIRONG-W",
-      "ann_date": "2026-06-17",
-      "typeLabel": "\u914d\u80a1",
-      "is_placement": true,
-      "is_rights": false,
-      "is_increase": false,
-      "best_alert": "WATCH",
-      "best_info": [
-        1,
-        "2026-06-18",
-        -0.19,
-        1.87,
-        5.32,
-        5.33
-      ],
-      "all_days": [
-        {
-          "offset": 1,
-          "date": "2026-06-18",
-          "jump": -0.19,
-          "vol_ratio": 1.87,
-          "close": 5.32,
-          "alert": "WATCH"
-        },
-        {
-          "offset": 2,
-          "date": "2026-06-22",
-          "jump": -7.69,
-          "vol_ratio": 2.0,
-          "close": 4.92,
-          "alert": "WATCH"
-        },
-        {
-          "offset": 3,
-          "date": "2026-06-23",
-          "jump": -2.25,
-          "vol_ratio": 1.75,
-          "close": 5.21,
-          "alert": "WATCH"
-        }
-      ],
-      "ann_close": 5.33
-    },
-    {
-      "code": "01011",
-      "name": "NT PHARMA",
-      "ann_date": "2026-06-17",
+      "code": "02333",
+      "name": "GWMOTOR",
+      "ann_date": "2026-06-26",
       "typeLabel": "\u914d\u80a1",
       "is_placement": true,
       "is_rights": false,
@@ -1004,44 +532,66 @@
       "best_alert": "WATCH",
       "best_info": [
         2,
-        "2026-06-22",
-        -6.52,
-        1.77,
-        0.43,
-        0.46
+        "2026-06-30",
+        -3.08,
+        1.53,
+        8.4078,
+        8.675
       ],
       "all_days": [
         {
           "offset": 1,
-          "date": "2026-06-18",
-          "jump": 0.0,
-          "vol_ratio": 0.0,
-          "close": 0.46,
+          "date": "2026-06-29",
+          "jump": 0.44,
+          "vol_ratio": 0.67,
+          "close": 8.7132,
           "alert": "-"
         },
         {
           "offset": 2,
-          "date": "2026-06-22",
-          "jump": -6.52,
-          "vol_ratio": 1.77,
-          "close": 0.43,
-          "alert": "WATCH"
-        },
-        {
-          "offset": 3,
-          "date": "2026-06-23",
-          "jump": -21.74,
-          "vol_ratio": 3.32,
-          "close": 0.36,
+          "date": "2026-06-30",
+          "jump": -3.08,
+          "vol_ratio": 1.53,
+          "close": 8.4078,
           "alert": "WATCH"
         }
       ],
-      "ann_close": 0.46
+      "ann_close": 8.675
     },
     {
-      "code": "01736",
-      "name": "PARENTING NET",
-      "ann_date": "2026-06-17",
+      "code": "82333",
+      "name": "GWMOTOR-R",
+      "ann_date": "2026-06-26",
+      "typeLabel": "\u914d\u80a1",
+      "is_placement": true,
+      "is_rights": false,
+      "is_increase": false,
+      "best_alert": null,
+      "best_info": null,
+      "all_days": [
+        {
+          "offset": 1,
+          "date": "2026-06-29",
+          "jump": 0.13,
+          "vol_ratio": 0.09,
+          "close": 7.87,
+          "alert": "-"
+        },
+        {
+          "offset": 2,
+          "date": "2026-06-30",
+          "jump": -3.05,
+          "vol_ratio": 0.82,
+          "close": 7.62,
+          "alert": "-"
+        }
+      ],
+      "ann_close": 7.86
+    },
+    {
+      "code": "01949",
+      "name": "PLATT NERA",
+      "ann_date": "2026-06-26",
       "typeLabel": "\u914d\u80a1",
       "is_placement": true,
       "is_rights": false,
@@ -1049,165 +599,73 @@
       "best_alert": "RED",
       "best_info": [
         1,
-        "2026-06-18",
-        25.93,
-        60.21,
-        0.51,
-        0.405
+        "2026-06-29",
+        26.19,
+        3.46,
+        0.53,
+        0.42
       ],
       "all_days": [
         {
           "offset": 1,
-          "date": "2026-06-18",
-          "jump": 25.93,
-          "vol_ratio": 60.21,
-          "close": 0.51,
+          "date": "2026-06-29",
+          "jump": 26.19,
+          "vol_ratio": 3.46,
+          "close": 0.53,
           "alert": "RED"
         },
         {
           "offset": 2,
-          "date": "2026-06-22",
-          "jump": 11.11,
-          "vol_ratio": 0.61,
-          "close": 0.45,
-          "alert": "WATCH"
-        },
-        {
-          "offset": 3,
-          "date": "2026-06-23",
-          "jump": 11.11,
-          "vol_ratio": 0.0,
-          "close": 0.45,
+          "date": "2026-06-30",
+          "jump": 38.1,
+          "vol_ratio": 0.5,
+          "close": 0.58,
           "alert": "WATCH"
         }
       ],
-      "ann_close": 0.405
+      "ann_close": 0.42
     },
     {
-      "code": "02503",
-      "name": "ZHONGSHENJIANYE",
-      "ann_date": "2026-06-17",
-      "typeLabel": "\u4f9b\u80a1",
-      "is_placement": false,
-      "is_rights": true,
+      "code": "01327",
+      "name": "LUXXU GROUP",
+      "ann_date": "2026-06-26",
+      "typeLabel": "\u914d\u80a1",
+      "is_placement": true,
+      "is_rights": false,
       "is_increase": false,
-      "best_alert": "WATCH",
+      "best_alert": "RED",
       "best_info": [
-        1,
-        "2026-06-18",
-        0.54,
-        0.76,
-        0.186,
-        0.185
+        2,
+        "2026-06-30",
+        60.26,
+        11.88,
+        1.25,
+        0.78
       ],
       "all_days": [
         {
           "offset": 1,
-          "date": "2026-06-18",
-          "jump": 0.54,
-          "vol_ratio": 0.76,
-          "close": 0.186,
-          "alert": "WATCH"
-        },
-        {
-          "offset": 2,
-          "date": "2026-06-22",
-          "jump": 0.54,
-          "vol_ratio": 0.0,
-          "close": 0.186,
-          "alert": "WATCH"
-        },
-        {
-          "offset": 3,
-          "date": "2026-06-23",
-          "jump": -5.95,
-          "vol_ratio": 0.69,
-          "close": 0.174,
-          "alert": "WATCH"
-        }
-      ],
-      "ann_close": 0.185
-    },
-    {
-      "code": "00992",
-      "name": "LENOVO GROUP",
-      "ann_date": "2026-06-17",
-      "typeLabel": "\u914d\u80a1",
-      "is_placement": true,
-      "is_rights": false,
-      "is_increase": false,
-      "best_alert": null,
-      "best_info": null,
-      "all_days": [
-        {
-          "offset": 1,
-          "date": "2026-06-18",
-          "jump": -4.42,
-          "vol_ratio": 1.21,
-          "close": 23.78,
+          "date": "2026-06-29",
+          "jump": 2.56,
+          "vol_ratio": 1.11,
+          "close": 0.8,
           "alert": "-"
         },
         {
           "offset": 2,
-          "date": "2026-06-22",
-          "jump": -6.35,
-          "vol_ratio": 0.78,
-          "close": 23.3,
-          "alert": "-"
-        },
-        {
-          "offset": 3,
-          "date": "2026-06-23",
-          "jump": -10.45,
-          "vol_ratio": 1.18,
-          "close": 22.28,
-          "alert": "-"
+          "date": "2026-06-30",
+          "jump": 60.26,
+          "vol_ratio": 11.88,
+          "close": 1.25,
+          "alert": "RED"
         }
       ],
-      "ann_close": 24.88
+      "ann_close": 0.78
     },
     {
-      "code": "80992",
-      "name": "LENOVO GROUP-R",
-      "ann_date": "2026-06-17",
-      "typeLabel": "\u914d\u80a1",
-      "is_placement": true,
-      "is_rights": false,
-      "is_increase": false,
-      "best_alert": null,
-      "best_info": null,
-      "all_days": [
-        {
-          "offset": 1,
-          "date": "2026-06-18",
-          "jump": -3.19,
-          "vol_ratio": 0.93,
-          "close": 20.66,
-          "alert": "-"
-        },
-        {
-          "offset": 2,
-          "date": "2026-06-22",
-          "jump": -5.06,
-          "vol_ratio": 0.17,
-          "close": 20.26,
-          "alert": "-"
-        },
-        {
-          "offset": 3,
-          "date": "2026-06-23",
-          "jump": -10.03,
-          "vol_ratio": 0.62,
-          "close": 19.2,
-          "alert": "-"
-        }
-      ],
-      "ann_close": 21.34
-    },
-    {
-      "code": "00574",
-      "name": "PASHUN INT'L",
-      "ann_date": "2026-06-17",
+      "code": "00776",
+      "name": "IMPERIUM TEC GP",
+      "ann_date": "2026-06-26",
       "typeLabel": "\u4f9b\u80a1 / \u914d\u80a1",
       "is_placement": false,
       "is_rights": true,
@@ -1215,44 +673,133 @@
       "best_alert": "WATCH",
       "best_info": [
         1,
-        "2026-06-18",
-        -20.0,
-        14.91,
-        0.024,
-        0.03
+        "2026-06-29",
+        -3.85,
+        0.13,
+        0.5,
+        0.52
       ],
       "all_days": [
         {
           "offset": 1,
-          "date": "2026-06-18",
-          "jump": -20.0,
-          "vol_ratio": 14.91,
-          "close": 0.024,
+          "date": "2026-06-29",
+          "jump": -3.85,
+          "vol_ratio": 0.13,
+          "close": 0.5,
           "alert": "WATCH"
         },
         {
           "offset": 2,
-          "date": "2026-06-22",
-          "jump": -40.0,
-          "vol_ratio": 11.53,
-          "close": 0.018,
+          "date": "2026-06-30",
+          "jump": -3.85,
+          "vol_ratio": 0.24,
+          "close": 0.5,
+          "alert": "WATCH"
+        }
+      ],
+      "ann_close": 0.52
+    },
+    {
+      "code": "01073",
+      "name": "DA YU FIN",
+      "ann_date": "2026-06-26",
+      "typeLabel": "\u4f9b\u80a1",
+      "is_placement": false,
+      "is_rights": true,
+      "is_increase": false,
+      "best_alert": "WATCH",
+      "best_info": [
+        1,
+        "2026-06-29",
+        -4.76,
+        14.36,
+        0.1,
+        0.105
+      ],
+      "all_days": [
+        {
+          "offset": 1,
+          "date": "2026-06-29",
+          "jump": -4.76,
+          "vol_ratio": 14.36,
+          "close": 0.1,
           "alert": "WATCH"
         },
         {
-          "offset": 3,
-          "date": "2026-06-23",
-          "jump": -40.0,
-          "vol_ratio": 1.12,
-          "close": 0.018,
+          "offset": 2,
+          "date": "2026-06-30",
+          "jump": -3.81,
+          "vol_ratio": 0.07,
+          "close": 0.101,
           "alert": "WATCH"
+        }
+      ],
+      "ann_close": 0.105
+    },
+    {
+      "code": "02380",
+      "name": "CHINA POWER",
+      "ann_date": "2026-06-26",
+      "typeLabel": "\u914d\u80a1",
+      "is_placement": true,
+      "is_rights": false,
+      "is_increase": false,
+      "best_alert": null,
+      "best_info": null,
+      "all_days": [
+        {
+          "offset": 1,
+          "date": "2026-06-29",
+          "jump": 3.68,
+          "vol_ratio": 0.83,
+          "close": 2.82,
+          "alert": "-"
+        },
+        {
+          "offset": 2,
+          "date": "2026-06-30",
+          "jump": 0.74,
+          "vol_ratio": 1.07,
+          "close": 2.74,
+          "alert": "-"
+        }
+      ],
+      "ann_close": 2.72
+    },
+    {
+      "code": "02772",
+      "name": "ZHONGLIANG HLDG",
+      "ann_date": "2026-06-26",
+      "typeLabel": "\u914d\u80a1",
+      "is_placement": true,
+      "is_rights": false,
+      "is_increase": false,
+      "best_alert": null,
+      "best_info": null,
+      "all_days": [
+        {
+          "offset": 1,
+          "date": "2026-06-29",
+          "jump": -3.33,
+          "vol_ratio": 1.0,
+          "close": 0.029,
+          "alert": "-"
+        },
+        {
+          "offset": 2,
+          "date": "2026-06-30",
+          "jump": 0.0,
+          "vol_ratio": 1.41,
+          "close": 0.03,
+          "alert": "-"
         }
       ],
       "ann_close": 0.03
     },
     {
-      "code": "03963",
-      "name": "RONGZHONG FIN",
-      "ann_date": "2026-06-17",
+      "code": "00745",
+      "name": "CN CULTURE GP",
+      "ann_date": "2026-06-26",
       "typeLabel": "\u914d\u80a1",
       "is_placement": true,
       "is_rights": false,
@@ -1262,35 +809,27 @@
       "all_days": [
         {
           "offset": 1,
-          "date": "2026-06-18",
-          "jump": 0.0,
-          "vol_ratio": 0,
-          "close": 0.156,
+          "date": "2026-06-29",
+          "jump": 0.93,
+          "vol_ratio": 0.31,
+          "close": 4.36,
           "alert": "-"
         },
         {
           "offset": 2,
-          "date": "2026-06-22",
-          "jump": 0.0,
-          "vol_ratio": 0,
-          "close": 0.156,
-          "alert": "-"
-        },
-        {
-          "offset": 3,
-          "date": "2026-06-23",
-          "jump": 0.0,
-          "vol_ratio": 0,
-          "close": 0.156,
+          "date": "2026-06-30",
+          "jump": 0.93,
+          "vol_ratio": 0.0,
+          "close": 4.36,
           "alert": "-"
         }
       ],
-      "ann_close": 0.156
+      "ann_close": 4.32
     },
     {
-      "code": "01020",
-      "name": "CIPRUN TECH",
-      "ann_date": "2026-06-17",
+      "code": "01115",
+      "name": "5100 XIZANG",
+      "ann_date": "2026-06-26",
       "typeLabel": "\u914d\u80a1",
       "is_placement": true,
       "is_rights": false,
@@ -1300,80 +839,162 @@
       "all_days": [
         {
           "offset": 1,
-          "date": "2026-06-18",
-          "jump": 0.0,
-          "vol_ratio": 0.45,
-          "close": 0.204,
+          "date": "2026-06-29",
+          "jump": 3.7,
+          "vol_ratio": 0.55,
+          "close": 0.42,
           "alert": "-"
         },
         {
           "offset": 2,
-          "date": "2026-06-22",
-          "jump": -0.49,
-          "vol_ratio": 0.68,
-          "close": 0.203,
-          "alert": "-"
-        },
-        {
-          "offset": 3,
-          "date": "2026-06-23",
-          "jump": -3.43,
-          "vol_ratio": 0.94,
-          "close": 0.197,
+          "date": "2026-06-30",
+          "jump": 0.0,
+          "vol_ratio": 0.27,
+          "close": 0.405,
           "alert": "-"
         }
       ],
-      "ann_close": 0.204
+      "ann_close": 0.405
     },
     {
-      "code": "02889",
-      "name": "PATEO",
-      "ann_date": "2026-06-17",
-      "typeLabel": "\u914d\u80a1",
-      "is_placement": true,
+      "code": "01837",
+      "name": "NATURAL FOOD IH",
+      "ann_date": "2026-06-25",
+      "typeLabel": "\u80a1\u6771\u589e\u6301",
+      "is_placement": false,
       "is_rights": false,
-      "is_increase": false,
+      "is_increase": true,
       "best_alert": "WATCH",
       "best_info": [
-        2,
-        "2026-06-22",
-        -6.54,
-        2.31,
-        165.9,
-        177.5
+        1,
+        "2026-06-26",
+        5.67,
+        2.73,
+        1.49,
+        1.41
       ],
       "all_days": [
         {
           "offset": 1,
-          "date": "2026-06-18",
-          "jump": 5.3,
-          "vol_ratio": 1.06,
-          "close": 186.9,
-          "alert": "-"
+          "date": "2026-06-26",
+          "jump": 5.67,
+          "vol_ratio": 2.73,
+          "close": 1.49,
+          "alert": "WATCH"
         },
         {
           "offset": 2,
-          "date": "2026-06-22",
-          "jump": -6.54,
-          "vol_ratio": 2.31,
-          "close": 165.9,
+          "date": "2026-06-29",
+          "jump": 8.51,
+          "vol_ratio": 1.98,
+          "close": 1.53,
           "alert": "WATCH"
         },
         {
           "offset": 3,
-          "date": "2026-06-23",
-          "jump": -14.93,
-          "vol_ratio": 1.55,
-          "close": 151.0,
+          "date": "2026-06-30",
+          "jump": 8.51,
+          "vol_ratio": 0.82,
+          "close": 1.53,
           "alert": "WATCH"
         }
       ],
-      "ann_close": 177.5
+      "ann_close": 1.41
     },
     {
-      "code": "00148",
-      "name": "KINGBOARD HLDG",
-      "ann_date": "2026-06-17",
+      "code": "02431",
+      "name": "MINIEYE",
+      "ann_date": "2026-06-25",
+      "typeLabel": "\u80a1\u6771\u589e\u6301",
+      "is_placement": false,
+      "is_rights": false,
+      "is_increase": true,
+      "best_alert": "WATCH",
+      "best_info": [
+        1,
+        "2026-06-26",
+        -6.29,
+        2.53,
+        9.69,
+        10.34
+      ],
+      "all_days": [
+        {
+          "offset": 1,
+          "date": "2026-06-26",
+          "jump": -6.29,
+          "vol_ratio": 2.53,
+          "close": 9.69,
+          "alert": "WATCH"
+        },
+        {
+          "offset": 2,
+          "date": "2026-06-29",
+          "jump": -7.83,
+          "vol_ratio": 0.81,
+          "close": 9.53,
+          "alert": "WATCH"
+        },
+        {
+          "offset": 3,
+          "date": "2026-06-30",
+          "jump": -11.7,
+          "vol_ratio": 0.36,
+          "close": 9.13,
+          "alert": "WATCH"
+        }
+      ],
+      "ann_close": 10.34
+    },
+    {
+      "code": "01156",
+      "name": "CHINANEWENERGY",
+      "ann_date": "2026-06-25",
+      "typeLabel": "\u914d\u80a1",
+      "is_placement": true,
+      "is_rights": false,
+      "is_increase": false,
+      "best_alert": "RED",
+      "best_info": [
+        1,
+        "2026-06-26",
+        16.1,
+        30.32,
+        0.238,
+        0.205
+      ],
+      "all_days": [
+        {
+          "offset": 1,
+          "date": "2026-06-26",
+          "jump": 16.1,
+          "vol_ratio": 30.32,
+          "close": 0.238,
+          "alert": "RED"
+        },
+        {
+          "offset": 2,
+          "date": "2026-06-29",
+          "jump": 17.07,
+          "vol_ratio": 0.95,
+          "close": 0.24,
+          "alert": "WATCH"
+        },
+        {
+          "offset": 3,
+          "date": "2026-06-30",
+          "jump": 14.15,
+          "vol_ratio": 0.26,
+          "close": 0.234,
+          "alert": "WATCH"
+        }
+      ],
+      "ann_close": 0.205
+    },
+    {
+      "code": "01943",
+      "name": "KING'S STONE",
+      "ann_date": "2026-06-25",
       "typeLabel": "\u914d\u80a1",
       "is_placement": true,
       "is_rights": false,
@@ -1381,45 +1002,45 @@
       "best_alert": "WATCH",
       "best_info": [
         1,
-        "2026-06-18",
-        8.67,
-        1.09,
-        126.6,
-        116.5
+        "2026-06-26",
+        11.94,
+        1.13,
+        0.75,
+        0.67
       ],
       "all_days": [
         {
           "offset": 1,
-          "date": "2026-06-18",
-          "jump": 8.67,
-          "vol_ratio": 1.09,
-          "close": 126.6,
+          "date": "2026-06-26",
+          "jump": 11.94,
+          "vol_ratio": 1.13,
+          "close": 0.75,
           "alert": "WATCH"
         },
         {
           "offset": 2,
-          "date": "2026-06-22",
-          "jump": 21.12,
-          "vol_ratio": 1.34,
-          "close": 141.1,
+          "date": "2026-06-29",
+          "jump": 13.43,
+          "vol_ratio": 0.2,
+          "close": 0.76,
           "alert": "WATCH"
         },
         {
           "offset": 3,
-          "date": "2026-06-23",
-          "jump": 9.7,
-          "vol_ratio": 1.06,
-          "close": 127.8,
+          "date": "2026-06-30",
+          "jump": 8.96,
+          "vol_ratio": 0.11,
+          "close": 0.73,
           "alert": "WATCH"
         }
       ],
-      "ann_close": 116.5
+      "ann_close": 0.67
     },
     {
-      "code": "01888",
-      "name": "KB LAMINATES",
-      "ann_date": "2026-06-17",
-      "typeLabel": "\u914d\u80a1",
+      "code": "01371",
+      "name": "CHINA ECOTOUR",
+      "ann_date": "2026-06-25",
+      "typeLabel": "\u914d\u80a1 / \u6536\u8cfc/\u8981\u7d04",
       "is_placement": true,
       "is_rights": false,
       "is_increase": false,
@@ -1428,79 +1049,34 @@
       "all_days": [
         {
           "offset": 1,
-          "date": "2026-06-18",
-          "jump": 3.73,
-          "vol_ratio": 0.83,
-          "close": 91.85,
+          "date": "2026-06-26",
+          "jump": 0.0,
+          "vol_ratio": 0.0,
+          "close": 1.44,
           "alert": "-"
         },
         {
           "offset": 2,
-          "date": "2026-06-22",
-          "jump": 3.84,
-          "vol_ratio": 0.65,
-          "close": 91.95,
+          "date": "2026-06-29",
+          "jump": -19.44,
+          "vol_ratio": 0.96,
+          "close": 1.16,
           "alert": "-"
         },
         {
           "offset": 3,
-          "date": "2026-06-23",
-          "jump": -1.47,
-          "vol_ratio": 0.65,
-          "close": 87.25,
+          "date": "2026-06-30",
+          "jump": -20.14,
+          "vol_ratio": 0.14,
+          "close": 1.15,
           "alert": "-"
         }
       ],
-      "ann_close": 88.55
-    },
-    {
-      "code": "02465",
-      "name": "LOPAL TECH",
-      "ann_date": "2026-06-17",
-      "typeLabel": "\u914d\u80a1",
-      "is_placement": true,
-      "is_rights": false,
-      "is_increase": false,
-      "best_alert": "WATCH",
-      "best_info": [
-        2,
-        "2026-06-22",
-        -0.81,
-        1.81,
-        13.53,
-        13.64
-      ],
-      "all_days": [
-        {
-          "offset": 1,
-          "date": "2026-06-18",
-          "jump": -9.53,
-          "vol_ratio": 0.94,
-          "close": 12.34,
-          "alert": "-"
-        },
-        {
-          "offset": 2,
-          "date": "2026-06-22",
-          "jump": -0.81,
-          "vol_ratio": 1.81,
-          "close": 13.53,
-          "alert": "WATCH"
-        },
-        {
-          "offset": 3,
-          "date": "2026-06-23",
-          "jump": -3.89,
-          "vol_ratio": 1.38,
-          "close": 13.11,
-          "alert": "-"
-        }
-      ],
-      "ann_close": 13.64
+      "ann_close": 1.44
     }
   ],
   "errors": [],
-  "reds": 2,
-  "watches": 19,
-  "no_trigger": 27
+  "reds": 5,
+  "watches": 11,
+  "no_trigger": 25
 }

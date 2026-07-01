@@ -1,7 +1,23 @@
 {
-  "updated": "2026-06-24 00:37 UTC",
-  "count": 32,
+  "updated": "2026-07-01 22:38 UTC",
+  "count": 34,
   "watchlist": [
+    {
+      "code": "02500",
+      "name": "VENUS MEDTECH-B",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-02"
+    },
+    {
+      "code": "00576",
+      "name": "ZHEJIANGEXPRESS",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-01"
+    },
     {
       "code": "01364",
       "name": "GUMING",

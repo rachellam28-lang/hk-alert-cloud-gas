@@ -1,14 +1,186 @@
 {
-  "alerted": [],
-  "watchlisted": [],
+  "alerted": [
+    {
+      "code": "06820",
+      "name": "FRIENDTIMES",
+      "types": "股東增持",
+      "types_list": [
+        "股東增持"
+      ],
+      "title_cn": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING OF THE COMPANY BY A CONTRO…",
+      "volume_ratio": 0.02,
+      "cur_price": 0.3799999952316284,
+      "prev_week_low": 0.34,
+      "year_open": 0.455,
+      "year_open_rel": "🔻低於年開",
+      "gap": {
+        "pct": 0.0,
+        "direction": ""
+      },
+      "fvg": {
+        "top": 0.38,
+        "bottom": 0.375,
+        "idx": 245,
+        "size_pct": 1.33,
+        "dist_pct": 0.0
+      },
+      "release_time": "24/06/2026 18:22",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0624/2026062400977.pdf",
+      "tv_url": "https://www.tradingview.com/chart/?symbol=HKEX%3A6820",
+      "priority": 3,
+      "immediate": true
+    },
+    {
+      "code": "01793",
+      "name": "WECON HOLDINGS",
+      "types": "收購/要約 / 聯合公告",
+      "types_list": [
+        "收購/要約",
+        "聯合公告"
+      ],
+      "title_cn": "公司公告：JOINT ANNOUNCEMENT RESULTS OF THE COURT MEETING AND THE EGM AND LAPSE OF T…",
+      "volume_ratio": 1.0,
+      "cur_price": 0.3149999976158142,
+      "prev_week_low": 0.285,
+      "year_open": 0.219,
+      "year_open_rel": "🔺高於年開",
+      "gap": {
+        "pct": 0.0,
+        "direction": ""
+      },
+      "fvg": {
+        "top": 0.285,
+        "bottom": 0.275,
+        "idx": 230,
+        "size_pct": 3.64,
+        "dist_pct": -9.52
+      },
+      "release_time": "24/06/2026 18:19",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0624/2026062400965.pdf",
+      "tv_url": "https://www.tradingview.com/chart/?symbol=HKEX%3A1793",
+      "priority": 3,
+      "immediate": true
+    },
+    {
+      "code": "01932",
+      "name": "CPM GROUP",
+      "types": "收購/要約 / 聯合公告",
+      "types_list": [
+        "收購/要約",
+        "聯合公告"
+      ],
+      "title_cn": "公司公告：JOINT ANNOUNCEMENT DESPATCH OF COMPOSITE DOCUMENT OF THE CPM OFFERS",
+      "volume_ratio": 0.0,
+      "cur_price": 0.23999999463558197,
+      "prev_week_low": 0.232,
+      "year_open": 0.144,
+      "year_open_rel": "🔺高於年開",
+      "gap": {
+        "pct": 0.0,
+        "direction": ""
+      },
+      "fvg": {
+        "top": 0.24,
+        "bottom": 0.232,
+        "idx": 243,
+        "size_pct": 3.45,
+        "dist_pct": 0.0
+      },
+      "release_time": "24/06/2026 17:05",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0624/2026062400538.pdf",
+      "tv_url": "https://www.tradingview.com/chart/?symbol=HKEX%3A1932",
+      "priority": 3,
+      "immediate": true
+    }
+  ],
+  "watchlisted": [
+    {
+      "code": "00875",
+      "name": "CONGYU INTE AGR",
+      "types": "配股",
+      "types_list": [
+        "配股"
+      ],
+      "title_cn": "配股完成 OF NEW SHARES（特別授權）",
+      "volume_ratio": 0.35,
+      "cur_price": 0.5400000214576721,
+      "prev_week_low": 0.485,
+      "year_open": 1.46,
+      "year_open_rel": "🔻低於年開",
+      "gap": {
+        "pct": 12.5,
+        "direction": "🔼"
+      },
+      "fvg": {
+        "top": 0.51,
+        "bottom": 0.5,
+        "idx": 240,
+        "size_pct": 2.0,
+        "dist_pct": -5.56
+      },
+      "release_time": "24/06/2026 18:25",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0624/2026062400987.pdf",
+      "tv_url": "https://www.tradingview.com/chart/?symbol=HKEX%3A0875",
+      "priority": 1,
+      "immediate": false
+    },
+    {
+      "code": "02012",
+      "name": "SUNSHINE OIL",
+      "types": "配股",
+      "types_list": [
+        "配股"
+      ],
+      "title_cn": "公司公告：POLL RESULTS OF THE SPECIAL MEETING HELD ON JUNE 24, 2026 (HONG KONG TIME)…",
+      "volume_ratio": 0.13,
+      "cur_price": 0.24699999392032623,
+      "prev_week_low": 0.228,
+      "year_open": 0.43,
+      "year_open_rel": "🔻低於年開",
+      "gap": {
+        "pct": -1.85,
+        "direction": "🔽"
+      },
+      "fvg": null,
+      "release_time": "24/06/2026 17:10",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0624/2026062400567.pdf",
+      "tv_url": "https://www.tradingview.com/chart/?symbol=HKEX%3A2012",
+      "priority": 1,
+      "immediate": false
+    },
+    {
+      "code": "01364",
+      "name": "GUMING",
+      "types": "配股",
+      "types_list": [
+        "配股"
+      ],
+      "title_cn": "公司公告：PROPOSED OFFERING OF HK$1,960 MILLION ZERO COUPON GUARANTEED CONVERTIBLE B…",
+      "volume_ratio": 1.1,
+      "cur_price": 20.780000686645508,
+      "prev_week_low": 20.86,
+      "year_open": 24.76,
+      "year_open_rel": "🔻低於年開",
+      "gap": {
+        "pct": -0.2,
+        "direction": "🔽"
+      },
+      "fvg": null,
+      "release_time": "24/06/2026 07:48",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0624/2026062400045.pdf",
+      "tv_url": "https://www.tradingview.com/chart/?symbol=HKEX%3A1364",
+      "priority": 1,
+      "immediate": false
+    }
+  ],
   "summary": {
     "date": "2026/06/24",
     "date_iso": "2026-06-24",
     "weekday": "星期三",
-    "total_raw": 99,
-    "today_count": 0,
+    "total_raw": 105,
+    "today_count": 6,
     "volume_multiplier": 1.5,
-    "alerted_count": 0,
-    "watchlisted_count": 0
+    "alerted_count": 3,
+    "watchlisted_count": 3
   }
 }

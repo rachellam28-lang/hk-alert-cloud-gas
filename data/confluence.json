@@ -1,5 +1,398 @@
 [
   {
+    "code": "01950",
+    "name": "DIWANG IND H",
+    "types": [
+      "配股"
+    ],
+    "title": "配售新股（一般授權）",
+    "date": "2026-06-30",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0630/2026063002723.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "半年POC"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "半年POC"
+    ],
+    "first_pre_days": 14,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "02650",
+    "name": "ZHIDA TECH",
+    "types": [
+      "配股"
+    ],
+    "title": "公告 配股完成 OF NEW H SHARES（一般授權）",
+    "date": "2026-06-30",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0630/2026063002501.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "觀察·配股"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "觀察·配股"
+    ],
+    "first_pre_days": 7,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "00191",
+    "name": "LAI SUN INT'L",
+    "types": [
+      "聯合公告"
+    ],
+    "title": "公司公告：JOINT ANNOUNCEMENT: VERY SUBSTANTIAL DISPOSAL - COMPLETION OF DISPOSAL OF …",
+    "date": "2026-06-30",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0630/2026063002165.pdf",
+    "type": "announcement",
+    "typeLabel": "聯合公告",
+    "direction": "neutral",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "觀察·聯合公告"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "觀察·聯合公告"
+    ],
+    "first_pre_days": 8,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "00488",
+    "name": "LAI SUN DEV",
+    "types": [
+      "聯合公告"
+    ],
+    "title": "公司公告：JOINT ANNOUNCEMENT: VERY SUBSTANTIAL DISPOSAL - COMPLETION OF DISPOSAL OF …",
+    "date": "2026-06-30",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0630/2026063002165.pdf",
+    "type": "announcement",
+    "typeLabel": "聯合公告",
+    "direction": "neutral",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "觀察·聯合公告"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "觀察·聯合公告"
+    ],
+    "first_pre_days": 8,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "00201",
+    "name": "MAGNIFICENT",
+    "types": [
+      "聯合公告",
+      "大手轉倉"
+    ],
+    "title": "公司公告：JOINT ANNOUNCEMENT - (1) DELAY IN DESPATCH OF THE CONNECTED TRANSACTION CI…",
+    "date": "2026-06-30",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0630/2026063001752.pdf",
+    "type": "announcement",
+    "typeLabel": "聯合公告 / 大手轉倉",
+    "direction": "neutral",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "IPO首日開突破"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "IPO首日開突破"
+    ],
+    "first_pre_days": 14,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "00195",
+    "name": "GREENTECH INTL",
+    "types": [
+      "收購/要約"
+    ],
+    "title": "公司公告：ANNOUNCEMENT - PRE-CONDITIONAL VOLUNTARY CASH PARTIAL OFFER BY QUAM CAPITA…",
+    "date": "2026-06-29",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0629/2026062901431.pdf",
+    "type": "acquisition",
+    "typeLabel": "收購/要約",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "披露易公告 - 收購/要約"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "披露易公告 - 收購/要約"
+    ],
+    "first_pre_days": 7,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "00776",
+    "name": "IMPERIUM TEC GP",
+    "types": [
+      "供股",
+      "配股"
+    ],
+    "title": "公司公告：EXTENSION OF PLACING PERIOD; AND REVISED TIMETABLE IN RELATION TO PROPOSED…",
+    "date": "2026-06-26",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0626/2026062602155.pdf",
+    "type": "rights",
+    "typeLabel": "供股 / 配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "觀察·供股 / 配股"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "觀察·供股 / 配股"
+    ],
+    "first_pre_days": 3,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "00992",
+    "name": "LENOVO GROUP",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：COMPLETION OF THE ISSUE OF US$2,000 MILLION ZERO COUPON CONVERTIBLE BONDS …",
+    "date": "2026-06-25",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0625/2026062501254.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "觀察·配股"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "觀察·配股"
+    ],
+    "first_pre_days": 7,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "80992",
+    "name": "LENOVO GROUP-R",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：COMPLETION OF THE ISSUE OF US$2,000 MILLION ZERO COUPON CONVERTIBLE BONDS …",
+    "date": "2026-06-25",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0625/2026062501254.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "觀察·配股"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "觀察·配股"
+    ],
+    "first_pre_days": 7,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "01657",
+    "name": "SG GROUP HLDGS",
+    "types": [
+      "收購/要約",
+      "聯合公告"
+    ],
+    "title": "公司公告：JOINT ANNOUNCEMENT - DELAY IN DESPATCH OF THE COMPOSITE DOCUMENT RELATING …",
+    "date": "2026-06-25",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0625/2026062501176.pdf",
+    "type": "acquisition",
+    "typeLabel": "收購/要約 / 聯合公告",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "披露易公告 - 收購/要約 / 聯合公告"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "披露易公告 - 收購/要約 / 聯合公告"
+    ],
+    "first_pre_days": 2,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "00195",
+    "name": "GREENTECH INTL",
+    "types": [
+      "收購/要約"
+    ],
+    "title": "公司公告：ESTABLISHMENT OF INDEPENDENT BOARD COMMITTEE; APPOINTMENT OF INDEPENDENT F…",
+    "date": "2026-06-25",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0625/2026062500945.pdf",
+    "type": "acquisition",
+    "typeLabel": "收購/要約",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "披露易公告 - 收購/要約"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "披露易公告 - 收購/要約"
+    ],
+    "first_pre_days": 3,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "03708",
+    "name": "WORLD DIGI ECON",
+    "types": [
+      "配股"
+    ],
+    "title": "認購完成 OF NEW SHARES（一般授權）",
+    "date": "2026-06-25",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0625/2026062500867.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "觀察·配股"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "觀察·配股"
+    ],
+    "first_pre_days": 3,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "01657",
+    "name": "SG GROUP HLDGS",
+    "types": [
+      "收購/要約"
+    ],
+    "title": "公司公告：APPOINTMENT OF INDEPENDENT FINANCIAL ADVISER",
+    "date": "2026-06-24",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0624/2026062401778.pdf",
+    "type": "acquisition",
+    "typeLabel": "收購/要約",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "披露易公告 - 收購/要約 / 聯合公告"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "披露易公告 - 收購/要約 / 聯合公告"
+    ],
+    "first_pre_days": 1,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "00028",
+    "name": "TIAN AN",
+    "types": [
+      "聯合公告"
+    ],
+    "title": "公司公告：Joint Announcement: Discloseable Transaction - Provision of Financial Assi…",
+    "date": "2026-06-24",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0624/2026062401738.pdf",
+    "type": "announcement",
+    "typeLabel": "聯合公告",
+    "direction": "neutral",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "半年POC + 12個月POC"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "半年POC + 12個月POC"
+    ],
+    "first_pre_days": 8,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "00875",
+    "name": "CONGYU INTE AGR",
+    "types": [
+      "配股"
+    ],
+    "title": "配股完成 OF NEW SHARES（特別授權）",
+    "date": "2026-06-24",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0624/2026062400987.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "半年POC"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "半年POC"
+    ],
+    "first_pre_days": 8,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
     "code": "01208",
     "name": "MMG",
     "types": [
@@ -358,6 +751,58 @@
     "pattern": "catalyst"
   },
   {
+    "code": "00576",
+    "name": "ZHEJIANGEXPRESS",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：ANNOUNCEMENT ON REGISTRATION APPROVAL FROM THE CHINA SECURITIES REGULATORY…",
+    "date": "2026-07-01",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0701/2026070100059.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "觀察·配股"
+    ],
+    "signal_types_summary": [
+      "觀察·配股"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01364",
+    "name": "GUMING",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：PROPOSED OFFERING OF HK$1,960 MILLION ZERO COUPON GUARANTEED CONVERTIBLE B…",
+    "date": "2026-06-24",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0624/2026062400045.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "觀察·配股"
+    ],
+    "signal_types_summary": [
+      "觀察·配股"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
     "code": "00776",
     "name": "IMPERIUM TEC GP",
     "types": [
@@ -461,6 +906,32 @@
     ],
     "first_pre_days": null,
     "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01364",
+    "name": "GUMING",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：VOLUNTARY ANNOUNCEMENT PROPOSED OFFERING OF HKD-DENOMINATED GUARANTEED CON…",
+    "date": "2026-06-23",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0623/2026062300482.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "觀察·配股"
+    ],
+    "signal_types_summary": [
+      "觀察·配股"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 1,
     "pattern": "catalyst"
   },
   {

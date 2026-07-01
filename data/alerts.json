@@ -1,7 +1,51 @@
 {
-  "updated": "2026-06-24 00:37 UTC",
-  "count": 145,
+  "updated": "2026-07-01 22:38 UTC",
+  "count": 147,
   "alerts": [
+    {
+      "source": "hkexnews",
+      "category": "corp_action",
+      "code": "02500",
+      "symbol": "2500.HK",
+      "name": "VENUS MEDTECH-B",
+      "signal": "觀察·配股",
+      "timeframe": "公告",
+      "message": "公司公告：INSIDE INFORMATION POTENTIAL SUBSCRIPTION OF NEW SHARES AND NEW CONVERTIBL…",
+      "strategy": "HKEXnews Corp Action (觀察)",
+      "chart_url": "",
+      "source_url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0702/2026070200001.pdf",
+      "announcement_date": "2026-07-02",
+      "release_time": "02/07/2026 06:03",
+      "tags": [
+        "公告",
+        "觀察",
+        "配股"
+      ],
+      "priority": 0,
+      "raw": "{\"code\": \"02500\", \"name\": \"VENUS MEDTECH-B\", \"types\": [\"配股\"], \"title\": \"公司公告：INSIDE INFORMATION POTENTIAL SUBSCRIPTION OF NEW SHARES AND NEW CONVERTIBL…\", \"title_en\": \"INSIDE INFORMATION POTENTIAL SUBSCRIPTION OF NEW SHARES AND NEW CONVERTIBLE BONDS BY INTENDED INVESTORS\", \"release_time\": \"02/07/2026 06:03\", \"release_date\": \"2026-07-02\", \"url\": \"https://www.hkexnews.hk/listedco/listconews/sehk/2026/0702/2026070200001.pdf\"}"
+    },
+    {
+      "source": "hkexnews",
+      "category": "corp_action",
+      "code": "00576",
+      "symbol": "0576.HK",
+      "name": "ZHEJIANGEXPRESS",
+      "signal": "觀察·配股",
+      "timeframe": "公告",
+      "message": "公司公告：ANNOUNCEMENT ON REGISTRATION APPROVAL FROM THE CHINA SECURITIES REGULATORY…",
+      "strategy": "HKEXnews Corp Action (觀察)",
+      "chart_url": "",
+      "source_url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0701/2026070100059.pdf",
+      "announcement_date": "2026-07-01",
+      "release_time": "01/07/2026 18:19",
+      "tags": [
+        "公告",
+        "觀察",
+        "配股"
+      ],
+      "priority": 0,
+      "raw": "{\"code\": \"00576\", \"name\": \"ZHEJIANGEXPRESS\", \"types\": [\"配股\"], \"title\": \"公司公告：ANNOUNCEMENT ON REGISTRATION APPROVAL FROM THE CHINA SECURITIES REGULATORY…\", \"title_en\": \"ANNOUNCEMENT ON REGISTRATION APPROVAL FROM THE CHINA SECURITIES REGULATORY COMMISSION FOR THE ABSORPTION AND MERGER OF OCEANKING DEVELOPMENT THROUGH SHARE SWAP AND ISSUANCE OF A SHARES UNDER SPECIFIC MANDATE\", \"release_time\": \"01/07/2026 18:19\", \"release_date\": \"2026-07-01\", \"url\": \"https://www.hkexnews.hk/listedco/listconews/sehk/2026/0701/2026070100059.pdf\"}"
+    },
     {
       "source": "hkexnews",
       "category": "corp_action",
