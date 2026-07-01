@@ -248,9 +248,11 @@ tbody tr{cursor:pointer}
 .mc-small,.stock-card-section-small{border-top:3px solid #ef4444}
 .mc-mid,.stock-card-section-mid{border-top:3px solid #f97316}
 .mc-large,.stock-card-section-large{border-top:3px solid #eab308}
+.mc-heat{border-top:3px solid var(--primary)}
 .mc-small .mc-section-head,.stock-card-section-small .stock-card-section-head{background:linear-gradient(90deg,rgba(239,68,68,.12),var(--surface-soft));color:#b91c1c}
 .mc-mid .mc-section-head,.stock-card-section-mid .stock-card-section-head{background:linear-gradient(90deg,rgba(249,115,22,.12),var(--surface-soft));color:#c2410c}
 .mc-large .mc-section-head,.stock-card-section-large .stock-card-section-head{background:linear-gradient(90deg,rgba(234,179,8,.12),var(--surface-soft));color:#a16207}
+.mc-heat .mc-section-head{background:linear-gradient(90deg,rgba(2,132,199,.16),var(--surface-soft));color:var(--primary)}
 /* Section toggle */
 .section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:20px 0 10px}
 .section-head h2{margin:0;display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.16em}
@@ -745,6 +747,34 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
     </section>
 
     <!-- MC split: 小市值 -->
+    <div class="mc-section mc-heat" id="mcSectionHeat" style="display:none">
+      <div class="mc-section-head"><span id="mcHeatTitle">Heatmap 命中</span><span id="mcHeatCount"></span></div>
+      <div style="overflow-x:auto"><table>
+        <thead><tr>
+          <th class="sortable th-vr sort-active sort-desc" data-sort="vr" onclick="sortBy('vr',event)"><span>量比</span><span class="sort-icon">▼</span></th>
+          <th class="sortable" data-sort="code" onclick="sortBy('code',event)"><span>代碼</span><span class="sort-icon"></span></th>
+          <th class="sortable" data-sort="n" onclick="sortBy('n',event)"><span>名稱</span><span class="sort-icon"></span></th>
+          <th class="sortable th-prevyo" data-sort="prevyo" onclick="sortBy('prevyo',event)"><span>😻</span><span class="sort-icon"></span></th>
+          <th class="sortable th-pypct" data-sort="pypct" onclick="sortBy('pypct',event)"><span>前年Δ%</span><span class="sort-icon"></span></th>
+          <th class="sortable th-price" data-sort="price" onclick="sortBy('price',event)"><span>現價</span><span class="sort-icon"></span></th>
+          <th class="sortable th-chg" data-sort="chg" onclick="sortBy('chg',event)"><span>今日Δ%</span><span class="sort-icon"></span></th>
+          <th class="sortable th-yo_pct hide-yo_pct" data-sort="yo_pct" onclick="sortBy('yo_pct',event)"><span>今年Δ%</span><span class="sort-icon"></span></th>
+          <th class="sortable th-sig" data-sort="sig" onclick="sortBy('sig',event)"><span>信號</span><span class="sort-icon"></span></th>
+          <th class="sortable" data-sort="tp" onclick="sortBy('tp',event)"><span>Market%</span><span class="sort-icon"></span></th>
+          <th class="sortable th-t5" data-sort="t5" onclick="sortBy('t5',event)"><span>Top5%</span><span class="sort-icon"></span></th>
+          <th class="sortable th-t10" data-sort="t10" onclick="sortBy('t10',event)"><span>Top10%</span><span class="sort-icon"></span></th>
+          <th class="sortable th-score" data-sort="score" onclick="sortBy('score',event)"><span>評分</span><span class="sort-icon"></span></th>
+          <th class="sortable th-streak" data-sort="su" onclick="sortBy('su',event)"><span>連升</span><span class="sort-icon"></span></th>
+          <th class="sortable th-np" data-sort="np" onclick="sortBy('np',event)"><span>參與者</span><span class="sort-icon"></span></th>
+          <th class="sortable th-mc" data-sort="mc" onclick="sortBy('mc',event)"><span>市值</span><span class="sort-icon"></span></th>
+          <th class="sortable th-fcf" data-sort="fcf" onclick="sortBy('fcf',event)"><span>FCF(億)</span><span class="sort-icon"></span></th>
+          <th class="sortable th-link"><span>連結</span></th>
+        </tr></thead>
+        <tbody id="mcHeatTbody"></tbody>
+      </table></div>
+      <div class="mc-pagination" id="mcPagHeat"></div>
+    </div>
+
     <div class="mc-section mc-small" id="mcSectionSmall">
       <div class="mc-section-head">🐟 小市值 (&lt;20億)</div>
       <div style="overflow-x:auto"><table>
@@ -1188,6 +1218,19 @@ function heatMarkMatches(s){
   if(heatMarkType==='sector')return stockSector(s)===heatMarkKey;
   if(heatMarkType==='flow')return flowMatches(s,heatMarkKey);
   return false;
+}
+function heatMarkLabel(){
+  if(!heatMarkType||!heatMarkKey)return '';
+  if(heatMarkType==='theme'){
+    var theme=THEME_HEATMAP.find(function(x){return x.key===heatMarkKey;});
+    return theme?theme.label:heatMarkKey;
+  }
+  if(heatMarkType==='sector')return SECTOR_LABELS[heatMarkKey]||heatMarkKey;
+  if(heatMarkType==='flow'){
+    var flow=flowItem(heatMarkKey);
+    return flow?flow.label:heatMarkKey;
+  }
+  return heatMarkKey;
 }
 function heatStats(stocks,predicate){
   var stat={count:0,up:0,chgSum:0,chgN:0,vrSum:0,vrN:0,signalN:0};
@@ -2026,13 +2069,14 @@ function renderTable(){
     else if(mc<100) groups.mid.push(s);
     else groups.large.push(s);
     });
+  var heatMatches=(heatMarkType&&heatMarkKey)?filtered.filter(heatMarkMatches):[];
   function renderOne(section, stocks){
-    var cap=(section==='small'?'Small':section==='mid'?'Mid':'Large');
+    var cap=(section==='heat'?'Heat':section==='small'?'Small':section==='mid'?'Mid':'Large');
     var tbody=document.getElementById('mc'+cap+'Tbody');
     var pagEl=document.getElementById('mcPag'+cap);
-    var PAGE=Math.max(stocks.length, 1);
+    var PAGE=section==='heat'?Math.min(Math.max(stocks.length,1),120):Math.max(stocks.length, 1);
     var totalPages=Math.ceil(stocks.length/PAGE);
-    var p=(section==='small'?pageSmall:section==='mid'?pageMid:pageLarge)||0;
+    var p=(section==='heat'?0:section==='small'?pageSmall:section==='mid'?pageMid:pageLarge)||0;
     if(p>=totalPages) p=0;
     var start2=p*PAGE, end2=Math.min(start2+PAGE, stocks.length);
     var slice=stocks.slice(start2, end2);
@@ -2107,7 +2151,9 @@ function renderTable(){
         +'</tr>';
     }).join('');
 
-    if(pagEl){
+    if(pagEl&&section==='heat'){
+      pagEl.innerHTML=stocks.length>slice.length?'<span>顯示前 '+slice.length+' / '+stocks.length+' 隻，完整清單在下方市值分區</span>':'';
+    }else if(pagEl){
       if(totalPages<=1){pagEl.innerHTML='';}
       else{
         var sec=section;
@@ -2118,6 +2164,15 @@ function renderTable(){
     }
   }
 
+  var heatSection=document.getElementById('mcSectionHeat');
+  var heatTitle=document.getElementById('mcHeatTitle');
+  var heatCount=document.getElementById('mcHeatCount');
+  if(heatSection){
+    heatSection.style.display=heatMatches.length?'':'none';
+    if(heatTitle)heatTitle.textContent='Heatmap 命中：'+heatMarkLabel();
+    if(heatCount)heatCount.textContent=heatMatches.length+' 隻';
+    renderOne('heat', heatMatches);
+  }
   renderOne('small', groups.small);
   renderOne('mid', groups.mid);
   renderOne('large', groups.large);
