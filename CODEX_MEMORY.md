@@ -1,6 +1,6 @@
 # HK Alert Cloud GAS Memory
 
-Last updated: 2026-06-30 HKT
+Last updated: 2026-07-01 HKT
 
 ## Load First
 
@@ -155,6 +155,7 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - Main page now fetches existing `data/fundflow.json` and builds a clickable fund-flow heatmap from `main_net`, `total_net`, and `lgt_cap_chg_daily`.
 - Fund-flow heatmap tiles cover main/total/southbound inflow and outflow; clicking a tile applies the flow filter, and presets/URL state persist the `flow` filter.
 - Heatmap tiles must connect to stocks, not only show group stats. Each tile shows top stock-code chips that open the stock drawer directly, and clicking the tile filters then scrolls/highlights the first matching stock row/card.
+- Keep the heatmap compact. The main-page heatmap card uses reduced tile height, dense grid gaps, smaller panel padding, and three top stock chips per tile so it does not dominate the dashboard.
 
 ### 2026-06-30 main signal badge and theme/sector heatmaps
 
