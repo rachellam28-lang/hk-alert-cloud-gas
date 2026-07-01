@@ -151,6 +151,7 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 
 - Main-page heatmap tiles must visibly show selection after click/tap. Active tiles now use a blue fill, stronger border/shadow, and `aria-pressed=true`.
 - Empty active tiles must not stay faded. `.heat-tile.empty` opacity only applies when the tile is not active, so zero-count theme tiles still look selected when tapped.
+- Zero-count inactive heatmap tiles are disabled and must not apply a new filter. If a zero-count tile is already active from URL/preset/old state, it stays clickable only so the user can clear that filter.
 
 ### 2026-06-30 main heatmap card, sector overrides, and fund-flow heatmap
 
