@@ -53,6 +53,7 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .heat-clear{appearance:none;border:1px solid var(--line);background:var(--surface-soft);color:var(--mute);width:18px;height:18px;border-radius:5px;font:700 11px/1 inherit;cursor:pointer}
 .heat-clear:hover{border-color:var(--primary-border);background:var(--primary-soft);color:var(--primary)}
 .heatmap-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:3px}
+.heat-loading{grid-column:1/-1;min-height:44px;border:1px dashed var(--line);border-radius:6px;background:var(--surface-soft);color:var(--mute);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700}
 .heat-tile{appearance:none;position:relative;overflow:hidden;min-height:44px;border:1px solid var(--line-soft);border-radius:6px;background:var(--surface-soft);color:var(--text);padding:4px 5px;text-align:left;cursor:pointer;touch-action:manipulation;user-select:none}
 .heat-tile:before{content:"";position:absolute;inset:0;background:rgb(var(--heat-rgb));opacity:var(--heat-alpha);pointer-events:none}
 .heat-tile:hover{border-color:var(--primary-border);box-shadow:0 0 0 2px rgba(2,132,199,.08)}
@@ -551,6 +552,8 @@ tr.hl-up{background:linear-gradient(90deg,rgba(34,197,94,.06),transparent)!impor
 tr.hl-dn{background:linear-gradient(90deg,rgba(239,68,68,.06),transparent)!important}
 tr.hl-conc{outline:2px solid rgba(124,58,237,.3);outline-offset:-2px}
 tr.hl-ipo{background:linear-gradient(90deg,rgba(251,191,36,.08),transparent)!important}
+tr.heat-marked{background:linear-gradient(90deg,rgba(2,132,199,.16),rgba(2,132,199,.04) 48%,transparent)!important;box-shadow:inset 4px 0 0 var(--primary)}
+.stock-card.heat-marked{border-color:var(--primary);box-shadow:0 0 0 2px rgba(2,132,199,.16),var(--shadow);background:linear-gradient(90deg,rgba(224,242,254,.82),var(--surface) 60%)}
 tr.heat-linked,.stock-card.heat-linked{outline:2px solid var(--primary);outline-offset:-2px;box-shadow:0 0 0 3px rgba(2,132,199,.12)}
 .hl-dot{margin-left:4px;font-size:9px}
 /* Second sort indicator on header */
@@ -1179,6 +1182,13 @@ function flowMatches(s,key){
   if(!Number.isFinite(v)||v===0)return false;
   return item.dir>0 ? v>0 : v<0;
 }
+function heatMarkMatches(s){
+  if(!heatMarkType||!heatMarkKey)return false;
+  if(heatMarkType==='theme')return themeMatches(s,signalMap.get(s.c),techSignalMap.get(s.c)||[],heatMarkKey);
+  if(heatMarkType==='sector')return stockSector(s)===heatMarkKey;
+  if(heatMarkType==='flow')return flowMatches(s,heatMarkKey);
+  return false;
+}
 function heatStats(stocks,predicate){
   var stat={count:0,up:0,chgSum:0,chgN:0,vrSum:0,vrN:0,signalN:0};
   (stocks||[]).forEach(function(s){
@@ -1438,33 +1448,23 @@ function heatTileHtml(type,item,stat,activeKey,matches){
     +'</div>';
 }
 function setHeatFilter(type,key){
-  if(type==='flow'){
-    var next=(flowFilter===key)?'all':key;
-    flowFilter=next;
-    activePreset=null;
-    applyFilters();
-    return;
+  if(heatMarkType===type&&heatMarkKey===key){
+    heatMarkType='';
+    heatMarkKey='';
+  }else{
+    heatMarkType=type;
+    heatMarkKey=key;
   }
-  var id=type==='theme'?'themeSelect':'sectorSelect';
-  var el=document.getElementById(id);
-  if(!el)return;
-  var nextVal=(el.value===key)?'all':key;
-  el.value=nextVal;
-  activePreset=null;
-  applyFilters();
+  maybeRenderHeatmaps();
+  renderTable();
 }
 function clearHeatFilter(type){
-  if(type==='flow'){
-    flowFilter='all';
-    activePreset=null;
-    applyFilters();
-    return;
+  if(!type||heatMarkType===type){
+    heatMarkType='';
+    heatMarkKey='';
+    maybeRenderHeatmaps();
+    renderTable();
   }
-  var id=type==='theme'?'themeSelect':'sectorSelect';
-  var el=document.getElementById(id);
-  if(el)el.value='all';
-  activePreset=null;
-  applyFilters();
 }
 function stockPassesFilters(s,opts){
   opts=opts||{};
@@ -1553,14 +1553,49 @@ function setHeatScopeText(){
   if(sector)sector.textContent=heatScopeLabel('sector');
   if(flow)flow.textContent=heatScopeLabel('flow');
 }
+function markHeatmapFeedReady(feed){
+  if(feed==='fundflow')heatmapFundflowReady=true;
+  if(feed==='signals')heatmapSignalsReady=true;
+  if(feed==='alerts')heatmapAlertsReady=true;
+  heatmapReady=!!(baseStocks&&baseStocks.length)&&heatmapFundflowReady&&heatmapSignalsReady&&heatmapAlertsReady;
+  return heatmapReady;
+}
+function resetHeatmapReadiness(){
+  heatmapReady=false;
+  heatmapFundflowReady=false;
+  heatmapSignalsReady=false;
+  heatmapAlertsReady=false;
+}
+function renderHeatmapLoading(){
+  ['themeHeatmap','sectorHeatmap','flowHeatmap'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el)el.innerHTML='<div class="heat-loading">Heatmap loading</div>';
+  });
+  var metaEl=document.getElementById('fundflowHeatmapMeta');
+  if(metaEl)metaEl.textContent='Heatmap loading';
+  setHeatScopeText();
+}
+function maybeRenderHeatmaps(){
+  heatmapReady=!!(baseStocks&&baseStocks.length)&&heatmapFundflowReady&&heatmapSignalsReady&&heatmapAlertsReady;
+  if(!heatmapReady){
+    renderHeatmapLoading();
+    return;
+  }
+  renderHeatmaps();
+}
 function renderHeatmaps(){
+  if(!heatmapReady){
+    renderHeatmapLoading();
+    return;
+  }
   var stocks=allStocks||[];
   var themeEl=document.getElementById('themeHeatmap');
   var sectorEl=document.getElementById('sectorHeatmap');
   var flowEl=document.getElementById('flowHeatmap');
   var metaEl=document.getElementById('fundflowHeatmapMeta');
-  var activeTheme=document.getElementById('themeSelect')?.value||'all';
-  var activeSector=document.getElementById('sectorSelect')?.value||'all';
+  var activeTheme=heatMarkType==='theme'?heatMarkKey:'all';
+  var activeSector=heatMarkType==='sector'?heatMarkKey:'all';
+  var activeFlow=heatMarkType==='flow'?heatMarkKey:'all';
   if(themeEl){
     themeEl.innerHTML=THEME_HEATMAP.map(function(item){
       var matches=stocks.filter(function(s){return stockPassesFilters(s,{skipTheme:true}) && themeMatches(s,signalMap.get(s.c),techSignalMap.get(s.c)||[],item.key);});
@@ -1579,7 +1614,7 @@ function renderHeatmaps(){
     flowEl.innerHTML=FLOW_HEATMAP.map(function(item){
       var matches=stocks.filter(function(s){return stockPassesFilters(s,{skipFlow:true}) && flowMatches(s,item.key);});
       var stat=flowStats(matches,item);
-      return flowTileHtml(item,stat,flowFilter,matches);
+      return flowTileHtml(item,stat,activeFlow,matches);
     }).join('');
   }
   if(metaEl){
@@ -1611,6 +1646,8 @@ let searchVal='';
 let themeFilter='all';
 let sectorFilter='all';
 let flowFilter='all';
+let heatMarkType='';
+let heatMarkKey='';
 let activeFilters=new Set();
 let page=0;let pageSmall=0,pageMid=0,pageLarge=0;
 const PAGE_SIZE=200;
@@ -1620,6 +1657,10 @@ let priceMap=new Map();
 let fundflowMap=new Map();
 let fundflowUpdated='';
 let fundflowCount=0;
+let heatmapReady=false;
+let heatmapFundflowReady=false;
+let heatmapSignalsReady=false;
+let heatmapAlertsReady=false;
 let hkexLinkMap=new Map();
 let techSignalMap=new Map();
 let breakthroughMap={};
@@ -1772,6 +1813,8 @@ function loadPreset(key){
   var tf=document.getElementById('themeSelect');if(tf)tf.value=s.themeFilter||'all';
   var secf=document.getElementById('sectorSelect');if(secf)secf.value=s.sectorFilter||'all';
   flowFilter=s.flowFilter||'all';
+  heatMarkType='';
+  heatMarkKey='';
   if(s.tpMin!==undefined){var e1=document.getElementById('rfTpMin');if(e1)e1.value=s.tpMin||'';}
   if(s.tpMax!==undefined){var e2=document.getElementById('rfTpMax');if(e2)e2.value=s.tpMax||'';}
   if(s.mcMin!==undefined){var e5=document.getElementById('rfMcMin');if(e5)e5.value=s.mcMin||'';}
@@ -1828,6 +1871,8 @@ function loadPresetCustom(i){
   var tf=document.getElementById('themeSelect');if(tf)tf.value=s.themeFilter||'all';
   var secf=document.getElementById('sectorSelect');if(secf)secf.value=s.sectorFilter||'all';
   flowFilter=s.flowFilter||'all';
+  heatMarkType='';
+  heatMarkKey='';
   if(s.tpMin!==undefined){var e1=document.getElementById('rfTpMin');if(e1)e1.value=s.tpMin||'';}
   if(s.tpMax!==undefined){var e2=document.getElementById('rfTpMax');if(e2)e2.value=s.tpMax||'';}
   if(s.mcMin!==undefined){var e5=document.getElementById('rfMcMin');if(e5)e5.value=s.mcMin||'';}
@@ -2041,7 +2086,8 @@ function renderTable(){
       if(s.sd>1)hlClass+=' hl-dn';
       if(s.tp>=80)hlClass+=' hl-conc';
       if(hasIPO)hlClass+=' hl-ipo';
-      return '<tr data-code="'+esc(s.c)+'" class="'+ipoClass+hlClass+'" onclick="showDetail(\''+s.c+'\')">'
+      var heatClass=heatMarkMatches(s)?' heat-marked':'';
+      return '<tr data-code="'+esc(s.c)+'" class="'+ipoClass+hlClass+heatClass+'" onclick="showDetail(\''+s.c+'\')">'
         +'<td class="hide-vr"><span class="num'+(s.vr&&s.vr>=2?' up':'')+'">'+(s.vr!=null?s.vr.toFixed(1):'—')+'</span></td>'
         +'<td><span class="code">'+esc(s.c)+'</span>'+(s.suspended?' <span class="suspended-badge">停牌</span>':'')+'</td>'
         +'<td><span class="name" title="'+esc(s.n)+'">'+esc(s.n)+'</span></td>'
@@ -2119,7 +2165,8 @@ function renderTable(){
     var valBadge=''; /* FCF replaces PE */ //'<span class="sc-val-expensive">昂貴</span>':(s.pe>0&&s.pe<5?'<span class="sc-val-cheap">便宜</span>':'')):'';
     var valClass=""; /* FCF replaces PE */ //' pe-expensive':(s.pe>0&&s.pe<5?' pe-cheap':'')):'';
     var ipoClass=hasIPO?' ipo-highlight':'';
-    return '<div data-code="'+esc(s.c)+'" class="stock-card'+ipoClass+valClass+'" onclick="showDetail(\''+s.c+'\')">'
+    var heatClass=heatMarkMatches(s)?' heat-marked':'';
+    return '<div data-code="'+esc(s.c)+'" class="stock-card'+ipoClass+valClass+heatClass+'" onclick="showDetail(\''+s.c+'\')">'
       +'<div class="sc-header">'
         +'<span class="code">'+(s.lp&&s.py&&s.lp>s.py?'😻 ':'')+esc(s.c)+(s.suspended?' <span class="suspended-badge">停牌</span>':'')+'</span>'
         +(s.su>1?'<span class="sc-streak up">🔥'+s.su+'</span>':'')
@@ -2195,7 +2242,7 @@ function applyFilters(){
   page=0;
   encodeState();
   updateSortInfo();
-  renderHeatmaps();
+  maybeRenderHeatmaps();
   renderTable();
   // Sync dropdown to current sort
   var ss=document.getElementById('sortSelect');
@@ -2398,6 +2445,8 @@ function resetAllFilters(){
   var tf=document.getElementById('themeSelect');if(tf)tf.value='all';
   var secf=document.getElementById('sectorSelect');if(secf)secf.value='all';
   flowFilter='all';
+  heatMarkType='';
+  heatMarkKey='';
   // Reset sort to default
   sortCol='vr';sortDir=-1;sortCol2='';sortDir2=1;
   var ss=document.getElementById('sortSelect');if(ss)ss.value='code';
@@ -2812,6 +2861,8 @@ async function loadData(){
   const dot=document.getElementById('statusDot');
   const upd=document.getElementById('updatedAt');
   dot.className='dot loading';
+  resetHeatmapReadiness();
+  renderHeatmapLoading();
   upd.textContent='載入中…';
   try{
     const res=await fetch('./holdings.json?_='+Date.now()+'&v=2');
@@ -2836,7 +2887,8 @@ async function loadData(){
         if(!ff||!ff.all){
           fundflowUpdated='未載入';
           fundflowCount=0;
-          renderHeatmaps();
+          markHeatmapFeedReady('fundflow');
+          applyFilters();
           return;
         }
         fundflowUpdated=ff.updated||'';
@@ -2844,9 +2896,10 @@ async function loadData(){
           return [String(pair[0]||'').padStart(5,'0'),pair[1]||{}];
         }));
         fundflowCount=fundflowMap.size;
+        markHeatmapFeedReady('fundflow');
         applyFilters();
       })
-      .catch(()=>{fundflowUpdated='未載入';fundflowCount=0;renderHeatmaps();});
+      .catch(()=>{fundflowUpdated='未載入';fundflowCount=0;markHeatmapFeedReady('fundflow');applyFilters();});
 
     // Fetch confluence data for pattern badges in main table
     fetch('./data/confluence.json?_='+Date.now())
@@ -2929,6 +2982,7 @@ async function loadData(){
           priceMap = newPriceMap;
           hkexLinkMap = newHkexLinkMap;
           techSignalMap = newTechSignalMap;
+          markHeatmapFeedReady('signals');
           // Merge technical alerts (POC/FVG/Gap) from alerts.json
           fetch('./data/alerts.json?_='+Date.now())
             .then(r=>r.ok?r.json():null)
@@ -2948,9 +3002,10 @@ async function loadData(){
                   existing.push({label:sig.type||'',date:sig.date||(a.created_at||'').slice(0,10),gap_pct:sig.gap_pct,fvg_pct:sig.fvg_pct,breakout_pct:sig.breakout_pct,poc:sig.poc});
                   techSignalMap.set(code,existing);
                 });
-                applyFilters();
               }
-            }).catch(function(){});
+              markHeatmapFeedReady('alerts');
+              applyFilters();
+            }).catch(function(){markHeatmapFeedReady('alerts');applyFilters();});
           // Inject placement/rights dates into stock objects for sorting
           allStocks.forEach(function(s){
             var sm=signalMap.get(s.c);
@@ -2958,6 +3013,9 @@ async function loadData(){
           });
           // Signal summary count
           const techCodes=new Set(d.groups.filter(g=>(g.signals||[]).length>0).map(g=>String(g.code||"").padStart(5,"0")));
+        }else{
+          markHeatmapFeedReady('signals');
+          markHeatmapFeedReady('alerts');
         }
         // GAS is a sparse signal feed. Keep holdings.json as the canonical stock list.
         allStocks=baseStocks.slice();
@@ -2982,7 +3040,7 @@ async function loadData(){
         applyFilters();
         updateSortInfo();
         const savedScroll=sessionStorage.getItem('hkdataScroll');if(savedScroll)window.scrollTo(0,parseInt(savedScroll,10));
-      }).catch(()=>{});
+      }).catch(()=>{markHeatmapFeedReady('signals');markHeatmapFeedReady('alerts');applyFilters();});
     dot.className='dot';
     upd.textContent='CCASS持倉日 '+data.updated+' · 市場/訊號資料已按今日刷新';
     fetch('./data/publish_bundle.json?_='+Date.now())

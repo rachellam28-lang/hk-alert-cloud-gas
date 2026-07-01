@@ -147,6 +147,14 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 
 ## Latest Deploy Notes
 
+### 2026-07-01 heatmap no-filter marking and stable render
+
+- Main-page heatmap clicks must not narrow the stock table. Theme/sector/fund-flow tiles now set only `heatMarkType` / `heatMarkKey`; toolbar dropdowns remain the only theme/sector filters, and `flowFilter` remains a toolbar/preset filter.
+- Rows and mobile stock cards matching the active heatmap tile get `.heat-marked` blue highlighting while the table keeps its current full filtered set. Heatmap clicks do not update URL query params, presets, `themeSelect`, `sectorSelect`, or `flowFilter`.
+- Heatmap rendering is gated until holdings, `data/fundflow.json`, `data/signals.json`, and `data/alerts.json` have all completed or failed. Before then, the card shows a compact loading state instead of drawing partial percentages that later jump.
+- Fund-flow failure now marks the feed complete with `未載入`, so the heatmap can still render a stable empty/fallback state instead of hanging.
+- Local headless Chrome audit verified: two reloads produced identical heatmap signatures, 24 tiles rendered, fund-flow meta `資金 2026-06-30 · 500`, clicking the `supply_stock` theme tile kept `filtered.length` at 2731, kept URL/selectors unchanged, set `aria-pressed=true`, and marked 8 matching filtered stocks without JS exceptions.
+
 ### 2026-07-01 heatmap active tile visibility
 
 - Main-page heatmap tiles must visibly show selection after click/tap. Active tiles now use a blue fill, stronger border/shadow, and `aria-pressed=true`.
