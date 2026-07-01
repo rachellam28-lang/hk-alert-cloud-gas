@@ -1453,6 +1453,15 @@ function focusHeatStocks(){
     setTimeout(function(){target.classList.remove('heat-linked');},1800);
   });
 }
+function scrollHeatMatchesIntoView(){
+  requestAnimationFrame(function(){
+    var section=document.getElementById('mcSectionHeat');
+    if(!section||!heatMarkType||!heatMarkKey||section.style.display==='none')return;
+    section.classList.add('heat-linked');
+    section.scrollIntoView({behavior:'smooth',block:'start'});
+    setTimeout(function(){section.classList.remove('heat-linked');},1800);
+  });
+}
 function flowTileHtml(item,stat,activeKey,matches){
   var vis=flowVisual(stat,item);
   var isActive=activeKey===item.key;
@@ -1491,6 +1500,7 @@ function heatTileHtml(type,item,stat,activeKey,matches){
     +'</div>';
 }
 function setHeatFilter(type,key){
+  var shouldScroll=!(heatMarkType===type&&heatMarkKey===key);
   if(heatMarkType===type&&heatMarkKey===key){
     heatMarkType='';
     heatMarkKey='';
@@ -1499,6 +1509,7 @@ function setHeatFilter(type,key){
     heatMarkKey=key;
   }
   applyFilters();
+  if(shouldScroll)scrollHeatMatchesIntoView();
 }
 function clearHeatFilter(type){
   if(!type||heatMarkType===type){
@@ -1564,6 +1575,16 @@ function stockPassesFilters(s,opts){
   if(conFilter && confluenceMap.get(s.c)!==conFilter)return false;
   return true;
 }
+function compareTableStocks(a,b){
+  var cmp=cmpSortVal(getSortVal(a,sortCol),getSortVal(b,sortCol),sortDir);
+  if(cmp!==0)return cmp;
+  if(sortCol2){
+    cmp=cmpSortVal(getSortVal(a,sortCol2),getSortVal(b,sortCol2),sortDir2);
+    if(cmp!==0)return cmp;
+  }
+  return 0;
+}
+/* Legacy scoped heatmap labels disabled; heatmaps now use the full market.
 function heatScopeLabel(skipType){
   var labels=[];
   var themeVal=document.getElementById('themeSelect')?.value||'all';
@@ -1590,9 +1611,18 @@ function setHeatScopeText(){
   var theme=document.getElementById('themeHeatScope');
   var sector=document.getElementById('sectorHeatScope');
   var flow=document.getElementById('flowHeatScope');
-  if(theme)theme.textContent=heatScopeLabel('theme');
-  if(sector)sector.textContent=heatScopeLabel('sector');
-  if(flow)flow.textContent=heatScopeLabel('flow');
+  if(theme)theme.textContent='全市場';
+  if(sector)sector.textContent='全市場';
+  if(flow)flow.textContent='全市場';
+}
+*/
+function setHeatScopeText(){
+  var theme=document.getElementById('themeHeatScope');
+  var sector=document.getElementById('sectorHeatScope');
+  var flow=document.getElementById('flowHeatScope');
+  if(theme)theme.textContent='全市場';
+  if(sector)sector.textContent='全市場';
+  if(flow)flow.textContent='全市場';
 }
 function markHeatmapFeedReady(feed){
   if(feed==='fundflow')heatmapFundflowReady=true;
@@ -1639,21 +1669,21 @@ function renderHeatmaps(){
   var activeFlow=heatMarkType==='flow'?heatMarkKey:'all';
   if(themeEl){
     themeEl.innerHTML=THEME_HEATMAP.map(function(item){
-      var matches=stocks.filter(function(s){return stockPassesFilters(s,{skipTheme:true}) && themeMatches(s,signalMap.get(s.c),techSignalMap.get(s.c)||[],item.key);});
+      var matches=stocks.filter(function(s){return themeMatches(s,signalMap.get(s.c),techSignalMap.get(s.c)||[],item.key);});
       var stat=heatStats(matches,function(){return true;});
       return heatTileHtml('theme',item,stat,activeTheme,matches);
     }).join('');
   }
   if(sectorEl){
     sectorEl.innerHTML=SECTOR_HEATMAP.map(function(item){
-      var matches=stocks.filter(function(s){return stockPassesFilters(s,{skipSector:true}) && stockSector(s)===item.key;});
+      var matches=stocks.filter(function(s){return stockSector(s)===item.key;});
       var stat=heatStats(matches,function(){return true;});
       return heatTileHtml('sector',item,stat,activeSector,matches);
     }).join('');
   }
   if(flowEl){
     flowEl.innerHTML=FLOW_HEATMAP.map(function(item){
-      var matches=stocks.filter(function(s){return stockPassesFilters(s,{skipFlow:true}) && flowMatches(s,item.key);});
+      var matches=stocks.filter(function(s){return flowMatches(s,item.key);});
       var stat=flowStats(matches,item);
       return flowTileHtml(item,stat,activeFlow,matches);
     }).join('');
@@ -2069,7 +2099,7 @@ function renderTable(){
     else if(mc<100) groups.mid.push(s);
     else groups.large.push(s);
     });
-  var heatMatches=(heatMarkType&&heatMarkKey)?filtered.filter(heatMarkMatches):[];
+  var heatMatches=(heatMarkType&&heatMarkKey)?(allStocks||[]).filter(heatMarkMatches).sort(compareTableStocks):[];
   function renderOne(section, stocks){
     var cap=(section==='heat'?'Heat':section==='small'?'Small':section==='mid'?'Mid':'Large');
     var tbody=document.getElementById('mc'+cap+'Tbody');
@@ -2286,15 +2316,7 @@ function applyFilters(){
       var am=heatMarkMatches(a),bm=heatMarkMatches(b);
       if(am!==bm)return am?-1:1;
     }
-    // Primary sort
-    var cmp=cmpSortVal(getSortVal(a,sortCol),getSortVal(b,sortCol),sortDir);
-    if(cmp!==0)return cmp;
-    // Secondary sort
-    if(sortCol2){
-      cmp=cmpSortVal(getSortVal(a,sortCol2),getSortVal(b,sortCol2),sortDir2);
-      if(cmp!==0)return cmp;
-    }
-    return 0;
+    return compareTableStocks(a,b);
   });
   page=0;
   pageSmall=0;

@@ -153,11 +153,14 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - Rows and mobile stock cards matching the active heatmap tile get `.heat-marked` blue highlighting while the table keeps its current full filtered set. Heatmap clicks do not update URL query params, presets, `themeSelect`, `sectorSelect`, or `flowFilter`.
 - Heatmap-marked rows are promoted to the top of the current table sort, then the normal primary/secondary sort continues inside marked and unmarked groups. This keeps the full table visible while making each Heatmap tap visibly change the stocks below.
 - Because the main table is split into small/mid/large market-cap sections, active heatmap matches are also rendered in a dedicated `Heatmap 命中` section directly below the heatmap card. The original market-cap sections remain below, so heatmap does not replace the full table.
+- Heatmap panels no longer cross-filter by theme/sector/flow/search/table controls. The three panel subtitles show `全市場`, and each panel computes from `allStocks`. Clicking a tile updates the global `Heatmap 命中` list even if the main table currently has a sector/search/range filter.
+- Heatmap tile activation scrolls to `Heatmap 命中` so mobile users immediately see the stock list change instead of staying on the heatmap grid.
 - Heatmap rendering is gated until holdings, `data/fundflow.json`, `data/signals.json`, and `data/alerts.json` have all completed or failed. Before then, the card shows a compact loading state instead of drawing partial percentages that later jump.
 - Fund-flow failure now marks the feed complete with `未載入`, so the heatmap can still render a stable empty/fallback state instead of hanging.
 - Local headless Chrome audit verified: two reloads produced identical heatmap signatures, 24 tiles rendered, fund-flow meta `資金 2026-06-30 · 500`, clicking the `supply_stock` theme tile kept `filtered.length` at 2731, kept URL/selectors unchanged, set `aria-pressed=true`, and marked 8 matching filtered stocks without JS exceptions.
 - Follow-up local audit verified switching from `supply_stock` to `supply_cash` keeps `filtered.length` at 2731 but changes the first visible stock batch from the 8 marked supply-stock names to the supply-cash marked names.
 - DOM audit verified `#mcHeatTbody` itself changes: before click the section is hidden; `supply_stock` shows all 8 marked rows; switching to `supply_cash` changes the section title/count and shows the first 120 of 164 marked rows, with URL/selectors unchanged.
+- Follow-up audit with sector filter `電訊/基建` active verified Heatmap subtitles remain `全市場`, tile counts stay global, `Heatmap 命中` still shows global matches, and the page scrolls to that section after tile activation.
 
 ### 2026-07-01 heatmap active tile visibility
 
