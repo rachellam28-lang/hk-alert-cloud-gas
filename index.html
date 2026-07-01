@@ -642,7 +642,7 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
         </select>
         <select class="input filter-select" id="themeSelect" onchange="applyFilters();">
           <option value="all">主題選股</option>
-          <option value="supply_stock">圈股可炒</option>
+          <option value="supply_stock">圈股吸貨</option>
           <option value="supply_cash">圈錢避開</option>
           <option value="momentum">高動能</option>
           <option value="yearopen">年開突破</option>
@@ -1031,7 +1031,7 @@ function issuerFavorBadge(sig){
   return '<span class="cpill cpill-issuer '+cls+'" title="'+esc(tip)+'">圈股判斷 '+esc(label)+'</span>';
 }
 const THEME_HEATMAP=[
-  {key:'supply_stock',label:'圈股可炒'},
+  {key:'supply_stock',label:'圈股吸貨'},
   {key:'supply_cash',label:'圈錢避開'},
   {key:'momentum',label:'高動能'},
   {key:'yearopen',label:'年開突破'},
