@@ -53,7 +53,7 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .heat-clear{appearance:none;border:1px solid var(--line);background:var(--surface-soft);color:var(--mute);width:18px;height:18px;border-radius:5px;font:700 11px/1 inherit;cursor:pointer}
 .heat-clear:hover{border-color:var(--primary-border);background:var(--primary-soft);color:var(--primary)}
 .heatmap-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:3px}
-.heat-tile{appearance:none;position:relative;overflow:hidden;min-height:44px;border:1px solid var(--line-soft);border-radius:6px;background:var(--surface-soft);color:var(--text);padding:4px 5px;text-align:left;cursor:pointer}
+.heat-tile{appearance:none;position:relative;overflow:hidden;min-height:44px;border:1px solid var(--line-soft);border-radius:6px;background:var(--surface-soft);color:var(--text);padding:4px 5px;text-align:left;cursor:pointer;touch-action:manipulation;user-select:none}
 .heat-tile:before{content:"";position:absolute;inset:0;background:rgb(var(--heat-rgb));opacity:var(--heat-alpha);pointer-events:none}
 .heat-tile:hover{border-color:var(--primary-border);box-shadow:0 0 0 2px rgba(2,132,199,.08)}
 .heat-tile:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
@@ -70,7 +70,7 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .heat-main{font:800 12px "JetBrains Mono",ui-monospace,monospace;margin-top:2px}
 .heat-meta{display:flex;align-items:center;justify-content:space-between;gap:3px;margin-top:1px;font-size:8.5px;color:var(--mute)}
 .heat-stocks{display:flex;flex-wrap:wrap;gap:2px;margin-top:3px}
-.heat-stock{appearance:none;border:1px solid var(--line);background:rgba(255,255,255,.54);color:var(--text-soft);border-radius:4px;padding:0 3px;font:700 8.5px "JetBrains Mono",ui-monospace,monospace;cursor:pointer;line-height:1.45}
+.heat-stock{appearance:none;border:1px solid var(--line);background:rgba(255,255,255,.54);color:var(--text-soft);border-radius:4px;padding:0 3px;font:700 8.5px "JetBrains Mono",ui-monospace,monospace;cursor:pointer;line-height:1.45;touch-action:manipulation}
 .heat-stock:hover,.heat-stock:focus-visible{border-color:var(--primary-border);color:var(--primary);background:var(--primary-soft);outline:0}
 .heat-bar{height:2px;margin-top:3px;border-radius:999px;background:rgba(100,116,139,.14);overflow:hidden}
 .heat-bar span{display:block;height:100%;width:var(--heat-width);border-radius:999px;background:rgb(var(--heat-rgb))}
@@ -1083,7 +1083,25 @@ const SECTOR_CODE_MAP={
   '00073':'consumer','00100':'consumer','00113':'consumer','00122':'consumer','00126':'consumer','00146':'consumer','00157':'consumer','00162':'consumer','00236':'consumer','00239':'consumer','00244':'consumer','00286':'consumer','00289':'consumer','00375':'consumer','00389':'consumer','00411':'consumer','00417':'consumer','00511':'consumer','00520':'consumer','00524':'consumer','00623':'consumer',
   '00046':'tech','00302':'tech','00320':'tech','00327':'tech','00334':'tech','00400':'tech','00434':'tech','00522':'tech','00536':'tech','00547':'tech','00564':'tech','00600':'tech','00628':'tech','00638':'tech',
   '00042':'industrial','00096':'industrial','00213':'industrial','00505':'industrial','00509':'industrial','00568':'industrial','00586':'industrial','00627':'industrial','00637':'industrial',
-  '00669':'industrial','01766':'industrial','02313':'industrial'
+  '00669':'industrial','01766':'industrial','02313':'industrial',
+  '00001':'conglomerate','00019':'conglomerate','00087':'conglomerate','00142':'conglomerate',
+  '01456':'finance','01606':'finance','01776':'finance','01828':'finance','02328':'finance','02378':'finance','02601':'finance','02888':'finance','03360':'finance','06030':'finance','06060':'finance','06066':'finance','06623':'finance','06881':'finance','06886':'finance',
+  '00683':'property','01113':'property','02423':'property',
+  '00290':'tech','00501':'tech','01357':'tech','01385':'tech','02076':'tech','02400':'tech','02513':'tech','02577':'tech','02631':'tech','02676':'tech','02726':'tech','03200':'industrial','03277':'tech','03296':'tech','03317':'tech','03986':'tech','06088':'tech','06651':'tech','06869':'tech','09880':'tech','09903':'tech',
+  '01128':'consumer','01364':'consumer','01757':'consumer','01768':'consumer','01797':'consumer','01880':'consumer','01910':'consumer','01913':'consumer','01928':'consumer','01929':'consumer','02097':'consumer','02419':'consumer','02589':'consumer','02714':'consumer','03288':'consumer','03998':'consumer','06690':'consumer','06862':'consumer','06979':'consumer','09633':'consumer','09896':'consumer','09901':'consumer','09961':'consumer','09985':'consumer',
+  '00968':'energy','00991':'energy','01772':'energy','02579':'energy','02883':'energy','03677':'energy','03993':'energy','06656':'energy','06680':'energy','09696':'energy','09981':'energy',
+  '00390':'infra','00392':'infra','00659':'infra','01072':'industrial','01133':'industrial','01157':'industrial','01186':'infra','01800':'infra','02039':'industrial','02338':'industrial','02357':'industrial','02689':'industrial','02727':'industrial','03808':'auto','03898':'industrial','03899':'industrial','03969':'infra','06031':'industrial',
+  '00753':'shipping','01308':'shipping','01519':'shipping','02880':'shipping','06198':'shipping','06936':'shipping',
+  '01585':'auto','02026':'auto','02050':'auto','02525':'auto','02590':'industrial','03750':'auto','03931':'auto','09927':'auto',
+  '01833':'healthcare','02162':'healthcare','02315':'healthcare','02526':'healthcare','02696':'healthcare','03759':'healthcare','06821':'healthcare','09969':'healthcare',
+  '00220':'consumer','00780':'consumer','01044':'consumer','01179':'consumer','01318':'consumer','02145':'consumer','02282':'consumer','02580':'consumer','02698':'consumer','06055':'consumer','06110':'consumer','09858':'consumer',
+  '00268':'tech','00800':'auto','00856':'tech','01304':'tech','01396':'tech','02228':'tech','02432':'tech','02498':'auto','03355':'tech','03625':'tech','09898':'tech',
+  '01066':'healthcare','02630':'healthcare','02632':'healthcare',
+  '00666':'auto','01114':'auto','02643':'auto',
+  '00425':'auto','00966':'finance','01378':'energy','01618':'infra','01882':'industrial','01908':'property','03311':'infra','06969':'industrial',
+  '00598':'shipping','02638':'infra','03369':'shipping',
+  '01286':'industrial','02314':'industrial','02715':'industrial','07688':'industrial',
+  '00189':'energy','01033':'energy'
 };
 const SECTOR_RULES=[
   {key:'tech',kw:['科技','AI','人工智能','智能','軟件','软件','數據','数据','雲','云','半導體','半导体','芯片','晶片','電子','电子','網絡','网络','互聯網','互联网','商湯','騰訊','腾讯','阿里','快手','小米','美團','美团','京東','京东','百度','嗶哩','哔哩','機器人','机器人','TECH','TECHNOLOGY','DIGITAL','SOFTWARE','SEMICON','CHIP','ELECTRONIC','NETWORK','INTERNET','CLOUD','DATA','ONLINE','CYBER','ROBOT','SYSTEM']},
@@ -1233,6 +1251,106 @@ function heatKey(ev,type,key){
     setHeatFilter(type,key);
   }
 }
+var heatmapLastTouch=0;
+function heatmapEventPoint(ev){
+  if(!ev)return null;
+  var point=null;
+  if(ev.changedTouches&&ev.changedTouches[0])point=ev.changedTouches[0];
+  else if(ev.touches&&ev.touches[0])point=ev.touches[0];
+  else if(Number.isFinite(ev.clientX)&&Number.isFinite(ev.clientY))point=ev;
+  if(!point)return null;
+  return {x:point.clientX,y:point.clientY};
+}
+function heatmapPointTarget(ev){
+  var point=heatmapEventPoint(ev);
+  if(!point)return null;
+  return document.elementFromPoint(point.x,point.y);
+}
+function heatmapElementFromRects(ev,selector,maxDistance){
+  var wrap=document.getElementById('heatmapWrap');
+  var point=heatmapEventPoint(ev);
+  if(!wrap||!point)return null;
+  var best=null,bestDist=Infinity;
+  Array.from(wrap.querySelectorAll(selector)).forEach(function(el){
+    var r=el.getBoundingClientRect();
+    var pad=3;
+    if(point.x>=r.left-pad&&point.x<=r.right+pad&&point.y>=r.top-pad&&point.y<=r.bottom+pad){
+      best=el;
+      bestDist=0;
+      return;
+    }
+    var cx=r.left+r.width/2,cy=r.top+r.height/2;
+    var dist=Math.hypot(point.x-cx,point.y-cy);
+    if(dist<bestDist){best=el;bestDist=dist;}
+  });
+  return bestDist<=maxDistance?best:null;
+}
+function heatmapPointInsideElement(ev,el,pad){
+  var point=heatmapEventPoint(ev);
+  if(!point||!el)return false;
+  var r=el.getBoundingClientRect();
+  pad=pad||0;
+  return point.x>=r.left-pad&&point.x<=r.right+pad&&point.y>=r.top-pad&&point.y<=r.bottom+pad;
+}
+function activateHeatmapTarget(target,ev){
+  var wrap=document.getElementById('heatmapWrap');
+  if(!wrap||!target)return false;
+  if(target.closest&&target.closest('.heat-clear,.heatmap-head'))return false;
+  var pointTarget=heatmapPointTarget(ev);
+  var stockBtn=target.closest&&target.closest('.heat-stock[data-heat-stock]');
+  if(stockBtn&&!heatmapPointInsideElement(ev,stockBtn,3))stockBtn=null;
+  if((!stockBtn||!wrap.contains(stockBtn))&&pointTarget){
+    stockBtn=pointTarget.closest&&pointTarget.closest('.heat-stock[data-heat-stock]');
+    if(stockBtn&&!heatmapPointInsideElement(ev,stockBtn,3))stockBtn=null;
+  }
+  if((!stockBtn||!wrap.contains(stockBtn))){
+    stockBtn=heatmapElementFromRects(ev,'.heat-stock[data-heat-stock]',0);
+  }
+  if(stockBtn&&wrap.contains(stockBtn)){
+    if(ev){ev.preventDefault();ev.stopPropagation();}
+    var parentTile=stockBtn.closest('.heat-tile[data-heat-type][data-heat-key]');
+    if(parentTile&&parentTile.getAttribute('aria-disabled')!=='true'&&parentTile.getAttribute('aria-pressed')!=='true'){
+      setHeatFilter(parentTile.dataset.heatType,parentTile.dataset.heatKey);
+    }
+    showDetail(stockBtn.dataset.heatStock);
+    return true;
+  }
+  var tile=target.closest&&target.closest('.heat-tile[data-heat-type][data-heat-key]');
+  if((!tile||!wrap.contains(tile))&&pointTarget){
+    tile=pointTarget.closest&&pointTarget.closest('.heat-tile[data-heat-type][data-heat-key]');
+  }
+  if((!tile||!wrap.contains(tile))){
+    tile=heatmapElementFromRects(ev,'.heat-tile[data-heat-type][data-heat-key]',80);
+  }
+  if(!tile||!wrap.contains(tile))return false;
+  if(tile.getAttribute('aria-disabled')==='true'){
+    if(ev){ev.preventDefault();ev.stopPropagation();}
+    return true;
+  }
+  if(ev){ev.preventDefault();ev.stopPropagation();}
+  setHeatFilter(tile.dataset.heatType,tile.dataset.heatKey);
+  return true;
+}
+function bindHeatmapInteractions(){
+  var wrap=document.getElementById('heatmapWrap');
+  if(!wrap||wrap.dataset.heatBound)return;
+  wrap.dataset.heatBound='1';
+  wrap.addEventListener('click',function(e){
+    if(Date.now()-heatmapLastTouch<1200){
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
+    activateHeatmapTarget(e.target,e);
+  },true);
+  wrap.addEventListener('touchend',function(e){
+    if(activateHeatmapTarget(e.target,e))heatmapLastTouch=Date.now();
+  },{passive:false,capture:true});
+  wrap.addEventListener('keydown',function(e){
+    if(e.key!=='Enter'&&e.key!==' ')return;
+    if(activateHeatmapTarget(e.target,e))heatmapLastTouch=0;
+  },true);
+}
 function heatStockScore(s){
   var score=calcScore(s)*100;
   var vr=Number(s.vr);
@@ -1245,10 +1363,11 @@ function heatStockScore(s){
   return score;
 }
 function heatAttrs(type,key,isActive,isDisabled){
+  var attrs=' data-heat-type="'+esc(type)+'" data-heat-key="'+esc(key)+'"';
   if(isDisabled){
-    return ' role="button" tabindex="-1" aria-disabled="true" aria-pressed="false"';
+    return attrs+' role="button" tabindex="-1" aria-disabled="true" aria-pressed="false"';
   }
-  return ' role="button" tabindex="0" aria-disabled="false" aria-pressed="'+(isActive?'true':'false')+'" onclick="setHeatFilter(\''+type+'\',\''+key+'\')" onkeydown="heatKey(event,\''+type+'\',\''+key+'\')"';
+  return attrs+' role="button" tabindex="0" aria-disabled="false" aria-pressed="'+(isActive?'true':'false')+'"';
 }
 function heatStockChips(stocks,item){
   var list=(stocks||[]).slice().sort(function(a,b){
@@ -1262,7 +1381,7 @@ function heatStockChips(stocks,item){
   if(!list.length)return '';
   return '<div class="heat-stocks">'+list.map(function(s){
     var tip=s.c+' '+(s.n||'')+(s.chg!=null?' | '+fmtPct(s.chg):'');
-    return '<button type="button" class="heat-stock" title="'+esc(tip)+'" onclick="event.stopPropagation();showDetail(\''+s.c+'\')">'+esc(s.c)+'</button>';
+    return '<button type="button" class="heat-stock" title="'+esc(tip)+'" data-heat-stock="'+esc(s.c)+'">'+esc(s.c)+'</button>';
   }).join('')+'</div>';
 }
 function focusHeatStocks(){
@@ -2355,6 +2474,7 @@ function bindDynamicTapFixes(){
   bindTouchClickFallback('#filterAll,#filterUp,#filterDn,#filterConcentrated,#filterPlacement,#filterRights,#filterSmallMC,#filterMidMC,#filterLargeMC,#dirBtn,.btn-csv,.btn-save,.col-toggle-btn,.preset-btn,.preset-save,#pagination button,.section-toggle,.drawer-close');
 }
 bindDynamicTapFixes();
+bindHeatmapInteractions();
 document.getElementById('stockCards').addEventListener('click',e=>{
   if(e.target.closest('a'))e.stopPropagation();
 }, true);
