@@ -1329,6 +1329,63 @@ function clearHeatFilter(type){
   activePreset=null;
   applyFilters();
 }
+function stockPassesFilters(s,opts){
+  opts=opts||{};
+  var q=(opts.q!=null?opts.q:searchVal.toLowerCase().trim());
+  var sigFilterVal=opts.sigFilterVal||document.getElementById('sigFilter')?.value||'all';
+  var themeVal=opts.themeFilter||document.getElementById('themeSelect')?.value||'all';
+  var sectorVal=opts.sectorFilter||document.getElementById('sectorSelect')?.value||'all';
+  var flowVal=opts.flowFilter||flowFilter||'all';
+  var tpMin=opts.tpMin!==undefined?opts.tpMin:getRF('rfTpMin');
+  var tpMax=opts.tpMax!==undefined?opts.tpMax:getRF('rfTpMax');
+  var mcMin=opts.mcMin!==undefined?opts.mcMin:getRF('rfMcMin');
+  var mcMax=opts.mcMax!==undefined?opts.mcMax:getRF('rfMcMax');
+  if(q){
+    var matchCode=s.c.includes(q);
+    var matchName=s.n.toLowerCase().includes(q);
+    var matchStreak=((s.su>1?'🔥'+s.su+'日':'')+(s.sd>1?'❄️'+s.sd+'日':'')).includes(q);
+    var matchSig=false;
+    var ts=techSignalMap.get(s.c)||[];
+    for(var ti=0;ti<ts.length;ti++){if(ts[ti].label&&String(ts[ti].label).includes(q)){matchSig=true;break;}}
+    if(!matchSig){var sm2=signalMap.get(s.c);if(sm2){var cp='';if(sm2.pl)cp+='配股';if(sm2.ri)cp+='供股';if(sm2.inc)cp+='增持';if(cp.includes(q))matchSig=true;}}
+    if(!matchCode&&!matchName&&!matchStreak&&!matchSig)return false;
+  }
+  const pickerSig=signalMap.get(s.c);
+  const pickerTech=techSignalMap.get(s.c)||[];
+  if(!opts.skipTheme && themeVal!=='all' && !themeMatches(s,pickerSig,pickerTech,themeVal))return false;
+  if(!opts.skipSector && sectorVal!=='all' && stockSector(s)!==sectorVal)return false;
+  if(!opts.skipFlow && flowVal!=='all' && fundflowMap.size>0 && !flowMatches(s,flowVal))return false;
+  if(activeFilters.size>0){
+    for(const mode of activeFilters){
+      if(mode==='up' && !(s.su>1))return false;
+      if(mode==='dn' && !(s.sd>1))return false;
+      if(mode==='concentrated' && s.t5<50)return false;
+      if(mode==='placement'){const sm=signalMap.get(s.c);if(!sm||!sm.pl)return false;}
+      if(mode==='rights'){const sm=signalMap.get(s.c);if(!sm||!sm.ri)return false;}
+      if(mode==='small_mc' && (!hasMC(s)||s.mc>=20))return false;
+      if(mode==='mid_mc' && (!hasMC(s)||s.mc<20||s.mc>=100))return false;
+      if(mode==='large_mc' && (!hasMC(s)||s.mc<100))return false;
+    }
+  }
+  if(tpMin!=null && s.tp<tpMin)return false;
+  if(tpMax!=null && s.tp>tpMax)return false;
+  if(mcMin!=null && (!hasMC(s)||s.mc<mcMin))return false;
+  if(mcMax!=null && (!hasMC(s)||s.mc>mcMax))return false;
+  if(sigFilterVal!=='all'){
+    const ts=techSignalMap.get(s.c)||[];
+    const sigText=ts.map(x=>x.label).join(' ');
+    let sigOK=true;
+    if(sigFilterVal==='poc')sigOK=sigText.indexOf('POC')>=0;
+    else if(sigFilterVal==='poc_half')sigOK=sigText.indexOf('半年POC')>=0;
+    else if(sigFilterVal==='poc3')sigOK=sigText.indexOf('3年POC')>=0;
+    else if(sigFilterVal==='fvg')sigOK=sigText.indexOf('FVG')>=0;
+    else if(sigFilterVal==='yearopen')sigOK=sigText.indexOf('年開突破')>=0;
+    else if(sigFilterVal==='ipo')sigOK=sigText.indexOf('IPO首日')>=0;
+    if(!sigOK)return false;
+  }
+  if(conFilter && confluenceMap.get(s.c)!==conFilter)return false;
+  return true;
+}
 function renderHeatmaps(){
   var stocks=allStocks||[];
   var themeEl=document.getElementById('themeHeatmap');
@@ -1339,21 +1396,21 @@ function renderHeatmaps(){
   var activeSector=document.getElementById('sectorSelect')?.value||'all';
   if(themeEl){
     themeEl.innerHTML=THEME_HEATMAP.map(function(item){
-      var matches=stocks.filter(function(s){return themeMatches(s,signalMap.get(s.c),techSignalMap.get(s.c)||[],item.key);});
+      var matches=stocks.filter(function(s){return stockPassesFilters(s,{skipTheme:true}) && themeMatches(s,signalMap.get(s.c),techSignalMap.get(s.c)||[],item.key);});
       var stat=heatStats(matches,function(){return true;});
       return heatTileHtml('theme',item,stat,activeTheme,matches);
     }).join('');
   }
   if(sectorEl){
     sectorEl.innerHTML=SECTOR_HEATMAP.map(function(item){
-      var matches=stocks.filter(function(s){return stockSector(s)===item.key;});
+      var matches=stocks.filter(function(s){return stockPassesFilters(s,{skipSector:true}) && stockSector(s)===item.key;});
       var stat=heatStats(matches,function(){return true;});
       return heatTileHtml('sector',item,stat,activeSector,matches);
     }).join('');
   }
   if(flowEl){
     flowEl.innerHTML=FLOW_HEATMAP.map(function(item){
-      var matches=stocks.filter(function(s){return flowMatches(s,item.key);});
+      var matches=stocks.filter(function(s){return stockPassesFilters(s,{skipFlow:true}) && flowMatches(s,item.key);});
       var stat=flowStats(matches,item);
       return flowTileHtml(item,stat,flowFilter,matches);
     }).join('');
@@ -1952,62 +2009,8 @@ function applyFilters(){
   // Read range filter values
   var tpMin=getRF('rfTpMin'),tpMax=getRF('rfTpMax');
   var mcMin=getRF('rfMcMin'),mcMax=getRF('rfMcMax');
-  filtered=allStocks.filter(s=>{
-    if(q){
-      var matchCode=s.c.includes(q);
-      var matchName=s.n.toLowerCase().includes(q);
-      var matchStreak=((s.su>1?'🔥'+s.su+'日':'')+(s.sd>1?'❄️'+s.sd+'日':'')).includes(q);
-      // Search signal labels
-      var matchSig=false;
-      var ts=techSignalMap.get(s.c)||[];
-      for(var ti=0;ti<ts.length;ti++){if(ts[ti].label&&String(ts[ti].label).includes(q)){matchSig=true;break;}}
-      if(!matchSig){var sm2=signalMap.get(s.c);if(sm2){var cp='';if(sm2.pl)cp+='配股';if(sm2.ri)cp+='供股';if(sm2.inc)cp+='增持';if(cp.includes(q))matchSig=true;}}
-      if(!matchCode&&!matchName&&!matchStreak&&!matchSig) return false;
-    }
-
-    const pickerSig=signalMap.get(s.c);
-    const pickerTech=techSignalMap.get(s.c)||[];
-    if(themeFilter!=='all' && !themeMatches(s,pickerSig,pickerTech,themeFilter)) return false;
-    if(sectorFilter!=='all' && stockSector(s)!==sectorFilter) return false;
-    if(flowFilter!=='all' && fundflowMap.size>0 && !flowMatches(s,flowFilter)) return false;
-
-    // Multi-select AND-logic filters
-    if(activeFilters.size>0){
-      for(const mode of activeFilters){
-        if(mode==='up' && !(s.su>1)) return false;
-        if(mode==='dn' && !(s.sd>1)) return false;
-        if(mode==='concentrated' && s.t5<50) return false;
-        if(mode==='placement'){const sm=signalMap.get(s.c);if(!sm||!sm.pl)return false;}
-        if(mode==='rights'){const sm=signalMap.get(s.c);if(!sm||!sm.ri)return false;}
-        if(mode==='small_mc' && (!hasMC(s) || s.mc>=20)) return false;
-        if(mode==='mid_mc' && (!hasMC(s) || s.mc<20 || s.mc>=100)) return false;
-        if(mode==='large_mc' && (!hasMC(s) || s.mc<100)) return false;
-      }
-    }
-
-    // Range filters
-    if(tpMin!=null && s.tp<tpMin) return false;
-    if(tpMax!=null && s.tp>tpMax) return false;
-    if(mcMin!=null && (!hasMC(s)||s.mc<mcMin)) return false;
-    if(mcMax!=null && (!hasMC(s)||s.mc>mcMax)) return false;
-
-    // Signal type dropdown filter (AND with multi-select)
-    if(sigFilterVal!=='all'){
-      const ts=techSignalMap.get(s.c)||[];
-      const sigText=ts.map(x=>x.label).join(' ');
-      const sm=signalMap.get(s.c);
-      let sigOK=true;
-      if(sigFilterVal==='poc') sigOK=sigText.indexOf('POC')>=0;
-      else if(sigFilterVal==='poc_half') sigOK=sigText.indexOf('半年POC')>=0;
-      else if(sigFilterVal==='poc3') sigOK=sigText.indexOf('3年POC')>=0;
-      else if(sigFilterVal==='fvg') sigOK=sigText.indexOf('FVG')>=0;
-      else if(sigFilterVal==='yearopen') sigOK=sigText.indexOf('年開突破')>=0;
-      else if(sigFilterVal==='ipo') sigOK=sigText.indexOf('IPO首日')>=0;
-      if(!sigOK) return false;
-    }
-    // Confluence pattern filter
-    if(conFilter && confluenceMap.get(s.c)!==conFilter) return false;
-    return true;
+  filtered=allStocks.filter(function(s){
+    return stockPassesFilters(s,{q:q,sigFilterVal:sigFilterVal,themeFilter:themeFilter,sectorFilter:sectorFilter,flowFilter:flowFilter,tpMin:tpMin,tpMax:tpMax,mcMin:mcMin,mcMax:mcMax});
   });
   // Multi-column sort
   filtered.sort((a,b)=>{
