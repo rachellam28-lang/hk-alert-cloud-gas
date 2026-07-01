@@ -659,6 +659,7 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
           <option value="infra">電訊/基建</option>
           <option value="shipping">航運物流</option>
           <option value="industrial">工業/製造</option>
+          <option value="conglomerate">綜合/控股</option>
           <option value="other">其他/未分類</option>
         </select>
       </div>
@@ -1046,6 +1047,7 @@ const SECTOR_HEATMAP=[
   {key:'infra',label:'電訊/基建'},
   {key:'shipping',label:'航運物流'},
   {key:'industrial',label:'工業/製造'},
+  {key:'conglomerate',label:'綜合/控股'},
   {key:'other',label:'其他/未分類'}
 ];
 const FLOW_HEATMAP=[
@@ -1068,23 +1070,40 @@ const SECTOR_CODE_MAP={
   '02359':'healthcare','06160':'healthcare','06618':'healthcare','09885':'healthcare','09886':'healthcare','09926':'healthcare','09995':'healthcare','09996':'healthcare',
   '00002':'infra','00003':'infra','00066':'infra','00728':'infra','00762':'infra','00788':'infra','00941':'infra','01038':'infra',
   '02057':'shipping','01119':'shipping','01919':'shipping','02866':'shipping',
+  '00050':'infra','00062':'infra','00077':'infra','00357':'infra','00525':'infra','00576':'infra',
+  '00237':'shipping','00316':'shipping','00560':'shipping','00636':'shipping',
+  '00086':'finance','00267':'finance','00279':'finance','00379':'finance','00616':'finance',
+  '00051':'property','00081':'property','00097':'property','00337':'property','00535':'property','00563':'property','00606':'property',
+  '00073':'consumer','00100':'consumer','00113':'consumer','00122':'consumer','00126':'consumer','00146':'consumer','00157':'consumer','00162':'consumer','00236':'consumer','00239':'consumer','00244':'consumer','00286':'consumer','00289':'consumer','00375':'consumer','00389':'consumer','00411':'consumer','00417':'consumer','00511':'consumer','00520':'consumer','00524':'consumer','00623':'consumer',
+  '00046':'tech','00302':'tech','00320':'tech','00327':'tech','00334':'tech','00400':'tech','00434':'tech','00522':'tech','00536':'tech','00547':'tech','00564':'tech','00600':'tech','00628':'tech','00638':'tech',
+  '00042':'industrial','00096':'industrial','00213':'industrial','00505':'industrial','00509':'industrial','00568':'industrial','00586':'industrial','00627':'industrial','00637':'industrial',
   '00669':'industrial','01766':'industrial','02313':'industrial'
 };
 const SECTOR_RULES=[
-  {key:'tech',kw:['科技','AI','人工智能','智能','軟件','软件','數據','数据','雲','云','半導體','半导体','芯片','晶片','電子','电子','網絡','网络','互聯網','互联网','商湯','騰訊','腾讯','阿里','快手','小米','美團','美团','京東','京东','百度','嗶哩','哔哩','機器人','机器人']},
-  {key:'healthcare',kw:['醫藥','医药','製藥','制药','生物','醫療','医疗','健康','藥','药','康方','藥明','药明','君實','君实','百濟','百济']},
-  {key:'property',kw:['地產','地产','置業','置业','物業','物业','房地產','房地产','新城','萬科','万科','龍湖','龙湖','碧桂園','碧桂园','綠城','绿城']},
-  {key:'finance',kw:['銀行','银行','金融','保險','保险','資本','资本','信託','信托','證券','证券','券商','交易所','港交所','中金','海通','國泰君安','国泰君安']},
-  {key:'energy',kw:['能源','石油','煤','礦','矿','黃金','黄金','金礦','金矿','銅','铜','鋁','铝','鋼','钢','稀土','資源','资源','電力','电力','燃氣','燃气','光伏']},
-  {key:'auto',kw:['汽車','汽车','車','车','新能源','電池','电池','比亞迪','比亚迪','吉利','理想','蔚來','蔚来','小鵬','小鹏','零跑']},
-  {key:'consumer',kw:['食品','飲料','饮料','啤酒','餐飲','餐饮','零售','百貨','百货','旅遊','旅游','酒店','娛樂','娱乐','體育','体育','服飾','服饰','教育','潮玩']},
-  {key:'infra',kw:['電訊','电讯','移動','移动','聯通','联通','電信','电信','鐵塔','铁塔','基建','公路','水務','水务','環保','环保','公用']},
-  {key:'shipping',kw:['航運','航运','物流','港口','航空','海運','海运','中遠','中远','快遞','快递']},
-  {key:'industrial',kw:['工業','工业','製造','制造','機械','机械','工程','建材','水泥','玻璃','化工','包裝','包装']}
+  {key:'tech',kw:['科技','AI','人工智能','智能','軟件','软件','數據','数据','雲','云','半導體','半导体','芯片','晶片','電子','电子','網絡','网络','互聯網','互联网','商湯','騰訊','腾讯','阿里','快手','小米','美團','美团','京東','京东','百度','嗶哩','哔哩','機器人','机器人','TECH','TECHNOLOGY','DIGITAL','SOFTWARE','SEMICON','CHIP','ELECTRONIC','NETWORK','INTERNET','CLOUD','DATA','ONLINE','CYBER','ROBOT','SYSTEM']},
+  {key:'healthcare',kw:['醫藥','医药','製藥','制药','生物','醫療','医疗','健康','醫院','医院','診所','诊所','藥','药','康方','藥明','药明','君實','君实','百濟','百济','HEALTH','HEALTHCARE','MEDICAL','MEDIC','PHARMA','BIO','CLINIC','HOSPITAL','DENTAL']},
+  {key:'property',kw:['地產','地产','置業','置业','置地','物業','物业','房地產','房地产','物管','房託','房托','建業','建业','九龍倉','九龙仓','恒隆','希慎','遠東發展','远东发展','鷹君','鹰君','嘉華國際','嘉华国际','新城','萬科','万科','龍湖','龙湖','碧桂園','碧桂园','綠城','绿城','PROPERT','PROPERTY','PROPERTIES','REALTY','REAL ESTATE','LAND','REIT','WHARF','HANG LUNG','HYSAN','KERRY PPT','TST PROPERTIES','COSMOPOL']},
+  {key:'finance',kw:['銀行','银行','金融','保險','保险','資本','资本','信託','信托','證券','证券','券商','交易所','港交所','基金','投資','投资','期貨','期货','信貸','信贷','信達','信达','光大控股','申萬宏源','申万宏源','第一上海','中金','海通','國泰君安','国泰君安','BANK','BANKING','FINANCE','FINANCIAL','INSURANCE','SECURITIES','SECURITY','CAPITAL','ASSET','TRUST','FUND','INVEST','CREDIT','FUTURES','BROKER']},
+  {key:'energy',kw:['能源','能量','電能','电能','石油','煤','礦','矿','黃金','黄金','金礦','金矿','銅','铜','鋁','铝','鋼','钢','稀土','資源','资源','電力','电力','燃氣','燃气','光伏','太陽能','太阳能','風電','风电','低碳','油氣','油气','ENERGY','POWER','ELECTRIC','GAS','PETRO','OIL','COAL','MINING','MINERAL','GOLD','COPPER','STEEL','SOLAR','WIND','PV','LNG']},
+  {key:'auto',kw:['汽車','汽车','車','车','新能源','電池','电池','比亞迪','比亚迪','吉利','理想','蔚來','蔚来','小鵬','小鹏','零跑','AUTO','AUTOMOBILE','MOTOR','VEHICLE','EV','BATTERY']},
+  {key:'consumer',kw:['食品','飲料','饮料','啤酒','餐飲','餐饮','零售','百貨','百货','旅遊','旅游','酒店','傳媒','传媒','媒體','媒体','文化','影視','影视','娛樂','娱乐','體育','体育','服飾','服饰','服裝','服装','珠寶','珠宝','鐘錶','钟表','光學','光学','美容','美妝','美妆','生活','家電','家电','教育','潮玩','香格里拉','大快活','周生生','莎莎','達芙妮','达芙妮','旺旺','康師傅','康师傅','美的','中旅','FOOD','BEVERAGE','BEER','RESTAURANT','RETAIL','DEPARTMENT STORE','HOTEL','TOUR','TRAVEL','MEDIA','ENTERTAIN','CULTURE','SPORT','APPAREL','FASHION','JEWEL','WATCH','OPTICAL','BEAUTY','COSMETIC','LIFESTYLE','HOME','APPLIANCE','EDUCATION','HYPEBEAST']},
+  {key:'infra',kw:['電訊','电讯','通訊','通讯','通信','移動','移动','聯通','联通','電信','电信','鐵塔','铁塔','基建','公路','公共交通','巴士','小輪','小轮','載通','载通','冠忠','水務','水务','環境','环境','環保','环保','公用','港通','粵海投資','粤海投资','光大環境','光大环境','TELECOM','MOBILE','TOWER','INFRA','INFRASTRUCTURE','ROAD','EXPRESSWAY','TRANSPORT','TRANSIT','BUS','FERRY','ENVIRONMENT','WATER','UTILITY','UTILITIES']},
+  {key:'shipping',kw:['航運','航运','物流','港口','航空','貨倉','货仓','倉','仓','海運','海运','中遠','中远','東方海外','东方海外','快遞','快递','SHIPPING','MARINE','LOGISTICS','PORT','AIR','AIRLINE','CARGO','WAREHOUSE','FREIGHT','OOIL','COSCO','EXPRESS']},
+  {key:'industrial',kw:['工業','工业','實業','实业','製造','制造','機械','机械','機電','机电','電機','电机','工程','建材','水泥','玻璃','化工','精化','化肥','包裝','包装','紡織','纺织','製衣','制衣','建滔','德昌','震雄','拖拉機','拖拉机','中船','防務','防务','美的集團','美的集团','INDUSTRIAL','INDUSTRY','MANUFACTUR','MACH','ELECTRIC','ENGINEERING','MATERIAL','CEMENT','GLASS','CHEM','FERTILIZER','PACK','TEXTILE','GARMENT','VTECH','MIDEA']},
+  {key:'conglomerate',kw:['控股','集團','集团','國際','国际','企業','企业','發展','发展','管理','中國','中国','亞洲','亚洲','大中華','大中华','HOLD','HOLDING','HOLDINGS','GROUP','INTL',"INT'L",'INTERNATIONAL','ENTERPRISE','ENT','DEVELOPMENT','DEV','MANAGEMENT','CHINA','ASIA','PACIFIC']}
 ];
 function textHasAny(text,words){
   text=String(text||'');
-  for(var i=0;i<words.length;i++){if(text.indexOf(words[i])>=0)return true;}
+  var up=text.toUpperCase();
+  for(var i=0;i<words.length;i++){
+    var w=String(words[i]||'');
+    var wu=w.toUpperCase();
+    if(/^[A-Z0-9]{1,2}$/.test(wu)){
+      if(new RegExp('(^|[^A-Z0-9])'+wu+'([^A-Z0-9]|$)').test(up))return true;
+      continue;
+    }
+    if(text.indexOf(w)>=0 || up.indexOf(wu)>=0)return true;
+  }
   return false;
 }
 function stockSector(s){

@@ -152,6 +152,7 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - Main-page heatmaps remain in their own `section.card heatmap-card`, separate from table controls, with three panels: theme, sector, and fund flow.
 - The heatmap card now has a compact header with fund-flow publish date/count metadata so it does not look stuck while data is loading.
 - Sector grouping still avoids another heavy JSON source. It now checks a lightweight `SECTOR_CODE_MAP` for common HK large caps before falling back to stock-name keyword rules, which reduces obvious wrong-sector placements.
+- Sector grouping should not dump holding-company names into `其他/未分類`. `index.html` now has a `綜合/控股` sector for generic holding/group/development names, broader bilingual keyword rules, short English token boundary matching for `AI`/`EV`, and extra exact code overrides for obvious HK names. Local audit improved sector heatmap `other` from 1768 to about 621 stocks.
 - Main page now fetches existing `data/fundflow.json` and builds a clickable fund-flow heatmap from `main_net`, `total_net`, and `lgt_cap_chg_daily`.
 - Fund-flow heatmap tiles cover main/total/southbound inflow and outflow; clicking a tile applies the flow filter, and presets/URL state persist the `flow` filter.
 - Heatmap tiles must connect to stocks, not only show group stats. Each tile shows top stock-code chips that open the stock drawer directly, and clicking the tile filters then scrolls/highlights the first matching stock row/card.
