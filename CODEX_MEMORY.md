@@ -152,6 +152,12 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - Main-page heatmap tiles must visibly show selection after click/tap. Active tiles now use a blue fill, stronger border/shadow, and `aria-pressed=true`.
 - Empty active tiles must not stay faded. `.heat-tile.empty` opacity only applies when the tile is not active, so zero-count theme tiles still look selected when tapped.
 - Zero-count inactive heatmap tiles are disabled and must not apply a new filter. If a zero-count tile is already active from URL/preset/old state, it stays clickable only so the user can clear that filter.
+- Heatmap card audit after the zero-tile fixes:
+  - DOM counts match the page's own theme/sector/flow filter functions.
+  - Tile click row counts match displayed tile counts.
+  - Stock-code chips open the drawer without changing filters.
+  - Mobile 390px layout has no heatmap tile overflow.
+  - `data/fundflow.json` was refreshed from westock to `2026-06-30` with 500 symbols; the heatmap header now shows `資金 2026-06-30 · 500`.
 
 ### 2026-06-30 main heatmap card, sector overrides, and fund-flow heatmap
 

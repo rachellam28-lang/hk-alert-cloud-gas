@@ -1,6 +1,6 @@
 {
   "schema_v": 1,
-  "generated_at": "2026-06-30T17:22:53",
+  "generated_at": "2026-07-01T16:48:57",
   "source_of_truth": {
     "db": "ccass/holdings.db",
     "primary_holdings": "holdings.json",
@@ -19,7 +19,7 @@
     },
     "signals": {
       "path": "data/signals.json",
-      "updated": "2026-06-30T17:22:52.436792",
+      "updated": "2026-06-30T18:24:21.564500",
       "source": "announcements.json + rights_analysis.json + alerts.json + holdings.json",
       "groups": 2731,
       "with_signals": 492,
@@ -148,7 +148,7 @@
     "latest_publishable_date": "2026-06-18",
     "latest_publishable_stock_count": 2745,
     "latest_publishable_coverage_pct": 99.5,
-    "signals_updated": "2026-06-30T17:22:52.436792",
+    "signals_updated": "2026-06-30T18:24:21.564500",
     "alerts_updated": "2026-06-29 05:13 UTC",
     "transfers_updated": "2026-06-26 transfer backfill required",
     "transfers_date": "2026-06-26",
@@ -162,6 +162,6 @@
     }
   },
   "telegram": {
-    "summary": "publish=FAIL | holdings=2026-06-26 | latest_db=2026-06-26 (0.9%) | publishable=2026-06-18 | signals=2026-06-30T17:22:52.436792 | alerts=2026-06-29 05:13 UTC | transfers=2026-06-26 transfer backfill required | market=2026-06-30T02:41:33.202234+00:00"
+    "summary": "publish=FAIL | holdings=2026-06-26 | latest_db=2026-06-26 (0.9%) | publishable=2026-06-18 | signals=2026-06-30T18:24:21.564500 | alerts=2026-06-29 05:13 UTC | transfers=2026-06-26 transfer backfill required | market=2026-06-30T02:41:33.202234+00:00"
   }
 }
