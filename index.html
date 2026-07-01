@@ -1296,23 +1296,22 @@ function activateHeatmapTarget(target,ev){
   var wrap=document.getElementById('heatmapWrap');
   if(!wrap||!target)return false;
   if(target.closest&&target.closest('.heat-clear,.heatmap-head'))return false;
+  var isTouch=ev&&ev.type==='touchend';
   var pointTarget=heatmapPointTarget(ev);
-  var stockBtn=target.closest&&target.closest('.heat-stock[data-heat-stock]');
+  var stockBtn=!isTouch&&target.closest&&target.closest('.heat-stock[data-heat-stock]');
   if(stockBtn&&!heatmapPointInsideElement(ev,stockBtn,3))stockBtn=null;
-  if((!stockBtn||!wrap.contains(stockBtn))&&pointTarget){
+  if(!isTouch&&(!stockBtn||!wrap.contains(stockBtn))&&pointTarget){
     stockBtn=pointTarget.closest&&pointTarget.closest('.heat-stock[data-heat-stock]');
     if(stockBtn&&!heatmapPointInsideElement(ev,stockBtn,3))stockBtn=null;
   }
-  if((!stockBtn||!wrap.contains(stockBtn))){
+  if(!isTouch&&(!stockBtn||!wrap.contains(stockBtn))){
     stockBtn=heatmapElementFromRects(ev,'.heat-stock[data-heat-stock]',0);
   }
   if(stockBtn&&wrap.contains(stockBtn)){
     if(ev){ev.preventDefault();ev.stopPropagation();}
     var parentTile=stockBtn.closest('.heat-tile[data-heat-type][data-heat-key]');
-    var parentActive=parentTile&&parentTile.getAttribute('aria-pressed')==='true';
-    if(parentTile&&parentTile.getAttribute('aria-disabled')!=='true'&&!parentActive){
+    if(parentTile&&parentTile.getAttribute('aria-disabled')!=='true'&&parentTile.getAttribute('aria-pressed')!=='true'){
       setHeatFilter(parentTile.dataset.heatType,parentTile.dataset.heatKey);
-      return true;
     }
     showDetail(stockBtn.dataset.heatStock);
     return true;
@@ -1444,7 +1443,6 @@ function setHeatFilter(type,key){
     flowFilter=next;
     activePreset=null;
     applyFilters();
-    if(next!=='all')focusHeatStocks();
     return;
   }
   var id=type==='theme'?'themeSelect':'sectorSelect';
@@ -1454,7 +1452,6 @@ function setHeatFilter(type,key){
   el.value=nextVal;
   activePreset=null;
   applyFilters();
-  if(nextVal!=='all')focusHeatStocks();
 }
 function clearHeatFilter(type){
   if(type==='flow'){
