@@ -48,6 +48,8 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .heatmap-panel{min-width:0;padding:5px 7px}
 .heatmap-panel+.heatmap-panel{border-left:1px solid var(--line-soft)}
 .heatmap-head{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:4px;font-size:10px;font-weight:800;color:var(--text-soft);text-transform:uppercase;letter-spacing:0}
+.heatmap-head-title{display:flex;align-items:center;gap:5px;min-width:0}
+.heat-scope{font-size:8.5px;font-weight:700;color:var(--mute-2);text-transform:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:72px}
 .heat-clear{appearance:none;border:1px solid var(--line);background:var(--surface-soft);color:var(--mute);width:18px;height:18px;border-radius:5px;font:700 11px/1 inherit;cursor:pointer}
 .heat-clear:hover{border-color:var(--primary-border);background:var(--primary-soft);color:var(--primary)}
 .heatmap-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:3px}
@@ -721,15 +723,15 @@ th.sortable .sort2-icon{font-size:8px;margin-left:2px;opacity:.6}
       </div>
       <div class="heatmap-wrap">
         <div class="heatmap-panel">
-          <div class="heatmap-head"><span>主題 Heatmap</span><button class="heat-clear" title="清除主題" onclick="clearHeatFilter('theme')">×</button></div>
+          <div class="heatmap-head"><span class="heatmap-head-title">主題 Heatmap <small class="heat-scope" id="themeHeatScope"></small></span><button class="heat-clear" title="清除主題" onclick="clearHeatFilter('theme')">×</button></div>
           <div class="heatmap-grid" id="themeHeatmap"></div>
         </div>
         <div class="heatmap-panel">
-          <div class="heatmap-head"><span>板塊 Heatmap</span><button class="heat-clear" title="清除板塊" onclick="clearHeatFilter('sector')">×</button></div>
+          <div class="heatmap-head"><span class="heatmap-head-title">板塊 Heatmap <small class="heat-scope" id="sectorHeatScope"></small></span><button class="heat-clear" title="清除板塊" onclick="clearHeatFilter('sector')">×</button></div>
           <div class="heatmap-grid" id="sectorHeatmap"></div>
         </div>
         <div class="heatmap-panel">
-          <div class="heatmap-head"><span>資金流 Heatmap</span><button class="heat-clear" title="清除資金流" onclick="clearHeatFilter('flow')">×</button></div>
+          <div class="heatmap-head"><span class="heatmap-head-title">資金流 Heatmap <small class="heat-scope" id="flowHeatScope"></small></span><button class="heat-clear" title="清除資金流" onclick="clearHeatFilter('flow')">×</button></div>
           <div class="heatmap-grid" id="flowHeatmap"></div>
         </div>
       </div>
@@ -1386,6 +1388,36 @@ function stockPassesFilters(s,opts){
   if(conFilter && confluenceMap.get(s.c)!==conFilter)return false;
   return true;
 }
+function heatScopeLabel(skipType){
+  var labels=[];
+  var themeVal=document.getElementById('themeSelect')?.value||'all';
+  var sectorVal=document.getElementById('sectorSelect')?.value||'all';
+  var sigVal=document.getElementById('sigFilter')?.value||'all';
+  var fItem=flowItem(flowFilter);
+  if(skipType!=='theme'&&themeVal!=='all')labels.push(THEME_LABELS[themeVal]||themeVal);
+  if(skipType!=='sector'&&sectorVal!=='all')labels.push(SECTOR_LABELS[sectorVal]||sectorVal);
+  if(skipType!=='flow'&&flowFilter&&flowFilter!=='all')labels.push(fItem?fItem.label:flowFilter);
+  activeFilters.forEach(function(mode){
+    var map={up:'連升',dn:'連跌',concentrated:'集中',placement:'配股',rights:'供股',small_mc:'小市值',mid_mc:'中市值',large_mc:'大市值'};
+    if(map[mode])labels.push(map[mode]);
+  });
+  if(sigVal!=='all')labels.push('信號');
+  if(conFilter)labels.push('共振');
+  if((searchVal||'').trim())labels.push('搜尋');
+  if(getRF('rfTpMin')!=null||getRF('rfTpMax')!=null||getRF('rfMcMin')!=null||getRF('rfMcMax')!=null)labels.push('範圍');
+  if(!labels.length)return '全市場';
+  var txt=labels.slice(0,2).join('/');
+  if(labels.length>2)txt+='+'+(labels.length-2);
+  return txt+'內';
+}
+function setHeatScopeText(){
+  var theme=document.getElementById('themeHeatScope');
+  var sector=document.getElementById('sectorHeatScope');
+  var flow=document.getElementById('flowHeatScope');
+  if(theme)theme.textContent=heatScopeLabel('theme');
+  if(sector)sector.textContent=heatScopeLabel('sector');
+  if(flow)flow.textContent=heatScopeLabel('flow');
+}
 function renderHeatmaps(){
   var stocks=allStocks||[];
   var themeEl=document.getElementById('themeHeatmap');
@@ -1418,6 +1450,7 @@ function renderHeatmaps(){
   if(metaEl){
     metaEl.textContent=fundflowUpdated ? '資金 '+fundflowUpdated+(fundflowCount?' · '+fundflowCount:'') : (fundflowMap.size ? '資金已載入' : '資金載入中');
   }
+  setHeatScopeText();
 }
 // P2: Composite score 0-10
 function calcScore(s){
