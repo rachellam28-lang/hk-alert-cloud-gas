@@ -147,6 +147,12 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 
 ## Latest Deploy Notes
 
+### 2026-07-02 Cloudflare production rollback check and gray badges
+
+- `index.html` and `signals.html` now define `.ev-gray`, so market eval badges with `color:"gray"` such as HSI/M2 and SPX/M2 `合理` render with the same framed badge style as green/orange/red/neutral labels.
+- Live production was found serving an older `index.html` that did not contain the current heatmap globals (`mcSectionHeat`, `scrollHeatMatchesIntoView`, and `function renderHeatmaps`). Local repo HEAD still had the latest heatmap commits, so the issue was Cloudflare production content, not a local worktree revert.
+- Deployed directly with `ccass/scripts/_deploy_cf.py`; production root verified with cache-bust HTML checks for the heatmap markers plus `.ev-gray`, and a headless Chromium DOM audit verified the `合理` gray badge is framed, 24 heatmap tiles render, clicking `圈股吸貨` opens `Heatmap 命中` with 8 rows, and no JS exceptions fired.
+
 ### 2026-07-01 heatmap no-filter marking and stable render
 
 - Main-page heatmap clicks must not narrow the stock table. Theme/sector/fund-flow tiles now set only `heatMarkType` / `heatMarkKey`; toolbar dropdowns remain the only theme/sector filters, and `flowFilter` remains a toolbar/preset filter.
