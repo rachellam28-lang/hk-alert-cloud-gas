@@ -1,6 +1,6 @@
 # HK Alert Cloud GAS Memory
 
-Last updated: 2026-07-01 HKT
+Last updated: 2026-07-02 HKT
 
 ## Load First
 
@@ -152,6 +152,17 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - `index.html` and `signals.html` now define `.ev-gray`, so market eval badges with `color:"gray"` such as HSI/M2 and SPX/M2 `合理` render with the same framed badge style as green/orange/red/neutral labels.
 - Live production was found serving an older `index.html` that did not contain the current heatmap globals (`mcSectionHeat`, `scrollHeatMatchesIntoView`, and `function renderHeatmaps`). Local repo HEAD still had the latest heatmap commits, so the issue was Cloudflare production content, not a local worktree revert.
 - Deployed directly with `ccass/scripts/_deploy_cf.py`; production root verified with cache-bust HTML checks for the heatmap markers plus `.ev-gray`, and a headless Chromium DOM audit verified the `合理` gray badge is framed, 24 heatmap tiles render, clicking `圈股吸貨` opens `Heatmap 命中` with 8 rows, and no JS exceptions fired.
+- Current incident log:
+  - Read `AGENTS.md`, `CODEX_MEMORY.md`, and `git status --short` before touching files.
+  - Compared local `index.html` with `https://hk-alert-cloud-gas.pages.dev/?verify=...`; local had latest heatmap code, live production did not.
+  - Added `.ev-gray` to both `index.html` and `signals.html`.
+  - Ran embedded-script parse check for `index.html` and `signals.html`; both passed.
+  - Ran `git diff --check` on the touched files; no whitespace errors beyond normal line-ending warnings.
+  - Committed only `index.html`, `signals.html`, and `CODEX_MEMORY.md` as `b4f6fc5 fix(main): frame gray market badges`.
+  - Direct Cloudflare deploy returned preview `https://2faf647d.hk-alert-cloud-gas.pages.dev`; no GitHub/`gh` route was used.
+  - Production cache-bust check verified `mcSectionHeat`, `scrollHeatMatchesIntoView`, `function renderHeatmaps`, `.ev-gray`, and `HSI/M2` are all present.
+  - Headless Chromium DOM check on production verified `.ev-gray` text `合理` has a 1px border, 24 heatmap tiles render, `supply_stock` click scrolls to `Heatmap 命中：圈股吸貨`, and 8 rows appear.
+  - After the commit/deploy, the only remaining dirty worktree files were pre-existing data files: `data/announcements.json`, `data/breakthroughs.json`, and `data/corp_graded_scan.json`.
 
 ### 2026-07-01 heatmap no-filter marking and stable render
 
