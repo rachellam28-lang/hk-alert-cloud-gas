@@ -1,5 +1,31 @@
 [
   {
+    "code": "02500",
+    "name": "VENUS MEDTECH-B",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：INSIDE INFORMATION POTENTIAL SUBSCRIPTION OF NEW SHARES AND NEW CONVERTIBL…",
+    "date": "2026-07-02",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0702/2026070200001.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "觀察·配股"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "觀察·配股"
+    ],
+    "first_pre_days": 1,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
     "code": "01950",
     "name": "DIWANG IND H",
     "types": [
