@@ -1,6 +1,6 @@
 # HK Alert Cloud GAS Memory
 
-Last updated: 2026-07-03 HKT
+Last updated: 2026-07-04 HKT
 
 ## Load First
 
@@ -146,6 +146,25 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - Sheet schema should upgrade without destroying existing rows.
 
 ## Latest Deploy Notes
+
+### 2026-07-04 full-system audit, Hermes alignment, and refresh reliability
+
+- Full page fetch audit found one missing main-page data request: `index.html` still fetched `data/webb_site/summary.json`, but the file was not present. Removed that fetch so the main page no longer creates a guaranteed failed request during load.
+- `scripts/health_check.py` crashed on Windows GBK console output before it could report health. It now forces UTF-8 stdout/stderr like the other pipeline scripts, so local/Hermes health reporting can complete.
+- `scripts/build_publish_bundle.py` now includes page-level status for `announcements`, `rights_analysis`, `fundflow`, `breakthroughs`, `corp_graded_scan`, `watchlist`, and `history`, not only holdings/signals/alerts/market.
+- Hermes/Telegram health summaries must read the same `data/publish_bundle.json` metadata as the dashboard. The bundle Telegram summary now includes `anns`, `rights`, `flow`, and `transfers`, and `scripts/health_check.py` prints those same fields in the CCASS publish line.
+- `ccass/scripts/daily_refresh.sh` now refreshes corporate announcements, breakthrough data, same-day corporate grading, and local alerts/watchlist/history exports before rebuilding rights/signals/publish bundle.
+- Daily refresh no longer aborts staging merely because `audit_gate.py` fails on partial CCASS coverage. It continues staging fresh non-CCASS feeds while `publish_bundle` and Hermes honestly show `publish=FAIL/PARTIAL`.
+- Direct Cloudflare deploy helper now uses a `data/*.json` whitelist instead of uploading nearly every JSON under `data/`. Dry-run deploy package dropped from about 43.6 MB to about 22.1 MB and no longer includes unused heavy cache/intermediate files such as `data/replay_results.json` or `data/price_cache/*.json`.
+- Current audit truth remains red for CCASS: local DB latest `2026-07-02` has only 48 stocks / 1.7% coverage; `holdings.json.updated` remains `2026-06-26`; transfer monitor remains `backfill_required`. Do not fake this to green.
+
+### 2026-07-04 main page partial-state UI cleanup
+
+- Screenshot audit found the main page looked healthier than it really was: the top status dot stayed green even when `data/publish_bundle.json.publish.status=FAIL` because CCASS was partial.
+- `index.html` now sets the top status dot to amber/warn for publish `FAIL`/partial and shortens the status text to `系統 YYYY-MM-DD HH:mm · CCASS MM/DD · PARTIAL`.
+- Stale market chips now display the stale cached value with a `舊` + source tag, but suppress valuation/eval badges while stale. This prevents `HSI/M2` from showing a blank value with an old `高/合理` badge.
+- The market partial line now says `部分刷新 · 舊欄 N` instead of the mixed `partial · 1舊` wording.
+- Theme heatmap `高動能` was too broad because `p52>=30` admitted roughly half the market. It now requires real upper-range strength with `p52>=80` unless volume ratio or same-day change already qualify.
 
 ### 2026-07-03 daily freshness repair and CCASS partial truth
 

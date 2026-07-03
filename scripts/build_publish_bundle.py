@@ -37,6 +37,33 @@ def dt(value) -> str:
     return s[:19].replace("T", " ")
 
 
+def normalize_date(value) -> str | None:
+    if not value:
+        return None
+    s = str(value).strip()[:10]
+    for fmt in ("%Y-%m-%d", "%d/%m/%Y", "%m/%d/%Y"):
+        try:
+            return datetime.strptime(s, fmt).date().isoformat()
+        except ValueError:
+            continue
+    return s or None
+
+
+def latest_date(items, keys=("date", "ann_date", "announcement_date", "created_at", "updated", "scan_date")) -> str | None:
+    dates = []
+    for item in items or []:
+        if not isinstance(item, dict):
+            continue
+        for key in keys:
+            val = item.get(key)
+            if val:
+                norm = normalize_date(val)
+                if norm:
+                    dates.append(norm)
+                break
+    return max(dates) if dates else None
+
+
 def summarize_holdings():
     data = load_json(BASE / "holdings.json", {})
     return {
@@ -69,6 +96,87 @@ def summarize_alerts():
         "updated": data.get("updated"),
         "source": "scanner / holdings events",
         "count": data.get("count"),
+        "latest_event_date": latest_date(data.get("alerts", [])),
+    }
+
+
+def summarize_watchlist():
+    data = load_json(DATA / "watchlist.json", {})
+    return {
+        "path": "data/watchlist.json",
+        "updated": data.get("updated"),
+        "source": "local alert store",
+        "count": data.get("count"),
+        "latest_event_date": latest_date(data.get("watchlist", [])),
+    }
+
+
+def summarize_history():
+    data = load_json(DATA / "history.json", {})
+    days = data.get("days", []) if isinstance(data, dict) else []
+    return {
+        "path": "data/history.json",
+        "updated": latest_date(days, ("date",)),
+        "source": "local alert store",
+        "days": len(days) if isinstance(days, list) else None,
+        "total": data.get("total") if isinstance(data, dict) else None,
+    }
+
+
+def summarize_announcements():
+    data = load_json(DATA / "announcements.json", [])
+    return {
+        "path": "data/announcements.json",
+        "updated": latest_date(data, ("date", "ann_date", "release_date")),
+        "source": "HKEXnews corporate action scanner",
+        "count": len(data) if isinstance(data, list) else None,
+    }
+
+
+def summarize_rights_analysis():
+    data = load_json(DATA / "rights_analysis.json", [])
+    return {
+        "path": "data/rights_analysis.json",
+        "updated": latest_date(data, ("date", "ann_date", "announcement_date")),
+        "source": "announcements.json + placements_enriched.json + stock_prices.json",
+        "count": len(data) if isinstance(data, list) else None,
+    }
+
+
+def summarize_fundflow():
+    data = load_json(DATA / "fundflow.json", {})
+    all_rows = data.get("all", {}) if isinstance(data, dict) else {}
+    return {
+        "path": "data/fundflow.json",
+        "updated": data.get("updated") if isinstance(data, dict) else None,
+        "source": data.get("source") if isinstance(data, dict) else "westock fund flow",
+        "count": len(all_rows) if isinstance(all_rows, dict) else None,
+    }
+
+
+def summarize_breakthroughs():
+    data = load_json(DATA / "breakthroughs.json", {})
+    breakthroughs = data.get("breakthroughs", []) if isinstance(data, dict) else []
+    active_prices = data.get("active_prices", {}) if isinstance(data, dict) else {}
+    return {
+        "path": "data/breakthroughs.json",
+        "updated": data.get("updated") if isinstance(data, dict) else None,
+        "source": "scanner.breakthrough_detector",
+        "count": len(breakthroughs) if isinstance(breakthroughs, list) else None,
+        "active_price_count": len(active_prices) if isinstance(active_prices, dict) else None,
+    }
+
+
+def summarize_corp_graded():
+    data = load_json(DATA / "corp_graded_scan.json", {})
+    return {
+        "path": "data/corp_graded_scan.json",
+        "updated": data.get("scan_date") if isinstance(data, dict) else None,
+        "source": "same-day corporate action grading",
+        "total_raw": data.get("total_raw") if isinstance(data, dict) else None,
+        "same_day": data.get("same_day") if isinstance(data, dict) else None,
+        "red_alerts": data.get("red_alerts") if isinstance(data, dict) else None,
+        "watchlist": data.get("watchlist") if isinstance(data, dict) else None,
     }
 
 
@@ -205,6 +313,13 @@ def main():
             "holdings": summarize_holdings(),
             "signals": summarize_signals(),
             "alerts": summarize_alerts(),
+            "watchlist": summarize_watchlist(),
+            "history": summarize_history(),
+            "announcements": summarize_announcements(),
+            "rights_analysis": summarize_rights_analysis(),
+            "fundflow": summarize_fundflow(),
+            "breakthroughs": summarize_breakthroughs(),
+            "corp_graded_scan": summarize_corp_graded(),
             "transfers": summarize_transfers(),
             "prices": summarize_prices(),
             "market": summarize_market(),
@@ -236,6 +351,13 @@ def main():
         "latest_publishable_coverage_pct": bundle["publish"].get("latest_publishable_coverage_pct"),
         "signals_updated": bundle["files"]["signals"]["updated"],
         "alerts_updated": bundle["files"]["alerts"]["updated"],
+        "watchlist_updated": bundle["files"]["watchlist"]["updated"],
+        "history_updated": bundle["files"]["history"]["updated"],
+        "announcements_updated": bundle["files"]["announcements"]["updated"],
+        "rights_analysis_updated": bundle["files"]["rights_analysis"]["updated"],
+        "fundflow_updated": bundle["files"]["fundflow"]["updated"],
+        "breakthroughs_updated": bundle["files"]["breakthroughs"]["updated"],
+        "corp_graded_scan_updated": bundle["files"]["corp_graded_scan"]["updated"],
         "transfers_updated": bundle["files"]["transfers"]["updated"],
         "transfers_date": bundle["files"]["transfers"].get("date"),
         "prices_updated": bundle["files"]["prices"]["updated"],
@@ -263,6 +385,15 @@ def main():
     bundle["telegram"]["summary"] = bundle["telegram"]["summary"].replace(
         " | market=",
         f" | transfers={bundle['files']['transfers']['updated'] or 'n/a'} | market=",
+    )
+    bundle["telegram"]["summary"] = bundle["telegram"]["summary"].replace(
+        " | transfers=",
+        (
+            f" | anns={bundle['files']['announcements']['updated'] or 'n/a'}"
+            f" | rights={bundle['files']['rights_analysis']['updated'] or 'n/a'}"
+            f" | flow={bundle['files']['fundflow']['updated'] or 'n/a'}"
+            " | transfers="
+        ),
     )
 
     OUT.write_text(json.dumps(bundle, ensure_ascii=False, indent=2), encoding="utf-8")

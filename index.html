@@ -25,6 +25,7 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .topright{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--mute)}
 .dot{width:7px;height:7px;border-radius:999px;background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.18)}
 .dot.loading{background:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.18)}
+.dot.warn{background:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.18)}
 .dot.error{background:#ef4444;box-shadow:0 0 0 3px rgba(239,68,68,.18)}
 .refresh-tag{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:11px;color:var(--text-soft)}
 .wrap{width:100%;max-width:none;margin:0;padding:14px 24px 36px}
@@ -1191,7 +1192,7 @@ function themeMatches(s,sig,techSig,theme){
   var text=signalText(sig,techSig);
   if(theme==='supply_stock')return label.indexOf('圈股')>=0 && label.indexOf('圈錢')<0;
   if(theme==='supply_cash')return label.indexOf('圈錢')>=0;
-  if(theme==='momentum')return Number(s.vr)>=2 || Number(s.chg)>=5 || Number(s.p52)>=30;
+  if(theme==='momentum')return Number(s.vr)>=2 || Number(s.chg)>=5 || Number(s.p52)>=80;
   if(theme==='yearopen')return (Number(s.lp)>0 && Number(s.yo)>0 && Number(s.lp)>Number(s.yo)) || text.indexOf('年開突破')>=0;
   if(theme==='poc_fvg')return /POC|FVG|跳空|缺口/.test(text);
   if(theme==='corp')return !!(sig&&(sig.pl||sig.ri||sig.inc));
@@ -2622,9 +2623,9 @@ function renderMarket(snap){
   function avgHtml(avg){if(avg==null)return '';return '<span class="mchip-avg">均'+fmtNum(avg,2)+'</span>';}
   function sourceHtml(source){if(!source)return '';const s=String(source);const label=s.includes('longbridge')?'LB':(s==='worldperatio'?'PE':(s.startsWith('cnbc:')?'CNBC':(s.startsWith('hkma:')||s.startsWith('fred:')?'M2':s)));return '<span class="mchip-avg">'+label+'</span>';}
   function chip(label,val,chgPct,stale,dp,ev,avg5y,source){
-    const valStr=stale?'—':fmtNum(val,dp??2);
+    const valStr=fmtNum(val,dp??2);
     const staleTag=stale?'<span class="mchip-avg stale">舊</span>':'';
-    const sub=(staleTag||evBadge(ev)||avgHtml(avg5y)||sourceHtml(source))?'<span class="mchip-sub">'+staleTag+(stale?'':sourceHtml(source)+evBadge(ev)+avgHtml(avg5y))+'</span>':'';
+    const sub=(staleTag||evBadge(ev)||avgHtml(avg5y)||sourceHtml(source))?'<span class="mchip-sub">'+(stale?staleTag+sourceHtml(source):sourceHtml(source)+evBadge(ev)+avgHtml(avg5y))+'</span>':'';
     return '<div class="mchip"><span class="mchip-label">'+label+'</span><span class="mchip-val'+(stale?' stale':'')+'">'+valStr+'</span><span class="mchip-chg">'+(stale?'':chgHtml(chgPct))+'</span>'+sub+'</div>';
   }
   const h=snap.hsi||{},dow=snap.dow||{},d=snap.dxy||{},v=snap.vix||{},hp=snap.hsi_pe||{},hm=snap.hsi_m2||{},sp=snap.spx_pe||{},sm=snap.spx_m2||{},fg=snap.fear_greed||{};
@@ -2656,7 +2657,7 @@ function renderMarket(snap){
     const m2Text=m2Count?(' · '+m2Count+'格M2'):'';
     const partial=!!snap.market_partial || staleCount>0;
     left.textContent=(partial?'市場卡部分刷新 ':'市場卡更新於 ')+updated;
-    right.textContent=partial ? ('⚠ partial · '+staleCount+'舊'+lbText+peText+cnbcText+m2Text) : '✅ fresh';
+    right.textContent=partial ? ('⚠ 部分刷新 · 舊欄 '+staleCount+lbText+peText+cnbcText+m2Text) : '✅ fresh';
     right.className=partial ? 'partial' : '';
     meta.style.display='';
   }
@@ -2990,12 +2991,6 @@ async function loadData(){
       .then(cf=>{if(cf){confluenceMap=new Map();cf.forEach(r=>{confluenceMap.set(String(r.code||'').padStart(5,'0'),r.pattern||'');});renderTable();}})
       .catch(()=>{});
 
-    // Fetch Webb-site summary
-    fetch('./data/webb_site/summary.json?_='+Date.now())
-      .then(r=>r.ok?r.json():null)
-      .then(w=>{if(w&&w.sources)renderWebb(w);})
-      .catch(()=>{});
-
     // Fetch transfers (moved to gap_fvg.html)
     /* fetch('./data/transfers.json?_='+Date.now())
       .then(r=>r.ok?r.json():null)
@@ -3124,16 +3119,23 @@ async function loadData(){
         updateSortInfo();
         const savedScroll=sessionStorage.getItem('hkdataScroll');if(savedScroll)window.scrollTo(0,parseInt(savedScroll,10));
       }).catch(()=>{markHeatmapFeedReady('signals');markHeatmapFeedReady('alerts');applyFilters();});
-    dot.className='dot';
+    dot.className=data.is_complete===false?'dot warn':'dot';
     upd.textContent='CCASS持倉日 '+data.updated+' · 市場/訊號資料已按今日刷新';
     fetch('./data/publish_bundle.json?_='+Date.now())
       .then(r=>r.ok?r.json():null)
       .then(b=>{
         if(!b) return;
+        const pub=b.publish||{};
+        const head=b.headline||{};
         const gen=String(b.generated_at||'').replace('T',' ').slice(0,16);
-        if(gen) upd.textContent='系統刷新 '+gen+' · CCASS持倉日 '+data.updated;
+        const status=String(pub.status||'').toUpperCase();
+        const ccassDate=head.holdings_updated||data.updated;
+        const shortDate=function(v){return String(v||'').replace(/^2026-/,'').replace(/-/g,'/');};
+        if(gen) upd.textContent='系統 '+gen+' · CCASS '+shortDate(ccassDate)+' · '+(status==='PASS'?'PASS':'PARTIAL');
+        const dot=document.getElementById('statusDot');
+        if(dot)dot.className=status==='PASS'?'dot':'dot warn';
       })
-      .catch(()=>{});
+      .catch(()=>{const dot=document.getElementById('statusDot');if(dot)dot.className='dot warn';});
   }catch(err){
     showError(document.getElementById('mcSmallTbody'), err.message, loadData);
     const dot=document.getElementById('statusDot');

@@ -24,6 +24,12 @@ import sys
 import urllib.request
 from datetime import datetime, timedelta
 
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+except AttributeError:
+    pass
+
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from schema import parse_announcement_date
 
@@ -268,6 +274,10 @@ def check_ccass_publish():
         holdings = files.get("holdings", {}) or {}
         signals = files.get("signals", {}) or {}
         alerts = files.get("alerts", {}) or {}
+        announcements = files.get("announcements", {}) or {}
+        rights = files.get("rights_analysis", {}) or {}
+        fundflow = files.get("fundflow", {}) or {}
+        transfers = files.get("transfers", {}) or {}
         latest_db = publish.get("latest_db_date", "—")
         latest_db_count = publish.get("latest_db_stock_count", "—")
         latest_db_cov = publish.get("latest_db_coverage_pct", "—")
@@ -283,6 +293,16 @@ def check_ccass_publish():
             f"publish {holdings_updated} | coverage {coverage_pct}% "
             f"| signals {signals.get('updated', '—')} | alerts {alerts.get('updated', '—')} "
             f"| verify_data {verify_data} | verify_dashboard {verify_dash}"
+        )
+        detail = detail.replace(
+            " | verify_data ",
+            (
+                f" | anns {announcements.get('updated', 'n/a')}"
+                f" | rights {rights.get('updated', 'n/a')}"
+                f" | flow {fundflow.get('updated', 'n/a')}"
+                f" | transfers {transfers.get('updated', 'n/a')}"
+                " | verify_data "
+            ),
         )
         if publish.get("status") == "PASS":
             return {"status": "🟢", "detail": detail, "raw": bundle}

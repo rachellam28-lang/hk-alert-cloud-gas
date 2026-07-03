@@ -51,10 +51,32 @@ ROOT_DEPLOY_FILES = [
     "shared-nav.js",
 ]
 
+DATA_DEPLOY_FILES = {
+    Path("data/alerts.json"),
+    Path("data/announcements.json"),
+    Path("data/breakthroughs.json"),
+    Path("data/confluence.json"),
+    Path("data/corp_graded_scan.json"),
+    Path("data/distribution_day_backtest.json"),
+    Path("data/fundflow.json"),
+    Path("data/history.json"),
+    Path("data/jieqi_backtest.json"),
+    Path("data/market.json"),
+    Path("data/placements_enriched.json"),
+    Path("data/prices.json"),
+    Path("data/publish_bundle.json"),
+    Path("data/rights_analysis.json"),
+    Path("data/signals.json"),
+    Path("data/stock_prices.json"),
+    Path("data/suspended_stocks.json"),
+    Path("data/transfers.json"),
+    Path("data/vqc_backtest.json"),
+    Path("data/watchlist.json"),
+}
+
 DATA_DEPLOY_SKIP = {
     Path("data/holdings.json"),
     Path("data/ccass.json"),
-    Path("data/market.json"),
 }
 
 
@@ -94,6 +116,8 @@ def copy_site_files(src: Path, tmp: Path) -> int:
                 continue
             rel = src_file.relative_to(src)
             if rel in DATA_DEPLOY_SKIP:
+                continue
+            if rel.parts and rel.parts[0] == "data" and rel not in DATA_DEPLOY_FILES:
                 continue
             if rel.suffix.lower() not in {".html", ".json", ".png", ".webp", ".jpg", ".jpeg", ".svg", ".ico", ".txt"}:
                 continue
