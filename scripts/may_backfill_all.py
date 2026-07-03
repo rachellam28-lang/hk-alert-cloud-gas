@@ -87,7 +87,7 @@ run_daily(skip_scrape=True, skip_alerts=True)
     log(f"ccass.json regeneration: rc={result.returncode}")
 
 def commit_and_push(target_date):
-    """Stage ccass.json, commit, and push to git."""
+    """Stage ccass.json and commit locally. GitHub push is blocked by default."""
     log(f"Committing ccass.json (date: {target_date})...")
     # Check if ccass.json was generated
     ccass_json = REPO_DIR / "ccass.json"
@@ -117,6 +117,10 @@ def commit_and_push(target_date):
     )
     log(f"git commit: {result.stdout.strip()} {result.stderr.strip()}")
     
+    if os.environ.get("ALLOW_GITHUB_WRITE") != "1":
+        log("git push skipped: GitHub writes are blocked by default. Set ALLOW_GITHUB_WRITE=1 only if explicitly requested.")
+        return True
+
     result = subprocess.run(
         ["git", "push"],
         cwd=str(REPO_DIR),

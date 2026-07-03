@@ -33,7 +33,7 @@ jobs:
           git config user.email "bot@noreply"
           git add docs/ccass_events.json events_watchlist.json
           git diff --cached --quiet || git commit -m "events $(date +%F)"
-          git push
+          echo "GitHub push disabled by project policy; deploy directly to Cloudflare only."
 
       - name: Telegram 通知 (Hermes)
         if: always()

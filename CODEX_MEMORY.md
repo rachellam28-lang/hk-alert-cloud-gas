@@ -1,6 +1,6 @@
 # HK Alert Cloud GAS Memory
 
-Last updated: 2026-07-02 HKT
+Last updated: 2026-07-03 HKT
 
 ## Load First
 
@@ -33,8 +33,8 @@ If this file disagrees with chat memory, trust the current repo state.
 
 - Repo: `C:\Users\Administrator\Desktop\automatic\hk-alert-cloud-gas`
 - Live site: `https://hk-alert-cloud-gas.pages.dev`
-- Current deploy preference: direct Cloudflare Pages deploy with Wrangler.
-- Main branch push deployment exists historically, but do not route through GitHub unless the user asks.
+- Current deploy preference: direct Cloudflare Pages deploy with Wrangler only.
+- GitHub Pages, GitHub Actions, Cloudflare Git auto-deploy, and `gh` CLI must not be used for refresh/deploy unless the user explicitly asks to re-enable GitHub routes.
 
 ## Hard Rules
 
@@ -56,8 +56,8 @@ HKEX / Futu / Longbridge / local JSON
   -> root JSON + data/*.json aliases
   -> data/publish_bundle.json
   -> HTML pages / health checks / Telegram
-  -> GitHub main
-  -> Cloudflare Pages
+  -> local commit
+  -> direct Wrangler upload to Cloudflare Pages
 ```
 
 Primary layers:
@@ -85,7 +85,7 @@ Main workflow:
 
 - Shell orchestrator: `ccass/scripts/daily_refresh.sh`
 - Direct deploy helper: `ccass/scripts/_deploy_cf.py`
-- GitHub Actions schedules are disabled; do not route refresh/deploy through GitHub unless the user explicitly asks.
+- GitHub Actions are disabled at repository settings; do not route refresh/deploy through GitHub unless the user explicitly asks to re-enable them.
 - Cloudflare cron Worker `ccass-refresh-cron` is a no-op and must not dispatch GitHub Actions.
 
 Expected sequence:
@@ -127,7 +127,7 @@ Keep the daily refresh bounded; let resume jobs mop up incomplete coverage.
 
 - Current user preference is direct Wrangler deploy to Cloudflare Pages.
 - Avoid GitHub/`gh` for refresh/deploy unless the user explicitly asks.
-- GitHub Actions workflow files may remain for manual fallback, but schedules should stay disabled.
+- GitHub Actions are disabled at repository settings; workflow files may remain locally for reference only, but they must not be used as a deploy/refresh route.
 - Cloudflare cron Worker should stay no-op unless a non-GitHub refresh path is implemented.
 - Telegram Hermes bot is for general dashboard/status/health summaries. CCASS events cron should use its own Telegram bot/chat secrets, not the Hermes bot, unless the user explicitly asks to merge them.
 - Cloudflare Pages output should include `_headers` with `X-Robots-Tag: noindex, nofollow, noarchive, nosnippet, noimageindex`.
@@ -146,6 +146,18 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - Sheet schema should upgrade without destroying existing rows.
 
 ## Latest Deploy Notes
+
+### 2026-07-03 GitHub Pages and Actions disabled
+
+- User received a GitHub email titled `pages build and deployment`, with build/report status succeeded and deploy failed. This was GitHub Pages' built-in `pages build and deployment` workflow, not Codex using the `gh` CLI.
+- GitHub Pages was still enabled for `rachellam28-lang/hk-alert-cloud-gas`, build type `legacy`, source `main /`, URL `https://rachellam28-lang.github.io/hk-alert-cloud-gas/`. Deleted the GitHub Pages site via GitHub REST API; verification now returns HTTP `404` for `/repos/rachellam28-lang/hk-alert-cloud-gas/pages`.
+- Disabled GitHub Actions at repository settings via GitHub REST API; verification now returns `{"enabled":false}` for `/repos/rachellam28-lang/hk-alert-cloud-gas/actions/permissions`.
+- Cloudflare live site was unaffected and still served the latest direct-deploy build: root HTML contains `mcSectionHeat` and `.ev-gray`, and response headers include `Cache-Control: no-store`.
+- Local guardrails added so old helper scripts cannot accidentally write to GitHub:
+  - Deleted `_enable_pages.py`, `_verify_push.py`, and `scripts/gh_push_announcements.py`.
+  - `scripts/codex_pipeline.py`, `ccass/scripts/post_backfill.py`, and `scripts/may_backfill_all.py` now skip GitHub push unless `ALLOW_GITHUB_WRITE=1` is explicitly set.
+  - `.github/workflows/ccass_events.yml` no longer runs `git push` in its local copy.
+- `AGENTS.md` now says deploy only by direct Wrangler upload to Cloudflare Pages, not main-branch push/GitHub Pages/GitHub Actions.
 
 ### 2026-07-02 Cloudflare production rollback check and gray badges
 

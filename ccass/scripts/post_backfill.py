@@ -2,7 +2,7 @@
 Post-backfill script: after backfill completes for a date, rebuild all outputs.
 Usage: python scripts/post_backfill.py 2026-06-05
 """
-import sys, subprocess
+import os, sys, subprocess
 from pathlib import Path
 
 CCASS_DIR = Path(__file__).resolve().parent.parent
@@ -41,8 +41,8 @@ def main():
     if not run([PYTHON, "scripts/audit_gate.py", "--min-coverage", "99.0"], cwd=CCASS_DIR):
         sys.exit(1)
 
-    # 4. Git push all
-    print("\n[4/4] Push to GitHub...")
+    # 4. Commit locally. GitHub push is blocked by default.
+    print("\n[4/4] Commit local outputs...")
     subprocess.run(["git", "add", "holdings.json", "data/"], cwd=REPO_ROOT, check=True, capture_output=True)
     r = subprocess.run(
         ["git", "commit", "-m", f"post-backfill {date}: holdings.json + alerts + transfers"],
@@ -58,6 +58,11 @@ def main():
             sys.exit(r.returncode)
     else:
         print(f"  commit: {r.stdout.strip()}")
+
+    if os.environ.get("ALLOW_GITHUB_WRITE") != "1":
+        print("  push skipped: GitHub writes are blocked by default. Set ALLOW_GITHUB_WRITE=1 only if explicitly requested.")
+        print(f"\n=== Done: {date} ===")
+        return
 
     push = subprocess.run(["git", "push"], cwd=REPO_ROOT, capture_output=True, text=True)
     if push.returncode != 0:
