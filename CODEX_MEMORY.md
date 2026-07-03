@@ -147,6 +147,27 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 
 ## Latest Deploy Notes
 
+### 2026-07-03 daily freshness repair and CCASS partial truth
+
+- User reported the live system still looked like `2026-07-01` on `2026-07-03`; confirmed local `data/publish_bundle.json` had previously been generated on `2026-07-01T16:48:57`.
+- Refreshed public daily feeds without GitHub/`gh`: Longbridge price fallback, market card cache, westock fund-flow, announcements-to-rights sync, placement returns, rights page JSON/HTML, signals/events, timing/jieqi/distribution/daily prompt pages, breakthrough JSON, corp graded scan, alerts/watchlist exports, and publish bundle.
+- Current public freshness after rebuild:
+  - `data/publish_bundle.json.generated_at=2026-07-03T16:58:49`
+  - `data/announcements.json` has 803 rows, latest announcement date `2026-07-03`.
+  - `data/rights_analysis.json` has 502 rows after syncing the latest placement/rights announcements.
+  - `data/signals.json.updatedAt=2026-07-03T16:58:44`
+  - `data/alerts.json.updated=2026-07-03 08:54 UTC`
+  - `data/watchlist.json.updated=2026-07-03 08:54 UTC`
+  - `data/fundflow.json.updated=2026-07-03`
+  - `data/breakthroughs.json.updated=2026-07-03T16:58:21+08:00`
+  - `data/corp_graded_scan.json.scan_date=2026-07-03`
+  - `market.json.updated_at=2026-07-03T08:33:58+00:00`
+  - `raw/prices_20260703.json` saved from the 2026-07-03 price cache.
+- CCASS/holdings must remain honestly labelled: `holdings.json.updated=2026-06-26`; local DB probe/scrape reached `2026-07-02` but only `48/2806` stocks, coverage `1.7%`, so `audit_gate.py --min-coverage 99.0` correctly stays `FAIL`.
+- Do not fake `holdings.json` to `2026-07-03`. The publish bundle should keep showing `publish=FAIL`, `latest_db=2026-07-02 (1.7%)`, and transfer backfill required until participant DB coverage is actually complete.
+- Root cause for long "loading" during CCASS refresh: `HOLDINGS_DAILY_MAX_MINUTES` was checked only between HKEX batches, while a single batch could wait far beyond the remaining daily budget. `ccass/src/runner.py` now caps batch and single-stock child timeouts by the remaining daily budget.
+- Windows console bug fixed in `scanner/_corp_graded_scan.py` by forcing UTF-8 stdout/stderr before printing emoji/Chinese scan results.
+
 ### 2026-07-03 GitHub Pages and Actions disabled
 
 - User received a GitHub email titled `pages build and deployment`, with build/report status succeeded and deploy failed. This was GitHub Pages' built-in `pages build and deployment` workflow, not Codex using the `gh` CLI.

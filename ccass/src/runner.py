@@ -100,6 +100,12 @@ def _daily_budget_deadline() -> float | None:
     return time.monotonic() + (minutes * 60.0)
 
 
+def _remaining_budget_seconds(deadline: float | None) -> int | None:
+    if deadline is None:
+        return None
+    return max(1, int(deadline - time.monotonic()))
+
+
 def load_config() -> dict:
     with open(CONFIG_PATH, encoding="utf-8") as f:
         return yaml.safe_load(f)
@@ -574,6 +580,9 @@ def run_daily(
                         if done % 48 == 0 or done >= len(stocks):
                             logger.info("Progress: %d/%d (%.1f%%)", done, len(stocks), 100 * done / len(stocks))
                         batch_timeout = max(45, len(batch) * HARD_TIMEOUT + 15)
+                        remaining_budget = _remaining_budget_seconds(daily_budget_deadline)
+                        if remaining_budget is not None:
+                            batch_timeout = min(batch_timeout, remaining_budget)
                         try:
                             result = _run_child(
                                 [sys.executable, _scrape_batch, query_date.strftime("%Y-%m-%d"),
@@ -635,6 +644,10 @@ def run_daily(
                         if i % 50 == 0:
                             logger.info("Progress: %d/%d (%.1f%%)", i, len(stocks), 100 * i / len(stocks))
                         try:
+                            child_timeout = HARD_TIMEOUT
+                            remaining_budget = _remaining_budget_seconds(daily_budget_deadline)
+                            if remaining_budget is not None:
+                                child_timeout = min(child_timeout, remaining_budget)
                             result = _run_child(
                                 [sys.executable, _scrape_one, code, query_date.strftime("%Y-%m-%d"),
                                  sc_cfg["user_agent"],
@@ -642,7 +655,7 @@ def run_daily(
                                  str(sc_cfg["delay_max_seconds"]),
                                  str(sc_cfg["timeout_seconds"]),
                                  str(sc_cfg["max_retries"])],
-                                timeout=HARD_TIMEOUT,
+                                timeout=child_timeout,
                             )
                             if result.returncode != 0:
                                 failed_stocks.append(code)

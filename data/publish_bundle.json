@@ -1,6 +1,6 @@
 {
   "schema_v": 1,
-  "generated_at": "2026-07-01T16:48:57",
+  "generated_at": "2026-07-03T16:58:49",
   "source_of_truth": {
     "db": "ccass/holdings.db",
     "primary_holdings": "holdings.json",
@@ -19,15 +19,15 @@
     },
     "signals": {
       "path": "data/signals.json",
-      "updated": "2026-06-30T18:24:21.564500",
+      "updated": "2026-07-03T16:58:44.189239",
       "source": "announcements.json + rights_analysis.json + alerts.json + holdings.json",
       "groups": 2731,
       "with_signals": 492,
-      "with_corp": 241
+      "with_corp": 262
     },
     "alerts": {
       "path": "data/alerts.json",
-      "updated": "2026-06-29 05:13 UTC",
+      "updated": "2026-07-03 08:54 UTC",
       "source": "scanner / holdings events",
       "count": 500
     },
@@ -45,19 +45,21 @@
     },
     "prices": {
       "path": "data/stock_prices.json",
-      "updated": "2026-06-30T09:19:06.858168+00:00",
+      "updated": "2026-07-03T08:30:53.799498+00:00",
       "source": "Futu / Longbridge cache",
       "count": 2782,
       "provider": "longbridge:quote"
     },
     "market": {
       "path": "data/market.json",
-      "updated": "2026-06-30T02:41:33.202234+00:00",
+      "updated": "2026-07-03T08:33:58.781394+00:00",
       "source": "Longbridge / WorldPERatio / CNBC / HKMA / FRED market cache",
       "keys": 20,
-      "stale": false,
-      "stale_keys": [],
-      "partial": false,
+      "stale": true,
+      "stale_keys": [
+        "hsi_m2"
+      ],
+      "partial": true,
       "dopamine_stale": true
     },
     "vqc_backtest": {
@@ -121,9 +123,9 @@
   },
   "publish": {
     "status": "FAIL",
-    "latest_db_date": "2026-06-26",
-    "latest_db_stock_count": 24,
-    "latest_db_coverage_pct": 0.9,
+    "latest_db_date": "2026-07-02",
+    "latest_db_stock_count": 48,
+    "latest_db_coverage_pct": 1.7,
     "latest_publishable_date": "2026-06-18",
     "latest_publishable_stock_count": 2745,
     "latest_publishable_coverage_pct": 99.5,
@@ -132,29 +134,29 @@
     "verify_data": {
       "status": null,
       "errors": 150,
-      "warnings": 172
+      "warnings": 173
     },
     "verify_dashboard": {
       "status": "WARN",
       "errors": 0,
-      "warnings": 2484
+      "warnings": 2486
     }
   },
   "headline": {
     "holdings_updated": "2026-06-26",
-    "latest_db_date": "2026-06-26",
-    "latest_db_stock_count": 24,
-    "latest_db_coverage_pct": 0.9,
+    "latest_db_date": "2026-07-02",
+    "latest_db_stock_count": 48,
+    "latest_db_coverage_pct": 1.7,
     "latest_publishable_date": "2026-06-18",
     "latest_publishable_stock_count": 2745,
     "latest_publishable_coverage_pct": 99.5,
-    "signals_updated": "2026-06-30T18:24:21.564500",
-    "alerts_updated": "2026-06-29 05:13 UTC",
+    "signals_updated": "2026-07-03T16:58:44.189239",
+    "alerts_updated": "2026-07-03 08:54 UTC",
     "transfers_updated": "2026-06-26 transfer backfill required",
     "transfers_date": "2026-06-26",
-    "prices_updated": "2026-06-30T09:19:06.858168+00:00",
-    "market_updated": "2026-06-30T02:41:33.202234+00:00",
-    "market_stale": false,
+    "prices_updated": "2026-07-03T08:30:53.799498+00:00",
+    "market_updated": "2026-07-03T08:33:58.781394+00:00",
+    "market_stale": true,
     "backtests_updated": {
       "vqc": "2026-06-17T09:56:21",
       "distribution_day": "2026-06-23T21:08:35",
@@ -162,6 +164,6 @@
     }
   },
   "telegram": {
-    "summary": "publish=FAIL | holdings=2026-06-26 | latest_db=2026-06-26 (0.9%) | publishable=2026-06-18 | signals=2026-06-30T18:24:21.564500 | alerts=2026-06-29 05:13 UTC | transfers=2026-06-26 transfer backfill required | market=2026-06-30T02:41:33.202234+00:00"
+    "summary": "publish=FAIL | holdings=2026-06-26 | latest_db=2026-07-02 (1.7%) | publishable=2026-06-18 | signals=2026-07-03T16:58:44.189239 | alerts=2026-07-03 08:54 UTC | transfers=2026-06-26 transfer backfill required | market=2026-07-03T08:33:58.781394+00:00"
   }
 }

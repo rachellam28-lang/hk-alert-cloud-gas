@@ -1,7 +1,39 @@
 {
-  "updated": "2026-06-29 05:13 UTC",
-  "count": 14,
+  "updated": "2026-07-03 08:54 UTC",
+  "count": 18,
   "watchlist": [
+    {
+      "code": "02295",
+      "name": "MAXICITY",
+      "types": [
+        "復牌"
+      ],
+      "ann_date": "2026-07-03"
+    },
+    {
+      "code": "03317",
+      "name": "XUNCE",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-03"
+    },
+    {
+      "code": "06651",
+      "name": "51WORLD",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-03"
+    },
+    {
+      "code": "00576",
+      "name": "ZHEJIANGEXPRESS",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-01"
+    },
     {
       "code": "02490",
       "name": "LC LOGISTICS",

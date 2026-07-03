@@ -1,62 +1,62 @@
 {
   "hsi": {
-    "value": 22768.38,
-    "change": -258.3,
-    "changePct": -1.12,
+    "value": 23350.03,
+    "change": 295.0,
+    "changePct": 1.28,
     "stale": false,
     "source": "longbridge:quote",
-    "updated": "2026-06-30T02:41:22.297882+00:00"
+    "updated": "2026-07-03T08:33:43.272411+00:00"
   },
   "dow": {
-    "value": 52182.74,
-    "change": 306.63,
-    "changePct": 0.59,
+    "value": 52900.07,
+    "change": 594.83,
+    "changePct": 1.14,
     "stale": false,
     "source": "longbridge:quote",
-    "updated": "2026-06-30T02:41:22.297882+00:00"
+    "updated": "2026-07-03T08:33:43.272411+00:00"
   },
   "spx": {
-    "value": 7440.43,
-    "change": 86.41,
-    "changePct": 1.18,
+    "value": 7483.24,
+    "change": 0.01,
+    "changePct": 0.0,
     "stale": false,
     "source": "longbridge:quote",
-    "updated": "2026-06-30T02:41:22.297882+00:00"
+    "updated": "2026-07-03T08:33:43.272411+00:00"
   },
   "dxy": {
-    "value": 101.265,
-    "change": 0.16,
-    "changePct": 0.16,
+    "value": 100.699,
+    "change": -0.158,
+    "changePct": -0.16,
     "stale": false,
     "source": "cnbc:.DXY",
     "source_url": "https://quote.cnbc.com/quote-html-webservice/restQuote/symbolType/symbol?symbols=.DXY&output=json",
-    "updated": "2026-06-30T02:41:29+00:00",
+    "updated": "2026-07-03T08:33:45+00:00",
     "name": "ICE U.S. Dollar Index"
   },
   "vix": {
-    "value": 17.65,
-    "change": -0.76,
-    "changePct": -4.13,
+    "value": 16.15,
+    "change": -0.44,
+    "changePct": -2.65,
     "stale": false,
     "source": "longbridge:quote",
-    "updated": "2026-06-30T02:41:22.297882+00:00",
+    "updated": "2026-07-03T08:33:43.272411+00:00",
     "eval": {
       "label": "正常",
       "color": "neutral"
     }
   },
   "hsi_pe": {
-    "value": 17.31,
+    "value": 17.19,
     "change": null,
     "changePct": null,
     "avg5y_mid": 15.47,
     "avg5y_range": [
       14.3,
-      16.64
+      16.63
     ],
     "std2_range": [
-      13.12,
-      17.82
+      13.14,
+      17.79
     ],
     "eval": {
       "label": "偏貴",
@@ -65,21 +65,21 @@
     "stale": false,
     "source": "worldperatio",
     "source_url": "https://worldperatio.com/area/hong-kong/",
-    "source_date": "29 June 2026",
-    "updated": "2026-06-30T02:41:28.438830+00:00"
+    "source_date": "02 July 2026",
+    "updated": "2026-07-03T08:33:47.711268+00:00"
   },
   "spx_pe": {
-    "value": 26.59,
+    "value": 26.73,
     "change": null,
     "changePct": null,
-    "avg5y_mid": 23.22,
+    "avg5y_mid": 23.35,
     "avg5y_range": [
-      19.92,
-      26.52
+      20.03,
+      26.67
     ],
     "std2_range": [
-      16.62,
-      29.82
+      16.71,
+      29.99
     ],
     "eval": {
       "label": "偏貴",
@@ -88,11 +88,11 @@
     "stale": false,
     "source": "worldperatio",
     "source_url": "https://worldperatio.com/index/sp-500/",
-    "source_date": "29 June 2026",
-    "updated": "2026-06-30T02:41:28.438830+00:00"
+    "source_date": "02 July 2026",
+    "updated": "2026-07-03T08:33:47.711268+00:00"
   },
   "spx_m2": {
-    "value": 322.8,
+    "value": 324.6,
     "m2": 23052.3,
     "stale": false,
     "eval": {
@@ -102,21 +102,21 @@
     "source": "fred:M2SL",
     "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=M2SL",
     "source_date": "2026-05-01",
-    "updated": "2026-06-30T02:41:33.202234+00:00"
+    "updated": "2026-07-03T08:33:58.781394+00:00"
   },
   "fear_greed": {
-    "value": 57.0,
-    "changePct": 0.0,
+    "value": 68.0,
+    "changePct": 11.0,
     "stale": false,
     "source": "longbridge:market-temp",
-    "updated": "2026-06-30T02:41:22.297882+00:00",
+    "updated": "2026-07-03T08:33:43.272411+00:00",
     "eval": {
       "label": "貪婪",
       "color": "orange"
     },
-    "sentiment": 40.0,
-    "valuation": 74.0,
-    "description": "Temp Comfortable & Gradually Dropping"
+    "sentiment": 57.0,
+    "valuation": 79.0,
+    "description": "Temp Comfortable & Staying Stable"
   },
   "breadth": {
     "hk": {
@@ -138,12 +138,12 @@
       "count": 108
     }
   },
-  "updated_at": "2026-06-30T02:41:33.202234+00:00",
+  "updated_at": "2026-07-03T08:33:58.781394+00:00",
   "hsi_m2": {
     "value": 1078.4,
     "m2": 21112.5,
     "m2_raw_million": 21112460.539,
-    "stale": false,
+    "stale": true,
     "eval": {
       "label": "合理",
       "color": "gray"
@@ -165,8 +165,8 @@
     "breadth_pct": null,
     "stocks_sampled": null
   },
-  "market_partial": false,
-  "market_note": "Longbridge refreshed 5 market fields; WorldPERatio refreshed 2 P/E fields; CNBC refreshed 1 market fields; HKMA/FRED refreshed 2 M2 fields; all market card fields are fresh.",
+  "market_partial": true,
+  "market_note": "Longbridge refreshed 5 market fields; WorldPERatio refreshed 2 P/E fields; CNBC refreshed 1 market fields; HKMA/FRED refreshed 1 M2 fields; stale fields remain: hsi_m2.",
   "market_longbridge_fields": [
     "hsi",
     "dow",
@@ -174,7 +174,9 @@
     "vix",
     "fear_greed"
   ],
-  "market_stale_fields": [],
+  "market_stale_fields": [
+    "hsi_m2"
+  ],
   "market_pe_fields": [
     "hsi_pe",
     "spx_pe"
@@ -183,7 +185,6 @@
     "dxy"
   ],
   "market_m2_fields": [
-    "hsi_m2",
     "spx_m2"
   ]
 }
