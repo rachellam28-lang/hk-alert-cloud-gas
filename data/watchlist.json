@@ -1,7 +1,163 @@
 {
-  "updated": "2026-07-02 00:38 UTC",
-  "count": 15,
+  "updated": "2026-07-03 00:38 UTC",
+  "count": 34,
   "watchlist": [
+    {
+      "code": "06651",
+      "name": "51WORLD",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-03"
+    },
+    {
+      "code": "03317",
+      "name": "XUNCE",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-03"
+    },
+    {
+      "code": "02503",
+      "name": "ZHONGSHENJIANYE",
+      "types": [
+        "供股"
+      ],
+      "ann_date": "2026-07-02"
+    },
+    {
+      "code": "02295",
+      "name": "MAXICITY",
+      "types": [
+        "收購/要約",
+        "復牌",
+        "聯合公告"
+      ],
+      "ann_date": "2026-07-02"
+    },
+    {
+      "code": "03700",
+      "name": "INKEVERSE",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-02"
+    },
+    {
+      "code": "01837",
+      "name": "NATURAL FOOD IH",
+      "types": [
+        "股東增持"
+      ],
+      "ann_date": "2026-07-02"
+    },
+    {
+      "code": "00607",
+      "name": "FULLSHARE",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-02"
+    },
+    {
+      "code": "01364",
+      "name": "GUMING",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-02"
+    },
+    {
+      "code": "00701",
+      "name": "CNT GROUP",
+      "types": [
+        "收購/要約",
+        "聯合公告"
+      ],
+      "ann_date": "2026-07-02"
+    },
+    {
+      "code": "01709",
+      "name": "DL HOLDINGS GP",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-02"
+    },
+    {
+      "code": "00347",
+      "name": "ANGANG STEEL",
+      "types": [
+        "聯合公告"
+      ],
+      "ann_date": "2026-07-02"
+    },
+    {
+      "code": "01468",
+      "name": "JAKOTA CAPITAL",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-02"
+    },
+    {
+      "code": "00913",
+      "name": "HARBOUR DIGITAL",
+      "types": [
+        "供股",
+        "配股"
+      ],
+      "ann_date": "2026-07-02"
+    },
+    {
+      "code": "06820",
+      "name": "FRIENDTIMES",
+      "types": [
+        "股東增持"
+      ],
+      "ann_date": "2026-07-02"
+    },
+    {
+      "code": "00643",
+      "name": "CARRY WEALTH",
+      "types": [
+        "復牌"
+      ],
+      "ann_date": "2026-07-02"
+    },
+    {
+      "code": "09863",
+      "name": "LEAPMOTOR",
+      "types": [
+        "股東增持"
+      ],
+      "ann_date": "2026-07-02"
+    },
+    {
+      "code": "01835",
+      "name": "REALWAY CAPITAL",
+      "types": [
+        "復牌"
+      ],
+      "ann_date": "2026-07-02"
+    },
+    {
+      "code": "00377",
+      "name": "CHINA HUAJUN GP",
+      "types": [
+        "復牌"
+      ],
+      "ann_date": "2026-07-02"
+    },
+    {
+      "code": "02322",
+      "name": "MODERN INNO DT",
+      "types": [
+        "復牌"
+      ],
+      "ann_date": "2026-07-02"
+    },
     {
       "code": "02500",
       "name": "VENUS MEDTECH-B",
