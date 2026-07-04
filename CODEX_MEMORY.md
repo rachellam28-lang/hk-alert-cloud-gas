@@ -485,6 +485,13 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - Result: `hsi_m2` moved from `1078.4` stale to `1106.0` fresh, `market_partial=false`, `market_stale_fields=[]`, and `data/publish_bundle.json.files.market.partial=false`.
 - Important nuance: Futu-backed dopamine still timed out and stayed fallback/stale, but market-card freshness is now clean because `dopamine_stale` is intentionally separate from market-card stale status.
 
+### 2026-07-05 Hermes health notification dedup
+
+- Researched `ZhuLinsen/daily_stock_analysis` for useful lightweight ideas only; did not import its GitHub/Docker/Web stack.
+- Borrowed the notification-noise idea in a smaller repo-native form: `scripts/health_check.py` now keeps persistent Telegram dedup state in `logs/health_telegram_state.json`.
+- Exact same Hermes health summary is suppressed for `HEALTH_TELEGRAM_DEDUP_TTL_SECONDS` seconds (default `21600`), even when only the header timestamp changed between cron retries.
+- This protects the Hermes/status bot from duplicate watchdog spam without hiding changed health content or affecting the health-check exit code.
+
 ## Open Items
 
 - Keep auditing page data sources when new pages or JSON files are added.

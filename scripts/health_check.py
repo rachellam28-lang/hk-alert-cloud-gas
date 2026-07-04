@@ -16,6 +16,7 @@ Checks:
 """
 
 import argparse
+import hashlib
 import json
 import os
 import statistics
@@ -52,6 +53,7 @@ WATCH_FILES = {
 DEEPSEEK_BALANCE_WARN = 5.0
 ANN_DEVIATION_WARN = 0.7
 HEALTH_OUT = os.path.join(BASE, "health.json")
+HEALTH_TELEGRAM_STATE = os.path.join(BASE, "logs", "health_telegram_state.json")
 ICON_OK = "🟢"
 ICON_WARN = "⚠️"
 ICON_FAIL = "🔴"
@@ -66,6 +68,73 @@ def load_json(path, default=None):
             return json.load(f)
     except Exception:
         return default
+
+
+def save_json(path, payload):
+    try:
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(payload, f, ensure_ascii=False, indent=1)
+        return True
+    except Exception as exc:
+        print(f"{ICON_WARN} failed to save JSON {path}: {exc}")
+        return False
+
+
+def _env_int(name, default):
+    raw = str(os.environ.get(name, "")).strip()
+    if not raw:
+        return default
+    try:
+        return int(raw)
+    except ValueError:
+        return default
+
+
+def health_telegram_state_path():
+    return str(os.environ.get("HEALTH_TELEGRAM_STATE_PATH", "")).strip() or HEALTH_TELEGRAM_STATE
+
+
+def health_report_fingerprint(text):
+    lines = text.splitlines()
+    if lines and "System Health" in lines[0]:
+        lines = lines[1:]
+    normalized = "\n".join(line.rstrip() for line in lines).strip()
+    return hashlib.sha256(normalized.encode("utf-8")).hexdigest()
+
+
+def should_send_health_telegram(text, *, now=None, state_path=None):
+    ttl_seconds = max(0, _env_int("HEALTH_TELEGRAM_DEDUP_TTL_SECONDS", 21600))
+    fingerprint = health_report_fingerprint(text)
+    if ttl_seconds <= 0:
+        return True, fingerprint, "dedup disabled"
+
+    state = load_json(state_path or health_telegram_state_path(), default={}) or {}
+    last_fp = state.get("fingerprint")
+    last_sent_at = state.get("sent_at")
+    if last_fp != fingerprint or not last_sent_at:
+        return True, fingerprint, "new fingerprint"
+
+    current = now or datetime.now().astimezone()
+    try:
+        sent_at = datetime.fromisoformat(str(last_sent_at))
+        if sent_at.tzinfo is None:
+            sent_at = sent_at.replace(tzinfo=current.tzinfo)
+        age_seconds = (current - sent_at).total_seconds()
+    except Exception:
+        return True, fingerprint, "state timestamp unreadable"
+
+    if 0 <= age_seconds < ttl_seconds:
+        return False, fingerprint, f"duplicate fingerprint within {ttl_seconds}s"
+    return True, fingerprint, "duplicate fingerprint expired"
+
+
+def record_health_telegram_sent(text, *, fingerprint=None, now=None, state_path=None):
+    payload = {
+        "fingerprint": fingerprint or health_report_fingerprint(text),
+        "sent_at": (now or datetime.now().astimezone()).isoformat(),
+    }
+    return save_json(state_path or health_telegram_state_path(), payload)
 
 
 def _latest_date_from_items(items, keys):
@@ -462,6 +531,10 @@ def push_telegram(text):
     if not (token and chat):
         print("⚪ no Telegram config, skip push")
         return False
+    should_send, fingerprint, reason = should_send_health_telegram(text)
+    if not should_send:
+        print(f"{ICON_SKIP} Telegram push skipped: {reason}")
+        return False
     data = json.dumps({"chat_id": chat, "text": text}).encode()
     url = f"https://api.telegram.org/bot{token}/sendMessage"
     for attempt in range(1, 3):
@@ -472,6 +545,7 @@ def push_telegram(text):
         )
         try:
             urllib.request.urlopen(req, timeout=15)
+            record_health_telegram_sent(text, fingerprint=fingerprint)
             print("✅ pushed to Telegram")
             return True
         except Exception as exc:
