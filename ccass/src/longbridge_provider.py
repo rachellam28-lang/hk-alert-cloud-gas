@@ -10,7 +10,7 @@ Maps Longbridge broker_holding_detail fields to HOLDINGSSnapshot / holdings form
   ratio.value  -> pct_of_issued (float)
 """
 
-import json, os, sys, time, logging
+import json, os, sys, time, logging, subprocess, shutil
 from datetime import date
 from dataclasses import dataclass
 from typing import Optional
@@ -20,7 +20,7 @@ import requests
 logger = logging.getLogger(__name__)
 
 ALLOWED_MCP_HOSTS = {"mcp.longbridge.com", "mcp.longbridge.global", "localhost", "127.0.0.1"}
-_raw = os.environ.get("LONGBRIDGE_MCP_URL", "https://mcp.longbridge.com/agent")
+_raw = os.environ.get("LONGBRIDGE_MCP_URL", "https://mcp.longbridge.com")
 from urllib.parse import urlparse as _urlparse
 _parsed = _urlparse(_raw)
 if _parsed.hostname not in ALLOWED_MCP_HOSTS:
@@ -31,6 +31,8 @@ BASE = _raw
 MAX_RETRIES = int(os.environ.get("LONGBRIDGE_MCP_MAX_RETRIES", "2"))
 RETRY_DELAY = float(os.environ.get("LONGBRIDGE_MCP_RETRY_DELAY_SECONDS", "3.0"))
 MCP_TIMEOUT_SECONDS = float(os.environ.get("LONGBRIDGE_MCP_TIMEOUT_SECONDS", "30"))
+CLI_TIMEOUT_SECONDS = float(os.environ.get("LONGBRIDGE_CLI_TIMEOUT_SECONDS", "45"))
+USE_CLI_FIRST = os.environ.get("LONGBRIDGE_USE_CLI", "1") != "0"
 
 # --- Token loading ---
 
@@ -163,23 +165,48 @@ def _stock_code_to_symbol(stock_code: str) -> str:
     return f"{code}.HK"
 
 
+def _parse_date(value: str | None) -> str | None:
+    if not value:
+        return None
+    text = str(value).strip()
+    for fmt in ("%Y.%m.%d", "%Y-%m-%d", "%Y/%m/%d"):
+        try:
+            from datetime import datetime as _dt
+
+            return _dt.strptime(text[:10], fmt).date().isoformat()
+        except ValueError:
+            continue
+    return None
+
+
+def _num(value) -> float:
+    if value is None:
+        return 0.0
+    text = str(value).replace(",", "").strip()
+    if not text:
+        return 0.0
+    try:
+        return float(text)
+    except (TypeError, ValueError):
+        return 0.0
+
+
+def _normalize_ratio(value) -> float:
+    ratio = _num(value)
+    # Longbridge broker-holding returns fractions such as 0.3239 for 32.39%.
+    # HKEX/dashboard fields use percentage points.
+    if abs(ratio) <= 1:
+        ratio *= 100
+    return ratio
+
+
 def _parse_holding(item: dict) -> dict:
     """Convert Longbridge holding item to HOLDINGS format."""
     shares_val = item.get("shares", {})
     ratio_val = item.get("ratio", {})
 
-    shares_str = (shares_val.get("value") or "0").replace(",", "")
-    ratio_str = (ratio_val.get("value") or "0").replace(",", "")
-
-    try:
-        shares = int(float(shares_str)) if shares_str else 0
-    except (ValueError, TypeError):
-        shares = 0
-
-    try:
-        pct = float(ratio_str) if ratio_str else 0.0
-    except (ValueError, TypeError):
-        pct = 0.0
+    shares = int(_num(shares_val.get("value")))
+    pct = _normalize_ratio(ratio_val.get("value"))
 
     return {
         "participant_id": item.get("parti_number", ""),
@@ -189,12 +216,81 @@ def _parse_holding(item: dict) -> dict:
     }
 
 
+def _payload_to_snapshot(stock_code: str, query_date: date, data: dict) -> Optional["HOLDINGSSnapshot"]:
+    from src.scraper import HOLDINGSSnapshot  # local import to avoid circular
+
+    actual_date = _parse_date(data.get("updated_at"))
+    requested = query_date.isoformat() if query_date else None
+    if requested and actual_date and actual_date != requested:
+        logger.warning(
+            "Longbridge broker holding date mismatch for %s: requested=%s actual=%s",
+            stock_code,
+            requested,
+            actual_date,
+        )
+        return None
+
+    items = data.get("list", [])
+    if not items:
+        logger.warning("Longbridge returned empty holdings for %s", stock_code)
+        return None
+
+    holdings = [_parse_holding(item) for item in items]
+    holdings = [h for h in holdings if h["shares"] > 0]
+    if not holdings:
+        return None
+
+    total_shares = sum(h["shares"] for h in holdings)
+    total_pct = sum(h["pct_of_issued"] for h in holdings)
+    return HOLDINGSSnapshot(
+        stock_code=stock_code.strip().zfill(5),
+        trade_date=actual_date or requested,
+        total_shares=total_shares,
+        total_pct=round(total_pct, 2) if total_pct else None,
+        num_participants=len(holdings),
+        holdings=holdings,
+    )
+
+
+def _scrape_stock_cli(stock_code: str, query_date: date) -> Optional["HOLDINGSSnapshot"]:
+    exe = shutil.which("longbridge")
+    if not exe:
+        logger.warning("Longbridge CLI not found in PATH")
+        return None
+    symbol = _stock_code_to_symbol(stock_code)
+    try:
+        proc = subprocess.run(
+            [exe, "broker-holding", "detail", symbol, "--format", "json"],
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=CLI_TIMEOUT_SECONDS,
+            check=False,
+        )
+    except subprocess.TimeoutExpired:
+        logger.warning("Longbridge CLI timeout for %s", symbol)
+        return None
+    if proc.returncode != 0:
+        logger.warning("Longbridge CLI failed for %s: %s", symbol, (proc.stderr or proc.stdout)[-300:])
+        return None
+    try:
+        data = json.loads(proc.stdout)
+    except json.JSONDecodeError as exc:
+        logger.warning("Longbridge CLI JSON parse failed for %s: %s", symbol, exc)
+        return None
+    return _payload_to_snapshot(stock_code, query_date, data)
+
+
 def scrape_stock(stock_code: str, query_date: date) -> Optional["HOLDINGSSnapshot"]:
     """Scrape a single stock via Longbridge API.
 
     Returns HOLDINGSSnapshot (same shape as HOLDINGSScraper.scrape_stock) or None.
     """
-    from src.scraper import HOLDINGSSnapshot  # local import to avoid circular
+    if USE_CLI_FIRST:
+        snap = _scrape_stock_cli(stock_code, query_date)
+        if snap:
+            return snap
 
     symbol = _stock_code_to_symbol(stock_code)
     date_str = query_date.strftime("%Y-%m-%d") if query_date else None
@@ -206,27 +302,4 @@ def scrape_stock(stock_code: str, query_date: date) -> Optional["HOLDINGSSnapsho
         logger.error("Longbridge API failed for %s: %s", symbol, e)
         return None
 
-    items = data.get("list", [])
-    if not items:
-        logger.warning("Longbridge returned empty holdings for %s", symbol)
-        return None
-
-    holdings = [_parse_holding(item) for item in items]
-    # Filter out entries with zero shares (can happen with empty values)
-    holdings = [h for h in holdings if h["shares"] > 0]
-
-    if not holdings:
-        return None
-
-    total_shares = sum(h["shares"] for h in holdings)
-    total_pct = sum(h["pct_of_issued"] for h in holdings)
-    num_participants = len(holdings)
-
-    return HOLDINGSSnapshot(
-        stock_code=stock_code,
-        trade_date=date_str,
-        total_shares=total_shares,
-        total_pct=round(total_pct, 2) if total_pct else None,
-        num_participants=num_participants,
-        holdings=holdings,
-    )
+    return _payload_to_snapshot(stock_code, query_date, data)

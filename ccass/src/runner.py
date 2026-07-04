@@ -950,7 +950,7 @@ def _export_json(query_date: date, alerts_today: int) -> bool:
         for r in rows:
             # P3: Include Sentinel Option A concentration fields (matches merge_shards.py)
             sc = r["stock_code"]
-            tp_val = round(r["total_pct"] or 0, 2)
+            tp_val = round(r["total_pct"], 2) if r["total_pct"] is not None else None
             np_val = r["num_participants"] or 0
             t5_val = round(r["top5_pct"] or 0, 2)
             t10_val = round(r["top10_pct"] or 0, 2)

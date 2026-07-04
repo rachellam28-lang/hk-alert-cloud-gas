@@ -11,6 +11,7 @@ REPO_ROOT="$(cd "$CCASS_DIR/.." && pwd)"
 cd "$CCASS_DIR"
 
 export HOLDINGS_FAST="${HOLDINGS_FAST:-1}"
+export HOLDINGS_PROVIDER="${HOLDINGS_PROVIDER:-longbridge}"
 export HOLDINGS_DAILY_MAX_MINUTES="${HOLDINGS_DAILY_MAX_MINUTES:-120}"
 export HOLDINGS_SKIP_MARKET_CAP_FETCH="${HOLDINGS_SKIP_MARKET_CAP_FETCH:-1}"
 if [[ -x "$REPO_ROOT/.venv/bin/python" ]]; then
@@ -35,6 +36,7 @@ elif [[ "$runner_rc" -ne 0 ]]; then
 fi
 
 echo "2/5 Regenerate holdings.json..."
+"$PYTHON_BIN" scripts/repair_pct_scale.py || echo "WARN: pct scale repair unavailable; continuing"
 "$PYTHON_BIN" scripts/regenerate_json.py --min-coverage "${AUDIT_MIN_COVERAGE:-99.0}" || { echo "ERROR: holdings.json regeneration failed"; exit 1; }
 
 echo "2.1/5 Detect deposit/transfer monitor..."

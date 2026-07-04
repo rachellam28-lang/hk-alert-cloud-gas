@@ -244,7 +244,7 @@ def update_holdings_json(target_date: date) -> None:
     stocks = []
     for row in rows:
         sc = row[0]
-        tp = round(row[1] or 0, 2)
+        tp = round(row[1], 2) if row[1] is not None else None
         np_val = row[2] or 0
         t5 = round(row[3] or 0, 2)
         t10 = round(row[4] or 0, 2)

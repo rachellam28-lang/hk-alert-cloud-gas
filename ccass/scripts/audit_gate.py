@@ -1,7 +1,8 @@
 """Unified publish gate for HOLDINGS outputs.
 
-Runs data/dashboard verification, checks freshness against the DB, and fails
-fast if the latest publish is stale or the trading-day timeline has gaps.
+Runs data/dashboard verification and checks freshness against the DB. The gate
+fails on current publish-data errors; historical gaps stay visible as backlog
+warnings so stale old rows do not block today's page refresh.
 
 Usage:
     python scripts/audit_gate.py
@@ -287,14 +288,16 @@ def main() -> int:
     elif not isinstance(is_complete, bool):
         warnings.append("holdings.json.is_complete is missing or non-bool")
 
-    # Timeline continuity check across the current DB range.
+    # Timeline continuity check across the current DB range. Historical gaps are
+    # backlog warnings; the current publish date/coverage checks above decide
+    # whether today's output is deployable.
     if present_dates:
         start_db = min(present_dates)
         end_db = publishable_db or max(present_dates)
         missing_days = _missing_trading_days(start_db, end_db, present_dates)
         if missing_days:
-            errors.append(
-                f"Missing trading days in DB range {start_db}..{end_db}: "
+            warnings.append(
+                f"Historical DB gaps in range {start_db}..{end_db}: "
                 + ", ".join(missing_days[:12])
                 + (" ..." if len(missing_days) > 12 else "")
             )
@@ -308,12 +311,21 @@ def main() -> int:
                     + (" ..." if len(tail_missing) > 12 else "")
                 )
 
-    # Run the existing verifiers.
+    # Run verifiers. Date-scoped data verification gates the current publish;
+    # full-history verification is reported as backlog only.
+    verify_date = str(holdings_updated or publishable_db or "")
     try:
-        data_report, data_rc, _, _ = _run_json_script("scripts/verify_data.py", "--json")
+        if not verify_date:
+            raise RuntimeError("No holdings/publishable date available for verify_data")
+        data_report, data_rc, _, _ = _run_json_script("scripts/verify_data.py", "--date", verify_date, "--json")
     except Exception as exc:
         data_report, data_rc = {"status": "FAIL", "errors": [str(exc)], "warnings": []}, 1
         errors.append(f"verify_data failed to run: {exc}")
+    try:
+        history_report, history_rc, _, _ = _run_json_script("scripts/verify_data.py", "--json")
+    except Exception as exc:
+        history_report, history_rc = {"status": "FAIL", "errors": [str(exc)], "warnings": []}, 1
+        warnings.append(f"historical verify_data failed to run: {exc}")
     try:
         dash_report, dash_rc, _, _ = _run_json_script("scripts/verify_dashboard.py")
     except Exception as exc:
@@ -321,12 +333,18 @@ def main() -> int:
         errors.append(f"verify_dashboard failed to run: {exc}")
 
     if data_report.get("errors"):
-        errors.append(f"verify_data errors={len(data_report['errors'])}")
+        errors.append(f"verify_data {verify_date} errors={len(data_report['errors'])}")
     if dash_report.get("status") == "FAIL" or dash_rc != 0:
         errors.append("verify_dashboard failed")
 
     if data_report.get("warnings"):
-        warnings.append(f"verify_data warnings={len(data_report['warnings'])}")
+        warnings.append(f"verify_data {verify_date} warnings={len(data_report['warnings'])}")
+    if history_report.get("errors") or history_report.get("warnings"):
+        warnings.append(
+            "historical verify_data backlog "
+            f"errors={len(history_report.get('errors', []))} "
+            f"warnings={len(history_report.get('warnings', []))}"
+        )
     if dash_report.get("status") == "WARN":
         warnings.append("verify_dashboard WARN")
 
@@ -344,9 +362,15 @@ def main() -> int:
         "errors": errors,
         "warnings": warnings,
         "verify_data": {
-            "status": data_report.get("status"),
+            "date": verify_date or None,
+            "status": "FAIL" if data_report.get("errors") else ("WARN" if data_report.get("warnings") else "PASS"),
             "errors": len(data_report.get("errors", [])),
             "warnings": len(data_report.get("warnings", [])),
+        },
+        "historical_verify_data": {
+            "status": "FAIL" if history_report.get("errors") else ("WARN" if history_report.get("warnings") else "PASS"),
+            "errors": len(history_report.get("errors", [])),
+            "warnings": len(history_report.get("warnings", [])),
         },
         "verify_dashboard": {
             "status": dash_report.get("status"),

@@ -232,7 +232,11 @@ def _check_pct_consistency(conn, result, stock, date_val):
             "holdings_sum_pct": hs,
             "diff": diff,
         }
-        if diff is None or diff > 999:
+        if tp is None:
+            entry["severity"] = "warning"
+            entry["detail"] = f"total_pct is unavailable for {sc} on {td}"
+            result.warnings.append(entry)
+        elif diff is None or diff >= 999:
             # No holdings data at all
             entry["severity"] = "warning"
             entry["detail"] = f"No holdings data exists for {sc} on {td}"
@@ -298,6 +302,10 @@ def _check_shares_consistency(conn, result, stock, date_val):
 def _check_daily_jumps(conn, result, stock, date_val):
     stock_where = "WHERE stock_code = ?" if stock else ""
     stock_params = [stock] if stock else []
+    date_filter = "AND trade_date = ?" if date_val else ""
+    params = stock_params + [MAX_PCT_JUMP_DAY]
+    if date_val:
+        params.append(date_val)
 
     # Limit scope for full-scan performance
     limit_clause = "" if (stock or date_val) else "LIMIT 50"
@@ -320,9 +328,10 @@ def _check_daily_jumps(conn, result, stock, date_val):
         WHERE prev_pct IS NOT NULL
           AND total_pct > 0 AND prev_pct > 0
           AND ABS(total_pct - prev_pct) > ?
+          {date_filter}
         ORDER BY ABS(total_pct - prev_pct) DESC
         {limit_clause}
-    """, stock_params + [MAX_PCT_JUMP_DAY]).fetchall()
+    """, params).fetchall()
 
     for r in rows:
         sc, pd, td, pp, tp, delta, ps, ts = r

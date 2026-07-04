@@ -175,25 +175,19 @@ def fill_missing(target_date: str, max_stocks: int = 3000):
     db.execute("PRAGMA journal_mode=WAL")
     db.execute("PRAGMA foreign_keys=ON")
 
-    # Get full universe from the date with most stocks
+    # Use the active universe as the denominator. The previous implementation
+    # used the historical date with the most DB rows, which skipped newly
+    # listed/activated stocks and made coverage impossible to repair.
     EXCLUDE_PATTERNS = ["029%", "04%", "8%"]
     exclude_clauses = " AND ".join(["stock_code NOT LIKE ?" for _ in EXCLUDE_PATTERNS])
-    
-    # Find the date with the most stocks (reference universe)
-    ref_row = db.execute(
-        "SELECT trade_date, COUNT(*) AS n FROM holdings_daily "
-        "WHERE " + " AND ".join(["stock_code NOT LIKE ?" for _ in EXCLUDE_PATTERNS]) +
-        " GROUP BY trade_date ORDER BY n DESC LIMIT 1",
-        tuple(EXCLUDE_PATTERNS)
-    ).fetchone()
-    if not ref_row:
-        print("ERROR: No reference universe found")
-        return
-    ref_date = ref_row[0]
-    
+
     full = set(r[0] for r in db.execute(
-        f"SELECT DISTINCT stock_code FROM holdings_daily WHERE trade_date=? AND {exclude_clauses}",
-        (ref_date, *EXCLUDE_PATTERNS)
+        f"""
+        SELECT stock_code
+        FROM stock_universe
+        WHERE is_active=1 AND {exclude_clauses}
+        """,
+        tuple(EXCLUDE_PATTERNS),
     ))
     have = set(r[0] for r in db.execute(
         'SELECT DISTINCT stock_code FROM holdings_daily WHERE trade_date=?',

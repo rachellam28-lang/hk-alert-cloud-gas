@@ -11,13 +11,14 @@ import sqlite3
 import subprocess
 import sys
 import os
+from datetime import date, timedelta
 from pathlib import Path
 
 
 PROJECT = Path(__file__).resolve().parents[1]
 DB = PROJECT / "holdings.db"
 RESUME = PROJECT / "scripts" / "resume_backfill_range.py"
-THRESHOLD = 0.99
+DEFAULT_THRESHOLD = 0.99
 EXCLUDE_PATTERNS = ("029%", "04%", "8%")
 
 
@@ -35,7 +36,7 @@ def _active_total(con: sqlite3.Connection) -> int:
     return int(row[0] or 0)
 
 
-def _recent_dates(con: sqlite3.Connection, limit: int) -> list[str]:
+def _db_recent_dates(con: sqlite3.Connection, limit: int) -> list[str]:
     rows = con.execute(
         """
         SELECT DISTINCT trade_date
@@ -47,6 +48,28 @@ def _recent_dates(con: sqlite3.Connection, limit: int) -> list[str]:
         (limit,),
     ).fetchall()
     return [str(r[0]) for r in rows][::-1]
+
+
+def _candidate_dates(con: sqlite3.Connection, lookback: int, start: str | None, end: str | None) -> list[str]:
+    sys.path.insert(0, str(PROJECT))
+    from src.trading_calendar import is_trading_day, last_n_trading_days, today_hk
+
+    if start or end:
+        if start:
+            start_date = date.fromisoformat(start)
+        else:
+            db_dates = _db_recent_dates(con, lookback)
+            start_date = date.fromisoformat(db_dates[0]) if db_dates else today_hk()
+        end_date = date.fromisoformat(end) if end else today_hk()
+        out: list[str] = []
+        cur = start_date
+        while cur <= end_date:
+            if is_trading_day(cur):
+                out.append(cur.isoformat())
+            cur += timedelta(days=1)
+        return out
+
+    return [d.isoformat() for d in last_n_trading_days(today_hk(), lookback)]
 
 
 def _coverage(con: sqlite3.Connection, trade_date: str) -> tuple[int, int, float]:
@@ -69,13 +92,18 @@ def _coverage(con: sqlite3.Connection, trade_date: str) -> tuple[int, int, float
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--lookback", type=int, default=20, help="How many recent dates to inspect")
+    parser.add_argument("--lookback", type=int, default=45, help="How many recent trading dates to inspect, including absent DB dates")
+    parser.add_argument("--start", help="Optional start date YYYY-MM-DD")
+    parser.add_argument("--end", help="Optional end date YYYY-MM-DD")
     parser.add_argument("--max-batches", type=int, default=6)
+    parser.add_argument("--max-stocks", type=int, default=1000)
+    parser.add_argument("--provider", choices=("auto", "hkex", "longbridge"), default=os.environ.get("HOLDINGS_PROVIDER", "auto"))
+    parser.add_argument("--target-coverage", type=float, default=DEFAULT_THRESHOLD)
     args = parser.parse_args()
 
     with sqlite3.connect(DB) as con:
         con.row_factory = sqlite3.Row
-        dates = _recent_dates(con, args.lookback)
+        dates = _candidate_dates(con, args.lookback, args.start, args.end)
         if not dates:
             print("NO_DATES")
             return 0
@@ -84,7 +112,7 @@ def main() -> int:
         for d in dates:
             n, total, cov = _coverage(con, d)
             print(f"CHECK {d} {n}/{total} {cov*100:.1f}%")
-            if cov < THRESHOLD:
+            if cov < args.target_coverage:
                 incomplete.append(d)
 
     if not incomplete:
@@ -101,13 +129,14 @@ def main() -> int:
             "--start", start,
             "--end", end,
             "--max-batches", str(args.max_batches),
+            "--max-stocks", str(args.max_stocks),
+            "--provider", args.provider,
+            "--target-coverage", str(args.target_coverage),
         ],
         cwd=PROJECT,
         env={
             **os.environ,
-            "HOLDINGS_PROVIDER": "hkex",
             "HOLDINGS_BACKFILL_FAST": "1",
-            "FILL_MISSING_WORKERS": "1",
             "PYTHONPATH": ".",
         },
     )

@@ -1,6 +1,6 @@
 {
   "schema_v": 1,
-  "generated_at": "2026-07-04T00:24:22",
+  "generated_at": "2026-07-04T10:38:17",
   "source_of_truth": {
     "db": "ccass/holdings.db",
     "primary_holdings": "holdings.json",
@@ -10,20 +10,20 @@
   "files": {
     "holdings": {
       "path": "holdings.json",
-      "updated": "2026-06-26",
+      "updated": "2026-07-03",
       "source": "ccass.db / holdings export",
-      "stock_count": 2731,
-      "coverage_pct": 99.5,
-      "first_date": "2026-05-01",
+      "stock_count": 2747,
+      "coverage_pct": 99.6,
+      "first_date": "2026-04-30",
       "is_complete": false
     },
     "signals": {
       "path": "data/signals.json",
-      "updated": "2026-07-03T16:58:44.189239",
+      "updated": "2026-07-04T10:38:17.772419",
       "source": "announcements.json + rights_analysis.json + alerts.json + holdings.json",
-      "groups": 2731,
-      "with_signals": 492,
-      "with_corp": 262
+      "groups": 2747,
+      "with_signals": 494,
+      "with_corp": 261
     },
     "alerts": {
       "path": "data/alerts.json",
@@ -82,15 +82,15 @@
     },
     "transfers": {
       "path": "data/transfers.json",
-      "updated": "2026-06-26 transfer backfill required",
-      "date": "2026-06-26",
-      "previous_date": "2026-06-15",
+      "updated": "2026-07-03 vs 2026-07-02",
+      "date": "2026-07-03",
+      "previous_date": "2026-07-02",
       "source": "ccass participant holdings transfer monitor",
-      "count": 0,
-      "published_count": 0,
-      "ok": false,
-      "status": "backfill_required",
-      "message": "participant holdings coverage 24/2759 (0.9%) below 95.0%"
+      "count": 22,
+      "published_count": 22,
+      "ok": null,
+      "status": null,
+      "message": null
     },
     "prices": {
       "path": "data/stock_prices.json",
@@ -171,35 +171,36 @@
     }
   },
   "publish": {
-    "status": "FAIL",
-    "latest_db_date": "2026-07-02",
-    "latest_db_stock_count": 48,
-    "latest_db_coverage_pct": 1.7,
-    "latest_publishable_date": "2026-06-18",
-    "latest_publishable_stock_count": 2745,
-    "latest_publishable_coverage_pct": 99.5,
-    "holdings_updated": "2026-06-26",
-    "coverage_pct": 99.5,
+    "status": "WARN",
+    "latest_db_date": "2026-07-03",
+    "latest_db_stock_count": 2747,
+    "latest_db_coverage_pct": 99.6,
+    "latest_publishable_date": "2026-07-03",
+    "latest_publishable_stock_count": 2747,
+    "latest_publishable_coverage_pct": 99.6,
+    "holdings_updated": "2026-07-03",
+    "coverage_pct": 99.6,
     "verify_data": {
-      "status": null,
-      "errors": 150,
-      "warnings": 173
+      "date": "2026-07-03",
+      "status": "WARN",
+      "errors": 0,
+      "warnings": 30
     },
     "verify_dashboard": {
       "status": "WARN",
       "errors": 0,
-      "warnings": 2486
+      "warnings": 2075
     }
   },
   "headline": {
-    "holdings_updated": "2026-06-26",
-    "latest_db_date": "2026-07-02",
-    "latest_db_stock_count": 48,
-    "latest_db_coverage_pct": 1.7,
-    "latest_publishable_date": "2026-06-18",
-    "latest_publishable_stock_count": 2745,
-    "latest_publishable_coverage_pct": 99.5,
-    "signals_updated": "2026-07-03T16:58:44.189239",
+    "holdings_updated": "2026-07-03",
+    "latest_db_date": "2026-07-03",
+    "latest_db_stock_count": 2747,
+    "latest_db_coverage_pct": 99.6,
+    "latest_publishable_date": "2026-07-03",
+    "latest_publishable_stock_count": 2747,
+    "latest_publishable_coverage_pct": 99.6,
+    "signals_updated": "2026-07-04T10:38:17.772419",
     "alerts_updated": "2026-07-03 08:54 UTC",
     "watchlist_updated": "2026-07-03 08:54 UTC",
     "history_updated": "2026-06-12",
@@ -208,8 +209,8 @@
     "fundflow_updated": "2026-07-03",
     "breakthroughs_updated": "2026-07-03T16:58:21.158451+08:00",
     "corp_graded_scan_updated": "2026-07-03",
-    "transfers_updated": "2026-06-26 transfer backfill required",
-    "transfers_date": "2026-06-26",
+    "transfers_updated": "2026-07-03 vs 2026-07-02",
+    "transfers_date": "2026-07-03",
     "prices_updated": "2026-07-03T08:30:53.799498+00:00",
     "market_updated": "2026-07-03T08:33:58.781394+00:00",
     "market_stale": true,
@@ -220,6 +221,6 @@
     }
   },
   "telegram": {
-    "summary": "publish=FAIL | holdings=2026-06-26 | latest_db=2026-07-02 (1.7%) | publishable=2026-06-18 | signals=2026-07-03T16:58:44.189239 | alerts=2026-07-03 08:54 UTC | anns=2026-07-03 | rights=2026-07-03 | flow=2026-07-03 | transfers=2026-06-26 transfer backfill required | market=2026-07-03T08:33:58.781394+00:00"
+    "summary": "publish=WARN | holdings=2026-07-03 | latest_db=2026-07-03 (99.6%) | publishable=2026-07-03 | signals=2026-07-04T10:38:17.772419 | alerts=2026-07-03 08:54 UTC | anns=2026-07-03 | rights=2026-07-03 | flow=2026-07-03 | transfers=2026-07-03 vs 2026-07-02 | market=2026-07-03T08:33:58.781394+00:00"
   }
 }

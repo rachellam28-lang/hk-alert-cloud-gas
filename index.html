@@ -1024,7 +1024,8 @@ function pbar(v,c){return'<div class="pbar-wrap"><div class="pbar"><div class="p
 function cc(v){if(v>=80)return'vhi';if(v>=60)return'hi';if(v>=40)return'mid';return'lo';}
 function cl(v){if(v>=80)return'非常高';if(v>=60)return'高';if(v>=40)return'中';return'低';}
 function dc(v){if(v==null)return'<span class="dcell zero">—</span>';var c=v>0?'up':(v<0?'dn':'zero');var a=v>0?'▲':(v<0?'▼':'—');var s=v>0?'+':'';return'<span class="dcell '+c+'"><span style="font-size:9px">'+a+'</span>'+s+v.toFixed(2)+'%</span>';}
-function ecsv(){var h=['代碼','名稱','前年Δ%','現價','Market%','Top5%','Top10%','參與者數','市值(億)'];var r=filtered.map(function(s){var p=priceMap.get(s.c);return[esc(s.c),esc(s.n),s.py_pct!=null?s.py_pct.toFixed(2)+'%':'',p||'',s.tp.toFixed(2),s.t5.toFixed(2),s.t10.toFixed(2),s.np,s.mc!=null?s.mc.toFixed(1):''].join(',');}).join('\n');var csv='\uFEFF'+h.join(',')+'\n'+r;var b=new Blob([csv],{type:'text/csv;charset=utf-8'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='hkdata_'+new Date().toISOString().slice(0,10)+'.csv';a.click();URL.revokeObjectURL(a.href);}
+function pctText(v,d){return v==null||!Number.isFinite(Number(v))?'':Number(v).toFixed(d==null?2:d)+'%';}
+function ecsv(){var h=['代碼','名稱','前年Δ%','現價','Market%','Top5%','Top10%','參與者數','市值(億)'];var r=filtered.map(function(s){var p=priceMap.get(s.c);return[esc(s.c),esc(s.n),pctText(s.py_pct),p||'',pctText(s.tp),pctText(s.t5),pctText(s.t10),s.np,s.mc!=null?s.mc.toFixed(1):''].join(',');}).join('\n');var csv='\uFEFF'+h.join(',')+'\n'+r;var b=new Blob([csv],{type:'text/csv;charset=utf-8'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='hkdata_'+new Date().toISOString().slice(0,10)+'.csv';a.click();URL.revokeObjectURL(a.href);}
 
 function hasMC(s){return Number.isFinite(s.mc)&&s.mc>0;}
 function normalizeStockMC(s){
@@ -1558,8 +1559,9 @@ function stockPassesFilters(s,opts){
       if(mode==='large_mc' && (!hasMC(s)||s.mc<100))return false;
     }
   }
-  if(tpMin!=null && s.tp<tpMin)return false;
-  if(tpMax!=null && s.tp>tpMax)return false;
+  var tpVal=s.tp==null?null:Number(s.tp);
+  if(tpMin!=null && (tpVal==null || tpVal<tpMin))return false;
+  if(tpMax!=null && (tpVal==null || tpVal>tpMax))return false;
   if(mcMin!=null && (!hasMC(s)||s.mc<mcMin))return false;
   if(mcMax!=null && (!hasMC(s)||s.mc>mcMax))return false;
   if(sigFilterVal!=='all'){
@@ -2158,7 +2160,7 @@ function renderTable(){
       if(totalSigCount>0)hlClass+=' hl-signal';
       if(s.su>1)hlClass+=' hl-up';
       if(s.sd>1)hlClass+=' hl-dn';
-      if(s.tp>=80)hlClass+=' hl-conc';
+      if(s.tp!=null && s.tp>=80)hlClass+=' hl-conc';
       if(hasIPO)hlClass+=' hl-ipo';
       var heatClass=heatMarkMatches(s)?' heat-marked':'';
       return '<tr data-code="'+esc(s.c)+'" class="'+ipoClass+hlClass+heatClass+'" onclick="showDetail(\''+s.c+'\')">'
@@ -2379,10 +2381,13 @@ async function showDetail(code){
     const body='<span class="'+cls+'">'+esc(shortLabel(sig.label))+dateStr+'</span>';
     return sig.link?'<a class="splink" href="'+esc(sig.link)+'" target="_blank" rel="noopener">'+body+'</a>':body;
   }).join(' ');
+  const concHtml=s.tp!=null
+    ? '<span class="conc-badge conc-'+cc(s.tp)+'">● '+cl(s.tp)+'集中</span>'
+    : '<span class="mc-null">—</span>';
 
   document.getElementById('drawerBody').innerHTML=
     '<div class="drawer-meta">'
-    +'<div class="dmeta"><span class="dmeta-label">Market%</span><span class="dmeta-val">'+(s.tp!=null?s.tp.toFixed(2)+'%':'—')+'</span><span class="dmeta-sub"><span class="conc-badge conc-'+cc(s.tp||0)+'">● '+cl(s.tp||0)+'集中</span></span></div>'
+    +'<div class="dmeta"><span class="dmeta-label">Market%</span><span class="dmeta-val">'+(s.tp!=null?s.tp.toFixed(2)+'%':'—')+'</span><span class="dmeta-sub">'+concHtml+'</span></div>'
     +'<div class="dmeta"><span class="dmeta-label">市值</span><span class="dmeta-val">'+fmtMC(s.mc)+'</span></div>'
     +'<div class="dmeta"><span class="dmeta-label">現價</span><span class="dmeta-val" style="font-size:16px">'+priceHtml+'</span></div>'
     +'<div class="dmeta"><span class="dmeta-label">Top5%</span><span class="dmeta-val">'+(s.t5!=null?s.t5.toFixed(2)+'%':'—')+'</span></div>'

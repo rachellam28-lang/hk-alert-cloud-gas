@@ -147,6 +147,21 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 
 ## Latest Deploy Notes
 
+### 2026-07-04 Longbridge CCASS latest backfill and publish gate split
+
+- Root cause of stale `2026-06-26` CCASS publish: `holdings.json` had drifted away from the local DB. The DB latest rows were partial, and the old resume jobs missed fully absent trading days because they only inspected dates already present in `ccass_daily`.
+- Longbridge CLI broker-holding detail is now the preferred latest-date CCASS provider. `ccass/src/longbridge_provider.py` defaults to CLI-first, uses the main MCP endpoint if needed, rejects date mismatches, and normalizes Longbridge ratio fractions such as `0.3239` into dashboard percentage points such as `32.39`.
+- `ccass/scripts/resume_backfill_range.py` now supports `--provider auto|hkex|longbridge`, trading-calendar dates, `--max-stocks`, `--target-coverage`, and a real dry run when `--max-batches <= 0`. `auto` uses Longbridge only for the Longbridge latest holding date and HKEX for older dates.
+- `ccass/scripts/resume_incomplete_dates.py` now builds candidates from the trading calendar, not only DB dates, so 0-row missing trading days can be detected/backfilled. Default lookback is 45 trading days.
+- `ccass/scripts/fill_missing.py` now compares against active `stock_universe` instead of the historical max-row date, so newly active/listed stocks are no longer skipped when repairing coverage.
+- Backfilled latest Longbridge CCASS date `2026-07-03`: public `holdings.json` / `data/holdings.json` / `ccass.json` / `data/ccass.json` now publish 2747 stocks, 99.6% coverage. Remaining missing/no-data codes after the run included `00876`, `00809`, `00309`, `01371`, `01468`, `03313`, `08048`, `08071`, `08471`, `08568`, `08569`, `08603`.
+- `data/transfers.json` and `ccass/data/transfers.json` now align to `2026-07-03 vs 2026-07-02` with 22 transfer items. Do not show stale `2026-06-05` transfer output.
+- Added `ccass/scripts/repair_pct_scale.py` and wired it into `daily_refresh.sh` before regeneration. It backs up `ccass/holdings.db` before repairing legacy `total_pct` rows stored as fractions when a nearby same-stock row confirms the x100 scale. Current local repair updated 2201 legacy rows after backup `ccass/backups/holdings.db.bak.20260704_103654`.
+- `ccass/scripts/verify_data.py --date YYYY-MM-DD` now truly scopes daily-jump checks to that date. It treats unavailable `total_pct` as a warning, not a massive mismatch error. Latest `2026-07-03` verification is 0 errors / 30 warnings; 8 Longbridge rows have shares/participants but no percentage ratio and are published as `tp:null`, not fake `0`.
+- `ccass/scripts/audit_gate.py` now gates on current publish-date errors. Historical DB gaps and full-history verifier failures remain warnings/backlog so old rows cannot block today's page refresh. Current gate is `WARN`, not `FAIL`: latest publish is deployable, while historical gaps/backlog remain visible.
+- `index.html`, `ccass/scripts/merge_shards.py`, and `ccass/src/runner.py` preserve missing Market% as `null` and guard CSV/filter/detail rendering so unknown concentration is not displayed as low/0.
+- Hermes/dashboard shared bundle now shows `publish=WARN`, holdings `2026-07-03`, signals generated on `2026-07-04`, rights/announcements/fundflow `2026-07-03`, and transfers `2026-07-03 vs 2026-07-02`.
+
 ### 2026-07-04 full-system audit, Hermes alignment, and refresh reliability
 
 - Full page fetch audit found one missing main-page data request: `index.html` still fetched `data/webb_site/summary.json`, but the file was not present. Removed that fetch so the main page no longer creates a guaranteed failed request during load.
