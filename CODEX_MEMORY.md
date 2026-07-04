@@ -478,6 +478,13 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - Fix: new `scripts/run_health_watchdog.py` wraps the health check plus direct Cloudflare deploy of `health.json`; real data-red exits still fail, but transient Telegram/Sentry/deploy network noise stays green with a warning.
 - Rule: data/integrity red should fail watchdog; Sentry, Telegram, or Hermes network notification errors should only be warnings unless the data check itself is red.
 
+### 2026-07-05 market card partial refresh cleared
+
+- User reported live main-page market meta still showing `市場卡部分刷新 2026-07-03 08:33:58` with stale `hsi_m2`.
+- Manual `scripts/dopamine_refresh.py` run succeeded for Longbridge, WorldPERatio, CNBC, HKMA, and FRED, and refreshed both `market.json` and `data/market.json`.
+- Result: `hsi_m2` moved from `1078.4` stale to `1106.0` fresh, `market_partial=false`, `market_stale_fields=[]`, and `data/publish_bundle.json.files.market.partial=false`.
+- Important nuance: Futu-backed dopamine still timed out and stayed fallback/stale, but market-card freshness is now clean because `dopamine_stale` is intentionally separate from market-card stale status.
+
 ## Open Items
 
 - Keep auditing page data sources when new pages or JSON files are added.

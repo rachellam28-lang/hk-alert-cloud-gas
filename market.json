@@ -5,7 +5,7 @@
     "changePct": 1.28,
     "stale": false,
     "source": "longbridge:quote",
-    "updated": "2026-07-03T08:33:43.272411+00:00"
+    "updated": "2026-07-04T16:45:54.964996+00:00"
   },
   "dow": {
     "value": 52900.07,
@@ -13,7 +13,7 @@
     "changePct": 1.14,
     "stale": false,
     "source": "longbridge:quote",
-    "updated": "2026-07-03T08:33:43.272411+00:00"
+    "updated": "2026-07-04T16:45:54.964996+00:00"
   },
   "spx": {
     "value": 7483.24,
@@ -21,16 +21,16 @@
     "changePct": 0.0,
     "stale": false,
     "source": "longbridge:quote",
-    "updated": "2026-07-03T08:33:43.272411+00:00"
+    "updated": "2026-07-04T16:45:54.964996+00:00"
   },
   "dxy": {
-    "value": 100.699,
-    "change": -0.158,
-    "changePct": -0.16,
+    "value": 100.879,
+    "change": 0.022,
+    "changePct": 0.02,
     "stale": false,
     "source": "cnbc:.DXY",
     "source_url": "https://quote.cnbc.com/quote-html-webservice/restQuote/symbolType/symbol?symbols=.DXY&output=json",
-    "updated": "2026-07-03T08:33:45+00:00",
+    "updated": "2026-07-04T16:46:05.320048+00:00",
     "name": "ICE U.S. Dollar Index"
   },
   "vix": {
@@ -39,7 +39,7 @@
     "changePct": -2.65,
     "stale": false,
     "source": "longbridge:quote",
-    "updated": "2026-07-03T08:33:43.272411+00:00",
+    "updated": "2026-07-04T16:45:54.964996+00:00",
     "eval": {
       "label": "正常",
       "color": "neutral"
@@ -66,7 +66,7 @@
     "source": "worldperatio",
     "source_url": "https://worldperatio.com/area/hong-kong/",
     "source_date": "02 July 2026",
-    "updated": "2026-07-03T08:33:47.711268+00:00"
+    "updated": "2026-07-04T16:45:59.750101+00:00"
   },
   "spx_pe": {
     "value": 26.73,
@@ -89,7 +89,7 @@
     "source": "worldperatio",
     "source_url": "https://worldperatio.com/index/sp-500/",
     "source_date": "02 July 2026",
-    "updated": "2026-07-03T08:33:47.711268+00:00"
+    "updated": "2026-07-04T16:45:59.750101+00:00"
   },
   "spx_m2": {
     "value": 324.6,
@@ -102,20 +102,20 @@
     "source": "fred:M2SL",
     "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=M2SL",
     "source_date": "2026-05-01",
-    "updated": "2026-07-03T08:33:58.781394+00:00"
+    "updated": "2026-07-04T16:46:05.320116+00:00"
   },
   "fear_greed": {
-    "value": 68.0,
-    "changePct": 11.0,
+    "value": 69.0,
+    "changePct": 1.0,
     "stale": false,
     "source": "longbridge:market-temp",
-    "updated": "2026-07-03T08:33:43.272411+00:00",
+    "updated": "2026-07-04T16:45:54.964996+00:00",
     "eval": {
       "label": "貪婪",
       "color": "orange"
     },
     "sentiment": 57.0,
-    "valuation": 79.0,
+    "valuation": 82.0,
     "description": "Temp Comfortable & Staying Stable"
   },
   "breadth": {
@@ -138,12 +138,12 @@
       "count": 108
     }
   },
-  "updated_at": "2026-07-03T08:33:58.781394+00:00",
+  "updated_at": "2026-07-04T16:46:05.320116+00:00",
   "hsi_m2": {
-    "value": 1078.4,
+    "value": 1106.0,
     "m2": 21112.5,
     "m2_raw_million": 21112460.539,
-    "stale": true,
+    "stale": false,
     "eval": {
       "label": "合理",
       "color": "gray"
@@ -151,7 +151,7 @@
     "source": "hkma:m2_total",
     "source_url": "https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/money/supply-adjusted?offset=0",
     "source_date": "2026-04",
-    "updated": "2026-06-30T02:41:33.202234+00:00"
+    "updated": "2026-07-04T16:46:05.320116+00:00"
   },
   "dopamine": {
     "score": 50.0,
@@ -165,8 +165,8 @@
     "breadth_pct": null,
     "stocks_sampled": null
   },
-  "market_partial": true,
-  "market_note": "Longbridge refreshed 5 market fields; WorldPERatio refreshed 2 P/E fields; CNBC refreshed 1 market fields; HKMA/FRED refreshed 1 M2 fields; stale fields remain: hsi_m2.",
+  "market_partial": false,
+  "market_note": "Longbridge refreshed 5 market fields; WorldPERatio refreshed 2 P/E fields; CNBC refreshed 1 market fields; HKMA/FRED refreshed 2 M2 fields; all market card fields are fresh.",
   "market_longbridge_fields": [
     "hsi",
     "dow",
@@ -174,9 +174,7 @@
     "vix",
     "fear_greed"
   ],
-  "market_stale_fields": [
-    "hsi_m2"
-  ],
+  "market_stale_fields": [],
   "market_pe_fields": [
     "hsi_pe",
     "spx_pe"
@@ -185,6 +183,7 @@
     "dxy"
   ],
   "market_m2_fields": [
+    "hsi_m2",
     "spx_m2"
   ]
 }
