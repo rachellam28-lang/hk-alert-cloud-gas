@@ -16,6 +16,7 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .topright{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--mute)}
 .dot{width:7px;height:7px;border-radius:999px;background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.18)}
 .dot.loading{background:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.18)}
+.dot.warn{background:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.18)}
 .dot.error{background:#ef4444;box-shadow:0 0 0 3px rgba(239,68,68,.18)}
 .refresh-tag{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:11px;color:var(--text-soft)}
 .wrap{max-width:1440px;margin:0 auto;padding:18px 20px 36px}
@@ -663,6 +664,22 @@ async function loadData(){
     const footerUpd=document.getElementById('signalsFooterUpdated');
     if (footerUpd) footerUpd.textContent = upd.textContent.replace(/^更新於\s*/, '');
     dot.className='dot';
+    fetch('./data/publish_bundle.json?_='+Date.now())
+      .then(r=>r.ok?r.json():null)
+      .then(b=>{
+        if(!b){ dot.className='dot warn'; return; }
+        const pub=b.publish||{};
+        const status=String(pub.status||'').toUpperCase();
+        const gen=String(b.generated_at||'').replace('T',' ').slice(0,16);
+        const ccassDate=pub.holdings_updated || b.headline?.holdings_updated || '';
+        const shortDate=v=>String(v||'').replace(/^2026-/,'').replace(/-/g,'/');
+        if(gen){
+          upd.textContent='系統 '+gen+' · CCASS '+shortDate(ccassDate)+' · '+(status==='PASS'?'PASS':'PARTIAL');
+          if(footerUpd) footerUpd.textContent=upd.textContent;
+        }
+        dot.className=status==='PASS'?'dot':'dot warn';
+      })
+      .catch(()=>{ dot.className='dot warn'; });
     applyFilter();
   }catch(err){
     showError(document.getElementById('tableWrap'), err.message, loadData);

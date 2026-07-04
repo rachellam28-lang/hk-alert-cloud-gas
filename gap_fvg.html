@@ -14,7 +14,7 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .logo{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#b45309,#f59e0b);display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px}
 .brand-title{font-size:14px;font-weight:600}.brand-sub{font-size:10px;color:var(--mute)}
 .topright{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--mute)}
-.dot{width:7px;height:7px;border-radius:999px;background:#22c55e}.dot.loading{background:#f59e0b}.dot.error{background:#ef4444}
+.dot{width:7px;height:7px;border-radius:999px;background:#22c55e}.dot.loading,.dot.warn{background:#f59e0b}.dot.error{background:#ef4444}
 .wrap{max-width:1440px;margin:0 auto;padding:8px 12px 20px}
 .summary-bar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:0 0 8px}
 .summary-item{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:5px 8px;box-shadow:var(--shadow)}
@@ -228,6 +228,7 @@ async function main(){
     var r1 = await fetch('./data/alerts.json?_='+Date.now());
     var r2 = await fetch('./holdings.json?_='+Date.now());
     var r3 = await fetch('./data/transfers.json?_='+Date.now());
+    var r4 = await fetch('./data/publish_bundle.json?_='+Date.now());
 
     // ─── 1. Gap/FVG/POC alerts ───
     var alerts = r1.ok ? ((await r1.json()).alerts||[]) : [];
@@ -247,6 +248,9 @@ async function main(){
     });
     var stocks = Object.values(byCode).sort((a,b)=>b.items.length-a.items.length);
     var hkdata = r2.ok ? await r2.json() : {stocks:[]};
+    var bundle = r4.ok ? await r4.json() : null;
+    var publish = (bundle && bundle.publish) || {};
+    var publishStatus = String(publish.status || '').toUpperCase();
     window._hkdataStocks = hkdata.stocks||[];
     var ranked = (hkdata.stocks||[]).filter(function(s){return s.vr!=null&&s.vr>=2;}).sort(function(a,b){return b.vr-a.vr;}).slice(0,40);
     var tdata = r3.ok ? await r3.json() : {transfers:[]};
@@ -429,8 +433,11 @@ async function main(){
     }
 
     document.getElementById('root').innerHTML = html;
-    dot.className = 'dot';
-    upd.textContent = '更新完成';
+    var warnState = hkdata.is_complete === false || !transferUsable || (publishStatus && publishStatus !== 'PASS');
+    dot.className = warnState ? 'dot warn' : 'dot';
+    upd.textContent = warnState
+      ? '資料WARN · CCASS '+(holdingsDate||'--')+' · '+(publishStatus||'PARTIAL')
+      : '更新完成 · PASS';
   } catch(e){
     dot.className = 'dot error';
     upd.textContent = '載入失敗';

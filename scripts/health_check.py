@@ -44,13 +44,17 @@ WATCH_FILES = {
     "alerts.json":          {"path": os.path.join(BASE, "data", "alerts.json"),        "max_age_h": 26},
     "announcements.json":   {"path": os.path.join(BASE, "data", "announcements.json"), "max_age_h": 26},
     "events.json":          {"path": os.path.join(BASE, "events.json"),                "max_age_h": 26},
-    "price_snapshot":       {"path": os.path.join(BASE, "data", "prices.json"),        "max_age_h": 26},
+    "price_snapshot":       {"path": os.path.join(BASE, "data", "stock_prices.json"),  "max_age_h": 26},
     "jieqi_backtest":       {"path": os.path.join(BASE, "data", "jieqi_backtest.json"), "max_age_h": 72},
 }
 
 DEEPSEEK_BALANCE_WARN = 5.0
 ANN_DEVIATION_WARN = 0.7
 HEALTH_OUT = os.path.join(BASE, "health.json")
+ICON_OK = "🟢"
+ICON_WARN = "⚠️"
+ICON_FAIL = "🔴"
+ICON_SKIP = "⚪"
 
 
 def load_json(path, default=None):
@@ -77,6 +81,29 @@ def _latest_date_from_items(items, keys):
     return max(dates) if dates else None
 
 
+def _latest_price_time(data):
+    vals = []
+    if isinstance(data, dict):
+        rows = data.values()
+    elif isinstance(data, list):
+        rows = data
+    else:
+        rows = []
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        val = row.get("price_updated_at") or row.get("lp_time") or row.get("source_date")
+        if val:
+            vals.append(str(val))
+    return max(vals) if vals else None
+
+
+def _previous_weekday(d):
+    while d.weekday() >= 5:
+        d -= timedelta(days=1)
+    return d
+
+
 def check_freshness():
     rows = []
     for name, cfg in WATCH_FILES.items():
@@ -88,10 +115,17 @@ def check_freshness():
             updated = data.get("updated", "—")
             coverage = data.get("coverage_pct")
             stock_count = data.get("stock_count")
+            complete = data.get("is_complete")
+            if updated in (None, "", "—"):
+                status = ICON_FAIL
+            elif complete is True:
+                status = ICON_OK
+            else:
+                status = ICON_WARN
             rows.append({
                 "name": name,
-                "status": "🟢" if updated not in (None, "", "—") else "🔴",
-                "detail": f"updated={updated} coverage={coverage}% stock_count={stock_count}",
+                "status": status,
+                "detail": f"updated={updated} coverage={coverage}% stock_count={stock_count} complete={complete}",
             })
         elif name == "publish_bundle":
             data = load_json(cfg["path"], default={}) or {}
@@ -101,9 +135,18 @@ def check_freshness():
             holdings = files.get("holdings", {}) or {}
             signals = files.get("signals", {}) or {}
             alerts = files.get("alerts", {}) or {}
+            publish_status = str(publish.get("status") or "").upper()
+            if generated == "—":
+                status = ICON_FAIL
+            elif publish_status == "PASS":
+                status = ICON_OK
+            elif publish_status == "WARN":
+                status = ICON_WARN
+            else:
+                status = ICON_FAIL
             rows.append({
                 "name": name,
-                "status": "🟢" if generated != "—" else "🔴",
+                "status": status,
                 "detail": (
                     f"generated={generated} publish={publish.get('status', '—')} "
                     f"holdings={holdings.get('updated', '—')} "
@@ -152,6 +195,30 @@ def check_freshness():
                 "name": name,
                 "status": "🟢" if updated != "—" else "⚪",
                 "detail": f"updated={updated} terms={len(data.get('term_stats', []))}",
+            })
+        elif name == "price_snapshot":
+            data = load_json(cfg["path"], default={}) or {}
+            latest = _latest_price_time(data)
+            today = datetime.now().date()
+            expected = _previous_weekday(today)
+            latest_date = None
+            if latest:
+                try:
+                    latest_date = datetime.fromisoformat(str(latest).replace("Z", "+00:00")[:10]).date()
+                except Exception:
+                    latest_date = None
+            if not latest_date:
+                status = ICON_FAIL
+            elif latest_date >= expected:
+                status = ICON_OK
+            elif today.weekday() >= 5 and latest_date >= expected:
+                status = ICON_OK
+            else:
+                status = ICON_WARN
+            rows.append({
+                "name": name,
+                "status": status,
+                "detail": f"latest_price={latest or '—'} stocks={len(data) if isinstance(data, dict) else '—'}",
             })
         else:
             age_h = (datetime.now() - datetime.fromtimestamp(os.path.getmtime(cfg["path"]))).total_seconds() / 3600

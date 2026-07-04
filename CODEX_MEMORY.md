@@ -459,6 +459,15 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - Verification: `python -m pytest tests/test_main_heatmap_smoke.py -q` passed; Playwright screenshots checked desktop and mobile locally.
 - Remaining truth-in-data warning: participant/backfill coverage is still the core incomplete issue; dashboard and Hermes must say `partial`/`backfill_required` instead of pretending all signals are fully trade-ready.
 
+### 2026-07-04 fake-green audit
+
+- User challenged whether the system was still showing fake readiness. Clarification: no fabricated market data was found in this pass; the problem was optimistic status coloring/wording.
+- Fixed `scripts/health_check.py`: `holdings.json` and `data/holdings.json` now show warning when `is_complete=false`, even if date and coverage are present. `publish_bundle` now shows warning for `publish.status=WARN` instead of green just because the bundle exists.
+- Fixed `scripts/health_check.py` price freshness: `price_snapshot` now checks primary `data/stock_prices.json` `price_updated_at`/`lp_time` and accepts the previous trading day on weekends, instead of marking `data/prices.json` mtime stale.
+- Fixed `signals.html`: top status now reads `data/publish_bundle.json` and turns amber for `WARN/PARTIAL`.
+- Fixed `gap_fvg.html`: top status now turns amber when holdings are incomplete, transfers are unusable, or `publish_bundle` is not `PASS`; loading success alone no longer means green.
+- Verification: local browser probe showed `index.html`, `signals.html`, and `gap_fvg.html` all expose `dot warn` under current `publish=WARN`; `scripts/health_check.py` now ends with `WARNINGS`, not false `ALL OK`.
+
 ## Open Items
 
 - Keep auditing page data sources when new pages or JSON files are added.
