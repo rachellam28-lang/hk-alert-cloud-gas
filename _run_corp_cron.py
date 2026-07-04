@@ -89,6 +89,15 @@ for path in (PROJECT, SCANNER_DIR):
 script_path = SCANNER_DIR / "hk_cloud_scanner.py"
 sys.argv = [str(script_path), "corp"]
 
-print(f"[cron] Starting hk_cloud_scanner.py corp at {datetime.now()}", flush=True)
-runpy.run_path(str(script_path), run_name="__main__")
-print(f"[cron] hk_cloud_scanner.py corp finished at {datetime.now()}", flush=True)
+
+def main() -> int:
+    print(f"[cron] Starting hk_cloud_scanner.py corp at {datetime.now()}", flush=True)
+    runpy.run_path(str(script_path), run_name="__main__")
+    print(f"[cron] hk_cloud_scanner.py corp finished at {datetime.now()}", flush=True)
+    return 0
+
+
+if __name__ == "__main__":
+    from scripts.sentry_cron import run_monitored_callable
+
+    raise SystemExit(run_monitored_callable("hk-alert-corp-cron", main))

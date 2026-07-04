@@ -164,6 +164,15 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
   - Defer unless validation rules become much bigger: Great Expectations or Dagster, because the current repo already has custom `audit_gate` and direct scripts.
 - Installed locally in `.venv` on 2026-07-04 and recorded in requirements: `sentry-sdk 2.64.0`, `duckdb 1.5.4`, `pytest-playwright 0.8.0`, `playwright 1.61.0`; Playwright Chromium browser `149.0.7827.55` was installed under the user Playwright cache.
 - Sentry still needs a local/platform secret such as `SENTRY_DSN` before it can send cron monitoring events. Do not commit the DSN.
+- `scripts/sentry_cron.py` and `scripts/cron_monitor.py` provide optional fail-open Sentry Cron Monitoring. They load local `.env`, send check-ins only when `SENTRY_DSN` is present, and never block the wrapped job if Sentry itself fails.
+- Sentry cron slugs currently wired:
+  - `hk-alert-daily-refresh`: auto-wraps `ccass/scripts/daily_refresh.sh`.
+  - `hk-alert-resume-incomplete`: wraps `ccass/scripts/resume_incomplete_dates.py`.
+  - `hk-alert-resume-backfill-range`: wraps `ccass/scripts/resume_backfill_range.py`.
+  - `hk-alert-corp-cron`: wraps both corp cron launchers.
+  - `hk-alert-health-check`: wraps `scripts/health_check.py`.
+- To disable the wrapper for a one-off run, set `SENTRY_CRON_DISABLED=1`. To customize schedule metadata, use slug-specific env names like `SENTRY_CRON_HK_ALERT_DAILY_REFRESH_MAX_RUNTIME=240`; do not commit those secrets/settings unless they are non-sensitive.
+- `tests/test_main_heatmap_smoke.py` is the first Playwright smoke test. It defaults to `https://hk-alert-cloud-gas.pages.dev` and checks that the main heatmap renders, a clickable theme tile activates, and the heatmap matches section appears. Override target with `HK_ALERT_BASE_URL`.
 
 ### 2026-07-04 Longbridge CCASS latest backfill and publish gate split
 

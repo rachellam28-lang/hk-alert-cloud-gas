@@ -22,6 +22,12 @@ elif [[ -x "$REPO_ROOT/.venv/Scripts/python.exe" ]]; then
 else
     PYTHON_BIN="$(command -v python3 || command -v python)"
 fi
+if [[ "${SENTRY_CRON_WRAPPED:-0}" != "1" && "${SENTRY_CRON_DISABLED:-0}" != "1" ]]; then
+    export SENTRY_CRON_WRAPPED=1
+    exec "$PYTHON_BIN" "$REPO_ROOT/scripts/cron_monitor.py" \
+        --slug "${SENTRY_DAILY_REFRESH_SLUG:-hk-alert-daily-refresh}" \
+        -- "$0" "$@"
+fi
 
 echo "=== $(date) ==="
 echo "1/5 Run HOLDINGS scrape (bounded daily mode)..."

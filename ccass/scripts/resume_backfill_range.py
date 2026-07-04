@@ -12,6 +12,7 @@ from pathlib import Path
 
 
 PROJECT = Path(__file__).resolve().parents[1]
+REPO_ROOT = PROJECT.parent
 DB = PROJECT / "holdings.db"
 DEFAULT_THRESHOLD = 0.99
 
@@ -168,4 +169,7 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    sys.path.insert(0, str(REPO_ROOT))
+    from scripts.sentry_cron import run_monitored_callable
+
+    raise SystemExit(run_monitored_callable("hk-alert-resume-backfill-range", main))

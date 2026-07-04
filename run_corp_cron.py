@@ -94,4 +94,13 @@ btd.add_prices_from_announcements = lambda anns: 0
 
 from scanner.hk_cloud_scanner import run_corp_actions
 
-run_corp_actions()
+
+def main() -> int:
+    run_corp_actions()
+    return 0
+
+
+if __name__ == "__main__":
+    from scripts.sentry_cron import run_monitored_callable
+
+    raise SystemExit(run_monitored_callable("hk-alert-corp-cron", main))

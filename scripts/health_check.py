@@ -434,4 +434,7 @@ def main():
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from scripts.sentry_cron import run_monitored_callable
+
+    sys.exit(run_monitored_callable("hk-alert-health-check", main))
