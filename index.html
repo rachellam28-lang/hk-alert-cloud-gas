@@ -824,27 +824,51 @@ main.wrap > .card{overflow:visible}
   .topbar-inner{padding:8px 10px}
   .brand-title{font-size:14px}
   .topright{font-size:11px;max-width:52%;justify-content:flex-end}
-  .wrap{padding:10px 4px 26px!important}
-  .mbar{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
-  .mchip{padding:7px 6px;align-items:center;text-align:center}
-  .mchip-label{font-size:8px}
-  .mchip-val{font-size:13px}
-  .mchip-sub{justify-content:center;font-size:8px}
-  .toolbar{top:81px;padding:6px 7px!important}
-  .input{min-height:34px}
-  .heatmap-panel{padding:7px 6px}
-  .heatmap-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
-  .heat-tile{min-height:70px;padding:7px 8px}
+  .wrap{padding:8px 4px 24px!important}
+  .mbar{grid-template-columns:repeat(4,minmax(0,1fr));gap:3px;padding-bottom:7px}
+  .mchip{min-height:48px;padding:4px 4px;align-items:center;text-align:center;border-radius:7px}
+  .mchip-label{font-size:7px;letter-spacing:.04em}
+  .mchip-val{font-size:11px}
+  .mchip-sub{min-height:12px;justify-content:center;font-size:7px;line-height:1.15}
+  .breadth-card{padding:9px 10px;border-radius:8px}
+  .breadth-row{gap:6px}
+  .breadth-bar{height:10px}
+  .bt-cards{gap:5px!important;margin-bottom:7px!important}
+  .ipo-card{max-height:92px;border-radius:8px}
+  .ipo-head{padding:4px 10px 3px;font-size:10px}
+  .ipo-count{font-size:9px;padding:0 7px}
+  .ipo-tbl th{padding:3px 8px!important;font-size:8px!important}
+  .ipo-tbl td{padding:2px 8px!important;font-size:10px!important}
+  .toolbar{top:81px;padding:5px 6px!important;gap:4px!important}
+  .input{min-height:30px;padding:5px 8px;font-size:11px}
+  .heatmap-card{margin-top:6px;border-radius:8px}
+  .heatmap-card-head{padding:5px 8px}
+  .heatmap-panel{padding:5px 5px}
+  .heatmap-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:3px}
+  .heat-tile{min-height:54px;padding:5px 5px;border-radius:7px}
+  .heat-title{font-size:9px}
+  .heat-main{font-size:11.5px}
+  .heat-meta{font-size:7.5px}
+  .heat-stock{font-size:7.2px;padding:0 2px}
   .mc-section{margin:10px 0;border-radius:9px}
   .mc-section thead th{top:122px}
 }
 @media(max-width:420px){
-  .mbar{grid-template-columns:repeat(3,minmax(0,1fr))}
-  .mchip{min-height:64px}
-  .mchip-val{font-size:12px}
-  .heatmap-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .heat-title{font-size:10.5px}
-  .heat-main{font-size:13px}
+  .mbar{grid-template-columns:repeat(5,minmax(0,1fr));gap:2px}
+  .mchip{min-height:40px;padding:3px 2px;border-radius:6px}
+  .mchip-label{font-size:6.5px;letter-spacing:.02em}
+  .mchip-val{font-size:9.5px}
+  .mchip-sub{min-height:10px;font-size:6px;gap:1px}
+  .heatmap-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .heatmap-panel{padding:4px 4px}
+  .heat-tile{min-height:48px;padding:3px 4px}
+  .heat-title{font-size:8px}
+  .heat-count{font-size:7.5px}
+  .heat-main{font-size:10.5px;margin-top:1px}
+  .heat-meta{font-size:6.5px;margin-top:0}
+  .heat-stocks{gap:1px;margin-top:1px}
+  .heat-stock{font-size:6.5px;line-height:1.3;padding:0 1px}
+  .heat-bar{height:2px;margin-top:1px}
 }
 </style>
 </head><body>

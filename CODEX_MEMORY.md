@@ -455,6 +455,7 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - Applied a low-risk CSS override pass to `index.html` only: calmer terminal palette, denser market chips, stronger heatmap active/hover states, better buttons/filters, cleaner market-cap sections, and mobile-friendly heatmap sizing.
 - Fixed a CSS scope bug introduced during the pass: sticky table headers now target `.mc-section` only, so IPO/placement mini tables are not distorted.
 - Fixed sticky-toolbar blank-space behavior by letting the outer dashboard card use `overflow:visible` while nested heatmap cards remain clipped.
+- Follow-up same day: user said mobile cards were too large; compressed mobile market chips, IPO/placement cards, toolbar, and heatmap tiles. On 393px viewport, market chip block reduced from about 165px to 109px and heatmap tiles from about 69px to 54px.
 - Verification: `python -m pytest tests/test_main_heatmap_smoke.py -q` passed; Playwright screenshots checked desktop and mobile locally.
 - Remaining truth-in-data warning: participant/backfill coverage is still the core incomplete issue; dashboard and Hermes must say `partial`/`backfill_required` instead of pretending all signals are fully trade-ready.
 
