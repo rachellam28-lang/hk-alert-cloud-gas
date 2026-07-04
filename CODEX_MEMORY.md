@@ -173,6 +173,8 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
   - `hk-alert-health-check`: wraps `scripts/health_check.py`.
 - To disable the wrapper for a one-off run, set `SENTRY_CRON_DISABLED=1`. To customize schedule metadata, use slug-specific env names like `SENTRY_CRON_HK_ALERT_DAILY_REFRESH_MAX_RUNTIME=240`; do not commit those secrets/settings unless they are non-sensitive.
 - `tests/test_main_heatmap_smoke.py` is the first Playwright smoke test. It defaults to `https://hk-alert-cloud-gas.pages.dev` and checks that the main heatmap renders, a clickable theme tile activates, and the heatmap matches section appears. Override target with `HK_ALERT_BASE_URL`.
+- Installed Codex skills from `https://github.com/Leonxlnx/taste-skill` into `C:\Users\Administrator\.codex\skills`: `taste-skill` (`design-taste-frontend`), `gpt-tasteskill` (`gpt-taste`), and `redesign-skill` (`redesign-existing-projects`). Restart Codex to load them in future sessions. For this CCASS dashboard, prefer `redesign-existing-projects` over the default taste skill because the default skill explicitly targets landing pages/portfolios rather than data-table dashboards.
+- Installed `soda-core 3.5.6` CLI for future CCASS data-quality checks and `pytest-playwright-visual-snapshot 0.5.1` for future heatmap/UI screenshot regression tests. `soda-core-duckdb` was intentionally not installed because it pins `duckdb<1.1.0`, which has no Python 3.14 wheel here and tries to compile with Microsoft C++ Build Tools; keep using the already installed `duckdb 1.5.4` for local DuckDB checks.
 
 ### 2026-07-04 Longbridge CCASS latest backfill and publish gate split
 

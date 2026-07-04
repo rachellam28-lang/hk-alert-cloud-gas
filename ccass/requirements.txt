@@ -9,3 +9,4 @@ openpyxl>=3.1.0
 futu-api
 sentry-sdk>=2.64.0
 duckdb>=1.5.4
+soda-core==3.5.6

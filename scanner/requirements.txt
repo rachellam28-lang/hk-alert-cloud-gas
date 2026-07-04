@@ -4,3 +4,4 @@ openpyxl
 beautifulsoup4
 matplotlib
 pytest-playwright>=0.8.0
+pytest-playwright-visual-snapshot>=0.5.1
