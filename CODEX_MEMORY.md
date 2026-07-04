@@ -448,6 +448,16 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - Root cause: `index.html` dropped the `issuer` payload while building `signalMap`, then fell back to a local estimate and displayed score `65`.
 - Long-term fix: generate rights analysis before signals, then let signals reuse the canonical issuer payload.
 
+### 2026-07-04 Taste redesign pass
+
+- User asked to use the installed taste skill to rework the CCASS dashboard.
+- Correct skill for this repo is `redesign-existing-projects`, because CCASS is a dense trading dashboard, not a landing page.
+- Applied a low-risk CSS override pass to `index.html` only: calmer terminal palette, denser market chips, stronger heatmap active/hover states, better buttons/filters, cleaner market-cap sections, and mobile-friendly heatmap sizing.
+- Fixed a CSS scope bug introduced during the pass: sticky table headers now target `.mc-section` only, so IPO/placement mini tables are not distorted.
+- Fixed sticky-toolbar blank-space behavior by letting the outer dashboard card use `overflow:visible` while nested heatmap cards remain clipped.
+- Verification: `python -m pytest tests/test_main_heatmap_smoke.py -q` passed; Playwright screenshots checked desktop and mobile locally.
+- Remaining truth-in-data warning: participant/backfill coverage is still the core incomplete issue; dashboard and Hermes must say `partial`/`backfill_required` instead of pretending all signals are fully trade-ready.
+
 ## Open Items
 
 - Keep auditing page data sources when new pages or JSON files are added.
