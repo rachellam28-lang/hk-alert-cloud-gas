@@ -475,6 +475,7 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - Root repo-side risk found in `scripts/sentry_cron.py`: final `sentry_sdk.flush(timeout=5)` was not wrapped, so a transient Sentry/network abort could turn an already-decided successful job result into a failed cron.
 - Fix: final Sentry flush is now fail-open and preserves the job result.
 - Fix: Telegram health push now retries once and stays fail-open; Telegram/Hermes notification failures must not change the health-check exit code.
+- Fix: new `scripts/run_health_watchdog.py` wraps the health check plus direct Cloudflare deploy of `health.json`; real data-red exits still fail, but transient Telegram/Sentry/deploy network noise stays green with a warning.
 - Rule: data/integrity red should fail watchdog; Sentry, Telegram, or Hermes network notification errors should only be warnings unless the data check itself is red.
 
 ## Open Items
