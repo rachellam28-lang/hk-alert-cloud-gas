@@ -469,6 +469,14 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - Fixed `gap_fvg.html`: top status now turns amber when holdings are incomplete, transfers are unusable, or `publish_bundle` is not `PASS`; loading success alone no longer means green.
 - Verification: local browser probe showed `index.html`, `signals.html`, and `gap_fvg.html` all expose `dot warn` under current `publish=WARN`; `scripts/health_check.py` now ends with `WARNINGS`, not false `ALL OK`.
 
+### 2026-07-04 CCASS Health Watchdog WinError 10053
+
+- Automation `CCASS Health Watchdog` reported `[WinError 10053]` after the health check. Local `scripts/health_check.py` and `scripts/health_check.py --telegram` both returned exit `0` with current `WARNINGS`, so the data health result itself was not a hard failure.
+- Root repo-side risk found in `scripts/sentry_cron.py`: final `sentry_sdk.flush(timeout=5)` was not wrapped, so a transient Sentry/network abort could turn an already-decided successful job result into a failed cron.
+- Fix: final Sentry flush is now fail-open and preserves the job result.
+- Fix: Telegram health push now retries once and stays fail-open; Telegram/Hermes notification failures must not change the health-check exit code.
+- Rule: data/integrity red should fail watchdog; Sentry, Telegram, or Hermes network notification errors should only be warnings unless the data check itself is red.
+
 ## Open Items
 
 - Keep auditing page data sources when new pages or JSON files are added.

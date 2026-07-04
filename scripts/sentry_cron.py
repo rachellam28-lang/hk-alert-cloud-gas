@@ -189,7 +189,10 @@ def run_monitored_callable(slug: str, fn: Callable[[], int | None]) -> int:
             print(f"[sentry] exception reporting failed: {sentry_exc}", flush=True)
         raise
     finally:
-        sentry_sdk.flush(timeout=5)
+        try:
+            sentry_sdk.flush(timeout=5)
+        except Exception as exc:
+            print(f"[sentry] final flush failed; preserving job result: {exc}", flush=True)
 
 
 def run_monitored_command(slug: str, command: Sequence[str]) -> int:

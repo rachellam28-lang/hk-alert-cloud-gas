@@ -21,6 +21,7 @@ import os
 import statistics
 import subprocess
 import sys
+import time
 import urllib.request
 from datetime import datetime, timedelta
 
@@ -460,17 +461,26 @@ def push_telegram(text):
     )
     if not (token and chat):
         print("⚪ no Telegram config, skip push")
-        return
+        return False
     data = json.dumps({"chat_id": chat, "text": text}).encode()
-    req = urllib.request.Request(
-        f"https://api.telegram.org/bot{token}/sendMessage",
-        data=data, headers={"Content-Type": "application/json"},
-    )
-    try:
-        urllib.request.urlopen(req, timeout=15)
-        print("✅ pushed to Telegram")
-    except Exception as exc:
-        print(f"🔴 Telegram push failed: {exc}")
+    url = f"https://api.telegram.org/bot{token}/sendMessage"
+    for attempt in range(1, 3):
+        req = urllib.request.Request(
+            url,
+            data=data,
+            headers={"Content-Type": "application/json"},
+        )
+        try:
+            urllib.request.urlopen(req, timeout=15)
+            print("✅ pushed to Telegram")
+            return True
+        except Exception as exc:
+            if attempt == 1:
+                print(f"⚠️ Telegram push failed (attempt {attempt}/2), retrying: {exc}")
+                time.sleep(2)
+            else:
+                print(f"⚠️ Telegram push failed after {attempt} attempts; health rc unchanged: {exc}")
+    return False
 
 
 def main():
