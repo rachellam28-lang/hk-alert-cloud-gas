@@ -16,8 +16,8 @@ jobs:
     steps:
       - name: Send heartbeat
         env:
-          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_HEARTBEAT_CHAT_ID }}
+          TELEGRAM_TOKEN: ${{ secrets.HERMES_TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.HERMES_TELEGRAM_CHAT_ID }}
         run: |
           if [ -z "$TELEGRAM_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then
             echo "Telegram secrets missing; skipping send."

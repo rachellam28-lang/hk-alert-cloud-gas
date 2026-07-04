@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   build:
@@ -27,19 +27,15 @@ jobs:
           TV_USER: ${{ secrets.TV_USER }}
           TV_PASS: ${{ secrets.TV_PASS }}
 
-      - name: Commit 去 Pages
+      - name: Local artifact only
         run: |
-          git config user.name "ccass-bot"
-          git config user.email "bot@noreply"
-          git add docs/ccass_events.json events_watchlist.json
-          git diff --cached --quiet || git commit -m "events $(date +%F)"
           echo "GitHub push disabled by project policy; deploy directly to Cloudflare only."
 
-      - name: Telegram 通知 (Hermes)
+      - name: Telegram notify (CCASS bot)
         if: always()
         env:
-          TG_TOKEN: ${{ secrets.TG_TOKEN }}
-          TG_CHAT:  ${{ secrets.TG_CHAT }}
+          TG_TOKEN: ${{ secrets.CCASS_TELEGRAM_TOKEN }}
+          TG_CHAT:  ${{ secrets.CCASS_TELEGRAM_CHAT_ID }}
         run: |
           N=$(python -c "import json;print(len(json.load(open('docs/ccass_events.json'))))" 2>/dev/null || echo "ERR")
           S=$(python - <<'EOF' 2>/dev/null || echo ""

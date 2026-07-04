@@ -97,8 +97,45 @@ PRICE_BATCH_THREADS = int(os.getenv("PRICE_BATCH_THREADS", "8"))
 POC_TIME_BUDGET_SEC = int(os.getenv("POC_TIME_BUDGET_SEC", "1500"))
 CHART_LOOKBACK_DAYS = int(os.getenv("CHART_LOOKBACK_DAYS", "180"))
 
-TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN", "")
-TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "")
+def _truthy_env(name: str) -> bool:
+    return os.getenv(name, "").strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _first_env(*names: str) -> str:
+    for name in names:
+        val = os.getenv(name, "").strip()
+        if val:
+            return val
+    return ""
+
+
+def _ccass_telegram_config() -> tuple[str, str]:
+    token = _first_env(
+        "CCASS_TELEGRAM_TOKEN",
+        "CCASS_TELEGRAM_BOT_TOKEN",
+        "CCASS_TG_BOT_TOKEN",
+        "ALERT_TELEGRAM_TOKEN",
+        "ALERT_TG_BOT_TOKEN",
+    )
+    chat_id = _first_env(
+        "CCASS_TELEGRAM_CHAT_ID",
+        "CCASS_TG_CHAT_ID",
+        "ALERT_TELEGRAM_CHAT_ID",
+        "ALERT_TG_CHAT_ID",
+    )
+    if token and chat_id:
+        return token, chat_id
+    if token or chat_id:
+        return "", ""
+    if _truthy_env("CCASS_TELEGRAM_REQUIRE_DEDICATED"):
+        return "", ""
+    return (
+        _first_env("TELEGRAM_TOKEN", "TELEGRAM_BOT_TOKEN", "TG_BOT_TOKEN"),
+        _first_env("TELEGRAM_CHAT_ID", "TELEGRAM_ADMIN_CHAT_ID", "TG_CHAT_ID"),
+    )
+
+
+TELEGRAM_TOKEN, TELEGRAM_CHAT_ID = _ccass_telegram_config()
 
 # ── 初始化 TelegramPusher（穩健重試/降級） ──────────────────────────────────
 _tg_pusher = None

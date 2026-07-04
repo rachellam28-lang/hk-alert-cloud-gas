@@ -9,6 +9,8 @@ import pandas as pd
 from datetime import datetime, timedelta
 from pathlib import Path
 
+os.environ.setdefault("CCASS_TELEGRAM_REQUIRE_DEDICATED", "1")
+
 try:
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     sys.stderr.reconfigure(encoding="utf-8", errors="replace")

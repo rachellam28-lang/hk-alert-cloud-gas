@@ -1,6 +1,8 @@
 """Wrapper to run hk_cloud_scanner.py corp mode, avoiding __file__ issues."""
 import sys, os
 
+os.environ.setdefault("CCASS_TELEGRAM_REQUIRE_DEDICATED", "1")
+
 # Ensure scanner dir is on sys.path so relative imports work
 scanner_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, scanner_dir)

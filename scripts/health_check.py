@@ -374,12 +374,21 @@ def format_report(freshness, ann_vol, balance, integrity):
 
 def push_telegram(text):
     token = (
-        os.environ.get("TELEGRAM_TOKEN", "")
+        os.environ.get("HERMES_TELEGRAM_TOKEN", "")
+        or os.environ.get("HERMES_TELEGRAM_BOT_TOKEN", "")
+        or os.environ.get("HERMES_TG_BOT_TOKEN", "")
+        or os.environ.get("HERMES_BOT_TOKEN", "")
+        or os.environ.get("TELEGRAM_STATUS_TOKEN", "")
+        or os.environ.get("TELEGRAM_TOKEN", "")
         or os.environ.get("TELEGRAM_BOT_TOKEN", "")
         or os.environ.get("TG_BOT_TOKEN", "")
     )
     chat = (
-        os.environ.get("TELEGRAM_CHAT_ID", "")
+        os.environ.get("HERMES_TELEGRAM_CHAT_ID", "")
+        or os.environ.get("HERMES_TG_CHAT_ID", "")
+        or os.environ.get("HERMES_CHAT_ID", "")
+        or os.environ.get("TELEGRAM_STATUS_CHAT_ID", "")
+        or os.environ.get("TELEGRAM_CHAT_ID", "")
         or os.environ.get("TELEGRAM_ADMIN_CHAT_ID", "")
     )
     if not (token and chat):

@@ -22,8 +22,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 180
     env:
-      TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-      TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      CCASS_TELEGRAM_TOKEN: ${{ secrets.CCASS_TELEGRAM_TOKEN }}
+      CCASS_TELEGRAM_CHAT_ID: ${{ secrets.CCASS_TELEGRAM_CHAT_ID }}
+      CCASS_TELEGRAM_REQUIRE_DEDICATED: "1"
       LONGBRIDGE_ACCESS_TOKEN: ${{ secrets.LONGBRIDGE_ACCESS_TOKEN }}
       FUTU_HOST: ${{ vars.FUTU_HOST || '127.0.0.1' }}
       FUTU_PORT: ${{ vars.FUTU_PORT || '11111' }}

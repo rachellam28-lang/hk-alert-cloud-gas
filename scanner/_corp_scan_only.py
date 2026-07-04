@@ -1,6 +1,8 @@
 """Minimal corp scan — just fetch + export, no extras."""
 import sys, os
 
+os.environ.setdefault("CCASS_TELEGRAM_REQUIRE_DEDICATED", "1")
+
 scanner_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(scanner_dir)
 sys.path.insert(0, scanner_dir)

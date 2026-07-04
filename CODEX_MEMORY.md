@@ -130,6 +130,11 @@ Keep the daily refresh bounded; let resume jobs mop up incomplete coverage.
 - GitHub Actions are disabled at repository settings; workflow files may remain locally for reference only, but they must not be used as a deploy/refresh route.
 - Cloudflare cron Worker should stay no-op unless a non-GitHub refresh path is implemented.
 - Telegram Hermes bot is for general dashboard/status/health summaries. CCASS events cron should use its own Telegram bot/chat secrets, not the Hermes bot, unless the user explicitly asks to merge them.
+- Telegram env routing:
+  - Hermes/status bot: prefer `HERMES_TELEGRAM_TOKEN` / `HERMES_TELEGRAM_CHAT_ID` (fallbacks: `HERMES_TG_BOT_TOKEN`, `TG_BOT_TOKEN`, old generic names only for legacy).
+  - CCASS/corporate-action cron bot: use `CCASS_TELEGRAM_TOKEN` / `CCASS_TELEGRAM_CHAT_ID`.
+  - CCASS cron paths set `CCASS_TELEGRAM_REQUIRE_DEDICATED=1`, so missing CCASS secrets means skip Telegram instead of reusing Hermes.
+  - Do not put any bot token/chat id in tracked files; keep them in local `.env` or platform secrets only.
 - Cloudflare Pages output should include `_headers` with `X-Robots-Tag: noindex, nofollow, noarchive, nosnippet, noimageindex`.
 - `robots.txt` and `_headers` reduce search indexing for the live site, but they do not make a public GitHub repository private.
 
@@ -146,6 +151,17 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - Sheet schema should upgrade without destroying existing rows.
 
 ## Latest Deploy Notes
+
+### 2026-07-04 Telegram bot routing, Hermes sync, and tooling audit
+
+- `run_corp_cron.py` and `_run_corp_cron.py` now run from this repo root, not `C:\Users\Administrator\Desktop\automatic\ccass-debug`, and read only this repo's local `.env`.
+- CCASS/corporate-action Telegram sends now prefer dedicated second-bot env names: `CCASS_TELEGRAM_TOKEN` and `CCASS_TELEGRAM_CHAT_ID`. Corp cron launchers and `daily_refresh.sh` default `CCASS_TELEGRAM_REQUIRE_DEDICATED=1`, so they cannot silently use Hermes/generic Telegram credentials.
+- Hermes/status paths now prefer `HERMES_TELEGRAM_TOKEN` and `HERMES_TELEGRAM_CHAT_ID`. `scripts/health_check.py --telegram` and `scripts/tg_claude_bot.py` were aligned to those names while keeping legacy generic fallback for manual use.
+- Local disabled GitHub workflow references were hardened: CCASS workflows now reference `CCASS_TELEGRAM_*` and no longer keep a commit/push-capable permissions block for `ccass-events`; heartbeat references `HERMES_TELEGRAM_*`.
+- Web/tooling audit recommendations:
+  - Install/enable first: Sentry Cron Monitoring for `daily_refresh`, resume/backfill, and Hermes/CCASS cron no-run/failed-run detection; Playwright smoke tests for live page/heatmap click-to-table checks; DuckDB/Parquet snapshots for lighter history/audit queries.
+  - Use next if the pipeline grows: Prefect for local Python orchestration and retry/state UI; Cloudflare Queues with dead-letter queues if alerts/jobs move into Workers and need retry isolation.
+  - Defer unless validation rules become much bigger: Great Expectations or Dagster, because the current repo already has custom `audit_gate` and direct scripts.
 
 ### 2026-07-04 Longbridge CCASS latest backfill and publish gate split
 
