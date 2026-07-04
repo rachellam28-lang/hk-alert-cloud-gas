@@ -3,3 +3,4 @@ requests
 openpyxl
 beautifulsoup4
 matplotlib
+pytest-playwright>=0.8.0

@@ -162,6 +162,8 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
   - Install/enable first: Sentry Cron Monitoring for `daily_refresh`, resume/backfill, and Hermes/CCASS cron no-run/failed-run detection; Playwright smoke tests for live page/heatmap click-to-table checks; DuckDB/Parquet snapshots for lighter history/audit queries.
   - Use next if the pipeline grows: Prefect for local Python orchestration and retry/state UI; Cloudflare Queues with dead-letter queues if alerts/jobs move into Workers and need retry isolation.
   - Defer unless validation rules become much bigger: Great Expectations or Dagster, because the current repo already has custom `audit_gate` and direct scripts.
+- Installed locally in `.venv` on 2026-07-04 and recorded in requirements: `sentry-sdk 2.64.0`, `duckdb 1.5.4`, `pytest-playwright 0.8.0`, `playwright 1.61.0`; Playwright Chromium browser `149.0.7827.55` was installed under the user Playwright cache.
+- Sentry still needs a local/platform secret such as `SENTRY_DSN` before it can send cron monitoring events. Do not commit the DSN.
 
 ### 2026-07-04 Longbridge CCASS latest backfill and publish gate split
 
