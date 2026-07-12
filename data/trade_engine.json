@@ -1,0 +1,7288 @@
+{
+  "updated_at": "2026-07-12T23:43:24",
+  "built_at": "2026-07-12T23:43:24",
+  "source_updated_at": "2026-07-12T23:25:10",
+  "source": "kbar_cache derived trading engine",
+  "scope_count": 41,
+  "momentum_count": 41,
+  "summary": {
+    "setup_counts": {
+      "breakout": 13,
+      "base": 19,
+      "breaklow": 1,
+      "rebound": 8
+    },
+    "top_momentum_symbol": "1808.HK"
+  },
+  "by_symbol": {
+    "700.HK": {
+      "symbol": "700.HK",
+      "label": "騰訊",
+      "market": "hk",
+      "activeKey": "base",
+      "scores": {
+        "breakout": 2,
+        "base": 7,
+        "breaklow": 5,
+        "rebound": 5
+      },
+      "metrics": {
+        "close1": 460.2,
+        "trend1": "down",
+        "trend4": "up",
+        "gapHigh20": -5.113402061855672,
+        "bounceLow20": 0.30514385353094536,
+        "rangePct": 5.693176879617555,
+        "thrust5": -0.3464703334777009,
+        "emaSpread1": -0.3721848359774006,
+        "emaSpread4": 2.6610906635423692,
+        "posInRange": 0.053435114503815946,
+        "priorLow": 461.6,
+        "recentLow": 458.8,
+        "reclaimPrevLow": -0.30329289428076994,
+        "brokePriorLow": true,
+        "high20": 485.0,
+        "low20": 458.8,
+        "priorHigh20": 485.0,
+        "priorLow20": 458.8,
+        "newHigh": false,
+        "newLow": false,
+        "ema8_1": 463.79068637349127,
+        "ema21_1": 465.5232934797655
+      },
+      "cards": [
+        {
+          "key": "breakout",
+          "tone": "breakout",
+          "name": "Breakout",
+          "kicker": "near prior high",
+          "tag": "watch",
+          "score": 2,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "down / up"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-5.11%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-0.35%"
+            },
+            {
+              "label": "Range pos",
+              "value": "5%"
+            }
+          ],
+          "note": "Hold near highs before treating it as a valid breakout."
+        },
+        {
+          "key": "base",
+          "tone": "base",
+          "name": "Base",
+          "kicker": "compression / absorption",
+          "tag": "active",
+          "score": 7,
+          "active": true,
+          "stats": [
+            {
+              "label": "Range size",
+              "value": "+5.69%"
+            },
+            {
+              "label": "EMA spread 1H",
+              "value": "-0.37%"
+            },
+            {
+              "label": "EMA spread 4H",
+              "value": "+2.66%"
+            },
+            {
+              "label": "Range pos",
+              "value": "5%"
+            }
+          ],
+          "note": "Stay patient until volume expansion confirms the move."
+        },
+        {
+          "key": "breaklow",
+          "tone": "breaklow",
+          "name": "Breaklow Reclaim",
+          "kicker": "flush then reclaim",
+          "tag": "watch",
+          "score": 5,
+          "active": false,
+          "stats": [
+            {
+              "label": "Prior low",
+              "value": "+461.60"
+            },
+            {
+              "label": "Recent low",
+              "value": "+458.80"
+            },
+            {
+              "label": "Reclaim",
+              "value": "-0.30%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-0.35%"
+            }
+          ],
+          "note": "Only counts after price closes back above the prior low."
+        },
+        {
+          "key": "rebound",
+          "tone": "rebound",
+          "name": "Weak Rebound",
+          "kicker": "counter-trend bounce",
+          "tag": "watch",
+          "score": 5,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "down / up"
+            },
+            {
+              "label": "Off low20",
+              "value": "+0.31%"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-5.11%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-0.35%"
+            }
+          ],
+          "note": "Treat as a bounce until key levels are recovered."
+        }
+      ],
+      "trendGuard": {
+        "key": "neutral",
+        "label": "Trend Pending",
+        "note": "No aligned rhythm yet."
+      }
+    },
+    "9988.HK": {
+      "symbol": "9988.HK",
+      "label": "阿里",
+      "market": "hk",
+      "activeKey": "breakout",
+      "scores": {
+        "breakout": 10,
+        "base": 3,
+        "breaklow": 3,
+        "rebound": 2
+      },
+      "metrics": {
+        "close1": 110.2,
+        "trend1": "up",
+        "trend4": "up",
+        "gapHigh20": -2.477876106194688,
+        "bounceLow20": 11.934992381919756,
+        "rangePct": 13.2032667876588,
+        "thrust5": -0.7207207207207181,
+        "emaSpread1": 2.466531759293177,
+        "emaSpread4": 3.5567540428077327,
+        "posInRange": 0.8075601374570448,
+        "priorLow": 98.45,
+        "recentLow": 109.9,
+        "reclaimPrevLow": 11.934992381919756,
+        "brokePriorLow": false,
+        "high20": 113.0,
+        "low20": 98.45,
+        "priorHigh20": 113.0,
+        "priorLow20": 98.45,
+        "newHigh": false,
+        "newLow": false,
+        "ema8_1": 110.31030543560317,
+        "ema21_1": 107.65496161686823
+      },
+      "cards": [
+        {
+          "key": "breakout",
+          "tone": "breakout",
+          "name": "Breakout",
+          "kicker": "near prior high",
+          "tag": "active",
+          "score": 10,
+          "active": true,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / up"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-2.48%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-0.72%"
+            },
+            {
+              "label": "Range pos",
+              "value": "81%"
+            }
+          ],
+          "note": "Hold near highs before treating it as a valid breakout."
+        },
+        {
+          "key": "base",
+          "tone": "base",
+          "name": "Base",
+          "kicker": "compression / absorption",
+          "tag": "watch",
+          "score": 3,
+          "active": false,
+          "stats": [
+            {
+              "label": "Range size",
+              "value": "+13.20%"
+            },
+            {
+              "label": "EMA spread 1H",
+              "value": "+2.47%"
+            },
+            {
+              "label": "EMA spread 4H",
+              "value": "+3.56%"
+            },
+            {
+              "label": "Range pos",
+              "value": "81%"
+            }
+          ],
+          "note": "Stay patient until volume expansion confirms the move."
+        },
+        {
+          "key": "breaklow",
+          "tone": "breaklow",
+          "name": "Breaklow Reclaim",
+          "kicker": "flush then reclaim",
+          "tag": "watch",
+          "score": 3,
+          "active": false,
+          "stats": [
+            {
+              "label": "Prior low",
+              "value": "+98.45"
+            },
+            {
+              "label": "Recent low",
+              "value": "+109.90"
+            },
+            {
+              "label": "Reclaim",
+              "value": "+11.93%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-0.72%"
+            }
+          ],
+          "note": "Only counts after price closes back above the prior low."
+        },
+        {
+          "key": "rebound",
+          "tone": "rebound",
+          "name": "Weak Rebound",
+          "kicker": "counter-trend bounce",
+          "tag": "watch",
+          "score": 2,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / up"
+            },
+            {
+              "label": "Off low20",
+              "value": "+11.93%"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-2.48%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-0.72%"
+            }
+          ],
+          "note": "Treat as a bounce until key levels are recovered."
+        }
+      ],
+      "trendGuard": {
+        "key": "bull",
+        "label": "Bull Guard",
+        "note": "1H / 4H aligned up; hold 1H EMA21."
+      }
+    },
+    "2800.HK": {
+      "symbol": "2800.HK",
+      "label": "盈富",
+      "market": "hk",
+      "activeKey": "base",
+      "scores": {
+        "breakout": 9,
+        "base": 10,
+        "breaklow": 3,
+        "rebound": 1
+      },
+      "metrics": {
+        "close1": 24.64,
+        "trend1": "up",
+        "trend4": "up",
+        "gapHigh20": -1.2820512820512833,
+        "bounceLow20": 1.4827018121911013,
+        "rangePct": 2.7597402597402585,
+        "thrust5": -0.24291497975707987,
+        "emaSpread1": 0.5521502134680455,
+        "emaSpread4": 1.060385745422404,
+        "posInRange": 0.5294117647058817,
+        "priorLow": 24.28,
+        "recentLow": 24.58,
+        "reclaimPrevLow": 1.4827018121911013,
+        "brokePriorLow": false,
+        "high20": 24.96,
+        "low20": 24.28,
+        "priorHigh20": 24.96,
+        "priorLow20": 24.28,
+        "newHigh": false,
+        "newLow": false,
+        "ema8_1": 24.695899684063694,
+        "ema21_1": 24.560289990453036
+      },
+      "cards": [
+        {
+          "key": "breakout",
+          "tone": "breakout",
+          "name": "Breakout",
+          "kicker": "near prior high",
+          "tag": "watch",
+          "score": 9,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / up"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-1.28%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-0.24%"
+            },
+            {
+              "label": "Range pos",
+              "value": "53%"
+            }
+          ],
+          "note": "Hold near highs before treating it as a valid breakout."
+        },
+        {
+          "key": "base",
+          "tone": "base",
+          "name": "Base",
+          "kicker": "compression / absorption",
+          "tag": "active",
+          "score": 10,
+          "active": true,
+          "stats": [
+            {
+              "label": "Range size",
+              "value": "+2.76%"
+            },
+            {
+              "label": "EMA spread 1H",
+              "value": "+0.55%"
+            },
+            {
+              "label": "EMA spread 4H",
+              "value": "+1.06%"
+            },
+            {
+              "label": "Range pos",
+              "value": "53%"
+            }
+          ],
+          "note": "Stay patient until volume expansion confirms the move."
+        },
+        {
+          "key": "breaklow",
+          "tone": "breaklow",
+          "name": "Breaklow Reclaim",
+          "kicker": "flush then reclaim",
+          "tag": "watch",
+          "score": 3,
+          "active": false,
+          "stats": [
+            {
+              "label": "Prior low",
+              "value": "+24.28"
+            },
+            {
+              "label": "Recent low",
+              "value": "+24.58"
+            },
+            {
+              "label": "Reclaim",
+              "value": "+1.48%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-0.24%"
+            }
+          ],
+          "note": "Only counts after price closes back above the prior low."
+        },
+        {
+          "key": "rebound",
+          "tone": "rebound",
+          "name": "Weak Rebound",
+          "kicker": "counter-trend bounce",
+          "tag": "watch",
+          "score": 1,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / up"
+            },
+            {
+              "label": "Off low20",
+              "value": "+1.48%"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-1.28%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-0.24%"
+            }
+          ],
+          "note": "Treat as a bounce until key levels are recovered."
+        }
+      ],
+      "trendGuard": {
+        "key": "bull",
+        "label": "Bull Guard",
+        "note": "1H / 4H aligned up; hold 1H EMA21."
+      }
+    },
+    "NVDA.US": {
+      "symbol": "NVDA.US",
+      "label": "NVDA",
+      "market": "us",
+      "activeKey": "breakout",
+      "scores": {
+        "breakout": 10,
+        "base": 6,
+        "breaklow": 4,
+        "rebound": 4
+      },
+      "metrics": {
+        "close1": 210.96,
+        "trend1": "up",
+        "trend4": "up",
+        "gapHigh20": -0.01895734597156021,
+        "bounceLow20": 7.605202754399386,
+        "rangePct": 7.086651497914291,
+        "thrust5": 0.28045824024338234,
+        "emaSpread1": 1.7953668247913932,
+        "emaSpread4": 1.0493656499939614,
+        "posInRange": 0.9973244147157196,
+        "priorLow": 196.05,
+        "recentLow": 207.66,
+        "reclaimPrevLow": 7.605202754399386,
+        "brokePriorLow": false,
+        "high20": 211.0,
+        "low20": 196.05,
+        "priorHigh20": 210.88,
+        "priorLow20": 196.05,
+        "newHigh": true,
+        "newLow": false,
+        "ema8_1": 208.7460619183984,
+        "ema21_1": 205.06440364588389
+      },
+      "cards": [
+        {
+          "key": "breakout",
+          "tone": "breakout",
+          "name": "Breakout",
+          "kicker": "near prior high",
+          "tag": "active",
+          "score": 10,
+          "active": true,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / up"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-0.02%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.28%"
+            },
+            {
+              "label": "Range pos",
+              "value": "100%"
+            }
+          ],
+          "note": "Hold near highs before treating it as a valid breakout."
+        },
+        {
+          "key": "base",
+          "tone": "base",
+          "name": "Base",
+          "kicker": "compression / absorption",
+          "tag": "watch",
+          "score": 6,
+          "active": false,
+          "stats": [
+            {
+              "label": "Range size",
+              "value": "+7.09%"
+            },
+            {
+              "label": "EMA spread 1H",
+              "value": "+1.80%"
+            },
+            {
+              "label": "EMA spread 4H",
+              "value": "+1.05%"
+            },
+            {
+              "label": "Range pos",
+              "value": "100%"
+            }
+          ],
+          "note": "Stay patient until volume expansion confirms the move."
+        },
+        {
+          "key": "breaklow",
+          "tone": "breaklow",
+          "name": "Breaklow Reclaim",
+          "kicker": "flush then reclaim",
+          "tag": "watch",
+          "score": 4,
+          "active": false,
+          "stats": [
+            {
+              "label": "Prior low",
+              "value": "+196.05"
+            },
+            {
+              "label": "Recent low",
+              "value": "+207.66"
+            },
+            {
+              "label": "Reclaim",
+              "value": "+7.61%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.28%"
+            }
+          ],
+          "note": "Only counts after price closes back above the prior low."
+        },
+        {
+          "key": "rebound",
+          "tone": "rebound",
+          "name": "Weak Rebound",
+          "kicker": "counter-trend bounce",
+          "tag": "watch",
+          "score": 4,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / up"
+            },
+            {
+              "label": "Off low20",
+              "value": "+7.61%"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-0.02%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.28%"
+            }
+          ],
+          "note": "Treat as a bounce until key levels are recovered."
+        }
+      ],
+      "trendGuard": {
+        "key": "bull",
+        "label": "Bull Guard",
+        "note": "1H / 4H aligned up; hold 1H EMA21."
+      }
+    },
+    "QQQ.US": {
+      "symbol": "QQQ.US",
+      "label": "QQQ",
+      "market": "us",
+      "activeKey": "breakout",
+      "scores": {
+        "breakout": 9,
+        "base": 8,
+        "breaklow": 4,
+        "rebound": 6
+      },
+      "metrics": {
+        "close1": 725.51,
+        "trend1": "up",
+        "trend4": "down",
+        "gapHigh20": -0.12114704222249692,
+        "bounceLow20": 3.5097230742891417,
+        "rangePct": 3.5120122396658924,
+        "thrust5": -0.10189328743545738,
+        "emaSpread1": 0.46570391409551753,
+        "emaSpread4": -0.09004279141417112,
+        "posInRange": 0.9654631083202514,
+        "priorLow": 700.91,
+        "recentLow": 720.58,
+        "reclaimPrevLow": 3.5097230742891417,
+        "brokePriorLow": false,
+        "high20": 726.39,
+        "low20": 700.91,
+        "priorHigh20": 726.39,
+        "priorLow20": 700.91,
+        "newHigh": false,
+        "newLow": false,
+        "ema8_1": 724.4407241796506,
+        "ema21_1": 721.0826142213594
+      },
+      "cards": [
+        {
+          "key": "breakout",
+          "tone": "breakout",
+          "name": "Breakout",
+          "kicker": "near prior high",
+          "tag": "active",
+          "score": 9,
+          "active": true,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / down"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-0.12%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-0.10%"
+            },
+            {
+              "label": "Range pos",
+              "value": "97%"
+            }
+          ],
+          "note": "Hold near highs before treating it as a valid breakout."
+        },
+        {
+          "key": "base",
+          "tone": "base",
+          "name": "Base",
+          "kicker": "compression / absorption",
+          "tag": "watch",
+          "score": 8,
+          "active": false,
+          "stats": [
+            {
+              "label": "Range size",
+              "value": "+3.51%"
+            },
+            {
+              "label": "EMA spread 1H",
+              "value": "+0.47%"
+            },
+            {
+              "label": "EMA spread 4H",
+              "value": "-0.09%"
+            },
+            {
+              "label": "Range pos",
+              "value": "97%"
+            }
+          ],
+          "note": "Stay patient until volume expansion confirms the move."
+        },
+        {
+          "key": "breaklow",
+          "tone": "breaklow",
+          "name": "Breaklow Reclaim",
+          "kicker": "flush then reclaim",
+          "tag": "watch",
+          "score": 4,
+          "active": false,
+          "stats": [
+            {
+              "label": "Prior low",
+              "value": "+700.91"
+            },
+            {
+              "label": "Recent low",
+              "value": "+720.58"
+            },
+            {
+              "label": "Reclaim",
+              "value": "+3.51%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-0.10%"
+            }
+          ],
+          "note": "Only counts after price closes back above the prior low."
+        },
+        {
+          "key": "rebound",
+          "tone": "rebound",
+          "name": "Weak Rebound",
+          "kicker": "counter-trend bounce",
+          "tag": "watch",
+          "score": 6,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / down"
+            },
+            {
+              "label": "Off low20",
+              "value": "+3.51%"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-0.12%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-0.10%"
+            }
+          ],
+          "note": "Treat as a bounce until key levels are recovered."
+        }
+      ],
+      "trendGuard": {
+        "key": "neutral",
+        "label": "Trend Pending",
+        "note": "No aligned rhythm yet."
+      }
+    },
+    "SPY.US": {
+      "symbol": "SPY.US",
+      "label": "SPY",
+      "market": "us",
+      "activeKey": "breakout",
+      "scores": {
+        "breakout": 10,
+        "base": 8,
+        "breaklow": 3,
+        "rebound": 3
+      },
+      "metrics": {
+        "close1": 754.95,
+        "trend1": "up",
+        "trend4": "up",
+        "gapHigh20": -0.062217044822736184,
+        "bounceLow20": 2.0878689943340936,
+        "rangePct": 2.107424332737263,
+        "thrust5": -0.0026491118852380634,
+        "emaSpread1": 0.3278016349874936,
+        "emaSpread4": 0.4694761593494039,
+        "posInRange": 0.9704588309239526,
+        "priorLow": 739.51,
+        "recentLow": 751.38,
+        "reclaimPrevLow": 2.0878689943340936,
+        "brokePriorLow": false,
+        "high20": 755.42,
+        "low20": 739.51,
+        "priorHigh20": 755.18,
+        "priorLow20": 739.51,
+        "newHigh": true,
+        "newLow": false,
+        "ema8_1": 753.5710158335526,
+        "ema21_1": 751.1088686814786
+      },
+      "cards": [
+        {
+          "key": "breakout",
+          "tone": "breakout",
+          "name": "Breakout",
+          "kicker": "near prior high",
+          "tag": "active",
+          "score": 10,
+          "active": true,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / up"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-0.06%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-0.00%"
+            },
+            {
+              "label": "Range pos",
+              "value": "97%"
+            }
+          ],
+          "note": "Hold near highs before treating it as a valid breakout."
+        },
+        {
+          "key": "base",
+          "tone": "base",
+          "name": "Base",
+          "kicker": "compression / absorption",
+          "tag": "watch",
+          "score": 8,
+          "active": false,
+          "stats": [
+            {
+              "label": "Range size",
+              "value": "+2.11%"
+            },
+            {
+              "label": "EMA spread 1H",
+              "value": "+0.33%"
+            },
+            {
+              "label": "EMA spread 4H",
+              "value": "+0.47%"
+            },
+            {
+              "label": "Range pos",
+              "value": "97%"
+            }
+          ],
+          "note": "Stay patient until volume expansion confirms the move."
+        },
+        {
+          "key": "breaklow",
+          "tone": "breaklow",
+          "name": "Breaklow Reclaim",
+          "kicker": "flush then reclaim",
+          "tag": "watch",
+          "score": 3,
+          "active": false,
+          "stats": [
+            {
+              "label": "Prior low",
+              "value": "+739.51"
+            },
+            {
+              "label": "Recent low",
+              "value": "+751.38"
+            },
+            {
+              "label": "Reclaim",
+              "value": "+2.09%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-0.00%"
+            }
+          ],
+          "note": "Only counts after price closes back above the prior low."
+        },
+        {
+          "key": "rebound",
+          "tone": "rebound",
+          "name": "Weak Rebound",
+          "kicker": "counter-trend bounce",
+          "tag": "watch",
+          "score": 3,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / up"
+            },
+            {
+              "label": "Off low20",
+              "value": "+2.09%"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-0.06%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-0.00%"
+            }
+          ],
+          "note": "Treat as a bounce until key levels are recovered."
+        }
+      ],
+      "trendGuard": {
+        "key": "bull",
+        "label": "Bull Guard",
+        "note": "1H / 4H aligned up; hold 1H EMA21."
+      }
+    },
+    "GLD.US": {
+      "symbol": "GLD.US",
+      "label": "GLD",
+      "market": "us",
+      "activeKey": "base",
+      "scores": {
+        "breakout": 6,
+        "base": 8,
+        "breaklow": 4,
+        "rebound": 7
+      },
+      "metrics": {
+        "close1": 377.01,
+        "trend1": "down",
+        "trend4": "down",
+        "gapHigh20": -0.6953773212169068,
+        "bounceLow20": 2.181808326105814,
+        "rangePct": 2.8354685552107366,
+        "thrust5": 0.2686170212765933,
+        "emaSpread1": -0.015901182120694652,
+        "emaSpread4": -0.32377355726276696,
+        "posInRange": 0.7530402245088881,
+        "priorLow": 368.96,
+        "recentLow": 375.98,
+        "reclaimPrevLow": 2.181808326105814,
+        "brokePriorLow": false,
+        "high20": 379.65,
+        "low20": 368.96,
+        "priorHigh20": 379.65,
+        "priorLow20": 368.96,
+        "newHigh": false,
+        "newLow": false,
+        "ema8_1": 376.88409878949045,
+        "ema21_1": 376.94403734736215
+      },
+      "cards": [
+        {
+          "key": "breakout",
+          "tone": "breakout",
+          "name": "Breakout",
+          "kicker": "near prior high",
+          "tag": "watch",
+          "score": 6,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "down / down"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-0.70%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.27%"
+            },
+            {
+              "label": "Range pos",
+              "value": "75%"
+            }
+          ],
+          "note": "Hold near highs before treating it as a valid breakout."
+        },
+        {
+          "key": "base",
+          "tone": "base",
+          "name": "Base",
+          "kicker": "compression / absorption",
+          "tag": "active",
+          "score": 8,
+          "active": true,
+          "stats": [
+            {
+              "label": "Range size",
+              "value": "+2.84%"
+            },
+            {
+              "label": "EMA spread 1H",
+              "value": "-0.02%"
+            },
+            {
+              "label": "EMA spread 4H",
+              "value": "-0.32%"
+            },
+            {
+              "label": "Range pos",
+              "value": "75%"
+            }
+          ],
+          "note": "Stay patient until volume expansion confirms the move."
+        },
+        {
+          "key": "breaklow",
+          "tone": "breaklow",
+          "name": "Breaklow Reclaim",
+          "kicker": "flush then reclaim",
+          "tag": "watch",
+          "score": 4,
+          "active": false,
+          "stats": [
+            {
+              "label": "Prior low",
+              "value": "+368.96"
+            },
+            {
+              "label": "Recent low",
+              "value": "+375.98"
+            },
+            {
+              "label": "Reclaim",
+              "value": "+2.18%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.27%"
+            }
+          ],
+          "note": "Only counts after price closes back above the prior low."
+        },
+        {
+          "key": "rebound",
+          "tone": "rebound",
+          "name": "Weak Rebound",
+          "kicker": "counter-trend bounce",
+          "tag": "watch",
+          "score": 7,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "down / down"
+            },
+            {
+              "label": "Off low20",
+              "value": "+2.18%"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-0.70%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.27%"
+            }
+          ],
+          "note": "Treat as a bounce until key levels are recovered."
+        }
+      ],
+      "trendGuard": {
+        "key": "neutral",
+        "label": "Trend Pending",
+        "note": "No aligned rhythm yet."
+      }
+    },
+    "EWJ.US": {
+      "symbol": "EWJ.US",
+      "label": "EWJ",
+      "market": "us",
+      "activeKey": "breakout",
+      "scores": {
+        "breakout": 9,
+        "base": 8,
+        "breaklow": 4,
+        "rebound": 6
+      },
+      "metrics": {
+        "close1": 94.55,
+        "trend1": "up",
+        "trend4": "down",
+        "gapHigh20": -0.21002860188497827,
+        "bounceLow20": 3.6846145410680995,
+        "rangePct": 3.764145954521415,
+        "thrust5": -0.01586210543012803,
+        "emaSpread1": 0.519710062137276,
+        "emaSpread4": -0.08606050614204545,
+        "posInRange": 0.9440854172520375,
+        "priorLow": 91.19,
+        "recentLow": 94.27,
+        "reclaimPrevLow": 3.6846145410680995,
+        "brokePriorLow": false,
+        "high20": 94.749,
+        "low20": 91.19,
+        "priorHigh20": 94.749,
+        "priorLow20": 91.19,
+        "newHigh": false,
+        "newLow": false,
+        "ema8_1": 94.34854494043542,
+        "ema21_1": 93.86074122389819
+      },
+      "cards": [
+        {
+          "key": "breakout",
+          "tone": "breakout",
+          "name": "Breakout",
+          "kicker": "near prior high",
+          "tag": "active",
+          "score": 9,
+          "active": true,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / down"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-0.21%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-0.02%"
+            },
+            {
+              "label": "Range pos",
+              "value": "94%"
+            }
+          ],
+          "note": "Hold near highs before treating it as a valid breakout."
+        },
+        {
+          "key": "base",
+          "tone": "base",
+          "name": "Base",
+          "kicker": "compression / absorption",
+          "tag": "watch",
+          "score": 8,
+          "active": false,
+          "stats": [
+            {
+              "label": "Range size",
+              "value": "+3.76%"
+            },
+            {
+              "label": "EMA spread 1H",
+              "value": "+0.52%"
+            },
+            {
+              "label": "EMA spread 4H",
+              "value": "-0.09%"
+            },
+            {
+              "label": "Range pos",
+              "value": "94%"
+            }
+          ],
+          "note": "Stay patient until volume expansion confirms the move."
+        },
+        {
+          "key": "breaklow",
+          "tone": "breaklow",
+          "name": "Breaklow Reclaim",
+          "kicker": "flush then reclaim",
+          "tag": "watch",
+          "score": 4,
+          "active": false,
+          "stats": [
+            {
+              "label": "Prior low",
+              "value": "+91.19"
+            },
+            {
+              "label": "Recent low",
+              "value": "+94.27"
+            },
+            {
+              "label": "Reclaim",
+              "value": "+3.68%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-0.02%"
+            }
+          ],
+          "note": "Only counts after price closes back above the prior low."
+        },
+        {
+          "key": "rebound",
+          "tone": "rebound",
+          "name": "Weak Rebound",
+          "kicker": "counter-trend bounce",
+          "tag": "watch",
+          "score": 6,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / down"
+            },
+            {
+              "label": "Off low20",
+              "value": "+3.68%"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-0.21%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-0.02%"
+            }
+          ],
+          "note": "Treat as a bounce until key levels are recovered."
+        }
+      ],
+      "trendGuard": {
+        "key": "neutral",
+        "label": "Trend Pending",
+        "note": "No aligned rhythm yet."
+      }
+    },
+    "ASHR.US": {
+      "symbol": "ASHR.US",
+      "label": "ASHR",
+      "market": "us",
+      "activeKey": "base",
+      "scores": {
+        "breakout": 6,
+        "base": 10,
+        "breaklow": 4,
+        "rebound": 5
+      },
+      "metrics": {
+        "close1": 35.38,
+        "trend1": "up",
+        "trend4": "down",
+        "gapHigh20": -1.5170494084898947,
+        "bounceLow20": 2.1215182566026827,
+        "rangePct": 3.61786319954775,
+        "thrust5": -0.014130281192582882,
+        "emaSpread1": 0.012546404915686664,
+        "emaSpread4": -0.7709276485683074,
+        "posInRange": 0.5742187500000022,
+        "priorLow": 34.645,
+        "recentLow": 35.345,
+        "reclaimPrevLow": 2.1215182566026827,
+        "brokePriorLow": false,
+        "high20": 35.925,
+        "low20": 34.645,
+        "priorHigh20": 35.925,
+        "priorLow20": 34.645,
+        "newHigh": false,
+        "newLow": false,
+        "ema8_1": 35.437987559338566,
+        "ema21_1": 35.43354192369285
+      },
+      "cards": [
+        {
+          "key": "breakout",
+          "tone": "breakout",
+          "name": "Breakout",
+          "kicker": "near prior high",
+          "tag": "watch",
+          "score": 6,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / down"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-1.52%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-0.01%"
+            },
+            {
+              "label": "Range pos",
+              "value": "57%"
+            }
+          ],
+          "note": "Hold near highs before treating it as a valid breakout."
+        },
+        {
+          "key": "base",
+          "tone": "base",
+          "name": "Base",
+          "kicker": "compression / absorption",
+          "tag": "active",
+          "score": 10,
+          "active": true,
+          "stats": [
+            {
+              "label": "Range size",
+              "value": "+3.62%"
+            },
+            {
+              "label": "EMA spread 1H",
+              "value": "+0.01%"
+            },
+            {
+              "label": "EMA spread 4H",
+              "value": "-0.77%"
+            },
+            {
+              "label": "Range pos",
+              "value": "57%"
+            }
+          ],
+          "note": "Stay patient until volume expansion confirms the move."
+        },
+        {
+          "key": "breaklow",
+          "tone": "breaklow",
+          "name": "Breaklow Reclaim",
+          "kicker": "flush then reclaim",
+          "tag": "watch",
+          "score": 4,
+          "active": false,
+          "stats": [
+            {
+              "label": "Prior low",
+              "value": "+34.65"
+            },
+            {
+              "label": "Recent low",
+              "value": "+35.34"
+            },
+            {
+              "label": "Reclaim",
+              "value": "+2.12%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-0.01%"
+            }
+          ],
+          "note": "Only counts after price closes back above the prior low."
+        },
+        {
+          "key": "rebound",
+          "tone": "rebound",
+          "name": "Weak Rebound",
+          "kicker": "counter-trend bounce",
+          "tag": "watch",
+          "score": 5,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / down"
+            },
+            {
+              "label": "Off low20",
+              "value": "+2.12%"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-1.52%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-0.01%"
+            }
+          ],
+          "note": "Treat as a bounce until key levels are recovered."
+        }
+      ],
+      "trendGuard": {
+        "key": "watch",
+        "label": "Bear Watch",
+        "note": "4H still down, 1H not fully synced."
+      }
+    },
+    "1933.HK": {
+      "symbol": "1933.HK",
+      "label": "元力控股",
+      "market": "hk",
+      "activeKey": "breakout",
+      "scores": {
+        "breakout": 9,
+        "base": 1,
+        "breaklow": 4,
+        "rebound": 6
+      },
+      "metrics": {
+        "close1": 0.209,
+        "trend1": "up",
+        "trend4": "down",
+        "gapHigh20": -0.9478672985782,
+        "bounceLow20": 20.114942528735636,
+        "rangePct": 17.703349282296653,
+        "thrust5": -0.47619047619047666,
+        "emaSpread1": 4.372200650907411,
+        "emaSpread4": -2.05065410296237,
+        "posInRange": 0.9459459459459459,
+        "priorLow": 0.174,
+        "recentLow": 0.197,
+        "reclaimPrevLow": 20.114942528735636,
+        "brokePriorLow": false,
+        "high20": 0.211,
+        "low20": 0.174,
+        "priorHigh20": 0.211,
+        "priorLow20": 0.174,
+        "newHigh": false,
+        "newLow": false,
+        "ema8_1": 0.2057851621834541,
+        "ema21_1": 0.19716472480228864
+      },
+      "cards": [
+        {
+          "key": "breakout",
+          "tone": "breakout",
+          "name": "Breakout",
+          "kicker": "near prior high",
+          "tag": "active",
+          "score": 9,
+          "active": true,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / down"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-0.95%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-0.48%"
+            },
+            {
+              "label": "Range pos",
+              "value": "95%"
+            }
+          ],
+          "note": "Hold near highs before treating it as a valid breakout."
+        },
+        {
+          "key": "base",
+          "tone": "base",
+          "name": "Base",
+          "kicker": "compression / absorption",
+          "tag": "watch",
+          "score": 1,
+          "active": false,
+          "stats": [
+            {
+              "label": "Range size",
+              "value": "+17.70%"
+            },
+            {
+              "label": "EMA spread 1H",
+              "value": "+4.37%"
+            },
+            {
+              "label": "EMA spread 4H",
+              "value": "-2.05%"
+            },
+            {
+              "label": "Range pos",
+              "value": "95%"
+            }
+          ],
+          "note": "Stay patient until volume expansion confirms the move."
+        },
+        {
+          "key": "breaklow",
+          "tone": "breaklow",
+          "name": "Breaklow Reclaim",
+          "kicker": "flush then reclaim",
+          "tag": "watch",
+          "score": 4,
+          "active": false,
+          "stats": [
+            {
+              "label": "Prior low",
+              "value": "+0.17"
+            },
+            {
+              "label": "Recent low",
+              "value": "+0.20"
+            },
+            {
+              "label": "Reclaim",
+              "value": "+20.11%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-0.48%"
+            }
+          ],
+          "note": "Only counts after price closes back above the prior low."
+        },
+        {
+          "key": "rebound",
+          "tone": "rebound",
+          "name": "Weak Rebound",
+          "kicker": "counter-trend bounce",
+          "tag": "watch",
+          "score": 6,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / down"
+            },
+            {
+              "label": "Off low20",
+              "value": "+20.11%"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-0.95%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-0.48%"
+            }
+          ],
+          "note": "Treat as a bounce until key levels are recovered."
+        }
+      ],
+      "trendGuard": {
+        "key": "neutral",
+        "label": "Trend Pending",
+        "note": "No aligned rhythm yet."
+      }
+    },
+    "9993.HK": {
+      "symbol": "9993.HK",
+      "label": "金輝控股",
+      "market": "hk",
+      "activeKey": "breakout",
+      "scores": {
+        "breakout": 8,
+        "base": 6,
+        "breaklow": 4,
+        "rebound": 6
+      },
+      "metrics": {
+        "close1": 1.13,
+        "trend1": "up",
+        "trend4": "up",
+        "gapHigh20": -10.317460317460327,
+        "bounceLow20": 7.619047619047604,
+        "rangePct": 18.584070796460175,
+        "thrust5": 2.7272727272727093,
+        "emaSpread1": 1.2170374062274103,
+        "emaSpread4": 0.0020535711282887105,
+        "posInRange": 0.3809523809523803,
+        "priorLow": 1.05,
+        "recentLow": 1.08,
+        "reclaimPrevLow": 7.619047619047604,
+        "brokePriorLow": false,
+        "high20": 1.26,
+        "low20": 1.05,
+        "priorHigh20": 1.26,
+        "priorLow20": 1.05,
+        "newHigh": false,
+        "newLow": false,
+        "ema8_1": 1.1163698674933018,
+        "ema21_1": 1.1029465948631063
+      },
+      "cards": [
+        {
+          "key": "breakout",
+          "tone": "breakout",
+          "name": "Breakout",
+          "kicker": "near prior high",
+          "tag": "active",
+          "score": 8,
+          "active": true,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / up"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-10.32%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+2.73%"
+            },
+            {
+              "label": "Range pos",
+              "value": "38%"
+            }
+          ],
+          "note": "Hold near highs before treating it as a valid breakout."
+        },
+        {
+          "key": "base",
+          "tone": "base",
+          "name": "Base",
+          "kicker": "compression / absorption",
+          "tag": "watch",
+          "score": 6,
+          "active": false,
+          "stats": [
+            {
+              "label": "Range size",
+              "value": "+18.58%"
+            },
+            {
+              "label": "EMA spread 1H",
+              "value": "+1.22%"
+            },
+            {
+              "label": "EMA spread 4H",
+              "value": "+0.00%"
+            },
+            {
+              "label": "Range pos",
+              "value": "38%"
+            }
+          ],
+          "note": "Stay patient until volume expansion confirms the move."
+        },
+        {
+          "key": "breaklow",
+          "tone": "breaklow",
+          "name": "Breaklow Reclaim",
+          "kicker": "flush then reclaim",
+          "tag": "watch",
+          "score": 4,
+          "active": false,
+          "stats": [
+            {
+              "label": "Prior low",
+              "value": "+1.05"
+            },
+            {
+              "label": "Recent low",
+              "value": "+1.08"
+            },
+            {
+              "label": "Reclaim",
+              "value": "+7.62%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+2.73%"
+            }
+          ],
+          "note": "Only counts after price closes back above the prior low."
+        },
+        {
+          "key": "rebound",
+          "tone": "rebound",
+          "name": "Weak Rebound",
+          "kicker": "counter-trend bounce",
+          "tag": "watch",
+          "score": 6,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / up"
+            },
+            {
+              "label": "Off low20",
+              "value": "+7.62%"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-10.32%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+2.73%"
+            }
+          ],
+          "note": "Treat as a bounce until key levels are recovered."
+        }
+      ],
+      "trendGuard": {
+        "key": "bull",
+        "label": "Bull Guard",
+        "note": "1H / 4H aligned up; hold 1H EMA21."
+      }
+    },
+    "2158.HK": {
+      "symbol": "2158.HK",
+      "label": "醫渡科技",
+      "market": "hk",
+      "activeKey": "base",
+      "scores": {
+        "breakout": 7,
+        "base": 9,
+        "breaklow": 4,
+        "rebound": 2
+      },
+      "metrics": {
+        "close1": 5.35,
+        "trend1": "up",
+        "trend4": "up",
+        "gapHigh20": -3.4296028880866496,
+        "bounceLow20": 5.314960629921251,
+        "rangePct": 8.598130841121495,
+        "thrust5": -1.1090573012939093,
+        "emaSpread1": 1.157233764197878,
+        "emaSpread4": 3.733190527426965,
+        "posInRange": 0.5869565217391296,
+        "priorLow": 5.08,
+        "recentLow": 5.33,
+        "reclaimPrevLow": 5.314960629921251,
+        "brokePriorLow": false,
+        "high20": 5.54,
+        "low20": 5.08,
+        "priorHigh20": 5.54,
+        "priorLow20": 5.08,
+        "newHigh": false,
+        "newLow": false,
+        "ema8_1": 5.37624021538339,
+        "ema21_1": 5.314736292528176
+      },
+      "cards": [
+        {
+          "key": "breakout",
+          "tone": "breakout",
+          "name": "Breakout",
+          "kicker": "near prior high",
+          "tag": "watch",
+          "score": 7,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / up"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-3.43%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-1.11%"
+            },
+            {
+              "label": "Range pos",
+              "value": "59%"
+            }
+          ],
+          "note": "Hold near highs before treating it as a valid breakout."
+        },
+        {
+          "key": "base",
+          "tone": "base",
+          "name": "Base",
+          "kicker": "compression / absorption",
+          "tag": "active",
+          "score": 9,
+          "active": true,
+          "stats": [
+            {
+              "label": "Range size",
+              "value": "+8.60%"
+            },
+            {
+              "label": "EMA spread 1H",
+              "value": "+1.16%"
+            },
+            {
+              "label": "EMA spread 4H",
+              "value": "+3.73%"
+            },
+            {
+              "label": "Range pos",
+              "value": "59%"
+            }
+          ],
+          "note": "Stay patient until volume expansion confirms the move."
+        },
+        {
+          "key": "breaklow",
+          "tone": "breaklow",
+          "name": "Breaklow Reclaim",
+          "kicker": "flush then reclaim",
+          "tag": "watch",
+          "score": 4,
+          "active": false,
+          "stats": [
+            {
+              "label": "Prior low",
+              "value": "+5.08"
+            },
+            {
+              "label": "Recent low",
+              "value": "+5.33"
+            },
+            {
+              "label": "Reclaim",
+              "value": "+5.31%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-1.11%"
+            }
+          ],
+          "note": "Only counts after price closes back above the prior low."
+        },
+        {
+          "key": "rebound",
+          "tone": "rebound",
+          "name": "Weak Rebound",
+          "kicker": "counter-trend bounce",
+          "tag": "watch",
+          "score": 2,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / up"
+            },
+            {
+              "label": "Off low20",
+              "value": "+5.31%"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-3.43%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-1.11%"
+            }
+          ],
+          "note": "Treat as a bounce until key levels are recovered."
+        }
+      ],
+      "trendGuard": {
+        "key": "bull",
+        "label": "Bull Guard",
+        "note": "1H / 4H aligned up; hold 1H EMA21."
+      }
+    },
+    "1672.HK": {
+      "symbol": "1672.HK",
+      "label": "歌禮製藥－Ｂ",
+      "market": "hk",
+      "activeKey": "base",
+      "scores": {
+        "breakout": 5,
+        "base": 9,
+        "breaklow": 4,
+        "rebound": 6
+      },
+      "metrics": {
+        "close1": 11.17,
+        "trend1": "down",
+        "trend4": "up",
+        "gapHigh20": -2.869565217391305,
+        "bounceLow20": 4.58801498127341,
+        "rangePct": 7.341092211280217,
+        "thrust5": 0.6306306306306332,
+        "emaSpread1": -0.17888053246437877,
+        "emaSpread4": 3.6963312595542237,
+        "posInRange": 0.5975609756097562,
+        "priorLow": 10.68,
+        "recentLow": 10.94,
+        "reclaimPrevLow": 4.58801498127341,
+        "brokePriorLow": false,
+        "high20": 11.5,
+        "low20": 10.68,
+        "priorHigh20": 11.5,
+        "priorLow20": 10.68,
+        "newHigh": false,
+        "newLow": false,
+        "ema8_1": 11.149438124919648,
+        "ema21_1": 11.169418039381666
+      },
+      "cards": [
+        {
+          "key": "breakout",
+          "tone": "breakout",
+          "name": "Breakout",
+          "kicker": "near prior high",
+          "tag": "watch",
+          "score": 5,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "down / up"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-2.87%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.63%"
+            },
+            {
+              "label": "Range pos",
+              "value": "60%"
+            }
+          ],
+          "note": "Hold near highs before treating it as a valid breakout."
+        },
+        {
+          "key": "base",
+          "tone": "base",
+          "name": "Base",
+          "kicker": "compression / absorption",
+          "tag": "active",
+          "score": 9,
+          "active": true,
+          "stats": [
+            {
+              "label": "Range size",
+              "value": "+7.34%"
+            },
+            {
+              "label": "EMA spread 1H",
+              "value": "-0.18%"
+            },
+            {
+              "label": "EMA spread 4H",
+              "value": "+3.70%"
+            },
+            {
+              "label": "Range pos",
+              "value": "60%"
+            }
+          ],
+          "note": "Stay patient until volume expansion confirms the move."
+        },
+        {
+          "key": "breaklow",
+          "tone": "breaklow",
+          "name": "Breaklow Reclaim",
+          "kicker": "flush then reclaim",
+          "tag": "watch",
+          "score": 4,
+          "active": false,
+          "stats": [
+            {
+              "label": "Prior low",
+              "value": "+10.68"
+            },
+            {
+              "label": "Recent low",
+              "value": "+10.94"
+            },
+            {
+              "label": "Reclaim",
+              "value": "+4.59%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.63%"
+            }
+          ],
+          "note": "Only counts after price closes back above the prior low."
+        },
+        {
+          "key": "rebound",
+          "tone": "rebound",
+          "name": "Weak Rebound",
+          "kicker": "counter-trend bounce",
+          "tag": "watch",
+          "score": 6,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "down / up"
+            },
+            {
+              "label": "Off low20",
+              "value": "+4.59%"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-2.87%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.63%"
+            }
+          ],
+          "note": "Treat as a bounce until key levels are recovered."
+        }
+      ],
+      "trendGuard": {
+        "key": "watch",
+        "label": "Bull Watch",
+        "note": "4H still up, 1H not fully synced."
+      }
+    },
+    "2233.HK": {
+      "symbol": "2233.HK",
+      "label": "西部水泥",
+      "market": "hk",
+      "activeKey": "breakout",
+      "scores": {
+        "breakout": 9,
+        "base": 8,
+        "breaklow": 4,
+        "rebound": 6
+      },
+      "metrics": {
+        "close1": 1.54,
+        "trend1": "up",
+        "trend4": "down",
+        "gapHigh20": -1.2820512820512833,
+        "bounceLow20": 8.450704225352121,
+        "rangePct": 9.090909090909099,
+        "thrust5": 0.0,
+        "emaSpread1": 0.9624865724964284,
+        "emaSpread4": -0.4433995434714821,
+        "posInRange": 0.8571428571428571,
+        "priorLow": 1.42,
+        "recentLow": 1.52,
+        "reclaimPrevLow": 8.450704225352121,
+        "brokePriorLow": false,
+        "high20": 1.56,
+        "low20": 1.42,
+        "priorHigh20": 1.56,
+        "priorLow20": 1.42,
+        "newHigh": false,
+        "newLow": false,
+        "ema8_1": 1.5245163157304593,
+        "ema21_1": 1.509982932755698
+      },
+      "cards": [
+        {
+          "key": "breakout",
+          "tone": "breakout",
+          "name": "Breakout",
+          "kicker": "near prior high",
+          "tag": "active",
+          "score": 9,
+          "active": true,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / down"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-1.28%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            },
+            {
+              "label": "Range pos",
+              "value": "86%"
+            }
+          ],
+          "note": "Hold near highs before treating it as a valid breakout."
+        },
+        {
+          "key": "base",
+          "tone": "base",
+          "name": "Base",
+          "kicker": "compression / absorption",
+          "tag": "watch",
+          "score": 8,
+          "active": false,
+          "stats": [
+            {
+              "label": "Range size",
+              "value": "+9.09%"
+            },
+            {
+              "label": "EMA spread 1H",
+              "value": "+0.96%"
+            },
+            {
+              "label": "EMA spread 4H",
+              "value": "-0.44%"
+            },
+            {
+              "label": "Range pos",
+              "value": "86%"
+            }
+          ],
+          "note": "Stay patient until volume expansion confirms the move."
+        },
+        {
+          "key": "breaklow",
+          "tone": "breaklow",
+          "name": "Breaklow Reclaim",
+          "kicker": "flush then reclaim",
+          "tag": "watch",
+          "score": 4,
+          "active": false,
+          "stats": [
+            {
+              "label": "Prior low",
+              "value": "+1.42"
+            },
+            {
+              "label": "Recent low",
+              "value": "+1.52"
+            },
+            {
+              "label": "Reclaim",
+              "value": "+8.45%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            }
+          ],
+          "note": "Only counts after price closes back above the prior low."
+        },
+        {
+          "key": "rebound",
+          "tone": "rebound",
+          "name": "Weak Rebound",
+          "kicker": "counter-trend bounce",
+          "tag": "watch",
+          "score": 6,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / down"
+            },
+            {
+              "label": "Off low20",
+              "value": "+8.45%"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-1.28%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            }
+          ],
+          "note": "Treat as a bounce until key levels are recovered."
+        }
+      ],
+      "trendGuard": {
+        "key": "neutral",
+        "label": "Trend Pending",
+        "note": "No aligned rhythm yet."
+      }
+    },
+    "2096.HK": {
+      "symbol": "2096.HK",
+      "label": "先聲藥業",
+      "market": "hk",
+      "activeKey": "breakout",
+      "scores": {
+        "breakout": 9,
+        "base": 9,
+        "breaklow": 3,
+        "rebound": 2
+      },
+      "metrics": {
+        "close1": 12.09,
+        "trend1": "up",
+        "trend4": "up",
+        "gapHigh20": -2.3424878836833676,
+        "bounceLow20": 6.613756613756613,
+        "rangePct": 8.602150537634417,
+        "thrust5": -0.5756578947368444,
+        "emaSpread1": 1.3795612494256533,
+        "emaSpread4": 7.347335428976229,
+        "posInRange": 0.7211538461538455,
+        "priorLow": 11.34,
+        "recentLow": 12.09,
+        "reclaimPrevLow": 6.613756613756613,
+        "brokePriorLow": false,
+        "high20": 12.38,
+        "low20": 11.34,
+        "priorHigh20": 12.38,
+        "priorLow20": 11.34,
+        "newHigh": false,
+        "newLow": false,
+        "ema8_1": 12.144131657518972,
+        "ema21_1": 11.978875729833337
+      },
+      "cards": [
+        {
+          "key": "breakout",
+          "tone": "breakout",
+          "name": "Breakout",
+          "kicker": "near prior high",
+          "tag": "active",
+          "score": 9,
+          "active": true,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / up"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-2.34%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-0.58%"
+            },
+            {
+              "label": "Range pos",
+              "value": "72%"
+            }
+          ],
+          "note": "Hold near highs before treating it as a valid breakout."
+        },
+        {
+          "key": "base",
+          "tone": "base",
+          "name": "Base",
+          "kicker": "compression / absorption",
+          "tag": "watch",
+          "score": 9,
+          "active": false,
+          "stats": [
+            {
+              "label": "Range size",
+              "value": "+8.60%"
+            },
+            {
+              "label": "EMA spread 1H",
+              "value": "+1.38%"
+            },
+            {
+              "label": "EMA spread 4H",
+              "value": "+7.35%"
+            },
+            {
+              "label": "Range pos",
+              "value": "72%"
+            }
+          ],
+          "note": "Stay patient until volume expansion confirms the move."
+        },
+        {
+          "key": "breaklow",
+          "tone": "breaklow",
+          "name": "Breaklow Reclaim",
+          "kicker": "flush then reclaim",
+          "tag": "watch",
+          "score": 3,
+          "active": false,
+          "stats": [
+            {
+              "label": "Prior low",
+              "value": "+11.34"
+            },
+            {
+              "label": "Recent low",
+              "value": "+12.09"
+            },
+            {
+              "label": "Reclaim",
+              "value": "+6.61%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-0.58%"
+            }
+          ],
+          "note": "Only counts after price closes back above the prior low."
+        },
+        {
+          "key": "rebound",
+          "tone": "rebound",
+          "name": "Weak Rebound",
+          "kicker": "counter-trend bounce",
+          "tag": "watch",
+          "score": 2,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / up"
+            },
+            {
+              "label": "Off low20",
+              "value": "+6.61%"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-2.34%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-0.58%"
+            }
+          ],
+          "note": "Treat as a bounce until key levels are recovered."
+        }
+      ],
+      "trendGuard": {
+        "key": "bull",
+        "label": "Bull Guard",
+        "note": "1H / 4H aligned up; hold 1H EMA21."
+      }
+    },
+    "2556.HK": {
+      "symbol": "2556.HK",
+      "label": "邁富時",
+      "market": "hk",
+      "activeKey": "base",
+      "scores": {
+        "breakout": 7,
+        "base": 8,
+        "breaklow": 4,
+        "rebound": 4
+      },
+      "metrics": {
+        "close1": 34.36,
+        "trend1": "up",
+        "trend4": "up",
+        "gapHigh20": -5.082872928176805,
+        "bounceLow20": 3.1212484993997576,
+        "rangePct": 8.381839348079168,
+        "thrust5": 2.0190023752969113,
+        "emaSpread1": 0.40999529264196427,
+        "emaSpread4": 2.691689514689204,
+        "posInRange": 0.3611111111111105,
+        "priorLow": 33.32,
+        "recentLow": 33.34,
+        "reclaimPrevLow": 3.1212484993997576,
+        "brokePriorLow": false,
+        "high20": 36.2,
+        "low20": 33.32,
+        "priorHigh20": 36.2,
+        "priorLow20": 33.32,
+        "newHigh": false,
+        "newLow": false,
+        "ema8_1": 34.37375855963802,
+        "ema21_1": 34.23340321793335
+      },
+      "cards": [
+        {
+          "key": "breakout",
+          "tone": "breakout",
+          "name": "Breakout",
+          "kicker": "near prior high",
+          "tag": "watch",
+          "score": 7,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / up"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-5.08%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+2.02%"
+            },
+            {
+              "label": "Range pos",
+              "value": "36%"
+            }
+          ],
+          "note": "Hold near highs before treating it as a valid breakout."
+        },
+        {
+          "key": "base",
+          "tone": "base",
+          "name": "Base",
+          "kicker": "compression / absorption",
+          "tag": "active",
+          "score": 8,
+          "active": true,
+          "stats": [
+            {
+              "label": "Range size",
+              "value": "+8.38%"
+            },
+            {
+              "label": "EMA spread 1H",
+              "value": "+0.41%"
+            },
+            {
+              "label": "EMA spread 4H",
+              "value": "+2.69%"
+            },
+            {
+              "label": "Range pos",
+              "value": "36%"
+            }
+          ],
+          "note": "Stay patient until volume expansion confirms the move."
+        },
+        {
+          "key": "breaklow",
+          "tone": "breaklow",
+          "name": "Breaklow Reclaim",
+          "kicker": "flush then reclaim",
+          "tag": "watch",
+          "score": 4,
+          "active": false,
+          "stats": [
+            {
+              "label": "Prior low",
+              "value": "+33.32"
+            },
+            {
+              "label": "Recent low",
+              "value": "+33.34"
+            },
+            {
+              "label": "Reclaim",
+              "value": "+3.12%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+2.02%"
+            }
+          ],
+          "note": "Only counts after price closes back above the prior low."
+        },
+        {
+          "key": "rebound",
+          "tone": "rebound",
+          "name": "Weak Rebound",
+          "kicker": "counter-trend bounce",
+          "tag": "watch",
+          "score": 4,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / up"
+            },
+            {
+              "label": "Off low20",
+              "value": "+3.12%"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-5.08%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+2.02%"
+            }
+          ],
+          "note": "Treat as a bounce until key levels are recovered."
+        }
+      ],
+      "trendGuard": {
+        "key": "bull",
+        "label": "Bull Guard",
+        "note": "1H / 4H aligned up; hold 1H EMA21."
+      }
+    },
+    "8188.HK": {
+      "symbol": "8188.HK",
+      "label": "駿傑集團控股",
+      "market": "hk",
+      "activeKey": "breakout",
+      "scores": {
+        "breakout": 10,
+        "base": 6,
+        "breaklow": 4,
+        "rebound": 4
+      },
+      "metrics": {
+        "close1": 1.27,
+        "trend1": "up",
+        "trend4": "up",
+        "gapHigh20": -1.5503875968992262,
+        "bounceLow20": 10.434782608695663,
+        "rangePct": 11.023622047244103,
+        "thrust5": -0.7812500000000007,
+        "emaSpread1": 2.3647213393166613,
+        "emaSpread4": 0.6852928914934365,
+        "posInRange": 0.8571428571428571,
+        "priorLow": 1.15,
+        "recentLow": 1.27,
+        "reclaimPrevLow": 10.434782608695663,
+        "brokePriorLow": false,
+        "high20": 1.29,
+        "low20": 1.15,
+        "priorHigh20": 1.29,
+        "priorLow20": 1.15,
+        "newHigh": false,
+        "newLow": false,
+        "ema8_1": 1.2609639668380772,
+        "ema21_1": 1.2318345132384598
+      },
+      "cards": [
+        {
+          "key": "breakout",
+          "tone": "breakout",
+          "name": "Breakout",
+          "kicker": "near prior high",
+          "tag": "active",
+          "score": 10,
+          "active": true,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / up"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-1.55%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-0.78%"
+            },
+            {
+              "label": "Range pos",
+              "value": "86%"
+            }
+          ],
+          "note": "Hold near highs before treating it as a valid breakout."
+        },
+        {
+          "key": "base",
+          "tone": "base",
+          "name": "Base",
+          "kicker": "compression / absorption",
+          "tag": "watch",
+          "score": 6,
+          "active": false,
+          "stats": [
+            {
+              "label": "Range size",
+              "value": "+11.02%"
+            },
+            {
+              "label": "EMA spread 1H",
+              "value": "+2.36%"
+            },
+            {
+              "label": "EMA spread 4H",
+              "value": "+0.69%"
+            },
+            {
+              "label": "Range pos",
+              "value": "86%"
+            }
+          ],
+          "note": "Stay patient until volume expansion confirms the move."
+        },
+        {
+          "key": "breaklow",
+          "tone": "breaklow",
+          "name": "Breaklow Reclaim",
+          "kicker": "flush then reclaim",
+          "tag": "watch",
+          "score": 4,
+          "active": false,
+          "stats": [
+            {
+              "label": "Prior low",
+              "value": "+1.15"
+            },
+            {
+              "label": "Recent low",
+              "value": "+1.27"
+            },
+            {
+              "label": "Reclaim",
+              "value": "+10.43%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-0.78%"
+            }
+          ],
+          "note": "Only counts after price closes back above the prior low."
+        },
+        {
+          "key": "rebound",
+          "tone": "rebound",
+          "name": "Weak Rebound",
+          "kicker": "counter-trend bounce",
+          "tag": "watch",
+          "score": 4,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / up"
+            },
+            {
+              "label": "Off low20",
+              "value": "+10.43%"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-1.55%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-0.78%"
+            }
+          ],
+          "note": "Treat as a bounce until key levels are recovered."
+        }
+      ],
+      "trendGuard": {
+        "key": "bull",
+        "label": "Bull Guard",
+        "note": "1H / 4H aligned up; hold 1H EMA21."
+      }
+    },
+    "631.HK": {
+      "symbol": "631.HK",
+      "label": "三一國際",
+      "market": "hk",
+      "activeKey": "base",
+      "scores": {
+        "breakout": 1,
+        "base": 9,
+        "breaklow": 4,
+        "rebound": 7
+      },
+      "metrics": {
+        "close1": 6.77,
+        "trend1": "down",
+        "trend4": "down",
+        "gapHigh20": -3.285714285714292,
+        "bounceLow20": 2.4205748865355408,
+        "rangePct": 5.760709010339729,
+        "thrust5": 0.29629629629629,
+        "emaSpread1": -0.8743049530128562,
+        "emaSpread4": -1.6564423172268126,
+        "posInRange": 0.4102564102564087,
+        "priorLow": 6.61,
+        "recentLow": 6.73,
+        "reclaimPrevLow": 2.4205748865355408,
+        "brokePriorLow": false,
+        "high20": 7.0,
+        "low20": 6.61,
+        "priorHigh20": 7.0,
+        "priorLow20": 6.61,
+        "newHigh": false,
+        "newLow": false,
+        "ema8_1": 6.786218480340397,
+        "ema21_1": 6.8460740448010196
+      },
+      "cards": [
+        {
+          "key": "breakout",
+          "tone": "breakout",
+          "name": "Breakout",
+          "kicker": "near prior high",
+          "tag": "watch",
+          "score": 1,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "down / down"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-3.29%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.30%"
+            },
+            {
+              "label": "Range pos",
+              "value": "41%"
+            }
+          ],
+          "note": "Hold near highs before treating it as a valid breakout."
+        },
+        {
+          "key": "base",
+          "tone": "base",
+          "name": "Base",
+          "kicker": "compression / absorption",
+          "tag": "active",
+          "score": 9,
+          "active": true,
+          "stats": [
+            {
+              "label": "Range size",
+              "value": "+5.76%"
+            },
+            {
+              "label": "EMA spread 1H",
+              "value": "-0.87%"
+            },
+            {
+              "label": "EMA spread 4H",
+              "value": "-1.66%"
+            },
+            {
+              "label": "Range pos",
+              "value": "41%"
+            }
+          ],
+          "note": "Stay patient until volume expansion confirms the move."
+        },
+        {
+          "key": "breaklow",
+          "tone": "breaklow",
+          "name": "Breaklow Reclaim",
+          "kicker": "flush then reclaim",
+          "tag": "watch",
+          "score": 4,
+          "active": false,
+          "stats": [
+            {
+              "label": "Prior low",
+              "value": "+6.61"
+            },
+            {
+              "label": "Recent low",
+              "value": "+6.73"
+            },
+            {
+              "label": "Reclaim",
+              "value": "+2.42%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.30%"
+            }
+          ],
+          "note": "Only counts after price closes back above the prior low."
+        },
+        {
+          "key": "rebound",
+          "tone": "rebound",
+          "name": "Weak Rebound",
+          "kicker": "counter-trend bounce",
+          "tag": "watch",
+          "score": 7,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "down / down"
+            },
+            {
+              "label": "Off low20",
+              "value": "+2.42%"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-3.29%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.30%"
+            }
+          ],
+          "note": "Treat as a bounce until key levels are recovered."
+        }
+      ],
+      "trendGuard": {
+        "key": "bear",
+        "label": "Bear Guard",
+        "note": "1H / 4H aligned down; recover 1H EMA21 first."
+      }
+    },
+    "1693.HK": {
+      "symbol": "1693.HK",
+      "label": "璋利國際",
+      "market": "hk",
+      "activeKey": "base",
+      "scores": {
+        "breakout": 5,
+        "base": 10,
+        "breaklow": 4,
+        "rebound": 8
+      },
+      "metrics": {
+        "close1": 6.8,
+        "trend1": "down",
+        "trend4": "down",
+        "gapHigh20": 0.0,
+        "bounceLow20": 0.0,
+        "rangePct": 0,
+        "thrust5": 0.0,
+        "emaSpread1": -0.03409336347451364,
+        "emaSpread4": -0.7596858822373519,
+        "posInRange": 0.5,
+        "priorLow": 6.8,
+        "recentLow": 6.8,
+        "reclaimPrevLow": 0.0,
+        "brokePriorLow": false,
+        "high20": 6.8,
+        "low20": 6.8,
+        "priorHigh20": 6.8,
+        "priorLow20": 6.8,
+        "newHigh": false,
+        "newLow": false,
+        "ema8_1": 6.799986557799932,
+        "ema21_1": 6.802305692604359
+      },
+      "cards": [
+        {
+          "key": "breakout",
+          "tone": "breakout",
+          "name": "Breakout",
+          "kicker": "near prior high",
+          "tag": "watch",
+          "score": 5,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "down / down"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "+0.00%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            },
+            {
+              "label": "Range pos",
+              "value": "50%"
+            }
+          ],
+          "note": "Hold near highs before treating it as a valid breakout."
+        },
+        {
+          "key": "base",
+          "tone": "base",
+          "name": "Base",
+          "kicker": "compression / absorption",
+          "tag": "active",
+          "score": 10,
+          "active": true,
+          "stats": [
+            {
+              "label": "Range size",
+              "value": "+0.00%"
+            },
+            {
+              "label": "EMA spread 1H",
+              "value": "-0.03%"
+            },
+            {
+              "label": "EMA spread 4H",
+              "value": "-0.76%"
+            },
+            {
+              "label": "Range pos",
+              "value": "50%"
+            }
+          ],
+          "note": "Stay patient until volume expansion confirms the move."
+        },
+        {
+          "key": "breaklow",
+          "tone": "breaklow",
+          "name": "Breaklow Reclaim",
+          "kicker": "flush then reclaim",
+          "tag": "watch",
+          "score": 4,
+          "active": false,
+          "stats": [
+            {
+              "label": "Prior low",
+              "value": "+6.80"
+            },
+            {
+              "label": "Recent low",
+              "value": "+6.80"
+            },
+            {
+              "label": "Reclaim",
+              "value": "+0.00%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            }
+          ],
+          "note": "Only counts after price closes back above the prior low."
+        },
+        {
+          "key": "rebound",
+          "tone": "rebound",
+          "name": "Weak Rebound",
+          "kicker": "counter-trend bounce",
+          "tag": "watch",
+          "score": 8,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "down / down"
+            },
+            {
+              "label": "Off low20",
+              "value": "+0.00%"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "+0.00%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            }
+          ],
+          "note": "Treat as a bounce until key levels are recovered."
+        }
+      ],
+      "trendGuard": {
+        "key": "bear",
+        "label": "Bear Guard",
+        "note": "1H / 4H aligned down; recover 1H EMA21 first."
+      }
+    },
+    "8125.HK": {
+      "symbol": "8125.HK",
+      "label": "中新控股",
+      "market": "hk",
+      "activeKey": "rebound",
+      "scores": {
+        "breakout": 0,
+        "base": 2,
+        "breaklow": 4,
+        "rebound": 7
+      },
+      "metrics": {
+        "close1": 0.48,
+        "trend1": "down",
+        "trend4": "down",
+        "gapHigh20": -12.727272727272737,
+        "bounceLow20": 0.0,
+        "rangePct": 14.583333333333348,
+        "thrust5": 0.0,
+        "emaSpread1": -2.1243037076802347,
+        "emaSpread4": -4.882799446109456,
+        "posInRange": 0.0,
+        "priorLow": 0.48,
+        "recentLow": 0.48,
+        "reclaimPrevLow": 0.0,
+        "brokePriorLow": false,
+        "high20": 0.55,
+        "low20": 0.48,
+        "priorHigh20": 0.55,
+        "priorLow20": 0.48,
+        "newHigh": false,
+        "newLow": false,
+        "ema8_1": 0.48189261766498037,
+        "ema21_1": 0.49235166228165483
+      },
+      "cards": [
+        {
+          "key": "breakout",
+          "tone": "breakout",
+          "name": "Breakout",
+          "kicker": "near prior high",
+          "tag": "watch",
+          "score": 0,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "down / down"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-12.73%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            },
+            {
+              "label": "Range pos",
+              "value": "0%"
+            }
+          ],
+          "note": "Hold near highs before treating it as a valid breakout."
+        },
+        {
+          "key": "base",
+          "tone": "base",
+          "name": "Base",
+          "kicker": "compression / absorption",
+          "tag": "watch",
+          "score": 2,
+          "active": false,
+          "stats": [
+            {
+              "label": "Range size",
+              "value": "+14.58%"
+            },
+            {
+              "label": "EMA spread 1H",
+              "value": "-2.12%"
+            },
+            {
+              "label": "EMA spread 4H",
+              "value": "-4.88%"
+            },
+            {
+              "label": "Range pos",
+              "value": "0%"
+            }
+          ],
+          "note": "Stay patient until volume expansion confirms the move."
+        },
+        {
+          "key": "breaklow",
+          "tone": "breaklow",
+          "name": "Breaklow Reclaim",
+          "kicker": "flush then reclaim",
+          "tag": "watch",
+          "score": 4,
+          "active": false,
+          "stats": [
+            {
+              "label": "Prior low",
+              "value": "+0.48"
+            },
+            {
+              "label": "Recent low",
+              "value": "+0.48"
+            },
+            {
+              "label": "Reclaim",
+              "value": "+0.00%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            }
+          ],
+          "note": "Only counts after price closes back above the prior low."
+        },
+        {
+          "key": "rebound",
+          "tone": "rebound",
+          "name": "Weak Rebound",
+          "kicker": "counter-trend bounce",
+          "tag": "active",
+          "score": 7,
+          "active": true,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "down / down"
+            },
+            {
+              "label": "Off low20",
+              "value": "+0.00%"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-12.73%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            }
+          ],
+          "note": "Treat as a bounce until key levels are recovered."
+        }
+      ],
+      "trendGuard": {
+        "key": "bear",
+        "label": "Bear Guard",
+        "note": "1H / 4H aligned down; recover 1H EMA21 first."
+      }
+    },
+    "8106.HK": {
+      "symbol": "8106.HK",
+      "label": "浙江芯化",
+      "market": "hk",
+      "activeKey": "breakout",
+      "scores": {
+        "breakout": 10,
+        "base": 8,
+        "breaklow": 3,
+        "rebound": 2
+      },
+      "metrics": {
+        "close1": 0.3,
+        "trend1": "up",
+        "trend4": "up",
+        "gapHigh20": 0.0,
+        "bounceLow20": 0.0,
+        "rangePct": 0,
+        "thrust5": 0.0,
+        "emaSpread1": 0.07832051711599584,
+        "emaSpread4": 3.788722383958115,
+        "posInRange": 0.5,
+        "priorLow": 0.3,
+        "recentLow": 0.3,
+        "reclaimPrevLow": 0.0,
+        "brokePriorLow": false,
+        "high20": 0.3,
+        "low20": 0.3,
+        "priorHigh20": 0.3,
+        "priorLow20": 0.3,
+        "newHigh": false,
+        "newLow": false,
+        "ema8_1": 0.2999999425212573,
+        "ema21_1": 0.2997651648939787
+      },
+      "cards": [
+        {
+          "key": "breakout",
+          "tone": "breakout",
+          "name": "Breakout",
+          "kicker": "near prior high",
+          "tag": "active",
+          "score": 10,
+          "active": true,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / up"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "+0.00%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            },
+            {
+              "label": "Range pos",
+              "value": "50%"
+            }
+          ],
+          "note": "Hold near highs before treating it as a valid breakout."
+        },
+        {
+          "key": "base",
+          "tone": "base",
+          "name": "Base",
+          "kicker": "compression / absorption",
+          "tag": "watch",
+          "score": 8,
+          "active": false,
+          "stats": [
+            {
+              "label": "Range size",
+              "value": "+0.00%"
+            },
+            {
+              "label": "EMA spread 1H",
+              "value": "+0.08%"
+            },
+            {
+              "label": "EMA spread 4H",
+              "value": "+3.79%"
+            },
+            {
+              "label": "Range pos",
+              "value": "50%"
+            }
+          ],
+          "note": "Stay patient until volume expansion confirms the move."
+        },
+        {
+          "key": "breaklow",
+          "tone": "breaklow",
+          "name": "Breaklow Reclaim",
+          "kicker": "flush then reclaim",
+          "tag": "watch",
+          "score": 3,
+          "active": false,
+          "stats": [
+            {
+              "label": "Prior low",
+              "value": "+0.30"
+            },
+            {
+              "label": "Recent low",
+              "value": "+0.30"
+            },
+            {
+              "label": "Reclaim",
+              "value": "+0.00%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            }
+          ],
+          "note": "Only counts after price closes back above the prior low."
+        },
+        {
+          "key": "rebound",
+          "tone": "rebound",
+          "name": "Weak Rebound",
+          "kicker": "counter-trend bounce",
+          "tag": "watch",
+          "score": 2,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / up"
+            },
+            {
+              "label": "Off low20",
+              "value": "+0.00%"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "+0.00%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            }
+          ],
+          "note": "Treat as a bounce until key levels are recovered."
+        }
+      ],
+      "trendGuard": {
+        "key": "bull",
+        "label": "Bull Guard",
+        "note": "1H / 4H aligned up; hold 1H EMA21."
+      }
+    },
+    "1575.HK": {
+      "symbol": "1575.HK",
+      "label": "皇庭智家",
+      "market": "hk",
+      "activeKey": "base",
+      "scores": {
+        "breakout": 8,
+        "base": 10,
+        "breaklow": 4,
+        "rebound": 4
+      },
+      "metrics": {
+        "close1": 0.037,
+        "trend1": "up",
+        "trend4": "down",
+        "gapHigh20": 0.0,
+        "bounceLow20": 0.0,
+        "rangePct": 0,
+        "thrust5": 0.0,
+        "emaSpread1": 0.4491758200376441,
+        "emaSpread4": -1.3625134377525514,
+        "posInRange": 0.5,
+        "priorLow": 0.037,
+        "recentLow": 0.037,
+        "reclaimPrevLow": 0.0,
+        "brokePriorLow": false,
+        "high20": 0.037,
+        "low20": 0.037,
+        "priorHigh20": 0.037,
+        "priorLow20": 0.037,
+        "newHigh": false,
+        "newLow": false,
+        "ema8_1": 0.03699698827759347,
+        "ema21_1": 0.036831549861470636
+      },
+      "cards": [
+        {
+          "key": "breakout",
+          "tone": "breakout",
+          "name": "Breakout",
+          "kicker": "near prior high",
+          "tag": "watch",
+          "score": 8,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / down"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "+0.00%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            },
+            {
+              "label": "Range pos",
+              "value": "50%"
+            }
+          ],
+          "note": "Hold near highs before treating it as a valid breakout."
+        },
+        {
+          "key": "base",
+          "tone": "base",
+          "name": "Base",
+          "kicker": "compression / absorption",
+          "tag": "active",
+          "score": 10,
+          "active": true,
+          "stats": [
+            {
+              "label": "Range size",
+              "value": "+0.00%"
+            },
+            {
+              "label": "EMA spread 1H",
+              "value": "+0.45%"
+            },
+            {
+              "label": "EMA spread 4H",
+              "value": "-1.36%"
+            },
+            {
+              "label": "Range pos",
+              "value": "50%"
+            }
+          ],
+          "note": "Stay patient until volume expansion confirms the move."
+        },
+        {
+          "key": "breaklow",
+          "tone": "breaklow",
+          "name": "Breaklow Reclaim",
+          "kicker": "flush then reclaim",
+          "tag": "watch",
+          "score": 4,
+          "active": false,
+          "stats": [
+            {
+              "label": "Prior low",
+              "value": "+0.04"
+            },
+            {
+              "label": "Recent low",
+              "value": "+0.04"
+            },
+            {
+              "label": "Reclaim",
+              "value": "+0.00%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            }
+          ],
+          "note": "Only counts after price closes back above the prior low."
+        },
+        {
+          "key": "rebound",
+          "tone": "rebound",
+          "name": "Weak Rebound",
+          "kicker": "counter-trend bounce",
+          "tag": "watch",
+          "score": 4,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / down"
+            },
+            {
+              "label": "Off low20",
+              "value": "+0.00%"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "+0.00%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            }
+          ],
+          "note": "Treat as a bounce until key levels are recovered."
+        }
+      ],
+      "trendGuard": {
+        "key": "neutral",
+        "label": "Trend Pending",
+        "note": "No aligned rhythm yet."
+      }
+    },
+    "1808.HK": {
+      "symbol": "1808.HK",
+      "label": "ENTERPRISE DEV",
+      "market": "hk",
+      "activeKey": "breakout",
+      "scores": {
+        "breakout": 10,
+        "base": 2,
+        "breaklow": 4,
+        "rebound": 4
+      },
+      "metrics": {
+        "close1": 2.7,
+        "trend1": "up",
+        "trend4": "up",
+        "gapHigh20": 0.0,
+        "bounceLow20": 17.391304347826104,
+        "rangePct": 14.814814814814827,
+        "thrust5": 0.0,
+        "emaSpread1": 4.001674799738313,
+        "emaSpread4": 4.539571788256187,
+        "posInRange": 1.0,
+        "priorLow": 2.3,
+        "recentLow": 2.53,
+        "reclaimPrevLow": 17.391304347826104,
+        "brokePriorLow": false,
+        "high20": 2.7,
+        "low20": 2.3,
+        "priorHigh20": 2.7,
+        "priorLow20": 2.3,
+        "newHigh": false,
+        "newLow": false,
+        "ema8_1": 2.6585967227335954,
+        "ema21_1": 2.556301836343394
+      },
+      "cards": [
+        {
+          "key": "breakout",
+          "tone": "breakout",
+          "name": "Breakout",
+          "kicker": "near prior high",
+          "tag": "active",
+          "score": 10,
+          "active": true,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / up"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "+0.00%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            },
+            {
+              "label": "Range pos",
+              "value": "100%"
+            }
+          ],
+          "note": "Hold near highs before treating it as a valid breakout."
+        },
+        {
+          "key": "base",
+          "tone": "base",
+          "name": "Base",
+          "kicker": "compression / absorption",
+          "tag": "watch",
+          "score": 2,
+          "active": false,
+          "stats": [
+            {
+              "label": "Range size",
+              "value": "+14.81%"
+            },
+            {
+              "label": "EMA spread 1H",
+              "value": "+4.00%"
+            },
+            {
+              "label": "EMA spread 4H",
+              "value": "+4.54%"
+            },
+            {
+              "label": "Range pos",
+              "value": "100%"
+            }
+          ],
+          "note": "Stay patient until volume expansion confirms the move."
+        },
+        {
+          "key": "breaklow",
+          "tone": "breaklow",
+          "name": "Breaklow Reclaim",
+          "kicker": "flush then reclaim",
+          "tag": "watch",
+          "score": 4,
+          "active": false,
+          "stats": [
+            {
+              "label": "Prior low",
+              "value": "+2.30"
+            },
+            {
+              "label": "Recent low",
+              "value": "+2.53"
+            },
+            {
+              "label": "Reclaim",
+              "value": "+17.39%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            }
+          ],
+          "note": "Only counts after price closes back above the prior low."
+        },
+        {
+          "key": "rebound",
+          "tone": "rebound",
+          "name": "Weak Rebound",
+          "kicker": "counter-trend bounce",
+          "tag": "watch",
+          "score": 4,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / up"
+            },
+            {
+              "label": "Off low20",
+              "value": "+17.39%"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "+0.00%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            }
+          ],
+          "note": "Treat as a bounce until key levels are recovered."
+        }
+      ],
+      "trendGuard": {
+        "key": "bull",
+        "label": "Bull Guard",
+        "note": "1H / 4H aligned up; hold 1H EMA21."
+      }
+    },
+    "476.HK": {
+      "symbol": "476.HK",
+      "label": "科軒動力",
+      "market": "hk",
+      "activeKey": "base",
+      "scores": {
+        "breakout": 1,
+        "base": 9,
+        "breaklow": 4,
+        "rebound": 6
+      },
+      "metrics": {
+        "close1": 0.445,
+        "trend1": "down",
+        "trend4": "down",
+        "gapHigh20": -4.3010752688172085,
+        "bounceLow20": 0.0,
+        "rangePct": 4.494382022471914,
+        "thrust5": 0.0,
+        "emaSpread1": -0.9063162570049894,
+        "emaSpread4": -1.390967942054677,
+        "posInRange": 0.0,
+        "priorLow": 0.445,
+        "recentLow": 0.445,
+        "reclaimPrevLow": 0.0,
+        "brokePriorLow": false,
+        "high20": 0.465,
+        "low20": 0.445,
+        "priorHigh20": 0.465,
+        "priorLow20": 0.445,
+        "newHigh": false,
+        "newLow": false,
+        "ema8_1": 0.44535739484840664,
+        "ema21_1": 0.44943065796551257
+      },
+      "cards": [
+        {
+          "key": "breakout",
+          "tone": "breakout",
+          "name": "Breakout",
+          "kicker": "near prior high",
+          "tag": "watch",
+          "score": 1,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "down / down"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-4.30%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            },
+            {
+              "label": "Range pos",
+              "value": "0%"
+            }
+          ],
+          "note": "Hold near highs before treating it as a valid breakout."
+        },
+        {
+          "key": "base",
+          "tone": "base",
+          "name": "Base",
+          "kicker": "compression / absorption",
+          "tag": "active",
+          "score": 9,
+          "active": true,
+          "stats": [
+            {
+              "label": "Range size",
+              "value": "+4.49%"
+            },
+            {
+              "label": "EMA spread 1H",
+              "value": "-0.91%"
+            },
+            {
+              "label": "EMA spread 4H",
+              "value": "-1.39%"
+            },
+            {
+              "label": "Range pos",
+              "value": "0%"
+            }
+          ],
+          "note": "Stay patient until volume expansion confirms the move."
+        },
+        {
+          "key": "breaklow",
+          "tone": "breaklow",
+          "name": "Breaklow Reclaim",
+          "kicker": "flush then reclaim",
+          "tag": "watch",
+          "score": 4,
+          "active": false,
+          "stats": [
+            {
+              "label": "Prior low",
+              "value": "+0.45"
+            },
+            {
+              "label": "Recent low",
+              "value": "+0.45"
+            },
+            {
+              "label": "Reclaim",
+              "value": "+0.00%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            }
+          ],
+          "note": "Only counts after price closes back above the prior low."
+        },
+        {
+          "key": "rebound",
+          "tone": "rebound",
+          "name": "Weak Rebound",
+          "kicker": "counter-trend bounce",
+          "tag": "watch",
+          "score": 6,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "down / down"
+            },
+            {
+              "label": "Off low20",
+              "value": "+0.00%"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-4.30%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            }
+          ],
+          "note": "Treat as a bounce until key levels are recovered."
+        }
+      ],
+      "trendGuard": {
+        "key": "bear",
+        "label": "Bear Guard",
+        "note": "1H / 4H aligned down; recover 1H EMA21 first."
+      }
+    },
+    "8489.HK": {
+      "symbol": "8489.HK",
+      "label": "裕程物流",
+      "market": "hk",
+      "activeKey": "rebound",
+      "scores": {
+        "breakout": 0,
+        "base": 0,
+        "breaklow": 5,
+        "rebound": 7
+      },
+      "metrics": {
+        "close1": 0.172,
+        "trend1": "down",
+        "trend4": "down",
+        "gapHigh20": -16.097560975609756,
+        "bounceLow20": 0.0,
+        "rangePct": 19.18604651162791,
+        "thrust5": -4.444444444444449,
+        "emaSpread1": -3.2304124038483657,
+        "emaSpread4": -4.3470629239349305,
+        "posInRange": 0.0,
+        "priorLow": 0.175,
+        "recentLow": 0.172,
+        "reclaimPrevLow": -1.7142857142857157,
+        "brokePriorLow": true,
+        "high20": 0.205,
+        "low20": 0.172,
+        "priorHigh20": 0.205,
+        "priorLow20": 0.172,
+        "newHigh": false,
+        "newLow": false,
+        "ema8_1": 0.17747093907679898,
+        "ema21_1": 0.18339536571907092
+      },
+      "cards": [
+        {
+          "key": "breakout",
+          "tone": "breakout",
+          "name": "Breakout",
+          "kicker": "near prior high",
+          "tag": "watch",
+          "score": 0,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "down / down"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-16.10%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-4.44%"
+            },
+            {
+              "label": "Range pos",
+              "value": "0%"
+            }
+          ],
+          "note": "Hold near highs before treating it as a valid breakout."
+        },
+        {
+          "key": "base",
+          "tone": "base",
+          "name": "Base",
+          "kicker": "compression / absorption",
+          "tag": "watch",
+          "score": 0,
+          "active": false,
+          "stats": [
+            {
+              "label": "Range size",
+              "value": "+19.19%"
+            },
+            {
+              "label": "EMA spread 1H",
+              "value": "-3.23%"
+            },
+            {
+              "label": "EMA spread 4H",
+              "value": "-4.35%"
+            },
+            {
+              "label": "Range pos",
+              "value": "0%"
+            }
+          ],
+          "note": "Stay patient until volume expansion confirms the move."
+        },
+        {
+          "key": "breaklow",
+          "tone": "breaklow",
+          "name": "Breaklow Reclaim",
+          "kicker": "flush then reclaim",
+          "tag": "watch",
+          "score": 5,
+          "active": false,
+          "stats": [
+            {
+              "label": "Prior low",
+              "value": "+0.17"
+            },
+            {
+              "label": "Recent low",
+              "value": "+0.17"
+            },
+            {
+              "label": "Reclaim",
+              "value": "-1.71%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-4.44%"
+            }
+          ],
+          "note": "Only counts after price closes back above the prior low."
+        },
+        {
+          "key": "rebound",
+          "tone": "rebound",
+          "name": "Weak Rebound",
+          "kicker": "counter-trend bounce",
+          "tag": "active",
+          "score": 7,
+          "active": true,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "down / down"
+            },
+            {
+              "label": "Off low20",
+              "value": "+0.00%"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-16.10%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-4.44%"
+            }
+          ],
+          "note": "Treat as a bounce until key levels are recovered."
+        }
+      ],
+      "trendGuard": {
+        "key": "bear",
+        "label": "Bear Guard",
+        "note": "1H / 4H aligned down; recover 1H EMA21 first."
+      }
+    },
+    "1736.HK": {
+      "symbol": "1736.HK",
+      "label": "中國育兒",
+      "market": "hk",
+      "activeKey": "base",
+      "scores": {
+        "breakout": 7,
+        "base": 9,
+        "breaklow": 4,
+        "rebound": 2
+      },
+      "metrics": {
+        "close1": 0.5,
+        "trend1": "up",
+        "trend4": "up",
+        "gapHigh20": -3.8461538461538494,
+        "bounceLow20": 4.1666666666666705,
+        "rangePct": 8.000000000000007,
+        "thrust5": 0.0,
+        "emaSpread1": 0.6854217200278987,
+        "emaSpread4": 3.08916924561904,
+        "posInRange": 0.5,
+        "priorLow": 0.48,
+        "recentLow": 0.5,
+        "reclaimPrevLow": 4.1666666666666705,
+        "brokePriorLow": false,
+        "high20": 0.52,
+        "low20": 0.48,
+        "priorHigh20": 0.52,
+        "priorLow20": 0.48,
+        "newHigh": false,
+        "newLow": false,
+        "ema8_1": 0.5000781760939236,
+        "ema21_1": 0.49667386554179793
+      },
+      "cards": [
+        {
+          "key": "breakout",
+          "tone": "breakout",
+          "name": "Breakout",
+          "kicker": "near prior high",
+          "tag": "watch",
+          "score": 7,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / up"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-3.85%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            },
+            {
+              "label": "Range pos",
+              "value": "50%"
+            }
+          ],
+          "note": "Hold near highs before treating it as a valid breakout."
+        },
+        {
+          "key": "base",
+          "tone": "base",
+          "name": "Base",
+          "kicker": "compression / absorption",
+          "tag": "active",
+          "score": 9,
+          "active": true,
+          "stats": [
+            {
+              "label": "Range size",
+              "value": "+8.00%"
+            },
+            {
+              "label": "EMA spread 1H",
+              "value": "+0.69%"
+            },
+            {
+              "label": "EMA spread 4H",
+              "value": "+3.09%"
+            },
+            {
+              "label": "Range pos",
+              "value": "50%"
+            }
+          ],
+          "note": "Stay patient until volume expansion confirms the move."
+        },
+        {
+          "key": "breaklow",
+          "tone": "breaklow",
+          "name": "Breaklow Reclaim",
+          "kicker": "flush then reclaim",
+          "tag": "watch",
+          "score": 4,
+          "active": false,
+          "stats": [
+            {
+              "label": "Prior low",
+              "value": "+0.48"
+            },
+            {
+              "label": "Recent low",
+              "value": "+0.50"
+            },
+            {
+              "label": "Reclaim",
+              "value": "+4.17%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            }
+          ],
+          "note": "Only counts after price closes back above the prior low."
+        },
+        {
+          "key": "rebound",
+          "tone": "rebound",
+          "name": "Weak Rebound",
+          "kicker": "counter-trend bounce",
+          "tag": "watch",
+          "score": 2,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / up"
+            },
+            {
+              "label": "Off low20",
+              "value": "+4.17%"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-3.85%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            }
+          ],
+          "note": "Treat as a bounce until key levels are recovered."
+        }
+      ],
+      "trendGuard": {
+        "key": "bull",
+        "label": "Bull Guard",
+        "note": "1H / 4H aligned up; hold 1H EMA21."
+      }
+    },
+    "8406.HK": {
+      "symbol": "8406.HK",
+      "label": "中國口腔",
+      "market": "hk",
+      "activeKey": "rebound",
+      "scores": {
+        "breakout": 2,
+        "base": 2,
+        "breaklow": 4,
+        "rebound": 6
+      },
+      "metrics": {
+        "close1": 0.077,
+        "trend1": "down",
+        "trend4": "up",
+        "gapHigh20": -12.499999999999996,
+        "bounceLow20": 1.3157894736842117,
+        "rangePct": 15.58441558441558,
+        "thrust5": 0.0,
+        "emaSpread1": -1.8734579984155313,
+        "emaSpread4": 8.09649429330363,
+        "posInRange": 0.08333333333333343,
+        "priorLow": 0.076,
+        "recentLow": 0.077,
+        "reclaimPrevLow": 1.3157894736842117,
+        "brokePriorLow": false,
+        "high20": 0.088,
+        "low20": 0.076,
+        "priorHigh20": 0.088,
+        "priorLow20": 0.076,
+        "newHigh": false,
+        "newLow": false,
+        "ema8_1": 0.07843452522731253,
+        "ema21_1": 0.07993201801205431
+      },
+      "cards": [
+        {
+          "key": "breakout",
+          "tone": "breakout",
+          "name": "Breakout",
+          "kicker": "near prior high",
+          "tag": "watch",
+          "score": 2,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "down / up"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-12.50%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            },
+            {
+              "label": "Range pos",
+              "value": "8%"
+            }
+          ],
+          "note": "Hold near highs before treating it as a valid breakout."
+        },
+        {
+          "key": "base",
+          "tone": "base",
+          "name": "Base",
+          "kicker": "compression / absorption",
+          "tag": "watch",
+          "score": 2,
+          "active": false,
+          "stats": [
+            {
+              "label": "Range size",
+              "value": "+15.58%"
+            },
+            {
+              "label": "EMA spread 1H",
+              "value": "-1.87%"
+            },
+            {
+              "label": "EMA spread 4H",
+              "value": "+8.10%"
+            },
+            {
+              "label": "Range pos",
+              "value": "8%"
+            }
+          ],
+          "note": "Stay patient until volume expansion confirms the move."
+        },
+        {
+          "key": "breaklow",
+          "tone": "breaklow",
+          "name": "Breaklow Reclaim",
+          "kicker": "flush then reclaim",
+          "tag": "watch",
+          "score": 4,
+          "active": false,
+          "stats": [
+            {
+              "label": "Prior low",
+              "value": "+0.08"
+            },
+            {
+              "label": "Recent low",
+              "value": "+0.08"
+            },
+            {
+              "label": "Reclaim",
+              "value": "+1.32%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            }
+          ],
+          "note": "Only counts after price closes back above the prior low."
+        },
+        {
+          "key": "rebound",
+          "tone": "rebound",
+          "name": "Weak Rebound",
+          "kicker": "counter-trend bounce",
+          "tag": "active",
+          "score": 6,
+          "active": true,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "down / up"
+            },
+            {
+              "label": "Off low20",
+              "value": "+1.32%"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-12.50%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            }
+          ],
+          "note": "Treat as a bounce until key levels are recovered."
+        }
+      ],
+      "trendGuard": {
+        "key": "neutral",
+        "label": "Trend Pending",
+        "note": "No aligned rhythm yet."
+      }
+    },
+    "1153.HK": {
+      "symbol": "1153.HK",
+      "label": "JIAYUAN SERVICES",
+      "market": "hk",
+      "activeKey": "base",
+      "scores": {
+        "breakout": 3,
+        "base": 9,
+        "breaklow": 4,
+        "rebound": 6
+      },
+      "metrics": {
+        "close1": 0.355,
+        "trend1": "down",
+        "trend4": "up",
+        "gapHigh20": -4.054054054054058,
+        "bounceLow20": 4.41176470588234,
+        "rangePct": 8.450704225352105,
+        "thrust5": -1.3888888888888902,
+        "emaSpread1": -0.41627339862320634,
+        "emaSpread4": 2.1497527208787135,
+        "posInRange": 0.49999999999999906,
+        "priorLow": 0.34,
+        "recentLow": 0.34,
+        "reclaimPrevLow": 4.41176470588234,
+        "brokePriorLow": false,
+        "high20": 0.37,
+        "low20": 0.34,
+        "priorHigh20": 0.37,
+        "priorLow20": 0.34,
+        "newHigh": false,
+        "newLow": false,
+        "ema8_1": 0.3553416855990873,
+        "ema21_1": 0.35682706173618384
+      },
+      "cards": [
+        {
+          "key": "breakout",
+          "tone": "breakout",
+          "name": "Breakout",
+          "kicker": "near prior high",
+          "tag": "watch",
+          "score": 3,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "down / up"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-4.05%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-1.39%"
+            },
+            {
+              "label": "Range pos",
+              "value": "50%"
+            }
+          ],
+          "note": "Hold near highs before treating it as a valid breakout."
+        },
+        {
+          "key": "base",
+          "tone": "base",
+          "name": "Base",
+          "kicker": "compression / absorption",
+          "tag": "active",
+          "score": 9,
+          "active": true,
+          "stats": [
+            {
+              "label": "Range size",
+              "value": "+8.45%"
+            },
+            {
+              "label": "EMA spread 1H",
+              "value": "-0.42%"
+            },
+            {
+              "label": "EMA spread 4H",
+              "value": "+2.15%"
+            },
+            {
+              "label": "Range pos",
+              "value": "50%"
+            }
+          ],
+          "note": "Stay patient until volume expansion confirms the move."
+        },
+        {
+          "key": "breaklow",
+          "tone": "breaklow",
+          "name": "Breaklow Reclaim",
+          "kicker": "flush then reclaim",
+          "tag": "watch",
+          "score": 4,
+          "active": false,
+          "stats": [
+            {
+              "label": "Prior low",
+              "value": "+0.34"
+            },
+            {
+              "label": "Recent low",
+              "value": "+0.34"
+            },
+            {
+              "label": "Reclaim",
+              "value": "+4.41%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-1.39%"
+            }
+          ],
+          "note": "Only counts after price closes back above the prior low."
+        },
+        {
+          "key": "rebound",
+          "tone": "rebound",
+          "name": "Weak Rebound",
+          "kicker": "counter-trend bounce",
+          "tag": "watch",
+          "score": 6,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "down / up"
+            },
+            {
+              "label": "Off low20",
+              "value": "+4.41%"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-4.05%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-1.39%"
+            }
+          ],
+          "note": "Treat as a bounce until key levels are recovered."
+        }
+      ],
+      "trendGuard": {
+        "key": "neutral",
+        "label": "Trend Pending",
+        "note": "No aligned rhythm yet."
+      }
+    },
+    "8245.HK": {
+      "symbol": "8245.HK",
+      "label": "烽翼集團",
+      "market": "hk",
+      "activeKey": "breaklow",
+      "scores": {
+        "breakout": 5,
+        "base": 4,
+        "breaklow": 10,
+        "rebound": 10
+      },
+      "metrics": {
+        "close1": 0.096,
+        "trend1": "down",
+        "trend4": "up",
+        "gapHigh20": -15.04424778761062,
+        "bounceLow20": 20.0,
+        "rangePct": 34.375,
+        "thrust5": 6.666666666666673,
+        "emaSpread1": -0.8399871087613275,
+        "emaSpread4": 6.463244186622687,
+        "posInRange": 0.48484848484848486,
+        "priorLow": 0.09,
+        "recentLow": 0.08,
+        "reclaimPrevLow": 6.666666666666673,
+        "brokePriorLow": true,
+        "high20": 0.113,
+        "low20": 0.08,
+        "priorHigh20": 0.113,
+        "priorLow20": 0.08,
+        "newHigh": false,
+        "newLow": false,
+        "ema8_1": 0.09530674415845197,
+        "ema21_1": 0.09611409012520696
+      },
+      "cards": [
+        {
+          "key": "breakout",
+          "tone": "breakout",
+          "name": "Breakout",
+          "kicker": "near prior high",
+          "tag": "watch",
+          "score": 5,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "down / up"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-15.04%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+6.67%"
+            },
+            {
+              "label": "Range pos",
+              "value": "48%"
+            }
+          ],
+          "note": "Hold near highs before treating it as a valid breakout."
+        },
+        {
+          "key": "base",
+          "tone": "base",
+          "name": "Base",
+          "kicker": "compression / absorption",
+          "tag": "watch",
+          "score": 4,
+          "active": false,
+          "stats": [
+            {
+              "label": "Range size",
+              "value": "+34.38%"
+            },
+            {
+              "label": "EMA spread 1H",
+              "value": "-0.84%"
+            },
+            {
+              "label": "EMA spread 4H",
+              "value": "+6.46%"
+            },
+            {
+              "label": "Range pos",
+              "value": "48%"
+            }
+          ],
+          "note": "Stay patient until volume expansion confirms the move."
+        },
+        {
+          "key": "breaklow",
+          "tone": "breaklow",
+          "name": "Breaklow Reclaim",
+          "kicker": "flush then reclaim",
+          "tag": "active",
+          "score": 10,
+          "active": true,
+          "stats": [
+            {
+              "label": "Prior low",
+              "value": "+0.09"
+            },
+            {
+              "label": "Recent low",
+              "value": "+0.08"
+            },
+            {
+              "label": "Reclaim",
+              "value": "+6.67%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+6.67%"
+            }
+          ],
+          "note": "Only counts after price closes back above the prior low."
+        },
+        {
+          "key": "rebound",
+          "tone": "rebound",
+          "name": "Weak Rebound",
+          "kicker": "counter-trend bounce",
+          "tag": "watch",
+          "score": 10,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "down / up"
+            },
+            {
+              "label": "Off low20",
+              "value": "+20.00%"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-15.04%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+6.67%"
+            }
+          ],
+          "note": "Treat as a bounce until key levels are recovered."
+        }
+      ],
+      "trendGuard": {
+        "key": "neutral",
+        "label": "Trend Pending",
+        "note": "No aligned rhythm yet."
+      }
+    },
+    "8375.HK": {
+      "symbol": "8375.HK",
+      "label": "數盟資本",
+      "market": "hk",
+      "activeKey": "rebound",
+      "scores": {
+        "breakout": 2,
+        "base": 7,
+        "breaklow": 4,
+        "rebound": 9
+      },
+      "metrics": {
+        "close1": 1.13,
+        "trend1": "down",
+        "trend4": "down",
+        "gapHigh20": -6.61157024793389,
+        "bounceLow20": 5.607476635514002,
+        "rangePct": 12.389380530973444,
+        "thrust5": 0.0,
+        "emaSpread1": -0.20637722939072478,
+        "emaSpread4": -6.297865724563281,
+        "posInRange": 0.42857142857142766,
+        "priorLow": 1.07,
+        "recentLow": 1.12,
+        "reclaimPrevLow": 5.607476635514002,
+        "brokePriorLow": false,
+        "high20": 1.21,
+        "low20": 1.07,
+        "priorHigh20": 1.21,
+        "priorLow20": 1.07,
+        "newHigh": false,
+        "newLow": false,
+        "ema8_1": 1.1238750038256846,
+        "ema21_1": 1.1261992225786623
+      },
+      "cards": [
+        {
+          "key": "breakout",
+          "tone": "breakout",
+          "name": "Breakout",
+          "kicker": "near prior high",
+          "tag": "watch",
+          "score": 2,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "down / down"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-6.61%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            },
+            {
+              "label": "Range pos",
+              "value": "43%"
+            }
+          ],
+          "note": "Hold near highs before treating it as a valid breakout."
+        },
+        {
+          "key": "base",
+          "tone": "base",
+          "name": "Base",
+          "kicker": "compression / absorption",
+          "tag": "watch",
+          "score": 7,
+          "active": false,
+          "stats": [
+            {
+              "label": "Range size",
+              "value": "+12.39%"
+            },
+            {
+              "label": "EMA spread 1H",
+              "value": "-0.21%"
+            },
+            {
+              "label": "EMA spread 4H",
+              "value": "-6.30%"
+            },
+            {
+              "label": "Range pos",
+              "value": "43%"
+            }
+          ],
+          "note": "Stay patient until volume expansion confirms the move."
+        },
+        {
+          "key": "breaklow",
+          "tone": "breaklow",
+          "name": "Breaklow Reclaim",
+          "kicker": "flush then reclaim",
+          "tag": "watch",
+          "score": 4,
+          "active": false,
+          "stats": [
+            {
+              "label": "Prior low",
+              "value": "+1.07"
+            },
+            {
+              "label": "Recent low",
+              "value": "+1.12"
+            },
+            {
+              "label": "Reclaim",
+              "value": "+5.61%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            }
+          ],
+          "note": "Only counts after price closes back above the prior low."
+        },
+        {
+          "key": "rebound",
+          "tone": "rebound",
+          "name": "Weak Rebound",
+          "kicker": "counter-trend bounce",
+          "tag": "active",
+          "score": 9,
+          "active": true,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "down / down"
+            },
+            {
+              "label": "Off low20",
+              "value": "+5.61%"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-6.61%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            }
+          ],
+          "note": "Treat as a bounce until key levels are recovered."
+        }
+      ],
+      "trendGuard": {
+        "key": "neutral",
+        "label": "Trend Pending",
+        "note": "No aligned rhythm yet."
+      }
+    },
+    "2865.HK": {
+      "symbol": "2865.HK",
+      "label": "海南鈞達",
+      "market": "hk",
+      "activeKey": "rebound",
+      "scores": {
+        "breakout": 7,
+        "base": 1,
+        "breaklow": 4,
+        "rebound": 8
+      },
+      "metrics": {
+        "close1": 23.2,
+        "trend1": "up",
+        "trend4": "down",
+        "gapHigh20": -5.996758508914103,
+        "bounceLow20": 27.053669222343906,
+        "rangePct": 27.67241379310344,
+        "thrust5": 3.479036574487054,
+        "emaSpread1": 6.180676113037015,
+        "emaSpread4": -4.354345057022836,
+        "posInRange": 0.7694704049844235,
+        "priorLow": 18.26,
+        "recentLow": 19.38,
+        "reclaimPrevLow": 27.053669222343906,
+        "brokePriorLow": false,
+        "high20": 24.68,
+        "low20": 18.26,
+        "priorHigh20": 24.68,
+        "priorLow20": 18.26,
+        "newHigh": false,
+        "newLow": false,
+        "ema8_1": 21.654517513394342,
+        "ema21_1": 20.394028655780588
+      },
+      "cards": [
+        {
+          "key": "breakout",
+          "tone": "breakout",
+          "name": "Breakout",
+          "kicker": "near prior high",
+          "tag": "watch",
+          "score": 7,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / down"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-6.00%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+3.48%"
+            },
+            {
+              "label": "Range pos",
+              "value": "77%"
+            }
+          ],
+          "note": "Hold near highs before treating it as a valid breakout."
+        },
+        {
+          "key": "base",
+          "tone": "base",
+          "name": "Base",
+          "kicker": "compression / absorption",
+          "tag": "watch",
+          "score": 1,
+          "active": false,
+          "stats": [
+            {
+              "label": "Range size",
+              "value": "+27.67%"
+            },
+            {
+              "label": "EMA spread 1H",
+              "value": "+6.18%"
+            },
+            {
+              "label": "EMA spread 4H",
+              "value": "-4.35%"
+            },
+            {
+              "label": "Range pos",
+              "value": "77%"
+            }
+          ],
+          "note": "Stay patient until volume expansion confirms the move."
+        },
+        {
+          "key": "breaklow",
+          "tone": "breaklow",
+          "name": "Breaklow Reclaim",
+          "kicker": "flush then reclaim",
+          "tag": "watch",
+          "score": 4,
+          "active": false,
+          "stats": [
+            {
+              "label": "Prior low",
+              "value": "+18.26"
+            },
+            {
+              "label": "Recent low",
+              "value": "+19.38"
+            },
+            {
+              "label": "Reclaim",
+              "value": "+27.05%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+3.48%"
+            }
+          ],
+          "note": "Only counts after price closes back above the prior low."
+        },
+        {
+          "key": "rebound",
+          "tone": "rebound",
+          "name": "Weak Rebound",
+          "kicker": "counter-trend bounce",
+          "tag": "active",
+          "score": 8,
+          "active": true,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / down"
+            },
+            {
+              "label": "Off low20",
+              "value": "+27.05%"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-6.00%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+3.48%"
+            }
+          ],
+          "note": "Treat as a bounce until key levels are recovered."
+        }
+      ],
+      "trendGuard": {
+        "key": "neutral",
+        "label": "Trend Pending",
+        "note": "No aligned rhythm yet."
+      }
+    },
+    "1380.HK": {
+      "symbol": "1380.HK",
+      "label": "中國金石",
+      "market": "hk",
+      "activeKey": "rebound",
+      "scores": {
+        "breakout": 3,
+        "base": 8,
+        "breaklow": 4,
+        "rebound": 8
+      },
+      "metrics": {
+        "close1": 0.59,
+        "trend1": "down",
+        "trend4": "down",
+        "gapHigh20": -1.6666666666666683,
+        "bounceLow20": 5.357142857142842,
+        "rangePct": 6.77966101694914,
+        "thrust5": 0.0,
+        "emaSpread1": -0.2287171998314061,
+        "emaSpread4": -5.4525714603805175,
+        "posInRange": 0.7499999999999993,
+        "priorLow": 0.56,
+        "recentLow": 0.59,
+        "reclaimPrevLow": 5.357142857142842,
+        "brokePriorLow": false,
+        "high20": 0.6,
+        "low20": 0.56,
+        "priorHigh20": 0.6,
+        "priorLow20": 0.56,
+        "newHigh": false,
+        "newLow": false,
+        "ema8_1": 0.5928728265653381,
+        "ema21_1": 0.5942319372126348
+      },
+      "cards": [
+        {
+          "key": "breakout",
+          "tone": "breakout",
+          "name": "Breakout",
+          "kicker": "near prior high",
+          "tag": "watch",
+          "score": 3,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "down / down"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-1.67%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            },
+            {
+              "label": "Range pos",
+              "value": "75%"
+            }
+          ],
+          "note": "Hold near highs before treating it as a valid breakout."
+        },
+        {
+          "key": "base",
+          "tone": "base",
+          "name": "Base",
+          "kicker": "compression / absorption",
+          "tag": "watch",
+          "score": 8,
+          "active": false,
+          "stats": [
+            {
+              "label": "Range size",
+              "value": "+6.78%"
+            },
+            {
+              "label": "EMA spread 1H",
+              "value": "-0.23%"
+            },
+            {
+              "label": "EMA spread 4H",
+              "value": "-5.45%"
+            },
+            {
+              "label": "Range pos",
+              "value": "75%"
+            }
+          ],
+          "note": "Stay patient until volume expansion confirms the move."
+        },
+        {
+          "key": "breaklow",
+          "tone": "breaklow",
+          "name": "Breaklow Reclaim",
+          "kicker": "flush then reclaim",
+          "tag": "watch",
+          "score": 4,
+          "active": false,
+          "stats": [
+            {
+              "label": "Prior low",
+              "value": "+0.56"
+            },
+            {
+              "label": "Recent low",
+              "value": "+0.59"
+            },
+            {
+              "label": "Reclaim",
+              "value": "+5.36%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            }
+          ],
+          "note": "Only counts after price closes back above the prior low."
+        },
+        {
+          "key": "rebound",
+          "tone": "rebound",
+          "name": "Weak Rebound",
+          "kicker": "counter-trend bounce",
+          "tag": "active",
+          "score": 8,
+          "active": true,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "down / down"
+            },
+            {
+              "label": "Off low20",
+              "value": "+5.36%"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-1.67%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            }
+          ],
+          "note": "Treat as a bounce until key levels are recovered."
+        }
+      ],
+      "trendGuard": {
+        "key": "bear",
+        "label": "Bear Guard",
+        "note": "1H / 4H aligned down; recover 1H EMA21 first."
+      }
+    },
+    "8403.HK": {
+      "symbol": "8403.HK",
+      "label": "德豐宿來",
+      "market": "hk",
+      "activeKey": "base",
+      "scores": {
+        "breakout": 6,
+        "base": 10,
+        "breaklow": 2,
+        "rebound": 2
+      },
+      "metrics": {
+        "close1": 3.2,
+        "trend1": "up",
+        "trend4": "up",
+        "gapHigh20": -5.32544378698224,
+        "bounceLow20": 2.2364217252396257,
+        "rangePct": 7.8125,
+        "thrust5": -1.538461538461533,
+        "emaSpread1": 0.13237391041355503,
+        "emaSpread4": 0.14605723401804782,
+        "posInRange": 0.28000000000000114,
+        "priorLow": 3.13,
+        "recentLow": 3.17,
+        "reclaimPrevLow": 2.2364217252396257,
+        "brokePriorLow": false,
+        "high20": 3.38,
+        "low20": 3.13,
+        "priorHigh20": 3.38,
+        "priorLow20": 3.13,
+        "newHigh": false,
+        "newLow": false,
+        "ema8_1": 3.202062238509119,
+        "ema21_1": 3.1978291470188656
+      },
+      "cards": [
+        {
+          "key": "breakout",
+          "tone": "breakout",
+          "name": "Breakout",
+          "kicker": "near prior high",
+          "tag": "watch",
+          "score": 6,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / up"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-5.33%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-1.54%"
+            },
+            {
+              "label": "Range pos",
+              "value": "28%"
+            }
+          ],
+          "note": "Hold near highs before treating it as a valid breakout."
+        },
+        {
+          "key": "base",
+          "tone": "base",
+          "name": "Base",
+          "kicker": "compression / absorption",
+          "tag": "active",
+          "score": 10,
+          "active": true,
+          "stats": [
+            {
+              "label": "Range size",
+              "value": "+7.81%"
+            },
+            {
+              "label": "EMA spread 1H",
+              "value": "+0.13%"
+            },
+            {
+              "label": "EMA spread 4H",
+              "value": "+0.15%"
+            },
+            {
+              "label": "Range pos",
+              "value": "28%"
+            }
+          ],
+          "note": "Stay patient until volume expansion confirms the move."
+        },
+        {
+          "key": "breaklow",
+          "tone": "breaklow",
+          "name": "Breaklow Reclaim",
+          "kicker": "flush then reclaim",
+          "tag": "watch",
+          "score": 2,
+          "active": false,
+          "stats": [
+            {
+              "label": "Prior low",
+              "value": "+3.13"
+            },
+            {
+              "label": "Recent low",
+              "value": "+3.17"
+            },
+            {
+              "label": "Reclaim",
+              "value": "+2.24%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-1.54%"
+            }
+          ],
+          "note": "Only counts after price closes back above the prior low."
+        },
+        {
+          "key": "rebound",
+          "tone": "rebound",
+          "name": "Weak Rebound",
+          "kicker": "counter-trend bounce",
+          "tag": "watch",
+          "score": 2,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / up"
+            },
+            {
+              "label": "Off low20",
+              "value": "+2.24%"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-5.33%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-1.54%"
+            }
+          ],
+          "note": "Treat as a bounce until key levels are recovered."
+        }
+      ],
+      "trendGuard": {
+        "key": "bull",
+        "label": "Bull Guard",
+        "note": "1H / 4H aligned up; hold 1H EMA21."
+      }
+    },
+    "1792.HK": {
+      "symbol": "1792.HK",
+      "label": "CMON",
+      "market": "hk",
+      "activeKey": "base",
+      "scores": {
+        "breakout": 8,
+        "base": 9,
+        "breaklow": 4,
+        "rebound": 6
+      },
+      "metrics": {
+        "close1": 0.96,
+        "trend1": "up",
+        "trend4": "down",
+        "gapHigh20": -2.040816326530614,
+        "bounceLow20": 4.3478260869565135,
+        "rangePct": 6.249999999999995,
+        "thrust5": 0.0,
+        "emaSpread1": 0.16660846716945013,
+        "emaSpread4": -1.5183886555211794,
+        "posInRange": 0.6666666666666661,
+        "priorLow": 0.92,
+        "recentLow": 0.96,
+        "reclaimPrevLow": 4.3478260869565135,
+        "brokePriorLow": false,
+        "high20": 0.98,
+        "low20": 0.92,
+        "priorHigh20": 0.98,
+        "priorLow20": 0.92,
+        "newHigh": false,
+        "newLow": false,
+        "ema8_1": 0.9574811822568376,
+        "ema21_1": 0.9558885909276454
+      },
+      "cards": [
+        {
+          "key": "breakout",
+          "tone": "breakout",
+          "name": "Breakout",
+          "kicker": "near prior high",
+          "tag": "watch",
+          "score": 8,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / down"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-2.04%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            },
+            {
+              "label": "Range pos",
+              "value": "67%"
+            }
+          ],
+          "note": "Hold near highs before treating it as a valid breakout."
+        },
+        {
+          "key": "base",
+          "tone": "base",
+          "name": "Base",
+          "kicker": "compression / absorption",
+          "tag": "active",
+          "score": 9,
+          "active": true,
+          "stats": [
+            {
+              "label": "Range size",
+              "value": "+6.25%"
+            },
+            {
+              "label": "EMA spread 1H",
+              "value": "+0.17%"
+            },
+            {
+              "label": "EMA spread 4H",
+              "value": "-1.52%"
+            },
+            {
+              "label": "Range pos",
+              "value": "67%"
+            }
+          ],
+          "note": "Stay patient until volume expansion confirms the move."
+        },
+        {
+          "key": "breaklow",
+          "tone": "breaklow",
+          "name": "Breaklow Reclaim",
+          "kicker": "flush then reclaim",
+          "tag": "watch",
+          "score": 4,
+          "active": false,
+          "stats": [
+            {
+              "label": "Prior low",
+              "value": "+0.92"
+            },
+            {
+              "label": "Recent low",
+              "value": "+0.96"
+            },
+            {
+              "label": "Reclaim",
+              "value": "+4.35%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            }
+          ],
+          "note": "Only counts after price closes back above the prior low."
+        },
+        {
+          "key": "rebound",
+          "tone": "rebound",
+          "name": "Weak Rebound",
+          "kicker": "counter-trend bounce",
+          "tag": "watch",
+          "score": 6,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / down"
+            },
+            {
+              "label": "Off low20",
+              "value": "+4.35%"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-2.04%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            }
+          ],
+          "note": "Treat as a bounce until key levels are recovered."
+        }
+      ],
+      "trendGuard": {
+        "key": "neutral",
+        "label": "Trend Pending",
+        "note": "No aligned rhythm yet."
+      }
+    },
+    "9689.HK": {
+      "symbol": "9689.HK",
+      "label": "JTF INTL",
+      "market": "hk",
+      "activeKey": "breakout",
+      "scores": {
+        "breakout": 10,
+        "base": 8,
+        "breaklow": 3,
+        "rebound": 2
+      },
+      "metrics": {
+        "close1": 0.69,
+        "trend1": "up",
+        "trend4": "up",
+        "gapHigh20": 0.0,
+        "bounceLow20": 0.0,
+        "rangePct": 0,
+        "thrust5": 0.0,
+        "emaSpread1": 0.44163712340648886,
+        "emaSpread4": 1.5446679766607212,
+        "posInRange": 0.5,
+        "priorLow": 0.69,
+        "recentLow": 0.69,
+        "reclaimPrevLow": 0.0,
+        "brokePriorLow": false,
+        "high20": 0.69,
+        "low20": 0.69,
+        "priorHigh20": 0.69,
+        "priorLow20": 0.69,
+        "newHigh": false,
+        "newLow": false,
+        "ema8_1": 0.6899493638052137,
+        "ema21_1": 0.6869156891155758
+      },
+      "cards": [
+        {
+          "key": "breakout",
+          "tone": "breakout",
+          "name": "Breakout",
+          "kicker": "near prior high",
+          "tag": "active",
+          "score": 10,
+          "active": true,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / up"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "+0.00%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            },
+            {
+              "label": "Range pos",
+              "value": "50%"
+            }
+          ],
+          "note": "Hold near highs before treating it as a valid breakout."
+        },
+        {
+          "key": "base",
+          "tone": "base",
+          "name": "Base",
+          "kicker": "compression / absorption",
+          "tag": "watch",
+          "score": 8,
+          "active": false,
+          "stats": [
+            {
+              "label": "Range size",
+              "value": "+0.00%"
+            },
+            {
+              "label": "EMA spread 1H",
+              "value": "+0.44%"
+            },
+            {
+              "label": "EMA spread 4H",
+              "value": "+1.54%"
+            },
+            {
+              "label": "Range pos",
+              "value": "50%"
+            }
+          ],
+          "note": "Stay patient until volume expansion confirms the move."
+        },
+        {
+          "key": "breaklow",
+          "tone": "breaklow",
+          "name": "Breaklow Reclaim",
+          "kicker": "flush then reclaim",
+          "tag": "watch",
+          "score": 3,
+          "active": false,
+          "stats": [
+            {
+              "label": "Prior low",
+              "value": "+0.69"
+            },
+            {
+              "label": "Recent low",
+              "value": "+0.69"
+            },
+            {
+              "label": "Reclaim",
+              "value": "+0.00%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            }
+          ],
+          "note": "Only counts after price closes back above the prior low."
+        },
+        {
+          "key": "rebound",
+          "tone": "rebound",
+          "name": "Weak Rebound",
+          "kicker": "counter-trend bounce",
+          "tag": "watch",
+          "score": 2,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / up"
+            },
+            {
+              "label": "Off low20",
+              "value": "+0.00%"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "+0.00%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            }
+          ],
+          "note": "Treat as a bounce until key levels are recovered."
+        }
+      ],
+      "trendGuard": {
+        "key": "bull",
+        "label": "Bull Guard",
+        "note": "1H / 4H aligned up; hold 1H EMA21."
+      }
+    },
+    "8191.HK": {
+      "symbol": "8191.HK",
+      "label": "鴻偉 (",
+      "market": "hk",
+      "activeKey": "rebound",
+      "scores": {
+        "breakout": 0,
+        "base": 1,
+        "breaklow": 5,
+        "rebound": 7
+      },
+      "metrics": {
+        "close1": 0.131,
+        "trend1": "down",
+        "trend4": "down",
+        "gapHigh20": -10.273972602739716,
+        "bounceLow20": 0.7692307692307698,
+        "rangePct": 12.213740458015257,
+        "thrust5": -7.7464788732394245,
+        "emaSpread1": -2.2991395656051434,
+        "emaSpread4": -3.141078088869847,
+        "posInRange": 0.06250000000000011,
+        "priorLow": 0.136,
+        "recentLow": 0.13,
+        "reclaimPrevLow": -3.676470588235297,
+        "brokePriorLow": true,
+        "high20": 0.146,
+        "low20": 0.13,
+        "priorHigh20": 0.146,
+        "priorLow20": 0.13,
+        "newHigh": false,
+        "newLow": false,
+        "ema8_1": 0.13781886938455332,
+        "ema21_1": 0.14106208355974234
+      },
+      "cards": [
+        {
+          "key": "breakout",
+          "tone": "breakout",
+          "name": "Breakout",
+          "kicker": "near prior high",
+          "tag": "watch",
+          "score": 0,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "down / down"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-10.27%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-7.75%"
+            },
+            {
+              "label": "Range pos",
+              "value": "6%"
+            }
+          ],
+          "note": "Hold near highs before treating it as a valid breakout."
+        },
+        {
+          "key": "base",
+          "tone": "base",
+          "name": "Base",
+          "kicker": "compression / absorption",
+          "tag": "watch",
+          "score": 1,
+          "active": false,
+          "stats": [
+            {
+              "label": "Range size",
+              "value": "+12.21%"
+            },
+            {
+              "label": "EMA spread 1H",
+              "value": "-2.30%"
+            },
+            {
+              "label": "EMA spread 4H",
+              "value": "-3.14%"
+            },
+            {
+              "label": "Range pos",
+              "value": "6%"
+            }
+          ],
+          "note": "Stay patient until volume expansion confirms the move."
+        },
+        {
+          "key": "breaklow",
+          "tone": "breaklow",
+          "name": "Breaklow Reclaim",
+          "kicker": "flush then reclaim",
+          "tag": "watch",
+          "score": 5,
+          "active": false,
+          "stats": [
+            {
+              "label": "Prior low",
+              "value": "+0.14"
+            },
+            {
+              "label": "Recent low",
+              "value": "+0.13"
+            },
+            {
+              "label": "Reclaim",
+              "value": "-3.68%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-7.75%"
+            }
+          ],
+          "note": "Only counts after price closes back above the prior low."
+        },
+        {
+          "key": "rebound",
+          "tone": "rebound",
+          "name": "Weak Rebound",
+          "kicker": "counter-trend bounce",
+          "tag": "active",
+          "score": 7,
+          "active": true,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "down / down"
+            },
+            {
+              "label": "Off low20",
+              "value": "+0.77%"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-10.27%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-7.75%"
+            }
+          ],
+          "note": "Treat as a bounce until key levels are recovered."
+        }
+      ],
+      "trendGuard": {
+        "key": "bear",
+        "label": "Bear Guard",
+        "note": "1H / 4H aligned down; recover 1H EMA21 first."
+      }
+    },
+    "1718.HK": {
+      "symbol": "1718.HK",
+      "label": "宏基集團",
+      "market": "hk",
+      "activeKey": "base",
+      "scores": {
+        "breakout": 0,
+        "base": 10,
+        "breaklow": 4,
+        "rebound": 8
+      },
+      "metrics": {
+        "close1": 0.355,
+        "trend1": "down",
+        "trend4": "down",
+        "gapHigh20": -6.5789473684210575,
+        "bounceLow20": 2.898550724637684,
+        "rangePct": 9.859154929577475,
+        "thrust5": -1.3888888888888902,
+        "emaSpread1": -0.1589777381813009,
+        "emaSpread4": -0.24729354791628014,
+        "posInRange": 0.2857142857142857,
+        "priorLow": 0.345,
+        "recentLow": 0.355,
+        "reclaimPrevLow": 2.898550724637684,
+        "brokePriorLow": false,
+        "high20": 0.38,
+        "low20": 0.345,
+        "priorHigh20": 0.38,
+        "priorLow20": 0.345,
+        "newHigh": false,
+        "newLow": false,
+        "ema8_1": 0.35912794048423846,
+        "ema21_1": 0.359699783063596
+      },
+      "cards": [
+        {
+          "key": "breakout",
+          "tone": "breakout",
+          "name": "Breakout",
+          "kicker": "near prior high",
+          "tag": "watch",
+          "score": 0,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "down / down"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-6.58%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-1.39%"
+            },
+            {
+              "label": "Range pos",
+              "value": "29%"
+            }
+          ],
+          "note": "Hold near highs before treating it as a valid breakout."
+        },
+        {
+          "key": "base",
+          "tone": "base",
+          "name": "Base",
+          "kicker": "compression / absorption",
+          "tag": "active",
+          "score": 10,
+          "active": true,
+          "stats": [
+            {
+              "label": "Range size",
+              "value": "+9.86%"
+            },
+            {
+              "label": "EMA spread 1H",
+              "value": "-0.16%"
+            },
+            {
+              "label": "EMA spread 4H",
+              "value": "-0.25%"
+            },
+            {
+              "label": "Range pos",
+              "value": "29%"
+            }
+          ],
+          "note": "Stay patient until volume expansion confirms the move."
+        },
+        {
+          "key": "breaklow",
+          "tone": "breaklow",
+          "name": "Breaklow Reclaim",
+          "kicker": "flush then reclaim",
+          "tag": "watch",
+          "score": 4,
+          "active": false,
+          "stats": [
+            {
+              "label": "Prior low",
+              "value": "+0.34"
+            },
+            {
+              "label": "Recent low",
+              "value": "+0.35"
+            },
+            {
+              "label": "Reclaim",
+              "value": "+2.90%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-1.39%"
+            }
+          ],
+          "note": "Only counts after price closes back above the prior low."
+        },
+        {
+          "key": "rebound",
+          "tone": "rebound",
+          "name": "Weak Rebound",
+          "kicker": "counter-trend bounce",
+          "tag": "watch",
+          "score": 8,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "down / down"
+            },
+            {
+              "label": "Off low20",
+              "value": "+2.90%"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-6.58%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-1.39%"
+            }
+          ],
+          "note": "Treat as a bounce until key levels are recovered."
+        }
+      ],
+      "trendGuard": {
+        "key": "bear",
+        "label": "Bear Guard",
+        "note": "1H / 4H aligned down; recover 1H EMA21 first."
+      }
+    },
+    "8631.HK": {
+      "symbol": "8631.HK",
+      "label": "裕豐昌控",
+      "market": "hk",
+      "activeKey": "base",
+      "scores": {
+        "breakout": 1,
+        "base": 9,
+        "breaklow": 4,
+        "rebound": 7
+      },
+      "metrics": {
+        "close1": 0.43,
+        "trend1": "down",
+        "trend4": "down",
+        "gapHigh20": -3.3707865168539355,
+        "bounceLow20": 2.380952380952383,
+        "rangePct": 5.813953488372099,
+        "thrust5": 0.0,
+        "emaSpread1": -0.9206056128075288,
+        "emaSpread4": -2.269779833674494,
+        "posInRange": 0.4,
+        "priorLow": 0.42,
+        "recentLow": 0.43,
+        "reclaimPrevLow": 2.380952380952383,
+        "brokePriorLow": false,
+        "high20": 0.445,
+        "low20": 0.42,
+        "priorHigh20": 0.445,
+        "priorLow20": 0.42,
+        "newHigh": false,
+        "newLow": false,
+        "ema8_1": 0.4304100707206281,
+        "ema21_1": 0.4344092668134689
+      },
+      "cards": [
+        {
+          "key": "breakout",
+          "tone": "breakout",
+          "name": "Breakout",
+          "kicker": "near prior high",
+          "tag": "watch",
+          "score": 1,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "down / down"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-3.37%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            },
+            {
+              "label": "Range pos",
+              "value": "40%"
+            }
+          ],
+          "note": "Hold near highs before treating it as a valid breakout."
+        },
+        {
+          "key": "base",
+          "tone": "base",
+          "name": "Base",
+          "kicker": "compression / absorption",
+          "tag": "active",
+          "score": 9,
+          "active": true,
+          "stats": [
+            {
+              "label": "Range size",
+              "value": "+5.81%"
+            },
+            {
+              "label": "EMA spread 1H",
+              "value": "-0.92%"
+            },
+            {
+              "label": "EMA spread 4H",
+              "value": "-2.27%"
+            },
+            {
+              "label": "Range pos",
+              "value": "40%"
+            }
+          ],
+          "note": "Stay patient until volume expansion confirms the move."
+        },
+        {
+          "key": "breaklow",
+          "tone": "breaklow",
+          "name": "Breaklow Reclaim",
+          "kicker": "flush then reclaim",
+          "tag": "watch",
+          "score": 4,
+          "active": false,
+          "stats": [
+            {
+              "label": "Prior low",
+              "value": "+0.42"
+            },
+            {
+              "label": "Recent low",
+              "value": "+0.43"
+            },
+            {
+              "label": "Reclaim",
+              "value": "+2.38%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            }
+          ],
+          "note": "Only counts after price closes back above the prior low."
+        },
+        {
+          "key": "rebound",
+          "tone": "rebound",
+          "name": "Weak Rebound",
+          "kicker": "counter-trend bounce",
+          "tag": "watch",
+          "score": 7,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "down / down"
+            },
+            {
+              "label": "Off low20",
+              "value": "+2.38%"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-3.37%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            }
+          ],
+          "note": "Treat as a bounce until key levels are recovered."
+        }
+      ],
+      "trendGuard": {
+        "key": "bear",
+        "label": "Bear Guard",
+        "note": "1H / 4H aligned down; recover 1H EMA21 first."
+      }
+    },
+    "1655.HK": {
+      "symbol": "1655.HK",
+      "label": "Okur",
+      "market": "hk",
+      "activeKey": "base",
+      "scores": {
+        "breakout": 9,
+        "base": 10,
+        "breaklow": 4,
+        "rebound": 5
+      },
+      "metrics": {
+        "close1": 0.179,
+        "trend1": "up",
+        "trend4": "up",
+        "gapHigh20": -3.243243243243246,
+        "bounceLow20": 7.18562874251496,
+        "rangePct": 10.055865921787703,
+        "thrust5": 1.7045454545454561,
+        "emaSpread1": 1.285682213565842,
+        "emaSpread4": 0.6763413989269347,
+        "posInRange": 0.6666666666666662,
+        "priorLow": 0.167,
+        "recentLow": 0.174,
+        "reclaimPrevLow": 7.18562874251496,
+        "brokePriorLow": false,
+        "high20": 0.185,
+        "low20": 0.167,
+        "priorHigh20": 0.185,
+        "priorLow20": 0.167,
+        "newHigh": false,
+        "newLow": false,
+        "ema8_1": 0.17810274976135462,
+        "ema21_1": 0.17584198069162058
+      },
+      "cards": [
+        {
+          "key": "breakout",
+          "tone": "breakout",
+          "name": "Breakout",
+          "kicker": "near prior high",
+          "tag": "watch",
+          "score": 9,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / up"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-3.24%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+1.70%"
+            },
+            {
+              "label": "Range pos",
+              "value": "67%"
+            }
+          ],
+          "note": "Hold near highs before treating it as a valid breakout."
+        },
+        {
+          "key": "base",
+          "tone": "base",
+          "name": "Base",
+          "kicker": "compression / absorption",
+          "tag": "active",
+          "score": 10,
+          "active": true,
+          "stats": [
+            {
+              "label": "Range size",
+              "value": "+10.06%"
+            },
+            {
+              "label": "EMA spread 1H",
+              "value": "+1.29%"
+            },
+            {
+              "label": "EMA spread 4H",
+              "value": "+0.68%"
+            },
+            {
+              "label": "Range pos",
+              "value": "67%"
+            }
+          ],
+          "note": "Stay patient until volume expansion confirms the move."
+        },
+        {
+          "key": "breaklow",
+          "tone": "breaklow",
+          "name": "Breaklow Reclaim",
+          "kicker": "flush then reclaim",
+          "tag": "watch",
+          "score": 4,
+          "active": false,
+          "stats": [
+            {
+              "label": "Prior low",
+              "value": "+0.17"
+            },
+            {
+              "label": "Recent low",
+              "value": "+0.17"
+            },
+            {
+              "label": "Reclaim",
+              "value": "+7.19%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+1.70%"
+            }
+          ],
+          "note": "Only counts after price closes back above the prior low."
+        },
+        {
+          "key": "rebound",
+          "tone": "rebound",
+          "name": "Weak Rebound",
+          "kicker": "counter-trend bounce",
+          "tag": "watch",
+          "score": 5,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "up / up"
+            },
+            {
+              "label": "Off low20",
+              "value": "+7.19%"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-3.24%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+1.70%"
+            }
+          ],
+          "note": "Treat as a bounce until key levels are recovered."
+        }
+      ],
+      "trendGuard": {
+        "key": "bull",
+        "label": "Bull Guard",
+        "note": "1H / 4H aligned up; hold 1H EMA21."
+      }
+    },
+    "9678.HK": {
+      "symbol": "9678.HK",
+      "label": "雲知聲智",
+      "market": "hk",
+      "activeKey": "rebound",
+      "scores": {
+        "breakout": 0,
+        "base": 5,
+        "breaklow": 4,
+        "rebound": 9
+      },
+      "metrics": {
+        "close1": 68.05,
+        "trend1": "down",
+        "trend4": "down",
+        "gapHigh20": -13.090676883780333,
+        "bounceLow20": 5.667701863354024,
+        "rangePct": 20.426157237325484,
+        "thrust5": -0.6569343065693473,
+        "emaSpread1": -0.7179408499168982,
+        "emaSpread4": -23.79781645450554,
+        "posInRange": 0.2625899280575535,
+        "priorLow": 64.4,
+        "recentLow": 67.6,
+        "reclaimPrevLow": 5.667701863354024,
+        "brokePriorLow": false,
+        "high20": 78.3,
+        "low20": 64.4,
+        "priorHigh20": 78.3,
+        "priorLow20": 64.4,
+        "newHigh": false,
+        "newLow": false,
+        "ema8_1": 70.15765952188625,
+        "ema21_1": 70.66499236869174
+      },
+      "cards": [
+        {
+          "key": "breakout",
+          "tone": "breakout",
+          "name": "Breakout",
+          "kicker": "near prior high",
+          "tag": "watch",
+          "score": 0,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "down / down"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-13.09%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-0.66%"
+            },
+            {
+              "label": "Range pos",
+              "value": "26%"
+            }
+          ],
+          "note": "Hold near highs before treating it as a valid breakout."
+        },
+        {
+          "key": "base",
+          "tone": "base",
+          "name": "Base",
+          "kicker": "compression / absorption",
+          "tag": "watch",
+          "score": 5,
+          "active": false,
+          "stats": [
+            {
+              "label": "Range size",
+              "value": "+20.43%"
+            },
+            {
+              "label": "EMA spread 1H",
+              "value": "-0.72%"
+            },
+            {
+              "label": "EMA spread 4H",
+              "value": "-23.80%"
+            },
+            {
+              "label": "Range pos",
+              "value": "26%"
+            }
+          ],
+          "note": "Stay patient until volume expansion confirms the move."
+        },
+        {
+          "key": "breaklow",
+          "tone": "breaklow",
+          "name": "Breaklow Reclaim",
+          "kicker": "flush then reclaim",
+          "tag": "watch",
+          "score": 4,
+          "active": false,
+          "stats": [
+            {
+              "label": "Prior low",
+              "value": "+64.40"
+            },
+            {
+              "label": "Recent low",
+              "value": "+67.60"
+            },
+            {
+              "label": "Reclaim",
+              "value": "+5.67%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-0.66%"
+            }
+          ],
+          "note": "Only counts after price closes back above the prior low."
+        },
+        {
+          "key": "rebound",
+          "tone": "rebound",
+          "name": "Weak Rebound",
+          "kicker": "counter-trend bounce",
+          "tag": "active",
+          "score": 9,
+          "active": true,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "down / down"
+            },
+            {
+              "label": "Off low20",
+              "value": "+5.67%"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-13.09%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "-0.66%"
+            }
+          ],
+          "note": "Treat as a bounce until key levels are recovered."
+        }
+      ],
+      "trendGuard": {
+        "key": "bear",
+        "label": "Bear Guard",
+        "note": "1H / 4H aligned down; recover 1H EMA21 first."
+      }
+    },
+    "8511.HK": {
+      "symbol": "8511.HK",
+      "label": "民富國際",
+      "market": "hk",
+      "activeKey": "base",
+      "scores": {
+        "breakout": 1,
+        "base": 9,
+        "breaklow": 4,
+        "rebound": 7
+      },
+      "metrics": {
+        "close1": 0.71,
+        "trend1": "down",
+        "trend4": "down",
+        "gapHigh20": -4.054054054054058,
+        "bounceLow20": 1.42857142857143,
+        "rangePct": 5.633802816901413,
+        "thrust5": 0.0,
+        "emaSpread1": -0.6050592312826456,
+        "emaSpread4": -6.032125818555996,
+        "posInRange": 0.25,
+        "priorLow": 0.7,
+        "recentLow": 0.71,
+        "reclaimPrevLow": 1.42857142857143,
+        "brokePriorLow": false,
+        "high20": 0.74,
+        "low20": 0.7,
+        "priorHigh20": 0.74,
+        "priorLow20": 0.7,
+        "newHigh": false,
+        "newLow": false,
+        "ema8_1": 0.710224049217606,
+        "ema21_1": 0.7145474847358985
+      },
+      "cards": [
+        {
+          "key": "breakout",
+          "tone": "breakout",
+          "name": "Breakout",
+          "kicker": "near prior high",
+          "tag": "watch",
+          "score": 1,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "down / down"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-4.05%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            },
+            {
+              "label": "Range pos",
+              "value": "25%"
+            }
+          ],
+          "note": "Hold near highs before treating it as a valid breakout."
+        },
+        {
+          "key": "base",
+          "tone": "base",
+          "name": "Base",
+          "kicker": "compression / absorption",
+          "tag": "active",
+          "score": 9,
+          "active": true,
+          "stats": [
+            {
+              "label": "Range size",
+              "value": "+5.63%"
+            },
+            {
+              "label": "EMA spread 1H",
+              "value": "-0.61%"
+            },
+            {
+              "label": "EMA spread 4H",
+              "value": "-6.03%"
+            },
+            {
+              "label": "Range pos",
+              "value": "25%"
+            }
+          ],
+          "note": "Stay patient until volume expansion confirms the move."
+        },
+        {
+          "key": "breaklow",
+          "tone": "breaklow",
+          "name": "Breaklow Reclaim",
+          "kicker": "flush then reclaim",
+          "tag": "watch",
+          "score": 4,
+          "active": false,
+          "stats": [
+            {
+              "label": "Prior low",
+              "value": "+0.70"
+            },
+            {
+              "label": "Recent low",
+              "value": "+0.71"
+            },
+            {
+              "label": "Reclaim",
+              "value": "+1.43%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            }
+          ],
+          "note": "Only counts after price closes back above the prior low."
+        },
+        {
+          "key": "rebound",
+          "tone": "rebound",
+          "name": "Weak Rebound",
+          "kicker": "counter-trend bounce",
+          "tag": "watch",
+          "score": 7,
+          "active": false,
+          "stats": [
+            {
+              "label": "1H / 4H",
+              "value": "down / down"
+            },
+            {
+              "label": "Off low20",
+              "value": "+1.43%"
+            },
+            {
+              "label": "Gap to high20",
+              "value": "-4.05%"
+            },
+            {
+              "label": "5m thrust",
+              "value": "+0.00%"
+            }
+          ],
+          "note": "Treat as a bounce until key levels are recovered."
+        }
+      ],
+      "trendGuard": {
+        "key": "bear",
+        "label": "Bear Guard",
+        "note": "1H / 4H aligned down; recover 1H EMA21 first."
+      }
+    }
+  },
+  "groups": {
+    "breakout": [
+      {
+        "symbol": "1808.HK",
+        "label": "ENTERPRISE DEV",
+        "market": "hk",
+        "score": 10,
+        "setupKey": "breakout"
+      },
+      {
+        "symbol": "8106.HK",
+        "label": "浙江芯化",
+        "market": "hk",
+        "score": 10,
+        "setupKey": "breakout"
+      },
+      {
+        "symbol": "8188.HK",
+        "label": "駿傑集團控股",
+        "market": "hk",
+        "score": 10,
+        "setupKey": "breakout"
+      },
+      {
+        "symbol": "9689.HK",
+        "label": "JTF INTL",
+        "market": "hk",
+        "score": 10,
+        "setupKey": "breakout"
+      },
+      {
+        "symbol": "9988.HK",
+        "label": "阿里",
+        "market": "hk",
+        "score": 10,
+        "setupKey": "breakout"
+      },
+      {
+        "symbol": "NVDA.US",
+        "label": "NVDA",
+        "market": "us",
+        "score": 10,
+        "setupKey": "breakout"
+      },
+      {
+        "symbol": "SPY.US",
+        "label": "SPY",
+        "market": "us",
+        "score": 10,
+        "setupKey": "breakout"
+      },
+      {
+        "symbol": "1933.HK",
+        "label": "元力控股",
+        "market": "hk",
+        "score": 9,
+        "setupKey": "breakout"
+      },
+      {
+        "symbol": "2096.HK",
+        "label": "先聲藥業",
+        "market": "hk",
+        "score": 9,
+        "setupKey": "breakout"
+      },
+      {
+        "symbol": "2233.HK",
+        "label": "西部水泥",
+        "market": "hk",
+        "score": 9,
+        "setupKey": "breakout"
+      },
+      {
+        "symbol": "EWJ.US",
+        "label": "EWJ",
+        "market": "us",
+        "score": 9,
+        "setupKey": "breakout"
+      },
+      {
+        "symbol": "QQQ.US",
+        "label": "QQQ",
+        "market": "us",
+        "score": 9,
+        "setupKey": "breakout"
+      },
+      {
+        "symbol": "9993.HK",
+        "label": "金輝控股",
+        "market": "hk",
+        "score": 8,
+        "setupKey": "breakout"
+      }
+    ],
+    "base": [
+      {
+        "symbol": "1575.HK",
+        "label": "皇庭智家",
+        "market": "hk",
+        "score": 10,
+        "setupKey": "base"
+      },
+      {
+        "symbol": "1655.HK",
+        "label": "Okur",
+        "market": "hk",
+        "score": 10,
+        "setupKey": "base"
+      },
+      {
+        "symbol": "1693.HK",
+        "label": "璋利國際",
+        "market": "hk",
+        "score": 10,
+        "setupKey": "base"
+      },
+      {
+        "symbol": "1718.HK",
+        "label": "宏基集團",
+        "market": "hk",
+        "score": 10,
+        "setupKey": "base"
+      },
+      {
+        "symbol": "2800.HK",
+        "label": "盈富",
+        "market": "hk",
+        "score": 10,
+        "setupKey": "base"
+      },
+      {
+        "symbol": "8403.HK",
+        "label": "德豐宿來",
+        "market": "hk",
+        "score": 10,
+        "setupKey": "base"
+      },
+      {
+        "symbol": "ASHR.US",
+        "label": "ASHR",
+        "market": "us",
+        "score": 10,
+        "setupKey": "base"
+      },
+      {
+        "symbol": "1153.HK",
+        "label": "JIAYUAN SERVICES",
+        "market": "hk",
+        "score": 9,
+        "setupKey": "base"
+      },
+      {
+        "symbol": "1672.HK",
+        "label": "歌禮製藥－Ｂ",
+        "market": "hk",
+        "score": 9,
+        "setupKey": "base"
+      },
+      {
+        "symbol": "1736.HK",
+        "label": "中國育兒",
+        "market": "hk",
+        "score": 9,
+        "setupKey": "base"
+      },
+      {
+        "symbol": "1792.HK",
+        "label": "CMON",
+        "market": "hk",
+        "score": 9,
+        "setupKey": "base"
+      },
+      {
+        "symbol": "2158.HK",
+        "label": "醫渡科技",
+        "market": "hk",
+        "score": 9,
+        "setupKey": "base"
+      },
+      {
+        "symbol": "476.HK",
+        "label": "科軒動力",
+        "market": "hk",
+        "score": 9,
+        "setupKey": "base"
+      },
+      {
+        "symbol": "631.HK",
+        "label": "三一國際",
+        "market": "hk",
+        "score": 9,
+        "setupKey": "base"
+      },
+      {
+        "symbol": "8511.HK",
+        "label": "民富國際",
+        "market": "hk",
+        "score": 9,
+        "setupKey": "base"
+      },
+      {
+        "symbol": "8631.HK",
+        "label": "裕豐昌控",
+        "market": "hk",
+        "score": 9,
+        "setupKey": "base"
+      },
+      {
+        "symbol": "2556.HK",
+        "label": "邁富時",
+        "market": "hk",
+        "score": 8,
+        "setupKey": "base"
+      },
+      {
+        "symbol": "GLD.US",
+        "label": "GLD",
+        "market": "us",
+        "score": 8,
+        "setupKey": "base"
+      },
+      {
+        "symbol": "700.HK",
+        "label": "騰訊",
+        "market": "hk",
+        "score": 7,
+        "setupKey": "base"
+      }
+    ],
+    "breaklow": [
+      {
+        "symbol": "8245.HK",
+        "label": "烽翼集團",
+        "market": "hk",
+        "score": 10,
+        "setupKey": "breaklow"
+      }
+    ],
+    "rebound": [
+      {
+        "symbol": "8375.HK",
+        "label": "數盟資本",
+        "market": "hk",
+        "score": 9,
+        "setupKey": "rebound"
+      },
+      {
+        "symbol": "9678.HK",
+        "label": "雲知聲智",
+        "market": "hk",
+        "score": 9,
+        "setupKey": "rebound"
+      },
+      {
+        "symbol": "1380.HK",
+        "label": "中國金石",
+        "market": "hk",
+        "score": 8,
+        "setupKey": "rebound"
+      },
+      {
+        "symbol": "2865.HK",
+        "label": "海南鈞達",
+        "market": "hk",
+        "score": 8,
+        "setupKey": "rebound"
+      },
+      {
+        "symbol": "8125.HK",
+        "label": "中新控股",
+        "market": "hk",
+        "score": 7,
+        "setupKey": "rebound"
+      },
+      {
+        "symbol": "8191.HK",
+        "label": "鴻偉 (",
+        "market": "hk",
+        "score": 7,
+        "setupKey": "rebound"
+      },
+      {
+        "symbol": "8489.HK",
+        "label": "裕程物流",
+        "market": "hk",
+        "score": 7,
+        "setupKey": "rebound"
+      },
+      {
+        "symbol": "8406.HK",
+        "label": "中國口腔",
+        "market": "hk",
+        "score": 6,
+        "setupKey": "rebound"
+      }
+    ]
+  },
+  "momentum_rank": [
+    {
+      "symbol": "1808.HK",
+      "label": "ENTERPRISE DEV",
+      "market": "hk",
+      "price": 2.7,
+      "r5": 15.879828326180267,
+      "r20": 20.000000000000018,
+      "r60": 4.651162790697683,
+      "vr": 1.039742529152454,
+      "trend": "bull",
+      "setupKey": "breakout",
+      "setupLabel": "Breakout",
+      "setupClass": "breakout",
+      "score": 89.65
+    },
+    {
+      "symbol": "8245.HK",
+      "label": "烽翼集團",
+      "market": "hk",
+      "price": 0.096,
+      "r5": 12.941176470588234,
+      "r20": 21.518987341772156,
+      "r60": 3.2258064516129004,
+      "vr": 18.489062957540263,
+      "trend": "bullish",
+      "setupKey": "breaklow",
+      "setupLabel": "Breaklow Reclaim",
+      "setupClass": "breaklow",
+      "score": 82.76
+    },
+    {
+      "symbol": "1736.HK",
+      "label": "中國育兒",
+      "market": "hk",
+      "price": 0.5,
+      "r5": 9.890109890109876,
+      "r20": 23.456790123456784,
+      "r60": 13.636363636363647,
+      "vr": 0.17233950883239982,
+      "trend": "bull",
+      "setupKey": "base",
+      "setupLabel": "Base",
+      "setupClass": "base",
+      "score": 68.37
+    },
+    {
+      "symbol": "8406.HK",
+      "label": "中國口腔",
+      "market": "hk",
+      "price": 0.077,
+      "r5": -3.749999999999998,
+      "r20": 45.28301886792454,
+      "r60": 28.333333333333343,
+      "vr": 0.07361737370019325,
+      "trend": "bullish",
+      "setupKey": "rebound",
+      "setupLabel": "Weak Rebound",
+      "setupClass": "rebound",
+      "score": 62.52
+    },
+    {
+      "symbol": "1153.HK",
+      "label": "JIAYUAN SERVICES",
+      "market": "hk",
+      "price": 0.355,
+      "r5": 2.898550724637694,
+      "r20": 4.411764705882337,
+      "r60": 31.481481481481467,
+      "vr": 1.592556127235281,
+      "trend": "bullish",
+      "setupKey": "base",
+      "setupLabel": "Base",
+      "setupClass": "base",
+      "score": 53.86
+    },
+    {
+      "symbol": "8106.HK",
+      "label": "浙江芯化",
+      "market": "hk",
+      "price": 0.3,
+      "r5": 0.0,
+      "r20": 17.647058823529417,
+      "r60": -3.2258064516129115,
+      "vr": 0.0,
+      "trend": "bull",
+      "setupKey": "breakout",
+      "setupLabel": "Breakout",
+      "setupClass": "breakout",
+      "score": 46.99
+    },
+    {
+      "symbol": "QQQ.US",
+      "label": "QQQ",
+      "market": "us",
+      "price": 725.51,
+      "r5": 1.8116755543081675,
+      "r20": 4.587063385662171,
+      "r60": 15.416799236398337,
+      "vr": 0.5562745089264914,
+      "trend": "bearish",
+      "setupKey": "breakout",
+      "setupLabel": "Breakout",
+      "setupClass": "breakout",
+      "score": 45.78
+    },
+    {
+      "symbol": "2096.HK",
+      "label": "先聲藥業",
+      "market": "hk",
+      "price": 12.09,
+      "r5": 5.405405405405395,
+      "r20": 22.865853658536594,
+      "r60": -11.944646758922072,
+      "vr": 0.8723153816083977,
+      "trend": "bull",
+      "setupKey": "breakout",
+      "setupLabel": "Breakout",
+      "setupClass": "breakout",
+      "score": 45.58
+    },
+    {
+      "symbol": "9689.HK",
+      "label": "JTF INTL",
+      "market": "hk",
+      "price": 0.69,
+      "r5": 6.153846153846132,
+      "r20": 4.545454545454541,
+      "r60": -10.389610389610393,
+      "vr": 0.0,
+      "trend": "bull",
+      "setupKey": "breakout",
+      "setupLabel": "Breakout",
+      "setupClass": "breakout",
+      "score": 45.23
+    },
+    {
+      "symbol": "NVDA.US",
+      "label": "NVDA",
+      "market": "us",
+      "price": 210.96,
+      "r5": 8.27901247241185,
+      "r20": 5.258956191996811,
+      "r60": 7.353315352908263,
+      "vr": 1.0057956918796744,
+      "trend": "bull",
+      "setupKey": "breakout",
+      "setupLabel": "Breakout",
+      "setupClass": "breakout",
+      "score": 45.23
+    },
+    {
+      "symbol": "9988.HK",
+      "label": "阿里",
+      "market": "hk",
+      "price": 110.2,
+      "r5": 17.109458023379396,
+      "r20": -2.9074889867841347,
+      "r60": -10.551948051948056,
+      "vr": 0.8674704462347146,
+      "trend": "bull",
+      "setupKey": "breakout",
+      "setupLabel": "Breakout",
+      "setupClass": "breakout",
+      "score": 44.98
+    },
+    {
+      "symbol": "SPY.US",
+      "label": "SPY",
+      "market": "us",
+      "price": 754.95,
+      "r5": 1.3655039071940767,
+      "r20": 4.069310615772737,
+      "r60": 8.710364887826504,
+      "vr": 0.7080325196717353,
+      "trend": "bull",
+      "setupKey": "breakout",
+      "setupLabel": "Breakout",
+      "setupClass": "breakout",
+      "score": 44.89
+    },
+    {
+      "symbol": "8188.HK",
+      "label": "駿傑集團控股",
+      "market": "hk",
+      "price": 1.27,
+      "r5": 8.547008547008561,
+      "r20": 1.6000000000000014,
+      "r60": 14.4144144144144,
+      "vr": 0.8796579108124618,
+      "trend": "bull",
+      "setupKey": "breakout",
+      "setupLabel": "Breakout",
+      "setupClass": "breakout",
+      "score": 44.54
+    },
+    {
+      "symbol": "EWJ.US",
+      "label": "EWJ",
+      "market": "us",
+      "price": 94.55,
+      "r5": 1.5138501181017894,
+      "r20": 5.890917235972659,
+      "r60": 5.748797673638295,
+      "vr": 0.5339185866926422,
+      "trend": "bearish",
+      "setupKey": "breakout",
+      "setupLabel": "Breakout",
+      "setupClass": "breakout",
+      "score": 43.0
+    },
+    {
+      "symbol": "8403.HK",
+      "label": "德豐宿來",
+      "market": "hk",
+      "price": 3.2,
+      "r5": 0.31347962382446415,
+      "r20": -0.6211180124223614,
+      "r60": 5.263157894736836,
+      "vr": 7.463026166097839,
+      "trend": "bull",
+      "setupKey": "base",
+      "setupLabel": "Base",
+      "setupClass": "base",
+      "score": 33.82
+    },
+    {
+      "symbol": "2556.HK",
+      "label": "邁富時",
+      "market": "hk",
+      "price": 34.36,
+      "r5": 7.374999999999998,
+      "r20": -1.2643678160919491,
+      "r60": -0.4634994206257348,
+      "vr": 1.483719477604037,
+      "trend": "bull",
+      "setupKey": "base",
+      "setupLabel": "Base",
+      "setupClass": "base",
+      "score": 30.31
+    },
+    {
+      "symbol": "2158.HK",
+      "label": "醫渡科技",
+      "market": "hk",
+      "price": 5.35,
+      "r5": 3.4816247582204918,
+      "r20": 4.288499025341119,
+      "r60": -3.603603603603611,
+      "vr": 0.8294357322504344,
+      "trend": "bull",
+      "setupKey": "base",
+      "setupLabel": "Base",
+      "setupClass": "base",
+      "score": 26.54
+    },
+    {
+      "symbol": "2800.HK",
+      "label": "盈富",
+      "market": "hk",
+      "price": 24.62,
+      "r5": 3.445378151260514,
+      "r20": -0.48504446240904553,
+      "r60": -4.462553356616217,
+      "vr": 1.125909845936458,
+      "trend": "bull",
+      "setupKey": "base",
+      "setupLabel": "Base",
+      "setupClass": "base",
+      "score": 25.85
+    },
+    {
+      "symbol": "1718.HK",
+      "label": "宏基集團",
+      "market": "hk",
+      "price": 0.355,
+      "r5": -1.388888888888895,
+      "r20": 9.23076923076922,
+      "r60": 0.0,
+      "vr": 0.04199695522074649,
+      "trend": "bear",
+      "setupKey": "base",
+      "setupLabel": "Base",
+      "setupClass": "base",
+      "score": 25.3
+    },
+    {
+      "symbol": "ASHR.US",
+      "label": "ASHR",
+      "market": "us",
+      "price": 35.38,
+      "r5": 0.6257110352673623,
+      "r20": 2.0773225620311697,
+      "r60": 2.1362586605080836,
+      "vr": 0.9059265245766147,
+      "trend": "bearish",
+      "setupKey": "base",
+      "setupLabel": "Base",
+      "setupClass": "base",
+      "score": 24.88
+    },
+    {
+      "symbol": "700.HK",
+      "label": "騰訊",
+      "market": "hk",
+      "price": 460.2,
+      "r5": 6.725417439703163,
+      "r20": -1.1597938144329967,
+      "r60": -6.081632653061231,
+      "vr": 1.1761307209872927,
+      "trend": "bullish",
+      "setupKey": "base",
+      "setupLabel": "Base",
+      "setupClass": "base",
+      "score": 23.91
+    },
+    {
+      "symbol": "2865.HK",
+      "label": "海南鈞達",
+      "market": "hk",
+      "price": 23.2,
+      "r5": 8.614232209737827,
+      "r20": -11.517925247902362,
+      "r60": -22.51169004676019,
+      "vr": 6.277675535964164,
+      "trend": "bearish",
+      "setupKey": "rebound",
+      "setupLabel": "Weak Rebound",
+      "setupClass": "rebound",
+      "score": 21.83
+    },
+    {
+      "symbol": "1380.HK",
+      "label": "中國金石",
+      "market": "hk",
+      "price": 0.59,
+      "r5": 0.0,
+      "r20": 5.357142857142838,
+      "r60": -6.34920634920636,
+      "vr": 0.205482116084186,
+      "trend": "bear",
+      "setupKey": "rebound",
+      "setupLabel": "Weak Rebound",
+      "setupClass": "rebound",
+      "score": 16.06
+    },
+    {
+      "symbol": "9993.HK",
+      "label": "金輝控股",
+      "market": "hk",
+      "price": 1.13,
+      "r5": 2.7272727272727115,
+      "r20": -3.4188034188034178,
+      "r60": -14.393939393939403,
+      "vr": 1.9058039045307291,
+      "trend": "bull",
+      "setupKey": "breakout",
+      "setupLabel": "Breakout",
+      "setupClass": "breakout",
+      "score": 12.85
+    },
+    {
+      "symbol": "1672.HK",
+      "label": "歌禮製藥－Ｂ",
+      "market": "hk",
+      "price": 11.17,
+      "r5": -3.2062391681109137,
+      "r20": 10.594059405940603,
+      "r60": -36.17142857142858,
+      "vr": 0.7912908954212884,
+      "trend": "bullish",
+      "setupKey": "base",
+      "setupLabel": "Base",
+      "setupClass": "base",
+      "score": 9.96
+    },
+    {
+      "symbol": "1655.HK",
+      "label": "Okur",
+      "market": "hk",
+      "price": 0.179,
+      "r5": 5.294117647058805,
+      "r20": -12.682926829268293,
+      "r60": -25.10460251046025,
+      "vr": 0.22390134189178945,
+      "trend": "bull",
+      "setupKey": "base",
+      "setupLabel": "Base",
+      "setupClass": "base",
+      "score": 9.01
+    },
+    {
+      "symbol": "1693.HK",
+      "label": "璋利國際",
+      "market": "hk",
+      "price": 6.8,
+      "r5": -2.7181688125894166,
+      "r20": -10.290237467018471,
+      "r60": 29.032258064516125,
+      "vr": 0.0,
+      "trend": "bear",
+      "setupKey": "base",
+      "setupLabel": "Base",
+      "setupClass": "base",
+      "score": 7.85
+    },
+    {
+      "symbol": "GLD.US",
+      "label": "GLD",
+      "market": "us",
+      "price": 377.01,
+      "r5": -0.29619443048687355,
+      "r20": 0.6487265737626258,
+      "r60": -15.29578287537352,
+      "vr": 0.6715342399300911,
+      "trend": "bear",
+      "setupKey": "base",
+      "setupLabel": "Base",
+      "setupClass": "base",
+      "score": 1.08
+    },
+    {
+      "symbol": "1792.HK",
+      "label": "CMON",
+      "market": "hk",
+      "price": 0.96,
+      "r5": 0.0,
+      "r20": -6.796116504854377,
+      "r60": -19.999999999999996,
+      "vr": 0.20155509836140745,
+      "trend": "bearish",
+      "setupKey": "base",
+      "setupLabel": "Base",
+      "setupClass": "base",
+      "score": -4.44
+    },
+    {
+      "symbol": "2233.HK",
+      "label": "西部水泥",
+      "market": "hk",
+      "price": 1.54,
+      "r5": 0.6535947712418277,
+      "r20": -5.521472392638027,
+      "r60": -38.152610441767074,
+      "vr": 0.5158922802357392,
+      "trend": "bearish",
+      "setupKey": "breakout",
+      "setupLabel": "Breakout",
+      "setupClass": "breakout",
+      "score": -4.79
+    },
+    {
+      "symbol": "1933.HK",
+      "label": "元力控股",
+      "market": "hk",
+      "price": 0.209,
+      "r5": 14.835164835164827,
+      "r20": -47.08860759493672,
+      "r60": -5.855855855855863,
+      "vr": 0.14217813597850795,
+      "trend": "bearish",
+      "setupKey": "breakout",
+      "setupLabel": "Breakout",
+      "setupClass": "breakout",
+      "score": -5.47
+    },
+    {
+      "symbol": "8631.HK",
+      "label": "裕豐昌控",
+      "market": "hk",
+      "price": 0.43,
+      "r5": -3.370786516853941,
+      "r20": -10.416666666666663,
+      "r60": -43.42105263157895,
+      "vr": 1.875,
+      "trend": "bear",
+      "setupKey": "base",
+      "setupLabel": "Base",
+      "setupClass": "base",
+      "score": -14.21
+    },
+    {
+      "symbol": "476.HK",
+      "label": "科軒動力",
+      "market": "hk",
+      "price": 0.445,
+      "r5": -5.319148936170204,
+      "r20": -9.183673469387754,
+      "r60": -20.535714285714292,
+      "vr": 6.63499562090289e-05,
+      "trend": "bear",
+      "setupKey": "base",
+      "setupLabel": "Base",
+      "setupClass": "base",
+      "score": -14.51
+    },
+    {
+      "symbol": "1575.HK",
+      "label": "皇庭智家",
+      "market": "hk",
+      "price": 0.037,
+      "r5": 0.0,
+      "r20": -21.27659574468086,
+      "r60": -33.92857142857143,
+      "vr": 0.0,
+      "trend": "bearish",
+      "setupKey": "base",
+      "setupLabel": "Base",
+      "setupClass": "base",
+      "score": -18.9
+    },
+    {
+      "symbol": "631.HK",
+      "label": "三一國際",
+      "market": "hk",
+      "price": 6.77,
+      "r5": -6.3623789764868715,
+      "r20": -9.127516778523493,
+      "r60": -46.141607000795545,
+      "vr": 1.0637352203405683,
+      "trend": "bear",
+      "setupKey": "base",
+      "setupLabel": "Base",
+      "setupClass": "base",
+      "score": -22.68
+    },
+    {
+      "symbol": "8511.HK",
+      "label": "民富國際",
+      "market": "hk",
+      "price": 0.71,
+      "r5": -4.054054054054057,
+      "r20": -25.263157894736842,
+      "r60": -15.476190476190476,
+      "vr": 0.0,
+      "trend": "bear",
+      "setupKey": "base",
+      "setupLabel": "Base",
+      "setupClass": "base",
+      "score": -23.71
+    },
+    {
+      "symbol": "8125.HK",
+      "label": "中新控股",
+      "market": "hk",
+      "price": 0.48,
+      "r5": -5.882352941176472,
+      "r20": -18.644067796610166,
+      "r60": -5.882352941176472,
+      "vr": 0.0,
+      "trend": "bear",
+      "setupKey": "rebound",
+      "setupLabel": "Weak Rebound",
+      "setupClass": "rebound",
+      "score": -23.8
+    },
+    {
+      "symbol": "8191.HK",
+      "label": "鴻偉 (",
+      "market": "hk",
+      "price": 0.131,
+      "r5": -11.48648648648648,
+      "r20": -16.560509554140125,
+      "r60": -6.4285714285714395,
+      "vr": 0.8889355521724674,
+      "trend": "bear",
+      "setupKey": "rebound",
+      "setupLabel": "Weak Rebound",
+      "setupClass": "rebound",
+      "score": -29.28
+    },
+    {
+      "symbol": "8489.HK",
+      "label": "裕程物流",
+      "market": "hk",
+      "price": 0.172,
+      "r5": -13.567839195979914,
+      "r20": -24.56140350877194,
+      "r60": -39.64912280701755,
+      "vr": 2.1283509341998377,
+      "trend": "bear",
+      "setupKey": "rebound",
+      "setupLabel": "Weak Rebound",
+      "setupClass": "rebound",
+      "score": -44.24
+    },
+    {
+      "symbol": "8375.HK",
+      "label": "數盟資本",
+      "market": "hk",
+      "price": 1.13,
+      "r5": -12.40310077519381,
+      "r20": -24.161073825503365,
+      "r60": -51.50214592274679,
+      "vr": 0.6779661016949152,
+      "trend": "bear",
+      "setupKey": "rebound",
+      "setupLabel": "Weak Rebound",
+      "setupClass": "rebound",
+      "score": -49.57
+    },
+    {
+      "symbol": "9678.HK",
+      "label": "雲知聲智",
+      "market": "hk",
+      "price": 67.6,
+      "r5": -10.106382978723417,
+      "r20": -59.07990314769975,
+      "r60": -75.99431818181819,
+      "vr": 1.4070148980069375,
+      "trend": "bear",
+      "setupKey": "rebound",
+      "setupLabel": "Weak Rebound",
+      "setupClass": "rebound",
+      "score": -78.99
+    }
+  ]
+}

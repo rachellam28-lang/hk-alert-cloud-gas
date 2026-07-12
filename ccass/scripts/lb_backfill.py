@@ -1,10 +1,5 @@
 #!/usr/bin/env python
-"""Legacy backfill wrapper.
-
-The old Longbridge-backed entrypoint is retired.
-This wrapper now delegates to the standard HKEX scraper path via
-scripts/fill_missing.py so we stop depending on Longbridge for holdings
-backfill.
+"""Compatibility wrapper for Longbridge latest-day holdings backfill.
 
 Usage:
     python -u scripts/lb_backfill.py YYYY-MM-DD [YYYY-MM-DD ...]
@@ -28,10 +23,11 @@ def main() -> int:
     dates = sys.argv[1:]
     rc = 0
     for d in dates:
-        print(f"[lb_backfill] delegating {d} -> fill_missing.py", flush=True)
+        print(f"[lb_backfill] delegating {d} -> fill_missing.py (longbridge latest-day mode)", flush=True)
         env = os.environ.copy()
-        env["HOLDINGS_PROVIDER"] = "hkex"
-        env.pop("LONGBRIDGE_ACCESS_TOKEN", None)
+        env["HOLDINGS_PROVIDER"] = "longbridge"
+        env["LONGBRIDGE_USE_CLI"] = env.get("LONGBRIDGE_USE_CLI", "1")
+        env["LONGBRIDGE_ENABLE_MCP_FALLBACK"] = env.get("LONGBRIDGE_ENABLE_MCP_FALLBACK", "0")
         result = subprocess.run([sys.executable, str(FILL_MISSING), d], env=env)
         if result.returncode != 0:
             rc = result.returncode

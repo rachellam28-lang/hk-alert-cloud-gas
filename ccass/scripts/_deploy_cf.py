@@ -31,7 +31,10 @@ ROOT_DEPLOY_FILES = [
     "gap_fvg.html",
     "guide.html",
     "history.html",
+    "kbar_matrix.html",
+    "rotation_matrix.html",
     "jieqi_analysis.html",
+    "momentum_list.html",
     "rights_analysis.html",
     "signals.html",
     "timing_analysis.html",
@@ -61,13 +64,21 @@ DATA_DEPLOY_FILES = {
     Path("data/fundflow.json"),
     Path("data/history.json"),
     Path("data/jieqi_backtest.json"),
+    Path("data/jieqi_calendar.json"),
+    Path("data/kbar_cache.json"),
     Path("data/market.json"),
+    Path("data/participant_anomalies.json"),
     Path("data/placements_enriched.json"),
     Path("data/prices.json"),
     Path("data/publish_bundle.json"),
+    Path("data/repo_audit.json"),
     Path("data/rights_analysis.json"),
     Path("data/signals.json"),
+    Path("data/sector_rotation.json"),
     Path("data/stock_prices.json"),
+    Path("data/trade_engine.json"),
+    Path("data/timesfm.json"),
+    Path("data/tradeable.json"),
     Path("data/suspended_stocks.json"),
     Path("data/transfers.json"),
     Path("data/vqc_backtest.json"),
@@ -87,7 +98,7 @@ def load_env():
     for d in [Path.cwd(), Path.cwd().parent]:
         env_file = d / ".env"
         if env_file.exists():
-            for line in env_file.read_text().splitlines():
+            for line in env_file.read_text(encoding="utf-8-sig", errors="replace").splitlines():
                 line = line.strip()
                 if not token and line.startswith("CLOUDFLARE_API_TOKEN="):
                     token = line.split("=", 1)[1].strip()

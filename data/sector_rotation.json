@@ -1,0 +1,169 @@
+{
+  "updated": "2026-07-12",
+  "source": "raw/prices_YYYYMMDD.json + holdings.json names",
+  "method": "equal-weight mean price return; missing prices excluded",
+  "windows": {
+    "5": {
+      "latest_date": "2026-07-12",
+      "reference_date": "2026-07-08"
+    },
+    "20": {
+      "latest_date": "2026-07-12",
+      "reference_date": "2026-06-22"
+    },
+    "60": {
+      "latest_date": "2026-07-12",
+      "reference_date": null
+    },
+    "120": {
+      "latest_date": "2026-07-12",
+      "reference_date": null
+    }
+  },
+  "sectors": {
+    "tech": {
+      "name": "tech",
+      "count": 0,
+      "windows": {
+        "5": {
+          "pct": 0.82,
+          "stocks": 222,
+          "reference_date": "2026-07-08",
+          "latest_date": "2026-07-12"
+        },
+        "20": {
+          "pct": -3.95,
+          "stocks": 222,
+          "reference_date": "2026-06-22",
+          "latest_date": "2026-07-12"
+        }
+      }
+    },
+    "finance": {
+      "name": "finance",
+      "count": 0,
+      "windows": {
+        "5": {
+          "pct": 0.59,
+          "stocks": 82,
+          "reference_date": "2026-07-08",
+          "latest_date": "2026-07-12"
+        },
+        "20": {
+          "pct": -2.21,
+          "stocks": 82,
+          "reference_date": "2026-06-22",
+          "latest_date": "2026-07-12"
+        }
+      }
+    },
+    "property": {
+      "name": "property",
+      "count": 0,
+      "windows": {
+        "5": {
+          "pct": 1.45,
+          "stocks": 45,
+          "reference_date": "2026-07-08",
+          "latest_date": "2026-07-12"
+        },
+        "20": {
+          "pct": -3.22,
+          "stocks": 45,
+          "reference_date": "2026-06-22",
+          "latest_date": "2026-07-12"
+        }
+      }
+    },
+    "energy": {
+      "name": "energy",
+      "count": 0,
+      "windows": {
+        "5": {
+          "pct": -0.36,
+          "stocks": 94,
+          "reference_date": "2026-07-08",
+          "latest_date": "2026-07-12"
+        },
+        "20": {
+          "pct": -6.01,
+          "stocks": 94,
+          "reference_date": "2026-06-22",
+          "latest_date": "2026-07-12"
+        }
+      }
+    },
+    "consumer": {
+      "name": "consumer",
+      "count": 0,
+      "windows": {
+        "5": {
+          "pct": 1.1,
+          "stocks": 132,
+          "reference_date": "2026-07-08",
+          "latest_date": "2026-07-12"
+        },
+        "20": {
+          "pct": 1.78,
+          "stocks": 132,
+          "reference_date": "2026-06-22",
+          "latest_date": "2026-07-12"
+        }
+      }
+    },
+    "industrial": {
+      "name": "industrial",
+      "count": 0,
+      "windows": {
+        "5": {
+          "pct": -0.8,
+          "stocks": 19,
+          "reference_date": "2026-07-08",
+          "latest_date": "2026-07-12"
+        },
+        "20": {
+          "pct": -2.44,
+          "stocks": 19,
+          "reference_date": "2026-06-22",
+          "latest_date": "2026-07-12"
+        }
+      }
+    },
+    "utilities": {
+      "name": "utilities",
+      "count": 0,
+      "windows": {
+        "5": {
+          "pct": 0.3,
+          "stocks": 31,
+          "reference_date": "2026-07-08",
+          "latest_date": "2026-07-12"
+        },
+        "20": {
+          "pct": -1.81,
+          "stocks": 31,
+          "reference_date": "2026-06-22",
+          "latest_date": "2026-07-12"
+        }
+      }
+    },
+    "other": {
+      "name": "other",
+      "count": 0,
+      "windows": {
+        "5": {
+          "pct": 0.49,
+          "stocks": 2097,
+          "reference_date": "2026-07-08",
+          "latest_date": "2026-07-12"
+        },
+        "20": {
+          "pct": -1.43,
+          "stocks": 2096,
+          "reference_date": "2026-06-22",
+          "latest_date": "2026-07-12"
+        }
+      }
+    }
+  }
+}

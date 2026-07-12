@@ -1,6 +1,55 @@
 # HK Alert Cloud GAS Memory
 
-Last updated: 2026-07-04 HKT
+Last updated: 2026-07-12 HKT
+
+## Latest Audit
+
+### 2026-07-12 CCASS historical DB audit / repair
+
+- New repo-native audit helper: `scripts/repo_audit.py`
+  - `python scripts/repo_audit.py pages` = scan each HTML page's JSON dependencies and missing refs
+  - `python scripts/repo_audit.py dates` = compare canonical JSON update dates / alias drift
+  - `python scripts/repo_audit.py db` = show `ccass/holdings.db` trading-day gaps and low-coverage dates
+  - `python scripts/repo_audit.py export` writes `data/repo_audit.json`
+  - `ccass/scripts/daily_refresh.sh` now generates `data/repo_audit.json` on every run before `build_publish_bundle.py`
+  - `scripts/build_publish_bundle.py` now exposes repo-audit summary in `data/publish_bundle.json`
+  - `scripts/health_check.py` now reads `data/repo_audit.json` and surfaces page-ref/date-spread/db-gap warnings in health output
+  - `ccass/scripts/_deploy_cf.py` now deploys `data/repo_audit.json`
+  - Use this first before page-only fixes when the user reports inconsistent data across pages.
+
+- Longbridge auth was refreshed successfully on 2026-07-12 and verified with a live `NVDA.US` quote. Repo `.env` is again the only valid token source for this system.
+- Windows `.env` loading in `ccass/src/longbridge_provider.py` now uses `utf-8-sig`, because the default Windows codec caused real token read failures on this repo.
+- `ccass/holdings.db` had a large historical `pct_of_issued` corruption backlog. Multiple repair passes were applied with DB backups created before each pass:
+  - `ccass/holdings_before_pct_repair_20260712_164520.db`
+  - `ccass/holdings_before_pct_repair_20260712_165029.db`
+  - `ccass/holdings_before_pct_repair_20260712_165238.db`
+  - `ccass/holdings_before_pct_repair_20260712_165337.db`
+  - `ccass/holdings_before_pct_repair_20260712_165456.db`
+- `ccass/scripts/repair_historical_pct.py` is the canonical pct repair tool. It can now target any pair where holdings pct sum materially exceeds daily pct and recompute participant pct from shares safely.
+- New tool: `ccass/scripts/rescrape_verify_errors.py`
+  - Purpose: collect remaining verifier error stock/date pairs, rescrape them from source, and overwrite both `ccass_daily` and `ccass_holdings`.
+  - Use it after `verify_data.py` when old daily rows contain fake non-null `total_pct` values that source now returns as `null`.
+- Source-truth rule confirmed on 2026-07-12:
+  - Some historical error dates were not “missing data”; DB contained fake non-null `total_pct` / wrong daily totals.
+  - Example class: `00328`, `00608`, `01118`, `01224`, `01771`, `03899`, `08552`.
+  - For these, HKEX rescrape returned the honest payload and often `total_pct=null`; the correct action is to overwrite DB with source truth, not infer or smooth.
+- Audit result after repair + targeted rescrape on 2026-07-12:
+  - `verify_data.py --json --publish-scope`: `errors=0`
+  - `audit_gate.py --min-coverage 99.0`: historical backlog downgraded from FAIL to WARN (`errors=0`, warnings remain)
+  - `verify_dashboard`: PASS
+- Current remaining integrity state is WARN, not PASS, for real reasons:
+  - historical date gaps still exist: `2026-05-11`, `2026-05-12`, `2026-05-13`, `2026-06-16`, `2026-06-22`, `2026-06-30`
+  - many historical warnings are now honest partial-data conditions (`total_pct` null, orphan daily rows, zero participant rows), not hard corruption
+  - latest publishable CCASS remains `2026-07-09` at `99.4%` coverage
+- Follow-up on 2026-07-12 evening:
+  - Repo-local `LONGBRIDGE_ACCESS_TOKEN` in `.env` is expired for MCP historical broker-holding calls, even though the machine's Longbridge CLI session is still valid for quote/latest commands.
+  - Added `ccass/scripts/hkex_gap_backfill.py` as the stable single-process HKEX fallback for explicit historical gap dates. It reuses one HKEX session, skips already-filled rows, writes directly through `save_snapshot`, and stays single-threaded by rule.
+  - Tested on `2026-06-30`: partial real backfill advanced the date from `0` to `75` stocks, proving source access works, but HKEX throughput is still too slow for timely completion of all six gap dates without a fresh Longbridge historical token.
+  - `ccass/scripts/audit_gate.py` now treats low-coverage historical dates as backlog warnings instead of implicitly treating any date with a few rows as "filled". Recent low-coverage dates now surface first, including `2026-07-08`, `2026-07-02`, and partial `2026-06-30`.
+- Decision rule going forward:
+  - If `verify_data` shows holdings pct sum materially larger than daily pct, repair or rescrape.
+  - If source rescrape returns `total_pct=null`, keep it null; do not backfill a guessed percentage.
+  - Treat `ccass_daily` rows as suspect when they disagree with rescraped participant payload; source overwrite beats local heuristic.
 
 ## Load First
 
@@ -78,6 +127,11 @@ Primary layers:
 - If duplicate/cache/fallback sources exist, choose one primary source and label fallback use clearly.
 - Page mismatch means fix source/export first, then page logic, then docs.
 - Every public page must be refreshed every daily run, together with the JSON files it reads. If a page has no new domain event that day, still rebuild the page/cache stamp and publish freshness metadata so it cannot remain on an old snapshot.
+- CCASS / participant interpretation rules:
+  - A position moving from one large broker seat to another can be a transfer/warehouse move, not necessarily a real buy/sell.
+  - Stronger practical signals come from multi-day large-seat accumulation, large-seat sudden reduction without price weakness, or fragmentation into many small seats.
+  - Public wording must not overclaim final-investor identity from broker-level CCASS data.
+  - Keep reminding that CCASS is broker-layer data and effectively T+2 settlement-lagged.
 
 ## Current Refresh Pipeline
 
@@ -151,6 +205,79 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - Sheet schema should upgrade without destroying existing rows.
 
 ## Latest Deploy Notes
+
+### 2026-07-12 provider split locked in
+
+- Operating rule for this repo is now explicit:
+  - Longbridge = primary CCASS / broker-holding / historical backfill source.
+  - Futu/OpenD = primary price / snapshot / K-bar source.
+- Reason:
+  - Longbridge historical broker-holding path is the one that can repair real CCASS date holes in `ccass/holdings.db`.
+  - Futu/OpenD is still the better local quote/chart engine for market cards, snapshots, and cached K-bar generation when the local gateway session is healthy.
+- Repo-local secret routing:
+  - `C:\Users\Administrator\Desktop\automatic\hk-alert-cloud-gas\.env` now remains the only repo token source for `LONGBRIDGE_ACCESS_TOKEN`.
+  - `ccass/src/longbridge_provider.py` must read repo `.env` with `utf-8-sig` on Windows; plain default decoding caused real `gbk` failures when loading the token file path through the repo `.env`.
+- Decision rule:
+  - If the task is CCASS participant history, broker concentration, or backfilling missing trade dates, use Longbridge first.
+  - If the task is latest price, turnover, intraday status, or K-bar cache refresh, use Futu first and Longbridge only as fallback.
+
+### 2026-07-11 small-cap trading desk and CCASS trend restoration
+
+- Main page now includes a compact `細價股 Desk` above the legacy breakthrough/heatmap/table sections. It reuses existing holdings, signals, alerts, and price data; no extra JSON feed was added.
+- Desk lists are separated into `優先研究`, `收集／突破`, `等確認`, and `避開／高風險`. Ranking combines liquidity, relative volume, 52-week position, year-open position, technical signals, corporate-action risk, and trusted CCASS trend evidence. A one-day fall of 15% or more is hard-gated to risk until a real reclaim signal exists.
+- CCASS 5/20/60/120-day trend export was restored. Compact stock fields are `d5s/d20s/d60s/d120s` for share changes and `d5p/d20p/d60p/d120p` for percentage changes.
+- `ccass/src/trend.py` now compares only snapshots where both ends have a real `total_pct`; this prevents incompatible fallback-source totals from creating fake jumps. Missing exact reference dates may use the nearest high-coverage trusted snapshot within four calendar days, and the actual dates are published in `trend_reference_dates`.
+- Current trusted references on 2026-07-09 are 5-day=`2026-07-03`, 20-day=`2026-06-10`; 60/120-day remain null because trusted history is insufficient. Null must stay visible as `—`, never zero.
+- A meaningful 5-day accumulation signal requires `d5s > 0` and `d5p >= 0.10%`. `data/signals.json` now labels it `CCASS合計持股5日增持` and carries all four trend windows in the `ccass` payload.
+- Main sorting/filter controls support CCASS 5/20/60/120-day values without restoring four wide table columns. The stock drawer shows all four windows and their actual reference dates.
+- Browser regression coverage includes the Desk tabs/drawer plus existing desktop/mobile heatmap behavior in `tests/test_small_cap_desk.py`, `tests/test_main_heatmap_smoke.py`, and `tests/test_main_heatmap_mobile_touch.py`.
+- Latest real `data/vqc_backtest.json` events are merged into `data/signals.json` as `成交轉勢日` with their actual signal date. The main Desk has a dedicated `成交轉勢` tab and gives this signal explicit ranking weight.
+- `kbar_matrix.html` loads VQC, `jieqi_calendar.json`, and HK distribution-day data and plots dated vertical markers directly on every cached HK chart: green=`VQC`, blue=`節氣`, amber=`DD`, pink=multi-signal resonance. The old prior-low reclaim heuristic is still retained but relabeled `返`; it must never be called real VQC.
+- Kbar page order is controls -> Kbar charts -> playbook/setup -> console. Do not reintroduce CSS order rules that push the chart below setup cards.
+- `scripts/build_kbar_cache.py` now prioritizes the latest VQC stocks, fixed a broken `to_float()` implementation, reads canonical CCASS 5/20-day metrics from `holdings.json`, and supports a real `--help` exit. Current cache has 41 symbols and includes all nine 2026-07-10 VQC stocks.
+- Kbar timing markers have browser coverage in `tests/test_kbar_timing_markers.py`.
+
+### 2026-07-05 daily timing-sample rebuild and page-vs-sample freshness split
+
+- `ccass/scripts/daily_refresh.sh` now rebuilds all three timing sample JSONs on every daily run before `build_publish_bundle.py`:
+  - `scripts/build_vqc_backtest.py`
+  - `scripts/build_distribution_day_backtest.py`
+  - `scripts/build_jieqi_backtest.py`
+- The same daily refresh script now stages `data/vqc_backtest.json`, `data/distribution_day_backtest.json`, and `data/jieqi_backtest.json`, so a fresh local rebuild cannot be dropped from the eventual direct Cloudflare deploy.
+- `scanner/local_alert_store.py export_history_json()` now writes a real export timestamp to `data/history.json` as `updated`, instead of leaving history freshness implied by the latest event day.
+- `scripts/build_publish_bundle.py` now treats history freshness and history latest-event date as different fields:
+  - `files.history.updated` = export/build freshness
+  - `files.history.latest_event_date` = latest actual alert day in the history window
+- The same bundle builder now falls back to file mtime for history/backtest metadata if an `updated` field is ever missing, so Telegram/health/dashboard freshness cannot go blank just because one JSON omitted that key.
+- Freshness labels on timing pages are now split between page rebuild time and sample-data time:
+  - `vqc_analysis.html`
+  - `distribution_day.html`
+  - `jieqi_analysis.html`
+  - `timing_analysis.html`
+  - `daily_trade_prompt.html` now labels `VQC樣本` / `分佈日樣本` instead of implying those dates are the page-refresh date.
+- Manual rebuild completed on `2026-07-05`:
+  - `data/vqc_backtest.json.updated=2026-07-05T23:38:23`
+  - `data/distribution_day_backtest.json.updated=2026-07-05T23:38:25`
+  - `data/jieqi_backtest.json.updated=2026-07-05T23:41:03.525184`
+  - `data/history.json.updated=2026-07-05 15:58 UTC`
+  - `data/publish_bundle.json.generated_at=2026-07-05T23:58:32`
+- Note: the manual VQC rebuild still saw a few transient TradingView `429 Too Many Requests` sample fetch failures, but the JSON/page output completed and published a current sample timestamp instead of leaving the page on an old snapshot.
+
+### 2026-07-06 per-page freshness grouping audit
+
+- Final page grouping for freshness/debugging:
+  - Dynamic live-JSON pages: `index.html`, `signals.html`, `gap_fvg.html`, `fundflow.html`, `history.html`, `rights_analysis.html`, `daily_trade_prompt.html`
+  - Static generated pages rebuilt from JSON snapshots: `vqc_analysis.html`, `distribution_day.html`, `jieqi_analysis.html`, `timing_analysis.html`
+  - Local-only pages: `watchlist.html`, `momentum_list.html`
+  - Pure static/non-data pages: `guide.html`, `ccass.html` (redirect), `404.html`
+- Dynamic live-JSON pages now use `Date.now()` cache-busting and `cache:'no-store'` on their primary JSON fetches so Cloudflare/browser cache does not leave the user on an older snapshot after a successful deploy.
+- `rights_analysis.html` no longer ships with a fixed `?v=...` build stamp in the HTML. It now fetches `data/rights_analysis.json?_=${Date.now()}` at runtime.
+- `fundflow.html` now fetches both `holdings.json` and `data/fundflow.json` with `no-store` semantics instead of relying on default browser cache behavior.
+- `daily_trade_prompt.html` remains an embedded/static page for most content, but now refreshes `data/publish_bundle.json` on load so the visible publish timestamp can stay current even if the page HTML is older than the bundle.
+- Manual live verification on 2026-07-06 confirmed:
+  - `index.html`, `signals.html`, and `gap_fvg.html` fetch `publish_bundle.json` with `cache:'no-store'`
+  - static timing pages show `頁面更新：2026-07-06 03:09`
+  - `daily_trade_prompt.html` still contains the `refreshBundle()` live-bundle logic
 
 ### 2026-07-04 Telegram bot routing, Hermes sync, and tooling audit
 
@@ -492,9 +619,93 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - Exact same Hermes health summary is suppressed for `HEALTH_TELEGRAM_DEDUP_TTL_SECONDS` seconds (default `21600`), even when only the header timestamp changed between cron retries.
 - This protects the Hermes/status bot from duplicate watchdog spam without hiding changed health content or affecting the health-check exit code.
 
+### 2026-07-05 cross-market momentum list page
+
+- Added new static page `momentum_list.html` for managing cross-market momentum watchlists across HK stocks, US stocks, index/ETF proxies, and gold/resource names.
+- The page now also has a dedicated `smallcap` bucket for high-volatility small-cap names, so small-cap runners do not get mixed into the broad-market buckets.
+- The page stores local state in `localStorage` key `hk_cross_market_momentum_lists_v1`, normalizes symbols such as `00700 -> 00700.HK` and `NVDA -> NVDA.US`, can import HK codes from existing `hk_watchlist_v1`, and exports both a grouped plain list plus a ready-to-paste analysis prompt.
+- Index/ETF defaults now include Japan and China proxies (`EWJ`, `ASHR`, `02823.HK`) in addition to US broad-market proxies (`SPY`, `QQQ`, `DIA`) and Hong Kong proxies (`02800.HK`, `03033.HK`).
+- `shared-nav.js` now includes the new page so it appears in the site navigation, `guide.html` now uses the shared nav instead of a hardcoded nav list, and direct Cloudflare deploy helper `_deploy_cf.py` now includes `momentum_list.html`.
+
+### 2026-07-06 Longbridge backfill source-of-truth fix
+
+- Root cause found in `direct_backfill.py`: it was pointed at legacy `ccass/ccass.db`, while the live system source-of-truth is `ccass/holdings.db`.
+- Impact: manual/Hermes Longbridge backfill diagnostics could report dates as empty in the wrong DB, and successful backfill writes would not necessarily land in the DB used by dashboard/publish health.
+- Fix: `direct_backfill.py` now uses shared `src.db.DB_PATH` / `get_conn`, so it reads and writes the same `ccass/holdings.db` used by the rest of the pipeline.
+- Fix: `direct_backfill.py` now has the current 10-date backlog queue, uses a PID lock like other backfill paths, and exits non-zero on auth-style hard failures or zero-success empty-date runs instead of silently returning exit `0`.
+- Fix: historical `direct_backfill.py` now forces `LONGBRIDGE_USE_CLI=0` because the Longbridge CLI `broker-holding detail` command has no date flag and only returns latest holdings, which caused false date-mismatch drops before the API call.
+- Fix: `ccass/src/longbridge_provider.py` now raises a clear runtime error when repeated `401` auth reload attempts still fail, instead of falling through with no usable response.
+- Fix: `ccass/src/longbridge_provider.py` no longer falls back to `~/Desktop/automatic/holdings-debug/.env`; this repo must use its own `.env` or explicit environment only.
+- Verified against the real `ccass/holdings.db` on 2026-07-06: `2026-07-03=2747`, `2026-07-02=48`, `2026-06-30=0`, `2026-06-27=0`, `2026-06-26=25`, `2026-06-25=1`, `2026-06-24=1`, `2026-06-23=1`, `2026-06-20=0`, `2026-06-19=0`.
+- Verified at 2026-07-06 23:44 local: manual B-run (`2026-07-02,2026-06-30`) now hard-fails immediately on `401` instead of fake-running; repo `.env` exists but currently has no `LONGBRIDGE_ACCESS_TOKEN=` line, so backfill is blocked until a valid access token is stored in this repo root `.env`.
+- Decision rule: do not estimate backfill need from legacy `ccass.db`; always inspect `ccass/holdings.db` because that is the only publish/dashboard source-of-truth.
+
+### 2026-07-07 Futu/OpenD repo probe and machine-state audit
+
+- Added `scripts/check_futu_setup.py` as the repo-local Futu/OpenD probe. It checks repo `.env`, `USE_FUTU`, TCP reachability to `FUTU_HOST:FUTU_PORT`, Python SDK import, quote context creation, `get_global_state()`, and a sample `get_market_snapshot(["HK.00700"])`.
+- Added `scripts/futu_env.py` as the shared Futu/OpenD env/socket helper. Normalized old hardcoded localhost scripts to use repo `.env` plus the shared socket gate:
+  - `ccass/scripts/daily_lp_futu.py`
+  - `ccass/scripts/fetch_lp_yo_futu.py`
+  - `ccass/scripts/fetch_py2024_futu.py`
+  - `scripts/fetch_mc_futu.py`
+  - `scripts/enrich_all_futu.py`
+  - `scripts/pull_hkex_prices.py`
+- The shared helper now distinguishes two different failure classes:
+  - socket/listener missing (`127.0.0.1:11111` unreachable)
+  - socket alive but quote backend not logged in (`qot_logined=false`)
+- Futu data scripts now use a stronger quote-backend readiness gate, not only a raw TCP socket check. This prevents an offline/partially initialized gateway from pretending to be usable during daily refresh.
+- Added `scripts/start_futu_opend_rs.py` as a local helper to start/stop the machine's `futu-opend-rs` gateway. It supports:
+  - foreground interactive start for SMS/device verification
+  - `--verify-code <SMS_CODE>` for non-interactive restart
+  - `--stop-only` to clear a stale local listener on `127.0.0.1:11111`
+- `ccass/scripts/daily_lp_futu.py` now prints a direct hint to run `scripts/check_futu_setup.py` when OpenD is unreachable, instead of only timing out.
+- Current machine evidence on `2026-07-07`:
+  - Repo `.env` has `FUTU_HOST=127.0.0.1`, `FUTU_PORT=11111`, `FUTU_CONNECT_TIMEOUT=2`, `USE_FUTU=true`.
+  - Repo `.venv` has `futu_api 10.8.6808` installed.
+  - `scripts/check_futu_setup.py` now distinguishes between:
+    - TCP/socket down
+    - socket up but `qot_logined=false` / `trd_logined=false`
+    - quote path actually usable
+  - Local roaming artifacts exist under `C:\Users\Administrator\AppData\Roaming\com.futunn.FutuOpenD`, including logs up to `2026-07-07`, which means this machine has prior OpenD usage traces.
+  - A local Rust gateway install exists at `C:\Users\Administrator\futu-opend\futu-opend-rs-1.4.110\futu-opend.exe` with local config beside it.
+  - Manual start on 2026-07-07 proved the gateway can bind `127.0.0.1:11111`, but backend quote login stayed offline because remember-login was rejected and device/SMS verification was required. In that state:
+    - TCP connect works
+    - `get_global_state()` works
+    - `qot_logined=false`
+    - market snapshot returns `no backend connection`
+  - Background helper behavior on this machine:
+    - without `--verify-code`, `start_futu_opend_rs.py --background` currently fails fast and stderr shows remember-login rejection plus the password/SMS flow kicking in
+    - this is expected for a non-interactive process when device/SMS verification is still required
+  - The temporary offline `futu-opend` listener started during this audit was later stopped, so port `11111` should not remain occupied by the repo audit itself.
+- Decision rule: when Futu-backed paths fail, first run `python scripts/check_futu_setup.py` from repo root. Do not assume token/API issues; verify local OpenD socket and session health first.
+
 ## Open Items
 
 - Keep auditing page data sources when new pages or JSON files are added.
 - Audit SQL/SQLite pressure paths when time allows: look for unbounded loops, fan-out queries, missing indexes, parallel writes, retry storms, and refresh jobs that can hammer `ccass/holdings.db` or `holdings.db`.
 - If local `ccass/holdings.db` is 0 bytes, audit gate should report structured fail instead of traceback.
 - Verify Cloudflare live pages after every push that affects public files.
+
+### 2026-07-11 page/data consolidation
+
+- `py_pct` must always be recomputed from `latest_price` and the effective year-open (`apy` first, then `py`). Never copy stale `apy_pct`/`py_pct` between datasets. This removed 2,486 false dashboard mismatch warnings.
+- `shared-nav.js` is the canonical grouped navigation and shared loading/error/empty-state shell. Run `scripts/apply_shared_shell.py` after generating public HTML pages; `daily_refresh.sh` already does this.
+- `daily_trade_prompt.html` now fetches holdings/signals/tradeable JSON on demand instead of embedding them (about 5 MB to 68 KB). `vqc_analysis.html` embeds only page-used fields and the latest 300 events (about 2.7 MB to 195 KB).
+- Current honest gate state remains WARN, not PASS: latest publishable CCASS is 2026-07-09 at 99.4% coverage; historical date gaps and current/historical verification backlog still need backfill/repair.
+- Deploy public changes directly with `ccass/scripts/_deploy_cf.py`; do not use GitHub Pages or GitHub Actions as the deployment path.
+
+### 2026-07-12 display fixes
+
+- `index.html` market-cap sections now paginate independently at 10 stocks per page for small, mid, and large caps. Existing sorting, filters, signals, and rows are preserved; only the visible page size changed.
+- `kbar_matrix.html` now uses larger responsive chart panes: three columns on wide desktop, two on tablet, one on mobile, with taller charts and stronger VQC/Jieqi/distribution-day marker lines and labels so reversal dates remain readable.
+- Verification after the change: the four focused Playwright smoke/touch tests passed; browser check confirmed 30 rows and independent pagination in all three market-cap sections.
+- `kbar_matrix.html` now adds a reproducible multi-timeframe Trend Guard: 1H/4H EMA direction plus 1H EMA21 close as the守位線, with `多頭守位`, `空頭守位`, `轉勢觀察`, or `多空未決` states. This implements the accessible part of the referenced Threads technique without claiming hidden video formulas.
+- Main market metadata now explains partial refresh in plain language and names stale fields such as `SPX/M2`, rather than the ambiguous old source-count-only sentence.
+- `kbar_matrix.html` now reserves a first `年圖` pane and level-overlay path for 1D data. `scripts/build_kbar_cache.py --daily-only` can fill 260 daily bars; the current Futu OpenD historical endpoint returned no rows for the long-range probe, so the UI must keep showing unavailable rather than fabricate a year chart.
+- Futu daily backfill was corrected to use five-digit HK codes (`HK.00700`) and a current-year date range. Direct Futu batch verification populated 35 HK cache symbols with 126 daily bars; 700.HK was browser-verified with real year-chart candles. Non-HK symbols remain unavailable for this HK-specific daily source.
+- Daily year-chart completion: `scripts/build_kbar_cache.py --daily-only` now preserves existing HK Futu bars and fills non-HK symbols through Longbridge. Current Kbar cache is 41/41 with 1D data: 35 HK symbols x 126 bars and 6 US/ETF symbols x 260 bars.
+- Daily cache guarantee: the normal Kbar rebuild now records `daily_chart_ready` and adds an explicit `daily_chart` error when any newly selected symbol lacks 1D data; the daily refresh cannot silently present a new Kbar symbol without a year-chart series.
+- Main table CCASS trends restored as four independent sortable columns: 5/20/60/120-day shares and percentage with reference dates. 60/120 display `資料不足` when their reference date is unavailable; they are not coerced to zero. The 5-day badge/filter now means any positive 5-day net change, while `su` remains a separate consecutive-positive-days metric.
+- Added `rotation_matrix.html`: a Hong Kong sector rotation template using existing `holdings.json` only. It provides Leading/Weakening/Lagging/Improving quadrants, 5/20, 20/60, and 60/120 CCASS windows, sector detail rows, and links back to the main sector filter. Navigation exposes it as `板塊輪動`.
+- Shared primary navigation now exposes `動量名單`, `每日提示`, `Gap/FVG`, `資金`, and `供配股`; only lower-frequency reference pages remain under `更多`.
+- Kbar terminology is `破底翻`, not `破底返`: it requires a support/prior-low break followed by a close back above that same level. The chart now draws the broken support line and marks the reclaim candle with `翻`; a break without reclaim is not classified as 破底翻.

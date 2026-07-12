@@ -22,6 +22,13 @@ elif [[ -x "$REPO_ROOT/.venv/Scripts/python.exe" ]]; then
 else
     PYTHON_BIN="$(command -v python3 || command -v python)"
 fi
+if [[ -x "$REPO_ROOT/.venv-timesfm/bin/python" ]]; then
+    TIMESFM_PY="$REPO_ROOT/.venv-timesfm/bin/python"
+elif [[ -x "$REPO_ROOT/.venv-timesfm/Scripts/python.exe" ]]; then
+    TIMESFM_PY="$REPO_ROOT/.venv-timesfm/Scripts/python.exe"
+else
+    TIMESFM_PY=""
+fi
 if [[ "${SENTRY_CRON_WRAPPED:-0}" != "1" && "${SENTRY_CRON_DISABLED:-0}" != "1" ]]; then
     export SENTRY_CRON_WRAPPED=1
     exec "$PYTHON_BIN" "$REPO_ROOT/scripts/cron_monitor.py" \
@@ -30,16 +37,20 @@ if [[ "${SENTRY_CRON_WRAPPED:-0}" != "1" && "${SENTRY_CRON_DISABLED:-0}" != "1" 
 fi
 
 echo "=== $(date) ==="
-echo "1/5 Run HOLDINGS scrape (bounded daily mode)..."
-set +e
-"$PYTHON_BIN" -m src.runner
-runner_rc=$?
-set -e
-if [[ "$runner_rc" -eq 1 ]]; then
-    echo "WARN: HOLDINGS scrape returned partial coverage; resume job will continue later"
-elif [[ "$runner_rc" -ne 0 ]]; then
-    echo "ERROR: HOLDINGS scrape failed (rc=$runner_rc)"
-    exit "$runner_rc"
+if [[ "${HOLDINGS_SKIP_SCRAPE:-0}" == "1" ]]; then
+    echo "1/5 Skip HOLDINGS scrape (HOLDINGS_SKIP_SCRAPE=1)"
+else
+    echo "1/5 Run HOLDINGS scrape (bounded daily mode)..."
+    set +e
+    "$PYTHON_BIN" -m src.runner
+    runner_rc=$?
+    set -e
+    if [[ "$runner_rc" -eq 1 ]]; then
+        echo "WARN: HOLDINGS scrape returned partial coverage; resume job will continue later"
+    elif [[ "$runner_rc" -ne 0 ]]; then
+        echo "ERROR: HOLDINGS scrape failed (rc=$runner_rc)"
+        exit "$runner_rc"
+    fi
 fi
 
 echo "2/5 Regenerate holdings.json..."
@@ -48,6 +59,9 @@ echo "2/5 Regenerate holdings.json..."
 
 echo "2.1/5 Detect deposit/transfer monitor..."
 "$PYTHON_BIN" scripts/detect_transfers.py --allow-unavailable || { echo "ERROR: transfer monitor generation failed"; exit 1; }
+
+echo "2.15/5 Build participant delta/anomaly monitor..."
+"$PYTHON_BIN" scripts/build_participant_anomalies.py --allow-unavailable || { echo "ERROR: participant anomaly generation failed"; exit 1; }
 
 echo "2.2/5 Refresh prices + suspended (Futu)..."
 set +e
@@ -92,6 +106,30 @@ echo "3.47/5 Generate signals.json for dashboard fallback..."
 echo "3.48/5 Sync publish aliases..."
 "$PYTHON_BIN" "$REPO_ROOT/scripts/sync_publish_aliases.py" || { echo "ERROR: publish alias sync failed"; exit 1; }
 
+echo "3.49/5 Rebuild timing sample JSON..."
+"$PYTHON_BIN" "$REPO_ROOT/scripts/build_vqc_backtest.py" || { echo "ERROR: VQC backtest build failed"; exit 1; }
+"$PYTHON_BIN" "$REPO_ROOT/scripts/build_distribution_day_backtest.py" || { echo "ERROR: distribution day backtest build failed"; exit 1; }
+"$PYTHON_BIN" "$REPO_ROOT/scripts/build_jieqi_backtest.py" || { echo "ERROR: jieqi backtest build failed"; exit 1; }
+
+echo "3.495/5 Build TimesFM multi-field cache (best-effort)..."
+if [[ -n "${TIMESFM_PY:-}" ]]; then
+    "$TIMESFM_PY" "$REPO_ROOT/timesfm_daily.py" --fields "${TIMESFM_FIELDS:-broker_top5_pct,total_pct,adj_hhi}" --top "${TIMESFM_TOP:-15}" --horizon "${TIMESFM_HORIZON:-5}" --min-days "${TIMESFM_MIN_DAYS:-25}" --lookback "${TIMESFM_LOOKBACK:-5}" --json-only || echo "WARN: TimesFM refresh unavailable; keeping existing timesfm cache"
+else
+    echo "WARN: TimesFM env unavailable; keeping existing timesfm cache"
+fi
+
+echo "3.497/5 Build Kbar preset cache (best-effort)..."
+"$PYTHON_BIN" "$REPO_ROOT/scripts/build_kbar_cache.py" || echo "WARN: Kbar cache refresh unavailable; keeping existing kbar cache"
+
+echo "3.498/5 Build HK sector rotation snapshot..."
+"$PYTHON_BIN" "$REPO_ROOT/scripts/build_sector_rotation.py" || { echo "ERROR: sector rotation build failed"; exit 1; }
+
+echo "3.499/5 Build shared trading engine..."
+"$PYTHON_BIN" "$REPO_ROOT/scripts/build_trade_engine.py" || { echo "ERROR: trade engine build failed"; exit 1; }
+
+echo "3.4995/5 Build repo audit snapshot..."
+"$PYTHON_BIN" "$REPO_ROOT/scripts/repo_audit.py" export || { echo "ERROR: repo audit snapshot build failed"; exit 1; }
+
 echo "3.5/5 Build publish bundle..."
 "$PYTHON_BIN" "$REPO_ROOT/scripts/build_publish_bundle.py" || { echo "ERROR: publish bundle build failed"; exit 1; }
 
@@ -103,6 +141,7 @@ echo "3.55/5 Regenerate timing analysis pages..."
 
 echo "3.6/5 Regenerate daily trade prompt..."
 "$PYTHON_BIN" "$REPO_ROOT/scripts/gen_daily_trade_prompt.py" || { echo "ERROR: daily trade prompt generation failed"; exit 1; }
+"$PYTHON_BIN" "$REPO_ROOT/scripts/apply_shared_shell.py" || { echo "ERROR: shared page shell generation failed"; exit 1; }
 
 echo "3.7/5 Cleanup logs..."
 "$PYTHON_BIN" "$REPO_ROOT/scripts/cleanup_logs.py" || { echo "ERROR: log cleanup failed"; exit 1; }
@@ -118,7 +157,7 @@ fi
 
 echo "5/5 Stage refreshed files..."
 cd "$REPO_ROOT"
-git add holdings.json data/holdings.json ccass.json data/ccass.json market.json data/market.json data/stock_prices.json data/suspended_stocks.json data/prices.json data/fundflow.json data/announcements.json data/placements_enriched.json data/rights_analysis.json data/signals.json data/transfers.json ccass/data/transfers.json data/alerts.json data/watchlist.json data/history.json data/breakthroughs.json data/corp_graded_scan.json data/publish_bundle.json events.json events_watchlist.json raw/prices_*.json daily_trade_prompt.html timing_analysis.html vqc_analysis.html distribution_day.html jieqi_analysis.html rights_analysis.html
+git add holdings.json data/holdings.json ccass.json data/ccass.json market.json data/market.json data/stock_prices.json data/suspended_stocks.json data/prices.json data/fundflow.json data/announcements.json data/placements_enriched.json data/rights_analysis.json data/signals.json data/transfers.json ccass/data/transfers.json data/participant_anomalies.json ccass/data/participant_anomalies.json data/timesfm.json data/kbar_cache.json data/trade_engine.json data/repo_audit.json data/alerts.json data/watchlist.json data/history.json data/breakthroughs.json data/corp_graded_scan.json data/publish_bundle.json data/vqc_backtest.json data/distribution_day_backtest.json data/jieqi_backtest.json events.json events_watchlist.json raw/prices_*.json daily_trade_prompt.html timing_analysis.html vqc_analysis.html distribution_day.html jieqi_analysis.html rights_analysis.html
 echo "Refreshed files staged. Commit/deploy should be handled explicitly; no GitHub push from daily_refresh.sh."
 
 echo "Done!"

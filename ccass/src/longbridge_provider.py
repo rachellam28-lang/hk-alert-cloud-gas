@@ -33,31 +33,40 @@ RETRY_DELAY = float(os.environ.get("LONGBRIDGE_MCP_RETRY_DELAY_SECONDS", "3.0"))
 MCP_TIMEOUT_SECONDS = float(os.environ.get("LONGBRIDGE_MCP_TIMEOUT_SECONDS", "30"))
 CLI_TIMEOUT_SECONDS = float(os.environ.get("LONGBRIDGE_CLI_TIMEOUT_SECONDS", "45"))
 USE_CLI_FIRST = os.environ.get("LONGBRIDGE_USE_CLI", "1") != "0"
+ALLOW_MCP_FALLBACK = os.environ.get("LONGBRIDGE_ENABLE_MCP_FALLBACK", "0") == "1"
+CLI_RETRIES = max(1, int(os.environ.get("LONGBRIDGE_CLI_RETRIES", "2")))
+CLI_RETRY_DELAY_SECONDS = float(os.environ.get("LONGBRIDGE_CLI_RETRY_DELAY_SECONDS", "1.5"))
 
 # --- Token loading ---
 
-def _load_token() -> str:
-    """Read LONGBRIDGE_ACCESS_TOKEN from .env in project root."""
-    # Try environment first
-    token = os.environ.get("LONGBRIDGE_ACCESS_TOKEN")
-    if token:
-        return token
-
-    # Walk up to find .env
+def _find_token() -> str:
+    """Read LONGBRIDGE_ACCESS_TOKEN from repo .env or environment."""
+    # Prefer this repo's local .env so one workspace cannot silently borrow
+    # another workspace's token.
     env_paths = [
         os.path.join(os.path.dirname(__file__), "..", "..", ".env"),
         os.path.join(os.getcwd(), ".env"),
-        os.path.expanduser("~/Desktop/automatic/holdings-debug/.env"),
     ]
     for p in env_paths:
         p = os.path.normpath(p)
         if os.path.exists(p):
-            with open(p) as f:
+            with open(p, encoding="utf-8-sig", errors="replace") as f:
                 for line in f:
                     line = line.strip()
                     if line.startswith("LONGBRIDGE_ACCESS_TOKEN="):
-                        return line.split("=", 1)[1]
-    raise RuntimeError("LONGBRIDGE_ACCESS_TOKEN not found in env or .env files")
+                        token = line.split("=", 1)[1].strip()
+                        if token:
+                            return token
+
+    return os.environ.get("LONGBRIDGE_ACCESS_TOKEN", "").strip()
+
+
+def _load_token() -> str:
+    """Read LONGBRIDGE_ACCESS_TOKEN from .env in project root."""
+    token = _find_token()
+    if token:
+        return token
+    raise RuntimeError("LONGBRIDGE_ACCESS_TOKEN not found in repo .env or environment")
 
 
 # --- MCP client ---
@@ -80,14 +89,17 @@ class LongbridgeMCPClient:
         if params:
             body["params"] = params
 
+        saw_auth_error = False
         for attempt in range(MAX_RETRIES):
             try:
                 r = requests.post(BASE, headers=self.headers, json=body, timeout=MCP_TIMEOUT_SECONDS)
                 if r.status_code == 401:
+                    saw_auth_error = True
                     logger.warning("Longbridge token expired (401), reloading...")
                     self.token = _load_token()
                     self.headers["Authorization"] = "Bearer " + self.token
                     continue
+                saw_auth_error = False
                 raw = r.text.strip()
                 if raw.startswith("data: "):
                     raw = raw[6:]
@@ -110,6 +122,10 @@ class LongbridgeMCPClient:
                     time.sleep(delay)
                 else:
                     raise RuntimeError(f"MCP call failed after {MAX_RETRIES} attempts: {e}")
+
+        if saw_auth_error:
+            raise RuntimeError("Longbridge auth failed (401) after token reload")
+        raise RuntimeError("Longbridge MCP call failed without a usable response")
 
     def initialize(self):
         """Send initialize + initialized notification."""
@@ -258,28 +274,38 @@ def _scrape_stock_cli(stock_code: str, query_date: date) -> Optional["HOLDINGSSn
         logger.warning("Longbridge CLI not found in PATH")
         return None
     symbol = _stock_code_to_symbol(stock_code)
-    try:
-        proc = subprocess.run(
-            [exe, "broker-holding", "detail", symbol, "--format", "json"],
-            capture_output=True,
-            text=True,
-            encoding="utf-8",
-            errors="replace",
-            timeout=CLI_TIMEOUT_SECONDS,
-            check=False,
-        )
-    except subprocess.TimeoutExpired:
-        logger.warning("Longbridge CLI timeout for %s", symbol)
-        return None
-    if proc.returncode != 0:
-        logger.warning("Longbridge CLI failed for %s: %s", symbol, (proc.stderr or proc.stdout)[-300:])
-        return None
-    try:
-        data = json.loads(proc.stdout)
-    except json.JSONDecodeError as exc:
-        logger.warning("Longbridge CLI JSON parse failed for %s: %s", symbol, exc)
-        return None
-    return _payload_to_snapshot(stock_code, query_date, data)
+    for attempt in range(1, CLI_RETRIES + 1):
+        try:
+            proc = subprocess.run(
+                [exe, "broker-holding", "detail", symbol, "--format", "json"],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                timeout=CLI_TIMEOUT_SECONDS,
+                check=False,
+            )
+        except subprocess.TimeoutExpired:
+            if attempt < CLI_RETRIES:
+                time.sleep(CLI_RETRY_DELAY_SECONDS * attempt)
+                continue
+            logger.warning("Longbridge CLI timeout for %s", symbol)
+            return None
+        if proc.returncode != 0:
+            err_text = (proc.stderr or proc.stdout or "")[-300:]
+            retryable = "timeout" in err_text.lower() or "connect" in err_text.lower()
+            if retryable and attempt < CLI_RETRIES:
+                time.sleep(CLI_RETRY_DELAY_SECONDS * attempt)
+                continue
+            logger.warning("Longbridge CLI failed for %s: %s", symbol, err_text)
+            return None
+        try:
+            data = json.loads(proc.stdout)
+        except json.JSONDecodeError as exc:
+            logger.warning("Longbridge CLI JSON parse failed for %s: %s", symbol, exc)
+            return None
+        return _payload_to_snapshot(stock_code, query_date, data)
+    return None
 
 
 def scrape_stock(stock_code: str, query_date: date) -> Optional["HOLDINGSSnapshot"]:
@@ -291,6 +317,12 @@ def scrape_stock(stock_code: str, query_date: date) -> Optional["HOLDINGSSnapsho
         snap = _scrape_stock_cli(stock_code, query_date)
         if snap:
             return snap
+        if not ALLOW_MCP_FALLBACK:
+            logger.debug("Longbridge CLI returned no usable snapshot for %s; MCP fallback disabled", stock_code)
+            return None
+        if not _find_token():
+            logger.debug("Longbridge MCP token unavailable; skip API fallback for %s", stock_code)
+            return None
 
     symbol = _stock_code_to_symbol(stock_code)
     date_str = query_date.strftime("%Y-%m-%d") if query_date else None
@@ -300,6 +332,9 @@ def scrape_stock(stock_code: str, query_date: date) -> Optional["HOLDINGSSnapsho
         data = client.broker_holding_detail(symbol, date_str)
     except Exception as e:
         logger.error("Longbridge API failed for %s: %s", symbol, e)
+        err = str(e).lower()
+        if any(marker in err for marker in ("auth", "401", "unauthorized", "forbidden", "rate", "quota", "429")):
+            raise RuntimeError(str(e))
         return None
 
     return _payload_to_snapshot(stock_code, query_date, data)

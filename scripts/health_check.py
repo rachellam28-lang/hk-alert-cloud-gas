@@ -174,6 +174,18 @@ def _previous_weekday(d):
     return d
 
 
+def _recent_trading_dates(now_dt: datetime, count: int = 2) -> set[str]:
+    days: list[str] = []
+    cur = now_dt.date()
+    while len(days) < count:
+        cur = _previous_weekday(cur)
+        iso = cur.isoformat()
+        if iso not in days:
+            days.append(iso)
+        cur -= timedelta(days=1)
+    return set(days)
+
+
 def check_freshness():
     rows = []
     for name, cfg in WATCH_FILES.items():
@@ -322,6 +334,8 @@ def check_announcement_volume():
 
     dev = abs(today_n - med) / med
     is_weekday = datetime.now().weekday() < 5
+    if not is_weekday:
+        return {"status": "⚪", "detail": f"non-trading day, today={today_n}, median {med:.0f}"}
     if today_n == 0 and is_weekday:
         return {"status": "⚠️", "detail": f"today 0 vs median {med:.0f} — check scraper"}
     elif dev > ANN_DEVIATION_WARN:
@@ -393,12 +407,43 @@ def check_integrity():
     if isinstance(events, dict):
         events = events.get("events", [])
     if events:
-        today = datetime.now().strftime("%Y-%m-%d")
-        yesterday = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
-        recent = sum(1 for e in events if e.get("alert_date") in (today, yesterday))
-        filled = sum(1 for e in events if e.get("outcome", {}).get("fwd_20d") is not None)
+        now_dt = datetime.now()
+        recent_dates = _recent_trading_dates(now_dt, 2)
+        recent = sum(1 for e in events if str(e.get("alert_date") or e.get("signal_date") or "")[:10] in recent_dates)
+        filled = 0
+        for e in events:
+            outcome = e.get("outcome", {}) or {}
+            if outcome.get("filled_at"):
+                filled += 1
+                continue
+            if any(outcome.get(key) is not None for key in ("fwd_20d", "fwd_60d", "max_gain_20d", "max_dd_20d", "benchmark_fwd_20d")):
+                filled += 1
         rows.append({"name": "events", "status": "🟢" if recent or filled else "⚠️",
                      "detail": f"{len(events)} total, {recent} recent, {filled} filled"})
+    repo_audit = load_json(os.path.join(BASE, "data", "repo_audit.json"), default={}) or {}
+    if repo_audit:
+        pages = repo_audit.get("pages", []) if isinstance(repo_audit.get("pages"), list) else []
+        dates = repo_audit.get("dates", {}) if isinstance(repo_audit.get("dates"), dict) else {}
+        db = repo_audit.get("db", {}) if isinstance(repo_audit.get("db"), dict) else {}
+        broken_pages = sum(1 for page in pages if isinstance(page, dict) and page.get("missing_refs"))
+        alias_mismatches = sum(
+            1 for pair in (dates.get("alias_pairs") or [])
+            if isinstance(pair, dict) and not pair.get("match")
+        )
+        spread_days = dates.get("spread_days")
+        detail = (
+            f"pages={len(pages)} missing_ref_pages={broken_pages} "
+            f"alias_mismatches={alias_mismatches} date_spread={spread_days}d "
+            f"db_gaps={db.get('missing_trading_day_count', 'n/a')} "
+            f"db_low_cov={db.get('low_coverage_count', 'n/a')}"
+        )
+        if broken_pages:
+            status = ICON_FAIL
+        elif alias_mismatches or (isinstance(spread_days, int) and spread_days > 2):
+            status = ICON_WARN
+        else:
+            status = ICON_OK
+        rows.append({"name": "repo_audit", "status": status, "detail": detail})
     return rows
 
 
@@ -488,24 +533,31 @@ def check_ccass_publish():
         return {"status": "🔴", "detail": f"audit_gate error: {exc}", "raw": ""}
 
 
-def format_report(freshness, ann_vol, balance, integrity):
-    lines = [f"🏥 System Health — {datetime.now().strftime('%Y-%m-%d %H:%M')} HKT", ""]
-    lines.append("📁 Freshness")
+def classify_overall_status(freshness, publish, ann_vol, balance, integrity):
+    items = list(freshness) + list(integrity) + [publish, ann_vol, balance]
+    if any(item.get("status") == ICON_FAIL for item in items):
+        return "FAIL"
+    if any(item.get("status") == ICON_WARN for item in items):
+        return "WARN"
+    return "PASS"
+
+
+def format_report(freshness, publish, ann_vol, balance, integrity):
+    lines = [f"System Health {datetime.now().strftime('%Y-%m-%d %H:%M')} HKT", ""]
+    lines.append("Freshness")
     for r in freshness:
         lines.append(f"  {r['status']} {r['name']}: {r['detail']}")
-    publish = check_ccass_publish()
-    lines.append(f"🗃 CCASS publish: {publish['status']} {publish['detail']}")
-    lines.append("ℹ️ Longbridge backfill: 只補歷史 holdings，不補 price / signals")
-    lines.append(f"📰 Announcements: {ann_vol['status']} {ann_vol['detail']}")
-    lines.append(f"💰 DeepSeek: {balance['status']} {balance['detail']}")
+    lines.append(f"CCASS publish: {publish['status']} {publish['detail']}")
+    lines.append("Longbridge backfill: history holdings only; does not refresh price / signals")
+    lines.append(f"Announcements: {ann_vol['status']} {ann_vol['detail']}")
+    lines.append(f"DeepSeek: {balance['status']} {balance['detail']}")
     if integrity:
-        lines.append("🔧 Integrity")
+        lines.append("Integrity")
         for r in integrity:
             lines.append(f"  {r['status']} {r['name']}: {r['detail']}")
-    bad = [x for x in freshness + integrity if x["status"] == "🔴"]
-    warn = [x for x in [ann_vol, balance] if x["status"] in ("⚠️", "🔴")]
+    overall = classify_overall_status(freshness, publish, ann_vol, balance, integrity)
     lines.append("")
-    lines.append("❌ ISSUES" if bad else ("⚠️ WARNINGS" if warn else "✅ ALL OK"))
+    lines.append("ISSUES" if overall == "FAIL" else ("WARNINGS" if overall == "WARN" else "ALL OK"))
     return "\n".join(lines)
 
 
@@ -567,12 +619,15 @@ def main():
     balance = check_deepseek_balance()
     integrity = check_integrity()
 
-    report_text = format_report(freshness, ann_vol, balance, integrity)
+    publish = check_ccass_publish()
+    report_text = format_report(freshness, publish, ann_vol, balance, integrity)
     print(report_text)
 
     with open(HEALTH_OUT, "w", encoding="utf-8") as f:
         json.dump({
             "at": datetime.now().isoformat(),
+            "overall_status": classify_overall_status(freshness, publish, ann_vol, balance, integrity),
+            "ccass_publish": publish,
             "freshness": freshness, "ann_volume": ann_vol,
             "deepseek": balance, "integrity": integrity,
         }, f, ensure_ascii=False, indent=1)

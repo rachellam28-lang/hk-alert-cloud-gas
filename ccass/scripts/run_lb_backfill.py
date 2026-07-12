@@ -1,9 +1,5 @@
 #!/usr/bin/env python
-"""Legacy helper wrapper for holdings backfill.
-
-The Longbridge-specific runner is retired. Keep this entrypoint as a thin
-compatibility shell that forwards to the standard fill_missing workflow.
-"""
+"""Compatibility wrapper for Longbridge latest-day holdings backfill."""
 from __future__ import annotations
 
 import subprocess
@@ -22,10 +18,11 @@ def main() -> int:
 
     rc = 0
     for d in sys.argv[1:]:
-        print(f"[run_lb_backfill] delegating {d} -> fill_missing.py", flush=True)
+        print(f"[run_lb_backfill] delegating {d} -> fill_missing.py (longbridge latest-day mode)", flush=True)
         env = os.environ.copy()
-        env["HOLDINGS_PROVIDER"] = "hkex"
-        env.pop("LONGBRIDGE_ACCESS_TOKEN", None)
+        env["HOLDINGS_PROVIDER"] = "longbridge"
+        env["LONGBRIDGE_USE_CLI"] = env.get("LONGBRIDGE_USE_CLI", "1")
+        env["LONGBRIDGE_ENABLE_MCP_FALLBACK"] = env.get("LONGBRIDGE_ENABLE_MCP_FALLBACK", "0")
         result = subprocess.run([sys.executable, str(FILL_MISSING), d], env=env)
         if result.returncode != 0:
             rc = result.returncode

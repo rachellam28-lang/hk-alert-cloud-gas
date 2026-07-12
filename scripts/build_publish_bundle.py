@@ -66,26 +66,48 @@ def latest_date(items, keys=("date", "ann_date", "announcement_date", "created_a
 
 def summarize_holdings():
     data = load_json(BASE / "holdings.json", {})
+    stocks = data.get("stocks", []) if isinstance(data, dict) else []
     return {
         "path": "holdings.json",
         "updated": data.get("updated"),
-        "source": "ccass.db / holdings export",
+        "source": "holdings.db / holdings export",
         "stock_count": data.get("stock_count"),
         "coverage_pct": data.get("coverage_pct"),
         "first_date": data.get("first_date"),
         "is_complete": data.get("is_complete"),
+        "trend_reference_dates": data.get("trend_reference_dates", {}),
+        "five_day_increase_count": sum(
+            1 for stock in stocks
+            if (stock.get("d5s") or 0) > 0 and (stock.get("d5p") or 0) > 0
+        ),
+        "five_day_decrease_count": sum(
+            1 for stock in stocks
+            if (stock.get("d5s") or 0) < 0 and (stock.get("d5p") or 0) < 0
+        ),
     }
 
 
 def summarize_signals():
     data = load_json(DATA / "signals.json", {})
+    groups = data.get("groups", []) if isinstance(data, dict) else []
+
+    def has_ccass_five_day(group):
+        cc = group.get("ccass") if isinstance(group, dict) else {}
+        try:
+            shares = float(cc.get("sharesDelta5d"))
+            pct = float(cc.get("pctDelta5d"))
+        except (TypeError, ValueError, AttributeError):
+            return False
+        return shares > 0 and pct > 0
+
     return {
         "path": "data/signals.json",
         "updated": data.get("updatedAt") or data.get("updated"),
         "source": "announcements.json + rights_analysis.json + alerts.json + holdings.json",
-        "groups": len(data.get("groups", [])),
+        "groups": len(groups),
         "with_signals": data.get("totalWithSignals"),
         "with_corp": data.get("totalWithCorp"),
+        "ccass_five_day_increase_count": sum(1 for group in groups if has_ccass_five_day(group)),
     }
 
 
@@ -112,14 +134,19 @@ def summarize_watchlist():
 
 
 def summarize_history():
-    data = load_json(DATA / "history.json", {})
+    path = DATA / "history.json"
+    data = load_json(path, {})
     days = data.get("days", []) if isinstance(data, dict) else []
+    updated = data.get("updated") if isinstance(data, dict) else None
+    if not updated and path.exists():
+        updated = datetime.fromtimestamp(path.stat().st_mtime).isoformat(timespec="seconds")
     return {
         "path": "data/history.json",
-        "updated": latest_date(days, ("date",)),
+        "updated": updated,
         "source": "local alert store",
         "days": len(days) if isinstance(days, list) else None,
         "total": data.get("total") if isinstance(data, dict) else None,
+        "latest_event_date": latest_date(days, ("date",)),
     }
 
 
@@ -204,6 +231,83 @@ def summarize_transfers():
     }
 
 
+def summarize_participant_anomalies():
+    data = load_json(DATA / "participant_anomalies.json", {})
+    anomalies = data.get("anomalies") if isinstance(data, dict) else []
+    summary = data.get("summary") if isinstance(data, dict) else {}
+    return {
+        "path": "data/participant_anomalies.json",
+        "updated": data.get("updated") if isinstance(data, dict) else None,
+        "date": data.get("date") if isinstance(data, dict) else None,
+        "previous_date": data.get("previous_date") if isinstance(data, dict) else None,
+        "source": "ccass participant delta/anomaly monitor",
+        "count": data.get("count") if isinstance(data, dict) else None,
+        "published_count": len(anomalies) if isinstance(anomalies, list) else None,
+        "delta_rows": data.get("delta_rows") if isinstance(data, dict) else None,
+        "ok": data.get("ok") if isinstance(data, dict) else None,
+        "status": data.get("status") if isinstance(data, dict) else None,
+        "message": data.get("message") if isinstance(data, dict) else None,
+        "summary": summary if isinstance(summary, dict) else {},
+    }
+
+
+def summarize_timesfm():
+    data = load_json(DATA / "timesfm.json", {})
+    fields = data.get("fields") if isinstance(data, dict) else []
+    by_field = data.get("by_field") if isinstance(data, dict) else {}
+    return {
+        "path": "data/timesfm.json",
+        "updated": data.get("updated") if isinstance(data, dict) else None,
+        "generated_at": data.get("generated_at") if isinstance(data, dict) else None,
+        "source": "TimesFM daily multi-field forecast",
+        "primary_field": data.get("primary_field") if isinstance(data, dict) else None,
+        "field_count": data.get("field_count") if isinstance(data, dict) else None,
+        "horizon": data.get("horizon") if isinstance(data, dict) else None,
+        "count": len(data.get("forecasts", [])) if isinstance(data, dict) else None,
+        "fields": [
+            {
+                "field": item.get("field"),
+                "count": item.get("count"),
+                "error_count": item.get("error_count"),
+                "top_codes": item.get("top_codes"),
+            }
+            for item in (fields or [])
+            if isinstance(item, dict)
+        ],
+        "available_fields": sorted(by_field.keys()) if isinstance(by_field, dict) else [],
+        "errors": data.get("errors") if isinstance(data, dict) else None,
+    }
+
+
+def summarize_trade_engine():
+    data = load_json(DATA / "trade_engine.json", {})
+    summary = data.get("summary") if isinstance(data, dict) else {}
+    return {
+        "path": "data/trade_engine.json",
+        "updated": data.get("built_at") or data.get("updated_at") if isinstance(data, dict) else None,
+        "source_updated": data.get("source_updated_at") if isinstance(data, dict) else None,
+        "source": "shared trading engine from kbar cache",
+        "scope_count": data.get("scope_count") if isinstance(data, dict) else None,
+        "momentum_count": data.get("momentum_count") if isinstance(data, dict) else None,
+        "setup_counts": summary.get("setup_counts") if isinstance(summary, dict) else None,
+        "top_momentum_symbol": summary.get("top_momentum_symbol") if isinstance(summary, dict) else None,
+    }
+
+
+def summarize_kbar_cache():
+    data = load_json(DATA / "kbar_cache.json", {})
+    symbols = data.get("symbols") if isinstance(data, dict) else {}
+    return {
+        "path": "data/kbar_cache.json",
+        "updated": data.get("updated_at") if isinstance(data, dict) else None,
+        "source": data.get("source") if isinstance(data, dict) else "Longbridge preset K-line cache",
+        "symbol_count": len(symbols) if isinstance(symbols, dict) else None,
+        "symbols": sorted(symbols.keys()) if isinstance(symbols, dict) else [],
+        "supported_intervals": data.get("supported_intervals") if isinstance(data, dict) else [],
+        "errors": len(data.get("errors", [])) if isinstance(data, dict) else None,
+    }
+
+
 def summarize_prices():
     data = load_json(DATA / "stock_prices.json", {})
     prices_path = DATA / "stock_prices.json"
@@ -217,6 +321,20 @@ def summarize_prices():
         "source": "Futu / Longbridge cache",
         "count": len([k for k in data if str(k).isdigit() and len(str(k)) == 5]) if isinstance(data, dict) else None,
         "provider": (meta or {}).get("source"),
+    }
+
+
+def summarize_sector_rotation():
+    data = load_json(DATA / "sector_rotation.json", {})
+    sectors = data.get("sectors") if isinstance(data, dict) else {}
+    windows = data.get("windows") if isinstance(data, dict) else {}
+    return {
+        "path": "data/sector_rotation.json",
+        "updated": data.get("updated") if isinstance(data, dict) else None,
+        "source": data.get("source") if isinstance(data, dict) else None,
+        "method": data.get("method") if isinstance(data, dict) else None,
+        "sector_count": len(sectors) if isinstance(sectors, dict) else 0,
+        "windows": windows if isinstance(windows, dict) else {},
     }
 
 
@@ -240,11 +358,41 @@ def summarize_market():
     }
 
 
+def summarize_repo_audit():
+    data = load_json(DATA / "repo_audit.json", {})
+    pages = data.get("pages") if isinstance(data, dict) else []
+    dates = data.get("dates") if isinstance(data, dict) else {}
+    db = data.get("db") if isinstance(data, dict) else {}
+    missing_ref_pages = sum(
+        1 for page in (pages or [])
+        if isinstance(page, dict) and page.get("missing_refs")
+    )
+    alias_pairs = dates.get("alias_pairs") if isinstance(dates, dict) else []
+    alias_mismatches = sum(
+        1 for pair in (alias_pairs or [])
+        if isinstance(pair, dict) and not pair.get("match")
+    )
+    return {
+        "path": "data/repo_audit.json",
+        "updated": data.get("generated_at") if isinstance(data, dict) else None,
+        "source": "repo-native audit snapshot",
+        "page_count": len(pages) if isinstance(pages, list) else None,
+        "missing_ref_pages": missing_ref_pages,
+        "date_spread_days": dates.get("spread_days") if isinstance(dates, dict) else None,
+        "alias_mismatches": alias_mismatches,
+        "db_gap_count": db.get("missing_trading_day_count") if isinstance(db, dict) else None,
+        "db_low_coverage_count": db.get("low_coverage_count") if isinstance(db, dict) else None,
+    }
+
+
 def summarize_backtest(name: str, path: Path, source: str):
     data = load_json(path, {})
+    updated = data.get("updated") if isinstance(data, dict) else None
+    if not updated and path.exists():
+        updated = datetime.fromtimestamp(path.stat().st_mtime).isoformat(timespec="seconds")
     return {
         "path": path.relative_to(BASE).as_posix(),
-        "updated": data.get("updated"),
+        "updated": updated,
         "source": source,
         "summary": data.get("summary") or data.get("edge") or {},
     }
@@ -321,8 +469,14 @@ def main():
             "breakthroughs": summarize_breakthroughs(),
             "corp_graded_scan": summarize_corp_graded(),
             "transfers": summarize_transfers(),
+            "participant_anomalies": summarize_participant_anomalies(),
+            "timesfm": summarize_timesfm(),
+            "trade_engine": summarize_trade_engine(),
+            "kbar_cache": summarize_kbar_cache(),
             "prices": summarize_prices(),
+            "sector_rotation": summarize_sector_rotation(),
             "market": summarize_market(),
+            "repo_audit": summarize_repo_audit(),
             "vqc_backtest": summarize_backtest(
                 "vqc_backtest",
                 DATA / "vqc_backtest.json",
@@ -343,6 +497,11 @@ def main():
     }
     bundle["headline"] = {
         "holdings_updated": bundle["files"]["holdings"]["updated"],
+        "ccass_trend_reference_dates": bundle["files"]["holdings"].get("trend_reference_dates", {}),
+        "ccass_five_day_increase_count": (
+            bundle["files"]["signals"].get("ccass_five_day_increase_count")
+            or bundle["files"]["holdings"].get("five_day_increase_count")
+        ),
         "latest_db_date": bundle["publish"].get("latest_db_date"),
         "latest_db_stock_count": bundle["publish"].get("latest_db_stock_count"),
         "latest_db_coverage_pct": bundle["publish"].get("latest_db_coverage_pct"),
@@ -360,9 +519,19 @@ def main():
         "corp_graded_scan_updated": bundle["files"]["corp_graded_scan"]["updated"],
         "transfers_updated": bundle["files"]["transfers"]["updated"],
         "transfers_date": bundle["files"]["transfers"].get("date"),
+        "participant_anomalies_updated": bundle["files"]["participant_anomalies"]["updated"],
+        "participant_anomalies_date": bundle["files"]["participant_anomalies"].get("date"),
+        "timesfm_updated": bundle["files"]["timesfm"].get("generated_at") or bundle["files"]["timesfm"].get("updated"),
+        "timesfm_primary_field": bundle["files"]["timesfm"].get("primary_field"),
+        "trade_engine_updated": bundle["files"]["trade_engine"].get("updated"),
+        "trade_engine_source_updated": bundle["files"]["trade_engine"].get("source_updated"),
+        "kbar_cache_updated": bundle["files"]["kbar_cache"].get("updated"),
         "prices_updated": bundle["files"]["prices"]["updated"],
         "market_updated": bundle["files"]["market"]["updated"],
         "market_stale": bundle["files"]["market"].get("stale"),
+        "repo_audit_updated": bundle["files"]["repo_audit"].get("updated"),
+        "repo_audit_missing_ref_pages": bundle["files"]["repo_audit"].get("missing_ref_pages"),
+        "repo_audit_date_spread_days": bundle["files"]["repo_audit"].get("date_spread_days"),
         "backtests_updated": {
             "vqc": bundle["files"]["vqc_backtest"]["updated"],
             "distribution_day": bundle["files"]["distribution_day_backtest"]["updated"],
