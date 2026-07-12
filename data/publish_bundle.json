@@ -1,6 +1,6 @@
 {
   "schema_v": 1,
-  "generated_at": "2026-07-13T00:07:41",
+  "generated_at": "2026-07-13T01:06:12",
   "source_of_truth": {
     "db": "ccass/holdings.db",
     "primary_holdings": "holdings.json",
@@ -390,9 +390,9 @@
       "warnings": 0
     },
     "verify_dashboard": {
-      "status": "WARN",
+      "status": "PASS",
       "errors": 0,
-      "warnings": 66
+      "warnings": 0
     }
   },
   "headline": {

@@ -224,6 +224,9 @@ def main() -> int:
                 entry["py_pct"] = round((entry["lp"] - effective_py) / effective_py * 100, 2)
                 if entry.get("apy"):
                     entry["apy_pct"] = entry["py_pct"]
+            else:
+                entry.pop("py_pct", None)
+                entry.pop("apy_pct", None)
             entry["price_source"] = "longbridge:cli" if "last" in item else "longbridge:mcp"
             ts = item.get("timestamp") or item.get("updated")
             entry["lp_time"] = trade_date
@@ -256,6 +259,13 @@ def main() -> int:
             effective_py = entry.get("apy", entry.get("py"))
             if effective_py is not None:
                 stock["py"] = effective_py
+                if entry.get("py_pct") is not None:
+                    stock["py_pct"] = entry["py_pct"]
+                else:
+                    stock.pop("py_pct", None)
+            else:
+                stock.pop("py", None)
+                stock.pop("py_pct", None)
             for key in ["lp", "lp_time", "vol", "chg", "p52", "py_pct", "prev_close", "turnover"]:
                 if entry.get(key) is not None:
                     stock[key] = entry[key]

@@ -2232,14 +2232,15 @@
     "hi52": 0.6,
     "lo52": 0.26,
     "mc": 9.08,
-    "py": null,
+    "py": 0.29,
     "pe": 36.67,
     "prev_close": 0.55,
     "vr": 0.959,
     "p52": 85.3,
     "turnover": 1099600.0,
     "price_source": "longbridge:cli",
-    "price_updated_at": "2026-07-10T08:41:51.277026+00:00"
+    "price_updated_at": "2026-07-10T08:41:51.277026+00:00",
+    "py_pct": 89.66
   },
   "00129": {
     "yo": 0.239,
@@ -19992,14 +19993,15 @@
     "lo52": 0.3,
     "p52": 41.3,
     "avg_vol": 16712428.5714,
-    "py": null,
+    "py": 0.33,
     "mc": 39.07,
     "pe": 33.48,
     "prev_close": 2.35,
     "vr": 0.968,
     "turnover": 40449260.0,
     "price_source": "longbridge:cli",
-    "price_updated_at": "2026-07-03T08:30:53.799498+00:00"
+    "price_updated_at": "2026-07-03T08:30:53.799498+00:00",
+    "py_pct": 569.7
   },
   "01301": {
     "yo": 0.345,
@@ -23626,13 +23628,14 @@
     "lo52": 1.22,
     "p52": 77.1,
     "avg_vol": 181942.8571,
-    "py": null,
+    "py": 2.18,
     "mc": 24.73,
     "prev_close": 12.61,
     "vr": 0.116,
     "turnover": 189260.0,
     "price_source": "longbridge:cli",
-    "price_updated_at": "2026-07-10T08:41:51.277026+00:00"
+    "price_updated_at": "2026-07-10T08:41:51.277026+00:00",
+    "py_pct": 478.44
   },
   "01571": {
     "yo": 3.86,
@@ -32422,12 +32425,13 @@
     "p52": 39.3,
     "avg_vol": 7142.8571,
     "mc": 2.2,
-    "py": null,
+    "py": 0.485,
     "prev_close": 0.325,
     "turnover": 2720.0,
     "price_source": "longbridge:cli",
     "price_updated_at": "2026-07-10T08:41:51.277026+00:00",
-    "vr": 0.769
+    "vr": 0.769,
+    "py_pct": -26.8
   },
   "02185": {
     "yo": 5.78,

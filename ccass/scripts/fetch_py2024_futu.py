@@ -12,7 +12,7 @@ from futu_env import ensure_futu_quote_backend_or_die
 # Load existing prices
 prices = json.loads(PRICES_PATH.read_text(encoding="utf-8"))
 holdings = json.loads(HOLDINGS_PATH.read_text(encoding="utf-8"))
-codes = sorted(k for k,v in prices.items() if v.get('yo'))  # only stocks with 2026 data
+codes = sorted(k for k,v in prices.items() if v.get('yo') and v.get('py') is None)  # only fill missing PY
 
 print(f'Fetching 2024 year-open for {len(codes)} stocks via Futu...')
 
@@ -63,8 +63,11 @@ for s in holdings['stocks']:
         p = prices[code]
         if p.get('py') is not None:
             s['py'] = p['py']
-        if p.get('py_pct') is not None:
-            s['py_pct'] = p['py_pct']
+            if p.get('py_pct') is not None:
+                s['py_pct'] = p['py_pct']
+        else:
+            s.pop('py', None)
+            s.pop('py_pct', None)
 
 tmp_holdings = HOLDINGS_PATH.with_suffix('.tmp')
 tmp_holdings.write_text(json.dumps(holdings, ensure_ascii=False, indent=2), encoding="utf-8")

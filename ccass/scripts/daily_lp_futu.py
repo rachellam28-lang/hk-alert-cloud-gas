@@ -102,6 +102,9 @@ for code, e in prices.items():
         e['py_pct'] = round((e['lp'] - effective_py) / effective_py * 100, 2)
         if e.get('apy'):
             e['apy_pct'] = e['py_pct']
+    else:
+        e.pop('py_pct', None)
+        e.pop('apy_pct', None)
 
 def sanitize(obj):
     if isinstance(obj, dict): return {k: sanitize(v) for k,v in obj.items()}
@@ -121,6 +124,13 @@ for s in holdings['stocks']:
     effective_py = e.get('apy', e.get('py'))
     if effective_py is not None:
         s['py'] = effective_py
+        if e.get('py_pct') is not None:
+            s['py_pct'] = e['py_pct']
+        else:
+            s.pop('py_pct', None)
+    else:
+        s.pop('py', None)
+        s.pop('py_pct', None)
     for k in ['lp','mc','hi52','lo52','pe','vol','vr','chg','p52','py_pct']:
         if e.get(k) is not None:
             s[k] = e[k]
