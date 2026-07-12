@@ -85,6 +85,7 @@ tr:hover td { background: #161b22; }
 </style>
 </head>
 <body>
+<nav class="site-nav" id="sharedSiteNav" data-base="./"></nav>
 
 <div class="nav">
   <a href="index.html">🇭🇰 港股版</a>
@@ -98,18 +99,18 @@ tr:hover td { background: #161b22; }
 </div>
 
 <div class="summary" id="rightsSummary">
-  <div class="card buy"><div class="label">🟢 跟</div><div class="value">32</div></div>
-  <div class="card wait"><div class="label">🟡 等</div><div class="value">25</div></div>
-  <div class="card avoid"><div class="label">🔴 避</div><div class="value">44</div></div>
+  <div class="card buy"><div class="label">🟢 跟</div><div class="value">35</div></div>
+  <div class="card wait"><div class="label">🟡 等</div><div class="value">30</div></div>
+  <div class="card avoid"><div class="label">🔴 避</div><div class="value">47</div></div>
   <div class="card"><div class="label">💡 核心理念</div><div class="value" style="font-size:10px;color:#58a6ff;line-height:1.5">配售本體 -EV (median -11.8%, 62%輸錢)<br>唯一實證: 配售後5日內收市升穿+8%=跳升確認<br>跳升組 16% 60日內翻倍, 係冇跳組 2.4x</div></div>
 </div>
 
 <div class="tabs">
-  <div class="tab active" onclick="filter('all')">全部<span class="count">502</span></div>
-  <div class="tab" onclick="filter('🟢')">🟢 跟<span class="count">32</span></div>
-  <div class="tab" onclick="filter('🟡')">🟡 等<span class="count">25</span></div>
-  <div class="tab" onclick="filter('🔴')">🔴 避<span class="count">44</span></div>
-  <div class="tab" onclick="filter('供股')">供股<span class="count">51</span></div>
+  <div class="tab active" onclick="filter('all')">全部<span class="count">532</span></div>
+  <div class="tab" onclick="filter('🟢')">🟢 跟<span class="count">35</span></div>
+  <div class="tab" onclick="filter('🟡')">🟡 等<span class="count">30</span></div>
+  <div class="tab" onclick="filter('🔴')">🔴 避<span class="count">47</span></div>
+  <div class="tab" onclick="filter('供股')">供股<span class="count">53</span></div>
   <div class="tab" onclick="filter('先舊後新')">先舊後新<span class="count">20</span></div>
 </div>
 
@@ -150,7 +151,7 @@ tr:hover td { background: #161b22; }
 <script>
 let DATA = [];
 let DATA_READY = false;
-const DATA_URL = 'data/rights_analysis.json?v=20260703085839';
+const DATA_URL = 'data/rights_analysis.json';
 
 function fmtAmt(n) {
   if (n >= 1e8) return (n/1e8).toFixed(1)+'億';
@@ -407,7 +408,7 @@ function sortTable(col) {
 
 async function loadData() {
   try {
-    const res = await fetch(DATA_URL, {cache: 'no-store'});
+    const res = await fetch(DATA_URL + '?_=' + Date.now(), {cache: 'no-store'});
     if (!res.ok) throw new Error('HTTP ' + res.status);
     DATA = await res.json();
     DATA_READY = true;
@@ -420,5 +421,6 @@ async function loadData() {
 
 loadData();
 </script>
+<script src="./shared-nav.js"></script>
 </body>
 </html>

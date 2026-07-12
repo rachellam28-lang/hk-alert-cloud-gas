@@ -1,1 +1,2167 @@
-{"updated": "2026-06-18", "horizon": 5, "field": "broker_top5_pct", "forecasts": [{"c": "02632", "n": "澤景股份", "tp": 93.5, "f1": 93.5, "f3": 93.5, "f5": 93.5, "delta": 0.0, "trend": "stable", "days": 29}, {"c": "00167", "n": "IDT INT'L", "tp": 89.7, "f1": 89.5, "f3": 89.3, "f5": 88.8, "delta": -0.9, "trend": "↘️ drop", "days": 30}, {"c": "02025", "n": "瑞豐動力", "tp": 88.1, "f1": 88.0, "f3": 88.1, "f5": 88.1, "delta": 0.0, "trend": "stable", "days": 29}, {"c": "02609", "n": "佰澤醫療", "tp": 88.0, "f1": 88.3, "f3": 84.2, "f5": 81.3, "delta": -6.7, "trend": "📉 DOWN", "days": 29}, {"c": "09929", "n": "澳達控股", "tp": 87.3, "f1": 87.4, "f3": 87.3, "f5": 87.3, "delta": -0.1, "trend": "stable", "days": 28}, {"c": "02621", "n": "手回集團", "tp": 86.0, "f1": 86.0, "f3": 86.0, "f5": 86.0, "delta": 0.0, "trend": "stable", "days": 29}, {"c": "08431", "n": "浩柏國際", "tp": 85.8, "f1": 85.7, "f3": 85.8, "f5": 85.7, "delta": -0.0, "trend": "stable", "days": 29}, {"c": "01738", "n": "飛尚無煙煤", "tp": 85.6, "f1": 85.5, "f3": 85.4, "f5": 85.3, "delta": -0.3, "trend": "stable", "days": 29}, {"c": "06636", "n": "極視角", "tp": 84.0, "f1": 84.0, "f3": 84.0, "f5": 84.0, "delta": 0.0, "trend": "stable", "days": 29}, {"c": "08029", "n": "中投金融科技集團", "tp": 83.2, "f1": 83.1, "f3": 83.1, "f5": 83.1, "delta": -0.0, "trend": "stable", "days": 29}, {"c": "08450", "n": "鉅京控股", "tp": 80.4, "f1": 80.3, "f3": 80.2, "f5": 80.3, "delta": -0.1, "trend": "stable", "days": 29}, {"c": "00524", "n": "長城天下", "tp": 80.3, "f1": 80.3, "f3": 80.3, "f5": 80.3, "delta": 0.0, "trend": "stable", "days": 30}], "errors": 0}
+{
+  "updated": "2026-07-10",
+  "generated_at": "2026-07-12T23:24:42",
+  "horizon": 5,
+  "min_days": 25,
+  "lookback": 5,
+  "primary_field": "broker_top5_pct",
+  "field_count": 3,
+  "fields": [
+    {
+      "field": "broker_top5_pct",
+      "count": 15,
+      "error_count": 0,
+      "top_codes": [
+        "01656",
+        "06966",
+        "01298",
+        "06816",
+        "00157"
+      ],
+      "records": [
+        {
+          "stock_code": "01656",
+          "stock_name": "億仕登控股",
+          "field": "broker_top5_pct",
+          "history_days": 34,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 99.5,
+          "recent_delta": 0.0,
+          "forecast": [
+            99.5001,
+            99.5,
+            99.4999,
+            99.5001,
+            99.5
+          ],
+          "forecast_end": 99.5,
+          "forecast_delta": 0.0,
+          "signal": "flat"
+        },
+        {
+          "stock_code": "06966",
+          "stock_name": "中國萬桐園",
+          "field": "broker_top5_pct",
+          "history_days": 34,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 98.29,
+          "recent_delta": 0.0,
+          "forecast": [
+            98.2901,
+            98.2898,
+            98.2896,
+            98.2894,
+            98.2896
+          ],
+          "forecast_end": 98.2896,
+          "forecast_delta": -0.0004,
+          "signal": "flat"
+        },
+        {
+          "stock_code": "01298",
+          "stock_name": "雲能國際",
+          "field": "broker_top5_pct",
+          "history_days": 35,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 97.88,
+          "recent_delta": 0.0,
+          "forecast": [
+            97.88,
+            97.88,
+            97.88,
+            97.88,
+            97.88
+          ],
+          "forecast_end": 97.88,
+          "forecast_delta": -0.0,
+          "signal": "flat"
+        },
+        {
+          "stock_code": "06816",
+          "stock_name": "瑞港建設",
+          "field": "broker_top5_pct",
+          "history_days": 34,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 97.48,
+          "recent_delta": 0.0,
+          "forecast": [
+            97.4803,
+            97.4803,
+            97.4802,
+            97.4802,
+            97.4802
+          ],
+          "forecast_end": 97.4802,
+          "forecast_delta": 0.0002,
+          "signal": "flat"
+        },
+        {
+          "stock_code": "00157",
+          "stock_name": "自然美",
+          "field": "broker_top5_pct",
+          "history_days": 37,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 97.35,
+          "recent_delta": 0.01,
+          "forecast": [
+            97.3466,
+            97.3462,
+            97.3454,
+            97.3454,
+            97.3448
+          ],
+          "forecast_end": 97.3448,
+          "forecast_delta": -0.0052,
+          "signal": "flat"
+        },
+        {
+          "stock_code": "01597",
+          "stock_name": "納泉能源科技",
+          "field": "broker_top5_pct",
+          "history_days": 34,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 97.09,
+          "recent_delta": -0.06,
+          "forecast": [
+            97.0927,
+            97.0939,
+            97.0965,
+            97.0958,
+            97.0975
+          ],
+          "forecast_end": 97.0975,
+          "forecast_delta": 0.0075,
+          "signal": "flat"
+        },
+        {
+          "stock_code": "02481",
+          "stock_name": "雙良睿能",
+          "field": "broker_top5_pct",
+          "history_days": 34,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 96.94,
+          "recent_delta": 0.01,
+          "forecast": [
+            96.9434,
+            96.9461,
+            96.947,
+            96.9455,
+            96.9428
+          ],
+          "forecast_end": 96.9428,
+          "forecast_delta": 0.0028,
+          "signal": "flat"
+        },
+        {
+          "stock_code": "00952",
+          "stock_name": "華富建業金融",
+          "field": "broker_top5_pct",
+          "history_days": 35,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 96.87,
+          "recent_delta": 0.0,
+          "forecast": [
+            96.8692,
+            96.8676,
+            96.8681,
+            96.8708,
+            96.8736
+          ],
+          "forecast_end": 96.8736,
+          "forecast_delta": 0.0036,
+          "signal": "flat"
+        },
+        {
+          "stock_code": "02299",
+          "stock_name": "百宏實業",
+          "field": "broker_top5_pct",
+          "history_days": 34,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 96.79,
+          "recent_delta": 0.02,
+          "forecast": [
+            96.7906,
+            96.7905,
+            96.7904,
+            96.7907,
+            96.7905
+          ],
+          "forecast_end": 96.7905,
+          "forecast_delta": 0.0005,
+          "signal": "flat"
+        },
+        {
+          "stock_code": "09913",
+          "stock_name": "智勤控股",
+          "field": "broker_top5_pct",
+          "history_days": 33,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 96.62,
+          "recent_delta": 0.01,
+          "forecast": [
+            96.6207,
+            96.6207,
+            96.6204,
+            96.6212,
+            96.6215
+          ],
+          "forecast_end": 96.6215,
+          "forecast_delta": 0.0015,
+          "signal": "flat"
+        },
+        {
+          "stock_code": "01577",
+          "stock_name": "匯鑫小貸",
+          "field": "broker_top5_pct",
+          "history_days": 34,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 96.34,
+          "recent_delta": 0.03,
+          "forecast": [
+            96.3417,
+            96.3416,
+            96.3408,
+            96.3417,
+            96.3421
+          ],
+          "forecast_end": 96.3421,
+          "forecast_delta": 0.0021,
+          "signal": "flat"
+        },
+        {
+          "stock_code": "02409",
+          "stock_name": "洲際船務",
+          "field": "broker_top5_pct",
+          "history_days": 34,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 95.92,
+          "recent_delta": 0.01,
+          "forecast": [
+            95.9212,
+            95.9209,
+            95.9218,
+            95.9221,
+            95.9216
+          ],
+          "forecast_end": 95.9216,
+          "forecast_delta": 0.0016,
+          "signal": "flat"
+        },
+        {
+          "stock_code": "08629",
+          "stock_name": "集信國控",
+          "field": "broker_top5_pct",
+          "history_days": 34,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 95.88,
+          "recent_delta": 0.0,
+          "forecast": [
+            95.8793,
+            95.8793,
+            95.8798,
+            95.8797,
+            95.8802
+          ],
+          "forecast_end": 95.8802,
+          "forecast_delta": 0.0002,
+          "signal": "flat"
+        },
+        {
+          "stock_code": "01748",
+          "stock_name": "信源企業集團",
+          "field": "broker_top5_pct",
+          "history_days": 34,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 95.71,
+          "recent_delta": 0.0,
+          "forecast": [
+            95.71,
+            95.71,
+            95.71,
+            95.71,
+            95.71
+          ],
+          "forecast_end": 95.71,
+          "forecast_delta": 0.0,
+          "signal": "flat"
+        },
+        {
+          "stock_code": "01204",
+          "stock_name": "博維智慧",
+          "field": "broker_top5_pct",
+          "history_days": 35,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 95.64,
+          "recent_delta": 0.56,
+          "forecast": [
+            95.6531,
+            95.6511,
+            95.6488,
+            95.6496,
+            95.6472
+          ],
+          "forecast_end": 95.6472,
+          "forecast_delta": 0.0072,
+          "signal": "flat"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "field": "total_pct",
+      "count": 15,
+      "error_count": 0,
+      "top_codes": [
+        "04332",
+        "02596",
+        "02687",
+        "02520",
+        "02352"
+      ],
+      "records": [
+        {
+          "stock_code": "04332",
+          "stock_name": "AMGEN-T",
+          "field": "total_pct",
+          "history_days": 25,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-07",
+          "latest": 100.0,
+          "recent_delta": 100.0,
+          "forecast": [
+            103.1841,
+            102.872,
+            102.1253,
+            99.4433,
+            96.6102
+          ],
+          "forecast_end": 96.6102,
+          "forecast_delta": -3.3898,
+          "signal": "distribution_risk"
+        },
+        {
+          "stock_code": "02596",
+          "stock_name": "宜賓銀行",
+          "field": "total_pct",
+          "history_days": 29,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 99.9,
+          "recent_delta": -0.1,
+          "forecast": [
+            99.8967,
+            99.8986,
+            99.9004,
+            99.9051,
+            99.9101
+          ],
+          "forecast_end": 99.9101,
+          "forecast_delta": 0.0101,
+          "signal": "flat"
+        },
+        {
+          "stock_code": "02687",
+          "stock_name": "卓越睿新",
+          "field": "total_pct",
+          "history_days": 29,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 99.9,
+          "recent_delta": -0.1,
+          "forecast": [
+            99.894,
+            99.8979,
+            99.9038,
+            99.9165,
+            99.9296
+          ],
+          "forecast_end": 99.9296,
+          "forecast_delta": 0.0296,
+          "signal": "flat"
+        },
+        {
+          "stock_code": "02520",
+          "stock_name": "山西安裝",
+          "field": "total_pct",
+          "history_days": 29,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 99.88,
+          "recent_delta": -0.12,
+          "forecast": [
+            99.8763,
+            99.8771,
+            99.8785,
+            99.8804,
+            99.8833
+          ],
+          "forecast_end": 99.8833,
+          "forecast_delta": 0.0033,
+          "signal": "flat"
+        },
+        {
+          "stock_code": "02352",
+          "stock_name": "東原仁知服務",
+          "field": "total_pct",
+          "history_days": 29,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 99.87,
+          "recent_delta": -0.13,
+          "forecast": [
+            99.8649,
+            99.8677,
+            99.8709,
+            99.8802,
+            99.8905
+          ],
+          "forecast_end": 99.8905,
+          "forecast_delta": 0.0205,
+          "signal": "flat"
+        },
+        {
+          "stock_code": "02637",
+          "stock_name": "海西新藥",
+          "field": "total_pct",
+          "history_days": 29,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 99.86,
+          "recent_delta": 12.86,
+          "forecast": [
+            94.1096,
+            92.726,
+            91.127,
+            89.3587,
+            88.4807
+          ],
+          "forecast_end": 88.4807,
+          "forecast_delta": -11.3793,
+          "signal": "distribution_risk"
+        },
+        {
+          "stock_code": "02496",
+          "stock_name": "友芝友生物－Ｂ",
+          "field": "total_pct",
+          "history_days": 29,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 99.85,
+          "recent_delta": -0.15,
+          "forecast": [
+            99.8868,
+            99.8936,
+            99.8934,
+            99.8999,
+            99.8953
+          ],
+          "forecast_end": 99.8953,
+          "forecast_delta": 0.0453,
+          "signal": "flat"
+        },
+        {
+          "stock_code": "01542",
+          "stock_name": "台州水務",
+          "field": "total_pct",
+          "history_days": 29,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 99.84,
+          "recent_delta": -0.16,
+          "forecast": [
+            99.8352,
+            99.8373,
+            99.8397,
+            99.8439,
+            99.8494
+          ],
+          "forecast_end": 99.8494,
+          "forecast_delta": 0.0094,
+          "signal": "flat"
+        },
+        {
+          "stock_code": "01983",
+          "stock_name": "瀘州銀行",
+          "field": "total_pct",
+          "history_days": 29,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 99.84,
+          "recent_delta": -0.16,
+          "forecast": [
+            99.8351,
+            99.8376,
+            99.8407,
+            99.8479,
+            99.8553
+          ],
+          "forecast_end": 99.8553,
+          "forecast_delta": 0.0153,
+          "signal": "flat"
+        },
+        {
+          "stock_code": "02589",
+          "stock_name": "滬上阿姨",
+          "field": "total_pct",
+          "history_days": 29,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 99.83,
+          "recent_delta": -0.17,
+          "forecast": [
+            99.8237,
+            99.8293,
+            99.838,
+            99.8576,
+            99.8793
+          ],
+          "forecast_end": 99.8793,
+          "forecast_delta": 0.0493,
+          "signal": "flat"
+        },
+        {
+          "stock_code": "06661",
+          "stock_name": "湖州燃氣",
+          "field": "total_pct",
+          "history_days": 29,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 99.83,
+          "recent_delta": -0.17,
+          "forecast": [
+            99.8235,
+            99.8307,
+            99.8413,
+            99.8654,
+            99.8906
+          ],
+          "forecast_end": 99.8906,
+          "forecast_delta": 0.0606,
+          "signal": "flat"
+        },
+        {
+          "stock_code": "06922",
+          "stock_name": "康灃生物－Ｂ",
+          "field": "total_pct",
+          "history_days": 29,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 99.83,
+          "recent_delta": -0.17,
+          "forecast": [
+            99.8235,
+            99.8307,
+            99.8413,
+            99.8654,
+            99.8906
+          ],
+          "forecast_end": 99.8906,
+          "forecast_delta": 0.0606,
+          "signal": "flat"
+        },
+        {
+          "stock_code": "02152",
+          "stock_name": "蘇新服務",
+          "field": "total_pct",
+          "history_days": 29,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 99.8,
+          "recent_delta": -0.2,
+          "forecast": [
+            99.794,
+            99.7957,
+            99.7977,
+            99.8008,
+            99.8058
+          ],
+          "forecast_end": 99.8058,
+          "forecast_delta": 0.0058,
+          "signal": "flat"
+        },
+        {
+          "stock_code": "06657",
+          "stock_name": "百望股份",
+          "field": "total_pct",
+          "history_days": 29,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 99.8,
+          "recent_delta": -0.2,
+          "forecast": [
+            99.7915,
+            99.7969,
+            99.8043,
+            99.8221,
+            99.8421
+          ],
+          "forecast_end": 99.8421,
+          "forecast_delta": 0.0421,
+          "signal": "flat"
+        },
+        {
+          "stock_code": "01497",
+          "stock_name": "燕之屋",
+          "field": "total_pct",
+          "history_days": 29,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 99.79,
+          "recent_delta": -0.21,
+          "forecast": [
+            99.7791,
+            99.785,
+            99.7938,
+            99.8149,
+            99.8385
+          ],
+          "forecast_end": 99.8385,
+          "forecast_delta": 0.0485,
+          "signal": "flat"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "field": "adj_hhi",
+      "count": 15,
+      "error_count": 0,
+      "top_codes": [
+        "04332",
+        "01656",
+        "03660",
+        "06686",
+        "02076"
+      ],
+      "records": [
+        {
+          "stock_code": "04332",
+          "stock_name": "AMGEN-T",
+          "field": "adj_hhi",
+          "history_days": 25,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-07",
+          "latest": 10000.0,
+          "recent_delta": 0.0,
+          "forecast": [
+            10000.0,
+            10000.0,
+            10000.0,
+            10000.0,
+            10000.0
+          ],
+          "forecast_end": 10000.0,
+          "forecast_delta": 0.0,
+          "signal": "flat"
+        },
+        {
+          "stock_code": "01656",
+          "stock_name": "億仕登控股",
+          "field": "adj_hhi",
+          "history_days": 34,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 9834.4004,
+          "recent_delta": 4.4,
+          "forecast": [
+            9834.5117,
+            9834.4414,
+            9834.4453,
+            9834.4141,
+            9834.3711
+          ],
+          "forecast_end": 9834.3711,
+          "forecast_delta": -0.0293,
+          "signal": "flat"
+        },
+        {
+          "stock_code": "03660",
+          "stock_name": "奇富科技－Ｓ",
+          "field": "adj_hhi",
+          "history_days": 34,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 9787.2998,
+          "recent_delta": 50.1,
+          "forecast": [
+            9787.6426,
+            9787.4004,
+            9787.0215,
+            9787.3477,
+            9787.248
+          ],
+          "forecast_end": 9787.248,
+          "forecast_delta": -0.0518,
+          "signal": "flat"
+        },
+        {
+          "stock_code": "06686",
+          "stock_name": "諾亞控股",
+          "field": "adj_hhi",
+          "history_days": 34,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 9566.5,
+          "recent_delta": -5.6,
+          "forecast": [
+            9566.5645,
+            9566.6777,
+            9566.7598,
+            9566.6133,
+            9566.6973
+          ],
+          "forecast_end": 9566.6973,
+          "forecast_delta": 0.1973,
+          "signal": "flat"
+        },
+        {
+          "stock_code": "02076",
+          "stock_name": "ＢＯＳＳ直聘－Ｗ",
+          "field": "adj_hhi",
+          "history_days": 34,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 9502.7002,
+          "recent_delta": 2.5,
+          "forecast": [
+            9503.3945,
+            9503.6875,
+            9506.29,
+            9506.084,
+            9505.5586
+          ],
+          "forecast_end": 9505.5586,
+          "forecast_delta": 2.8584,
+          "signal": "crowding_up"
+        },
+        {
+          "stock_code": "01698",
+          "stock_name": "騰訊音樂－ＳＷ",
+          "field": "adj_hhi",
+          "history_days": 34,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 8991.0996,
+          "recent_delta": 41.9,
+          "forecast": [
+            8995.7246,
+            8999.8535,
+            9003.8975,
+            9008.5732,
+            9011.752
+          ],
+          "forecast_end": 9011.752,
+          "forecast_delta": 20.6523,
+          "signal": "crowding_up"
+        },
+        {
+          "stock_code": "00468",
+          "stock_name": "紛美包裝",
+          "field": "adj_hhi",
+          "history_days": 36,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 8541.5,
+          "recent_delta": 0.0,
+          "forecast": [
+            8541.5,
+            8541.5,
+            8541.5,
+            8541.5,
+            8541.5
+          ],
+          "forecast_end": 8541.5,
+          "forecast_delta": 0.0,
+          "signal": "flat"
+        },
+        {
+          "stock_code": "09991",
+          "stock_name": "寶尊電商－Ｗ",
+          "field": "adj_hhi",
+          "history_days": 32,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 8471.7998,
+          "recent_delta": -2.4,
+          "forecast": [
+            8471.582,
+            8471.7822,
+            8471.7646,
+            8471.7832,
+            8471.9492
+          ],
+          "forecast_end": 8471.9492,
+          "forecast_delta": 0.1494,
+          "signal": "flat"
+        },
+        {
+          "stock_code": "06623",
+          "stock_name": "陸控",
+          "field": "adj_hhi",
+          "history_days": 34,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 8427.7998,
+          "recent_delta": 0.0,
+          "forecast": [
+            8427.7998,
+            8427.7998,
+            8427.7998,
+            8427.7998,
+            8427.7998
+          ],
+          "forecast_end": 8427.7998,
+          "forecast_delta": 0.0,
+          "signal": "flat"
+        },
+        {
+          "stock_code": "06966",
+          "stock_name": "中國萬桐園",
+          "field": "adj_hhi",
+          "history_days": 34,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 8372.7002,
+          "recent_delta": -0.3,
+          "forecast": [
+            8372.7041,
+            8372.7051,
+            8372.707,
+            8372.708,
+            8372.7119
+          ],
+          "forecast_end": 8372.7119,
+          "forecast_delta": 0.0117,
+          "signal": "flat"
+        },
+        {
+          "stock_code": "01657",
+          "stock_name": "樺欣控股",
+          "field": "adj_hhi",
+          "history_days": 34,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 8330.0,
+          "recent_delta": -0.3,
+          "forecast": [
+            8328.6748,
+            8337.6396,
+            8387.5654,
+            8411.7334,
+            8413.2969
+          ],
+          "forecast_end": 8413.2969,
+          "forecast_delta": 83.2969,
+          "signal": "crowding_up"
+        },
+        {
+          "stock_code": "06816",
+          "stock_name": "瑞港建設",
+          "field": "adj_hhi",
+          "history_days": 34,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 8266.9004,
+          "recent_delta": 0.0,
+          "forecast": [
+            8266.9014,
+            8266.9014,
+            8266.9004,
+            8266.9004,
+            8266.9014
+          ],
+          "forecast_end": 8266.9014,
+          "forecast_delta": 0.001,
+          "signal": "flat"
+        },
+        {
+          "stock_code": "01570",
+          "stock_name": "偉業控股",
+          "field": "adj_hhi",
+          "history_days": 34,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 8167.1001,
+          "recent_delta": -14.4,
+          "forecast": [
+            8166.8018,
+            8166.8999,
+            8166.9561,
+            8166.915,
+            8167.0132
+          ],
+          "forecast_end": 8167.0132,
+          "forecast_delta": -0.0869,
+          "signal": "flat"
+        },
+        {
+          "stock_code": "08495",
+          "stock_name": "1957 & CO.",
+          "field": "adj_hhi",
+          "history_days": 34,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 8047.7998,
+          "recent_delta": 0.0,
+          "forecast": [
+            8047.7998,
+            8047.7998,
+            8047.8008,
+            8047.8003,
+            8047.8008
+          ],
+          "forecast_end": 8047.8008,
+          "forecast_delta": 0.001,
+          "signal": "flat"
+        },
+        {
+          "stock_code": "01204",
+          "stock_name": "博維智慧",
+          "field": "adj_hhi",
+          "history_days": 35,
+          "from_date": "2026-04-30",
+          "to_date": "2026-07-10",
+          "latest": 8004.7002,
+          "recent_delta": -0.4,
+          "forecast": [
+            8004.6943,
+            8004.6948,
+            8004.6968,
+            8004.6978,
+            8004.6992
+          ],
+          "forecast_end": 8004.6992,
+          "forecast_delta": -0.001,
+          "signal": "flat"
+        }
+      ],
+      "errors": []
+    }
+  ],
+  "by_field": {
+    "broker_top5_pct": [
+      {
+        "stock_code": "01656",
+        "stock_name": "億仕登控股",
+        "field": "broker_top5_pct",
+        "history_days": 34,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 99.5,
+        "recent_delta": 0.0,
+        "forecast": [
+          99.5001,
+          99.5,
+          99.4999,
+          99.5001,
+          99.5
+        ],
+        "forecast_end": 99.5,
+        "forecast_delta": 0.0,
+        "signal": "flat"
+      },
+      {
+        "stock_code": "06966",
+        "stock_name": "中國萬桐園",
+        "field": "broker_top5_pct",
+        "history_days": 34,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 98.29,
+        "recent_delta": 0.0,
+        "forecast": [
+          98.2901,
+          98.2898,
+          98.2896,
+          98.2894,
+          98.2896
+        ],
+        "forecast_end": 98.2896,
+        "forecast_delta": -0.0004,
+        "signal": "flat"
+      },
+      {
+        "stock_code": "01298",
+        "stock_name": "雲能國際",
+        "field": "broker_top5_pct",
+        "history_days": 35,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 97.88,
+        "recent_delta": 0.0,
+        "forecast": [
+          97.88,
+          97.88,
+          97.88,
+          97.88,
+          97.88
+        ],
+        "forecast_end": 97.88,
+        "forecast_delta": -0.0,
+        "signal": "flat"
+      },
+      {
+        "stock_code": "06816",
+        "stock_name": "瑞港建設",
+        "field": "broker_top5_pct",
+        "history_days": 34,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 97.48,
+        "recent_delta": 0.0,
+        "forecast": [
+          97.4803,
+          97.4803,
+          97.4802,
+          97.4802,
+          97.4802
+        ],
+        "forecast_end": 97.4802,
+        "forecast_delta": 0.0002,
+        "signal": "flat"
+      },
+      {
+        "stock_code": "00157",
+        "stock_name": "自然美",
+        "field": "broker_top5_pct",
+        "history_days": 37,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 97.35,
+        "recent_delta": 0.01,
+        "forecast": [
+          97.3466,
+          97.3462,
+          97.3454,
+          97.3454,
+          97.3448
+        ],
+        "forecast_end": 97.3448,
+        "forecast_delta": -0.0052,
+        "signal": "flat"
+      },
+      {
+        "stock_code": "01597",
+        "stock_name": "納泉能源科技",
+        "field": "broker_top5_pct",
+        "history_days": 34,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 97.09,
+        "recent_delta": -0.06,
+        "forecast": [
+          97.0927,
+          97.0939,
+          97.0965,
+          97.0958,
+          97.0975
+        ],
+        "forecast_end": 97.0975,
+        "forecast_delta": 0.0075,
+        "signal": "flat"
+      },
+      {
+        "stock_code": "02481",
+        "stock_name": "雙良睿能",
+        "field": "broker_top5_pct",
+        "history_days": 34,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 96.94,
+        "recent_delta": 0.01,
+        "forecast": [
+          96.9434,
+          96.9461,
+          96.947,
+          96.9455,
+          96.9428
+        ],
+        "forecast_end": 96.9428,
+        "forecast_delta": 0.0028,
+        "signal": "flat"
+      },
+      {
+        "stock_code": "00952",
+        "stock_name": "華富建業金融",
+        "field": "broker_top5_pct",
+        "history_days": 35,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 96.87,
+        "recent_delta": 0.0,
+        "forecast": [
+          96.8692,
+          96.8676,
+          96.8681,
+          96.8708,
+          96.8736
+        ],
+        "forecast_end": 96.8736,
+        "forecast_delta": 0.0036,
+        "signal": "flat"
+      },
+      {
+        "stock_code": "02299",
+        "stock_name": "百宏實業",
+        "field": "broker_top5_pct",
+        "history_days": 34,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 96.79,
+        "recent_delta": 0.02,
+        "forecast": [
+          96.7906,
+          96.7905,
+          96.7904,
+          96.7907,
+          96.7905
+        ],
+        "forecast_end": 96.7905,
+        "forecast_delta": 0.0005,
+        "signal": "flat"
+      },
+      {
+        "stock_code": "09913",
+        "stock_name": "智勤控股",
+        "field": "broker_top5_pct",
+        "history_days": 33,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 96.62,
+        "recent_delta": 0.01,
+        "forecast": [
+          96.6207,
+          96.6207,
+          96.6204,
+          96.6212,
+          96.6215
+        ],
+        "forecast_end": 96.6215,
+        "forecast_delta": 0.0015,
+        "signal": "flat"
+      },
+      {
+        "stock_code": "01577",
+        "stock_name": "匯鑫小貸",
+        "field": "broker_top5_pct",
+        "history_days": 34,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 96.34,
+        "recent_delta": 0.03,
+        "forecast": [
+          96.3417,
+          96.3416,
+          96.3408,
+          96.3417,
+          96.3421
+        ],
+        "forecast_end": 96.3421,
+        "forecast_delta": 0.0021,
+        "signal": "flat"
+      },
+      {
+        "stock_code": "02409",
+        "stock_name": "洲際船務",
+        "field": "broker_top5_pct",
+        "history_days": 34,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 95.92,
+        "recent_delta": 0.01,
+        "forecast": [
+          95.9212,
+          95.9209,
+          95.9218,
+          95.9221,
+          95.9216
+        ],
+        "forecast_end": 95.9216,
+        "forecast_delta": 0.0016,
+        "signal": "flat"
+      },
+      {
+        "stock_code": "08629",
+        "stock_name": "集信國控",
+        "field": "broker_top5_pct",
+        "history_days": 34,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 95.88,
+        "recent_delta": 0.0,
+        "forecast": [
+          95.8793,
+          95.8793,
+          95.8798,
+          95.8797,
+          95.8802
+        ],
+        "forecast_end": 95.8802,
+        "forecast_delta": 0.0002,
+        "signal": "flat"
+      },
+      {
+        "stock_code": "01748",
+        "stock_name": "信源企業集團",
+        "field": "broker_top5_pct",
+        "history_days": 34,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 95.71,
+        "recent_delta": 0.0,
+        "forecast": [
+          95.71,
+          95.71,
+          95.71,
+          95.71,
+          95.71
+        ],
+        "forecast_end": 95.71,
+        "forecast_delta": 0.0,
+        "signal": "flat"
+      },
+      {
+        "stock_code": "01204",
+        "stock_name": "博維智慧",
+        "field": "broker_top5_pct",
+        "history_days": 35,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 95.64,
+        "recent_delta": 0.56,
+        "forecast": [
+          95.6531,
+          95.6511,
+          95.6488,
+          95.6496,
+          95.6472
+        ],
+        "forecast_end": 95.6472,
+        "forecast_delta": 0.0072,
+        "signal": "flat"
+      }
+    ],
+    "total_pct": [
+      {
+        "stock_code": "04332",
+        "stock_name": "AMGEN-T",
+        "field": "total_pct",
+        "history_days": 25,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-07",
+        "latest": 100.0,
+        "recent_delta": 100.0,
+        "forecast": [
+          103.1841,
+          102.872,
+          102.1253,
+          99.4433,
+          96.6102
+        ],
+        "forecast_end": 96.6102,
+        "forecast_delta": -3.3898,
+        "signal": "distribution_risk"
+      },
+      {
+        "stock_code": "02596",
+        "stock_name": "宜賓銀行",
+        "field": "total_pct",
+        "history_days": 29,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 99.9,
+        "recent_delta": -0.1,
+        "forecast": [
+          99.8967,
+          99.8986,
+          99.9004,
+          99.9051,
+          99.9101
+        ],
+        "forecast_end": 99.9101,
+        "forecast_delta": 0.0101,
+        "signal": "flat"
+      },
+      {
+        "stock_code": "02687",
+        "stock_name": "卓越睿新",
+        "field": "total_pct",
+        "history_days": 29,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 99.9,
+        "recent_delta": -0.1,
+        "forecast": [
+          99.894,
+          99.8979,
+          99.9038,
+          99.9165,
+          99.9296
+        ],
+        "forecast_end": 99.9296,
+        "forecast_delta": 0.0296,
+        "signal": "flat"
+      },
+      {
+        "stock_code": "02520",
+        "stock_name": "山西安裝",
+        "field": "total_pct",
+        "history_days": 29,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 99.88,
+        "recent_delta": -0.12,
+        "forecast": [
+          99.8763,
+          99.8771,
+          99.8785,
+          99.8804,
+          99.8833
+        ],
+        "forecast_end": 99.8833,
+        "forecast_delta": 0.0033,
+        "signal": "flat"
+      },
+      {
+        "stock_code": "02352",
+        "stock_name": "東原仁知服務",
+        "field": "total_pct",
+        "history_days": 29,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 99.87,
+        "recent_delta": -0.13,
+        "forecast": [
+          99.8649,
+          99.8677,
+          99.8709,
+          99.8802,
+          99.8905
+        ],
+        "forecast_end": 99.8905,
+        "forecast_delta": 0.0205,
+        "signal": "flat"
+      },
+      {
+        "stock_code": "02637",
+        "stock_name": "海西新藥",
+        "field": "total_pct",
+        "history_days": 29,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 99.86,
+        "recent_delta": 12.86,
+        "forecast": [
+          94.1096,
+          92.726,
+          91.127,
+          89.3587,
+          88.4807
+        ],
+        "forecast_end": 88.4807,
+        "forecast_delta": -11.3793,
+        "signal": "distribution_risk"
+      },
+      {
+        "stock_code": "02496",
+        "stock_name": "友芝友生物－Ｂ",
+        "field": "total_pct",
+        "history_days": 29,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 99.85,
+        "recent_delta": -0.15,
+        "forecast": [
+          99.8868,
+          99.8936,
+          99.8934,
+          99.8999,
+          99.8953
+        ],
+        "forecast_end": 99.8953,
+        "forecast_delta": 0.0453,
+        "signal": "flat"
+      },
+      {
+        "stock_code": "01542",
+        "stock_name": "台州水務",
+        "field": "total_pct",
+        "history_days": 29,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 99.84,
+        "recent_delta": -0.16,
+        "forecast": [
+          99.8352,
+          99.8373,
+          99.8397,
+          99.8439,
+          99.8494
+        ],
+        "forecast_end": 99.8494,
+        "forecast_delta": 0.0094,
+        "signal": "flat"
+      },
+      {
+        "stock_code": "01983",
+        "stock_name": "瀘州銀行",
+        "field": "total_pct",
+        "history_days": 29,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 99.84,
+        "recent_delta": -0.16,
+        "forecast": [
+          99.8351,
+          99.8376,
+          99.8407,
+          99.8479,
+          99.8553
+        ],
+        "forecast_end": 99.8553,
+        "forecast_delta": 0.0153,
+        "signal": "flat"
+      },
+      {
+        "stock_code": "02589",
+        "stock_name": "滬上阿姨",
+        "field": "total_pct",
+        "history_days": 29,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 99.83,
+        "recent_delta": -0.17,
+        "forecast": [
+          99.8237,
+          99.8293,
+          99.838,
+          99.8576,
+          99.8793
+        ],
+        "forecast_end": 99.8793,
+        "forecast_delta": 0.0493,
+        "signal": "flat"
+      },
+      {
+        "stock_code": "06661",
+        "stock_name": "湖州燃氣",
+        "field": "total_pct",
+        "history_days": 29,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 99.83,
+        "recent_delta": -0.17,
+        "forecast": [
+          99.8235,
+          99.8307,
+          99.8413,
+          99.8654,
+          99.8906
+        ],
+        "forecast_end": 99.8906,
+        "forecast_delta": 0.0606,
+        "signal": "flat"
+      },
+      {
+        "stock_code": "06922",
+        "stock_name": "康灃生物－Ｂ",
+        "field": "total_pct",
+        "history_days": 29,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 99.83,
+        "recent_delta": -0.17,
+        "forecast": [
+          99.8235,
+          99.8307,
+          99.8413,
+          99.8654,
+          99.8906
+        ],
+        "forecast_end": 99.8906,
+        "forecast_delta": 0.0606,
+        "signal": "flat"
+      },
+      {
+        "stock_code": "02152",
+        "stock_name": "蘇新服務",
+        "field": "total_pct",
+        "history_days": 29,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 99.8,
+        "recent_delta": -0.2,
+        "forecast": [
+          99.794,
+          99.7957,
+          99.7977,
+          99.8008,
+          99.8058
+        ],
+        "forecast_end": 99.8058,
+        "forecast_delta": 0.0058,
+        "signal": "flat"
+      },
+      {
+        "stock_code": "06657",
+        "stock_name": "百望股份",
+        "field": "total_pct",
+        "history_days": 29,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 99.8,
+        "recent_delta": -0.2,
+        "forecast": [
+          99.7915,
+          99.7969,
+          99.8043,
+          99.8221,
+          99.8421
+        ],
+        "forecast_end": 99.8421,
+        "forecast_delta": 0.0421,
+        "signal": "flat"
+      },
+      {
+        "stock_code": "01497",
+        "stock_name": "燕之屋",
+        "field": "total_pct",
+        "history_days": 29,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 99.79,
+        "recent_delta": -0.21,
+        "forecast": [
+          99.7791,
+          99.785,
+          99.7938,
+          99.8149,
+          99.8385
+        ],
+        "forecast_end": 99.8385,
+        "forecast_delta": 0.0485,
+        "signal": "flat"
+      }
+    ],
+    "adj_hhi": [
+      {
+        "stock_code": "04332",
+        "stock_name": "AMGEN-T",
+        "field": "adj_hhi",
+        "history_days": 25,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-07",
+        "latest": 10000.0,
+        "recent_delta": 0.0,
+        "forecast": [
+          10000.0,
+          10000.0,
+          10000.0,
+          10000.0,
+          10000.0
+        ],
+        "forecast_end": 10000.0,
+        "forecast_delta": 0.0,
+        "signal": "flat"
+      },
+      {
+        "stock_code": "01656",
+        "stock_name": "億仕登控股",
+        "field": "adj_hhi",
+        "history_days": 34,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 9834.4004,
+        "recent_delta": 4.4,
+        "forecast": [
+          9834.5117,
+          9834.4414,
+          9834.4453,
+          9834.4141,
+          9834.3711
+        ],
+        "forecast_end": 9834.3711,
+        "forecast_delta": -0.0293,
+        "signal": "flat"
+      },
+      {
+        "stock_code": "03660",
+        "stock_name": "奇富科技－Ｓ",
+        "field": "adj_hhi",
+        "history_days": 34,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 9787.2998,
+        "recent_delta": 50.1,
+        "forecast": [
+          9787.6426,
+          9787.4004,
+          9787.0215,
+          9787.3477,
+          9787.248
+        ],
+        "forecast_end": 9787.248,
+        "forecast_delta": -0.0518,
+        "signal": "flat"
+      },
+      {
+        "stock_code": "06686",
+        "stock_name": "諾亞控股",
+        "field": "adj_hhi",
+        "history_days": 34,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 9566.5,
+        "recent_delta": -5.6,
+        "forecast": [
+          9566.5645,
+          9566.6777,
+          9566.7598,
+          9566.6133,
+          9566.6973
+        ],
+        "forecast_end": 9566.6973,
+        "forecast_delta": 0.1973,
+        "signal": "flat"
+      },
+      {
+        "stock_code": "02076",
+        "stock_name": "ＢＯＳＳ直聘－Ｗ",
+        "field": "adj_hhi",
+        "history_days": 34,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 9502.7002,
+        "recent_delta": 2.5,
+        "forecast": [
+          9503.3945,
+          9503.6875,
+          9506.29,
+          9506.084,
+          9505.5586
+        ],
+        "forecast_end": 9505.5586,
+        "forecast_delta": 2.8584,
+        "signal": "crowding_up"
+      },
+      {
+        "stock_code": "01698",
+        "stock_name": "騰訊音樂－ＳＷ",
+        "field": "adj_hhi",
+        "history_days": 34,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 8991.0996,
+        "recent_delta": 41.9,
+        "forecast": [
+          8995.7246,
+          8999.8535,
+          9003.8975,
+          9008.5732,
+          9011.752
+        ],
+        "forecast_end": 9011.752,
+        "forecast_delta": 20.6523,
+        "signal": "crowding_up"
+      },
+      {
+        "stock_code": "00468",
+        "stock_name": "紛美包裝",
+        "field": "adj_hhi",
+        "history_days": 36,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 8541.5,
+        "recent_delta": 0.0,
+        "forecast": [
+          8541.5,
+          8541.5,
+          8541.5,
+          8541.5,
+          8541.5
+        ],
+        "forecast_end": 8541.5,
+        "forecast_delta": 0.0,
+        "signal": "flat"
+      },
+      {
+        "stock_code": "09991",
+        "stock_name": "寶尊電商－Ｗ",
+        "field": "adj_hhi",
+        "history_days": 32,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 8471.7998,
+        "recent_delta": -2.4,
+        "forecast": [
+          8471.582,
+          8471.7822,
+          8471.7646,
+          8471.7832,
+          8471.9492
+        ],
+        "forecast_end": 8471.9492,
+        "forecast_delta": 0.1494,
+        "signal": "flat"
+      },
+      {
+        "stock_code": "06623",
+        "stock_name": "陸控",
+        "field": "adj_hhi",
+        "history_days": 34,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 8427.7998,
+        "recent_delta": 0.0,
+        "forecast": [
+          8427.7998,
+          8427.7998,
+          8427.7998,
+          8427.7998,
+          8427.7998
+        ],
+        "forecast_end": 8427.7998,
+        "forecast_delta": 0.0,
+        "signal": "flat"
+      },
+      {
+        "stock_code": "06966",
+        "stock_name": "中國萬桐園",
+        "field": "adj_hhi",
+        "history_days": 34,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 8372.7002,
+        "recent_delta": -0.3,
+        "forecast": [
+          8372.7041,
+          8372.7051,
+          8372.707,
+          8372.708,
+          8372.7119
+        ],
+        "forecast_end": 8372.7119,
+        "forecast_delta": 0.0117,
+        "signal": "flat"
+      },
+      {
+        "stock_code": "01657",
+        "stock_name": "樺欣控股",
+        "field": "adj_hhi",
+        "history_days": 34,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 8330.0,
+        "recent_delta": -0.3,
+        "forecast": [
+          8328.6748,
+          8337.6396,
+          8387.5654,
+          8411.7334,
+          8413.2969
+        ],
+        "forecast_end": 8413.2969,
+        "forecast_delta": 83.2969,
+        "signal": "crowding_up"
+      },
+      {
+        "stock_code": "06816",
+        "stock_name": "瑞港建設",
+        "field": "adj_hhi",
+        "history_days": 34,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 8266.9004,
+        "recent_delta": 0.0,
+        "forecast": [
+          8266.9014,
+          8266.9014,
+          8266.9004,
+          8266.9004,
+          8266.9014
+        ],
+        "forecast_end": 8266.9014,
+        "forecast_delta": 0.001,
+        "signal": "flat"
+      },
+      {
+        "stock_code": "01570",
+        "stock_name": "偉業控股",
+        "field": "adj_hhi",
+        "history_days": 34,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 8167.1001,
+        "recent_delta": -14.4,
+        "forecast": [
+          8166.8018,
+          8166.8999,
+          8166.9561,
+          8166.915,
+          8167.0132
+        ],
+        "forecast_end": 8167.0132,
+        "forecast_delta": -0.0869,
+        "signal": "flat"
+      },
+      {
+        "stock_code": "08495",
+        "stock_name": "1957 & CO.",
+        "field": "adj_hhi",
+        "history_days": 34,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 8047.7998,
+        "recent_delta": 0.0,
+        "forecast": [
+          8047.7998,
+          8047.7998,
+          8047.8008,
+          8047.8003,
+          8047.8008
+        ],
+        "forecast_end": 8047.8008,
+        "forecast_delta": 0.001,
+        "signal": "flat"
+      },
+      {
+        "stock_code": "01204",
+        "stock_name": "博維智慧",
+        "field": "adj_hhi",
+        "history_days": 35,
+        "from_date": "2026-04-30",
+        "to_date": "2026-07-10",
+        "latest": 8004.7002,
+        "recent_delta": -0.4,
+        "forecast": [
+          8004.6943,
+          8004.6948,
+          8004.6968,
+          8004.6978,
+          8004.6992
+        ],
+        "forecast_end": 8004.6992,
+        "forecast_delta": -0.001,
+        "signal": "flat"
+      }
+    ]
+  },
+  "forecasts": [
+    {
+      "stock_code": "01656",
+      "stock_name": "億仕登控股",
+      "field": "broker_top5_pct",
+      "history_days": 34,
+      "from_date": "2026-04-30",
+      "to_date": "2026-07-10",
+      "latest": 99.5,
+      "recent_delta": 0.0,
+      "forecast": [
+        99.5001,
+        99.5,
+        99.4999,
+        99.5001,
+        99.5
+      ],
+      "forecast_end": 99.5,
+      "forecast_delta": 0.0,
+      "signal": "flat"
+    },
+    {
+      "stock_code": "06966",
+      "stock_name": "中國萬桐園",
+      "field": "broker_top5_pct",
+      "history_days": 34,
+      "from_date": "2026-04-30",
+      "to_date": "2026-07-10",
+      "latest": 98.29,
+      "recent_delta": 0.0,
+      "forecast": [
+        98.2901,
+        98.2898,
+        98.2896,
+        98.2894,
+        98.2896
+      ],
+      "forecast_end": 98.2896,
+      "forecast_delta": -0.0004,
+      "signal": "flat"
+    },
+    {
+      "stock_code": "01298",
+      "stock_name": "雲能國際",
+      "field": "broker_top5_pct",
+      "history_days": 35,
+      "from_date": "2026-04-30",
+      "to_date": "2026-07-10",
+      "latest": 97.88,
+      "recent_delta": 0.0,
+      "forecast": [
+        97.88,
+        97.88,
+        97.88,
+        97.88,
+        97.88
+      ],
+      "forecast_end": 97.88,
+      "forecast_delta": -0.0,
+      "signal": "flat"
+    },
+    {
+      "stock_code": "06816",
+      "stock_name": "瑞港建設",
+      "field": "broker_top5_pct",
+      "history_days": 34,
+      "from_date": "2026-04-30",
+      "to_date": "2026-07-10",
+      "latest": 97.48,
+      "recent_delta": 0.0,
+      "forecast": [
+        97.4803,
+        97.4803,
+        97.4802,
+        97.4802,
+        97.4802
+      ],
+      "forecast_end": 97.4802,
+      "forecast_delta": 0.0002,
+      "signal": "flat"
+    },
+    {
+      "stock_code": "00157",
+      "stock_name": "自然美",
+      "field": "broker_top5_pct",
+      "history_days": 37,
+      "from_date": "2026-04-30",
+      "to_date": "2026-07-10",
+      "latest": 97.35,
+      "recent_delta": 0.01,
+      "forecast": [
+        97.3466,
+        97.3462,
+        97.3454,
+        97.3454,
+        97.3448
+      ],
+      "forecast_end": 97.3448,
+      "forecast_delta": -0.0052,
+      "signal": "flat"
+    },
+    {
+      "stock_code": "01597",
+      "stock_name": "納泉能源科技",
+      "field": "broker_top5_pct",
+      "history_days": 34,
+      "from_date": "2026-04-30",
+      "to_date": "2026-07-10",
+      "latest": 97.09,
+      "recent_delta": -0.06,
+      "forecast": [
+        97.0927,
+        97.0939,
+        97.0965,
+        97.0958,
+        97.0975
+      ],
+      "forecast_end": 97.0975,
+      "forecast_delta": 0.0075,
+      "signal": "flat"
+    },
+    {
+      "stock_code": "02481",
+      "stock_name": "雙良睿能",
+      "field": "broker_top5_pct",
+      "history_days": 34,
+      "from_date": "2026-04-30",
+      "to_date": "2026-07-10",
+      "latest": 96.94,
+      "recent_delta": 0.01,
+      "forecast": [
+        96.9434,
+        96.9461,
+        96.947,
+        96.9455,
+        96.9428
+      ],
+      "forecast_end": 96.9428,
+      "forecast_delta": 0.0028,
+      "signal": "flat"
+    },
+    {
+      "stock_code": "00952",
+      "stock_name": "華富建業金融",
+      "field": "broker_top5_pct",
+      "history_days": 35,
+      "from_date": "2026-04-30",
+      "to_date": "2026-07-10",
+      "latest": 96.87,
+      "recent_delta": 0.0,
+      "forecast": [
+        96.8692,
+        96.8676,
+        96.8681,
+        96.8708,
+        96.8736
+      ],
+      "forecast_end": 96.8736,
+      "forecast_delta": 0.0036,
+      "signal": "flat"
+    },
+    {
+      "stock_code": "02299",
+      "stock_name": "百宏實業",
+      "field": "broker_top5_pct",
+      "history_days": 34,
+      "from_date": "2026-04-30",
+      "to_date": "2026-07-10",
+      "latest": 96.79,
+      "recent_delta": 0.02,
+      "forecast": [
+        96.7906,
+        96.7905,
+        96.7904,
+        96.7907,
+        96.7905
+      ],
+      "forecast_end": 96.7905,
+      "forecast_delta": 0.0005,
+      "signal": "flat"
+    },
+    {
+      "stock_code": "09913",
+      "stock_name": "智勤控股",
+      "field": "broker_top5_pct",
+      "history_days": 33,
+      "from_date": "2026-04-30",
+      "to_date": "2026-07-10",
+      "latest": 96.62,
+      "recent_delta": 0.01,
+      "forecast": [
+        96.6207,
+        96.6207,
+        96.6204,
+        96.6212,
+        96.6215
+      ],
+      "forecast_end": 96.6215,
+      "forecast_delta": 0.0015,
+      "signal": "flat"
+    },
+    {
+      "stock_code": "01577",
+      "stock_name": "匯鑫小貸",
+      "field": "broker_top5_pct",
+      "history_days": 34,
+      "from_date": "2026-04-30",
+      "to_date": "2026-07-10",
+      "latest": 96.34,
+      "recent_delta": 0.03,
+      "forecast": [
+        96.3417,
+        96.3416,
+        96.3408,
+        96.3417,
+        96.3421
+      ],
+      "forecast_end": 96.3421,
+      "forecast_delta": 0.0021,
+      "signal": "flat"
+    },
+    {
+      "stock_code": "02409",
+      "stock_name": "洲際船務",
+      "field": "broker_top5_pct",
+      "history_days": 34,
+      "from_date": "2026-04-30",
+      "to_date": "2026-07-10",
+      "latest": 95.92,
+      "recent_delta": 0.01,
+      "forecast": [
+        95.9212,
+        95.9209,
+        95.9218,
+        95.9221,
+        95.9216
+      ],
+      "forecast_end": 95.9216,
+      "forecast_delta": 0.0016,
+      "signal": "flat"
+    },
+    {
+      "stock_code": "08629",
+      "stock_name": "集信國控",
+      "field": "broker_top5_pct",
+      "history_days": 34,
+      "from_date": "2026-04-30",
+      "to_date": "2026-07-10",
+      "latest": 95.88,
+      "recent_delta": 0.0,
+      "forecast": [
+        95.8793,
+        95.8793,
+        95.8798,
+        95.8797,
+        95.8802
+      ],
+      "forecast_end": 95.8802,
+      "forecast_delta": 0.0002,
+      "signal": "flat"
+    },
+    {
+      "stock_code": "01748",
+      "stock_name": "信源企業集團",
+      "field": "broker_top5_pct",
+      "history_days": 34,
+      "from_date": "2026-04-30",
+      "to_date": "2026-07-10",
+      "latest": 95.71,
+      "recent_delta": 0.0,
+      "forecast": [
+        95.71,
+        95.71,
+        95.71,
+        95.71,
+        95.71
+      ],
+      "forecast_end": 95.71,
+      "forecast_delta": 0.0,
+      "signal": "flat"
+    },
+    {
+      "stock_code": "01204",
+      "stock_name": "博維智慧",
+      "field": "broker_top5_pct",
+      "history_days": 35,
+      "from_date": "2026-04-30",
+      "to_date": "2026-07-10",
+      "latest": 95.64,
+      "recent_delta": 0.56,
+      "forecast": [
+        95.6531,
+        95.6511,
+        95.6488,
+        95.6496,
+        95.6472
+      ],
+      "forecast_end": 95.6472,
+      "forecast_delta": 0.0072,
+      "signal": "flat"
+    }
+  ],
+  "errors": 0
+}

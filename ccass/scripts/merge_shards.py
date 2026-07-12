@@ -151,6 +151,7 @@ def update_holdings_json(target_date: date) -> None:
     """Update holdings.json with frontend-compatible fields from DB."""
     import sqlite3
     from src.db import DB_PATH
+    from src.trend import reference_dates_for_windows
     
     db = sqlite3.connect(str(DB_PATH))
     db.row_factory = sqlite3.Row
@@ -177,8 +178,24 @@ def update_holdings_json(target_date: date) -> None:
                cd.top5_pct, cd.top10_pct,
                cd.adj_hhi, cd.broker_top5_pct, cd.top_broker_id,
                cd.top_broker_name, cd.top_broker_pct, cd.futu_pct,
-               cd.a00005_pct
+               cd.a00005_pct, cd.total_shares,
+               COALESCE(tr.consecutive_increase_days, cd.consecutive_increase_days),
+               COALESCE(tr.consecutive_decrease_days, cd.consecutive_decrease_days),
+               (SELECT p.total_shares FROM holdings_daily p
+                WHERE p.stock_code = cd.stock_code AND p.trade_date < cd.trade_date
+                  AND p.total_pct IS NOT NULL
+                ORDER BY p.trade_date DESC LIMIT 1) AS previous_shares,
+               (SELECT p.total_pct FROM holdings_daily p
+                WHERE p.stock_code = cd.stock_code AND p.trade_date < cd.trade_date
+                  AND p.total_pct IS NOT NULL
+                ORDER BY p.trade_date DESC LIMIT 1) AS previous_pct,
+               tr.delta_5d_shares, tr.delta_20d_shares,
+               tr.delta_60d_shares, tr.delta_120d_shares,
+               tr.delta_5d_pct, tr.delta_20d_pct,
+               tr.delta_60d_pct, tr.delta_120d_pct
         FROM holdings_daily cd
+        LEFT JOIN holdings_trends tr
+          ON tr.stock_code = cd.stock_code AND tr.trade_date = cd.trade_date
         WHERE cd.trade_date = ? AND {exclude_where}
     """, (target_date.strftime("%Y-%m-%d"), *exclude_params)).fetchall()
     
@@ -256,10 +273,33 @@ def update_holdings_json(target_date: date) -> None:
         tbp = round(row[9], 2) if row[9] is not None else None       # top_broker_pct
         fp = round(row[10], 2) if row[10] is not None else None      # futu_pct
         a5 = round(row[11], 2) if row[11] is not None else None      # a00005_pct
+        total_shares = row[12]
+        streak_up = int(row[13] or 0)
+        streak_down = int(row[14] or 0)
+        previous_shares = row[15]
+        previous_pct = row[16]
+        trend_shares = {
+            5: row[17],
+            20: row[18],
+            60: row[19],
+            120: row[20],
+        }
+        trend_pct = {
+            5: row[21],
+            20: row[22],
+            60: row[23],
+            120: row[24],
+        }
 
         mc = mc_map.get(sc)
         pr = price_map.get(sc, {})
         fcf = fcf_map.get(sc, {})
+
+        effective_py = pr.get('apy', pr.get('py'))
+        latest_price = pr.get('lp')
+        effective_py_pct = None
+        if isinstance(effective_py, (int, float)) and effective_py > 0 and isinstance(latest_price, (int, float)):
+            effective_py_pct = round((latest_price - effective_py) / effective_py * 100, 2)
 
         stock = {
             'c': sc,
@@ -271,9 +311,9 @@ def update_holdings_json(target_date: date) -> None:
             'mc': mc,
             # Year-open + latest price
             'yo': pr.get('yo'),
-            'lp': pr.get('lp'),
-            'py': pr.get('apy', pr.get('py')),
-            'py_pct': pr.get('apy_pct', pr.get('py_pct')),
+            'lp': latest_price,
+            'py': effective_py,
+            'py_pct': effective_py_pct,
             # Cached live quote fields (compact keys)
             'chg': pr.get('chg'),            # 今日變幅%
             'vol': pr.get('vol'),            # 成交額
@@ -292,6 +332,19 @@ def update_holdings_json(target_date: date) -> None:
             'tbp': tbp,
             'fp': fp,
             'a5': a5,
+            'ts': total_shares,
+            'tsd': total_shares - previous_shares if tp is not None and previous_pct is not None and total_shares is not None and previous_shares is not None else None,
+            'tpd': round(tp - previous_pct, 4) if tp is not None and previous_pct is not None else None,
+            'su': streak_up,
+            'sd': streak_down,
+            'd5s': trend_shares[5],
+            'd20s': trend_shares[20],
+            'd60s': trend_shares[60],
+            'd120s': trend_shares[120],
+            'd5p': round(trend_pct[5], 4) if trend_pct[5] is not None else None,
+            'd20p': round(trend_pct[20], 4) if trend_pct[20] is not None else None,
+            'd60p': round(trend_pct[60], 4) if trend_pct[60] is not None else None,
+            'd120p': round(trend_pct[120], 4) if trend_pct[120] is not None else None,
         }
         for key in ("fcf", "fcf5y", "fcf_trend"):
             if fcf.get(key) is not None:
@@ -299,10 +352,33 @@ def update_holdings_json(target_date: date) -> None:
         stocks.append(stock)
 
     total_participants = sum(s['np'] for s in stocks)
+    trend_reference_dates = reference_dates_for_windows(target_date)
 
-    # Trend pipeline disabled: do not publish derived movers.
-    top_increase: list[dict] = []
-    top_decrease: list[dict] = []
+    def trend_mover(stock: dict) -> dict:
+        return {
+            "code": stock["c"],
+            "name": stock["n"],
+            "delta_5d": stock.get("d5p"),
+            "delta_20d": stock.get("d20p"),
+            "delta_60d": stock.get("d60p"),
+            "delta_120d": stock.get("d120p"),
+            "shares_5d": stock.get("d5s"),
+            "shares_20d": stock.get("d20s"),
+            "shares_60d": stock.get("d60s"),
+            "shares_120d": stock.get("d120s"),
+        }
+
+    trend_ready = [s for s in stocks if s.get("d5p") is not None and s.get("d5s") is not None]
+    top_increase = [
+        trend_mover(s)
+        for s in sorted(trend_ready, key=lambda item: item["d5p"], reverse=True)
+        if s["d5p"] >= 0.1
+    ][:50]
+    top_decrease = [
+        trend_mover(s)
+        for s in sorted(trend_ready, key=lambda item: item["d5p"])
+        if s["d5p"] <= -0.1
+    ][:50]
 
     # First date in DB
     first_row = db.execute("SELECT MIN(trade_date) FROM holdings_daily").fetchone()
@@ -365,6 +441,10 @@ def update_holdings_json(target_date: date) -> None:
         "top_increase": top_increase,
         "top_decrease": top_decrease,
         "first_date": first_date,
+        "trend_reference_dates": {
+            str(window): ref.isoformat() if ref else None
+            for window, ref in trend_reference_dates.items()
+        },
         "total_participants": total_participants,
         "coverage": date_count,
         "coverage_total": active_total,

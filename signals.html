@@ -66,6 +66,10 @@ th.sort-active{color:var(--primary)}.sort-icon{margin-left:4px;font-size:9px}
 .cpill-increase{background:var(--up-soft);color:var(--up);border-color:var(--up-border)}
 .cpill-rights{background:var(--violet-soft);color:var(--violet);border-color:var(--violet-border)}
 .cpill-other{background:var(--surface-soft);color:var(--mute);border-color:var(--line)}
+.cpill-setup-breakout{background:#fff7ed;color:#c2410c;border-color:#fdba74}
+.cpill-setup-base{background:#ecfeff;color:#0f766e;border-color:#67e8f9}
+.cpill-setup-breaklow{background:#eff6ff;color:#1d4ed8;border-color:#93c5fd}
+.cpill-setup-rebound{background:#fdf2f8;color:#be185d;border-color:#f9a8d4}
 .urow.ipo-highlight{background:linear-gradient(90deg,var(--amber-soft),transparent 50%)!important;border-left:3px solid var(--amber)}
 .cplink{text-decoration:none}
 .cell-time{color:var(--mute);font:500 12px "JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -312,6 +316,65 @@ function fmtDate(s){ const v=cleanText(s); if(!v)return'—'; try{ const d=new D
 
 const CORP_LABELS = {placement:'配股',increase:'增持',rights:'供股',other:'公告'};
 function corpLabel(t){ return CORP_LABELS[t]||'公告'; }
+const SETUP_LABELS = {breakout:'追勢突破',base:'盤底築台',breaklow:'破底翻',rebound:'弱勢反抽'};
+let tradeEngineCache = null;
+let tradeEngineMomentumIndex = new Map();
+
+async function ensureTradeEngine(){
+  if(tradeEngineCache) return tradeEngineCache;
+  try{
+    const res = await fetch('./data/trade_engine.json?_=' + Date.now(), {cache:'no-store'});
+    if(!res.ok) throw new Error('trade_engine unavailable');
+    tradeEngineCache = await res.json();
+    tradeEngineMomentumIndex = new Map();
+    ((tradeEngineCache && tradeEngineCache.momentum_rank) || []).forEach(function(row, idx){
+      if(!row || !row.symbol) return;
+      tradeEngineMomentumIndex.set(String(row.symbol), idx + 1);
+    });
+    return tradeEngineCache;
+  }catch(err){
+    console.warn('trade_engine load failed:', err && err.message ? err.message : err);
+    tradeEngineCache = null;
+    tradeEngineMomentumIndex = new Map();
+    return null;
+  }
+}
+function toTradeEngineSymbol(code){
+  const digits = String(code||'').replace(/^0+/, '') || '0';
+  return digits + '.HK';
+}
+function setupForCode(code){
+  if(!tradeEngineCache || !tradeEngineCache.by_symbol) return null;
+  return tradeEngineCache.by_symbol[toTradeEngineSymbol(code)] || null;
+}
+function hasCcass5dSignal(group){
+  const shares = Number(group && group.ccass && group.ccass.sharesDelta5d);
+  const pct = Number(group && group.ccass && group.ccass.pctDelta5d);
+  if(Number.isFinite(shares) && Number.isFinite(pct)){
+    return shares > 0 && pct > 0;
+  }
+  return (group && group.signals || []).some(function(sig){
+    const label = cleanText(sig && sig.label || sig);
+    return label.indexOf('CCASS') >= 0;
+  });
+}
+function setupPillHtml(code){
+  const setup = setupForCode(code);
+  if(!setup || !setup.activeKey) return '';
+  const key = String(setup.activeKey || '');
+  const score = Number(setup.scores && setup.scores[key]);
+  const symbol = toTradeEngineSymbol(code);
+  const rank = tradeEngineMomentumIndex.get(symbol);
+  const title = [];
+  title.push('Kbar: ' + (SETUP_LABELS[key] || key));
+  if(Number.isFinite(score)) title.push('score ' + score);
+  if(setup.trendGuard && setup.trendGuard.label) title.push(setup.trendGuard.label);
+  if(Number.isFinite(rank)) title.push('momentum #' + rank);
+  return '<span class="cpill cpill-setup-' + esc(key) + '" title="' + esc(title.join(' · ')) + '">'
+    + esc(SETUP_LABELS[key] || key)
+    + (Number.isFinite(rank) && rank <= 10 ? ' <em>TOP' + rank + '</em>' : '')
+    + '</span>';
+}
 
 function renderRow(g, wl){
   const codeStr = g.code||'';
@@ -342,6 +405,7 @@ function renderRow(g, wl){
   }).join(' ');
 
   const firstSig = (g.signals&&g.signals[0])?g.signals[0].label:(corpOrder.find(t=>g.corpTypes&&g.corpTypes[t])?corpLabel(corpOrder.find(t=>g.corpTypes&&g.corpTypes[t])):'');
+  const setupPill = setupPillHtml(codeStr);
   const hasCorp = g.corpCount>0?'1':'0';
   const hasTech = g.techCount>0?'1':'0';
   const rowCount = (g.techCount||0)+(g.corpCount||0);
@@ -350,10 +414,12 @@ function renderRow(g, wl){
   const saveBtn = `<button class="btn-save${saved?' saved':''}" data-code="${esc(codeStr)}" data-name="${esc(g.name||'')}" data-signal="${esc(firstSig)}" data-date="${esc(lastDate)}" title="加入自選">${saved?'★':'☆'}</button>`;
 
   const ipoBreak = (g.signals||[]).some(s=>s.label&&s.label.indexOf('IPO首日')>=0);
-  return `<tr class="urow${ipoBreak?' ipo-highlight':''}" data-code="${esc(codeStr)}" data-name="${esc(g.name||'')}" data-date="${esc(lastDate)}" data-corp="${hasCorp}" data-tech="${hasTech}" data-price="${price||0}" data-signal="${esc(firstSig)}">
+  const ccassUp = hasCcass5dSignal(g) ? '1' : '0';
+  const setupKey = (setupForCode(codeStr) || {}).activeKey || '';
+  return `<tr class="urow${ipoBreak?' ipo-highlight':''}" data-code="${esc(codeStr)}" data-name="${esc(g.name||'')}" data-date="${esc(lastDate)}" data-corp="${hasCorp}" data-tech="${hasTech}" data-ccass-up="${ccassUp}" data-setup="${esc(setupKey)}" data-price="${price||0}" data-signal="${esc(firstSig || (SETUP_LABELS[setupKey] || ''))}">
 <td class="cell-code"><div class="code">${esc(codeStr)}</div>${g.name?`<div class="name">${esc(g.name)}</div>`:''}</td>
 <td class="cell-price">${priceHtml}</td>
-<td class="cell-pills">${sigPills||'<span class="muted">—</span>'}${corpPills?`<div class="cpillrow">${corpPills}</div>`:''}</td>
+<td class="cell-pills">${sigPills||'<span class="muted">—</span>'}${(corpPills||setupPill)?`<div class="cpillrow">${setupPill||''}${corpPills||''}</div>`:''}</td>
 <td class="cell-time">${esc(lastTime)}</td>
 <td class="cell-link">${saveBtn}${hkexLnk}</td>
 </tr>`;
@@ -368,7 +434,7 @@ function renderTable(groups){
     `<div style="overflow-x:auto;-webkit-overflow-scrolling:touch"><table><thead><tr>
 <th class="sortable" data-sort="code">代號 / 名稱<span class="sort-icon"></span></th>
 <th class="sortable" data-sort="price">價格<span class="sort-icon"></span></th>
-<th class="sortable" data-sort="signal">信號 / 公告<select id="sigFilter" class="th-filter" onclick="event.stopPropagation()" onchange="ftype=this.value;applyFilter()"><option value="all">全部</option><option value="ipo_high">🚀 IPO首日高突破</option><option value="ipo_open">🚀 IPO首日開突破</option><option value="poc3">半年+12月+3年POC</option><option value="poc_half">半年POC</option><option value="yearopen">年開突破</option><option value="fvg">FVG</option><option value="hkdata_up">Market增持</option><option value="hkdata_dn">Market減持</option><option value="placement">配股</option><option value="increase">增持</option><option value="rights">供股</option></select><span class="sort-icon"></span></th>
+<th class="sortable" data-sort="signal">信號 / 公告<select id="sigFilter" class="th-filter" onclick="event.stopPropagation()" onchange="ftype=this.value;applyFilter()"><option value="all">全部</option><option value="ccass_up">CCASS合計持股5日增持</option><option value="setup_breakout">追勢突破</option><option value="setup_base">盤底築台</option><option value="setup_breaklow">破底翻</option><option value="setup_rebound">弱勢反抽</option><option value="vqc">成交轉勢日</option><option value="ipo_high">🚀 IPO首日高突破</option><option value="ipo_open">🚀 IPO首日開突破</option><option value="poc3">半年+12月+3年POC</option><option value="poc_half">半年POC</option><option value="yearopen">年開突破</option><option value="fvg">FVG</option><option value="hkdata_up">Market增持</option><option value="hkdata_dn">Market減持</option><option value="placement">配股</option><option value="increase">增持</option><option value="rights">供股</option></select><span class="sort-icon"></span></th>
 <th class="sortable sort-active sort-desc" data-sort="date">最後出現<span class="sort-icon">▼</span></th>
 <th>連結</th>
 </tr></thead><tbody id="urows">${html}</tbody></table></div>`;
@@ -424,8 +490,15 @@ function renderIPO(groups){
   card.style.display='';
 }
 function renderSummary(groups){
-  let p=0,inc=0,r=0;
+  let p=0,inc=0,r=0,ccassUp=0,breakout=0,base=0,breaklow=0,rebound=0;
   groups.forEach(g=>{
+    if(hasCcass5dSignal(g)) ccassUp+=1;
+    const setup = setupForCode(g.code);
+    const key = setup && setup.activeKey;
+    if(key === 'breakout') breakout += 1;
+    else if(key === 'base') base += 1;
+    else if(key === 'breaklow') breaklow += 1;
+    else if(key === 'rebound') rebound += 1;
     if(g.corpTypes){
       if(g.corpTypes.placement) p+=g.corpTypes.placement.count;
       if(g.corpTypes.increase) inc+=g.corpTypes.increase.count;
@@ -433,7 +506,7 @@ function renderSummary(groups){
     }
   });
   document.getElementById('summary').innerHTML =
-    `<span class="cnt placement">配股 <b>${p}</b></span><span class="cnt increase">增持 <b>${inc}</b></span><span class="cnt rights">供股 <b>${r}</b></span>`;
+    `<span class="cnt increase">CCASS合計持股5日增持 <b>${ccassUp}</b></span><span class="cnt">追勢突破 <b>${breakout}</b></span><span class="cnt">盤底築台 <b>${base}</b></span><span class="cnt">破底翻 <b>${breaklow}</b></span><span class="cnt">弱勢反抽 <b>${rebound}</b></span><span class="cnt placement">配股 <b>${p}</b></span><span class="cnt increase">股東增持 <b>${inc}</b></span><span class="cnt rights">供股 <b>${r}</b></span>`;
 }
 
 // --- Filtering ---
@@ -458,6 +531,12 @@ function applyFilter(){
     else if(ftype==='poc_half')ftOK=hasSig('半年POC');
     else if(ftype==='yearopen')ftOK=hasSig('年開突破');
     else if(ftype==='fvg')ftOK=hasSig('FVG');
+    else if(ftype==='vqc')ftOK=hasSig('成交轉勢日');
+    else if(ftype==='ccass_up')ftOK=r.dataset.ccassUp==='1';
+    else if(ftype==='setup_breakout')ftOK=r.dataset.setup==='breakout';
+    else if(ftype==='setup_base')ftOK=r.dataset.setup==='base';
+    else if(ftype==='setup_breaklow')ftOK=r.dataset.setup==='breaklow';
+    else if(ftype==='setup_rebound')ftOK=r.dataset.setup==='rebound';
     else if(ftype==='hkdata_up')ftOK=hasSig('Market增持');
     else if(ftype==='hkdata_dn')ftOK=hasSig('Market減持');
     else if(ftype==='ipo_high')ftOK=hasSig('IPO首日高突破');
@@ -578,7 +657,7 @@ function renderMarket(snap){
 // --- Data fetch ---
 async function mergeAndRender(hkGroups, recentCorps){
   try{
-    const ad = await fetch('./data/alerts.json?_='+Date.now()).then(r=>r.ok?r.json():null);
+    const ad = await fetch('./data/alerts.json?_='+Date.now(), {cache:'no-store'}).then(r=>r.ok?r.json():null);
     if(ad&&ad.alerts){
       var alertByCode={};
       ad.alerts.forEach(function(a){
@@ -620,7 +699,7 @@ async function loadData(){
   dot.className='dot loading';
   upd.textContent='載入中…';
   try{
-    const res = await fetch('./data/signals.json?_='+Date.now());
+    const res = await fetch('./data/signals.json?_='+Date.now(), {cache:'no-store'});
     const data = await res.json();
     if(!data.ok) throw new Error(data.error||'API error');
     let hkGroups=(data.groups||[]).filter(g=>{
@@ -650,10 +729,12 @@ async function loadData(){
     });
     saveCorpCache(cache);
 
+    await ensureTradeEngine();
+
     // Merge alerts and render ONCE
     await mergeAndRender(hkGroups, data.recentCorps||[]);
 
-    fetch('./market.json?_='+Date.now())
+    fetch('./market.json?_='+Date.now(), {cache:'no-store'})
       .then(r=>r.ok?r.json():null)
       .then(m=>{renderMarket(m);renderBreadth(m);})
       .catch(()=>{});
@@ -664,7 +745,7 @@ async function loadData(){
     const footerUpd=document.getElementById('signalsFooterUpdated');
     if (footerUpd) footerUpd.textContent = upd.textContent.replace(/^更新於\s*/, '');
     dot.className='dot';
-    fetch('./data/publish_bundle.json?_='+Date.now())
+    fetch('./data/publish_bundle.json?_='+Date.now(), {cache:'no-store'})
       .then(r=>r.ok?r.json():null)
       .then(b=>{
         if(!b){ dot.className='dot warn'; return; }

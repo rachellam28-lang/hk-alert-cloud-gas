@@ -893,7 +893,7 @@ tr:hover td {{ background: #161b22; }}
 <script>
 let DATA = [];
 let DATA_READY = false;
-const DATA_URL = 'data/rights_analysis.json?v={build_stamp}';
+const DATA_URL = 'data/rights_analysis.json';
 
 function fmtAmt(n) {{
   if (n >= 1e8) return (n/1e8).toFixed(1)+'億';
@@ -1150,7 +1150,7 @@ function sortTable(col) {{
 
 async function loadData() {{
   try {{
-    const res = await fetch(DATA_URL, {{cache: 'no-store'}});
+    const res = await fetch(DATA_URL + '?_=' + Date.now(), {{cache: 'no-store'}});
     if (!res.ok) throw new Error('HTTP ' + res.status);
     DATA = await res.json();
     DATA_READY = true;

@@ -1,14 +1,55 @@
 {
-  "updated": "2026-07-03 08:54 UTC",
-  "count": 18,
+  "updated": "2026-07-12 15:16 UTC",
+  "count": 50,
   "watchlist": [
     {
-      "code": "02295",
-      "name": "MAXICITY",
+      "code": "00100",
+      "name": "MINIMAX-W",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-10"
+    },
+    {
+      "code": "06288",
+      "name": "FAST RETAIL-DRS",
       "types": [
         "復牌"
       ],
-      "ann_date": "2026-07-03"
+      "ann_date": "2026-07-10"
+    },
+    {
+      "code": "02685",
+      "name": "QUANTGROUP",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-10"
+    },
+    {
+      "code": "01912",
+      "name": "CONTEL",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-06-08"
+    },
+    {
+      "code": "01657",
+      "name": "SG GROUP HLDGS",
+      "types": [
+        "收購/要約",
+        "聯合公告"
+      ],
+      "ann_date": "2026-07-10"
+    },
+    {
+      "code": "06990",
+      "name": "SKB BIO",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-10"
     },
     {
       "code": "03317",
@@ -19,10 +60,240 @@
       "ann_date": "2026-07-03"
     },
     {
+      "code": "06938",
+      "name": "RIBOLIFE-B",
+      "types": [
+        "股東增持"
+      ],
+      "ann_date": "2026-07-10"
+    },
+    {
+      "code": "01532",
+      "name": "CHINA PARTYTIME",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-10"
+    },
+    {
       "code": "06651",
       "name": "51WORLD",
       "types": [
         "配股"
+      ],
+      "ann_date": "2026-07-03"
+    },
+    {
+      "code": "01746",
+      "name": "MAN SHUN GP",
+      "types": [
+        "收購/要約",
+        "復牌"
+      ],
+      "ann_date": "2026-07-10"
+    },
+    {
+      "code": "01140",
+      "name": "HK.AI CAPITAL",
+      "types": [
+        "供股",
+        "配股"
+      ],
+      "ann_date": "2026-07-10"
+    },
+    {
+      "code": "03789",
+      "name": "ROYAL DELUXE",
+      "types": [
+        "股東增持"
+      ],
+      "ann_date": "2026-07-10"
+    },
+    {
+      "code": "02863",
+      "name": "GOLDEN FAITH GP",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-10"
+    },
+    {
+      "code": "00527",
+      "name": "RUIFENG RENEW",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-10"
+    },
+    {
+      "code": "01452",
+      "name": "DENOX ENV",
+      "types": [
+        "配股",
+        "收購/要約"
+      ],
+      "ann_date": "2026-07-10"
+    },
+    {
+      "code": "00397",
+      "name": "MINERVA GROUP",
+      "types": [
+        "供股",
+        "配股"
+      ],
+      "ann_date": "2026-07-07"
+    },
+    {
+      "code": "01894",
+      "name": "HANG YICK HLDGS",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-07"
+    },
+    {
+      "code": "01716",
+      "name": "MOST KWAI CHUNG",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-07"
+    },
+    {
+      "code": "02559",
+      "name": "DIDA INC",
+      "types": [
+        "收購/要約"
+      ],
+      "ann_date": "2026-07-06"
+    },
+    {
+      "code": "01985",
+      "name": "MICROWARE",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-06"
+    },
+    {
+      "code": "01142",
+      "name": "E&P GLOBAL",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-06"
+    },
+    {
+      "code": "00290",
+      "name": "GOFINTECH QUANT",
+      "types": [
+        "股東增持"
+      ],
+      "ann_date": "2026-07-06"
+    },
+    {
+      "code": "00195",
+      "name": "GREENTECH INTL",
+      "types": [
+        "收購/要約"
+      ],
+      "ann_date": "2026-07-06"
+    },
+    {
+      "code": "01159",
+      "name": "SMART DIGI TECH",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-06"
+    },
+    {
+      "code": "01055",
+      "name": "CHINA SOUTH AIR",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-06"
+    },
+    {
+      "code": "01736",
+      "name": "PARENTING NET",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-06"
+    },
+    {
+      "code": "00080",
+      "name": "CAI CORP",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-06"
+    },
+    {
+      "code": "00821",
+      "name": "VC HOLDINGS",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-06"
+    },
+    {
+      "code": "01942",
+      "name": "MOG DIGITECH",
+      "types": [
+        "供股",
+        "配股"
+      ],
+      "ann_date": "2026-07-06"
+    },
+    {
+      "code": "01830",
+      "name": "PERFECT MEDICAL",
+      "types": [
+        "股東增持"
+      ],
+      "ann_date": "2026-07-06"
+    },
+    {
+      "code": "01417",
+      "name": "RIVERINE CHINA",
+      "types": [
+        "收購/要約",
+        "聯合公告"
+      ],
+      "ann_date": "2026-07-06"
+    },
+    {
+      "code": "00145",
+      "name": "CCIAM FUTURE EN",
+      "types": [
+        "復牌"
+      ],
+      "ann_date": "2026-07-06"
+    },
+    {
+      "code": "00419",
+      "name": "HONY MEDIA",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-06"
+    },
+    {
+      "code": "02500",
+      "name": "VENUS MEDTECH-B",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-06"
+    },
+    {
+      "code": "02295",
+      "name": "MAXICITY",
+      "types": [
+        "復牌"
       ],
       "ann_date": "2026-07-03"
     },
@@ -127,14 +398,6 @@
       "name": "CHINASOFT INT'L",
       "types": [
         "股東增持"
-      ],
-      "ann_date": "2026-06-08"
-    },
-    {
-      "code": "01912",
-      "name": "CONTEL",
-      "types": [
-        "配股"
       ],
       "ann_date": "2026-06-08"
     },

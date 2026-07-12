@@ -1,0 +1,1192 @@
+<!doctype html>
+<html lang="zh-HK">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=0.5,maximum-scale=5,user-scalable=yes">
+<title>動量名單</title>
+<style>
+:root{
+  --bg:#f5f7fa;--surface:#fff;--surface-soft:#f8fafc;--text:#0f172a;--text-soft:#334155;
+  --mute:#64748b;--line:#e2e8f0;--line-soft:#eef2f7;--primary:#0284c7;--primary-soft:#e0f2fe;
+  --primary-border:#bae6fd;--up:#15803d;--up-soft:#dcfce7;--up-border:#86efac;
+  --down:#b91c1c;--down-soft:#fee2e2;--down-border:#fca5a5;--amber:#b45309;--amber-soft:#fef3c7;
+  --amber-border:#fcd34d;--violet:#6d28d9;--violet-soft:#ede9fe;--violet-border:#c4b5fd;
+  --rose:#be123c;--rose-soft:#ffe4e6;--rose-border:#fda4af;
+  --radius:10px;--shadow:0 1px 2px rgba(15,23,42,.05)
+}
+*{box-sizing:border-box}html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font:14px/1.55 Inter,system-ui,"PingFang TC","Noto Sans TC",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
+.site-nav{display:flex;flex-wrap:wrap;gap:6px 12px;padding:8px 12px;background:#0f172a;border-bottom:1px solid #1e293b;font-size:13px}
+.site-nav a{color:#94a3b8;text-decoration:none;white-space:nowrap}
+.site-nav a:hover{color:#e2e8f0}
+.site-nav a.active{color:#38bdf8;font-weight:600}
+.topbar{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.88);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topbar-inner{max-width:1380px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:10px}
+.logo{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#0284c7,#0ea5e9);display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+.brand-title{font-size:14px;font-weight:700}
+.brand-sub{font-size:11px;color:var(--mute)}
+.wrap{max-width:1380px;margin:0 auto;padding:18px 20px 36px}
+.section-head{display:flex;align-items:center;gap:8px;margin:2px 0 10px;font-size:11px;font-weight:700;color:var(--mute);text-transform:uppercase;letter-spacing:.16em}
+.ico{display:inline-flex;width:18px;height:18px;border-radius:6px;background:var(--amber-soft);color:var(--amber);align-items:center;justify-content:center}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;margin-bottom:14px}
+.card-head{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line-soft)}
+.card-title{font-size:14px;font-weight:700}
+.card-sub{font-size:12px;color:var(--mute)}
+.hero{padding:14px 16px}
+.hero h1{margin:0;font-size:22px;line-height:1.15}
+.hero p{margin:8px 0 0;color:var(--text-soft)}
+.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:12px 14px;border-top:1px solid var(--line-soft)}
+.btn{appearance:none;border:0;padding:7px 14px;border-radius:8px;font:600 13px inherit;cursor:pointer;background:var(--primary);color:#fff}
+.btn:hover{filter:brightness(1.05)}
+.btn-ghost{appearance:none;background:transparent;border:1px solid var(--line);color:var(--text-soft);padding:6px 12px;border-radius:8px;font:500 12px inherit;cursor:pointer}
+.btn-ghost:hover{background:var(--surface-soft);color:var(--text)}
+.btn-soft{background:var(--primary-soft);color:#075985;border:1px solid var(--primary-border)}
+.btn-soft:hover{filter:none;background:#d3ecfc}
+.btn-danger{background:var(--down-soft);color:var(--down);border:1px solid var(--down-border)}
+.btn-danger:hover{filter:none;background:#fbd5d5}
+.btn-amber{background:var(--amber-soft);color:var(--amber);border:1px solid var(--amber-border)}
+.btn-amber:hover{filter:none;background:#fce6ac}
+.spacer{flex:1}
+.status-line{font-size:12px;color:var(--mute)}
+.stats{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;padding:0 14px 14px}
+.stat{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--surface-soft);min-height:76px}
+.stat-k{font-size:11px;color:var(--mute);text-transform:uppercase;letter-spacing:.08em}
+.stat-v{margin-top:6px;font-size:24px;font-weight:800;line-height:1}
+.stat-s{margin-top:6px;font-size:12px;color:var(--text-soft)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.bucket-body{padding:12px 14px 14px}
+.bucket-meta{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px}
+.bucket-note{font-size:12px;color:var(--mute)}
+.pill{display:inline-flex;align-items:center;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:700;white-space:nowrap}
+.pill-hk{background:var(--amber-soft);color:var(--amber);border:1px solid var(--amber-border)}
+.pill-us{background:var(--primary-soft);color:#075985;border:1px solid var(--primary-border)}
+.pill-index{background:var(--violet-soft);color:var(--violet);border:1px solid var(--violet-border)}
+.pill-gold{background:var(--up-soft);color:var(--up);border:1px solid var(--up-border)}
+.pill-small{background:var(--rose-soft);color:var(--rose);border:1px solid var(--rose-border)}
+.textin,.search,.outbox{
+  width:100%;border:1px solid var(--line);border-radius:10px;background:var(--surface);
+  color:var(--text);padding:10px 12px;font:400 13px/1.5 "JetBrains Mono",ui-monospace,Consolas,monospace;outline:none
+}
+.textin:focus,.search:focus,.outbox:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(2,132,199,.15)}
+.textin{min-height:128px;resize:vertical}
+.outbox{min-height:190px;resize:vertical}
+.mini-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.tips{padding:12px 14px 2px;color:var(--text-soft)}
+.tips ul{margin:0;padding-left:18px}
+.tips li{margin-bottom:7px}
+.dual{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:14px}
+.outcard{border:1px solid var(--line);border-radius:10px;background:var(--surface-soft);overflow:hidden}
+.outhead{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--line-soft)}
+.outtitle{font-size:13px;font-weight:700}
+.outsub{font-size:11px;color:var(--mute)}
+.table-wrap{padding:0 14px 14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;min-width:700px}
+thead th{background:var(--surface-soft);color:var(--mute);font-size:10px;text-align:left;padding:9px 12px;text-transform:uppercase;letter-spacing:.14em;font-weight:700;border-bottom:1px solid var(--line);white-space:nowrap}
+tbody td{padding:9px 12px;border-bottom:1px solid var(--line-soft);vertical-align:top}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--surface-soft)}
+.setup-board{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;padding:14px}.setup-col{border:1px solid var(--line);border-radius:10px;background:var(--surface-soft);overflow:hidden}.setup-col.breakout{box-shadow:inset 0 0 0 1px rgba(21,128,61,.10)}.setup-col.base{box-shadow:inset 0 0 0 1px rgba(180,83,9,.10)}.setup-col.breaklow{box-shadow:inset 0 0 0 1px rgba(2,132,199,.10)}.setup-col.rebound{box-shadow:inset 0 0 0 1px rgba(185,28,28,.10)}.setup-col-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;border-bottom:1px solid var(--line-soft);background:#fff}.setup-col-title{font-size:13px;font-weight:800}.setup-col-sub{font-size:11px;color:var(--mute)}.setup-count{display:inline-flex;align-items:center;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;background:var(--surface-soft);border:1px solid var(--line)}.setup-list{padding:10px 12px;display:grid;gap:10px}.setup-pick{border:1px solid var(--line-soft);border-radius:9px;background:#fff;padding:10px}.setup-pick-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}.setup-pick-symbol{font:800 14px "JetBrains Mono",ui-monospace,Consolas,monospace}.setup-pick-bucket{font-size:11px;color:var(--mute)}.setup-pick-score{font-size:18px;font-weight:800;line-height:1}.setup-pick-tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;border:1px solid var(--line);background:var(--surface-soft);color:var(--text-soft);margin-top:4px}.setup-pick-meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}.setup-pick-stat{padding:7px 8px;border:1px solid var(--line-soft);border-radius:8px;background:var(--surface-soft)}.setup-pick-stat-label{font-size:10px;color:var(--mute);text-transform:uppercase;letter-spacing:.05em}.setup-pick-stat-value{margin-top:3px;font-size:12px;font-weight:700}.setup-pick-note{margin-top:10px;font-size:12px;line-height:1.5;color:var(--text-soft)}.setup-pick-link{display:inline-flex;align-items:center;margin-top:10px;font-size:12px;font-weight:700}.setup-empty{padding:14px 12px;color:var(--mute);font-size:12px;line-height:1.6}
+.code-col{font:700 13px "JetBrains Mono",ui-monospace,Consolas,monospace}
+.raw-col{font:500 12px "JetBrains Mono",ui-monospace,Consolas,monospace;color:var(--mute)}
+.empty{text-align:center;color:var(--mute);padding:34px 12px;font-size:13px}
+.foot{padding:0 14px 14px;color:var(--mute);font-size:11px;line-height:1.6}
+.momentum-table{min-width:980px}.momentum-table th{position:sticky;top:0;z-index:1}.momentum-table .rank{font:800 15px ui-monospace,Consolas,monospace;color:var(--mute)}.momentum-table .symbol{font:800 13px ui-monospace,Consolas,monospace}.momentum-table .score{font-weight:800;font-size:16px}.momentum-table .trend{font-weight:700}.momentum-table .setup{display:inline-flex;padding:2px 7px;border-radius:999px;border:1px solid var(--line);font-size:10px;font-weight:700}.momentum-table .setup.breakout{color:var(--up);background:var(--up-soft);border-color:var(--up-border)}.momentum-table .setup.watch{color:var(--amber);background:var(--amber-soft);border-color:var(--amber-border)}.momentum-table .setup.pullback{color:var(--violet);background:var(--violet-soft);border-color:var(--violet-border)}.momentum-table .setup.weak{color:var(--down);background:var(--down-soft);border-color:var(--down-border)}.momentum-empty{padding:28px 14px;color:var(--mute);text-align:center}.momentum-scope{padding:10px 14px;color:var(--mute);font-size:11px;border-top:1px solid var(--line-soft)}
+@media(max-width:980px){
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grid,.dual,.setup-board{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  .site-nav{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:6px 8px;gap:6px}
+  .site-nav a{flex:0 0 auto}
+  .topbar-inner{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .wrap{padding:12px 10px 28px}
+  .hero h1{font-size:19px}
+  .stats{grid-template-columns:1fr 1fr;gap:8px}
+  .stat{min-height:66px}
+  .stat-v{font-size:20px}
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#0f172a;--surface:#1e293b;--surface-soft:#162032;--text:#f1f5f9;--text-soft:#cbd5e1;
+    --mute:#64748b;--line:#334155;--line-soft:#273449;--primary:#38bdf8;--primary-soft:#0c2d44;
+    --primary-border:#0369a1;--up:#4ade80;--up-soft:#052e16;--up-border:#166534;--down:#f87171;
+    --down-soft:#2d0a0a;--down-border:#991b1b;--amber:#fbbf24;--amber-soft:#1c1200;--amber-border:#92400e;
+    --violet:#c4b5fd;--violet-soft:#1d1837;--violet-border:#5b21b6;
+    --rose:#fda4af;--rose-soft:#3a1018;--rose-border:#9f1239
+  }
+  .topbar{background:rgba(15,23,42,.92)}
+}
+</style>
+</head>
+<body>
+<nav class="site-nav" id="sharedSiteNav"></nav>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="logo">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 18L10 12L14 15L20 7"></path>
+          <path d="M14 7H20V13"></path>
+        </svg>
+      </div>
+      <div>
+        <div class="brand-title">動量名單</div>
+        <div class="brand-sub">港股 / 美股 / 日本 / 中國 / 黃金 / 小型股</div>
+      </div>
+    </div>
+    <div class="status-line" id="saveStatus">本機名單 · 即時儲存</div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="card" id="momentumRankCard">
+    <div class="card-head">
+      <div>
+        <div class="card-title">⚡ 即時動量名單</div>
+        <div class="card-sub">按真實 Kbar cache 的價格動能、量比、EMA 趨勢及 20 日突破排序；每隻可直接開 Kbar。</div>
+      </div>
+      <div class="spacer"></div><div class="status-line" id="momentumUpdated">讀取中…</div>
+    </div>
+    <div class="table-wrap"><table class="momentum-table"><thead><tr><th>#</th><th>代號</th><th>名稱</th><th>現價</th><th>5日Δ</th><th>20日Δ</th><th>60日Δ</th><th>量比</th><th>趨勢</th><th>分類</th><th>分數</th><th></th></tr></thead><tbody id="momentumRows"><tr><td colspan="12" class="momentum-empty">載入真實 Kbar cache…</td></tr></tbody></table></div>
+    <div class="momentum-scope" id="momentumScope">只會列出有真實日線資料的 cache universe；未載入或歷史不足的股票不會補入名單。</div>
+  </section>
+
+  <div class="section-head">
+    <span class="ico">⚡</span>
+    <span>Cross Market Momentum</span>
+  </div>
+
+  <section class="card">
+    <div class="hero">
+      <h1>集中管理動量清單，直接拎去做掃描</h1>
+      <p>呢一頁專登畀你整理跨市場觀察池。港股會自動補成 <code>00700.HK</code>，美股同 ETF 會自動補成 <code>NVDA.US</code> 呢類格式，指數位我已經補埋日本同中國 proxy，另外再開一格畀你專門放小型股，之後可以一鍵複製純清單或者分析 prompt。</p>
+    </div>
+    <div class="stats" id="summaryStats"></div>
+    <div class="toolbar">
+      <button class="btn btn-soft" type="button" onclick="loadAllDefaults()">載入示範名單</button>
+      <button class="btn btn-amber" type="button" onclick="importFromWatchlist()">由自選匯入 HK</button>
+      <button class="btn-ghost" type="button" onclick="exportJson()">匯出 JSON</button>
+      <button class="btn-ghost" type="button" onclick="document.getElementById('importFile').click()">匯入 JSON</button>
+      <button class="btn btn-danger" type="button" onclick="clearAllLists()">清空全部</button>
+      <input id="importFile" type="file" accept=".json" style="display:none" onchange="handleImport(event)">
+      <div class="spacer"></div>
+      <div class="status-line" id="totalHint">0 個代號</div>
+    </div>
+  </section>
+
+  <section class="grid">
+    <article class="card">
+      <div class="card-head">
+        <div class="card-title">港股</div>
+        <div class="card-sub">數字代號會自動補成 `.HK`</div>
+      </div>
+      <div class="bucket-body">
+        <div class="bucket-meta">
+          <div class="bucket-note">例：<code>00700</code>、<code>09988.HK</code>、<code>02800</code></div>
+          <span class="pill pill-hk" id="count-hk">0</span>
+        </div>
+        <textarea id="bucket-hk" class="textin" placeholder="00700&#10;09988&#10;03690&#10;01810"></textarea>
+        <div class="mini-actions">
+          <button class="btn-ghost" type="button" onclick="fillBucket('hk')">載入示範</button>
+          <button class="btn-ghost" type="button" onclick="clearBucket('hk')">清空</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="card-head">
+        <div class="card-title">美股</div>
+        <div class="card-sub">純英文代號會自動補成 `.US`</div>
+      </div>
+      <div class="bucket-body">
+        <div class="bucket-meta">
+          <div class="bucket-note">例：<code>NVDA</code>、<code>AAPL.US</code>、<code>TSLA</code></div>
+          <span class="pill pill-us" id="count-us">0</span>
+        </div>
+        <textarea id="bucket-us" class="textin" placeholder="NVDA&#10;AAPL&#10;MSFT&#10;META"></textarea>
+        <div class="mini-actions">
+          <button class="btn-ghost" type="button" onclick="fillBucket('us')">載入示範</button>
+          <button class="btn-ghost" type="button" onclick="clearBucket('us')">清空</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="card-head">
+        <div class="card-title">指數 / ETF 代理</div>
+        <div class="card-sub">已預設美股、日本、中國 proxy</div>
+      </div>
+      <div class="bucket-body">
+        <div class="bucket-meta">
+          <div class="bucket-note">例：<code>SPY</code>、<code>QQQ</code>、<code>EWJ</code>、<code>ASHR</code>、<code>2823</code></div>
+          <span class="pill pill-index" id="count-index">0</span>
+        </div>
+        <textarea id="bucket-index" class="textin" placeholder="SPY&#10;QQQ&#10;EWJ&#10;ASHR&#10;2823"></textarea>
+        <div class="mini-actions">
+          <button class="btn-ghost" type="button" onclick="fillBucket('index')">載入示範</button>
+          <button class="btn-ghost" type="button" onclick="clearBucket('index')">清空</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="card-head">
+        <div class="card-title">黃金 / 資源</div>
+        <div class="card-sub">可放金 ETF、金礦、資源代理</div>
+      </div>
+      <div class="bucket-body">
+        <div class="bucket-meta">
+          <div class="bucket-note">例：<code>GLD</code>、<code>GDX</code>、<code>02899</code></div>
+          <span class="pill pill-gold" id="count-gold">0</span>
+        </div>
+        <textarea id="bucket-gold" class="textin" placeholder="GLD&#10;GDX&#10;02899"></textarea>
+        <div class="mini-actions">
+          <button class="btn-ghost" type="button" onclick="fillBucket('gold')">載入示範</button>
+          <button class="btn-ghost" type="button" onclick="clearBucket('gold')">清空</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="card-head">
+        <div class="card-title">小型股</div>
+        <div class="card-sub">獨立放高波動 / 特攻名單</div>
+      </div>
+      <div class="bucket-body">
+        <div class="bucket-meta">
+          <div class="bucket-note">例：<code>01300</code>、<code>01126</code>、<code>01529</code></div>
+          <span class="pill pill-small" id="count-smallcap">0</span>
+        </div>
+        <textarea id="bucket-smallcap" class="textin" placeholder="01300&#10;01126&#10;01529"></textarea>
+        <div class="mini-actions">
+          <button class="btn-ghost" type="button" onclick="fillBucket('smallcap')">載入示範</button>
+          <button class="btn-ghost" type="button" onclick="clearBucket('smallcap')">清空</button>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <section class="card">
+    <div class="card-head">
+      <div>
+        <div class="card-title">輸出</div>
+        <div class="card-sub">一個係純清單，一個係可以直接貼去分析用嘅 prompt</div>
+      </div>
+    </div>
+    <div class="dual">
+      <div class="outcard">
+        <div class="outhead">
+          <div>
+            <div class="outtitle">純清單</div>
+            <div class="outsub">按組分好，方便直接貼</div>
+          </div>
+          <div class="spacer"></div>
+          <button class="btn-ghost" type="button" onclick="copyOutput('plainOutput')">複製</button>
+        </div>
+        <textarea id="plainOutput" class="outbox" readonly></textarea>
+      </div>
+      <div class="outcard">
+        <div class="outhead">
+          <div>
+            <div class="outtitle">分析 Prompt</div>
+            <div class="outsub">畀動量掃描 / Longbridge 分析用</div>
+          </div>
+          <div class="spacer"></div>
+          <button class="btn-ghost" type="button" onclick="copyOutput('promptOutput')">複製</button>
+        </div>
+        <textarea id="promptOutput" class="outbox" readonly></textarea>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-head">
+      <div>
+        <div class="card-title">圖型分組</div>
+        <div class="card-sub">把名單中已載入 Kbar cache 的票，自動分成追勢突破、盤底築台、破底返、弱勢反抽。</div>
+      </div>
+      <div class="spacer"></div>
+      <div class="status-line" id="setupLensMeta">讀取中...</div>
+    </div>
+    <div class="setup-board">
+      <div class="setup-col breakout">
+        <div class="setup-col-head">
+          <div>
+            <div class="setup-col-title">追勢突破</div>
+            <div class="setup-col-sub">前高附近，順勢跟強勢股</div>
+          </div>
+          <span class="setup-count" id="setupCountBreakout">0</span>
+        </div>
+        <div class="setup-list" id="setupListBreakout"></div>
+      </div>
+      <div class="setup-col base">
+        <div class="setup-col-head">
+          <div>
+            <div class="setup-col-title">盤底築台</div>
+            <div class="setup-col-sub">整固吸貨，等放量升級</div>
+          </div>
+          <span class="setup-count" id="setupCountBase">0</span>
+        </div>
+        <div class="setup-list" id="setupListBase"></div>
+      </div>
+      <div class="setup-col breaklow">
+        <div class="setup-col-head">
+          <div>
+            <div class="setup-col-title">破底返</div>
+            <div class="setup-col-sub">跌穿後收回，博洗倉回收</div>
+          </div>
+          <span class="setup-count" id="setupCountBreaklow">0</span>
+        </div>
+        <div class="setup-list" id="setupListBreaklow"></div>
+      </div>
+      <div class="setup-col rebound">
+        <div class="setup-col-head">
+          <div>
+            <div class="setup-col-title">弱勢反抽</div>
+            <div class="setup-col-sub">技術反彈，未算收回邊界</div>
+          </div>
+          <span class="setup-count" id="setupCountRebound">0</span>
+        </div>
+        <div class="setup-list" id="setupListRebound"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-head">
+      <div>
+        <div class="card-title">名單明細</div>
+        <div class="card-sub">睇返 normalization 結果，方便捉錯代號</div>
+      </div>
+      <div class="spacer"></div>
+      <input id="tableSearch" class="search" type="search" placeholder="搜尋 bucket / symbol / 原始輸入" style="max-width:260px">
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Bucket</th>
+            <th>Symbol</th>
+            <th>原始輸入</th>
+          </tr>
+        </thead>
+        <tbody id="itemsBody"></tbody>
+      </table>
+    </div>
+    <div class="foot">資料只存你部機瀏覽器 localStorage；唔會自動上傳。指數位如果你想用真 index symbol，可以直接改返你慣用格式。</div>
+  </section>
+
+  <section class="card">
+    <div class="card-head">
+      <div class="card-title">用法</div>
+      <div class="card-sub">保持名單輕、準、可每日更新</div>
+    </div>
+    <div class="tips">
+      <ul>
+        <li>港股建議放你真係會跟嘅核心票，自選一鍵匯入之後再刪走雜訊。</li>
+        <li>指數位已補咗美股、日本、中國 proxy，例如 <code>SPY.US</code>、<code>EWJ.US</code>、<code>ASHR.US</code>、<code>02823.HK</code>。</li>
+        <li>黃金位可以混合金 ETF、金礦股同資源代理，方便一眼睇風險偏好有冇轉。</li>
+        <li>小型股位建議只放你真係想跟、而且接受高波動嘅特攻股，等分析時唔會畀大盤股沖淡。</li>
+        <li>如果某個市場今日只想睇 3 至 5 隻，寧願精簡，唔好一次塞太多，否則 prompt 會變鈍。</li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<script src="./shared-nav.js"></script>
+<script>
+const KEY = 'hk_cross_market_momentum_lists_v1';
+const WATCHLIST_KEY = 'hk_watchlist_v1';
+const BUCKETS = [
+  { key:'hk', label:'港股', pill:'pill-hk' },
+  { key:'us', label:'美股', pill:'pill-us' },
+  { key:'index', label:'指數/ETF', pill:'pill-index' },
+  { key:'gold', label:'黃金/資源', pill:'pill-gold' },
+  { key:'smallcap', label:'小型股', pill:'pill-small' },
+];
+const DEFAULTS = {
+  hk: ['00700','09988','03690','01810','00981','00005'],
+  us: ['NVDA','AAPL','MSFT','META','AMZN','TSLA','AVGO','AMD'],
+  index: ['SPY','QQQ','DIA','EWJ','ASHR','02823','02800','03033'],
+  gold: ['GLD','GDX','02899','01815'],
+  smallcap: ['01300','01126','01529','00893'],
+};
+
+function emptyState(){
+  return { hk:'', us:'', index:'', gold:'', smallcap:'', updatedAt:'' };
+}
+
+function loadState(){
+  try{
+    const raw = JSON.parse(localStorage.getItem(KEY) || '{}');
+    return Object.assign(emptyState(), raw || {});
+  }catch(_){
+    return emptyState();
+  }
+}
+
+let state = loadState();
+let kbarCache = null;
+let tradeEngine = null;
+let kbarAliasMap = new Map();
+let momentumRankPromise = null;
+
+function saveState(){
+  state.updatedAt = new Date().toISOString();
+  localStorage.setItem(KEY, JSON.stringify(state));
+  renderAll();
+}
+
+function safeText(v){
+  return String(v == null ? '' : v).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+function cleanBucketInput(text){
+  return String(text || '')
+    .replace(/\r/g, '\n')
+    .replace(/[，、；;]+/g, '\n')
+    .replace(/\t+/g, '\n');
+}
+
+async function loadJson(path){
+  try{
+    const res = await fetch(path + '?ts=' + Date.now(), { cache:'no-store' });
+    if(!res.ok) return null;
+    return await res.json();
+  }catch(_){
+    return null;
+  }
+}
+
+function buildAliasMap(data){
+  const map = new Map();
+  const symbols = data && data.symbols ? data.symbols : {};
+  Object.entries(symbols).forEach(([symbol, entry]) => {
+    map.set(String(symbol).toUpperCase(), symbol);
+    (entry.aliases || []).forEach(alias => {
+      map.set(String(alias).trim().toUpperCase(), symbol);
+    });
+  });
+  return map;
+}
+
+async function ensureKbarCache(){
+  if(kbarCache) return kbarCache;
+  kbarCache = await loadJson('./data/kbar_cache.json');
+  kbarAliasMap = buildAliasMap(kbarCache || {});
+  return kbarCache;
+}
+
+async function ensureTradeEngine(){
+  if(tradeEngine) return tradeEngine;
+  tradeEngine = await loadJson('./data/trade_engine.json');
+  return tradeEngine;
+}
+
+function normalizeSymbol(raw, bucketKey){
+  let token = String(raw || '').trim().toUpperCase();
+  if(!token) return '';
+  token = token.replace(/\s+/g, '');
+
+  const numericWithSuffix = token.match(/^(\d{1,5})\.(HK|US)$/);
+  if(numericWithSuffix){
+    return numericWithSuffix[1].padStart(5, '0') + '.' + numericWithSuffix[2];
+  }
+
+  if(/^\d{1,5}$/.test(token)){
+    return token.padStart(5, '0') + '.HK';
+  }
+
+  if(token.startsWith('.')){
+    return token;
+  }
+
+  if(/^[A-Z][A-Z0-9._-]*\.(HK|US)$/.test(token)){
+    return token;
+  }
+
+  if(/^[A-Z][A-Z0-9._-]*$/.test(token)){
+    return token + (bucketKey === 'hk' ? '.HK' : '.US');
+  }
+
+  return token;
+}
+
+function parseBucket(bucketKey){
+  const text = cleanBucketInput(state[bucketKey] || '');
+  const rows = text.split(/\n+/).map(s => s.trim()).filter(Boolean);
+  const seen = new Set();
+  const items = [];
+  rows.forEach(raw => {
+    raw.split(/[,\s]+/).map(s => s.trim()).filter(Boolean).forEach(part => {
+      const symbol = normalizeSymbol(part, bucketKey);
+      if(!symbol) return;
+      const dedupeKey = bucketKey + '|' + symbol;
+      if(seen.has(dedupeKey)) return;
+      seen.add(dedupeKey);
+      items.push({ bucket:bucketKey, symbol, raw:part });
+    });
+  });
+  return items;
+}
+
+function getAllItems(){
+  return BUCKETS.flatMap(b => parseBucket(b.key));
+}
+
+function fmtSigned(value, suffix=''){
+  if(!Number.isFinite(value)) return '--';
+  return (value >= 0 ? '+' : '') + value.toFixed(2) + suffix;
+}
+
+function clamp(value, min, max){
+  return Math.max(min, Math.min(max, value));
+}
+
+function ema(values, period){
+  if(!Array.isArray(values) || values.length < period) return null;
+  const nums = values.map(item => Number(item && item.close)).filter(Number.isFinite);
+  if(nums.length < period) return null;
+  const alpha = 2 / (period + 1);
+  let current = nums.slice(0, period).reduce((sum, value) => sum + value, 0) / period;
+  for(let i = period; i < nums.length; i += 1){
+    current = nums[i] * alpha + current * (1 - alpha);
+  }
+  return current;
+}
+
+function aggregateBars(sourceBars, group){
+  if(!Array.isArray(sourceBars) || !sourceBars.length || group <= 1) return sourceBars || [];
+  const bars = sourceBars.slice();
+  const offset = bars.length % group;
+  const aligned = offset ? bars.slice(offset) : bars;
+  const out = [];
+  for(let i = 0; i < aligned.length; i += group){
+    const chunk = aligned.slice(i, i + group);
+    if(chunk.length < group) continue;
+    out.push({
+      time: chunk[chunk.length - 1].time,
+      open: chunk[0].open,
+      high: Math.max(...chunk.map(x => Number(x.high) || Number(x.open) || 0)),
+      low: Math.min(...chunk.map(x => Number(x.low) || Number(x.open) || 0)),
+      close: chunk[chunk.length - 1].close,
+      volume: chunk.reduce((sum, x) => sum + (Number(x.volume) || 0), 0),
+      turnover: chunk.reduce((sum, x) => sum + (Number(x.turnover) || 0), 0),
+    });
+  }
+  return out;
+}
+
+function seriesForInterval(entry, interval){
+  const direct = entry && entry.series ? entry.series[interval] : null;
+  if(direct && direct.length) return direct;
+  const base5m = entry && entry.series ? entry.series['5m'] : null;
+  const base1h = entry && entry.series ? entry.series['1h'] : null;
+  if(base5m && base5m.length){
+    if(interval === '15m') return aggregateBars(base5m, 3);
+    if(interval === '30m') return aggregateBars(base5m, 6);
+  }
+  if(!base1h || !base1h.length) return [];
+  if(interval === '2h') return aggregateBars(base1h, 2);
+  if(interval === '4h') return aggregateBars(base1h, 4);
+  return [];
+}
+
+function resolveCachedSymbol(symbol){
+  if(!symbol || !kbarAliasMap.size) return null;
+  const raw = String(symbol).trim().toUpperCase();
+  const candidates = [raw];
+  if(/^\d{5}\.HK$/.test(raw)){
+    const digits = String(parseInt(raw.slice(0, 5), 10));
+    candidates.push(digits + '.HK', digits, raw.slice(0, 5), 'HKEX:' + digits);
+  }else if(/^[A-Z0-9._-]+\.US$/.test(raw)){
+    const code = raw.replace(/\.US$/,'');
+    candidates.push(code, 'NASDAQ:' + code);
+  }
+  for(const candidate of candidates){
+    const hit = kbarAliasMap.get(String(candidate).toUpperCase());
+    if(hit) return hit;
+  }
+  return null;
+}
+
+function modeFromSymbol(symbol){
+  if(/\.HK$/i.test(symbol)) return 'hk';
+  if(/\.US$/i.test(symbol)) return 'us';
+  return 'tv';
+}
+
+function analyzeSetups(entry){
+  const bars5 = seriesForInterval(entry, '5m');
+  const bars1 = seriesForInterval(entry, '1h');
+  const bars4 = seriesForInterval(entry, '4h');
+  if(!bars1 || bars1.length < 30 || !bars4 || bars4.length < 24) return null;
+
+  const last1 = bars1[bars1.length - 1];
+  const close1 = Number(last1.close);
+  const ema8_1 = ema(bars1, 8);
+  const ema21_1 = ema(bars1, 21);
+  const ema8_4 = ema(bars4, 8);
+  const ema21_4 = ema(bars4, 21);
+  if(![close1, ema8_1, ema21_1, ema8_4, ema21_4].every(Number.isFinite)) return null;
+
+  const window1 = bars1.slice(-20);
+  const high20 = Math.max(...window1.map(bar => Number(bar.high)).filter(Number.isFinite));
+  const low20 = Math.min(...window1.map(bar => Number(bar.low)).filter(Number.isFinite));
+  const rangePct = high20 > low20 ? ((high20 - low20) / close1) * 100 : 0;
+  const gapHigh20 = high20 ? ((close1 - high20) / high20) * 100 : null;
+  const bounceLow20 = low20 ? ((close1 - low20) / low20) * 100 : null;
+  const posInRange = high20 > low20 ? (close1 - low20) / (high20 - low20) : 0.5;
+  const priorWindow = window1.slice(0, -5);
+  const recentWindow = window1.slice(-5);
+  const priorLow = priorWindow.length ? Math.min(...priorWindow.map(bar => Number(bar.low)).filter(Number.isFinite)) : low20;
+  const recentLow = recentWindow.length ? Math.min(...recentWindow.map(bar => Number(bar.low)).filter(Number.isFinite)) : low20;
+  const reclaimPrevLow = priorLow ? ((close1 - priorLow) / priorLow) * 100 : null;
+  const brokePriorLow = Number.isFinite(priorLow) && Number.isFinite(recentLow) && recentLow < priorLow * 0.9975;
+  const thrust5 = (bars5 && bars5.length >= 12)
+    ? ((Number(bars5[bars5.length - 1].close) - Number(bars5[bars5.length - 12].close)) / Number(bars5[bars5.length - 12].close || 1)) * 100
+    : 0;
+  const emaSpread1 = ((ema8_1 - ema21_1) / ema21_1) * 100;
+  const emaSpread4 = ((ema8_4 - ema21_4) / ema21_4) * 100;
+  const trend1 = ema8_1 > ema21_1 ? 'up' : (ema8_1 < ema21_1 ? 'down' : 'flat');
+  const trend4 = ema8_4 > ema21_4 ? 'up' : (ema8_4 < ema21_4 ? 'down' : 'flat');
+
+  let breakoutScore = 0;
+  if(trend1 === 'up') breakoutScore += 3;
+  if(trend4 === 'up') breakoutScore += 2; else if(trend4 === 'flat') breakoutScore += 1;
+  if(close1 > ema8_1) breakoutScore += 2; else if(close1 > ema21_1) breakoutScore += 1;
+  if(Number.isFinite(gapHigh20) && gapHigh20 >= -2.5) breakoutScore += 3; else if(Number.isFinite(gapHigh20) && gapHigh20 >= -5) breakoutScore += 1;
+  if(Number.isFinite(thrust5) && thrust5 > 1) breakoutScore += 1;
+  if(posInRange > 0.75) breakoutScore += 1;
+
+  let baseScore = 0;
+  if(rangePct <= 12) baseScore += 3; else if(rangePct <= 16) baseScore += 1;
+  if(Math.abs(emaSpread1) <= 1.5) baseScore += 2;
+  if(Math.abs(emaSpread4) <= 1.5) baseScore += 2;
+  if(posInRange >= 0.25 && posInRange <= 0.75) baseScore += 2;
+  if(Math.abs(thrust5) <= 1.5) baseScore += 1;
+  if(Number.isFinite(gapHigh20) && gapHigh20 <= -2 && gapHigh20 >= -8) baseScore += 1;
+
+  let reboundScore = 0;
+  if(trend1 === 'down') reboundScore += 2;
+  if(trend4 === 'down') reboundScore += 2;
+  if(close1 > ema8_1) reboundScore += 2;
+  if(close1 < ema21_1) reboundScore += 2;
+  if(Number.isFinite(bounceLow20) && bounceLow20 >= 3) reboundScore += 2; else if(Number.isFinite(bounceLow20) && bounceLow20 >= 1) reboundScore += 1;
+  if(Number.isFinite(gapHigh20) && gapHigh20 <= -5) reboundScore += 1;
+  if(Number.isFinite(thrust5) && thrust5 > 1) reboundScore += 1;
+
+  let breaklowScore = 0;
+  if(trend1 === 'down') breaklowScore += 1;
+  if(trend4 === 'down') breaklowScore += 2; else if(trend4 === 'flat') breaklowScore += 1;
+  if(brokePriorLow) breaklowScore += 3;
+  if(Number.isFinite(reclaimPrevLow) && reclaimPrevLow >= 0.5) breaklowScore += 2; else if(Number.isFinite(reclaimPrevLow) && reclaimPrevLow >= 0) breaklowScore += 1;
+  if(close1 > ema8_1) breaklowScore += 1;
+  if(close1 < ema21_1) breaklowScore += 1;
+  if(Number.isFinite(bounceLow20) && bounceLow20 >= 3) breaklowScore += 1;
+  if(Number.isFinite(thrust5) && thrust5 > 0.8) breaklowScore += 1;
+  if(posInRange >= 0.3 && posInRange <= 0.65) breaklowScore += 1;
+  if(!brokePriorLow) breaklowScore = Math.min(breaklowScore, 4);
+  if(!Number.isFinite(reclaimPrevLow) || reclaimPrevLow < 0) breaklowScore = Math.min(breaklowScore, 5);
+
+  const scores = {
+    breakout: clamp(breakoutScore, 0, 10),
+    base: clamp(baseScore, 0, 10),
+    breaklow: clamp(breaklowScore, 0, 10),
+    rebound: clamp(reboundScore, 0, 10),
+  };
+  let activeKey = 'base';
+  if(scores.breakout >= scores.base && scores.breakout >= scores.breaklow && scores.breakout >= scores.rebound) activeKey = 'breakout';
+  else if(scores.breaklow >= scores.base && scores.breaklow >= scores.breakout && scores.breaklow >= scores.rebound) activeKey = 'breaklow';
+  else if(scores.rebound >= scores.base && scores.rebound >= scores.breakout && scores.rebound >= scores.breaklow) activeKey = 'rebound';
+
+  return {
+    activeKey,
+    scores,
+    metrics: { trend1, trend4, gapHigh20, bounceLow20, rangePct, thrust5, posInRange, priorLow, recentLow, reclaimPrevLow, brokePriorLow },
+  };
+}
+
+function momentumReturn(bars, lookback){
+  if(!Array.isArray(bars) || bars.length <= lookback) return null;
+  const now=Number(bars[bars.length-1].close), old=Number(bars[bars.length-1-lookback].close);
+  return Number.isFinite(now)&&Number.isFinite(old)&&old>0 ? (now/old-1)*100 : null;
+}
+
+function buildMomentumRows(cache){
+  const rows=[];
+  Object.values((cache&&cache.symbols)||{}).forEach(entry=>{
+    const bars=seriesForInterval(entry,'1d');
+    if(!Array.isArray(bars)||bars.length<21)return;
+    const close=Number(bars[bars.length-1].close);
+    if(!Number.isFinite(close)||close<=0)return;
+    const r5=momentumReturn(bars,5),r20=momentumReturn(bars,20),r60=momentumReturn(bars,60);
+    const ema20=ema(bars,20),ema50=ema(bars,50),trendUp=Number.isFinite(ema20)&&Number.isFinite(ema50)&&close>ema20&&ema20>ema50,trendDown=Number.isFinite(ema20)&&Number.isFinite(ema50)&&close<ema20&&ema20<ema50;
+    const prior=bars.slice(-21,-1).map(x=>Number(x.high)).filter(Number.isFinite),high20=prior.length?Math.max(...prior):null;
+    const breakout=Number.isFinite(high20)&&close>=high20;
+    const volumes=bars.slice(-21,-1).map(x=>Number(x.volume)).filter(Number.isFinite),avgVol=volumes.length?volumes.reduce((a,b)=>a+b,0)/volumes.length:null,latestVol=Number(bars[bars.length-1].volume),vr=Number.isFinite(avgVol)&&avgVol>0&&Number.isFinite(latestVol)?latestVol/avgVol:null;
+    let score=0;
+    if(Number.isFinite(r5))score+=r5*1.5;if(Number.isFinite(r20))score+=r20*0.8;if(Number.isFinite(r60))score+=r60*0.35;
+    if(Number.isFinite(vr))score+=Math.max(-2,Math.min(10,(vr-1)*5));if(trendUp)score+=12;if(trendDown)score-=10;if(breakout)score+=10;
+    let setup='觀察',setupClass='watch';if(breakout&&trendUp){setup='追勢突破';setupClass='breakout'}else if(trendDown&&Number.isFinite(r5)&&r5>0){setup='弱勢反抽';setupClass='weak'}else if(trendUp&&Number.isFinite(r5)&&r5<0){setup='回踩觀察';setupClass='pullback'}else if(trendDown){setup='弱勢';setupClass='weak'}
+    rows.push({entry,close,r5,r20,r60,vr,trend:trendUp?'多頭':trendDown?'空頭':'未確認',setup,setupClass,score});
+  });
+  return rows.sort((a,b)=>b.score-a.score);
+}
+
+function renderMomentumRank(){
+  if(momentumRankPromise)return momentumRankPromise;
+  momentumRankPromise=(async()=>{
+    const body=document.getElementById('momentumRows'),status=document.getElementById('momentumUpdated'),scope=document.getElementById('momentumScope');
+    const cache=await ensureKbarCache();const rows=buildMomentumRows(cache);
+    if(!rows.length){body.innerHTML='<tr><td colspan="12" class="momentum-empty">目前 cache 沒有足夠日線資料，唔會造名單。</td></tr>';status.textContent='資料不足';return;}
+    const fmt=v=>Number.isFinite(v)?(v>=0?'+':'')+v.toFixed(2)+'%':'--',fmtVr=v=>Number.isFinite(v)?v.toFixed(2)+'x':'--';
+    body.innerHTML=rows.slice(0,50).map((row,i)=>{const e=row.entry,symbol=e.symbol,mode=modeFromSymbol(symbol);return `<tr><td class="rank">${i+1}</td><td class="symbol">${safeText(symbol)}</td><td>${safeText(e.label||symbol)}</td><td>${Number.isFinite(row.close)?row.close.toFixed(row.close<1?3:2):'--'}</td><td class="${row.r5>=0?'up':'down'}">${fmt(row.r5)}</td><td class="${row.r20>=0?'up':'down'}">${fmt(row.r20)}</td><td class="${row.r60>=0?'up':'down'}">${fmt(row.r60)}</td><td>${fmtVr(row.vr)}</td><td class="trend">${safeText(row.trend)}</td><td><span class="setup ${row.setupClass}">${safeText(row.setup)}</span></td><td class="score">${row.score.toFixed(1)}</td><td><a class="setup-pick-link" href="./kbar_matrix.html?mode=${encodeURIComponent(mode)}&symbol=${encodeURIComponent(symbol)}">Kbar</a></td></tr>`}).join('');
+    status.textContent='Kbar '+(cache.updated_at||'--');scope.textContent=`真實 cache universe ${Object.keys(cache.symbols||{}).length} 隻 · 有足夠日線並納入排序 ${rows.length} 隻 · 只列前 ${Math.min(50,rows.length)} 隻；5／20／60日係價格回報，不是預測。`;
+  })();
+  return momentumRankPromise;
+}
+
+function groupedItems(){
+  const map = {};
+  BUCKETS.forEach(b => { map[b.key] = parseBucket(b.key); });
+  return map;
+}
+
+function formatGroupedPlain(groups){
+  return BUCKETS.map(b => {
+    const lines = groups[b.key].map(x => x.symbol);
+    return b.label + '\n' + (lines.length ? lines.join('\n') : '-');
+  }).join('\n\n');
+}
+
+function buildPrompt(groups){
+  const block = key => groups[key].map(x => x.symbol).join(', ') || '-';
+  return [
+    '請用跨市場動量方式做一次掃描。',
+    '',
+    '港股: ' + block('hk'),
+    '美股: ' + block('us'),
+    '指數/ETF: ' + block('index'),
+    '黃金/資源: ' + block('gold'),
+    '小型股: ' + block('smallcap'),
+    '',
+    '要求：',
+    '1. 用趨勢、量價、年內高低位、相對強弱分組。',
+    '2. 分成 追勢 / 回踩 / 觀察 / 避開 四類。',
+    '3. 每組只挑最值得跟的幾隻，講清楚原因。',
+    '4. 指數、ETF、黃金資產請講方向、節奏同風險位。',
+    '5. 如果見到名單太散，請指出邊個 bucket 應該收窄。',
+  ].join('\n');
+}
+
+function renderSummary(){
+  const groups = groupedItems();
+  const total = BUCKETS.reduce((sum, b) => sum + groups[b.key].length, 0);
+  const unique = new Set(getAllItems().map(x => x.symbol)).size;
+  const updated = state.updatedAt ? state.updatedAt.replace('T', ' ').slice(0, 16) : '未儲存';
+  const cards = [
+    ['港股', groups.hk.length, '自動補 .HK'],
+    ['美股', groups.us.length, '自動補 .US'],
+    ['日中指數', groups.index.length, '已含日本 / 中國 proxy'],
+    ['黃金/資源', groups.gold.length, '金 ETF / 金礦 / 資源'],
+    ['小型股', groups.smallcap.length, '高波動特攻池'],
+    ['總數', total, 'unique ' + unique + ' · ' + updated],
+  ];
+  document.getElementById('summaryStats').innerHTML = cards.map(([k,v,s]) => `
+    <div class="stat">
+      <div class="stat-k">${safeText(k)}</div>
+      <div class="stat-v">${safeText(v)}</div>
+      <div class="stat-s">${safeText(s)}</div>
+    </div>`).join('');
+  document.getElementById('count-hk').textContent = groups.hk.length;
+  document.getElementById('count-us').textContent = groups.us.length;
+  document.getElementById('count-index').textContent = groups.index.length;
+  document.getElementById('count-gold').textContent = groups.gold.length;
+  document.getElementById('count-smallcap').textContent = groups.smallcap.length;
+  document.getElementById('totalHint').textContent = total + ' 個代號 · unique ' + unique;
+  document.getElementById('saveStatus').textContent = state.updatedAt
+    ? '本機名單 · 已儲存 ' + updated
+    : '本機名單 · 即時儲存';
+}
+
+function renderOutputs(){
+  const groups = groupedItems();
+  document.getElementById('plainOutput').value = formatGroupedPlain(groups);
+  document.getElementById('promptOutput').value = buildPrompt(groups);
+}
+
+function renderSetupPick(item, setup, labelMap){
+  const resolved = item.resolvedSymbol || item.symbol;
+  const href = './kbar_matrix.html?mode=' + encodeURIComponent(modeFromSymbol(resolved)) + '&symbol=' + encodeURIComponent(resolved);
+  const score = setup.scores[item.setupKey];
+  const stat3Label = item.setupKey === 'breaklow' ? '收回前低' : '距 20-bar 高位';
+  const stat3Value = item.setupKey === 'breaklow' ? fmtSigned(setup.metrics.reclaimPrevLow, '%') : fmtSigned(setup.metrics.gapHigh20, '%');
+  const stat4Label = item.setupKey === 'breaklow' ? '破位低點' : '離 20-bar 低位';
+  const stat4Value = item.setupKey === 'breaklow' ? fmtSigned(setup.metrics.recentLow) : fmtSigned(setup.metrics.bounceLow20, '%');
+  return `
+    <div class="setup-pick">
+      <div class="setup-pick-top">
+        <div>
+          <div class="setup-pick-symbol">${safeText(resolved)}</div>
+          <div class="setup-pick-bucket">${safeText(labelMap[item.bucket])}</div>
+        </div>
+        <div style="text-align:right">
+          <div class="setup-pick-score">${safeText(score)}</div>
+          <div class="setup-pick-tag">${safeText(item.setupLabel)}</div>
+        </div>
+      </div>
+      <div class="setup-pick-meta">
+        <div class="setup-pick-stat">
+          <div class="setup-pick-stat-label">1H / 4H</div>
+          <div class="setup-pick-stat-value">${safeText(setup.metrics.trend1)} / ${safeText(setup.metrics.trend4)}</div>
+        </div>
+        <div class="setup-pick-stat">
+          <div class="setup-pick-stat-label">5m thrust</div>
+          <div class="setup-pick-stat-value">${safeText(fmtSigned(setup.metrics.thrust5, '%'))}</div>
+        </div>
+        <div class="setup-pick-stat">
+          <div class="setup-pick-stat-label">${safeText(stat3Label)}</div>
+          <div class="setup-pick-stat-value">${safeText(stat3Value)}</div>
+        </div>
+        <div class="setup-pick-stat">
+          <div class="setup-pick-stat-label">${safeText(stat4Label)}</div>
+          <div class="setup-pick-stat-value">${safeText(stat4Value)}</div>
+        </div>
+      </div>
+      <div class="setup-pick-note">${safeText(item.note)}</div>
+      <a class="setup-pick-link" href="${href}">開 Kbar 睇圖</a>
+    </div>
+  `;
+}
+
+async function renderSetupBoard(){
+  const metaEl = document.getElementById('setupLensMeta');
+  const listEls = {
+    breakout: document.getElementById('setupListBreakout'),
+    base: document.getElementById('setupListBase'),
+    breaklow: document.getElementById('setupListBreaklow'),
+    rebound: document.getElementById('setupListRebound'),
+  };
+  const countEls = {
+    breakout: document.getElementById('setupCountBreakout'),
+    base: document.getElementById('setupCountBase'),
+    breaklow: document.getElementById('setupCountBreaklow'),
+    rebound: document.getElementById('setupCountRebound'),
+  };
+  if(!metaEl || !listEls.breakout || !listEls.base || !listEls.breaklow || !listEls.rebound) return;
+
+  metaEl.textContent = '讀取 Kbar cache...';
+  await ensureKbarCache();
+
+  const labelMap = Object.fromEntries(BUCKETS.map(b => [b.key, b.label]));
+  const seen = new Set();
+  const setupGroups = { breakout: [], base: [], breaklow: [], rebound: [] };
+  let totalItems = 0;
+  let resolvedItems = 0;
+
+  getAllItems().forEach(item => {
+    if(seen.has(item.symbol)) return;
+    seen.add(item.symbol);
+    totalItems += 1;
+    const resolvedSymbol = resolveCachedSymbol(item.symbol);
+    if(!resolvedSymbol || !kbarCache || !kbarCache.symbols || !kbarCache.symbols[resolvedSymbol]) return;
+    const entry = kbarCache.symbols[resolvedSymbol];
+    const setup = analyzeSetups(entry);
+    if(!setup) return;
+    resolvedItems += 1;
+    const setupKey = setup.activeKey;
+    const setupLabel = setupKey === 'breakout' ? '追勢突破' : (setupKey === 'base' ? '盤底築台' : (setupKey === 'breaklow' ? '破底返' : '弱勢反抽'));
+    const note = setupKey === 'breakout'
+      ? '近高位，守住先追。'
+      : (setupKey === 'base'
+        ? '整固期，等放量升級。'
+        : (setupKey === 'breaklow'
+          ? '跌穿後收回，博 stop-run reclaim。'
+          : '只係技術反彈，未當收回。'));
+    setupGroups[setupKey].push({
+      bucket: item.bucket,
+      symbol: item.symbol,
+      resolvedSymbol,
+      setupKey,
+      setupLabel,
+      note,
+      setup,
+    });
+  });
+
+  ['breakout','base','breaklow','rebound'].forEach(key => {
+    const rows = setupGroups[key].sort((a, b) => b.setup.scores[key] - a.setup.scores[key]);
+    countEls[key].textContent = rows.length;
+    listEls[key].innerHTML = rows.length
+      ? rows.map(row => renderSetupPick(row, row.setup, labelMap)).join('')
+      : '<div class="setup-empty">呢一欄暫時冇可判讀名單。</div>';
+  });
+
+  const cacheCount = kbarCache && kbarCache.symbols ? Object.keys(kbarCache.symbols).length : 0;
+  metaEl.textContent = `已判讀 ${resolvedItems} / ${totalItems} · Kbar cache ${cacheCount}`;
+}
+
+function renderTable(){
+  const q = String(document.getElementById('tableSearch').value || '').trim().toUpperCase();
+  const body = document.getElementById('itemsBody');
+  const items = getAllItems().filter(item => {
+    if(!q) return true;
+    return item.bucket.toUpperCase().includes(q) || item.symbol.includes(q) || item.raw.toUpperCase().includes(q);
+  });
+  if(!items.length){
+    body.innerHTML = '<tr><td colspan="3" class="empty">暫時無代號</td></tr>';
+    return;
+  }
+  const labelMap = Object.fromEntries(BUCKETS.map(b => [b.key, b.label]));
+  body.innerHTML = items.map(item => `
+    <tr>
+      <td><span class="pill ${BUCKETS.find(b => b.key === item.bucket).pill}">${safeText(labelMap[item.bucket])}</span></td>
+      <td class="code-col">${safeText(item.symbol)}</td>
+      <td class="raw-col">${safeText(item.raw)}</td>
+    </tr>`).join('');
+}
+
+function renderInputs(){
+  BUCKETS.forEach(b => {
+    const el = document.getElementById('bucket-' + b.key);
+    if(el && el.value !== state[b.key]) el.value = state[b.key] || '';
+  });
+}
+
+function renderAll(){
+  renderMomentumRank();
+  renderInputs();
+  renderSummary();
+  renderOutputs();
+  renderTable();
+  renderSetupBoard();
+}
+
+function mergeLines(existingText, additions, bucketKey){
+  const items = parseBucket(bucketKey).map(x => x.symbol);
+  const seen = new Set(items);
+  const merged = cleanBucketInput(existingText).split(/\n+/).map(s => s.trim()).filter(Boolean);
+  additions.forEach(raw => {
+    const symbol = normalizeSymbol(raw, bucketKey);
+    if(!symbol || seen.has(symbol)) return;
+    seen.add(symbol);
+    merged.push(raw);
+  });
+  return merged.join('\n');
+}
+
+function fillBucket(bucketKey){
+  state[bucketKey] = DEFAULTS[bucketKey].join('\n');
+  saveState();
+}
+
+function clearBucket(bucketKey){
+  state[bucketKey] = '';
+  saveState();
+}
+
+function loadAllDefaults(){
+  BUCKETS.forEach(b => {
+    state[b.key] = DEFAULTS[b.key].join('\n');
+  });
+  saveState();
+}
+
+function clearAllLists(){
+  if(!confirm('確定清空全部動量名單？')) return;
+  state = emptyState();
+  saveState();
+}
+
+function importFromWatchlist(){
+  let list = [];
+  try{
+    list = JSON.parse(localStorage.getItem(WATCHLIST_KEY) || '[]');
+  }catch(_){
+    list = [];
+  }
+  const codes = list.map(x => String(x && x.code || '').trim()).filter(Boolean);
+  if(!codes.length){
+    alert('自選入面暫時冇代號可匯入。');
+    return;
+  }
+  state.hk = mergeLines(state.hk || '', codes, 'hk');
+  saveState();
+}
+
+function exportJson(){
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type:'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'momentum_list_' + new Date().toISOString().slice(0, 10) + '.json';
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 3000);
+}
+
+function handleImport(event){
+  const file = event.target.files && event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try{
+      const raw = JSON.parse(String(e.target.result || '{}'));
+      const next = emptyState();
+      BUCKETS.forEach(b => {
+        next[b.key] = String(raw[b.key] || '');
+      });
+      state = next;
+      saveState();
+      alert('已匯入動量名單。');
+    }catch(err){
+      alert('匯入失敗：' + err.message);
+    }finally{
+      event.target.value = '';
+    }
+  };
+  reader.readAsText(file);
+}
+
+async function copyOutput(id){
+  const el = document.getElementById(id);
+  const text = el.value || '';
+  try{
+    await navigator.clipboard.writeText(text);
+  }catch(_){
+    el.focus();
+    el.select();
+    document.execCommand('copy');
+  }
+  document.getElementById('saveStatus').textContent = '已複製 ' + (id === 'plainOutput' ? '純清單' : '分析 prompt');
+  setTimeout(() => renderSummary(), 1200);
+}
+
+BUCKETS.forEach(b => {
+  const el = document.getElementById('bucket-' + b.key);
+  el.addEventListener('input', () => {
+    state[b.key] = el.value;
+    saveState();
+  });
+});
+
+document.getElementById('tableSearch').addEventListener('input', renderTable);
+window.addEventListener('storage', e => {
+  if(e.key === KEY || e.key === WATCHLIST_KEY){
+    state = loadState();
+    renderAll();
+  }
+});
+
+function setupEntryFromEngine(symbol){
+  if(!symbol || !tradeEngine || !tradeEngine.by_symbol) return null;
+  return tradeEngine.by_symbol[symbol] || null;
+}
+
+function renderMomentumRank(){
+  if(momentumRankPromise) return momentumRankPromise;
+  momentumRankPromise = (async() => {
+    const body = document.getElementById('momentumRows');
+    const status = document.getElementById('momentumUpdated');
+    const scope = document.getElementById('momentumScope');
+    const [engine, cache] = await Promise.all([ensureTradeEngine(), ensureKbarCache()]);
+    const rows = Array.isArray(engine && engine.momentum_rank) ? engine.momentum_rank : [];
+    if(!rows.length){
+      const fallback = buildMomentumRows(cache);
+      if(!fallback.length){
+        body.innerHTML = '<tr><td colspan="12" class="momentum-empty">鐩墠 cache 娌掓湁瓒冲鏃ョ窔璩囨枡锛屽敂鏈冮€犲悕鍠€?/td></tr>';
+        status.textContent = '璩囨枡涓嶈冻';
+        return;
+      }
+      const fmt=v=>Number.isFinite(v)?(v>=0?'+':'')+v.toFixed(2)+'%':'--',fmtVr=v=>Number.isFinite(v)?v.toFixed(2)+'x':'--';
+      body.innerHTML = fallback.slice(0,50).map((row,i)=>{const e=row.entry,symbol=e.symbol,mode=modeFromSymbol(symbol);return `<tr><td class="rank">${i+1}</td><td class="symbol">${safeText(symbol)}</td><td>${safeText(e.label||symbol)}</td><td>${Number.isFinite(row.close)?row.close.toFixed(row.close<1?3:2):'--'}</td><td class="${row.r5>=0?'up':'down'}">${fmt(row.r5)}</td><td class="${row.r20>=0?'up':'down'}">${fmt(row.r20)}</td><td class="${row.r60>=0?'up':'down'}">${fmt(row.r60)}</td><td>${fmtVr(row.vr)}</td><td class="trend">${safeText(row.trend)}</td><td><span class="setup ${row.setupClass}">${safeText(row.setup)}</span></td><td class="score">${row.score.toFixed(1)}</td><td><a class="setup-pick-link" href="./kbar_matrix.html?mode=${encodeURIComponent(mode)}&symbol=${encodeURIComponent(symbol)}">Kbar</a></td></tr>`}).join('');
+      status.textContent = 'Kbar ' + (cache.updated_at || '--');
+      scope.textContent = `fallback cache universe ${Object.keys(cache.symbols||{}).length} 路 ranking ${fallback.length}`;
+      return;
+    }
+    const fmt=v=>Number.isFinite(v)?(v>=0?'+':'')+v.toFixed(2)+'%':'--',fmtVr=v=>Number.isFinite(v)?v.toFixed(2)+'x':'--';
+    body.innerHTML = rows.slice(0,50).map((row,i) => {
+      const symbol = row.symbol;
+      const mode = modeFromSymbol(symbol);
+      const price = Number(row.price);
+      return `<tr><td class="rank">${i+1}</td><td class="symbol">${safeText(symbol)}</td><td>${safeText(row.label||symbol)}</td><td>${Number.isFinite(price)?price.toFixed(price<1?3:2):'--'}</td><td class="${Number(row.r5)>=0?'up':'down'}">${fmt(Number(row.r5))}</td><td class="${Number(row.r20)>=0?'up':'down'}">${fmt(Number(row.r20))}</td><td class="${Number(row.r60)>=0?'up':'down'}">${fmt(Number(row.r60))}</td><td>${fmtVr(Number(row.vr))}</td><td class="trend">${safeText(row.trend || '--')}</td><td><span class="setup ${safeText(row.setupClass || 'watch')}">${safeText(row.setupLabel || '觀察')}</span></td><td class="score">${Number(row.score || 0).toFixed(1)}</td><td><a class="setup-pick-link" href="./kbar_matrix.html?mode=${encodeURIComponent(mode)}&symbol=${encodeURIComponent(symbol)}">Kbar</a></td></tr>`;
+    }).join('');
+    status.textContent = 'Engine ' + ((engine && engine.updated_at) || '--');
+    scope.textContent = `共用 trade engine ${engine.scope_count || 0} 路 momentum ${engine.momentum_count || 0} 路 顯示前 ${Math.min(50, rows.length)} 隻`;
+  })();
+  return momentumRankPromise;
+}
+
+async function renderSetupBoard(){
+  const metaEl = document.getElementById('setupLensMeta');
+  const listEls = {
+    breakout: document.getElementById('setupListBreakout'),
+    base: document.getElementById('setupListBase'),
+    breaklow: document.getElementById('setupListBreaklow'),
+    rebound: document.getElementById('setupListRebound'),
+  };
+  const countEls = {
+    breakout: document.getElementById('setupCountBreakout'),
+    base: document.getElementById('setupCountBase'),
+    breaklow: document.getElementById('setupCountBreaklow'),
+    rebound: document.getElementById('setupCountRebound'),
+  };
+  if(!metaEl || !listEls.breakout || !listEls.base || !listEls.breaklow || !listEls.rebound) return;
+
+  metaEl.textContent = '璁€鍙?trade engine...';
+  await Promise.all([ensureTradeEngine(), ensureKbarCache()]);
+
+  const labelMap = Object.fromEntries(BUCKETS.map(b => [b.key, b.label]));
+  const seen = new Set();
+  const setupGroups = { breakout: [], base: [], breaklow: [], rebound: [] };
+  let totalItems = 0;
+  let resolvedItems = 0;
+
+  getAllItems().forEach(item => {
+    if(seen.has(item.symbol)) return;
+    seen.add(item.symbol);
+    totalItems += 1;
+    const resolvedSymbol = resolveCachedSymbol(item.symbol);
+    if(!resolvedSymbol || !kbarCache || !kbarCache.symbols || !kbarCache.symbols[resolvedSymbol]) return;
+    const entry = kbarCache.symbols[resolvedSymbol];
+    const setup = setupEntryFromEngine(resolvedSymbol) || analyzeSetups(entry);
+    if(!setup) return;
+    resolvedItems += 1;
+    const setupKey = setup.activeKey;
+    const setupLabel = setupKey === 'breakout' ? '追勢突破' : (setupKey === 'base' ? '盤底築台' : (setupKey === 'breaklow' ? '破底翻' : '弱勢反抽'));
+    const note = setupKey === 'breakout'
+      ? '近高位，守住先追。'
+      : (setupKey === 'base'
+        ? '整固未完，等量價配合。'
+        : (setupKey === 'breaklow'
+          ? '跌穿後收回，屬 stop-run reclaim。'
+          : '只當技術反彈，未算轉勢。'));
+    setupGroups[setupKey].push({
+      bucket: item.bucket,
+      symbol: item.symbol,
+      resolvedSymbol,
+      setupKey,
+      setupLabel,
+      note,
+      setup,
+    });
+  });
+
+  ['breakout','base','breaklow','rebound'].forEach(key => {
+    const rows = setupGroups[key].sort((a, b) => b.setup.scores[key] - a.setup.scores[key]);
+    countEls[key].textContent = rows.length;
+    listEls[key].innerHTML = rows.length
+      ? rows.map(row => renderSetupPick(row, row.setup, labelMap)).join('')
+      : '<div class="setup-empty">當前清單未見清楚對應 setup。</div>';
+  });
+
+  metaEl.textContent = `共用 engine ${tradeEngine && tradeEngine.scope_count ? tradeEngine.scope_count : 0} 路 命中 ${resolvedItems} / ${totalItems}`;
+}
+
+renderAll();
+</script>
+</body>
+</html>

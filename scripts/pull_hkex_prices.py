@@ -1,6 +1,7 @@
 """Pull historical daily kline from Futu OpenD → raw/prices_YYYYMMDD.json"""
 import json, os, sys, time
 from datetime import datetime, timedelta
+from pathlib import Path
 
 try:
     from futu import *
@@ -12,6 +13,8 @@ except ImportError:
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RAW_DIR = os.path.join(BASE, 'raw')
 os.makedirs(RAW_DIR, exist_ok=True)
+sys.path.insert(0, os.path.join(BASE, "scripts"))
+from futu_env import ensure_futu_quote_backend_or_die
 
 def get_hk_stocks(q):
     """Get all HK stock codes from Futu."""
@@ -73,7 +76,8 @@ if __name__ == '__main__':
     max_stocks = int(sys.argv[2]) if len(sys.argv) > 2 else None
     
     print(f"Connecting to Futu OpenD...")
-    q = OpenQuoteContext('127.0.0.1', 11111)
+    futu_host, futu_port = ensure_futu_quote_backend_or_die(Path(BASE))
+    q = OpenQuoteContext(futu_host, futu_port)
     
     codes = get_hk_stocks(q)
     if max_stocks:

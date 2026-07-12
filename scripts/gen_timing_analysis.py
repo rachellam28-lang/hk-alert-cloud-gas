@@ -7,7 +7,7 @@ import html
 import json
 import math
 from collections import defaultdict
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
 
 
@@ -234,6 +234,7 @@ def render_table(rows: list[dict], today: date) -> str:
 
 def main() -> None:
     today = date.today()
+    page_updated = datetime.now().strftime("%Y-%m-%d %H:%M")
     vqc = load_json(VQC_PATH, {"events": [], "updated": ""})
     dd = load_json(DD_PATH, {"benchmarks": [], "updated": ""})
     jieqi = load_json(JIEQI_PATH, {"calendar": {"years": {}}, "term_stats": [], "updated": ""})
@@ -264,7 +265,7 @@ def main() -> None:
       <div class="title">⏱ 時間窗口訊號表</div>
       <div class="subtitle">將節氣窗口、分佈日、成交轉勢日放成同一張日期表；重點係「幾時出現訊號」，唔再用第一屏堆統計圖。</div>
     </div>
-    <div class="hero-meta">今日：<b>{esc(today.isoformat())}</b><br>VQC：<b>{esc(str(vqc.get("updated", ""))[:10])}</b><br>DD/Jieqi：<b>{esc(str(dd.get("updated", ""))[:10])} / {esc(str(jieqi.get("updated", ""))[:10])}</b></div>
+    <div class="hero-meta">頁面更新：<b>{esc(page_updated)}</b><br>今日：<b>{esc(today.isoformat())}</b><br>VQC樣本：<b>{esc(str(vqc.get("updated", ""))[:10])}</b><br>DD/Jieqi樣本：<b>{esc(str(dd.get("updated", ""))[:10])} / {esc(str(jieqi.get("updated", ""))[:10])}</b></div>
   </section>
   <section class="cards">
     <div class="card"><div class="k">下一個窗口</div><div class="v">{esc(next_signal.get("date_text", "—"))}</div><div class="s">{esc(next_signal.get("signal", "—"))}</div></div>

@@ -19,17 +19,31 @@ import sys
 from datetime import date, timedelta
 from pathlib import Path
 
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+except AttributeError:
+    pass
+
 sys.path.insert(0, str((Path(__file__).resolve().parent.parent)))
 from src.db import DB_PATH
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 CCASS_DIR = PROJECT_ROOT / "ccass"
 PYTHON = sys.executable
+PUBLISH_SCOPE_PATTERNS = ("029%", "04%", "8%")
 
 
 def _run_json_script(script: str, *args: str) -> tuple[dict, int, str, str]:
     cmd = [PYTHON, script, *args]
-    proc = subprocess.run(cmd, cwd=CCASS_DIR, capture_output=True, text=True)
+    proc = subprocess.run(
+        cmd,
+        cwd=CCASS_DIR,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+    )
     stdout = (proc.stdout or "").strip()
     stderr = (proc.stderr or "").strip()
     if not stdout:
@@ -52,12 +66,20 @@ def _latest_db_date(conn: sqlite3.Connection) -> str | None:
     return row[0] if row and row[0] else None
 
 
+def _publish_scope_predicate(alias: str | None = None) -> str:
+    col = f"{alias}.stock_code" if alias else "stock_code"
+    return " AND ".join(f"{col} NOT LIKE '{pattern}'" for pattern in PUBLISH_SCOPE_PATTERNS)
+
+
 def _latest_db_coverage(conn: sqlite3.Connection, trade_date: str) -> tuple[int, int, float | None]:
     count_row = conn.execute(
         """
         SELECT COUNT(DISTINCT stock_code)
         FROM ccass_daily
         WHERE trade_date = ? AND validation_failed = 0
+          AND stock_code NOT LIKE '029%'
+          AND stock_code NOT LIKE '04%'
+          AND stock_code NOT LIKE '8%'
         """,
         (trade_date,),
     ).fetchone()
@@ -83,6 +105,9 @@ def _latest_publishable_db_date(conn: sqlite3.Connection, min_coverage: float) -
         SELECT trade_date, COUNT(DISTINCT stock_code) AS stock_count
         FROM ccass_daily
         WHERE validation_failed = 0
+          AND stock_code NOT LIKE '029%'
+          AND stock_code NOT LIKE '04%'
+          AND stock_code NOT LIKE '8%'
         GROUP BY trade_date
         ORDER BY trade_date DESC
         """
@@ -104,6 +129,36 @@ def _date_set(conn: sqlite3.Connection) -> set[str]:
         """
     ).fetchall()
     return {r[0] for r in rows if r and r[0]}
+
+
+def _date_coverages(conn: sqlite3.Connection) -> dict[str, float]:
+    rows = conn.execute(
+        """
+        SELECT trade_date, COUNT(DISTINCT stock_code) AS stock_count
+        FROM ccass_daily
+        WHERE validation_failed = 0
+          AND stock_code NOT LIKE '029%'
+          AND stock_code NOT LIKE '04%'
+          AND stock_code NOT LIKE '8%'
+        GROUP BY trade_date
+        ORDER BY trade_date
+        """
+    ).fetchall()
+    total_row = conn.execute(
+        """
+        SELECT COUNT(*)
+        FROM stock_universe
+        WHERE is_active=1
+          AND stock_code NOT LIKE '029%'
+          AND stock_code NOT LIKE '04%'
+          AND stock_code NOT LIKE '8%'
+        """
+    ).fetchone()
+    total = int(total_row[0] or 0)
+    out: dict[str, float] = {}
+    for trade_date, stock_count in rows:
+        out[str(trade_date)] = (float(stock_count) / total) if total else 0.0
+    return out
 
 
 def _table_exists(conn: sqlite3.Connection, table: str) -> bool:
@@ -242,6 +297,7 @@ def main() -> int:
     publishable_count = None
     publishable_coverage_pct = None
     present_dates: set[str] = set()
+    date_coverages: dict[str, float] = {}
     conn = sqlite3.connect(str(DB_PATH))
     try:
         if not _table_exists(conn, "ccass_daily") or not _table_exists(conn, "stock_universe"):
@@ -252,6 +308,7 @@ def main() -> int:
                 latest_db_stock_count, _, latest_db_coverage_pct = _latest_db_coverage(conn, latest_db)
             publishable_db, publishable_count, publishable_coverage_pct = _latest_publishable_db_date(conn, args.min_coverage)
             present_dates = _date_set(conn)
+            date_coverages = _date_coverages(conn)
     except sqlite3.Error as exc:
         errors.append(f"Database audit failed: {exc}")
     finally:
@@ -301,6 +358,17 @@ def main() -> int:
                 + ", ".join(missing_days[:12])
                 + (" ..." if len(missing_days) > 12 else "")
             )
+        incomplete_days = [
+            trade_date
+            for trade_date, cov in sorted(date_coverages.items(), reverse=True)
+            if start_db <= trade_date <= end_db and cov * 100 < args.min_coverage
+        ]
+        if incomplete_days:
+            warnings.append(
+                f"Historical low-coverage DB dates below {args.min_coverage}%: "
+                + ", ".join(incomplete_days[:12])
+                + (" ..." if len(incomplete_days) > 12 else "")
+            )
         if publishable_db and latest_db and publishable_db != latest_db:
             tail_missing = _missing_trading_days(publishable_db, latest_db, present_dates)
             tail_missing = [d for d in tail_missing if d != publishable_db]
@@ -310,6 +378,17 @@ def main() -> int:
                     + ", ".join(tail_missing[:12])
                     + (" ..." if len(tail_missing) > 12 else "")
                 )
+            tail_incomplete = [
+                trade_date
+                for trade_date, cov in sorted(date_coverages.items(), reverse=True)
+                if publishable_db < trade_date <= latest_db and cov * 100 < args.min_coverage
+            ]
+            if tail_incomplete:
+                warnings.append(
+                    f"Low-coverage tail after publishable date {publishable_db}: "
+                    + ", ".join(tail_incomplete[:12])
+                    + (" ..." if len(tail_incomplete) > 12 else "")
+                )
 
     # Run verifiers. Date-scoped data verification gates the current publish;
     # full-history verification is reported as backlog only.
@@ -317,12 +396,12 @@ def main() -> int:
     try:
         if not verify_date:
             raise RuntimeError("No holdings/publishable date available for verify_data")
-        data_report, data_rc, _, _ = _run_json_script("scripts/verify_data.py", "--date", verify_date, "--json")
+        data_report, data_rc, _, _ = _run_json_script("scripts/verify_data.py", "--date", verify_date, "--json", "--publish-scope")
     except Exception as exc:
         data_report, data_rc = {"status": "FAIL", "errors": [str(exc)], "warnings": []}, 1
         errors.append(f"verify_data failed to run: {exc}")
     try:
-        history_report, history_rc, _, _ = _run_json_script("scripts/verify_data.py", "--json")
+        history_report, history_rc, _, _ = _run_json_script("scripts/verify_data.py", "--json", "--publish-scope")
     except Exception as exc:
         history_report, history_rc = {"status": "FAIL", "errors": [str(exc)], "warnings": []}, 1
         warnings.append(f"historical verify_data failed to run: {exc}")

@@ -1,5 +1,461 @@
 [
   {
+    "code": "01128",
+    "name": "WYNN MACAU",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：Adjustment to Conversion Price of the Convertible Bonds",
+    "date": "2026-06-05",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060501722.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 9,
+    "pre_count": 9,
+    "post_count": 0,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 2,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "00174",
+    "name": "GEMINI INV",
+    "types": [
+      "配股"
+    ],
+    "title": "COMPLETION OF 發行新股（一般授權）",
+    "date": "2026-06-23",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0623/2026062300606.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 4,
+    "pre_count": 4,
+    "post_count": 0,
+    "pre_types": [
+      "半年POC + 12個月POC + 3年POC",
+      "半年POC + 3年POC",
+      "年開突破"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "半年POC + 12個月POC + 3年POC",
+      "半年POC + 3年POC",
+      "年開突破"
+    ],
+    "first_pre_days": 12,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "01334",
+    "name": "RUICHANG INTL",
+    "types": [
+      "股東增持"
+    ],
+    "title": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING BY CONTROLLING SHAREHOLDER…",
+    "date": "2026-06-09",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0609/2026060900003.pdf",
+    "type": "increase",
+    "typeLabel": "股東增持",
+    "direction": "up",
+    "signal_count": 4,
+    "pre_count": 3,
+    "post_count": 1,
+    "pre_types": [
+      "向上FVG",
+      "年開突破",
+      "披露易公告 - 股東增持"
+    ],
+    "post_types": [
+      "上破POC 12M"
+    ],
+    "signal_types_summary": [
+      "上破POC 12M",
+      "向上FVG",
+      "年開突破",
+      "披露易公告 - 股東增持"
+    ],
+    "first_pre_days": 1,
+    "first_post_days": 0,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "01323",
+    "name": "HUASHENG INTL",
+    "types": [
+      "配股"
+    ],
+    "title": "配股完成 OF NEW SHARES（一般授權）",
+    "date": "2026-07-03",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0703/2026070302763.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 3,
+    "pre_count": 3,
+    "post_count": 0,
+    "pre_types": [
+      "半年POC + 12個月POC"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "半年POC + 12個月POC"
+    ],
+    "first_pre_days": 22,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "01952",
+    "name": "EVEREST MED",
+    "types": [
+      "股東增持"
+    ],
+    "title": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING BY SUBSTANTIAL SHAREHOLDER…",
+    "date": "2026-06-18",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0618/2026061800131.pdf",
+    "type": "increase",
+    "typeLabel": "股東增持",
+    "direction": "up",
+    "signal_count": 3,
+    "pre_count": 3,
+    "post_count": 0,
+    "pre_types": [
+      "向上跳空缺口",
+      "披露易公告 - 股東增持"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "向上跳空缺口",
+      "披露易公告 - 股東增持"
+    ],
+    "first_pre_days": 8,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "02623",
+    "name": "HK GOLD IND GP",
+    "types": [
+      "配股"
+    ],
+    "title": "配售新股（一般授權）",
+    "date": "2026-06-18",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0618/2026061802288.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 3,
+    "pre_count": 3,
+    "post_count": 0,
+    "pre_types": [
+      "半年POC + 12個月POC"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "半年POC + 12個月POC"
+    ],
+    "first_pre_days": 6,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "01323",
+    "name": "HUASHENG INTL",
+    "types": [
+      "配股"
+    ],
+    "title": "配售新股（一般授權）",
+    "date": "2026-06-11",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0611/2026061101399.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 3,
+    "pre_count": 2,
+    "post_count": 1,
+    "pre_types": [
+      "半年POC + 12個月POC"
+    ],
+    "post_types": [
+      "半年POC + 12個月POC"
+    ],
+    "signal_types_summary": [
+      "半年POC + 12個月POC"
+    ],
+    "first_pre_days": 1,
+    "first_post_days": 0,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "01952",
+    "name": "EVEREST MED",
+    "types": [
+      "股東增持"
+    ],
+    "title": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING BY SUBSTANTIAL SHAREHOLDER…",
+    "date": "2026-06-10",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0610/2026061000037.pdf",
+    "type": "increase",
+    "typeLabel": "股東增持",
+    "direction": "up",
+    "signal_count": 3,
+    "pre_count": 2,
+    "post_count": 1,
+    "pre_types": [
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "披露易公告 - 股東增持"
+    ],
+    "signal_types_summary": [
+      "向上跳空缺口",
+      "披露易公告 - 股東增持"
+    ],
+    "first_pre_days": 5,
+    "first_post_days": 0,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "01378",
+    "name": "CHINAHONGQIAO",
+    "types": [
+      "股東增持"
+    ],
+    "title": "公司公告：VOLUNTARY ANNOUNCEMENT - INCREASE IN SHAREHOLDING BY THE CONTROLLING SHARE…",
+    "date": "2026-06-10",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0610/2026061000848.pdf",
+    "type": "increase",
+    "typeLabel": "股東增持",
+    "direction": "up",
+    "signal_count": 3,
+    "pre_count": 3,
+    "post_count": 0,
+    "pre_types": [
+      "向上跳空缺口",
+      "披露易公告 - 股東增持"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "向上跳空缺口",
+      "披露易公告 - 股東增持"
+    ],
+    "first_pre_days": 2,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "01378",
+    "name": "CHINAHONGQIAO",
+    "types": [
+      "股東增持"
+    ],
+    "title": "公司公告：VOLUNTARY ANNOUNCEMENT - INCREASE IN SHAREHOLDING BY THE CONTROLLING SHARE…",
+    "date": "2026-06-08",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0608/2026060801209.pdf",
+    "type": "increase",
+    "typeLabel": "股東增持",
+    "direction": "up",
+    "signal_count": 3,
+    "pre_count": 2,
+    "post_count": 1,
+    "pre_types": [
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "披露易公告 - 股東增持"
+    ],
+    "signal_types_summary": [
+      "向上跳空缺口",
+      "披露易公告 - 股東增持"
+    ],
+    "first_pre_days": 18,
+    "first_post_days": 0,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "09966",
+    "name": "ALPHAMAB-B",
+    "types": [
+      "股東增持"
+    ],
+    "title": "公司公告：VOLUNTARY ANNOUNCEMENT - INCREASE IN SHAREHOLDING BY EXECUTIVE DIRECTOR AN…",
+    "date": "2026-06-05",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060500115.pdf",
+    "type": "increase",
+    "typeLabel": "股東增持",
+    "direction": "up",
+    "signal_count": 3,
+    "pre_count": 3,
+    "post_count": 0,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 10,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "01378",
+    "name": "CHINAHONGQIAO",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：ADJUSTMENT OF CONVERSION PRICE OF US$300,000,000 1.50% CONVERTIBLE BONDS D…",
+    "date": "2026-06-02",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0602/2026060200901.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 3,
+    "pre_count": 2,
+    "post_count": 1,
+    "pre_types": [
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "披露易公告 - 股東增持"
+    ],
+    "signal_types_summary": [
+      "向上跳空缺口",
+      "披露易公告 - 股東增持"
+    ],
+    "first_pre_days": 12,
+    "first_post_days": 6,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "00201",
+    "name": "MAGNIFICENT",
+    "types": [
+      "聯合公告",
+      "大手轉倉"
+    ],
+    "title": "公司公告：JOINT ANNOUNCEMENT - UPDATE ON (1) TRANSFER OF SHARES IN SHUN HO PROPERTY …",
+    "date": "2026-07-03",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0703/2026070302167.pdf",
+    "type": "announcement",
+    "typeLabel": "聯合公告 / 大手轉倉",
+    "direction": "neutral",
+    "signal_count": 2,
+    "pre_count": 2,
+    "post_count": 0,
+    "pre_types": [
+      "半年POC + 12個月POC + 3年POC",
+      "年開突破"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "半年POC + 12個月POC + 3年POC",
+      "年開突破"
+    ],
+    "first_pre_days": 25,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "00201",
+    "name": "MAGNIFICENT",
+    "types": [
+      "聯合公告",
+      "大手轉倉"
+    ],
+    "title": "公司公告：JOINT ANNOUNCEMENT - (1) DELAY IN DESPATCH OF THE CONNECTED TRANSACTION CI…",
+    "date": "2026-06-30",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0630/2026063001752.pdf",
+    "type": "announcement",
+    "typeLabel": "聯合公告 / 大手轉倉",
+    "direction": "neutral",
+    "signal_count": 2,
+    "pre_count": 2,
+    "post_count": 0,
+    "pre_types": [
+      "半年POC + 12個月POC + 3年POC",
+      "年開突破"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "半年POC + 12個月POC + 3年POC",
+      "年開突破"
+    ],
+    "first_pre_days": 22,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "01327",
+    "name": "LUXXU GROUP",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：POLL RESULTS OF THE ANNUAL GENERAL MEETING HELD ON 26 JUNE 2026 AND SUPPLM…",
+    "date": "2026-06-26",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0626/2026062602237.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 2,
+    "pre_count": 2,
+    "post_count": 0,
+    "pre_types": [
+      "12個月POC",
+      "年開突破"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "12個月POC",
+      "年開突破"
+    ],
+    "first_pre_days": 18,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "01327",
+    "name": "LUXXU GROUP",
+    "types": [
+      "配股"
+    ],
+    "title": "配股完成 OF NEW SHARES（一般授權）",
+    "date": "2026-06-25",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0625/2026062501264.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 2,
+    "pre_count": 2,
+    "post_count": 0,
+    "pre_types": [
+      "12個月POC",
+      "年開突破"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "12個月POC",
+      "年開突破"
+    ],
+    "first_pre_days": 17,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
     "code": "01208",
     "name": "MMG",
     "types": [
@@ -11,68 +467,102 @@
     "type": "placement",
     "typeLabel": "配股",
     "direction": "up",
-    "signal_count": 1,
-    "pre_count": 1,
+    "signal_count": 2,
+    "pre_count": 2,
     "post_count": 0,
     "pre_types": [
+      "半年POC",
+      "年開突破"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "半年POC",
+      "年開突破"
+    ],
+    "first_pre_days": 11,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "02490",
+    "name": "LC LOGISTICS",
+    "types": [
+      "配股"
+    ],
+    "title": "配股完成 OF NEW SHARES（一般授權）",
+    "date": "2026-06-22",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0622/2026062201389.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 2,
+    "pre_count": 2,
+    "post_count": 0,
+    "pre_types": [
+      "年開突破",
       "披露易公告 - 配股"
     ],
     "post_types": [],
     "signal_types_summary": [
+      "年開突破",
       "披露易公告 - 配股"
+    ],
+    "first_pre_days": 10,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "02349",
+    "name": "CH CITY INFRA",
+    "types": [
+      "復牌"
+    ],
+    "title": "公司公告：EXCHANGE NOTICE - RESUMPTION OF TRADING",
+    "date": "2026-06-18",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0618/2026061800407.htm",
+    "type": "resume",
+    "typeLabel": "復牌",
+    "direction": "up",
+    "signal_count": 2,
+    "pre_count": 2,
+    "post_count": 0,
+    "pre_types": [
+      "12個月POC",
+      "12個月POC + 3年POC"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "12個月POC",
+      "12個月POC + 3年POC"
     ],
     "first_pre_days": 7,
     "first_post_days": null,
     "pattern": "frontrun"
   },
   {
-    "code": "03708",
-    "name": "WORLD DIGI ECON",
+    "code": "02349",
+    "name": "CH CITY INFRA",
     "types": [
-      "配股"
+      "配股",
+      "復牌"
     ],
-    "title": "補充公告：認購新股（一般授權）",
-    "date": "2026-06-23",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0623/2026062300847.pdf",
+    "title": "內幕消息 AND 復牌",
+    "date": "2026-06-18",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0618/2026061800399.pdf",
     "type": "placement",
-    "typeLabel": "配股",
+    "typeLabel": "配股 / 復牌",
     "direction": "up",
-    "signal_count": 1,
-    "pre_count": 1,
+    "signal_count": 2,
+    "pre_count": 2,
     "post_count": 0,
     "pre_types": [
-      "觀察·配股"
+      "12個月POC",
+      "12個月POC + 3年POC"
     ],
     "post_types": [],
     "signal_types_summary": [
-      "觀察·配股"
-    ],
-    "first_pre_days": 1,
-    "first_post_days": null,
-    "pattern": "frontrun"
-  },
-  {
-    "code": "01451",
-    "name": "MS GROUP HLDGS",
-    "types": [
-      "收購/要約",
-      "聯合公告"
-    ],
-    "title": "公司公告：JOINT ANNOUNCEMENT - FURTHER DELAY IN DESPATCH OF COMPOSITE DOCUMENT RELAT…",
-    "date": "2026-06-23",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0623/2026062300448.pdf",
-    "type": "acquisition",
-    "typeLabel": "收購/要約 / 聯合公告",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 1,
-    "post_count": 0,
-    "pre_types": [
-      "年開突破"
-    ],
-    "post_types": [],
-    "signal_types_summary": [
-      "年開突破"
+      "12個月POC",
+      "12個月POC + 3年POC"
     ],
     "first_pre_days": 7,
     "first_post_days": null,
@@ -90,160 +580,47 @@
     "type": "placement",
     "typeLabel": "配股",
     "direction": "up",
-    "signal_count": 1,
-    "pre_count": 1,
+    "signal_count": 2,
+    "pre_count": 2,
     "post_count": 0,
     "pre_types": [
-      "披露易公告 - 配股"
+      "半年POC",
+      "年開突破"
     ],
     "post_types": [],
     "signal_types_summary": [
-      "披露易公告 - 配股"
+      "半年POC",
+      "年開突破"
     ],
-    "first_pre_days": 2,
+    "first_pre_days": 6,
     "first_post_days": null,
     "pattern": "frontrun"
   },
   {
-    "code": "02889",
-    "name": "PATEO",
+    "code": "02728",
+    "name": "JINTAI ENERGY H",
     "types": [
       "配股"
     ],
-    "title": "配股完成 OF NEW H SHARES（一般授權）",
-    "date": "2026-06-22",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0622/2026062201609.pdf",
+    "title": "公司公告：SUPPLEMENTAL AND CLARIFICATION ANNOUNCEMENT FOURTH SUPPLEMENTAL DEED AMEND…",
+    "date": "2026-06-17",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0617/2026061701964.pdf",
     "type": "placement",
     "typeLabel": "配股",
     "direction": "up",
     "signal_count": 2,
-    "pre_count": 0,
-    "post_count": 2,
-    "pre_types": [],
-    "post_types": [
-      "披露易公告 - 股東增持",
-      "觀察·配股"
+    "pre_count": 2,
+    "post_count": 0,
+    "pre_types": [
+      "年開突破"
     ],
+    "post_types": [],
     "signal_types_summary": [
-      "披露易公告 - 股東增持",
-      "觀察·配股"
+      "年開突破"
     ],
-    "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "02889",
-    "name": "PATEO",
-    "types": [
-      "股東增持"
-    ],
-    "title": "公司公告：VOLUNTARY ANNOUNCEMENT - INCREASE IN SHAREHOLDINGS BY EXECUTIVE DIRECTORS",
-    "date": "2026-06-22",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0622/2026062201361.pdf",
-    "type": "increase",
-    "typeLabel": "股東增持",
-    "direction": "up",
-    "signal_count": 2,
-    "pre_count": 0,
-    "post_count": 2,
-    "pre_types": [],
-    "post_types": [
-      "披露易公告 - 股東增持",
-      "觀察·配股"
-    ],
-    "signal_types_summary": [
-      "披露易公告 - 股東增持",
-      "觀察·配股"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "02349",
-    "name": "CH CITY INFRA",
-    "types": [
-      "復牌"
-    ],
-    "title": "公司公告：EXCHANGE NOTICE - RESUMPTION OF TRADING",
-    "date": "2026-06-18",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0618/2026061800407.htm",
-    "type": "resume",
-    "typeLabel": "復牌",
-    "direction": "up",
-    "signal_count": 2,
-    "pre_count": 0,
-    "post_count": 2,
-    "pre_types": [],
-    "post_types": [
-      "披露易公告 - 復牌",
-      "披露易公告 - 配股 / 復牌"
-    ],
-    "signal_types_summary": [
-      "披露易公告 - 復牌",
-      "披露易公告 - 配股 / 復牌"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "02349",
-    "name": "CH CITY INFRA",
-    "types": [
-      "配股",
-      "復牌"
-    ],
-    "title": "內幕消息 AND 復牌",
-    "date": "2026-06-18",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0618/2026061800399.pdf",
-    "type": "placement",
-    "typeLabel": "配股 / 復牌",
-    "direction": "up",
-    "signal_count": 2,
-    "pre_count": 0,
-    "post_count": 2,
-    "pre_types": [],
-    "post_types": [
-      "披露易公告 - 復牌",
-      "披露易公告 - 配股 / 復牌"
-    ],
-    "signal_types_summary": [
-      "披露易公告 - 復牌",
-      "披露易公告 - 配股 / 復牌"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "02889",
-    "name": "PATEO",
-    "types": [
-      "股東增持"
-    ],
-    "title": "公司公告：VOLUNTARY ANNOUNCEMENT - PROPOSED INCREASE IN SHAREHOLDINGS BY EXECUTIVE D…",
-    "date": "2026-06-18",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0618/2026061801482.pdf",
-    "type": "increase",
-    "typeLabel": "股東增持",
-    "direction": "up",
-    "signal_count": 2,
-    "pre_count": 0,
-    "post_count": 2,
-    "pre_types": [],
-    "post_types": [
-      "披露易公告 - 股東增持",
-      "觀察·配股"
-    ],
-    "signal_types_summary": [
-      "披露易公告 - 股東增持",
-      "觀察·配股"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 4,
-    "pattern": "catalyst"
+    "first_pre_days": 6,
+    "first_post_days": null,
+    "pattern": "frontrun"
   },
   {
     "code": "02349",
@@ -258,131 +635,499 @@
     "typeLabel": "配股",
     "direction": "up",
     "signal_count": 2,
-    "pre_count": 0,
-    "post_count": 2,
-    "pre_types": [],
-    "post_types": [
-      "披露易公告 - 復牌",
-      "披露易公告 - 配股 / 復牌"
+    "pre_count": 2,
+    "post_count": 0,
+    "pre_types": [
+      "12個月POC",
+      "12個月POC + 3年POC"
     ],
+    "post_types": [],
     "signal_types_summary": [
-      "披露易公告 - 復牌",
-      "披露易公告 - 配股 / 復牌"
+      "12個月POC",
+      "12個月POC + 3年POC"
     ],
-    "first_pre_days": null,
-    "first_post_days": 1,
-    "pattern": "catalyst"
+    "first_pre_days": 6,
+    "first_post_days": null,
+    "pattern": "frontrun"
   },
   {
-    "code": "02889",
-    "name": "PATEO",
+    "code": "01208",
+    "name": "MMG",
     "types": [
       "配股"
     ],
-    "title": "配股 OF NEW H SHARES（一般授權）",
-    "date": "2026-06-17",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0617/2026061700301.pdf",
+    "title": "公司公告：(1) PLACING OF NEW SHARES UNDER GENERAL MANDATE; AND (2) CONCURRENT PROPOS…",
+    "date": "2026-06-16",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0616/2026061600117.pdf",
     "type": "placement",
     "typeLabel": "配股",
     "direction": "up",
     "signal_count": 2,
-    "pre_count": 0,
-    "post_count": 2,
-    "pre_types": [],
-    "post_types": [
-      "披露易公告 - 股東增持",
-      "觀察·配股"
-    ],
-    "signal_types_summary": [
-      "披露易公告 - 股東增持",
-      "觀察·配股"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 5,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "00128",
-    "name": "ENM HOLDINGS",
-    "types": [
-      "收購/要約"
-    ],
-    "title": "公司公告：ANNOUNCEMENT PURSUANT TO RULE 3.7 OF THE TAKEOVERS CODE, RULE 13.09(2) OF …",
-    "date": "2026-06-15",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0615/2026061501712.pdf",
-    "type": "acquisition",
-    "typeLabel": "收購/要約",
-    "direction": "up",
-    "signal_count": 2,
-    "pre_count": 0,
-    "post_count": 2,
-    "pre_types": [],
-    "post_types": [
-      "3年POC",
+    "pre_count": 2,
+    "post_count": 0,
+    "pre_types": [
+      "半年POC",
       "年開突破"
     ],
+    "post_types": [],
     "signal_types_summary": [
-      "3年POC",
+      "半年POC",
       "年開突破"
     ],
-    "first_pre_days": null,
-    "first_post_days": 1,
-    "pattern": "catalyst"
+    "first_pre_days": 4,
+    "first_post_days": null,
+    "pattern": "frontrun"
   },
   {
-    "code": "02889",
-    "name": "PATEO",
-    "types": [
-      "增持"
-    ],
-    "title": "VOLUNTARY ANNOUNCEMENT - IN RELATION TO MEMORANDUM OF UNDERSTANDING FOR THE INTENTION OF SHARE ACQUISITION",
-    "date": "2026-06-02",
-    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0602/2026060202776.pdf",
-    "type": "increase",
-    "typeLabel": "增持",
-    "direction": "up",
-    "signal_count": 2,
-    "pre_count": 0,
-    "post_count": 2,
-    "pre_types": [],
-    "post_types": [
-      "披露易公告 - 股東增持",
-      "觀察·配股"
-    ],
-    "signal_types_summary": [
-      "披露易公告 - 股東增持",
-      "觀察·配股"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 20,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "00776",
-    "name": "IMPERIUM TEC GP",
+    "code": "01676",
+    "name": "GAODI HOLDINGS",
     "types": [
       "供股",
       "配股"
     ],
-    "title": "公司公告：(1) PROPOSED RIGHTS ISSUE ON THE BASIS OF ONE (1) RIGHTS SHARE FOR EVERY T…",
-    "date": "2026-06-23",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0623/2026062300151.pdf",
+    "title": "公司公告：SUPPLEMENTARY ANNOUNCEMENT IN RELATION TO THE CHANGE IN BOARD LOT SIZE",
+    "date": "2026-06-12",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0612/2026061200746.pdf",
     "type": "rights",
     "typeLabel": "供股 / 配股",
     "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "觀察·供股 / 配股"
+    "signal_count": 2,
+    "pre_count": 2,
+    "post_count": 0,
+    "pre_types": [
+      "3年POC"
     ],
+    "post_types": [],
     "signal_types_summary": [
-      "觀察·供股 / 配股"
+      "3年POC"
     ],
-    "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
+    "first_pre_days": 2,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "03958",
+    "name": "DFZQ",
+    "types": [
+      "收購"
+    ],
+    "title": "APPOINTMENT OF HONG KONG INDEPENDENT FINANCIAL ADVISER",
+    "date": "2026-05-29",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0529/2026052900668.pdf",
+    "type": "acquisition",
+    "typeLabel": "收購",
+    "direction": "up",
+    "signal_count": 2,
+    "pre_count": 2,
+    "post_count": 0,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 22,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "02295",
+    "name": "MAXICITY",
+    "types": [
+      "復牌"
+    ],
+    "title": "公司公告：EXCHANGE NOTICE - RESUMPTION OF TRADING",
+    "date": "2026-07-03",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0703/2026070300127.htm",
+    "type": "resume",
+    "typeLabel": "復牌",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "半年POC + 12個月POC"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "半年POC + 12個月POC"
+    ],
+    "first_pre_days": 23,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "01912",
+    "name": "CONTEL",
+    "types": [
+      "收購/要約",
+      "聯合公告"
+    ],
+    "title": "公司公告：JOINT ANNOUNCEMENT - CLARIFICATION ON DELAY IN DESPATCH OF COMPOSITE DOCUM…",
+    "date": "2026-07-03",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0703/2026070302403.pdf",
+    "type": "acquisition",
+    "typeLabel": "收購/要約 / 聯合公告",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "觀察·配股"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "觀察·配股"
+    ],
+    "first_pre_days": 25,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "01432",
+    "name": "CHINA SHENGMU",
+    "types": [
+      "收購/要約"
+    ],
+    "title": "公司公告：SUPPLEMENTAL ANNOUNCEMENT - MANDATORY CONDITIONAL CASH OFFER BY CLSA LIMIT…",
+    "date": "2026-07-03",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0703/2026070302189.pdf",
+    "type": "acquisition",
+    "typeLabel": "收購/要約",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "半年POC"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "半年POC"
+    ],
+    "first_pre_days": 21,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "02295",
+    "name": "MAXICITY",
+    "types": [
+      "收購/要約",
+      "復牌",
+      "聯合公告"
+    ],
+    "title": "公司公告：JOINT ANNOUNCEMENT (1) SALE AND PURCHASE OF SHARES IN MAXICITY HOLDINGS LI…",
+    "date": "2026-07-02",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0702/2026070203921.pdf",
+    "type": "acquisition",
+    "typeLabel": "收購/要約 / 復牌 / 聯合公告",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "半年POC + 12個月POC"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "半年POC + 12個月POC"
+    ],
+    "first_pre_days": 22,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "09863",
+    "name": "LEAPMOTOR",
+    "types": [
+      "股東增持"
+    ],
+    "title": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING OF THE COMPANY BY SHAREHOL…",
+    "date": "2026-07-02",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0702/2026070200707.pdf",
+    "type": "increase",
+    "typeLabel": "股東增持",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "IPO首日開突破"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "IPO首日開突破"
+    ],
+    "first_pre_days": 24,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "01991",
+    "name": "TA YANG GROUP",
+    "types": [
+      "供股"
+    ],
+    "title": "公司公告：FURTHER DELAY IN DESPATCH OF CIRCULAR AND REVISED TIMETABLE IN RELATION TO…",
+    "date": "2026-06-30",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0630/2026063003131.pdf",
+    "type": "rights",
+    "typeLabel": "供股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "半年POC + 12個月POC + 3年POC"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "半年POC + 12個月POC + 3年POC"
+    ],
+    "first_pre_days": 22,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "01950",
+    "name": "DIWANG IND H",
+    "types": [
+      "配股"
+    ],
+    "title": "配售新股（一般授權）",
+    "date": "2026-06-30",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0630/2026063002723.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "半年POC"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "半年POC"
+    ],
+    "first_pre_days": 20,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "02650",
+    "name": "ZHIDA TECH",
+    "types": [
+      "配股"
+    ],
+    "title": "公告 配股完成 OF NEW H SHARES（一般授權）",
+    "date": "2026-06-30",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0630/2026063002501.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "半年POC"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "半年POC"
+    ],
+    "first_pre_days": 22,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "01432",
+    "name": "CHINA SHENGMU",
+    "types": [
+      "收購/要約",
+      "聯合公告"
+    ],
+    "title": "公司公告：JOINT ANNOUNCEMENT - DESPATCH OF COMPOSITE DOCUMENT RELATING TO MANDATORY …",
+    "date": "2026-06-30",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0630/2026063000049.pdf",
+    "type": "acquisition",
+    "typeLabel": "收購/要約 / 聯合公告",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "半年POC"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "半年POC"
+    ],
+    "first_pre_days": 18,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "01117",
+    "name": "CH MODERN D",
+    "types": [
+      "收購/要約",
+      "聯合公告"
+    ],
+    "title": "公司公告：JOINT ANNOUNCEMENT DESPATCH OF COMPOSITE DOCUMENT RELATING TO MANDATORY CO…",
+    "date": "2026-06-30",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0630/2026063000015.pdf",
+    "type": "acquisition",
+    "typeLabel": "收購/要約 / 聯合公告",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "3年POC"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "3年POC"
+    ],
+    "first_pre_days": 22,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "01632",
+    "name": "MSCTECH",
+    "types": [
+      "復牌"
+    ],
+    "title": "公司公告：EXCHANGE NOTICE - RESUMPTION OF TRADING",
+    "date": "2026-06-29",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0629/2026062900645.htm",
+    "type": "resume",
+    "typeLabel": "復牌",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "半年POC + 12個月POC + 3年POC"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "半年POC + 12個月POC + 3年POC"
+    ],
+    "first_pre_days": 17,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "06609",
+    "name": "HEARTCARE-B",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：ANNOUNCEMENT IN RELATION TO COMPLETION OF THE ISSUANCE OF DOMESTIC SHARES …",
+    "date": "2026-06-29",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0629/2026062902225.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "12個月POC"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "12個月POC"
+    ],
+    "first_pre_days": 17,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "01912",
+    "name": "CONTEL",
+    "types": [
+      "收購/要約",
+      "聯合公告"
+    ],
+    "title": "公司公告：JOINT ANNOUNCEMENT - DELAY IN DESPATCH OF COMPOSITE DOCUMENT",
+    "date": "2026-06-29",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0629/2026062901899.pdf",
+    "type": "acquisition",
+    "typeLabel": "收購/要約 / 聯合公告",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "觀察·配股"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "觀察·配股"
+    ],
+    "first_pre_days": 21,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "02431",
+    "name": "MINIEYE",
+    "types": [
+      "股東增持"
+    ],
+    "title": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING OF H SHARES OF THE COMPANY…",
+    "date": "2026-06-25",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0625/2026062501884.pdf",
+    "type": "increase",
+    "typeLabel": "股東增持",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "半年POC + 12個月POC"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "半年POC + 12個月POC"
+    ],
+    "first_pre_days": 17,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "02651",
+    "name": "DAZHONG DENTAL",
+    "types": [
+      "配股"
+    ],
+    "title": "配售新股（一般授權）",
+    "date": "2026-06-24",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0624/2026062401740.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "半年POC"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "半年POC"
+    ],
+    "first_pre_days": 16,
+    "first_post_days": null,
+    "pattern": "frontrun"
   },
   {
     "code": "02650",
@@ -397,985 +1142,849 @@
     "typeLabel": "配股",
     "direction": "up",
     "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "觀察·配股"
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "半年POC"
     ],
+    "post_types": [],
     "signal_types_summary": [
-      "觀察·配股"
+      "半年POC"
     ],
-    "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
+    "first_pre_days": 15,
+    "first_post_days": null,
+    "pattern": "frontrun"
   },
   {
-    "code": "02362",
-    "name": "JINCHUAN INTL",
+    "code": "01632",
+    "name": "MSCTECH",
     "types": [
       "收購/要約"
     ],
-    "title": "公司公告：DESPATCH OF RESPONSE DOCUMENT RELATING TO UNCONDITIONAL VOLUNTARY CASH PAR…",
+    "title": "公司公告：REVIEW OF THE DECISION OF THE LISTING DIVISION ON REVERSE TAKEOVER",
     "date": "2026-06-23",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0623/2026062300099.pdf",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0623/2026062300849.pdf",
     "type": "acquisition",
     "typeLabel": "收購/要約",
     "direction": "up",
     "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "披露易公告 - 收購/要約"
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "半年POC + 12個月POC + 3年POC"
     ],
+    "post_types": [],
     "signal_types_summary": [
-      "披露易公告 - 收購/要約"
+      "半年POC + 12個月POC + 3年POC"
     ],
-    "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
+    "first_pre_days": 11,
+    "first_post_days": null,
+    "pattern": "frontrun"
   },
   {
-    "code": "01657",
-    "name": "SG GROUP HLDGS",
-    "types": [
-      "收購/要約",
-      "聯合公告"
-    ],
-    "title": "公司公告：JOINT ANNOUNCEMENT (1) COMPLETION OF THE SHARE PURCHASE AGREEMENT BETWEEN …",
-    "date": "2026-06-23",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0623/2026062300327.pdf",
-    "type": "acquisition",
-    "typeLabel": "收購/要約 / 聯合公告",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "披露易公告 - 收購/要約 / 聯合公告"
-    ],
-    "signal_types_summary": [
-      "披露易公告 - 收購/要約 / 聯合公告"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "00191",
-    "name": "LAI SUN INT'L",
-    "types": [
-      "聯合公告"
-    ],
-    "title": "公司公告：JOINT ANNOUNCEMENT: VERY SUBSTANTIAL DISPOSAL - UPDATE ON DISPOSAL OF EQUI…",
-    "date": "2026-06-22",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0622/2026062200177.pdf",
-    "type": "announcement",
-    "typeLabel": "聯合公告",
-    "direction": "neutral",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "觀察·聯合公告"
-    ],
-    "signal_types_summary": [
-      "觀察·聯合公告"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "00488",
-    "name": "LAI SUN DEV",
-    "types": [
-      "聯合公告"
-    ],
-    "title": "公司公告：JOINT ANNOUNCEMENT: VERY SUBSTANTIAL DISPOSAL - UPDATE ON DISPOSAL OF EQUI…",
-    "date": "2026-06-22",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0622/2026062200177.pdf",
-    "type": "announcement",
-    "typeLabel": "聯合公告",
-    "direction": "neutral",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "觀察·聯合公告"
-    ],
-    "signal_types_summary": [
-      "觀察·聯合公告"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "01025",
-    "name": "KNT HOLDINGS",
-    "types": [
-      "配股"
-    ],
-    "title": "配售新股（一般授權）",
-    "date": "2026-06-22",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0622/2026062200145.pdf",
-    "type": "placement",
-    "typeLabel": "配股",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "觀察·配股"
-    ],
-    "signal_types_summary": [
-      "觀察·配股"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "02166",
-    "name": "SMART-CORE",
-    "types": [
-      "配股"
-    ],
-    "title": "配售新股（一般授權）",
-    "date": "2026-06-22",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0622/2026062201745.pdf",
-    "type": "placement",
-    "typeLabel": "配股",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "觀察·配股"
-    ],
-    "signal_types_summary": [
-      "觀察·配股"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "02465",
-    "name": "LOPAL TECH",
-    "types": [
-      "配股"
-    ],
-    "title": "配股完成 OF NEW H SHARES（一般授權）",
-    "date": "2026-06-22",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0622/2026062201635.pdf",
-    "type": "placement",
-    "typeLabel": "配股",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "觀察·配股"
-    ],
-    "signal_types_summary": [
-      "觀察·配股"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "02490",
-    "name": "LC LOGISTICS",
-    "types": [
-      "配股"
-    ],
-    "title": "配股完成 OF NEW SHARES（一般授權）",
-    "date": "2026-06-22",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0622/2026062201389.pdf",
-    "type": "placement",
-    "typeLabel": "配股",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "觀察·配股"
-    ],
-    "signal_types_summary": [
-      "觀察·配股"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "03700",
-    "name": "INKEVERSE",
-    "types": [
-      "配股"
-    ],
-    "title": "補充公告 認購新股（一般授權）",
-    "date": "2026-06-22",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0622/2026062201229.pdf",
-    "type": "placement",
-    "typeLabel": "配股",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "觀察·配股"
-    ],
-    "signal_types_summary": [
-      "觀察·配股"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "00195",
-    "name": "GREENTECH INTL",
-    "types": [
-      "收購/要約"
-    ],
-    "title": "公司公告：ANNOUNCEMENT UNCONDITIONAL VOLUNTARY CASH PARTIAL OFFER BY LEGO SECURITIES…",
-    "date": "2026-06-22",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0622/2026062201199.pdf",
-    "type": "acquisition",
-    "typeLabel": "收購/要約",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "披露易公告 - 收購/要約"
-    ],
-    "signal_types_summary": [
-      "披露易公告 - 收購/要約"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "03708",
-    "name": "WORLD DIGI ECON",
-    "types": [
-      "配股"
-    ],
-    "title": "認購新股（一般授權）",
-    "date": "2026-06-22",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0622/2026062201145.pdf",
-    "type": "placement",
-    "typeLabel": "配股",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "觀察·配股"
-    ],
-    "signal_types_summary": [
-      "觀察·配股"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "00815",
-    "name": "CHI SILVER GP",
-    "types": [
-      "配股"
-    ],
-    "title": "公司公告：COMPLETION OF THE REMAINING SUBSCRIPTIONS OF NEW SHARES UNDER SPECIFIC MAN…",
-    "date": "2026-06-22",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0622/2026062201077.pdf",
-    "type": "placement",
-    "typeLabel": "配股",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "觀察·配股"
-    ],
-    "signal_types_summary": [
-      "觀察·配股"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "01143",
-    "name": "CN ENGY STORAGE",
-    "types": [
-      "收購/要約",
-      "聯合公告"
-    ],
-    "title": "公司公告：JOINT ANNOUNCEMENT DESPATCH OF SCHEME DOCUMENT AND LETTER TO SHARE OPTION …",
-    "date": "2026-06-22",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0622/2026062201012.pdf",
-    "type": "acquisition",
-    "typeLabel": "收購/要約 / 聯合公告",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "披露易公告 - 收購/要約 / 聯合公告"
-    ],
-    "signal_types_summary": [
-      "披露易公告 - 收購/要約 / 聯合公告"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "03991",
-    "name": "CHANGHONG JH",
-    "types": [
-      "收購/要約",
-      "聯合公告"
-    ],
-    "title": "公司公告：JOINT ANNOUNCEMENT - MONTHLY UPDATE IN RELATION TO (1) PRE-CONDITIONAL PRO…",
-    "date": "2026-06-22",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0622/2026062200830.pdf",
-    "type": "acquisition",
-    "typeLabel": "收購/要約 / 聯合公告",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "披露易公告 - 收購/要約 / 聯合公告"
-    ],
-    "signal_types_summary": [
-      "披露易公告 - 收購/要約 / 聯合公告"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "00080",
-    "name": "CAI CORP",
-    "types": [
-      "配股"
-    ],
-    "title": "DELAY IN DESPATCH OF CIRCULAR 有關 關連交易 有關 認購新股（特別授權）",
-    "date": "2026-06-22",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0622/2026062200646.pdf",
-    "type": "placement",
-    "typeLabel": "配股",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "觀察·配股"
-    ],
-    "signal_types_summary": [
-      "觀察·配股"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "06939",
-    "name": "MEGAIN",
-    "types": [
-      "配股",
-      "收購/要約"
-    ],
-    "title": "公司公告：JOINT ANNONCEMENT: MONTHLY UPDATE ON THE POSSIBLE UNCONDITIONAL MANDATORY …",
-    "date": "2026-06-22",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0622/2026062200538.pdf",
-    "type": "placement",
-    "typeLabel": "配股 / 收購/要約",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "披露易公告 - 配股 / 收購/要約"
-    ],
-    "signal_types_summary": [
-      "披露易公告 - 配股 / 收購/要約"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "00356",
-    "name": "DT CAPITAL",
-    "types": [
-      "配股"
-    ],
-    "title": "認購完成 OF NEW SHARES（一般授權）",
-    "date": "2026-06-22",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0622/2026062200512.pdf",
-    "type": "placement",
-    "typeLabel": "配股",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "觀察·配股"
-    ],
-    "signal_types_summary": [
-      "觀察·配股"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "00658",
-    "name": "C TRANSMISSION",
-    "types": [
-      "復牌"
-    ],
-    "title": "公司公告：EXCHANGE NOTICE - RESUMPTION OF TRADING",
-    "date": "2026-06-18",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0618/2026061800179.htm",
-    "type": "resume",
-    "typeLabel": "復牌",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "披露易公告 - 復牌"
-    ],
-    "signal_types_summary": [
-      "披露易公告 - 復牌"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "00607",
-    "name": "FULLSHARE",
-    "types": [
-      "復牌"
-    ],
-    "title": "公司公告：EXCHANGE NOTICE - RESUMPTION OF TRADING",
-    "date": "2026-06-18",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0618/2026061800177.htm",
-    "type": "resume",
-    "typeLabel": "復牌",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "披露易公告 - 復牌"
-    ],
-    "signal_types_summary": [
-      "披露易公告 - 復牌"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "01792",
-    "name": "CMON",
+    "code": "01822",
+    "name": "CHINA WOOD INT",
     "types": [
       "供股",
       "配股"
     ],
-    "title": "公司公告：PROPOSED RIGHTS ISSUE ON THE BASIS OF THREE RIGHTS SHARES FOR EVERY ONE EX…",
+    "title": "公司公告：PROPOSED RIGHTS ISSUE ON THE BASIS OF ONE (1) RIGHTS SHARE FOR EVERY ONE (…",
     "date": "2026-06-18",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0618/2026061800153.pdf",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0618/2026061801642.pdf",
     "type": "rights",
     "typeLabel": "供股 / 配股",
     "direction": "up",
     "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "觀察·供股 / 配股"
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "12個月POC"
     ],
+    "post_types": [],
     "signal_types_summary": [
-      "觀察·供股 / 配股"
+      "12個月POC"
     ],
-    "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
+    "first_pre_days": 6,
+    "first_post_days": null,
+    "pattern": "frontrun"
   },
   {
-    "code": "00992",
-    "name": "LENOVO GROUP",
+    "code": "01117",
+    "name": "CH MODERN D",
     "types": [
-      "配股"
+      "收購/要約",
+      "聯合公告"
     ],
-    "title": "公司公告：(1) PROPOSED ISSUANCE OF US$2,000 MILLION ZERO COUPON CONVERTIBLE BONDS DU…",
+    "title": "公司公告：JOINT ANNOUNCEMENT FURTHER EXTENSION OF THE LATEST TIME FOR DESPATCH OF TH…",
     "date": "2026-06-18",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0618/2026061800133.pdf",
-    "type": "placement",
-    "typeLabel": "配股",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "觀察·配股"
-    ],
-    "signal_types_summary": [
-      "觀察·配股"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "80992",
-    "name": "LENOVO GROUP-R",
-    "types": [
-      "配股"
-    ],
-    "title": "公司公告：(1) PROPOSED ISSUANCE OF US$2,000 MILLION ZERO COUPON CONVERTIBLE BONDS DU…",
-    "date": "2026-06-18",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0618/2026061800133.pdf",
-    "type": "placement",
-    "typeLabel": "配股",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "觀察·配股"
-    ],
-    "signal_types_summary": [
-      "觀察·配股"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "01952",
-    "name": "EVEREST MED",
-    "types": [
-      "股東增持"
-    ],
-    "title": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING BY SUBSTANTIAL SHAREHOLDER…",
-    "date": "2026-06-18",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0618/2026061800131.pdf",
-    "type": "increase",
-    "typeLabel": "股東增持",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "披露易公告 - 股東增持"
-    ],
-    "signal_types_summary": [
-      "披露易公告 - 股東增持"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "00992",
-    "name": "LENOVO GROUP",
-    "types": [
-      "配股"
-    ],
-    "title": "公司公告：PROPOSED ISSUE OF CONVERTIBLE BONDS UNDER SHARE ISSUANCE MANDATE, PROPOSED…",
-    "date": "2026-06-17",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0617/2026061701320.pdf",
-    "type": "placement",
-    "typeLabel": "配股",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "觀察·配股"
-    ],
-    "signal_types_summary": [
-      "觀察·配股"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 1,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "80992",
-    "name": "LENOVO GROUP-R",
-    "types": [
-      "配股"
-    ],
-    "title": "公司公告：PROPOSED ISSUE OF CONVERTIBLE BONDS UNDER SHARE ISSUANCE MANDATE, PROPOSED…",
-    "date": "2026-06-17",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0617/2026061701320.pdf",
-    "type": "placement",
-    "typeLabel": "配股",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "觀察·配股"
-    ],
-    "signal_types_summary": [
-      "觀察·配股"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 1,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "02465",
-    "name": "LOPAL TECH",
-    "types": [
-      "配股"
-    ],
-    "title": "配股 OF NEW H SHARES（一般授權）",
-    "date": "2026-06-17",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0617/2026061700023.pdf",
-    "type": "placement",
-    "typeLabel": "配股",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "觀察·配股"
-    ],
-    "signal_types_summary": [
-      "觀察·配股"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 5,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "00607",
-    "name": "FULLSHARE",
-    "types": [
-      "復牌"
-    ],
-    "title": "公司公告：ANNUAL RESULTS ANNOUNCEMENT FOR THE YEAR ENDED 31 DECEMBER 2025 AND RESUMP…",
-    "date": "2026-06-17",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0617/2026061701691.pdf",
-    "type": "resume",
-    "typeLabel": "復牌",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "披露易公告 - 復牌"
-    ],
-    "signal_types_summary": [
-      "披露易公告 - 復牌"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 1,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "00658",
-    "name": "C TRANSMISSION",
-    "types": [
-      "復牌"
-    ],
-    "title": "公司公告：ANNOUNCEMENT OF ANNUAL RESULTS FOR THE YEAR ENDED 31 DECEMBER 2025 AND RES…",
-    "date": "2026-06-17",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0617/2026061701684.pdf",
-    "type": "resume",
-    "typeLabel": "復牌",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "披露易公告 - 復牌"
-    ],
-    "signal_types_summary": [
-      "披露易公告 - 復牌"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 1,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "00195",
-    "name": "GREENTECH INTL",
-    "types": [
-      "收購/要約"
-    ],
-    "title": "公司公告：ANNOUNCEMENT PURSUANT TO RULE 3.8 OF THE TAKEOVERS CODE AND CONTINUED SUSP…",
-    "date": "2026-06-17",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0617/2026061700558.pdf",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0618/2026061801556.pdf",
     "type": "acquisition",
-    "typeLabel": "收購/要約",
+    "typeLabel": "收購/要約 / 聯合公告",
     "direction": "up",
     "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "披露易公告 - 收購/要約"
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "3年POC"
     ],
+    "post_types": [],
     "signal_types_summary": [
-      "披露易公告 - 收購/要約"
+      "3年POC"
     ],
-    "first_pre_days": null,
-    "first_post_days": 5,
-    "pattern": "catalyst"
+    "first_pre_days": 10,
+    "first_post_days": null,
+    "pattern": "frontrun"
   },
   {
-    "code": "01208",
-    "name": "MMG",
+    "code": "01432",
+    "name": "CHINA SHENGMU",
+    "types": [
+      "收購/要約",
+      "聯合公告"
+    ],
+    "title": "公司公告：JOINT ANNOUNCEMENT - FURTHER EXTENSION OF THE LATEST TIME FOR DESPATCH OF …",
+    "date": "2026-06-18",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0618/2026061801550.pdf",
+    "type": "acquisition",
+    "typeLabel": "收購/要約 / 聯合公告",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "半年POC"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "半年POC"
+    ],
+    "first_pre_days": 6,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "00994",
+    "name": "CT VISION",
     "types": [
       "配股"
     ],
-    "title": "公司公告：(1) PLACING OF NEW SHARES UNDER GENERAL MANDATE; AND (2) CONCURRENT PROPOS…",
+    "title": "配股完成 OF NEW SHARES（一般授權）",
+    "date": "2026-06-17",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0617/2026061701241.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "觀察·配股"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "觀察·配股"
+    ],
+    "first_pre_days": 9,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "02039",
+    "name": "CIMC",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：ANNOUNCEMENT ON POLL RESULTS OF THE 2025 AGM",
     "date": "2026-06-16",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0616/2026061600117.pdf",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0616/2026061601410.pdf",
     "type": "placement",
     "typeLabel": "配股",
     "direction": "up",
     "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "披露易公告 - 配股"
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "年開突破"
     ],
+    "post_types": [],
     "signal_types_summary": [
-      "披露易公告 - 配股"
+      "年開突破"
     ],
-    "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
+    "first_pre_days": 8,
+    "first_post_days": null,
+    "pattern": "frontrun"
   },
   {
-    "code": "03908",
-    "name": "CICC",
+    "code": "00073",
+    "name": "ASIAN CITRUS",
     "types": [
-      "配股"
+      "供股"
     ],
-    "title": "公司公告：ANNOUNCEMENT - UPDATES ON PROGRESS RELATING TO THE MAJOR TRANSACTION AND S…",
+    "title": "公司公告：PROPOSED RIGHTS ISSUE ON THE BASIS OF THREE (3) RIGHTS SHARES FOR EVERY ON…",
     "date": "2026-06-15",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0615/2026061501152.pdf",
-    "type": "placement",
-    "typeLabel": "配股",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0615/2026061501734.pdf",
+    "type": "rights",
+    "typeLabel": "供股",
     "direction": "up",
     "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "披露易公告 - 配股"
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "半年POC"
     ],
+    "post_types": [],
     "signal_types_summary": [
-      "披露易公告 - 配股"
+      "半年POC"
     ],
-    "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
+    "first_pre_days": 5,
+    "first_post_days": null,
+    "pattern": "frontrun"
   },
   {
-    "code": "00419",
-    "name": "HONY MEDIA",
-    "types": [
-      "配股"
-    ],
-    "title": "公司公告：COMPLETION OF THE SUBSCRIPTION AGREEMENT I AND TERMINATION OF THE SUBSCRIP…",
-    "date": "2026-06-15",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0615/2026061500510.pdf",
-    "type": "placement",
-    "typeLabel": "配股",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "觀察·配股"
-    ],
-    "signal_types_summary": [
-      "觀察·配股"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "00195",
-    "name": "GREENTECH INTL",
+    "code": "00128",
+    "name": "ENM HOLDINGS",
     "types": [
       "收購/要約"
     ],
-    "title": "公司公告：ANNOUNCEMENT - PRE-CONDITIONAL VOLUNTARY CASH PARTIAL OFFER BY QUAM CAPITA…",
+    "title": "公司公告：ANNOUNCEMENT PURSUANT TO RULE 3.7 OF THE TAKEOVERS CODE, RULE 13.09(2) OF …",
     "date": "2026-06-15",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0615/2026061500770.pdf",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0615/2026061501712.pdf",
     "type": "acquisition",
     "typeLabel": "收購/要約",
     "direction": "up",
     "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "披露易公告 - 收購/要約"
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "年開突破"
     ],
+    "post_types": [],
     "signal_types_summary": [
-      "披露易公告 - 收購/要約"
+      "年開突破"
     ],
-    "first_pre_days": null,
-    "first_post_days": 7,
-    "pattern": "catalyst"
+    "first_pre_days": 5,
+    "first_post_days": null,
+    "pattern": "frontrun"
   },
   {
-    "code": "02490",
-    "name": "LC LOGISTICS",
+    "code": "01340",
+    "name": "HUISHENG INTL",
     "types": [
       "配股"
     ],
-    "title": "配售新股（一般授權）",
+    "title": "配股完成 OF NEW SHARES（一般授權）",
     "date": "2026-06-12",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0612/2026061200135.pdf",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0612/2026061201379.pdf",
     "type": "placement",
     "typeLabel": "配股",
     "direction": "up",
     "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "觀察·配股"
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "半年POC"
     ],
+    "post_types": [],
     "signal_types_summary": [
-      "觀察·配股"
+      "半年POC"
     ],
-    "first_pre_days": null,
-    "first_post_days": 10,
-    "pattern": "catalyst"
+    "first_pre_days": 4,
+    "first_post_days": null,
+    "pattern": "frontrun"
   },
   {
-    "code": "00195",
-    "name": "GREENTECH INTL",
+    "code": "00994",
+    "name": "CT VISION",
     "types": [
-      "收購/要約"
+      "配股"
     ],
-    "title": "公司公告：ESTABLISHMENT OF INDEPENDENT BOARD COMMITTEE; APPOINTMENT OF INDEPENDENT F…",
+    "title": "認購完成 OF NEW SHARES（一般授權）",
     "date": "2026-06-12",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0612/2026061201097.pdf",
-    "type": "acquisition",
-    "typeLabel": "收購/要約",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0612/2026061201137.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
     "direction": "up",
     "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "披露易公告 - 收購/要約"
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "觀察·配股"
     ],
+    "post_types": [],
     "signal_types_summary": [
-      "披露易公告 - 收購/要約"
+      "觀察·配股"
     ],
-    "first_pre_days": null,
-    "first_post_days": 10,
-    "pattern": "catalyst"
+    "first_pre_days": 4,
+    "first_post_days": null,
+    "pattern": "frontrun"
   },
   {
-    "code": "01952",
-    "name": "EVEREST MED",
+    "code": "01333",
+    "name": "BRETON",
     "types": [
       "股東增持"
     ],
-    "title": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING BY SUBSTANTIAL SHAREHOLDER…",
-    "date": "2026-06-10",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0610/2026061000037.pdf",
+    "title": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING BY THE DIRECTOR AND CONTRO…",
+    "date": "2026-06-11",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0611/2026061100969.pdf",
     "type": "increase",
     "typeLabel": "股東增持",
     "direction": "up",
     "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
       "披露易公告 - 股東增持"
     ],
+    "post_types": [],
     "signal_types_summary": [
       "披露易公告 - 股東增持"
     ],
-    "first_pre_days": null,
-    "first_post_days": 8,
-    "pattern": "catalyst"
+    "first_pre_days": 3,
+    "first_post_days": null,
+    "pattern": "frontrun"
   },
   {
-    "code": "01657",
-    "name": "SG GROUP HLDGS",
+    "code": "09936",
+    "name": "XIMEI RESOURCES",
+    "types": [
+      "配股"
+    ],
+    "title": "配股完成 OF EXISTING SHARES AND TOP-UP 認購新股（一般授權）",
+    "date": "2026-06-10",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0610/2026061001298.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "觀察·配股"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "觀察·配股"
+    ],
+    "first_pre_days": 2,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "03958",
+    "name": "DFZQ",
     "types": [
       "增持",
       "收購"
     ],
-    "title": "JOINT ANNOUNCEMENT - (1) SHARE PURCHASE AGREEMENT BETWEEN THE OFFEROR AND THE SELLERS IN RELATION TO APPROXIMATELY 74.91% OF THE TOTAL ISSUED SHARES OF THE COMPANY; (2) POSSIBLE UNCONDITIONAL MANDATORY CASH OFFER TO BE MADE BY DL SECURITIES (HK) LIMITED FOR AND ON BEHALF OF THE OFFEROR TO ACQUIRE ALL THE ISSUED SHARES OF THE COMPANY (OTHER THAN THOSE ALREADY OWNED AND/OR AGREED TO BE ACQUIRED BY THE OFFEROR AND THE OFFEROR CONCERT PARTIES); AND (3) RESUMPTION OF TRADING",
-    "date": "2026-06-04",
-    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0604/2026060402927.pdf",
+    "title": "MONTHLY UPDATE IN RELATION TO (1) POTENTIAL NOTIFIABLE TRANSACTION - THE PROPOSED ACQUISITION OF 100% EQUITY INTERESTS IN SHANGHAI SECURITIES BY WAY OF ISSUE OF CONSIDERATION A SHARES UNDER SPECIFIC MANDATE AND PAYMENT OF CASH AND (2) APPLICATION FOR WHITEWASH WAIVER",
+    "date": "2026-06-05",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060501754.pdf",
     "type": "increase",
     "typeLabel": "增持 / 收購",
     "direction": "up",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "向上跳空缺口"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 29,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "03958",
+    "name": "DFZQ",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：MONTHLY UPDATE IN RELATION TO (1) POTENTIAL NOTIFIABLE TRANSACTION - THE P…",
+    "date": "2026-06-05",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060501754.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "向上跳空缺口"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 29,
+    "first_post_days": null,
+    "pattern": "frontrun"
+  },
+  {
+    "code": "01808",
+    "name": "ENTERPRISE DEV",
+    "types": [
+      "配股"
+    ],
+    "title": "配售新股（一般授權）",
+    "date": "2026-05-15",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0515/2026051501665.pdf",
+    "typeLabel": "配股",
+    "type": "placement",
+    "direction": "up",
+    "offer_price": 1.08,
+    "discount_pct": 19.4,
+    "price_level": "low",
+    "signal_count": 11,
+    "pre_count": 2,
+    "post_count": 9,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "上破POC 12M",
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "上破POC 12M",
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 7,
+    "first_post_days": 3,
+    "pattern": "dual"
+  },
+  {
+    "code": "01808",
+    "name": "ENTERPRISE DEV",
+    "types": [
+      "配股"
+    ],
+    "title": "補充公告 RELATING TO 配售新股（一般授權）",
+    "date": "2026-05-19",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0519/2026051900690.pdf",
+    "typeLabel": "配股",
+    "type": "placement",
+    "direction": "up",
+    "offer_price": null,
+    "discount_pct": null,
+    "price_level": "unknown",
+    "signal_count": 11,
+    "pre_count": 3,
+    "post_count": 8,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "上破POC 12M",
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "上破POC 12M",
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 1,
+    "first_post_days": 14,
+    "pattern": "dual"
+  },
+  {
+    "code": "01808",
+    "name": "ENTERPRISE DEV",
+    "types": [
+      "配股"
+    ],
+    "title": "LAPSE OF PLACING OF NEW SHARES UNDER GENERAL MANDATE",
+    "date": "2026-06-05",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060500684.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": null,
+    "discount_pct": null,
+    "price_level": "unknown",
+    "signal_count": 10,
+    "pre_count": 4,
+    "post_count": 6,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "上破POC 12M",
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "signal_types_summary": [
+      "上破POC 12M",
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 3,
+    "first_post_days": 0,
+    "pattern": "dual"
+  },
+  {
+    "code": "03360",
+    "name": "FE HORIZON",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：UNIVERSE TREK LIMITED - FULL CONVERSION AND CANCELLATION OF U.S.$250,000,0…",
+    "date": "2026-06-05",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060501602.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 4,
+    "pre_count": 2,
+    "post_count": 2,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "向上FVG"
+    ],
+    "signal_types_summary": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 15,
+    "first_post_days": 0,
+    "pattern": "dual"
+  },
+  {
+    "code": "01860",
+    "name": "MOBVISTA",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：VOLUNTARY ANNOUNCEMENT - COMPLETION OF CONVERSION OF CONVERTIBLE BONDS",
+    "date": "2026-06-05",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060500511.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 4,
+    "pre_count": 2,
+    "post_count": 2,
+    "pre_types": [
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "post_types": [
+      "上破POC 12M"
+    ],
+    "signal_types_summary": [
+      "上破POC 12M",
+      "向上FVG",
+      "向上跳空缺口"
+    ],
+    "first_pre_days": 7,
+    "first_post_days": 0,
+    "pattern": "dual"
+  },
+  {
+    "code": "02728",
+    "name": "JINTAI ENERGY H",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：FOURTH SUPPLEMENTAL DEED AMENDMENTS TO THE TERMS AND CONDITIONS OF THE CON…",
+    "date": "2026-05-19",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0519/2026051901513.pdf",
+    "typeLabel": "配股",
+    "type": "placement",
+    "direction": "up",
+    "offer_price": 0.03,
+    "discount_pct": -25.0,
+    "price_level": "high",
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "年開突破"
+    ],
+    "signal_types_summary": [
+      "年開突破"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 22,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "00648",
+    "name": "SOFTMEDX",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：INSIDE INFORMATION COMPLETION OF PLACING OF EXISTING SHARES BY CONTROLLING…",
+    "date": "2026-05-15",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0515/2026051501367.pdf",
+    "typeLabel": "配股",
+    "type": "placement",
+    "direction": "up",
+    "offer_price": 0.0,
+    "discount_pct": null,
+    "price_level": "neutral",
+    "signal_count": 3,
+    "pre_count": 0,
+    "post_count": 3,
+    "pre_types": [],
+    "post_types": [
+      "CCASS減持",
+      "年開突破"
+    ],
+    "signal_types_summary": [
+      "CCASS減持",
+      "年開突破"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 26,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01676",
+    "name": "GAODI HOLDINGS",
+    "types": [
+      "配股",
+      "供股"
+    ],
+    "title": "(1) PROPOSED CHANGE IN BOARD LOT SIZE; AND (2) PROPOSED RIGHTS ISSUE OF RIGHTS SHARES ON THE BASIS OF ONE (1) RIGHTS SHARE FOR EVERY TWO (2) EXISTING SHARES AT HK$0.19 PER RIGHTS SHARE ON A NON-UNDERWRITTEN BASIS",
+    "date": "2026-06-05",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060502024.pdf",
+    "type": "rights",
+    "typeLabel": "供股 / 配股",
+    "direction": "up",
+    "offer_price": 0.19,
+    "discount_pct": 12.4,
+    "price_level": "neutral",
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "3年POC"
+    ],
+    "signal_types_summary": [
+      "3年POC"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 3,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01327",
+    "name": "LUXXU GROUP",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES UNDER GENERAL MANDATE",
+    "date": "2026-06-04",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0604/2026060402395.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.5,
+    "discount_pct": 11.97,
+    "price_level": "neutral",
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "12個月POC",
+      "年開突破"
+    ],
+    "signal_types_summary": [
+      "12個月POC",
+      "年開突破"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 4,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "06166",
+    "name": "CIG",
+    "types": [
+      "配股"
+    ],
+    "title": "COMPLETION OF PLACING OF H SHARES",
+    "date": "2026-06-04",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0604/2026060402543.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 126.66,
+    "discount_pct": null,
+    "price_level": "neutral",
     "signal_count": 1,
     "pre_count": 0,
     "post_count": 1,
     "pre_types": [],
     "post_types": [
-      "披露易公告 - 收購/要約 / 聯合公告"
+      "半年POC"
     ],
     "signal_types_summary": [
-      "披露易公告 - 收購/要約 / 聯合公告"
+      "半年POC"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 4,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "09936",
+    "name": "XIMEI RESOURCES",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF EXISTING SHARES AND TOP-UP SUBSCRIPTION OF NEW SHARES UNDER GENERAL MANDATE",
+    "date": "2026-06-03",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0603/2026060300037.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 20.0,
+    "discount_pct": 19.5,
+    "price_level": "low",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "觀察·配股"
+    ],
+    "signal_types_summary": [
+      "觀察·配股"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 5,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01087",
+    "name": "INVESTECH HLDGS",
+    "types": [
+      "配股"
+    ],
+    "title": "COMPLETION OF PLACING OF NEW SHARES UNDER GENERAL MANDATE",
+    "date": "2026-06-02",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0602/2026060201642.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.67,
+    "discount_pct": 15.19,
+    "price_level": "low",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "半年POC"
+    ],
+    "signal_types_summary": [
+      "半年POC"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 6,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01340",
+    "name": "HUISHENG INTL",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：(1) PROPOSED SHARE CONSOLIDATION AND PROPOSED CHANGE IN BOARD LOT SIZE; AN…",
+    "date": "2026-05-20",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0520/2026052001896.pdf",
+    "typeLabel": "配股",
+    "type": "placement",
+    "direction": "up",
+    "offer_price": 0.046,
+    "discount_pct": 19.3,
+    "price_level": "low",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "半年POC"
+    ],
+    "signal_types_summary": [
+      "半年POC"
     ],
     "first_pre_days": null,
     "first_post_days": 19,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "00174",
+    "name": "GEMINI INV",
+    "types": [
+      "配股"
+    ],
+    "title": "PROPOSED 發行新股（一般授權）",
+    "date": "2026-06-07",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0607/2026060700003.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 4,
+    "pre_count": 0,
+    "post_count": 4,
+    "pre_types": [],
+    "post_types": [
+      "半年POC + 12個月POC + 3年POC",
+      "半年POC + 3年POC",
+      "年開突破"
+    ],
+    "signal_types_summary": [
+      "半年POC + 12個月POC + 3年POC",
+      "半年POC + 3年POC",
+      "年開突破"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 2,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01305",
+    "name": "WAI CHI HOLD",
+    "types": [
+      "回購"
+    ],
+    "title": "VOLUNTARY ANNOUNCEMENT INTENTION TO CONDUCT SHARE BUY-BACKS IN THE MARKET",
+    "date": "2026-06-05",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060500457.pdf",
+    "type": "buyback",
+    "typeLabel": "回購",
+    "direction": "up",
+    "signal_count": 3,
+    "pre_count": 0,
+    "post_count": 3,
+    "pre_types": [],
+    "post_types": [
+      "12個月POC",
+      "年開突破"
+    ],
+    "signal_types_summary": [
+      "12個月POC",
+      "年開突破"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 4,
     "pattern": "catalyst"
   },
   {
@@ -1390,71 +1999,387 @@
     "type": "increase",
     "typeLabel": "股東增持",
     "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
+    "signal_count": 3,
+    "pre_count": 1,
+    "post_count": 2,
+    "pre_types": [
+      "向上跳空缺口"
+    ],
     "post_types": [
+      "向上跳空缺口",
       "披露易公告 - 股東增持"
     ],
     "signal_types_summary": [
+      "向上跳空缺口",
       "披露易公告 - 股東增持"
     ],
-    "first_pre_days": null,
-    "first_post_days": 14,
+    "first_pre_days": 1,
+    "first_post_days": 1,
     "pattern": "catalyst"
   },
   {
-    "code": "02362",
-    "name": "JINCHUAN INTL",
+    "code": "08370",
+    "name": "智昇集團",
     "types": [
-      "增持",
-      "收購"
+      "配股"
     ],
-    "title": "PRE-CONDITIONAL VOLUNTARY CASH PARTIAL OFFER BY AFG SECURITIES LIMITED FOR AND ON BEHALF OF GONG HAILIN TO ACQUIRE UP TO 130,000,000 SHARES IN JINCHUAN GROUP INTERNATIONAL RESOURCES CO. LTD SATISFACTION OF PRE-CONDITIONS",
-    "date": "2026-06-02",
-    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0602/2026060202658.pdf",
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-06-03",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 7.6,
+    "signal_count": 3,
+    "pre_count": 0,
+    "post_count": 3,
+    "pre_types": [],
+    "post_types": [
+      "3年POC",
+      "半年POC + 12個月POC"
+    ],
+    "signal_types_summary": [
+      "3年POC",
+      "半年POC + 12個月POC"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 7,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01952",
+    "name": "EVEREST MED",
+    "types": [
+      "股東增持"
+    ],
+    "title": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING BY SUBSTANTIAL SHAREHOLDER…",
+    "date": "2026-05-22",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0522/2026052200015.pdf",
+    "typeLabel": "股東增持",
     "type": "increase",
-    "typeLabel": "增持 / 收購",
     "direction": "up",
-    "signal_count": 1,
+    "signal_count": 3,
     "pre_count": 0,
-    "post_count": 1,
+    "post_count": 3,
     "pre_types": [],
     "post_types": [
-      "披露易公告 - 收購/要約"
+      "向上跳空缺口",
+      "披露易公告 - 股東增持"
     ],
     "signal_types_summary": [
-      "披露易公告 - 收購/要約"
+      "向上跳空缺口",
+      "披露易公告 - 股東增持"
     ],
     "first_pre_days": null,
-    "first_post_days": 21,
+    "first_post_days": 12,
     "pattern": "catalyst"
   },
   {
-    "code": "00195",
-    "name": "GREENTECH INTL",
+    "code": "02490",
+    "name": "LC LOGISTICS",
     "types": [
-      "收購"
+      "配股"
     ],
-    "title": "ANNOUNCEMENT PURSUANT TO RULE 3.8 OF THE TAKEOVERS CODE AND CONTINUED SUSPENSION OF TRADING",
-    "date": "2026-06-01",
-    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0601/2026060103634.pdf",
-    "type": "acquisition",
-    "typeLabel": "收購",
+    "title": "配售新股（一般授權）",
+    "date": "2026-06-12",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0612/2026061200135.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
     "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
+    "signal_count": 2,
+    "pre_count": 1,
     "post_count": 1,
-    "pre_types": [],
+    "pre_types": [
+      "年開突破"
+    ],
     "post_types": [
-      "披露易公告 - 收購/要約"
+      "披露易公告 - 配股"
     ],
     "signal_types_summary": [
-      "披露易公告 - 收購/要約"
+      "年開突破",
+      "披露易公告 - 配股"
+    ],
+    "first_pre_days": 4,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "00254",
+    "name": "NUR HOLDINGS",
+    "types": [
+      "配股"
+    ],
+    "title": "認購完成 OF NEW SHARES（一般授權）",
+    "date": "2026-06-12",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0612/2026061200402.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 2,
+    "pre_count": 1,
+    "post_count": 1,
+    "pre_types": [
+      "觀察·配股"
+    ],
+    "post_types": [
+      "半年POC + 12個月POC + 3年POC"
+    ],
+    "signal_types_summary": [
+      "半年POC + 12個月POC + 3年POC",
+      "觀察·配股"
+    ],
+    "first_pre_days": 4,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02186",
+    "name": "LUYE PHARMA",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：COMPLETION OF ISSUE OF US$180,000,000 5.25 PER CENT. CONVERTIBLE BONDS DUE…",
+    "date": "2026-06-11",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0611/2026061100045.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 2,
+    "pre_count": 1,
+    "post_count": 1,
+    "pre_types": [
+      "披露易公告 - 配股"
+    ],
+    "post_types": [
+      "觀察·配股"
+    ],
+    "signal_types_summary": [
+      "披露易公告 - 配股",
+      "觀察·配股"
+    ],
+    "first_pre_days": 3,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02186",
+    "name": "LUYE PHARMA",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：OVERSEAS REGULATORY ANNOUNCEMENT",
+    "date": "2026-06-08",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0608/2026060801570.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "披露易公告 - 配股",
+      "觀察·配股"
+    ],
+    "signal_types_summary": [
+      "披露易公告 - 配股",
+      "觀察·配股"
     ],
     "first_pre_days": null,
-    "first_post_days": 21,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "00254",
+    "name": "NUR HOLDINGS",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：SUPPLEMENTAL ANNOUNCEMENT IN RELATION TO (I) SUBSCRIPTION OF NEW SHARES UN…",
+    "date": "2026-06-08",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0608/2026060801438.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "半年POC + 12個月POC + 3年POC",
+      "觀察·配股"
+    ],
+    "signal_types_summary": [
+      "半年POC + 12個月POC + 3年POC",
+      "觀察·配股"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01765",
+    "name": "XJ INTL HLDGS",
+    "types": [
+      "配股"
+    ],
+    "title": "補充公告 關連交易S 有關 PROPOSED 認購新股",
+    "date": "2026-06-05",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060502514.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "半年POC"
+    ],
+    "signal_types_summary": [
+      "半年POC"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 5,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01676",
+    "name": "GAODI HOLDINGS",
+    "types": [
+      "供股",
+      "配股"
+    ],
+    "title": "公司公告：(1) PROPOSED CHANGE IN BOARD LOT SIZE; AND (2) PROPOSED RIGHTS ISSUE OF RI…",
+    "date": "2026-06-05",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060502024.pdf",
+    "type": "rights",
+    "typeLabel": "供股 / 配股",
+    "direction": "up",
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "3年POC"
+    ],
+    "signal_types_summary": [
+      "3年POC"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 3,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02186",
+    "name": "LUYE PHARMA",
+    "types": [
+      "回購"
+    ],
+    "title": "(1) PROPOSED CONCURRENT REPURCHASE OF US$180,000,000 6.25 PER CENT. CONVERTIBLE BONDS DUE 2028; AND (2) PROPOSED ISSUE OF US$180,000,000 5.25 PER CENT. CONVERTIBLE BONDS DUE 2031",
+    "date": "2026-06-04",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0604/2026060400109.pdf",
+    "type": "buyback",
+    "typeLabel": "回購",
+    "direction": "up",
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "披露易公告 - 配股",
+      "觀察·配股"
+    ],
+    "signal_types_summary": [
+      "披露易公告 - 配股",
+      "觀察·配股"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 4,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02186",
+    "name": "LUYE PHARMA",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：(1) PROPOSED CONCURRENT REPURCHASE OF US$180,000,000 6.25 PER CENT. CONVER…",
+    "date": "2026-06-04",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0604/2026060400109.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "披露易公告 - 配股",
+      "觀察·配股"
+    ],
+    "signal_types_summary": [
+      "披露易公告 - 配股",
+      "觀察·配股"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 4,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02186",
+    "name": "LUYE PHARMA",
+    "types": [
+      "回購"
+    ],
+    "title": "(1) PROPOSED CONCURRENT REPURCHASE OF US$180,000,000 6.25 PER CENT. CONVERTIBLE BONDS DUE 2028; AND (2) PROPOSED ISSUE OF USD-DENOMINATED CONVERTIBLE BONDS",
+    "date": "2026-06-03",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0603/2026060302514.pdf",
+    "type": "buyback",
+    "typeLabel": "回購",
+    "direction": "up",
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "披露易公告 - 配股",
+      "觀察·配股"
+    ],
+    "signal_types_summary": [
+      "披露易公告 - 配股",
+      "觀察·配股"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 5,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02186",
+    "name": "LUYE PHARMA",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：(1) PROPOSED CONCURRENT REPURCHASE OF US$180,000,000 6.25 PER CENT. CONVER…",
+    "date": "2026-06-03",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0603/2026060302514.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "披露易公告 - 配股",
+      "觀察·配股"
+    ],
+    "signal_types_summary": [
+      "披露易公告 - 配股",
+      "觀察·配股"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 5,
     "pattern": "catalyst"
   },
   {
@@ -1470,102 +2395,53 @@
     "type": "buyback",
     "typeLabel": "回購 / 轉倉",
     "direction": "up",
-    "signal_count": 1,
+    "signal_count": 2,
     "pre_count": 0,
-    "post_count": 1,
+    "post_count": 2,
     "pre_types": [],
     "post_types": [
-      "IPO首日開突破"
+      "半年POC + 12個月POC + 3年POC",
+      "年開突破"
     ],
     "signal_types_summary": [
-      "IPO首日開突破"
+      "半年POC + 12個月POC + 3年POC",
+      "年開突破"
     ],
     "first_pre_days": null,
-    "first_post_days": 15,
+    "first_post_days": 7,
     "pattern": "catalyst"
   },
   {
-    "code": "00419",
-    "name": "HONY MEDIA",
+    "code": "00978",
+    "name": "CHI MER LAND",
     "types": [
-      "配股"
+      "增持"
     ],
-    "title": "補充公告 TO 認購新股（一般授權）",
-    "date": "2026-06-01",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0601/2026060101702.pdf",
-    "type": "placement",
-    "typeLabel": "配股",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "觀察·配股"
-    ],
-    "signal_types_summary": [
-      "觀察·配股"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 14,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "00195",
-    "name": "GREENTECH INTL",
-    "types": [
-      "增持",
-      "收購"
-    ],
-    "title": "ANNOUNCEMENT PRE-CONDITIONAL VOLUNTARY CASH PARTIAL OFFER BY LEGO SECURITIES LIMITED FOR AND ON BEHALF OF GEO ENVIRON (HK) INVESTMENT LIMITED TO ACQUIRE UP TO 220,000,000 SHARES IN GREENTECH TECHNOLOGY INTERNATIONAL LIMITED",
+    "title": "FURTHER DELAY IN DESPATCH OF CIRCULAR REGARDING DISCLOSEABLE AND CONNECTED TRANSACTION ACQUISITION OF EQUITY INTERESTS IN TARGET COMPANY",
     "date": "2026-05-29",
-    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0529/2026052902164.pdf",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0529/2026052900760.pdf",
     "type": "increase",
-    "typeLabel": "增持 / 收購",
+    "typeLabel": "增持",
     "direction": "up",
-    "signal_count": 1,
+    "signal_count": 2,
     "pre_count": 0,
-    "post_count": 1,
+    "post_count": 2,
     "pre_types": [],
     "post_types": [
-      "披露易公告 - 收購/要約"
+      "CCASS增持",
+      "年開突破"
     ],
     "signal_types_summary": [
-      "披露易公告 - 收購/要約"
+      "CCASS增持",
+      "年開突破"
     ],
     "first_pre_days": null,
-    "first_post_days": 24,
+    "first_post_days": 10,
     "pattern": "catalyst"
   },
   {
-    "code": "00080",
-    "name": "CAI CORP",
-    "types": [
-      "配股"
-    ],
-    "title": "關連交易 有關 認購新股（特別授權）",
-    "date": "2026-05-29",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0529/2026052902728.pdf",
-    "type": "placement",
-    "typeLabel": "配股",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "觀察·配股"
-    ],
-    "signal_types_summary": [
-      "觀察·配股"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 24,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "03700",
-    "name": "映宇宙集",
+    "code": "00254",
+    "name": "國家聯合",
     "types": [
       "配股"
     ],
@@ -1575,7 +2451,113 @@
     "type": "placement",
     "typeLabel": "配股",
     "direction": "up",
-    "offer_price": 0.85,
+    "offer_price": 0.77,
+    "signal_count": 2,
+    "pre_count": 0,
+    "post_count": 2,
+    "pre_types": [],
+    "post_types": [
+      "半年POC + 12個月POC + 3年POC",
+      "觀察·配股"
+    ],
+    "signal_types_summary": [
+      "半年POC + 12個月POC + 3年POC",
+      "觀察·配股"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 11,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "09606",
+    "name": "DUALITYBIO-B",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：ACCEPTANCE BY THE SHANGHAI STOCK EXCHANGE OF APPLICATION MATERIALS FOR THE…",
+    "date": "2026-06-12",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0612/2026061202064.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "IPO首日開突破"
+    ],
+    "signal_types_summary": [
+      "IPO首日開突破"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01632",
+    "name": "MSCTECH",
+    "types": [
+      "收購/要約"
+    ],
+    "title": "公司公告：DECISION OF THE LISTING DIVISION ON REVERSE TAKEOVER",
+    "date": "2026-06-12",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0612/2026061200017.pdf",
+    "type": "acquisition",
+    "typeLabel": "收購/要約",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "半年POC + 12個月POC + 3年POC"
+    ],
+    "signal_types_summary": [
+      "半年POC + 12個月POC + 3年POC"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01333",
+    "name": "BRETON",
+    "types": [
+      "股東增持"
+    ],
+    "title": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING BY THE DIRECTOR AND CONTRO…",
+    "date": "2026-06-08",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0608/2026060801604.pdf",
+    "type": "increase",
+    "typeLabel": "股東增持",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "披露易公告 - 股東增持"
+    ],
+    "signal_types_summary": [
+      "披露易公告 - 股東增持"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "00994",
+    "name": "CT VISION",
+    "types": [
+      "配股"
+    ],
+    "title": "補充公告 TO (1) 發行新股（一般授權）; AND (2) 配售新股（一般授權）",
+    "date": "2026-06-08",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0608/2026060801574.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
     "signal_count": 1,
     "pre_count": 0,
     "post_count": 1,
@@ -1587,18 +2569,655 @@
       "觀察·配股"
     ],
     "first_pre_days": null,
-    "first_post_days": 25,
+    "first_post_days": 0,
     "pattern": "catalyst"
   },
   {
-    "code": "01952",
-    "name": "EVEREST MED",
+    "code": "00953",
+    "name": "SHAW BROTHERS",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：MONTHLY UPDATE IN RELATION TO (1) POTENTIAL EXTREME AND CONNECTED TRANSACT…",
+    "date": "2026-06-08",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0608/2026060801462.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "披露易公告 - 配股"
+    ],
+    "signal_types_summary": [
+      "披露易公告 - 配股"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01912",
+    "name": "CONTEL",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：JOINT ANNOUNCEMENT(1)SUBSCRIPTION OF NEW SHARES AND PLACING OF NEW SHARES …",
+    "date": "2026-06-08",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0608/2026060802324.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "觀察·配股"
+    ],
+    "signal_types_summary": [
+      "觀察·配股"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "00354",
+    "name": "CHINASOFT INT'L",
     "types": [
       "股東增持"
     ],
-    "title": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING BY SUBSTANTIAL SHAREHOLDER…",
+    "title": "公司公告：VOLUNTARY ANNOUNCEMENT - Major Shareholder's Shareholding Increase",
+    "date": "2026-06-08",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0608/2026060802080.pdf",
+    "type": "increase",
+    "typeLabel": "股東增持",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "披露易公告 - 股東增持"
+    ],
+    "signal_types_summary": [
+      "披露易公告 - 股東增持"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "09936",
+    "name": "XIMEI RESOURCES",
+    "types": [
+      "配股"
+    ],
+    "title": "補充公告：配股 OF EXISTING SHARES AND TOP-UP 認購新股（一般授權）",
+    "date": "2026-06-08",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0608/2026060802076.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "觀察·配股"
+    ],
+    "signal_types_summary": [
+      "觀察·配股"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01815",
+    "name": "EVEREST GOLD",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：SUPPLEMENTAL ANNOUNCEMENT IN RELATION TO UPDATE ON CERTAIN SUBSCRIPTIONS O…",
+    "date": "2026-06-08",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0608/2026060801808.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "觀察·配股"
+    ],
+    "signal_types_summary": [
+      "觀察·配股"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01333",
+    "name": "BRETON",
+    "types": [
+      "股東增持"
+    ],
+    "title": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING BY THE DIRECTOR AND CONTRO…",
+    "date": "2026-06-05",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060502208.pdf",
+    "type": "increase",
+    "typeLabel": "股東增持",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "披露易公告 - 股東增持"
+    ],
+    "signal_types_summary": [
+      "披露易公告 - 股東增持"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 3,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "00110",
+    "name": "CHINA FORTUNE",
+    "types": [
+      "配股"
+    ],
+    "title": "認購完成 OF NEW SHARES（一般授權）",
+    "date": "2026-06-05",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060500473.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "半年POC + 12個月POC + 3年POC"
+    ],
+    "signal_types_summary": [
+      "半年POC + 12個月POC + 3年POC"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 3,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02203",
+    "name": "BRAINHOLE TECH",
+    "types": [
+      "增持",
+      "減持"
+    ],
+    "title": "(1) DISCLOSEABLE TRANSACTION IN RELATION TO ACQUISITION OF LISTED SECURITIES (2) DISCLOSEABLE TRANSACTION IN RELATION TO FURTHER DISPOSAL OF LISTED SECURITIES",
+    "date": "2026-06-04",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0604/2026060402469.pdf",
+    "type": "increase",
+    "typeLabel": "增持 / 減持",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "年開突破"
+    ],
+    "signal_types_summary": [
+      "年開突破"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 8,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01333",
+    "name": "BRETON",
+    "types": [
+      "股東增持"
+    ],
+    "title": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING BY THE DIRECTOR AND CONTRO…",
+    "date": "2026-06-04",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0604/2026060402683.pdf",
+    "type": "increase",
+    "typeLabel": "股東增持",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "披露易公告 - 股東增持"
+    ],
+    "signal_types_summary": [
+      "披露易公告 - 股東增持"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 4,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "09863",
+    "name": "LEAPMOTOR",
+    "types": [
+      "股東增持"
+    ],
+    "title": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING OF THE COMPANY BY SHAREHOL…",
+    "date": "2026-06-04",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0604/2026060401183.pdf",
+    "type": "increase",
+    "typeLabel": "股東增持",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "IPO首日開突破"
+    ],
+    "signal_types_summary": [
+      "IPO首日開突破"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 4,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02158",
+    "name": "YIDU TECH",
+    "types": [
+      "增持"
+    ],
+    "title": "VOLUNTARY ANNOUNCEMENT - MEMORANDUM OF UNDERSTANDING IN RELATION TO PROPOSED ACQUISITION",
+    "date": "2026-06-01",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0601/2026060100081.pdf",
+    "type": "increase",
+    "typeLabel": "增持",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "年開突破"
+    ],
+    "signal_types_summary": [
+      "年開突破"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 11,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "08031",
+    "name": "易通訊集",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-06-01",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.298,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "12個月POC"
+    ],
+    "signal_types_summary": [
+      "12個月POC"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 7,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01815",
+    "name": "EVEREST GOLD",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：UPDATE ON CERTAIN SUBSCRIPTIONS OF NEW SHARES UNDER GENERAL MANDATE",
+    "date": "2026-06-01",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0601/2026060100041.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "觀察·配股"
+    ],
+    "signal_types_summary": [
+      "觀察·配股"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 7,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02431",
+    "name": "MINIEYE",
+    "types": [
+      "增持"
+    ],
+    "title": "SHARE TRANSACTION ACQUISITION OF 50% EQUITY INTEREST IN TONGTU TECHNOLOGY INVOLVING THE ISSUE OF CONSIDERATION SHARES UNDER GENERAL MANDATE",
+    "date": "2026-05-29",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0529/2026052902654.pdf",
+    "type": "increase",
+    "typeLabel": "增持",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "半年POC + 12個月POC"
+    ],
+    "signal_types_summary": [
+      "半年POC + 12個月POC"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 10,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01117",
+    "name": "CH MODERN D",
+    "types": [
+      "增持",
+      "收購"
+    ],
+    "title": "JOINT ANNOUNCEMENT - FURTHER EXTENSION OF THE LATEST TIME FOR DESPATCH OF THE OFFER DOCUMENT IN RELATION TO THE MANDATORY CONDITIONAL CASH OFFER BY CLSA LIMITED FOR AND ON BEHALF OF CHINA MODERN DAIRY HOLDINGS LTD. TO ACQUIRE ALL THE ISSUED SHARES OF CHINA SHENGMU ORGANIC MILK LIMITED (OTHER THAN THOSE ALREADY OWNED OR AGREED TO BE ACQUIRED BY CHINA MODERN DAIRY HOLDINGS LTD. AND START GREAT)",
+    "date": "2026-05-29",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0529/2026052902544.pdf",
+    "type": "increase",
+    "typeLabel": "增持 / 收購",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "3年POC"
+    ],
+    "signal_types_summary": [
+      "3年POC"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 10,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01432",
+    "name": "CHINA SHENGMU",
+    "types": [
+      "增持",
+      "收購"
+    ],
+    "title": "JOINT ANNOUNCEMENT - FURTHER EXTENSION OF THE LATEST TIME FOR DESPATCH OF THE OFFER DOCUMENT IN RELATION TO THE MANDATORY CONDITIONAL CASH OFFER BY CLSA LIMITED FOR AND ON BEHALF OF CHINA MODERN DAIRY HOLDINGS LTD. TO ACQUIRE ALL THE ISSUED SHARES OF CHINA SHENGMU ORGANIC MILK LIMITED (OTHER THAN THOSE ALREADY OWNED OR AGREED TO BE ACQUIRED BY CHINA MODERN DAIRY HOLDINGS LTD. AND START GREAT)",
+    "date": "2026-05-29",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0529/2026052902538.pdf",
+    "type": "increase",
+    "typeLabel": "增持 / 收購",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "半年POC"
+    ],
+    "signal_types_summary": [
+      "半年POC"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 14,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02182",
+    "name": "TIAN CHANG GP",
+    "types": [
+      "增持"
+    ],
+    "title": "DISCLOSEABLE TRANSACTIONS IN RELATION TO ACQUISITION OF MACHINERY AND FINANCE LEASE AGREEMENT",
+    "date": "2026-05-29",
+    "url": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0529/2026052902196.pdf",
+    "type": "increase",
+    "typeLabel": "增持",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "半年POC + 12個月POC"
+    ],
+    "signal_types_summary": [
+      "半年POC + 12個月POC"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 14,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "06613",
+    "name": "LENS",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：PROPOSED ADOPTION OF THE 2026 A-SHARES RESTRICTED SHARES INCENTIVE SCHEME;…",
+    "date": "2026-05-29",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0529/2026052903548.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "年開突破"
+    ],
+    "signal_types_summary": [
+      "年開突破"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 14,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "02431",
+    "name": "MINIEYE",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：SHARE TRANSACTION ACQUISITION OF 50% EQUITY INTEREST IN TONGTU TECHNOLOGY …",
+    "date": "2026-05-29",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0529/2026052902654.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "半年POC + 12個月POC"
+    ],
+    "signal_types_summary": [
+      "半年POC + 12個月POC"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 10,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "06166",
+    "name": "上海劍橋",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-05-28",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 228.0,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "半年POC"
+    ],
+    "signal_types_summary": [
+      "半年POC"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 11,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "00994",
+    "name": "中天宏信",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-05-27",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.36,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "觀察·配股"
+    ],
+    "signal_types_summary": [
+      "觀察·配股"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 12,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "08471",
+    "name": "新達控股",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-05-27",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.02,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "半年POC"
+    ],
+    "signal_types_summary": [
+      "半年POC"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 12,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01302",
+    "name": "LIFETECH SCI",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：MAJOR TRANSACTION - PROPOSED ACQUISITION OF APPROXIMATELY 96.46% EQUITY IN…",
     "date": "2026-05-22",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0522/2026052200015.pdf",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0522/2026052202358.pdf",
+    "typeLabel": "配股",
+    "type": "placement",
+    "direction": "up",
+    "offer_price": null,
+    "discount_pct": null,
+    "price_level": "unknown",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "半年POC + 12個月POC"
+    ],
+    "signal_types_summary": [
+      "半年POC + 12個月POC"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 21,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "00456",
+    "name": "NEW CITY DEV",
+    "types": [
+      "配股"
+    ],
+    "title": "認購完成 OF NEW SHARES（一般授權）",
+    "date": "2026-05-22",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0522/2026052201512.pdf",
+    "typeLabel": "配股",
+    "type": "placement",
+    "direction": "up",
+    "offer_price": null,
+    "discount_pct": null,
+    "price_level": "unknown",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "12個月POC"
+    ],
+    "signal_types_summary": [
+      "12個月POC"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 17,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01333",
+    "name": "BRETON",
+    "types": [
+      "股東增持"
+    ],
+    "title": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING BY THE DIRECTOR AND CONTRO…",
+    "date": "2026-05-21",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0521/2026052101750.pdf",
     "typeLabel": "股東增持",
     "type": "increase",
     "direction": "up",
@@ -1613,18 +3232,18 @@
       "披露易公告 - 股東增持"
     ],
     "first_pre_days": null,
-    "first_post_days": 27,
+    "first_post_days": 18,
     "pattern": "catalyst"
   },
   {
-    "code": "03908",
-    "name": "CICC",
+    "code": "06609",
+    "name": "HEARTCARE-B",
     "types": [
       "配股"
     ],
-    "title": "公司公告：NOTICE OF 2026 FIRST H SHAREHOLDERS' CLASS MEETING",
-    "date": "2026-05-18",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0518/2026051801364.pdf",
+    "title": "公司公告：APPROVAL BY THE CSRC FOR THE REGISTRATION OF THE SUBSCRIPTION OF NEW DOMES…",
+    "date": "2026-05-21",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0521/2026052101130.pdf",
     "typeLabel": "配股",
     "type": "placement",
     "direction": "up",
@@ -1636,10 +3255,117 @@
     "post_count": 1,
     "pre_types": [],
     "post_types": [
-      "披露易公告 - 配股"
+      "12個月POC"
     ],
     "signal_types_summary": [
-      "披露易公告 - 配股"
+      "12個月POC"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 22,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "09606",
+    "name": "DUALITYBIO-B",
+    "types": [
+      "股東增持"
+    ],
+    "title": "公司公告：VOLUNTARY ANNOUNCEMENT - SHARE REPURCHASE PLAN UNDER THE REPURCHASE MANDAT…",
+    "date": "2026-05-19",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0519/2026051901355.pdf",
+    "typeLabel": "股東增持",
+    "type": "increase",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "IPO首日開突破"
+    ],
+    "signal_types_summary": [
+      "IPO首日開突破"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 24,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "08125",
+    "name": "中新控股",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-05-19",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.425,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "年開突破"
+    ],
+    "signal_types_summary": [
+      "年開突破"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 20,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "01087",
+    "name": "威訊控股",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-05-13",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.67,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "半年POC"
+    ],
+    "signal_types_summary": [
+      "半年POC"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 26,
+    "pattern": "catalyst"
+  },
+  {
+    "code": "08125",
+    "name": "中新控股",
+    "types": [
+      "配股"
+    ],
+    "title": "PLACING OF NEW SHARES (Webb-site pnotes)",
+    "date": "2026-05-11",
+    "url": "",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "offer_price": 0.425,
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "年開突破"
+    ],
+    "signal_types_summary": [
+      "年開突破"
     ],
     "first_pre_days": null,
     "first_post_days": 28,

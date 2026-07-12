@@ -5,6 +5,7 @@ mc, hi52, lo52, pe, vol → compute p52, and enrich holdings.json.
 import json, time, sys
 from pathlib import Path
 from futu import OpenQuoteContext, RET_OK
+from futu_env import ensure_futu_quote_backend_or_die
 
 ROOT = Path(__file__).parent.parent
 CACHE = ROOT / "ccass" / "cache" / "enrich_futu.json"
@@ -52,7 +53,8 @@ if not needed:
     sys.exit(0)
 
 # Connect to Futu
-quote_ctx = OpenQuoteContext(host='127.0.0.1', port=11111)
+FUTU_HOST, FUTU_PORT = ensure_futu_quote_backend_or_die(ROOT)
+quote_ctx = OpenQuoteContext(host=FUTU_HOST, port=FUTU_PORT)
 print("Connected to Futu gateway")
 
 BATCH_SIZE = 200

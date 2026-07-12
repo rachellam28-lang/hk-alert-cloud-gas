@@ -1,13 +1,15 @@
 """Fetch REAL data from Futu: lp (latest price) + yo (2026 year-open).
-Prerequisite: Futu OpenD running on 127.0.0.1:11111.
+Prerequisite: Futu OpenD running at FUTU_HOST:FUTU_PORT from repo .env.
 """
-import json, time, math
+import json, time, math, sys
 from pathlib import Path
 from futu import OpenQuoteContext, KLType, RET_OK
 
 ROOT = Path(__file__).parent.parent.parent  # holdings-debug/
 HOLDINGS = ROOT / "holdings.json"
 PRICES = ROOT / "data" / "stock_prices.json"
+sys.path.insert(0, str(ROOT / "scripts"))
+from futu_env import ensure_futu_quote_backend_or_die
 
 # Load
 prices = json.loads(PRICES.read_text(encoding='utf-8'))
@@ -15,7 +17,8 @@ holdings = json.loads(HOLDINGS.read_text(encoding='utf-8'))
 codes = sorted(k for k,v in prices.items() if v.get('yo'))  # only active stocks
 print(f"Total active stocks: {len(codes)}")
 
-q = OpenQuoteContext('127.0.0.1', 11111)
+FUTU_HOST, FUTU_PORT = ensure_futu_quote_backend_or_die(ROOT)
+q = OpenQuoteContext(FUTU_HOST, FUTU_PORT)
 updated_lp = 0
 updated_yo = 0
 failed = 0

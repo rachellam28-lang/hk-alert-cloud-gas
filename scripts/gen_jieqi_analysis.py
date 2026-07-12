@@ -6,7 +6,7 @@ from __future__ import annotations
 import html
 import json
 import math
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
 
 
@@ -110,6 +110,8 @@ table{width:100%;border-collapse:collapse;min-width:900px}th,td{text-align:left;
 def main() -> None:
     data = load_data()
     today = date.today()
+    page_updated = datetime.now().strftime("%Y-%m-%d %H:%M")
+    sample_updated = str(data.get("updated", "")).replace("T", " ")[:16] or "—"
     calendar = ((data.get("calendar") or {}).get("years") or {})
     term_stats = data.get("term_stats") or []
     stats_by_id = {i + 1: stat for i, stat in enumerate(term_stats[:24])}
@@ -181,7 +183,7 @@ def main() -> None:
       <div class="title">🧭 節氣窗口訊號表</div>
       <div class="subtitle">24 節氣只保留日期窗口；第一屏直接顯示下一批窗口日期、距離今日幾多日、歷史樣本 count。</div>
     </div>
-    <div class="hero-meta">更新：<b>{esc(str(data.get("updated", ""))[:16].replace("T", " "))}</b><br>年份：<b>{esc(year_range)}</b><br>樣本：<b>{esc(data.get("sample_total", 0))}</b></div>
+    <div class="hero-meta">頁面更新：<b>{esc(page_updated)}</b><br>樣本更新：<b>{esc(sample_updated)}</b><br>年份：<b>{esc(year_range)}</b><br>樣本：<b>{esc(data.get("sample_total", 0))}</b></div>
   </section>
   <section class="cards">
     <div class="card"><div class="k">下一個窗口</div><div class="v">{esc(next_date.get("date_text", "—"))}</div><div class="s">{esc(next_date.get("name", "—"))}</div></div>

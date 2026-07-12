@@ -30,7 +30,9 @@ PRICES_JSON = DATA / "prices.json"
 CORP_SCAN = SCANNER / "corp_scan_result.json"
 FVG_JSON = ROOT / "fvg.json"
 BT_JSON = DATA / "breakthroughs.json"
+VQC_JSON = DATA / "vqc_backtest.json"
 ANNOUNCEMENTS_JSON = DATA / "announcements.json"
+HOLDINGS_JSON = ROOT / "holdings.json"
 
 # How far back to consider corp actions "active" for corpTypes
 CORP_WINDOW_DAYS = 90
@@ -213,6 +215,24 @@ def generate():
     else:
         stock_info = raw_prices
 
+    holdings_data = load_json(HOLDINGS_JSON)
+    holdings_map = {
+        str(row.get("c", "")).zfill(5): row
+        for row in (holdings_data.get("stocks", []) if isinstance(holdings_data, dict) else [])
+        if isinstance(row, dict) and row.get("c")
+    }
+
+    # The signals page must never drop a live CCASS code just because the
+    # intraday price cache missed it. Backfill any missing universe members
+    # from holdings.json so user-facing counts stay aligned with holdings.
+    for code, row in holdings_map.items():
+        if code in stock_info:
+            continue
+        stock_info[code] = {
+            "name": row.get("n") or row.get("name") or "",
+            "latestPrice": row.get("lp") or row.get("latestPrice"),
+        }
+
     # === CORP TYPES: from announcements.json (full history, 90-day window) ===
     corp_map = build_corp_types_from_announcements()
     
@@ -238,6 +258,7 @@ def generate():
 
     # === SIGNALS: from corp_scan_result.json + FVG + breakthroughs ===
     signals_map = {}     # code → list of signal strings
+    signal_dates = {}    # (code, signal) → actual signal date
 
     # 2a. Corp scan alerted signals
     corp_data = load_json(CORP_SCAN)
@@ -297,20 +318,63 @@ def generate():
             if tag not in signals_map[code]:
                 signals_map[code].append(tag)
 
+    # 2d. Latest成交轉勢日/VQC events. Keep the date with the signal so the
+    # main desk and signals page can rank a real current event, not a backtest count.
+    vqc_data = load_json(VQC_JSON)
+    vqc_events = vqc_data.get("events", []) if isinstance(vqc_data, dict) else []
+    vqc_latest = max((str(item.get("signal_date") or "") for item in vqc_events), default="")
+    for item in vqc_events:
+        if str(item.get("signal_date") or "") != vqc_latest:
+            continue
+        code = str(item.get("code") or "").strip().zfill(5)
+        if not code:
+            continue
+        signals_map.setdefault(code, [])
+        if "成交轉勢日" not in signals_map[code]:
+            signals_map[code].append("成交轉勢日")
+        signal_dates[(code, "成交轉勢日")] = vqc_latest
+
     # 3. Build output groups
     groups = []
     for code, info in stock_info.items():
         ct = corp_types_map.get(code, {"placement": False, "rights": False, "increase": False})
         sigs = signals_map.get(code, [])
+        holding = holdings_map.get(str(code).zfill(5), {})
+        five_day_up = (holding.get("d5s") or 0) > 0 and (holding.get("d5p") or 0) > 0
+        if five_day_up and "CCASS合計持股5日增持" not in sigs:
+            sigs = ["CCASS合計持股5日增持", *sigs]
         hk_link = hkex_link_map.get(code, "")
 
         groups.append({
             "code": code,
             "name": info.get("name", ""),
             "latestPrice": info.get("latestPrice"),
-            "signals": sigs,
+            "signals": [
+                {
+                    "label": sig,
+                    "date": signal_dates.get((code, sig)) or (
+                        holdings_data.get("updated")
+                        if sig == "CCASS合計持股5日增持" and isinstance(holdings_data, dict)
+                        else ""
+                    ),
+                }
+                for sig in sigs
+            ],
             "corpTypes": ct,
             "hkexLink": hk_link,
+            "ccass": {
+                "sharesDelta": holding.get("tsd"),
+                "pctDelta": holding.get("tpd"),
+                "sharesDelta5d": holding.get("d5s"),
+                "pctDelta5d": holding.get("d5p"),
+                "sharesDelta20d": holding.get("d20s"),
+                "pctDelta20d": holding.get("d20p"),
+                "sharesDelta60d": holding.get("d60s"),
+                "pctDelta60d": holding.get("d60p"),
+                "sharesDelta120d": holding.get("d120s"),
+                "pctDelta120d": holding.get("d120p"),
+                "increaseDays": holding.get("su", 0),
+            },
         })
 
     # Build recentCorps from alerted items

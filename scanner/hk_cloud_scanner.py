@@ -1424,7 +1424,7 @@ def _period_to_years(period: str) -> int:
 
 
 def _normalize_futu_df(df: pd.DataFrame) -> pd.DataFrame:
-    """Normalize a Futu get_history_kline result to the internal OHLCV format."""
+    """Normalize a Futu history-kline result to the internal OHLCV format."""
     if df is None or df.empty:
         return pd.DataFrame()
     try:
@@ -1457,7 +1457,7 @@ def get_daily_history_futu(code: str, years: int = 4) -> pd.DataFrame:
     try:
         ctx = OpenQuoteContext(host=FUTU_HOST, port=FUTU_PORT)
         try:
-            ret, df, _ = ctx.get_history_kline(
+            ret, df, _ = ctx.request_history_kline(
                 futu_code,
                 start=start_str,
                 end=end_str,
@@ -1465,7 +1465,7 @@ def get_daily_history_futu(code: str, years: int = 4) -> pd.DataFrame:
                 autype=AuType.QFQ,
                 fields=[
                     KL_FIELD.DATE_TIME, KL_FIELD.OPEN, KL_FIELD.HIGH,
-                    KL_FIELD.LOW, KL_FIELD.CLOSE, KL_FIELD.VOLUME,
+                    KL_FIELD.LOW, KL_FIELD.CLOSE, KL_FIELD.TRADE_VOL,
                 ],
                 max_count=5000,
             )

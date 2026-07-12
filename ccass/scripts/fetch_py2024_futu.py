@@ -1,11 +1,13 @@
 """Fetch 2024 year-open prices via Futu OpenD."""
-import json, time
+import json, time, sys
 from pathlib import Path
 from futu import *
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 PRICES_PATH = ROOT / "data" / "stock_prices.json"
 HOLDINGS_PATH = ROOT / "holdings.json"
+sys.path.insert(0, str(ROOT / "scripts"))
+from futu_env import ensure_futu_quote_backend_or_die
 
 # Load existing prices
 prices = json.loads(PRICES_PATH.read_text(encoding="utf-8"))
@@ -14,7 +16,8 @@ codes = sorted(k for k,v in prices.items() if v.get('yo'))  # only stocks with 2
 
 print(f'Fetching 2024 year-open for {len(codes)} stocks via Futu...')
 
-q = OpenQuoteContext('127.0.0.1', 11111)
+FUTU_HOST, FUTU_PORT = ensure_futu_quote_backend_or_die(ROOT)
+q = OpenQuoteContext(FUTU_HOST, FUTU_PORT)
 updated = 0
 failed = 0
 

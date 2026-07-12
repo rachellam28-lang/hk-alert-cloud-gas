@@ -1,0 +1,1332 @@
+<!doctype html>
+<html lang="zh-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>Kbar Matrix</title>
+<style>
+:root{--bg:#f5f7fa;--surface:#fff;--surface-soft:#f8fafc;--surface-dark:#0b1220;--text:#0f172a;--text-soft:#334155;--mute:#64748b;--line:#e2e8f0;--line-soft:#eef2f7;--primary:#0284c7;--primary-soft:#e0f2fe;--primary-border:#bae6fd;--up:#15803d;--up-soft:#dcfce7;--down:#b91c1c;--down-soft:#fee2e2;--radius:8px;--shadow:0 1px 2px rgba(15,23,42,.04)}
+*{box-sizing:border-box}html,body{margin:0;padding:0}body{background:var(--bg);color:var(--text);font:14px/1.45 Inter,system-ui,"PingFang TC","Noto Sans TC",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topbar-inner{max-width:1480px;margin:0 auto;padding:10px 16px 0}.brandrow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:10px}.brand{display:flex;align-items:center;gap:10px}.logo{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#0284c7,#0ea5e9);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px}.brand h1{margin:0;font-size:16px}.brand p{margin:2px 0 0;color:var(--mute);font-size:11px}.status{font-size:11px;color:var(--mute);white-space:nowrap}
+#sharedSiteNav{display:flex;gap:10px;flex-wrap:wrap;padding:8px 0 12px;border-top:1px solid var(--line-soft)}#sharedSiteNav a{display:inline-flex;align-items:center;padding:6px 10px;border-radius:999px;border:1px solid transparent;color:var(--text-soft);font-size:12px;font-weight:600;text-decoration:none}#sharedSiteNav a:hover{background:var(--surface-soft);border-color:var(--line)}#sharedSiteNav a.active{background:var(--primary-soft);border-color:var(--primary-border);color:var(--primary)}
+.page{max-width:1480px;margin:0 auto;padding:16px;display:flex;flex-direction:column}.band{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px 16px}.band + .band{margin-top:12px}.band-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}.band-title{font-size:15px;font-weight:700}.band-sub{margin-top:4px;font-size:11px;color:var(--mute)}
+.controls{display:grid;grid-template-columns:minmax(240px,1.2fr) auto auto auto auto;gap:10px;align-items:center}.input{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);font:500 13px inherit;color:var(--text);outline:none}.input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(2,132,199,.12)}.seg{display:inline-flex;align-items:center;gap:4px;background:var(--surface-soft);border:1px solid var(--line);border-radius:8px;padding:4px}.seg button,.btn,.chip{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--text-soft);padding:8px 10px;border-radius:7px;font:600 12px inherit;cursor:pointer;white-space:nowrap}.seg button{border-color:transparent;background:transparent}.seg button.active,.btn.primary,.chip.active{background:var(--primary-soft);border-color:var(--primary-border);color:var(--primary)}.btn:hover,.chip:hover,.seg button:hover{border-color:var(--primary-border);background:var(--surface-soft)}
+.preset-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.hint{margin-top:10px;font-size:11px;color:var(--mute)}
+.matrix{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.pane{background:var(--surface-soft);border:1px solid var(--line-soft);border-radius:8px;overflow:hidden}.pane-head{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:7px 9px;border-bottom:1px solid var(--line-soft);background:#fff}.pane-title{font-size:11px;font-weight:700}.pane-meta{font-size:9px;color:var(--mute)}.pane-link{font-size:10px;font-weight:600}.chart-box{display:block;width:100%;height:320px;border:0;background:#fff;position:relative}.chart-svg{display:block;width:100%;height:100%}.chart-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:14px;text-align:center;color:var(--mute);font-size:11px;line-height:1.5}
+.legend-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px;font-size:11px;color:var(--mute)}.legend-chip{display:inline-flex;align-items:center;gap:6px}.legend-color{width:10px;height:10px;border-radius:999px}.legend-up{background:var(--up)}.legend-down{background:var(--down)}.legend-vqc{background:#22c55e}.legend-jieqi{background:#38bdf8}.legend-dd{background:#f59e0b}.legend-reclaim{background:#818cf8}
+.trend-guard{margin-top:12px;padding:10px 12px;border:1px solid var(--line);border-left:4px solid #64748b;border-radius:8px;background:var(--surface-soft);font-size:12px}.trend-guard strong{font-size:13px}.trend-guard small{display:block;margin-top:3px;color:var(--mute);line-height:1.45}.trend-guard.bull{border-left-color:#16a34a;background:#f0fdf4}.trend-guard.bear{border-left-color:#dc2626;background:#fef2f2}.trend-guard.watch{border-left-color:#d97706;background:#fffbeb}.trend-guard.neutral{border-left-color:#64748b}
+.setup-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.setup-card{border:1px solid var(--line);border-radius:8px;background:var(--surface-soft);padding:12px 12px 10px;min-height:188px}.setup-card.active{box-shadow:0 0 0 1px rgba(2,132,199,.18)}.setup-card.breakout.active{border-color:#86efac;background:#f0fdf4}.setup-card.base.active{border-color:#fcd34d;background:#fffbeb}.setup-card.breaklow.active{border-color:#7dd3fc;background:#f0f9ff}.setup-card.rebound.active{border-color:#fca5a5;background:#fef2f2}.setup-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}.setup-name{font-size:13px;font-weight:800}.setup-score{font-size:20px;font-weight:800;line-height:1}.setup-kicker{margin-top:2px;font-size:11px;color:var(--mute)}.setup-tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;border:1px solid var(--line);background:#fff;color:var(--text-soft)}.setup-card.active .setup-tag{border-color:transparent}.setup-meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}.setup-stat{padding:8px;border:1px solid var(--line-soft);border-radius:8px;background:#fff}.setup-stat-label{font-size:10px;color:var(--mute);text-transform:uppercase;letter-spacing:.05em}.setup-stat-value{margin-top:3px;font-size:12px;font-weight:700}.setup-note{margin-top:10px;font-size:12px;line-height:1.5;color:var(--text-soft)}.setup-empty{padding:16px;border:1px dashed var(--line);border-radius:8px;background:var(--surface-soft);font-size:12px;color:var(--mute)}
+.setup-scout-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.setup-scout-card{border:1px solid var(--line);border-radius:8px;background:var(--surface-soft);overflow:hidden;display:flex;flex-direction:column;min-height:356px}.setup-scout-card.breakout{box-shadow:inset 0 0 0 1px rgba(21,128,61,.10)}.setup-scout-card.base{box-shadow:inset 0 0 0 1px rgba(180,83,9,.10)}.setup-scout-card.breaklow{box-shadow:inset 0 0 0 1px rgba(2,132,199,.10)}.setup-scout-card.rebound{box-shadow:inset 0 0 0 1px rgba(185,28,28,.10)}.setup-scout-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:12px;border-bottom:1px solid var(--line-soft);background:#fff}.setup-scout-title{font-size:13px;font-weight:800}.setup-scout-sub{margin-top:2px;font-size:11px;color:var(--mute)}.setup-scout-count{display:inline-flex;align-items:center;justify-content:center;min-width:30px;padding:2px 8px;border-radius:999px;background:var(--surface-soft);border:1px solid var(--line);font-size:11px;font-weight:700}.setup-scout-chart{height:156px;background:#fff;border-bottom:1px solid var(--line-soft)}.setup-scout-chart .chart-svg{height:156px}.setup-scout-chart .chart-empty{font-size:11px}.setup-scout-body{padding:12px;display:flex;flex:1;flex-direction:column}.setup-scout-symbol-row{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}.setup-scout-symbol{font:800 15px "JetBrains Mono",ui-monospace,Consolas,monospace}.setup-scout-label{margin-top:3px;font-size:11px;color:var(--mute)}.setup-scout-score{font-size:22px;font-weight:800;line-height:1}.setup-scout-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}.setup-scout-stat{padding:8px;border:1px solid var(--line-soft);border-radius:8px;background:#fff}.setup-scout-stat-label{font-size:10px;color:var(--mute);text-transform:uppercase;letter-spacing:.05em}.setup-scout-stat-value{margin-top:3px;font-size:12px;font-weight:700}.setup-scout-note{margin-top:10px;font-size:12px;line-height:1.5;color:var(--text-soft)}.setup-scout-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.setup-scout-chip,.setup-scout-btn{appearance:none;border:1px solid var(--line);background:#fff;color:var(--text-soft);padding:6px 9px;border-radius:999px;font:600 11px inherit;cursor:pointer}.setup-scout-chip:hover,.setup-scout-btn:hover{border-color:var(--primary-border);background:var(--surface-soft)}.setup-scout-btn{border-radius:8px;background:var(--primary-soft);border-color:var(--primary-border);color:var(--primary)}
+.console{background:var(--surface-dark);color:#c8facc;border-radius:8px;padding:12px 14px;font:12px/1.55 "JetBrains Mono",ui-monospace,monospace;white-space:pre-wrap;min-height:150px;overflow:auto}.console .muted{color:#7dd3fc}
+@media (max-width:1380px){.matrix{grid-template-columns:repeat(2,minmax(0,1fr))}.chart-box{height:300px}}
+@media (max-width:1180px){.controls{grid-template-columns:minmax(220px,1fr) auto auto;}.controls .full{grid-column:1/-1}.matrix,.setup-grid,.setup-scout-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.chart-box{height:300px}}
+@media (max-width:760px){.page{padding:10px}.topbar-inner{padding:10px 12px 0}.controls{grid-template-columns:1fr}.controls .full{grid-column:auto}.matrix,.setup-grid,.setup-scout-grid{grid-template-columns:1fr}.chart-box{height:340px}.brandrow{align-items:flex-start;flex-direction:column}.status{white-space:normal}.setup-meta,.setup-scout-stats{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brandrow">
+      <div class="brand">
+        <div class="logo">📈</div>
+        <div>
+          <h1>Kbar Matrix</h1>
+          <p>多週期 Kbar 主體 · 預載 cache 直接睇節奏，唔再卡 TradingView widget</p>
+        </div>
+      </div>
+      <div class="status" id="pageStatus">loading...</div>
+    </div>
+    <nav id="sharedSiteNav" data-base="./"></nav>
+  </div>
+</header>
+<main class="page">
+  <section class="band">
+    <div class="band-head">
+      <div>
+        <div class="band-title">多重時間矩陣</div>
+        <div class="band-sub">頁內 K 線只支援預載 cache。未預載的 symbol 會保留外跳圖表，不假裝有數據。</div>
+      </div>
+    </div>
+    <div class="controls" style="margin-top:12px">
+      <input id="symbolInput" class="input full" placeholder="例如：700 / 9988 / NVDA / SPY / GLD / EWJ / ASHR" value="700">
+      <div class="seg" id="modeSeg" aria-label="market mode">
+        <button data-mode="hk" class="active">HK</button>
+        <button data-mode="us">US</button>
+        <button data-mode="fx">FX</button>
+        <button data-mode="tv">TV</button>
+      </div>
+      <button class="btn primary" id="applyBtn">更新矩陣</button>
+      <button class="btn" id="copyLinkBtn">複製連結</button>
+      <a class="btn" id="tvOpenBtn" href="#" target="_blank" rel="noopener">開 TradingView</a>
+    </div>
+    <div class="preset-row" id="presetRow"></div>
+    <div class="hint" id="resolvedHint"></div>
+    <div class="legend-row">
+      <span class="legend-chip"><span class="legend-color" style="background:#facc15"></span>年開線</span>
+      <span class="legend-chip"><span class="legend-color" style="background:#38bdf8"></span>IPO O／H／L（有資料才顯示）</span>
+      <span class="legend-chip"><span class="legend-color legend-up"></span>收高於開</span>
+      <span class="legend-chip"><span class="legend-color legend-down"></span>收低於開</span>
+      <span class="legend-chip"><span class="legend-color legend-vqc"></span>VQC 成交轉勢</span>
+      <span class="legend-chip"><span class="legend-color legend-jieqi"></span>節氣窗口</span>
+      <span class="legend-chip"><span class="legend-color legend-dd"></span>分佈日</span>
+      <span class="legend-chip"><span class="legend-color legend-reclaim"></span>破底翻：跌穿支持後收回</span>
+      <span class="legend-chip">15m / 30m 由 5m 聚合，2h / 4h 由 1h 聚合</span>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="band-head">
+      <div>
+        <div class="band-title">Kbar 主體</div>
+        <div class="band-sub">5m / 15m / 30m / 1h / 2h / 4h 同步睇，短線切點同方向節奏分開。</div>
+      </div>
+    </div>
+    <div class="trend-guard neutral" id="trendGuard"><strong>多空 Trend 守位</strong><small>等候 Kbar cache 計算守位線。</small></div>
+    <div class="matrix" id="matrix" style="margin-top:12px"></div>
+  </section>
+
+  <section class="band">
+    <div class="band-head">
+      <div>
+        <div class="band-title">Kbar Playbook</div>
+        <div class="band-sub">把已預載 Kbar cache 的票，自動分成追勢突破、盤底築台、破底翻、弱勢反抽。每格直接揀一隻代表，順手列埋備選。</div>
+      </div>
+      <div class="status" id="setupScoutMeta">loading setup universe...</div>
+    </div>
+    <div class="setup-scout-grid" id="setupScoutGrid" style="margin-top:12px"></div>
+  </section>
+
+  <section class="band">
+    <div class="band-head">
+      <div>
+        <div class="band-title">Setup Lens</div>
+        <div class="band-sub">把 Kbar 分成追勢突破、盤底築台、破底翻、弱勢反抽，破底翻必須先跌穿支持位，再收市翻回支持位上方。</div>
+      </div>
+    </div>
+    <div class="setup-grid" id="setupLens" style="margin-top:12px"></div>
+  </section>
+
+  <section class="band">
+    <div class="band-head">
+      <div>
+        <div class="band-title">Signal Console</div>
+        <div class="band-sub">顯示目前 symbol、Kbar cache、publish bundle 同 TimesFM 摘要。</div>
+      </div>
+    </div>
+    <pre class="console" id="console">booting...</pre>
+  </section>
+</main>
+<script src="./shared-nav.js"></script>
+<script>
+const intervals = [
+  { label: '年圖', value: '1d' },
+  { label: '半年圖', value: '6m' },
+  { label: '季圖', value: '3m' },
+  { label: '5m', value: '5m' },
+  { label: '15m', value: '15m' },
+  { label: '30m', value: '30m' },
+  { label: '1h', value: '1h' },
+  { label: '2h', value: '2h' },
+  { label: '4h', value: '4h' },
+];
+const presets = [
+  { label: '騰訊', raw: '700', mode: 'hk' },
+  { label: '阿里', raw: '9988', mode: 'hk' },
+  { label: '盈富', raw: '2800', mode: 'hk' },
+  { label: 'NVDA', raw: 'NVDA', mode: 'us' },
+  { label: 'QQQ', raw: 'QQQ', mode: 'us' },
+  { label: 'SPY', raw: 'SPY', mode: 'us' },
+  { label: 'GLD', raw: 'GLD', mode: 'us' },
+  { label: 'EWJ', raw: 'EWJ', mode: 'us' },
+  { label: 'ASHR', raw: 'ASHR', mode: 'us' },
+];
+const state = { mode: 'hk', raw: '700' };
+let kbarCache = null;
+let tradeEngine = null;
+let aliasMap = new Map();
+let timingOverlay = null;
+let levelData = { yearOpen: new Map(), ipo: new Map() };
+
+const matrixEl = document.getElementById('matrix');
+const trendGuardEl = document.getElementById('trendGuard');
+const setupLensEl = document.getElementById('setupLens');
+const setupScoutGridEl = document.getElementById('setupScoutGrid');
+const setupScoutMetaEl = document.getElementById('setupScoutMeta');
+const symbolInput = document.getElementById('symbolInput');
+const resolvedHint = document.getElementById('resolvedHint');
+const statusEl = document.getElementById('pageStatus');
+const consoleEl = document.getElementById('console');
+const presetRow = document.getElementById('presetRow');
+
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function tvSymbolFromCacheSymbol(symbol) {
+  const map = {
+    '700.HK': 'HKEX:700',
+    '9988.HK': 'HKEX:9988',
+    '2800.HK': 'HKEX:2800',
+    'NVDA.US': 'NASDAQ:NVDA',
+    'QQQ.US': 'NASDAQ:QQQ',
+    'SPY.US': 'AMEX:SPY',
+    'GLD.US': 'AMEX:GLD',
+    'EWJ.US': 'AMEX:EWJ',
+    'ASHR.US': 'AMEX:ASHR',
+  };
+  if (map[symbol]) return map[symbol];
+  if (/^\d+\.HK$/i.test(symbol)) return `HKEX:${String(parseInt(symbol, 10))}`;
+  if (/^[A-Z.]+\.US$/i.test(symbol)) return `NASDAQ:${symbol.replace(/\.US$/i, '')}`;
+  return symbol;
+}
+
+function fallbackTvSymbol(raw, mode) {
+  const value = String(raw || '').trim().toUpperCase();
+  if (!value) return '';
+  if (value.includes(':')) return value;
+  if (mode === 'hk') {
+    const digits = value.replace(/\D+/g, '');
+    return digits ? `HKEX:${String(parseInt(digits, 10))}` : value;
+  }
+  if (mode === 'us') return `NASDAQ:${value.replace(/\.US$/,'')}`;
+  return value;
+}
+
+function tvChartUrl(tvSymbol, interval='60') {
+  const u = new URL('https://www.tradingview.com/chart/');
+  u.searchParams.set('symbol', tvSymbol);
+  u.searchParams.set('interval', interval);
+  return u.toString();
+}
+
+function modeFromCacheSymbol(symbol) {
+  if (/\.HK$/i.test(symbol)) return 'hk';
+  if (/\.US$/i.test(symbol)) return 'us';
+  return 'tv';
+}
+
+function updateModeButtons() {
+  document.querySelectorAll('#modeSeg button').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.mode === state.mode);
+  });
+}
+
+function renderPresets() {
+  presetRow.innerHTML = presets.map((preset, idx) => (
+    `<button class="chip" data-idx="${idx}">${preset.label}</button>`
+  )).join('');
+}
+
+async function loadJson(path) {
+  try {
+    const res = await fetch(`${path}?ts=${Date.now()}`, { cache: 'no-store' });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
+function buildAliasMap(data) {
+  const map = new Map();
+  const symbols = data && data.symbols ? data.symbols : {};
+  Object.entries(symbols).forEach(([symbol, item]) => {
+    map.set(symbol.toUpperCase(), symbol);
+    (item.aliases || []).forEach(alias => {
+      map.set(String(alias).trim().toUpperCase(), symbol);
+    });
+  });
+  return map;
+}
+
+async function ensureKbarCache() {
+  if (kbarCache) return kbarCache;
+  kbarCache = await loadJson('./data/kbar_cache.json');
+  aliasMap = buildAliasMap(kbarCache || {});
+  return kbarCache;
+}
+
+async function ensureTradeEngine() {
+  if (tradeEngine) return tradeEngine;
+  tradeEngine = await loadJson('./data/trade_engine.json');
+  return tradeEngine;
+}
+
+async function ensureLevelData() {
+  if (levelData.yearOpen.size || levelData.ipo.size) return levelData;
+  const [prices, alertsPayload] = await Promise.all([
+    loadJson('./data/stock_prices.json'),
+    loadJson('./data/alerts.json'),
+  ]);
+  Object.entries(prices || {}).forEach(([code, row]) => {
+    const value = Number(row && row.yo);
+    if (Number.isFinite(value)) levelData.yearOpen.set(String(code).padStart(5, '0'), { value, date: row.yo_date || '' });
+  });
+  const alerts = Array.isArray(alertsPayload) ? alertsPayload : ((alertsPayload && alertsPayload.alerts) || []);
+  alerts.filter(item => String(item.category || '').toLowerCase() === 'ipo').forEach(item => {
+    let raw = {};
+    try { raw = JSON.parse(item.raw || '{}'); } catch {}
+    const code = String(item.code || raw.Code || '').replace(/\D/g, '').padStart(5, '0');
+    if (!code) return;
+    const levels = {
+      date: raw['IPO Date'] || raw.IPODate || '',
+      open: Number(raw['IPO Open']),
+      high: Number(raw['IPO High']),
+      low: Number(raw['IPO Low']),
+    };
+    const existing = levelData.ipo.get(code) || {};
+    ['open', 'high', 'low'].forEach(key => { if (Number.isFinite(levels[key])) existing[key] = levels[key]; });
+    if (levels.date) existing.date = levels.date;
+    levelData.ipo.set(code, existing);
+  });
+  return levelData;
+}
+
+function hkCodeFromSymbol(symbol) {
+  const match = String(symbol || '').match(/^(\d+)\.HK$/i);
+  return match ? String(parseInt(match[1], 10)).padStart(5, '0') : '';
+}
+
+async function ensureTimingOverlay() {
+  if (timingOverlay) return timingOverlay;
+  const [vqc, jieqi, distribution] = await Promise.all([
+    loadJson('./data/vqc_backtest.json'),
+    loadJson('./data/jieqi_calendar.json'),
+    loadJson('./data/distribution_day_backtest.json'),
+  ]);
+  const vqcByCode = new Map();
+  ((vqc && vqc.events) || []).forEach(event => {
+    const code = String(event.code || '').padStart(5, '0');
+    const day = String(event.signal_date || '').slice(0, 10);
+    if (!code || !day) return;
+    if (!vqcByCode.has(code)) vqcByCode.set(code, new Set());
+    vqcByCode.get(code).add(day);
+  });
+  const jieqiDates = new Map();
+  const years = (jieqi && jieqi.years) || {};
+  Object.values(years).forEach(terms => {
+    Object.values(terms || {}).forEach(term => {
+      const day = String(term.date || '').slice(0, 10);
+      if (day) jieqiDates.set(day, String(term.name || '節氣'));
+    });
+  });
+  const distributionDates = new Map();
+  const hkBench = ((distribution && distribution.benchmarks) || []).find(item => item.key === 'hk') || null;
+  ((hkBench && hkBench.signals) || []).forEach(signal => {
+    const day = String(signal.date || '').slice(0, 10);
+    if (day) distributionDates.set(day, String(signal.market_state || 'DD'));
+  });
+  timingOverlay = { vqcByCode, jieqiDates, distributionDates };
+  return timingOverlay;
+}
+
+function timingMarkersFor(symbol, bars, xForIndex, priceHeight, padTop) {
+  if (!timingOverlay || !bars.length) return '';
+  const code = hkCodeFromSymbol(symbol);
+  if (!code) return '';
+  const byDate = new Map();
+  const add = (day, type, label, color) => {
+    if (!day) return;
+    if (!byDate.has(day)) byDate.set(day, []);
+    byDate.get(day).push({ type, label, color });
+  };
+  (timingOverlay.vqcByCode.get(code) || new Set()).forEach(day => add(day, 'VQC', 'VQC', '#22c55e'));
+  timingOverlay.jieqiDates.forEach((name, day) => add(day, 'JQ', name, '#38bdf8'));
+  timingOverlay.distributionDates.forEach((state, day) => add(day, 'DD', 'DD', '#f59e0b'));
+  const firstIndexByDay = new Map();
+  bars.forEach((bar, index) => {
+    const day = String(bar.time || '').slice(0, 10);
+    if (day && !firstIndexByDay.has(day)) firstIndexByDay.set(day, index);
+  });
+  return [...byDate.entries()].map(([day, events], markerIndex) => {
+    const idx = firstIndexByDay.get(day);
+    if (idx == null) return '';
+    const x = xForIndex(idx);
+    const resonance = events.length > 1;
+    const label = resonance ? events.map(item => item.type).join('+') : events[0].label;
+    const color = resonance ? '#f472b6' : events[0].color;
+    const y = padTop + 20 + (markerIndex % 2) * 10;
+    return `<g><title>${escapeHtml(day+' '+events.map(item => item.label).join(' + '))}</title><line x1="${x.toFixed(2)}" y1="${(padTop + 14).toFixed(2)}" x2="${x.toFixed(2)}" y2="${(padTop + priceHeight - 8).toFixed(2)}" stroke="${color}" stroke-width="1.8" stroke-dasharray="4 3" opacity=".9"/><text x="${(x + 3).toFixed(2)}" y="${y.toFixed(2)}" fill="${color}" font-size="9" font-weight="800" style="paint-order:stroke;stroke:#0b1018;stroke-width:2px;stroke-linejoin:round">${escapeHtml(label)}</text></g>`;
+  }).join('');
+}
+
+function resolveCachedSymbol(raw, mode) {
+  const value = String(raw || '').trim().toUpperCase();
+  if (!value || !aliasMap.size) return null;
+  const candidates = [value];
+  if (mode === 'hk') {
+    const digits = value.replace(/\D+/g, '');
+    if (digits) {
+      const stripped = String(parseInt(digits, 10));
+      candidates.push(stripped, digits.padStart(5, '0'), `${stripped}.HK`, `HKEX:${stripped}`, `HKEX:${digits.padStart(5, '0')}`);
+    }
+  } else if (mode === 'us') {
+    const code = value.replace(/\.US$/,'');
+    candidates.push(code, `${code}.US`, `NASDAQ:${code}`);
+  } else if (mode === 'tv') {
+    candidates.push(value.replace(':', '.'), value.replace(/^HKEX:/, '') + '.HK');
+  } else if (mode === 'fx') {
+    candidates.push(value, 'GLD', 'GLD.US');
+  }
+  for (const candidate of candidates) {
+    const hit = aliasMap.get(String(candidate).toUpperCase());
+    if (hit) return hit;
+  }
+  return null;
+}
+
+function fmtPct(value) {
+  if (!Number.isFinite(value)) return '—';
+  return `${value >= 0 ? '+' : ''}${value.toFixed(2)}%`;
+}
+
+function fmtCompact(value) {
+  if (!Number.isFinite(value)) return '—';
+  if (Math.abs(value) >= 1e9) return `${(value / 1e9).toFixed(2)}B`;
+  if (Math.abs(value) >= 1e6) return `${(value / 1e6).toFixed(2)}M`;
+  if (Math.abs(value) >= 1e3) return `${(value / 1e3).toFixed(2)}K`;
+  return value.toFixed(2);
+}
+
+function fmtSigned(value, suffix='') {
+  if (!Number.isFinite(value)) return '--';
+  return `${value >= 0 ? '+' : ''}${value.toFixed(2)}${suffix}`;
+}
+
+function ccassSummary(entry) {
+  const row = entry && entry.ccass;
+  if (!row) return 'CCASS --';
+  const shares = row.shares_delta_5d == null ? null : Number(row.shares_delta_5d);
+  const pct = row.pct_delta_5d == null ? null : Number(row.pct_delta_5d);
+  return `CCASS 5日 ${Number.isFinite(shares) ? fmtSigned(shares) : '--'}股 · ${Number.isFinite(pct) ? fmtSigned(pct, '%') : '--'}${row.increase_days > 1 ? ` · 連增${row.increase_days}日` : ''}`;
+}
+
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+
+function ema(values, period) {
+  if (!Array.isArray(values) || values.length < period) return null;
+  const nums = values.map(item => Number(item && item.close)).filter(Number.isFinite);
+  if (nums.length < period) return null;
+  const alpha = 2 / (period + 1);
+  let current = nums.slice(0, period).reduce((sum, value) => sum + value, 0) / period;
+  for (let i = period; i < nums.length; i += 1) {
+    current = nums[i] * alpha + current * (1 - alpha);
+  }
+  return current;
+}
+
+function aggregateBars(sourceBars, group) {
+  if (!Array.isArray(sourceBars) || !sourceBars.length || group <= 1) return sourceBars || [];
+  const bars = sourceBars.slice();
+  const offset = bars.length % group;
+  const aligned = offset ? bars.slice(offset) : bars;
+  const out = [];
+  for (let i = 0; i < aligned.length; i += group) {
+    const chunk = aligned.slice(i, i + group);
+    if (chunk.length < group) continue;
+    out.push({
+      time: chunk[chunk.length - 1].time,
+      open: chunk[0].open,
+      high: Math.max(...chunk.map(x => Number(x.high) || Number(x.open) || 0)),
+      low: Math.min(...chunk.map(x => Number(x.low) || Number(x.open) || 0)),
+      close: chunk[chunk.length - 1].close,
+      volume: chunk.reduce((sum, x) => sum + (Number(x.volume) || 0), 0),
+      turnover: chunk.reduce((sum, x) => sum + (Number(x.turnover) || 0), 0),
+    });
+  }
+  return out;
+}
+
+function seriesForInterval(entry, interval) {
+  if (interval === '6m' || interval === '3m') {
+    return entry && entry.series ? (entry.series['1d'] || []) : [];
+  }
+  const direct = entry && entry.series ? entry.series[interval] : null;
+  if (direct && direct.length) return direct;
+  const base5m = entry && entry.series ? entry.series['5m'] : null;
+  const base1h = entry && entry.series ? entry.series['1h'] : null;
+  if (base5m && base5m.length) {
+    if (interval === '15m') return aggregateBars(base5m, 3);
+    if (interval === '30m') return aggregateBars(base5m, 6);
+  }
+  if (!base1h || !base1h.length) return [];
+  if (interval === '2h') return aggregateBars(base1h, 2);
+  if (interval === '4h') return aggregateBars(base1h, 4);
+  return [];
+}
+
+function levelOverlays(entry) {
+  const code = hkCodeFromSymbol(entry && entry.symbol);
+  if (!code) return [];
+  const overlays = [];
+  const yo = levelData.yearOpen.get(code);
+  if (yo) overlays.push({ type: 'line', value: yo.value, color: '#facc15', label: `YO${yo.date ? ' ' + String(yo.date).slice(0, 4) : ''}`, width: 1.5 });
+  const ipo = levelData.ipo.get(code);
+  if (ipo) {
+    if (Number.isFinite(ipo.open)) overlays.push({ type: 'line', value: ipo.open, color: '#38bdf8', label: 'IPO O', width: 1.4 });
+    if (Number.isFinite(ipo.high)) overlays.push({ type: 'line', value: ipo.high, color: '#22c55e', label: 'IPO H', width: 1.4 });
+    if (Number.isFinite(ipo.low)) overlays.push({ type: 'line', value: ipo.low, color: '#f97316', label: 'IPO L', width: 1.4 });
+  }
+  return overlays;
+}
+
+function renderCandleSvg(bars, interval, symbol, options = {}) {
+  if (!bars || !bars.length) {
+    return `<div class="chart-empty">${escapeHtml(symbol)} ${escapeHtml(interval)} 暫未有 cache</div>`;
+  }
+  const rawSlice = bars.slice(-(Number(options.lookback) > 0 ? Number(options.lookback) : 48));
+  const reverseX = options.reverseX === true;
+  const reversePriceScale = options.reversePriceScale === true;
+  const slice = reverseX ? rawSlice.slice().reverse() : rawSlice;
+  const width = Number(options.width) > 0 ? Number(options.width) : 680;
+  const height = Number(options.height) > 0 ? Number(options.height) : 280;
+  const showVolume = options.showVolume !== false;
+  const padLeft = 48;
+  const profileWidth = 78;
+  const padRight = 12 + profileWidth;
+  const padTop = 10;
+  const padBottom = 12;
+  const volumeHeight = showVolume ? (Number(options.volumeHeight) > 0 ? Number(options.volumeHeight) : 56) : 0;
+  const priceHeight = Math.max(48, height - volumeHeight - padTop - padBottom);
+  const lows = slice.map(item => Number(item.low)).filter(Number.isFinite);
+  const highs = slice.map(item => Number(item.high)).filter(Number.isFinite);
+  const overlays = Array.isArray(options.overlays) ? options.overlays : [];
+  const overlayValues = overlays.map(item => Number(item && item.value)).filter(Number.isFinite);
+  const vols = slice.map(item => Number(item.volume) || 0);
+  if (!lows.length || !highs.length) {
+    return `<div class="chart-empty">${escapeHtml(symbol)} ${escapeHtml(interval)} 暫未有完整 OHLC</div>`;
+  }
+  let minPrice = Math.min(...lows, ...overlayValues);
+  let maxPrice = Math.max(...highs, ...overlayValues);
+  if (minPrice === maxPrice) {
+    minPrice -= 1;
+    maxPrice += 1;
+  }
+  const maxVol = Math.max(...vols, 1);
+  const usableWidth = width - padLeft - padRight;
+  const step = usableWidth / slice.length;
+  const candleWidth = Math.max(2, Math.min(10, step * 0.62));
+  const priceY = value => padTop + (reversePriceScale ? (value - minPrice) : (maxPrice - value)) / (maxPrice - minPrice) * (priceHeight - 8);
+  const volY = volume => (height - padBottom) - (volume / maxVol) * (volumeHeight - 6);
+
+  const profileBins = 14;
+  const profile = Array.from({length: profileBins}, () => 0);
+  slice.forEach(bar => {
+    const typical = (Number(bar.high) + Number(bar.low) + Number(bar.close)) / 3;
+    const idx = Math.max(0, Math.min(profileBins - 1, Math.floor((typical - minPrice) / (maxPrice - minPrice) * profileBins)));
+    profile[idx] += Number(bar.volume) || 0;
+  });
+  const profileMax = Math.max(...profile, 1);
+  const pocIndex = profile.indexOf(Math.max(...profile));
+  const binSize = (maxPrice - minPrice) / profileBins;
+  const pocLow = minPrice + pocIndex * binSize;
+  const pocHigh = pocLow + binSize;
+  const pocTop = priceY(pocHigh);
+  const pocBottom = priceY(pocLow);
+  const valueZone = `<rect x="${padLeft}" y="${pocTop.toFixed(2)}" width="${usableWidth.toFixed(2)}" height="${Math.max(2, pocBottom - pocTop).toFixed(2)}" fill="rgba(234,179,8,.15)"/>`;
+  const profileMarkup = profile.map((volume, idx) => {
+    const low = minPrice + idx * binSize;
+    const high = low + binSize;
+    const y = priceY(high);
+    const h = Math.max(2, priceY(low) - y);
+    const w = (volume / profileMax) * (profileWidth - 8);
+    const fill = idx === pocIndex ? '#f59e0b' : 'rgba(148,163,184,.48)';
+    return `<rect x="${(width - 10 - w).toFixed(2)}" y="${y.toFixed(2)}" width="${w.toFixed(2)}" height="${h.toFixed(2)}" fill="${fill}"/>`;
+  }).join('');
+
+  const emaPath = (period, color) => {
+    const k = 2 / (period + 1);
+    let current = Number(slice[0].close);
+    const points = slice.map((bar, idx) => {
+      const close = Number(bar.close);
+      current = idx ? close * k + current * (1 - k) : close;
+      return `${(padLeft + idx * step + step / 2).toFixed(2)},${priceY(current).toFixed(2)}`;
+    });
+    return `<polyline points="${points.join(' ')}" fill="none" stroke="${color}" stroke-width="1.8" opacity=".95"/>`;
+  };
+
+  const reclaimMarkers = slice.map((bar, idx) => {
+    if (idx < 5) return '';
+    const priorLow = Math.min(...slice.slice(idx - 5, idx).map(item => Number(item.low)));
+    if (!(Number(bar.low) < priorLow && Number(bar.close) > priorLow)) return '';
+    const x = padLeft + idx * step + step / 2;
+    const y = Math.max(18, priceY(Number(bar.high)) - 7);
+    const supportY = priceY(priorLow);
+    const supportStart = padLeft + Math.max(0, idx - 5) * step;
+    return `<line x1="${supportStart.toFixed(2)}" y1="${supportY.toFixed(2)}" x2="${(x + step / 2).toFixed(2)}" y2="${supportY.toFixed(2)}" stroke="#818cf8" stroke-width="1.4" stroke-dasharray="4 3"/><rect x="${(x - 3).toFixed(2)}" y="${(y - 3).toFixed(2)}" width="6" height="6" fill="#818cf8"/><text x="${x.toFixed(2)}" y="${(y - 5).toFixed(2)}" fill="#c4b5fd" font-size="9" font-weight="800" text-anchor="middle" style="paint-order:stroke;stroke:#0b1018;stroke-width:2px">翻</text>`;
+  }).join('');
+  const timingMarkers = timingMarkersFor(
+    symbol,
+    slice,
+    idx => padLeft + idx * step + step / 2,
+    priceHeight,
+    padTop,
+  );
+
+  const grid = [0, 0.25, 0.5, 0.75, 1].map(frac => {
+    const y = padTop + frac * (priceHeight - 8);
+    return `<line x1="${padLeft}" y1="${y.toFixed(2)}" x2="${width - 12}" y2="${y.toFixed(2)}" stroke="#263244" stroke-width="1"/>`;
+  }).join('');
+  const priceTicks = [0, 0.25, 0.5, 0.75, 1].map(frac => {
+    const value = reversePriceScale ? minPrice + (maxPrice - minPrice) * frac : maxPrice - (maxPrice - minPrice) * frac;
+    const y = padTop + frac * (priceHeight - 8);
+    return `<text x="4" y="${(y + 3).toFixed(2)}" fill="#cbd5e1" font-size="9" text-anchor="start">${escapeHtml(value < 1 ? value.toFixed(3) : value.toFixed(2))}</text>`;
+  }).join('');
+
+  const volumeBars = showVolume ? slice.map((bar, idx) => {
+    const x = padLeft + idx * step + (step - candleWidth) / 2;
+    const y = volY(Number(bar.volume) || 0);
+    const color = Number(bar.close) >= Number(bar.open) ? 'rgba(16,185,129,.34)' : 'rgba(239,68,68,.30)';
+    return `<rect x="${x.toFixed(2)}" y="${y.toFixed(2)}" width="${candleWidth.toFixed(2)}" height="${Math.max(1, height - padBottom - y).toFixed(2)}" fill="${color}"/>`;
+  }).join('') : '';
+
+  const overlayLabelYs = [];
+  const overlayMarkup = overlays.map(overlay => {
+    if (overlay && overlay.type === 'band' && Number.isFinite(overlay.low) && Number.isFinite(overlay.high)) {
+      const top = priceY(Math.max(overlay.low, overlay.high));
+      const bottom = priceY(Math.min(overlay.low, overlay.high));
+      const y = Math.min(top, bottom);
+      const h = Math.max(1, Math.abs(bottom - top));
+      return `<rect x="${padLeft}" y="${y.toFixed(2)}" width="${usableWidth.toFixed(2)}" height="${h.toFixed(2)}" fill="${overlay.fill || 'rgba(2,132,199,0.10)'}"/>`;
+    }
+    if (overlay && overlay.type === 'line' && Number.isFinite(overlay.value)) {
+      const y = priceY(overlay.value);
+      let labelY = Math.max(14, Math.min(height - 12, y - 4));
+      while (overlayLabelYs.some(previous => Math.abs(previous - labelY) < 12) && labelY < height - 12) labelY += 12;
+      overlayLabelYs.push(labelY);
+      const label = overlay.label ? `<text x="${width - padRight}" y="${labelY.toFixed(2)}" fill="${overlay.color || '#0f172a'}" font-size="10" font-weight="700" text-anchor="end" style="paint-order:stroke;stroke:#0b1018;stroke-width:2px">${escapeHtml(overlay.label)}</text>` : '';
+      return [
+        `<line x1="${padLeft}" y1="${y.toFixed(2)}" x2="${width - padRight}" y2="${y.toFixed(2)}" stroke="${overlay.color || '#0284c7'}" stroke-width="${overlay.width || 1.2}" stroke-dasharray="${overlay.dash || '5 4'}"/>`,
+        label,
+      ].join('');
+    }
+    return '';
+  }).join('');
+
+  const candles = slice.map((bar, idx) => {
+    const open = Number(bar.open);
+    const high = Number(bar.high);
+    const low = Number(bar.low);
+    const close = Number(bar.close);
+    const xCenter = padLeft + idx * step + step / 2;
+    const x = xCenter - candleWidth / 2;
+    const up = close >= open;
+    const color = up ? '#10b981' : '#ef4444';
+    const bodyTop = priceY(Math.max(open, close));
+    const bodyBottom = priceY(Math.min(open, close));
+    const bodyHeight = Math.max(1.5, bodyBottom - bodyTop);
+    return [
+      `<line x1="${xCenter.toFixed(2)}" y1="${priceY(high).toFixed(2)}" x2="${xCenter.toFixed(2)}" y2="${priceY(low).toFixed(2)}" stroke="${color}" stroke-width="1.2"/>`,
+      `<rect x="${x.toFixed(2)}" y="${bodyTop.toFixed(2)}" width="${candleWidth.toFixed(2)}" height="${bodyHeight.toFixed(2)}" fill="${up ? '#10b981' : '#ef4444'}" stroke="${color}" stroke-width="1.1"/>`
+    ].join('');
+  }).join('');
+
+  const last = rawSlice[rawSlice.length - 1];
+  const prev = rawSlice[rawSlice.length - 2] || last;
+  const deltaPct = Number(prev.close) ? ((Number(last.close) - Number(prev.close)) / Number(prev.close)) * 100 : 0;
+  const lastLabel = `${Number(last.close).toFixed(2)} ${fmtPct(deltaPct)}`;
+  const timeTicks = [0, 0.25, 0.5, 0.75, 1].map(frac => {
+    const idx = Math.min(slice.length - 1, Math.round((slice.length - 1) * frac));
+    const item = slice[idx] || {};
+    const label = String(item.time || '').slice(0, 10);
+    const x = padLeft + idx * step + step / 2;
+    return `<text x="${x.toFixed(2)}" y="${(height - 2).toFixed(2)}" fill="#94a3b8" font-size="9" text-anchor="middle">${escapeHtml(label)}</text>`;
+  }).join('');
+
+  return `
+    <svg class="chart-svg" viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" role="img" aria-label="${escapeHtml(symbol)} ${escapeHtml(interval)} candlestick chart">
+      <rect x="0" y="0" width="${width}" height="${height}" fill="#0b1018"/>
+      ${valueZone}
+      ${priceTicks}
+      ${overlayMarkup}
+      ${grid}
+      ${volumeBars}
+      ${candles}
+      ${emaPath(8, '#ef4444')}
+      ${emaPath(21, '#84cc16')}
+      ${emaPath(55, '#f59e0b')}
+      ${reclaimMarkers}
+      ${timingMarkers}
+      ${profileMarkup}
+      ${timeTicks}
+      ${showVolume ? `<line x1="${padLeft}" y1="${priceHeight + padTop}" x2="${width - padRight}" y2="${priceHeight + padTop}" stroke="#334155" stroke-width="1"/>` : ''}
+      <text x="${padLeft}" y="16" fill="#cbd5e1" font-size="11">${escapeHtml(lastLabel)}</text>
+      <text x="${reverseX ? padLeft : width - padRight}" y="16" fill="#94a3b8" font-size="11" text-anchor="${reverseX ? 'start' : 'end'}">${escapeHtml(String(last.time || '').slice(0, 16).replace('T', ' '))}</text>
+    </svg>
+  `;
+}
+
+function buildPane(entry, interval) {
+  const bars = seriesForInterval(entry, interval.value);
+  const quote = entry && entry.quote ? entry.quote : {};
+  const latestClose = Number.isFinite(Number(quote.last)) ? Number(quote.last) : (bars.length ? Number(bars[bars.length - 1].close) : null);
+  const chg = Number.isFinite(Number(quote.change_percentage)) ? Number(quote.change_percentage) : null;
+  const metaBits = [
+    entry.symbol,
+    latestClose != null ? latestClose.toFixed(2) : '—',
+    chg != null ? fmtPct(chg) : '—',
+    ccassSummary(entry),
+  ];
+  return `
+    <article class="pane">
+      <div class="pane-head">
+        <div>
+          <div class="pane-title">${interval.label}</div>
+          <div class="pane-meta">${escapeHtml(metaBits.join(' · '))}</div>
+        </div>
+        <a class="pane-link" href="${tvChartUrl(tvSymbolFromCacheSymbol(entry.symbol), interval.value === '1h' ? '60' : '5')}" target="_blank" rel="noopener">↗</a>
+      </div>
+      <div class="chart-box">${renderCandleSvg(bars, interval.label, entry.symbol, { overlays: levelOverlays(entry), lookback: interval.value === '1d' ? 260 : interval.value === '6m' ? 126 : interval.value === '3m' ? 66 : 48, reverseX: ['1d', '6m', '3m'].includes(interval.value), reversePriceScale: ['1d', '6m', '3m'].includes(interval.value) })}</div>
+    </article>
+  `;
+}
+
+function buildEmptyPane(interval, fallbackSymbol, supportedSymbols) {
+  return `
+    <article class="pane">
+      <div class="pane-head">
+        <div>
+          <div class="pane-title">${interval.label}</div>
+          <div class="pane-meta">${escapeHtml(fallbackSymbol || '未解析 symbol')}</div>
+        </div>
+        <a class="pane-link" href="${fallbackSymbol ? tvChartUrl(fallbackSymbol, interval.value === '1h' ? '60' : '5') : '#'}" target="_blank" rel="noopener">↗</a>
+      </div>
+      <div class="chart-box">
+        <div class="chart-empty">
+          未有本地 K 線 cache。<br>
+          目前預載：${escapeHtml(supportedSymbols.join(' / '))}
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+function trendGuardForSetup(setup) {
+  if (!setup || !setup.metrics) return { key: 'neutral', label: '趨勢待確認', note: 'Kbar 深度不足，暫不判斷多空。' };
+  const m = setup.metrics;
+  const aboveGuard = Number.isFinite(m.close1) && Number.isFinite(m.ema21_1) && m.close1 >= m.ema21_1;
+  const belowGuard = Number.isFinite(m.close1) && Number.isFinite(m.ema21_1) && m.close1 < m.ema21_1;
+  if (m.trend1 === 'up' && m.trend4 === 'up' && aboveGuard) return { key: 'bull', label: m.newHigh ? '多頭突破守位' : '多頭守位／未創新高', note: m.newHigh ? '1H／4H 同向向上並創近 20 根新高；守住 1H EMA21 才保留突破。' : '1H／4H 同向向上但未創新高；未收市跌穿 1H EMA21 前先守勢，不追價。' };
+  if (m.trend1 === 'down' && m.trend4 === 'down' && belowGuard) return { key: 'bear', label: m.newLow ? '空頭破底守位' : '空頭守位／未創新低', note: m.newLow ? '1H／4H 同向向下並創近 20 根新低；收復 1H EMA21 才解除弱勢。' : '1H／4H 同向向下但未創新低；未收市收復 1H EMA21 前，反彈先當弱勢。' };
+  if (m.trend4 === 'up' && aboveGuard) return { key: 'watch', label: '多頭轉勢觀察', note: '4H 仍偏多，但 1H 未完全同步；守住 1H EMA21 才保留多頭。' };
+  if (m.trend4 === 'down' && belowGuard) return { key: 'watch', label: '空頭轉勢觀察', note: '4H 仍偏空，但 1H 未完全同步；收復 1H EMA21 才解除弱勢。' };
+  return { key: 'neutral', label: '多空未決', note: '高低週期未同向；先等關鍵守位線收市確認，不追單。' };
+}
+
+function renderTrendGuard(setup) {
+  if (!trendGuardEl) return;
+  const guard = trendGuardForSetup(setup);
+  trendGuardEl.className = `trend-guard ${guard.key}`;
+  trendGuardEl.innerHTML = `<strong>${escapeHtml(guard.label)}</strong><small>${escapeHtml(guard.note)} 守位線：1H EMA21。</small>`;
+}
+
+function buildSetupCard(card) {
+  return `
+    <article class="setup-card ${card.tone}${card.active ? ' active' : ''}">
+      <div class="setup-top">
+        <div>
+          <div class="setup-name">${escapeHtml(card.name)}</div>
+          <div class="setup-kicker">${escapeHtml(card.kicker)}</div>
+        </div>
+        <div style="text-align:right">
+          <div class="setup-score">${escapeHtml(String(card.score))}</div>
+          <div class="setup-tag">${escapeHtml(card.tag)}</div>
+        </div>
+      </div>
+      <div class="setup-meta">
+        ${card.stats.map(stat => `
+          <div class="setup-stat">
+            <div class="setup-stat-label">${escapeHtml(stat.label)}</div>
+            <div class="setup-stat-value">${escapeHtml(stat.value)}</div>
+          </div>
+        `).join('')}
+      </div>
+      <div class="setup-note">${escapeHtml(card.note)}</div>
+    </article>
+  `;
+}
+
+function buildSetupFallback() {
+  return `
+    <div class="setup-empty">
+      輸入有 cache 的 symbol 之後，呢度會直接講當前係追勢突破、盤底築台、破底翻，定弱勢反抽，
+      同時畀你一套對應打法，唔使每次自己喺圖上腦補。
+    </div>
+  `;
+}
+
+const setupScoutDefs = [
+  { key: 'breakout', tone: 'breakout', name: '追勢突破', sub: '近前高，順勢跟強', note: '要點係守住近高位，唔係衝一下又縮返落箱底。' },
+  { key: 'base', tone: 'base', name: '盤底築台', sub: '整固吸貨，等放量', note: '未放量前只係觀察池，等真正出邊先追。' },
+  { key: 'breaklow', tone: 'breaklow', name: '破底翻', sub: '跌穿支持後收回，博洗倉', note: '定義係先跌穿前低／支持位，再收市翻回該位上方；未收回只算破底，唔算破底翻。' },
+  { key: 'rebound', tone: 'rebound', name: '弱勢反抽', sub: '逆勢快打，未算轉勢', note: '只當技術反彈，未收回關鍵位之前唔好當新升浪。' },
+];
+
+function buildScoutOverlays(row) {
+  if (!row || !row.setup) return [];
+  const metrics = row.setup.metrics || {};
+  if (row.key === 'breakout' && Number.isFinite(metrics.high20)) {
+    return [{ type: 'line', value: metrics.high20, color: '#15803d', label: '20-bar high' }];
+  }
+  if (row.key === 'base' && Number.isFinite(metrics.low20) && Number.isFinite(metrics.high20)) {
+    return [{ type: 'band', low: metrics.low20, high: metrics.high20, fill: 'rgba(180,83,9,0.10)' }];
+  }
+  if (row.key === 'breaklow' && Number.isFinite(metrics.priorLow)) {
+    return [{ type: 'line', value: metrics.priorLow, color: '#818cf8', label: '破底翻支持位' }];
+  }
+  if (row.key === 'rebound' && Number.isFinite(metrics.ema21_1)) {
+    return [{ type: 'line', value: metrics.ema21_1, color: '#b91c1c', label: '1h EMA21' }];
+  }
+  return [];
+}
+
+function scoutStatRows(row) {
+  const metrics = row.setup && row.setup.metrics ? row.setup.metrics : {};
+  if (row.key === 'breakout') {
+    return [
+      { label: '1H / 4H', value: `${metrics.trend1} / ${metrics.trend4}` },
+      { label: '距前高', value: fmtSigned(metrics.gapHigh20, '%') },
+      { label: '5m thrust', value: fmtSigned(metrics.thrust5, '%') },
+      { label: '箱內位置', value: `${Math.round((metrics.posInRange || 0) * 100)}%` },
+    ];
+  }
+  if (row.key === 'base') {
+    return [
+      { label: 'Range', value: fmtSigned(metrics.rangePct, '%') },
+      { label: '1H / 4H', value: `${metrics.trend1} / ${metrics.trend4}` },
+      { label: 'EMA spread 1H', value: fmtSigned(metrics.emaSpread1, '%') },
+      { label: '箱內位置', value: `${Math.round((metrics.posInRange || 0) * 100)}%` },
+    ];
+  }
+  if (row.key === 'breaklow') {
+    return [
+      { label: '收回前低', value: fmtSigned(metrics.reclaimPrevLow, '%') },
+      { label: '破位低點', value: fmtSigned(metrics.recentLow) },
+      { label: '1H / 4H', value: `${metrics.trend1} / ${metrics.trend4}` },
+      { label: '5m thrust', value: fmtSigned(metrics.thrust5, '%') },
+    ];
+  }
+  return [
+    { label: '離低位', value: fmtSigned(metrics.bounceLow20, '%') },
+    { label: '離高位', value: fmtSigned(metrics.gapHigh20, '%') },
+    { label: '1H / 4H', value: `${metrics.trend1} / ${metrics.trend4}` },
+    { label: '5m thrust', value: fmtSigned(metrics.thrust5, '%') },
+  ];
+}
+
+function buildSetupScoutCard(def, rows) {
+  const count = rows.length;
+  if (!count) {
+    return `
+      <article class="setup-scout-card ${def.tone}">
+        <div class="setup-scout-head">
+          <div>
+            <div class="setup-scout-title">${escapeHtml(def.name)}</div>
+            <div class="setup-scout-sub">${escapeHtml(def.sub)}</div>
+          </div>
+          <span class="setup-scout-count">0</span>
+        </div>
+        <div class="setup-scout-body">
+          <div class="setup-empty">當前 cache universe 未見清楚嘅 ${escapeHtml(def.name)}，寧願留白，唔亂標。</div>
+        </div>
+      </article>
+    `;
+  }
+  const lead = rows[0];
+  const stats = scoutStatRows(lead);
+  const alternates = rows.slice(1, 4);
+  const chart = renderCandleSvg(seriesForInterval(lead.entry, '1h'), '1h', lead.entry.symbol, {
+    width: 520,
+    height: 156,
+    lookback: 36,
+    showVolume: false,
+    overlays: [...buildScoutOverlays(lead), ...levelOverlays(lead.entry)],
+  });
+  return `
+    <article class="setup-scout-card ${def.tone}">
+      <div class="setup-scout-head">
+        <div>
+          <div class="setup-scout-title">${escapeHtml(def.name)}</div>
+          <div class="setup-scout-sub">${escapeHtml(def.sub)}</div>
+        </div>
+        <span class="setup-scout-count">${count}</span>
+      </div>
+      <div class="setup-scout-chart">${chart}</div>
+      <div class="setup-scout-body">
+        <div class="setup-scout-symbol-row">
+          <div>
+            <div class="setup-scout-symbol">${escapeHtml(lead.entry.symbol)}</div>
+            <div class="setup-scout-label">${escapeHtml(lead.entry.label || lead.entry.symbol)}</div>
+          </div>
+          <div style="text-align:right">
+            <div class="setup-scout-score">${escapeHtml(String(lead.score))}</div>
+            <div class="setup-tag">top pick</div>
+          </div>
+        </div>
+        <div class="setup-scout-stats">
+          ${stats.map(stat => `
+            <div class="setup-scout-stat">
+              <div class="setup-scout-stat-label">${escapeHtml(stat.label)}</div>
+              <div class="setup-scout-stat-value">${escapeHtml(stat.value)}</div>
+            </div>
+          `).join('')}
+        </div>
+        <div class="setup-scout-stat" style="margin-top:10px">
+          <div class="setup-scout-stat-label">CCASS 合計持股增減</div>
+          <div class="setup-scout-stat-value">${escapeHtml(ccassSummary(lead.entry))}</div>
+        </div>
+        <div class="setup-scout-note">${escapeHtml(def.note)}</div>
+        <div class="setup-scout-actions">
+          <button class="setup-scout-btn" type="button" data-symbol="${escapeHtml(lead.entry.symbol)}" data-mode="${escapeHtml(modeFromCacheSymbol(lead.entry.symbol))}">睇呢隻矩陣</button>
+          ${alternates.map(row => `<button class="setup-scout-chip" type="button" data-symbol="${escapeHtml(row.entry.symbol)}" data-mode="${escapeHtml(modeFromCacheSymbol(row.entry.symbol))}">${escapeHtml(row.entry.symbol)} · ${escapeHtml(String(row.score))}</button>`).join('')}
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+function renderSetupScoutBoard() {
+  if (!setupScoutGridEl || !setupScoutMetaEl) return;
+  if (!kbarCache || !kbarCache.symbols) {
+    setupScoutMetaEl.textContent = 'setup universe unavailable';
+    setupScoutGridEl.innerHTML = `<div class="setup-empty">未能讀取 Kbar cache。</div>`;
+    return;
+  }
+  const groups = { breakout: [], base: [], breaklow: [], rebound: [] };
+  let resolved = 0;
+  Object.values(kbarCache.symbols).forEach(entry => {
+    const setup = analyzeSetups(entry);
+    if (!setup) return;
+    resolved += 1;
+    const key = setup.activeKey;
+    groups[key].push({ key, entry, setup, score: setup.scores[key] });
+  });
+  setupScoutDefs.forEach(def => {
+    groups[def.key].sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      return String(a.entry.symbol).localeCompare(String(b.entry.symbol));
+    });
+  });
+  setupScoutGridEl.innerHTML = setupScoutDefs.map(def => buildSetupScoutCard(def, groups[def.key])).join('');
+  setupScoutMetaEl.textContent = `Kbar cache ${Object.keys(kbarCache.symbols).length} 隻 · 已判 setup ${resolved} 隻`;
+}
+
+function analyzeSetups(entry) {
+  const bars5 = seriesForInterval(entry, '5m');
+  const bars1 = seriesForInterval(entry, '1h');
+  const bars4 = seriesForInterval(entry, '4h');
+  if (!bars1 || bars1.length < 30 || !bars4 || bars4.length < 24) return null;
+
+  const last1 = bars1[bars1.length - 1];
+  const close1 = Number(last1.close);
+  const ema8_1 = ema(bars1, 8);
+  const ema21_1 = ema(bars1, 21);
+  const ema8_4 = ema(bars4, 8);
+  const ema21_4 = ema(bars4, 21);
+  if (![close1, ema8_1, ema21_1, ema8_4, ema21_4].every(Number.isFinite)) return null;
+
+  const window1 = bars1.slice(-20);
+  const high20 = Math.max(...window1.map(bar => Number(bar.high)).filter(Number.isFinite));
+  const low20 = Math.min(...window1.map(bar => Number(bar.low)).filter(Number.isFinite));
+  const priorWindow20 = window1.slice(0, -1);
+  const priorHigh20 = Math.max(...priorWindow20.map(bar => Number(bar.high)).filter(Number.isFinite));
+  const priorLow20 = Math.min(...priorWindow20.map(bar => Number(bar.low)).filter(Number.isFinite));
+  const newHigh = Number.isFinite(priorHigh20) && Number(last1.high) > priorHigh20;
+  const newLow = Number.isFinite(priorLow20) && Number(last1.low) < priorLow20;
+  const rangePct = high20 > low20 ? ((high20 - low20) / close1) * 100 : 0;
+  const gapHigh20 = high20 ? ((close1 - high20) / high20) * 100 : null;
+  const bounceLow20 = low20 ? ((close1 - low20) / low20) * 100 : null;
+  const posInRange = high20 > low20 ? (close1 - low20) / (high20 - low20) : 0.5;
+  const priorWindow = window1.slice(0, -5);
+  const recentWindow = window1.slice(-5);
+  const priorLow = priorWindow.length ? Math.min(...priorWindow.map(bar => Number(bar.low)).filter(Number.isFinite)) : low20;
+  const recentLow = recentWindow.length ? Math.min(...recentWindow.map(bar => Number(bar.low)).filter(Number.isFinite)) : low20;
+  const reclaimPrevLow = priorLow ? ((close1 - priorLow) / priorLow) * 100 : null;
+  const brokePriorLow = Number.isFinite(priorLow) && Number.isFinite(recentLow) && recentLow < priorLow * 0.9975;
+  const thrust5 = (bars5 && bars5.length >= 12)
+    ? ((Number(bars5[bars5.length - 1].close) - Number(bars5[bars5.length - 12].close)) / Number(bars5[bars5.length - 12].close || 1)) * 100
+    : 0;
+  const emaSpread1 = ((ema8_1 - ema21_1) / ema21_1) * 100;
+  const emaSpread4 = ((ema8_4 - ema21_4) / ema21_4) * 100;
+  const trend1 = ema8_1 > ema21_1 ? 'up' : (ema8_1 < ema21_1 ? 'down' : 'flat');
+  const trend4 = ema8_4 > ema21_4 ? 'up' : (ema8_4 < ema21_4 ? 'down' : 'flat');
+
+  let breakoutScore = 0;
+  if (trend1 === 'up') breakoutScore += 3;
+  if (trend4 === 'up') breakoutScore += 2; else if (trend4 === 'flat') breakoutScore += 1;
+  if (close1 > ema8_1) breakoutScore += 2; else if (close1 > ema21_1) breakoutScore += 1;
+  if (Number.isFinite(gapHigh20) && gapHigh20 >= -2.5) breakoutScore += 3; else if (Number.isFinite(gapHigh20) && gapHigh20 >= -5) breakoutScore += 1;
+  if (Number.isFinite(thrust5) && thrust5 > 1) breakoutScore += 1;
+  if (posInRange > 0.75) breakoutScore += 1;
+
+  let baseScore = 0;
+  if (rangePct <= 12) baseScore += 3; else if (rangePct <= 16) baseScore += 1;
+  if (Math.abs(emaSpread1) <= 1.5) baseScore += 2;
+  if (Math.abs(emaSpread4) <= 1.5) baseScore += 2;
+  if (posInRange >= 0.25 && posInRange <= 0.75) baseScore += 2;
+  if (Math.abs(thrust5) <= 1.5) baseScore += 1;
+  if (Number.isFinite(gapHigh20) && gapHigh20 <= -2 && gapHigh20 >= -8) baseScore += 1;
+
+  let reboundScore = 0;
+  if (trend1 === 'down') reboundScore += 2;
+  if (trend4 === 'down') reboundScore += 2;
+  if (close1 > ema8_1) reboundScore += 2;
+  if (close1 < ema21_1) reboundScore += 2;
+  if (Number.isFinite(bounceLow20) && bounceLow20 >= 3) reboundScore += 2; else if (Number.isFinite(bounceLow20) && bounceLow20 >= 1) reboundScore += 1;
+  if (Number.isFinite(gapHigh20) && gapHigh20 <= -5) reboundScore += 1;
+  if (Number.isFinite(thrust5) && thrust5 > 1) reboundScore += 1;
+
+  let breaklowScore = 0;
+  if (trend1 === 'down') breaklowScore += 1;
+  if (trend4 === 'down') breaklowScore += 2; else if (trend4 === 'flat') breaklowScore += 1;
+  if (brokePriorLow) breaklowScore += 3;
+  if (Number.isFinite(reclaimPrevLow) && reclaimPrevLow >= 0.5) breaklowScore += 2; else if (Number.isFinite(reclaimPrevLow) && reclaimPrevLow >= 0) breaklowScore += 1;
+  if (close1 > ema8_1) breaklowScore += 1;
+  if (close1 < ema21_1) breaklowScore += 1;
+  if (Number.isFinite(bounceLow20) && bounceLow20 >= 3) breaklowScore += 1;
+  if (Number.isFinite(thrust5) && thrust5 > 0.8) breaklowScore += 1;
+  if (posInRange >= 0.3 && posInRange <= 0.65) breaklowScore += 1;
+  if (!brokePriorLow) breaklowScore = Math.min(breaklowScore, 4);
+  if (!Number.isFinite(reclaimPrevLow) || reclaimPrevLow < 0) breaklowScore = Math.min(breaklowScore, 5);
+
+  const scores = {
+    breakout: clamp(breakoutScore, 0, 10),
+    base: clamp(baseScore, 0, 10),
+    breaklow: clamp(breaklowScore, 0, 10),
+    rebound: clamp(reboundScore, 0, 10),
+  };
+
+  let activeKey = 'base';
+  if (scores.breakout >= scores.base && scores.breakout >= scores.breaklow && scores.breakout >= scores.rebound) activeKey = 'breakout';
+  else if (scores.breaklow >= scores.base && scores.breaklow >= scores.breakout && scores.breaklow >= scores.rebound) activeKey = 'breaklow';
+  else if (scores.rebound >= scores.base && scores.rebound >= scores.breakout && scores.rebound >= scores.breaklow) activeKey = 'rebound';
+
+  return {
+    activeKey,
+    scores,
+    metrics: { close1, trend1, trend4, gapHigh20, bounceLow20, rangePct, thrust5, emaSpread1, emaSpread4, posInRange, priorLow, recentLow, reclaimPrevLow, brokePriorLow, high20, low20, priorHigh20, priorLow20, newHigh, newLow, ema8_1, ema21_1 },
+    cards: [
+      {
+        key: 'breakout',
+        tone: 'breakout',
+        name: '追勢突破',
+        kicker: '前高附近，順勢跟強勢股',
+        tag: activeKey === 'breakout' ? '現況' : '觀察',
+        score: scores.breakout,
+        active: activeKey === 'breakout',
+        stats: [
+          { label: '1H/4H', value: `${trend1} / ${trend4}` },
+          { label: 'Near high', value: fmtSigned(gapHigh20, '%') },
+          { label: '5m thrust', value: fmtSigned(thrust5, '%') },
+          { label: 'Range pos', value: `${Math.round(posInRange * 100)}%` },
+        ],
+        note: '守住近高位與 1h EMA8 先當續強；跌回箱內就降級，唔再當追勢。',
+      },
+      {
+        key: 'base',
+        tone: 'base',
+        name: '盤底築台',
+        kicker: '整固區吸貨，等放量先升級',
+        tag: activeKey === 'base' ? '現況' : '觀察',
+        score: scores.base,
+        active: activeKey === 'base',
+        stats: [
+          { label: 'Range size', value: fmtSigned(rangePct, '%') },
+          { label: 'EMA spread 1H', value: fmtSigned(emaSpread1, '%') },
+          { label: 'EMA spread 4H', value: fmtSigned(emaSpread4, '%') },
+          { label: 'Range pos', value: `${Math.round(posInRange * 100)}%` },
+        ],
+        note: '未放量破頂前只當觀察池；最值錢係由悶局轉擴散嗰一下，唔係中間亂追。',
+      },
+      {
+        key: 'breaklow',
+        tone: 'breaklow',
+        name: '破底翻',
+        kicker: '跌穿後收回，博洗倉回收',
+        tag: activeKey === 'breaklow' ? '現況' : '觀察',
+        score: scores.breaklow,
+        active: activeKey === 'breaklow',
+        stats: [
+          { label: '前段低位', value: fmtSigned(priorLow) },
+          { label: '破位低點', value: fmtSigned(recentLow) },
+          { label: '收回幅度', value: fmtSigned(reclaimPrevLow, '%') },
+          { label: '5m thrust', value: fmtSigned(thrust5, '%') },
+        ],
+        note: '呢類重點唔係估底，而係睇跌穿邊界後有冇即刻收回。未企穩 1h EMA21 前，只當 stop-run reversal。',
+      },
+      {
+        key: 'rebound',
+        tone: 'rebound',
+        name: '弱勢反抽',
+        kicker: '逆勢快打，唔當主升浪',
+        tag: activeKey === 'rebound' ? '現況' : '觀察',
+        score: scores.rebound,
+        active: activeKey === 'rebound',
+        stats: [
+          { label: '1H/4H', value: `${trend1} / ${trend4}` },
+          { label: 'Off low', value: fmtSigned(bounceLow20, '%') },
+          { label: 'Below high', value: fmtSigned(gapHigh20, '%') },
+          { label: '5m thrust', value: fmtSigned(thrust5, '%') },
+        ],
+        note: '呢類只係技術反彈；未成功跌穿再收市翻回前低／支持位，唔好當成破底翻，更加唔好當新趨勢。',
+      },
+    ],
+  };
+}
+
+function renderSetupLens(context) {
+  if (!context || !context.entry) {
+    setupLensEl.innerHTML = buildSetupFallback();
+    return null;
+  }
+  const analysis = analyzeSetups(context.entry);
+  if (!analysis) {
+    setupLensEl.innerHTML = `<div class="setup-empty">${escapeHtml(context.entry.symbol)} 目前 Kbar cache 未夠深，未能穩定分辨追勢、築底、破底翻或反抽。</div>`;
+    return null;
+  }
+  setupLensEl.innerHTML = analysis.cards.map(buildSetupCard).join('');
+  return analysis;
+}
+
+function updateQuery(resolvedSymbol) {
+  const url = new URL(location.href);
+  url.searchParams.set('mode', state.mode);
+  url.searchParams.set('symbol', state.raw);
+  if (resolvedSymbol) url.searchParams.set('resolved', resolvedSymbol);
+  history.replaceState({}, '', url);
+}
+
+function renderMatrix() {
+  const resolvedSymbol = resolveCachedSymbol(state.raw, state.mode);
+  const fallbackSymbol = fallbackTvSymbol(state.raw, state.mode);
+  const supported = presets.map(item => item.raw);
+  document.getElementById('tvOpenBtn').href = fallbackSymbol ? tvChartUrl(fallbackSymbol) : '#';
+
+  if (!resolvedSymbol || !kbarCache || !kbarCache.symbols || !kbarCache.symbols[resolvedSymbol]) {
+    resolvedHint.textContent = fallbackSymbol
+      ? `未命中本地 cache：${fallbackSymbol}。頁內只支援預載 symbol；外跳仍可用。`
+      : '請先輸入 symbol';
+    statusEl.textContent = fallbackSymbol ? `${fallbackSymbol} · fallback only` : 'waiting for symbol';
+    matrixEl.innerHTML = intervals.map(interval => buildEmptyPane(interval, fallbackSymbol, supported)).join('');
+    renderTrendGuard(null);
+    updateQuery(fallbackSymbol);
+    return { resolvedSymbol: null, fallbackSymbol };
+  }
+
+  const entry = kbarCache.symbols[resolvedSymbol];
+  renderTrendGuard(analyzeSetups(entry));
+  resolvedHint.textContent = `cache symbol: ${resolvedSymbol} · ${entry.label}`;
+  statusEl.textContent = `${resolvedSymbol} · ${intervals.length} panes`;
+  matrixEl.innerHTML = intervals.map(interval => buildPane(entry, interval)).join('');
+  updateQuery(resolvedSymbol);
+  return { resolvedSymbol, fallbackSymbol, entry };
+}
+
+async function refreshConsole(context) {
+  const bundle = await loadJson('./data/publish_bundle.json');
+  const timesfm = await loadJson('./data/timesfm.json');
+  const setup = renderSetupLens(context);
+  const trendGuard = trendGuardForSetup(setup);
+  const now = new Date().toLocaleString('zh-HK', { hour12: false });
+  const lines = [];
+  lines.push(`[session] ${now}`);
+  lines.push(`[symbol] raw=${state.raw || '-'} mode=${state.mode} resolved=${context.resolvedSymbol || context.fallbackSymbol || '-'}`);
+  lines.push(`[matrix] intervals=${intervals.map(x => x.label).join(', ')}`);
+  if (kbarCache) {
+    const count = kbarCache.symbols ? Object.keys(kbarCache.symbols).length : 0;
+    lines.push(`[kbar-cache] updated=${kbarCache.updated_at || '-'} symbols=${count}`);
+  } else {
+    lines.push('[kbar-cache] unavailable');
+  }
+  if (bundle && bundle.publish) {
+    lines.push(`[publish] status=${bundle.publish.status || '-'} latest_db=${bundle.publish.latest_db_date || '-'} publishable=${bundle.publish.latest_publishable_date || '-'}`);
+  } else {
+    lines.push('[publish] bundle unavailable');
+  }
+  if (timesfm) {
+    lines.push(`[timesfm] updated=${timesfm.generated_at || timesfm.updated || '-'} fields=${timesfm.field_count || 0} primary=${timesfm.primary_field || '-'}`);
+    if (context.resolvedSymbol) {
+      const lbCode = context.resolvedSymbol.split('.')[0].padStart(5, '0');
+      const rawCode = context.resolvedSymbol.split('.')[0];
+      const hits = [];
+      const byField = timesfm.by_field || {};
+      Object.keys(byField).forEach(field => {
+        const rec = (byField[field] || []).find(item => item.stock_code === lbCode || item.stock_code === rawCode);
+        if (rec) hits.push(`${field}:${rec.forecast_delta >= 0 ? '+' : ''}${rec.forecast_delta}`);
+      });
+      if (hits.length) lines.push(`[timesfm-symbol] ${hits.join(' | ')}`);
+    }
+  } else {
+    lines.push('[timesfm] cache unavailable');
+  }
+  if (setup) {
+    lines.push(`[trend-guard] ${trendGuard.label} · 1H/4H=${setup.metrics.trend1}/${setup.metrics.trend4} · guard=1H EMA21`);
+    lines.push(`[setup] active=${setup.activeKey} breakout=${setup.scores.breakout}/10 base=${setup.scores.base}/10 breaklow=${setup.scores.breaklow}/10 rebound=${setup.scores.rebound}/10`);
+    lines.push(`[setup-metrics] 1h=${setup.metrics.trend1} 4h=${setup.metrics.trend4} high20=${fmtSigned(setup.metrics.gapHigh20, '%')} low20=${fmtSigned(setup.metrics.bounceLow20, '%')} reclaim=${fmtSigned(setup.metrics.reclaimPrevLow, '%')} range=${fmtSigned(setup.metrics.rangePct, '%')}`);
+  } else {
+    lines.push('[setup] unavailable');
+  }
+  lines.push('[note] 頁內 K 線來自 Longbridge 預載 cache；未預載 symbol 只保留外跳圖表。');
+  consoleEl.textContent = lines.join('\n');
+}
+
+async function applyState() {
+  await Promise.all([ensureKbarCache(), ensureTimingOverlay(), ensureLevelData()]);
+  renderSetupScoutBoard();
+  state.raw = symbolInput.value.trim();
+  updateModeButtons();
+  const context = renderMatrix();
+  await refreshConsole(context);
+}
+
+function copyLink() {
+  navigator.clipboard.writeText(location.href).then(() => {
+    statusEl.textContent = 'link copied';
+    setTimeout(() => { applyState(); }, 1200);
+  }).catch(() => {
+    statusEl.textContent = 'copy failed';
+  });
+}
+
+function hydrateFromQuery() {
+  const qs = new URLSearchParams(location.search);
+  const mode = qs.get('mode');
+  const symbol = qs.get('symbol');
+  if (mode && ['hk','us','fx','tv'].includes(mode)) state.mode = mode;
+  if (symbol) state.raw = symbol;
+  symbolInput.value = state.raw;
+}
+
+document.getElementById('modeSeg').addEventListener('click', (event) => {
+  const btn = event.target.closest('button[data-mode]');
+  if (!btn) return;
+  state.mode = btn.dataset.mode;
+  applyState();
+});
+document.getElementById('applyBtn').addEventListener('click', () => applyState());
+document.getElementById('copyLinkBtn').addEventListener('click', copyLink);
+symbolInput.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter') applyState();
+});
+presetRow.addEventListener('click', (event) => {
+  const chip = event.target.closest('.chip[data-idx]');
+  if (!chip) return;
+  const preset = presets[Number(chip.dataset.idx)];
+  state.mode = preset.mode;
+  state.raw = preset.raw;
+  symbolInput.value = state.raw;
+  applyState();
+});
+setupScoutGridEl.addEventListener('click', (event) => {
+  const btn = event.target.closest('button[data-symbol][data-mode]');
+  if (!btn) return;
+  state.mode = btn.dataset.mode || 'hk';
+  state.raw = btn.dataset.symbol || '';
+  symbolInput.value = state.raw;
+  applyState().then(() => {
+    matrixEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+
+function setupAnalysisForSymbol(symbol) {
+  if (!symbol || !tradeEngine || !tradeEngine.by_symbol) return null;
+  return tradeEngine.by_symbol[symbol] || null;
+}
+
+function renderTrendGuard(setup) {
+  if (!trendGuardEl) return;
+  const guard = setup && setup.trendGuard ? setup.trendGuard : trendGuardForSetup(setup);
+  trendGuardEl.className = `trend-guard ${guard.key}`;
+  trendGuardEl.innerHTML = `<strong>${escapeHtml(guard.label)}</strong><small>${escapeHtml(guard.note)} 瀹堜綅绶氾細1H EMA21銆?/small>`;
+}
+
+function renderSetupScoutBoard() {
+  if (!setupScoutGridEl || !setupScoutMetaEl) return;
+  if (!kbarCache || !kbarCache.symbols || !tradeEngine || !tradeEngine.groups) {
+    setupScoutMetaEl.textContent = 'setup universe unavailable';
+    setupScoutGridEl.innerHTML = `<div class="setup-empty">鏈兘璁€鍙?Kbar cache銆?/div>`;
+    return;
+  }
+  const groups = { breakout: [], base: [], breaklow: [], rebound: [] };
+  let resolved = 0;
+  setupScoutDefs.forEach(def => {
+    const rows = Array.isArray(tradeEngine.groups[def.key]) ? tradeEngine.groups[def.key] : [];
+    groups[def.key] = rows.map(row => {
+      const entry = kbarCache.symbols[row.symbol];
+      const setup = setupAnalysisForSymbol(row.symbol);
+      if (!entry || !setup) return null;
+      resolved += 1;
+      return { key: def.key, entry, setup, score: row.score };
+    }).filter(Boolean);
+  });
+  setupScoutGridEl.innerHTML = setupScoutDefs.map(def => buildSetupScoutCard(def, groups[def.key])).join('');
+  setupScoutMetaEl.textContent = `Kbar cache ${Object.keys(kbarCache.symbols).length} 路 共用 engine ${tradeEngine.scope_count || 0} 路 setup ${resolved}`;
+}
+
+function renderSetupLens(context) {
+  if (!context || !context.entry) {
+    setupLensEl.innerHTML = buildSetupFallback();
+    return null;
+  }
+  const analysis = setupAnalysisForSymbol(context.entry.symbol) || analyzeSetups(context.entry);
+  if (!analysis) {
+    setupLensEl.innerHTML = `<div class="setup-empty">${escapeHtml(context.entry.symbol)} 鐩墠 Kbar cache 鏈娣憋紝鏈兘绌╁畾鍒嗚鲸杩藉嫝銆佺瘔搴曘€佺牬搴曠炕鎴栧弽鎶€銆?/div>`;
+    return null;
+  }
+  setupLensEl.innerHTML = analysis.cards.map(buildSetupCard).join('');
+  return analysis;
+}
+
+function renderMatrix() {
+  const resolvedSymbol = resolveCachedSymbol(state.raw, state.mode);
+  const fallbackSymbol = fallbackTvSymbol(state.raw, state.mode);
+  const supported = presets.map(item => item.raw);
+  document.getElementById('tvOpenBtn').href = fallbackSymbol ? tvChartUrl(fallbackSymbol) : '#';
+
+  if (!resolvedSymbol || !kbarCache || !kbarCache.symbols || !kbarCache.symbols[resolvedSymbol]) {
+    resolvedHint.textContent = fallbackSymbol
+      ? `鏈懡涓湰鍦?cache锛?{fallbackSymbol}銆傞爜鍏у彧鏀彺闋愯級 symbol锛涘璺充粛鍙敤銆俙`
+      : '璜嬪厛杓稿叆 symbol';
+    statusEl.textContent = fallbackSymbol ? `${fallbackSymbol} 路 fallback only` : 'waiting for symbol';
+    matrixEl.innerHTML = intervals.map(interval => buildEmptyPane(interval, fallbackSymbol, supported)).join('');
+    renderTrendGuard(null);
+    updateQuery(fallbackSymbol);
+    return { resolvedSymbol: null, fallbackSymbol };
+  }
+
+  const entry = kbarCache.symbols[resolvedSymbol];
+  renderTrendGuard(setupAnalysisForSymbol(resolvedSymbol) || analyzeSetups(entry));
+  resolvedHint.textContent = `cache symbol: ${resolvedSymbol} 路 ${entry.label}`;
+  statusEl.textContent = `${resolvedSymbol} 路 ${intervals.length} panes`;
+  matrixEl.innerHTML = intervals.map(interval => buildPane(entry, interval)).join('');
+  updateQuery(resolvedSymbol);
+  return { resolvedSymbol, fallbackSymbol, entry };
+}
+
+async function applyState() {
+  await Promise.all([ensureKbarCache(), ensureTradeEngine(), ensureTimingOverlay(), ensureLevelData()]);
+  renderSetupScoutBoard();
+  state.raw = symbolInput.value.trim();
+  updateModeButtons();
+  const context = renderMatrix();
+  await refreshConsole(context);
+}
+
+hydrateFromQuery();
+renderPresets();
+applyState();
+</script>
+</body>
+</html>

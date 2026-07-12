@@ -225,10 +225,10 @@ async function main(){
   var html = '';
 
   try {
-    var r1 = await fetch('./data/alerts.json?_='+Date.now());
-    var r2 = await fetch('./holdings.json?_='+Date.now());
-    var r3 = await fetch('./data/transfers.json?_='+Date.now());
-    var r4 = await fetch('./data/publish_bundle.json?_='+Date.now());
+    var r1 = await fetch('./data/alerts.json?_='+Date.now(), {cache:'no-store'});
+    var r2 = await fetch('./holdings.json?_='+Date.now(), {cache:'no-store'});
+    var r3 = await fetch('./data/transfers.json?_='+Date.now(), {cache:'no-store'});
+    var r4 = await fetch('./data/publish_bundle.json?_='+Date.now(), {cache:'no-store'});
 
     // ─── 1. Gap/FVG/POC alerts ───
     var alerts = r1.ok ? ((await r1.json()).alerts||[]) : [];
@@ -369,7 +369,7 @@ async function main(){
         html += '<div class="sec-sub" style="color:var(--amber)">轉倉監測待 DB backfill · '+E(tdata.updated||transferDate||'')+'</div>';
         html += '<div class="empty">'+E(tdata.message||'participant holdings 未達完整覆蓋，轉倉不作今日訊號顯示。')+'</div>';
       } else {
-        html += '<div class="sec-sub">'+E(tdata.updated||'')+' · '+transfers.length+'項</div>';
+        html += '<div class="sec-sub">'+E(tdata.updated||'')+' · '+transfers.length+'項 · 只反映券商席位變化，轉倉未必等於買賣</div>';
       }
       if(transferUsable && !transfers.length){
         html += '<div class="empty">暫無存倉轉倉</div>';
@@ -544,7 +544,7 @@ function renderConfluence(data){
 }
 
 // Load Confluence data
-fetch('./data/confluence.json?_='+Date.now())
+    fetch('./data/confluence.json?_='+Date.now(), {cache:'no-store'})
   .then(function(r){return r.ok?r.json():null;})
   .then(function(c){if(c&&c.length)renderConfluence(c);})
   .catch(function(){});

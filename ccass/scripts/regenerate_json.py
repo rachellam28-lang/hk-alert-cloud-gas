@@ -60,6 +60,9 @@ if __name__ == "__main__":
         print(f"Using latest publishable date: {target_date}")
 
     print(f"Regenerating holdings.json for {target_date}...")
+    from src.trend import compute_trends_for_date
+    trend_count = compute_trends_for_date(target_date)
+    print(f"Computed 5/20/60/120-day CCASS trends for {trend_count} stocks")
     update_holdings_json(target_date)
     out_path = Path(__file__).parent.parent.parent / "holdings.json"
     data = json.loads(out_path.read_text(encoding="utf-8"))

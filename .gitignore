@@ -54,3 +54,8 @@ ccass.db.backup.*
 ccass/holdings.db
 holdings/holdings.db
 ccass/holdings.db
+ccass/holdings.db.gz
+ccass/holdings_before_pct_repair_*.db
+logs/
+raw/prices_*.json
+scanner/corp_graded_result.json

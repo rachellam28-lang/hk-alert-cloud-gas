@@ -136,12 +136,12 @@ for item in TRADEABLE:
             "pattern": item.get("pattern"),
         }
 
-VQC_JSON = json.dumps(VQC, ensure_ascii=False)
-DD_JSON = json.dumps(DD, ensure_ascii=False)
-JIEQI_JSON = json.dumps(JIEQI, ensure_ascii=False)
-HOLDINGS_JSON = json.dumps(holdings_map, ensure_ascii=False)
-SIGNALS_JSON = json.dumps(signals_map, ensure_ascii=False)
-TRADEABLE_JSON = json.dumps(tradeable_map, ensure_ascii=False)
+VQC_JSON = json.dumps({k: VQC.get(k) for k in ("updated", "events_total", "summary", "edge")}, ensure_ascii=False)
+DD_JSON = json.dumps({k: DD.get(k) for k in ("updated", "benchmarks")}, ensure_ascii=False)
+JIEQI_JSON = json.dumps({k: JIEQI.get(k) for k in ("updated", "summary", "top_terms")}, ensure_ascii=False)
+HOLDINGS_JSON = "{}"
+SIGNALS_JSON = "{}"
+TRADEABLE_JSON = "{}"
 
 html = r"""<!DOCTYPE html>
 <html lang="zh-HK">
@@ -238,8 +238,8 @@ a { color:inherit; text-decoration:none; }
     </div>
     <div class="hero-meta">
       更新：<b id="updatedAt">__UPDATED__</b><br>
-      VQC：<b id="vqcUpdated">__VQC_UPDATED__</b><br>
-      分佈日：<b id="ddUpdated">__DD_UPDATED__</b>
+      VQC樣本：<b id="vqcUpdated">__VQC_UPDATED__</b><br>
+      分佈日樣本：<b id="ddUpdated">__DD_UPDATED__</b>
     </div>
   </section>
 
@@ -329,10 +329,43 @@ a { color:inherit; text-decoration:none; }
 const VQC = __VQC_JSON__;
 const DD = __DD_JSON__;
 const JIEQI = __JIEQI_JSON__;
-const PUBLISH_BUNDLE = __BUNDLE_JSON__;
-const HOLDINGS = __HOLDINGS_JSON__;
-const SIGNALS = __SIGNALS_JSON__;
-const TRADEABLE = __TRADEABLE_JSON__;
+let PUBLISH_BUNDLE = __BUNDLE_JSON__;
+let HOLDINGS = __HOLDINGS_JSON__;
+let SIGNALS = __SIGNALS_JSON__;
+let TRADEABLE = __TRADEABLE_JSON__;
+let watchDataPromise = null;
+
+function loadWatchData() {
+  if (watchDataPromise) return watchDataPromise;
+  watchDataPromise = Promise.all([
+    fetch('./holdings.json?_=' + Date.now(), {cache:'no-store'}).then(r => r.ok ? r.json() : {stocks:[]}),
+    fetch('./data/signals.json?_=' + Date.now(), {cache:'no-store'}).then(r => r.ok ? r.json() : {groups:[]}),
+    fetch('./data/tradeable.json?_=' + Date.now(), {cache:'no-store'}).then(r => r.ok ? r.json() : []),
+  ]).then(([h, s, t]) => {
+    HOLDINGS = Object.fromEntries((h.stocks || []).map(x => [normCode(x.c), {...x, code:normCode(x.c), name:x.n}]));
+    SIGNALS = Object.fromEntries((s.groups || []).map(x => [normCode(x.code), {
+      ...x,
+      code:normCode(x.code),
+      signal_count:(x.signals || []).length,
+      signals:(x.signals || []).slice(0, 5).map(v => typeof v === 'object' ? `${v.label || v.category || v.type || ''} ${v.date || ''}`.trim() : String(v)),
+    }]));
+    TRADEABLE = (Array.isArray(t) ? t : []).reduce((out, x) => {
+      const code = normCode(x.code);
+      if (!out[code] || Number(x.score || 0) > Number(out[code].score || 0)) out[code] = x;
+      return out;
+    }, {});
+  }).catch(() => { HOLDINGS = {}; SIGNALS = {}; TRADEABLE = {}; });
+  return watchDataPromise;
+}
+
+async function refreshBundle() {
+  try {
+    const res = await fetch('./data/publish_bundle.json?_=' + Date.now(), { cache: 'no-store' });
+    if (!res.ok) return;
+    const live = await res.json();
+    if (live && typeof live === 'object') PUBLISH_BUNDLE = live;
+  } catch (_) {}
+}
 
 function fmtPct(v) {
   if (v == null || Number.isNaN(v)) return '—';
@@ -505,12 +538,14 @@ function renderJieqi() {
   document.getElementById('jieqiNote').textContent = notes.join(' ');
 }
 
-function renderWatchlistPrompt() {
+async function renderWatchlistPrompt() {
   const wl = loadWatchlist().map(x => ({
     ...x,
     code: normCode(x.code),
     name: x.name || '',
   })).filter(x => x.code);
+
+  if (wl.length) await loadWatchData();
 
   const bundles = wl.map(item => {
     const bundle = pickWatchData(item.code);
@@ -646,18 +681,23 @@ function renderRules() {
   document.getElementById('rules').innerHTML = lines.map(x => `${x}<br>`).join('');
 }
 
-renderSummary();
-renderJieqi();
-renderCcassLesson();
-renderWatchlistPrompt();
-renderBars();
-renderRules();
+async function bootstrap() {
+  await refreshBundle();
+  renderSummary();
+  renderJieqi();
+  renderCcassLesson();
+  await renderWatchlistPrompt();
+  renderBars();
+  renderRules();
 
-const tradePromptFoot = document.getElementById('tradePromptFoot');
-if (tradePromptFoot) {
-  const updated = (PUBLISH_BUNDLE.generated_at || VQC.updated || '').replace('T', ' ').slice(0, 16) || '—';
-  tradePromptFoot.innerHTML = `更新於：${updated}<br>數據來源：data/publish_bundle.json · data/vqc_backtest.json · data/distribution_day_backtest.json · data/jieqi_backtest.json · holdings.json · localStorage（hk_watchlist_v1）`;
+  const tradePromptFoot = document.getElementById('tradePromptFoot');
+  if (tradePromptFoot) {
+    const updated = (PUBLISH_BUNDLE.generated_at || VQC.updated || '').replace('T', ' ').slice(0, 16) || '—';
+    tradePromptFoot.innerHTML = `更新於：${updated}<br>數據來源：data/publish_bundle.json · data/vqc_backtest.json · data/distribution_day_backtest.json · data/jieqi_backtest.json · holdings.json · localStorage（hk_watchlist_v1）`;
+  }
 }
+
+bootstrap();
 </script>
 </body>
 </html>"""

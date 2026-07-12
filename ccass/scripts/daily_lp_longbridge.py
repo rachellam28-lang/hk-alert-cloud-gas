@@ -24,7 +24,7 @@ CCASS_JSON = ROOT / "ccass.json"
 SUSPENDED = ROOT / "data" / "suspended_stocks.json"
 
 
-def load_token() -> str:
+def find_token() -> str:
     token = os.environ.get("LONGBRIDGE_ACCESS_TOKEN")
     if token:
         return token
@@ -36,6 +36,13 @@ def load_token() -> str:
                 token = line.split("=", 1)[1].strip()
                 if token:
                     return token
+    return ""
+
+
+def load_token() -> str:
+    token = find_token()
+    if token:
+        return token
     raise RuntimeError("LONGBRIDGE_ACCESS_TOKEN not found")
 
 
@@ -58,21 +65,34 @@ def lb_cli_quote(symbols: list[str]) -> list[dict]:
     exe = longbridge_cli()
     if not exe:
         raise RuntimeError("Longbridge CLI not found")
-    try:
-        proc = subprocess.run(
-            [exe, "quote", *symbols, "--format", "json"],
-            capture_output=True,
-            text=True,
-            encoding="utf-8",
-            errors="replace",
-            timeout=float(os.environ.get("LONGBRIDGE_QUOTE_TIMEOUT_SECONDS", "45")),
-            check=False,
-        )
-    except subprocess.TimeoutExpired as exc:
-        raise RuntimeError(f"Longbridge CLI quote timeout after {exc.timeout}s") from exc
-    if proc.returncode != 0:
-        raise RuntimeError((proc.stderr or proc.stdout or "Longbridge CLI quote failed").strip())
-    return json.loads(proc.stdout.strip() or "[]")
+    retries = max(1, int(os.environ.get("LONGBRIDGE_QUOTE_RETRIES", "2")))
+    retry_delay = float(os.environ.get("LONGBRIDGE_QUOTE_RETRY_DELAY_SECONDS", "1.5"))
+    timeout_seconds = float(os.environ.get("LONGBRIDGE_QUOTE_TIMEOUT_SECONDS", "45"))
+    for attempt in range(1, retries + 1):
+        try:
+            proc = subprocess.run(
+                [exe, "quote", *symbols, "--format", "json"],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                timeout=timeout_seconds,
+                check=False,
+            )
+        except subprocess.TimeoutExpired as exc:
+            if attempt < retries:
+                time.sleep(retry_delay * attempt)
+                continue
+            raise RuntimeError(f"Longbridge CLI quote timeout after {exc.timeout}s") from exc
+        if proc.returncode != 0:
+            err = (proc.stderr or proc.stdout or "Longbridge CLI quote failed").strip()
+            retryable = "timeout" in err.lower() or "connect" in err.lower()
+            if retryable and attempt < retries:
+                time.sleep(retry_delay * attempt)
+                continue
+            raise RuntimeError(err)
+        return json.loads(proc.stdout.strip() or "[]")
+    return []
 
 
 def lb_mcp(tool: str, args: dict) -> list[dict] | dict:
@@ -124,6 +144,8 @@ def lb_quote(symbols: list[str]) -> list[dict]:
     try:
         return lb_cli_quote(symbols)
     except Exception as cli_exc:
+        if not find_token():
+            raise cli_exc
         print(f"  Longbridge CLI quote unavailable: {cli_exc}; trying MCP token", file=sys.stderr)
     data = lb_mcp("quote", {"symbols": symbols})
     return data if isinstance(data, list) else data.get("items", data.get("lists", []))
@@ -197,8 +219,11 @@ def main() -> int:
                 changed = True
             if entry.get("lp") and entry.get("hi52") and entry.get("lo52") and entry["hi52"] > entry["lo52"]:
                 entry["p52"] = round((entry["lp"] - entry["lo52"]) / (entry["hi52"] - entry["lo52"]) * 100, 1)
-            if entry.get("lp") and entry.get("py") and entry["py"] > 0:
-                entry["py_pct"] = round((entry["lp"] - entry["py"]) / entry["py"] * 100, 2)
+            effective_py = entry.get("apy", entry.get("py"))
+            if entry.get("lp") and effective_py and effective_py > 0:
+                entry["py_pct"] = round((entry["lp"] - effective_py) / effective_py * 100, 2)
+                if entry.get("apy"):
+                    entry["apy_pct"] = entry["py_pct"]
             entry["price_source"] = "longbridge:cli" if "last" in item else "longbridge:mcp"
             ts = item.get("timestamp") or item.get("updated")
             entry["lp_time"] = trade_date
@@ -228,6 +253,9 @@ def main() -> int:
         for stock in holdings.get("stocks", []):
             code = stock.get("c")
             entry = prices.get(code, {})
+            effective_py = entry.get("apy", entry.get("py"))
+            if effective_py is not None:
+                stock["py"] = effective_py
             for key in ["lp", "lp_time", "vol", "chg", "p52", "py_pct", "prev_close", "turnover"]:
                 if entry.get(key) is not None:
                     stock[key] = entry[key]

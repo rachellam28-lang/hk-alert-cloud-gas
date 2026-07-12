@@ -872,6 +872,53 @@ main.wrap > .card{overflow:visible}
   .heat-bar{height:2px;margin-top:1px}
 }
 </style>
+<style id="mcHeaderPlacementFix">
+.mc-section thead th{position:static!important;top:auto!important;z-index:auto!important}
+</style>
+<style id="smallCapDeskStyles">
+.sc-desk{margin:10px 0;background:#101827;color:#e9eef5;border:1px solid #26354a;border-radius:8px;overflow:hidden;box-shadow:0 12px 30px rgba(15,24,39,.12)}
+.sc-desk-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 13px 9px;border-bottom:1px solid #26354a}
+.sc-desk-title{display:flex;align-items:baseline;gap:9px;min-width:0}
+.sc-desk-title strong{font-size:15px;font-weight:800;color:#fff}
+.sc-desk-title span{font-size:10px;color:#8796aa;white-space:nowrap}
+.sc-desk-truth{display:flex;align-items:center;gap:6px;font-size:10px;color:#aeb9c9;white-space:nowrap}
+.sc-desk-truth::before{content:'';width:7px;height:7px;border-radius:50%;background:#e6a23c;box-shadow:0 0 0 3px rgba(230,162,60,.13)}
+.sc-desk-truth.complete::before{background:#35b779;box-shadow:0 0 0 3px rgba(53,183,121,.13)}
+.sc-desk-pulse{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-bottom:1px solid #26354a;background:#0d1523}
+.sc-pulse{min-width:0;padding:8px 12px;border-right:1px solid #26354a}
+.sc-pulse:last-child{border-right:0}
+.sc-pulse-label{display:block;color:#74859a;font-size:9px;font-weight:700}
+.sc-pulse-value{display:block;margin-top:2px;color:#f4f7fb;font:800 16px/1.1 ui-monospace,SFMono-Regular,Consolas,monospace}
+.sc-pulse-value.up{color:#56d79a}.sc-pulse-value.risk{color:#ff8b91}.sc-pulse-note{margin-left:5px;color:#74859a;font-size:9px;font-weight:600}
+.sc-desk-tools{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;background:#111c2c}
+.sc-desk-tabs{display:flex;gap:3px;min-width:0;overflow-x:auto;scrollbar-width:none}
+.sc-desk-tabs::-webkit-scrollbar{display:none}
+.sc-desk-tab{min-height:29px;padding:5px 9px;border:1px solid transparent;border-radius:5px;background:transparent;color:#91a0b2;font-size:10px;font-weight:750;white-space:nowrap;cursor:pointer}
+.sc-desk-tab:hover{background:#1b293c;color:#fff}.sc-desk-tab.active{border-color:#387a7c;background:#17373b;color:#77dfd8}
+.sc-desk-link{color:#78cfd0;font-size:10px;font-weight:700;text-decoration:none;white-space:nowrap}
+.sc-desk-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:#26354a}
+.sc-pick{display:grid;grid-template-columns:28px minmax(116px,.9fr) minmax(0,1.55fr) auto 38px;align-items:center;gap:8px;min-height:62px;padding:8px 11px;border:0;background:#101827;color:inherit;text-align:left;cursor:pointer;transition:background .16s ease,transform .1s ease}
+.sc-pick:hover{background:#162235}.sc-pick:active{transform:translateY(1px)}.sc-pick:focus-visible{outline:2px solid #63c7ca;outline-offset:-2px}
+.sc-pick-rank{color:#53647a;font:700 11px ui-monospace,SFMono-Regular,Consolas,monospace}
+.sc-pick-id{min-width:0}.sc-pick-code{display:block;color:#fff;font:800 12px ui-monospace,SFMono-Regular,Consolas,monospace}.sc-pick-name{display:block;margin-top:2px;color:#93a3b5;font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sc-pick-reasons{display:flex;align-items:center;gap:3px;min-width:0;overflow:hidden}
+.sc-reason{display:inline-flex;align-items:center;min-height:19px;padding:2px 5px;border:1px solid #34445a;border-radius:4px;background:#172236;color:#aebbd0;font-size:8.5px;font-weight:700;white-space:nowrap}
+.sc-reason.good{border-color:#286a56;background:#12352e;color:#6ed8aa}.sc-reason.warn{border-color:#75572d;background:#332817;color:#efbd6b}.sc-reason.bad{border-color:#74353c;background:#351b21;color:#ff969c}
+.sc-pick-metrics{display:grid;grid-template-columns:repeat(4,48px);gap:3px;text-align:right}
+.sc-pick .sc-metric-label{display:block;color:#607086;font-size:7.5px;font-weight:700;text-transform:none;letter-spacing:0}.sc-pick .sc-metric-value{display:block;margin-top:1px;color:#dae2ec;font:700 10px ui-monospace,SFMono-Regular,Consolas,monospace}
+.sc-score{justify-self:end;min-width:34px;padding:4px 5px;border:1px solid #356d5c;border-radius:5px;background:#15342c;color:#68dda9;text-align:center;font:800 11px ui-monospace,SFMono-Regular,Consolas,monospace}
+.sc-score.wait{border-color:#6d552d;background:#2d2519;color:#e7b763}.sc-score.risk{border-color:#75353b;background:#351a20;color:#ff8f97}
+.sc-desk-empty{grid-column:1/-1;padding:22px;text-align:center;background:#101827;color:#7f8ea2;font-size:11px}
+@media(max-width:900px){.sc-desk-list{grid-template-columns:1fr}.sc-pick{grid-template-columns:24px minmax(94px,.8fr) minmax(0,1.3fr) auto 36px}.sc-pick:nth-child(n+7){display:none}}
+@media(max-width:640px){
+  .sc-desk{margin:6px 2px 8px;border-radius:7px}
+  .sc-desk-head{padding:8px 9px 7px}.sc-desk-title strong{font-size:12px}.sc-desk-title span{display:none}.sc-desk-truth{font-size:8px}
+  .sc-desk-pulse{grid-template-columns:repeat(4,minmax(0,1fr))}.sc-pulse{padding:6px 7px}.sc-pulse-label{font-size:7px}.sc-pulse-value{font-size:12px}.sc-pulse-note{display:none}
+  .sc-desk-tools{padding:5px 6px}.sc-desk-tab{min-height:26px;padding:4px 7px;font-size:9px}.sc-desk-link{font-size:9px}
+  .sc-pick{grid-template-columns:21px minmax(78px,.72fr) minmax(0,1.15fr) 31px;gap:5px;min-height:52px;padding:6px 7px}
+  .sc-pick-rank{font-size:9px}.sc-pick-code{font-size:10px}.sc-pick-name{font-size:8px}.sc-pick-metrics{display:none}.sc-reason{font-size:7.5px;min-height:17px;padding:1px 3px}.sc-reason:nth-child(n+3){display:none}.sc-score{min-width:29px;padding:3px;font-size:9px}
+}
+</style>
 </head><body>
   <nav class="site-nav" id="sharedSiteNav"></nav>
 
@@ -892,6 +939,30 @@ main.wrap > .card{overflow:visible}
   <div class="mkt-meta" id="mktMeta" style="display:none"><span id="mktMetaLeft"></span><span id="mktMetaRight"></span></div>
   <div class="legend-line">紫框=高集中度（Market%≥80）｜紫底=有訊號｜紫標=供股公告／雙向訊號</div>
   <div class="breadth-card" id="breadthCard" style="display:none"><div class="breadth-head">市場寬度 · 52周高低位分布</div><div id="breadthRows"></div></div>
+
+  <section class="sc-desk" id="smallCapDesk" aria-labelledby="smallCapDeskTitle">
+    <div class="sc-desk-head">
+      <div class="sc-desk-title"><strong id="smallCapDeskTitle">細價股 Desk</strong><span>貨路 × 價量 × 供配股風險</span></div>
+      <div class="sc-desk-truth" id="smallCapDeskTruth">等候完整資料</div>
+    </div>
+    <div class="sc-desk-pulse" id="smallCapDeskPulse">
+      <div class="sc-pulse"><span class="sc-pulse-label">優先研究</span><span class="sc-pulse-value">—</span></div>
+      <div class="sc-pulse"><span class="sc-pulse-label">CCASS 增持</span><span class="sc-pulse-value">—</span></div>
+      <div class="sc-pulse"><span class="sc-pulse-label">成交轉勢日</span><span class="sc-pulse-value">—</span></div>
+      <div class="sc-pulse"><span class="sc-pulse-label">供配風險</span><span class="sc-pulse-value">—</span></div>
+    </div>
+    <div class="sc-desk-tools">
+      <div class="sc-desk-tabs" role="tablist" aria-label="細價股名單">
+        <button class="sc-desk-tab active" type="button" data-desk-mode="priority" onclick="setSmallCapDeskMode('priority')">優先研究</button>
+        <button class="sc-desk-tab" type="button" data-desk-mode="setup" onclick="setSmallCapDeskMode('setup')">收集／突破</button>
+        <button class="sc-desk-tab" type="button" data-desk-mode="turn" onclick="setSmallCapDeskMode('turn')">成交轉勢</button>
+        <button class="sc-desk-tab" type="button" data-desk-mode="confirm" onclick="setSmallCapDeskMode('confirm')">等確認</button>
+        <button class="sc-desk-tab" type="button" data-desk-mode="risk" onclick="setSmallCapDeskMode('risk')">避開／高風險</button>
+      </div>
+      <a class="sc-desk-link" href="kbar_matrix.html">開 Kbar →</a>
+    </div>
+    <div class="sc-desk-list" id="smallCapDeskList"><div class="sc-desk-empty">載入持倉、訊號及成交資料…</div></div>
+  </section>
 
   <div class="bt-cards" id="btCards" style="display:none;gap:10px;flex-wrap:wrap;margin-bottom:10px">
     <div id="btIpo" class="ipo-card" style="display:none;flex:1;min-width:260px">
@@ -944,6 +1015,7 @@ main.wrap > .card{overflow:visible}
           <option value="poc_half">半年POC</option>
           <option value="poc3">半年+12月+3年POC</option>
           <option value="fvg">Bullish FVG</option>
+          <option value="vqc">成交轉勢日</option>
           <option value="yearopen">年開突破</option>
           <option value="ipo">🚀上破IPO</option>
         </select>
@@ -1007,8 +1079,8 @@ main.wrap > .card{overflow:visible}
       </div>
       <div class="toolbar-sect">
         <button class="btn-ghost" id="filterAll" onclick="toggleFilter('all')">全部</button>
-        <button class="btn-ghost" id="filterUp" onclick="toggleFilter('up')">↑ 增持</button>
-        <button class="btn-ghost" id="filterDn" onclick="toggleFilter('dn')">↓ 減持</button>
+        <button class="btn-ghost" id="filterUp" onclick="toggleFilter('up')">↑ 5日增持</button>
+        <button class="btn-ghost" id="filterDn" onclick="toggleFilter('dn')">↓ 5日減持</button>
         <span class="group-sep">·</span>
         <button class="btn-ghost" id="filterConcentrated" onclick="toggleFilter('concentrated')">高集中度</button>
         <button class="btn-ghost" id="filterPlacement" onclick="toggleFilter('placement')">配股</button>
@@ -1604,6 +1676,8 @@ function heatKey(ev,type,key){
   }
 }
 var heatmapLastTouch=0;
+var heatmapTouchStartPoint=null;
+var heatmapTouchMoved=false;
 function heatmapEventPoint(ev){
   if(!ev)return null;
   var point=null;
@@ -1612,6 +1686,25 @@ function heatmapEventPoint(ev){
   else if(Number.isFinite(ev.clientX)&&Number.isFinite(ev.clientY))point=ev;
   if(!point)return null;
   return {x:point.clientX,y:point.clientY};
+}
+function heatmapPointDistance(a,b){
+  if(!a||!b)return Infinity;
+  return Math.hypot(a.x-b.x,a.y-b.y);
+}
+function rememberHeatmapTouchStart(ev){
+  heatmapTouchStartPoint=heatmapEventPoint(ev);
+  heatmapTouchMoved=false;
+}
+function rememberHeatmapTouchMove(ev){
+  if(!heatmapTouchStartPoint)return;
+  var point=heatmapEventPoint(ev);
+  if(heatmapPointDistance(heatmapTouchStartPoint,point)>12){
+    heatmapTouchMoved=true;
+  }
+}
+function clearHeatmapTouchState(){
+  heatmapTouchStartPoint=null;
+  heatmapTouchMoved=false;
 }
 function heatmapPointTarget(ev){
   var point=heatmapEventPoint(ev);
@@ -1649,12 +1742,13 @@ function activateHeatmapTarget(target,ev){
   if(!wrap||!target)return false;
   if(target.closest&&target.closest('.heat-clear,.heatmap-head'))return false;
   var isTouch=ev&&ev.type==='touchend';
+  if(isTouch&&heatmapTouchMoved)return false;
   var pointTarget=heatmapPointTarget(ev);
-  var stockBtn=!isTouch&&target.closest&&target.closest('.heat-stock[data-heat-stock]');
-  if(stockBtn&&!heatmapPointInsideElement(ev,stockBtn,3))stockBtn=null;
-  if(!isTouch&&(!stockBtn||!wrap.contains(stockBtn))&&pointTarget){
+  var stockBtn=target.closest&&target.closest('.heat-stock[data-heat-stock]');
+  if(stockBtn&&!heatmapPointInsideElement(ev,stockBtn,isTouch?1:3))stockBtn=null;
+  if((!stockBtn||!wrap.contains(stockBtn))&&pointTarget){
     stockBtn=pointTarget.closest&&pointTarget.closest('.heat-stock[data-heat-stock]');
-    if(stockBtn&&!heatmapPointInsideElement(ev,stockBtn,3))stockBtn=null;
+    if(stockBtn&&!heatmapPointInsideElement(ev,stockBtn,isTouch?1:3))stockBtn=null;
   }
   if(!isTouch&&(!stockBtn||!wrap.contains(stockBtn))){
     stockBtn=heatmapElementFromRects(ev,'.heat-stock[data-heat-stock]',0);
@@ -1673,7 +1767,7 @@ function activateHeatmapTarget(target,ev){
     tile=pointTarget.closest&&pointTarget.closest('.heat-tile[data-heat-type][data-heat-key]');
   }
   if((!tile||!wrap.contains(tile))){
-    tile=heatmapElementFromRects(ev,'.heat-tile[data-heat-type][data-heat-key]',80);
+    tile=heatmapElementFromRects(ev,'.heat-tile[data-heat-type][data-heat-key]',isTouch?16:80);
   }
   if(!tile||!wrap.contains(tile))return false;
   if(tile.getAttribute('aria-disabled')==='true'){
@@ -1688,6 +1782,15 @@ function bindHeatmapInteractions(){
   var wrap=document.getElementById('heatmapWrap');
   if(!wrap||wrap.dataset.heatBound)return;
   wrap.dataset.heatBound='1';
+  wrap.addEventListener('touchstart',function(e){
+    rememberHeatmapTouchStart(e);
+  },{passive:true,capture:true});
+  wrap.addEventListener('touchmove',function(e){
+    rememberHeatmapTouchMove(e);
+  },{passive:true,capture:true});
+  wrap.addEventListener('touchcancel',function(){
+    clearHeatmapTouchState();
+  },true);
   wrap.addEventListener('click',function(e){
     if(Date.now()-heatmapLastTouch<1200){
       e.preventDefault();
@@ -1697,7 +1800,13 @@ function bindHeatmapInteractions(){
     activateHeatmapTarget(e.target,e);
   },true);
   wrap.addEventListener('touchend',function(e){
+    if(heatmapTouchMoved){
+      heatmapLastTouch=Date.now();
+      clearHeatmapTouchState();
+      return;
+    }
     if(activateHeatmapTarget(e.target,e))heatmapLastTouch=Date.now();
+    clearHeatmapTouchState();
   },{passive:false,capture:true});
   wrap.addEventListener('keydown',function(e){
     if(e.key!=='Enter'&&e.key!==' ')return;
@@ -1845,8 +1954,8 @@ function stockPassesFilters(s,opts){
   if(!opts.skipFlow && flowVal!=='all' && fundflowMap.size>0 && !flowMatches(s,flowVal))return false;
   if(activeFilters.size>0){
     for(const mode of activeFilters){
-      if(mode==='up' && !(s.su>1))return false;
-      if(mode==='dn' && !(s.sd>1))return false;
+      if(mode==='up' && !isMeaningfulFiveDayUp(s))return false;
+      if(mode==='dn' && !(Number(s.d5s)<0&&Number(s.d5p)<=-0.1))return false;
       if(mode==='concentrated' && s.t5<50)return false;
       if(mode==='placement'){const sm=signalMap.get(s.c);if(!sm||!sm.pl)return false;}
       if(mode==='rights'){const sm=signalMap.get(s.c);if(!sm||!sm.ri)return false;}
@@ -1868,6 +1977,7 @@ function stockPassesFilters(s,opts){
     else if(sigFilterVal==='poc_half')sigOK=sigText.indexOf('半年POC')>=0;
     else if(sigFilterVal==='poc3')sigOK=sigText.indexOf('3年POC')>=0;
     else if(sigFilterVal==='fvg')sigOK=sigText.indexOf('FVG')>=0;
+    else if(sigFilterVal==='vqc')sigOK=sigText.indexOf('成交轉勢日')>=0||sigText.indexOf('VQC')>=0;
     else if(sigFilterVal==='yearopen')sigOK=sigText.indexOf('年開突破')>=0;
     else if(sigFilterVal==='ipo')sigOK=sigText.indexOf('IPO首日')>=0;
     if(!sigOK)return false;
@@ -1953,6 +2063,7 @@ function maybeRenderHeatmaps(){
     return;
   }
   renderHeatmaps();
+  renderSmallCapDesk();
 }
 function renderHeatmaps(){
   if(!heatmapReady){
@@ -2040,6 +2151,9 @@ let conFilter='';
 let activePrices={};
 let corpFilter='all';
 let allCorpData=[];
+let smallCapDeskMode='priority';
+let smallCapDeskPartial=true;
+let smallCapTrendRefs={};
 const CORP_CACHE_KEY='hk_corp_signal_cache_v2';
 
 function setCorpFilter(dir,btn){
@@ -2060,6 +2174,174 @@ function setBaseStocks(stocks){
   baseStocks=(stocks||[]).filter(isDisplayStock).map(normalizeStockMC);
   stockByCode=new Map(baseStocks.map(s=>[s.c,s]));
   allStocks=baseStocks.slice();
+}
+
+function deskSupplyKind(sig){
+  if(!sig||!sig.supply)return'';
+  var text='';
+  try{text=JSON.stringify(sig.supply);}catch(e){text=String(sig.supply||'');}
+  if(/圈錢|集資|現金|cash/i.test(text))return'cash';
+  if(/圈股|吸貨|stock/i.test(text))return'stock';
+  return'';
+}
+function deskMoney(v){
+  if(!Number.isFinite(v))return'—';
+  if(v>=1e8)return(v/1e8).toFixed(1)+'億';
+  if(v>=1e6)return(v/1e6).toFixed(1)+'M';
+  if(v>=1e3)return(v/1e3).toFixed(0)+'K';
+  return Math.round(v).toLocaleString();
+}
+function deskPrice(v){
+  if(!Number.isFinite(v))return'—';
+  return v<1?v.toFixed(3):v.toFixed(2);
+}
+function isMeaningfulFiveDayUp(s){
+  return Number(s.d5s)>0&&Number(s.d5p)>0;
+}
+function deskTrendText(shares,pct){
+  if(!Number.isFinite(Number(shares))||!Number.isFinite(Number(pct)))return'—';
+  if(Number(shares)===0&&Number(pct)===0)return'無變化';
+  var sign=Number(shares)>0?'+':'';
+  return sign+deskMoney(Number(shares))+' / '+sign+Number(pct).toFixed(2)+'%';
+}
+function ccassTrendCell(s,w){
+  var shares=Number(s['d'+w+'s']), pct=Number(s['d'+w+'p']), ref=smallCapTrendRefs[String(w)]||'';
+  if(!Number.isFinite(shares)||!Number.isFinite(pct))return '<td class="th-ccass-trend"><span class="mc-null" title="此時間窗口的 CCASS 歷史基準日尚未回填">未回填</span></td>';
+  var cls=shares>0?'up':shares<0?'dn':'';
+  var sign=shares>0?'+':'';
+  return '<td class="th-ccass-trend"><span class="num '+cls+'">'+sign+pct.toFixed(2)+'%</span><span class="yo-price">'+sign+deskMoney(shares)+'</span><span class="dmeta-sub">'+(ref?'基準 '+ref:'未回填')+'</span></td>';
+}
+function ensureCCASSTrendHeaders(){
+  var header='<th class="sortable th-ccass-trend" data-sort="d5" onclick="sortBy(\'d5\',event)"><span>CCASS 5日</span><span class="sort-icon"></span></th>'
+    +'<th class="sortable th-ccass-trend" data-sort="d20" onclick="sortBy(\'d20\',event)"><span>CCASS 20日</span><span class="sort-icon"></span></th>'
+    +'<th class="sortable th-ccass-trend" data-sort="d60" onclick="sortBy(\'d60\',event)"><span>CCASS 60日</span><span class="sort-icon"></span></th>'
+    +'<th class="sortable th-ccass-trend" data-sort="d120" onclick="sortBy(\'d120\',event)"><span>CCASS 120日</span><span class="sort-icon"></span></th>';
+  ['mcSmallTbody','mcMidTbody','mcLargeTbody'].forEach(function(id){
+    var tbody=document.getElementById(id), row=tbody&&tbody.closest('table')&&tbody.closest('table').querySelector('thead tr');
+    if(row&&!row.querySelector('.th-ccass-trend'))row.insertAdjacentHTML('beforeend',header);
+  });
+}
+function smallCapProfile(s){
+  var sig=signalMap.get(s.c)||null;
+  var tech=techSignalMap.get(s.c)||[];
+  var labels=tech.map(function(x){return String(x.label||'');}).join(' ');
+  var price=Number(priceMap.get(s.c)??s.lp);
+  if(!Number.isFinite(price))price=null;
+  var turnover=price!=null&&Number.isFinite(Number(s.vol))?price*Number(s.vol):null;
+  var supply=deskSupplyKind(sig);
+  var turn=/成交轉勢日|VQC/i.test(labels);
+  var techSetup=/POC|FVG|年開|突破|IPO|破底返|反抽|成交轉勢日|VQC/i.test(labels)||!!breakthroughMap[s.c];
+  var fiveDayUp=isMeaningfulFiveDayUp(s);
+  var collect=fiveDayUp||Number(s.su)>1||supply==='stock'||!!(sig&&sig.inc);
+  var corpRisk=!!(sig&&(sig.pl||sig.ri));
+  var reasons=[],warnings=[],score=0;
+
+  if(Number.isFinite(s.mc)&&s.mc<20){score+=1.5;reasons.push(['小市值','good']);}
+  else if(Number.isFinite(s.mc)&&s.mc<100){score+=.5;reasons.push(['中小市值','']);}
+  if(turnover!=null){
+    if(turnover>=3e6){score+=2;reasons.push(['成交額 '+deskMoney(turnover),'good']);}
+    else if(turnover>=1e6){score+=1;reasons.push(['成交額 '+deskMoney(turnover),'']);}
+    else if(turnover<2e5){score-=2;warnings.push(['流動性低','bad']);}
+  }else warnings.push(['成交額未知','warn']);
+  if(Number.isFinite(s.vr)){
+    if(s.vr>=2){score+=2;reasons.push(['量比 '+s.vr.toFixed(1)+'x','good']);}
+    else if(s.vr>=1.2){score+=1;reasons.push(['量比 '+s.vr.toFixed(1)+'x','']);}
+  }
+  if(Number.isFinite(s.p52)){
+    if(s.p52>=80){score+=2;reasons.push(['近52周高位','good']);}
+    else if(s.p52>=50){score+=.5;reasons.push(['52周中上','']);}
+    else if(s.p52<=20&&Number(s.chg)>0&&Number(s.vr)>=1.2){score+=.5;reasons.push(['低位反抽','warn']);}
+  }
+  if(fiveDayUp){
+    score+=Number(s.d5p)>=0.5?3:2;
+    reasons.unshift(['CCASS 5日 +'+Number(s.d5p).toFixed(2)+'%','good']);
+  }else if(Number(s.d5s)>0){
+    score+=.25;
+    reasons.push(['5日微增','']);
+  }
+  if(Number(s.d20s)>0&&Number(s.d20p)>=0.2){score+=1;reasons.push(['20日增持','good']);}
+  if(Number(s.su)>1){score+=1;reasons.push([s.su+'日增持','good']);}
+  if(Number.isFinite(s.t5)){
+    if(s.t5>=35&&s.t5<=80){score+=.75;reasons.push(['Top5 '+s.t5.toFixed(0)+'%','']);}
+    else if(s.t5>90){score-=1;warnings.push(['Top5 過度集中','warn']);}
+  }
+  if(price!=null&&Number(s.yo)>0&&price>=Number(s.yo)){score+=1;reasons.push(['企穩今年開','good']);}
+  if(techSetup){score+=Math.min(2.5,1+tech.length*.5);reasons.unshift(['Kbar/技術訊號','good']);}
+  if(turn){score+=2;reasons.unshift(['成交轉勢日','good']);}
+  if(Number(s.chg)>0&&Number(s.chg)<=10)score+=.5;
+  if(Number(s.chg)>15){score-=1.5;warnings.push(['即日升幅過急','warn']);}
+  if(Number(s.chg)<=-8){score-=2;warnings.push(['急跌未收復','bad']);}
+  if(supply==='stock'){score+=2;reasons.unshift(['圈股候選','good']);}
+  if(supply==='cash'){score-=6;warnings.unshift(['圈錢風險','bad']);}
+  if(corpRisk&&supply!=='stock'){score-=2;warnings.push([sig.ri?'供股風險':'配股風險','bad']);}
+  if(s.suspended){score=-9;warnings.unshift(['停牌','bad']);}
+
+  var trigger=techSetup||collect||Number(s.vr)>=1.2||Math.abs(Number(s.chg)||0)>=4||corpRisk||supply;
+  var hardRisk=s.suspended||supply==='cash'||Number(s.chg)<=-15||(turnover!=null&&turnover<1e5&&trigger)||corpRisk&&supply!=='stock';
+  var known=[price,s.mc,s.vr,s.p52,s.t5,turnover].filter(function(v){return Number.isFinite(Number(v));}).length;
+  var confidence=known>=5?'高':known>=3?'中':'低';
+  var kind=hardRisk?'risk':(score>=6&&trigger?'priority':((techSetup||collect)&&score>=3?'setup':(trigger&&score>=1.5?'confirm':'')));
+  var displayReasons=(kind==='risk'?warnings.concat(reasons):reasons.concat(warnings)).slice(0,4);
+  return {stock:s,score:Math.max(0,Math.min(10,score)),kind:kind,trigger:!!trigger,collect:collect,techSetup:techSetup,turn:turn,corpRisk:corpRisk,supply:supply,turnover:turnover,price:price,confidence:confidence,reasons:displayReasons};
+}
+function getSmallCapDeskProfiles(){
+  return (baseStocks||[]).filter(function(s){return !Number.isFinite(s.mc)||s.mc<100;}).map(smallCapProfile).filter(function(p){return p.kind;});
+}
+function setSmallCapDeskMode(mode){
+  smallCapDeskMode=['priority','setup','turn','confirm','risk'].includes(mode)?mode:'priority';
+  document.querySelectorAll('[data-desk-mode]').forEach(function(btn){btn.classList.toggle('active',btn.dataset.deskMode===smallCapDeskMode);});
+  renderSmallCapDesk();
+}
+function renderSmallCapDesk(){
+  var list=document.getElementById('smallCapDeskList');
+  var pulse=document.getElementById('smallCapDeskPulse');
+  var truth=document.getElementById('smallCapDeskTruth');
+  if(!list||!pulse||!baseStocks.length)return;
+  if(smallCapDeskMode==='turn'&&!heatmapSignalsReady){
+    list.innerHTML='<div class="sc-desk-empty">成交轉勢訊號載入中…</div>';
+    return;
+  }
+  var profiles=getSmallCapDeskProfiles();
+  var priority=profiles.filter(function(p){return p.kind==='priority';});
+  var ccass=profiles.filter(function(p){return isMeaningfulFiveDayUp(p.stock);});
+  var turns=profiles.filter(function(p){return p.turn;});
+  var risks=profiles.filter(function(p){return p.kind==='risk';});
+  pulse.innerHTML=''
+    +'<div class="sc-pulse"><span class="sc-pulse-label">優先研究</span><span class="sc-pulse-value up">'+priority.length+'<span class="sc-pulse-note">隻</span></span></div>'
+    +'<div class="sc-pulse"><span class="sc-pulse-label">CCASS 5日增持</span><span class="sc-pulse-value">'+ccass.length+'<span class="sc-pulse-note">≥0.10%</span></span></div>'
+    +'<div class="sc-pulse"><span class="sc-pulse-label">成交轉勢日</span><span class="sc-pulse-value up">'+turns.length+'<span class="sc-pulse-note">最新事件</span></span></div>'
+    +'<div class="sc-pulse"><span class="sc-pulse-label">供配／流動風險</span><span class="sc-pulse-value risk">'+risks.length+'<span class="sc-pulse-note">先避</span></span></div>';
+  if(truth){
+    var ref5=smallCapTrendRefs['5']?String(smallCapTrendRefs['5']).slice(5).replace('-','/'):'不足';
+    truth.textContent=(smallCapDeskPartial?'CCASS 部分覆蓋':'CCASS 完整')+' · 5日基準 '+ref5;
+    truth.classList.toggle('complete',!smallCapDeskPartial);
+  }
+  var rows=profiles.filter(function(p){return p.kind===smallCapDeskMode;});
+  if(smallCapDeskMode==='setup')rows=profiles.filter(function(p){return p.kind!=='risk'&&(p.collect||p.techSetup);});
+  if(smallCapDeskMode==='turn')rows=profiles.filter(function(p){return p.kind!=='risk'&&p.turn;});
+  rows.sort(function(a,b){
+    if(smallCapDeskMode==='risk')return (b.corpRisk-a.corpRisk)||(a.score-b.score);
+    return (b.score-a.score)||((b.turnover||0)-(a.turnover||0));
+  });
+  rows=rows.slice(0,12);
+  if(!rows.length){list.innerHTML='<div class="sc-desk-empty">目前未有足夠證據，唔會夾硬出名單。</div>';return;}
+  list.innerHTML=rows.map(function(p,i){
+    var s=p.stock;
+    var scoreClass=p.kind==='risk'?' risk':p.kind==='confirm'?' wait':'';
+    var reasonHtml=p.reasons.slice(0,3).map(function(r){return'<span class="sc-reason '+r[1]+'">'+esc(r[0])+'</span>';}).join('');
+    return '<button class="sc-pick" type="button" onclick="showDetail(\''+esc(s.c)+'\')" title="開啟 '+esc(s.c)+' 詳情">'
+      +'<span class="sc-pick-rank">'+String(i+1).padStart(2,'0')+'</span>'
+      +'<span class="sc-pick-id"><span class="sc-pick-code">'+esc(s.c)+'</span><span class="sc-pick-name">'+esc(s.n||'')+'</span></span>'
+      +'<span class="sc-pick-reasons">'+reasonHtml+'</span>'
+      +'<span class="sc-pick-metrics">'
+        +'<span><span class="sc-metric-label">現價</span><span class="sc-metric-value">'+deskPrice(p.price)+'</span></span>'
+        +'<span><span class="sc-metric-label">今日</span><span class="sc-metric-value">'+(Number.isFinite(s.chg)?fmtPct(s.chg):'—')+'</span></span>'
+        +'<span><span class="sc-metric-label">量比</span><span class="sc-metric-value">'+(Number.isFinite(s.vr)?s.vr.toFixed(1)+'x':'—')+'</span></span>'
+        +'<span><span class="sc-metric-label">52周位</span><span class="sc-metric-value">'+(Number.isFinite(s.p52)?s.p52.toFixed(0)+'%':'—')+'</span></span>'
+      +'</span>'
+      +'<span class="sc-score'+scoreClass+'">'+(p.kind==='risk'?'避':p.score.toFixed(1))+'</span>'
+    +'</button>';
+  }).join('');
 }
 // --- new feature state ---
 let sortCol2='',sortDir2=1;
@@ -2100,6 +2382,10 @@ function getSortVal(s,col){
   if(col==='vr'){
     return s.vr != null ? s.vr : null;
   }
+  if(col==='d5'||col==='d20'||col==='d60'||col==='d120'){
+    var trendKey=col+'p';
+    return s[trendKey] != null ? s[trendKey] : null;
+  }
   if(col==='score'){
     return calcScore(s);
   }
@@ -2124,7 +2410,7 @@ function updateSortInfo(){
   sanitizeSortState();
   var el=document.getElementById('sortInfo');
   if(!el)return;
-  var names={code:'代碼',n:'名稱',price:'現價',yo_pct:'今年Δ%',tp:'Market%',t5:'Top5%',t10:'Top10%',np:'參與者',mc:'市值',chg:'今日Δ%',fcf:'FCF(億)',vr:'量比',sig:'信號',su:'連續增持',sd:'連續減持',yearyo:'🔺年開',prevyo:'😻前年',pypct:'前年Δ%',score:'⭐評分'};
+  var names={code:'代碼',n:'名稱',price:'現價',yo_pct:'今年Δ%',tp:'Market%',t5:'Top5%',t10:'Top10%',np:'參與者',mc:'市值',chg:'今日Δ%',fcf:'FCF(億)',vr:'量比',sig:'信號',su:'連續增持',sd:'連續減持',d5:'CCASS 5日',d20:'CCASS 20日',d60:'CCASS 60日',d120:'CCASS 120日',yearyo:'🔺年開',prevyo:'😻前年',pypct:'前年Δ%',score:'⭐評分'};
   var p=names[sortCol]||sortCol,pa=sortDir===1?'▲':'▼';
   if(sortCol2){var sn=names[sortCol2]||sortCol2,sa=sortDir2===1?'▲':'▼';el.innerHTML='<b>'+p+' '+pa+'</b><span class=\"si-sep\">|</span><span style=\"opacity:.7\">'+sn+' '+sa+'</span>';}
   else el.innerHTML='<b>'+p+' '+pa+'</b>';
@@ -2372,8 +2658,8 @@ function toggleSection(id, btn) {
 
 function renderSummaryBar(data){
   const bar=document.getElementById('summaryBar');
-  const up=data.top_increase?.length||0;
-  const dn=data.top_decrease?.length||0;
+  const up=allStocks.filter(isMeaningfulFiveDayUp).length;
+  const dn=allStocks.filter(s=>Number(s.d5s)<0&&Number(s.d5p)<=-0.1).length;
   const cov = data.coverage_pct != null ? data.coverage_pct : null;
   const covLabel = cov == null ? '' : (cov >= 100 ? '完整' : cov.toFixed(1) + '%');
   let pCnt=0, rCnt=0;
@@ -2385,8 +2671,23 @@ function renderSummaryBar(data){
     +'<span class="scnt">📦 <b>'+allStocks.length+'</b> 隻股票</span>'
     +(mcCnt?'<span class="scnt">💰 <b>'+(totalMc!=null?totalMc.toFixed(0):'0')+'億</b> 總市值</span>':'')
     +'<span class="scnt">📊 <b>'+data.first_date+'</b> 至 <b>'+esc(data.updated)+'</b></span>'+(pCnt?'<span class="scnt" style="border-color:var(--down-border);background:var(--down-soft);color:var(--down)">配股 <b>'+pCnt+'</b></span>':'')+(rCnt?'<span class="scnt" style="border-color:var(--violet-border);background:var(--violet-soft);color:var(--violet)">供股公告 <b>'+rCnt+'</b></span>':'')
-    +'<span class="scnt" style="border-color:var(--up-border);background:var(--up-soft);color:var(--up)">▲ <b>'+up+'</b> 增持</span>'
-    +'<span class="scnt" style="border-color:var(--down-border);background:var(--down-soft);color:var(--down)">▼ <b>'+dn+'</b> 減持</span>';
+    +'<span class="scnt" style="border-color:var(--up-border);background:var(--up-soft);color:var(--up)">▲ <b>'+up+'</b> 5日增持</span>'
+    +'<span class="scnt" style="border-color:var(--down-border);background:var(--down-soft);color:var(--down)">▼ <b>'+dn+'</b> 5日減持</span>';
+}
+
+// Main Market summary deliberately excludes CCASS window counters.
+function renderSummaryBar(data){
+  const bar=document.getElementById('summaryBar');
+  const cov=data.coverage_pct!=null?(data.coverage_pct>=100?'完整':data.coverage_pct.toFixed(1)+'%'):'';
+  let pCnt=0,rCnt=0,totalMc=0,mcCnt=0;
+  allStocks.forEach(s=>{const m=signalMap.get(s.c);if(m&&m.pl)pCnt++;if(m&&m.ri)rCnt++;if(hasMC(s)){totalMc+=s.mc;mcCnt++;}});
+  bar.innerHTML='<span class="scnt">CCASS 持倉日 <b>'+esc(data.updated)+'</b></span>'
+    +(cov?'<span class="scnt"><b>'+cov+'</b> 覆蓋</span>':'')
+    +'<span class="scnt"><b>'+allStocks.length+'</b> 隻股票</span>'
+    +(mcCnt?'<span class="scnt"><b>'+totalMc.toFixed(0)+'</b> 億市值</span>':'')
+    +'<span class="scnt"><b>'+data.first_date+'</b> 至 <b>'+esc(data.updated)+'</b></span>'
+    +(pCnt?'<span class="scnt">配股 <b>'+pCnt+'</b></span>':'')
+    +(rCnt?'<span class="scnt">供股公告 <b>'+rCnt+'</b></span>':'');
 }
 
 function renderTable(){
@@ -2404,7 +2705,7 @@ function renderTable(){
     var cap=(section==='heat'?'Heat':section==='small'?'Small':section==='mid'?'Mid':'Large');
     var tbody=document.getElementById('mc'+cap+'Tbody');
     var pagEl=document.getElementById('mcPag'+cap);
-    var PAGE=section==='heat'?Math.min(Math.max(stocks.length,1),120):Math.max(stocks.length, 1);
+    var PAGE=section==='heat'?Math.min(Math.max(stocks.length,1),120):10;
     var totalPages=Math.ceil(stocks.length/PAGE);
     var p=(section==='heat'?0:section==='small'?pageSmall:section==='mid'?pageMid:pageLarge)||0;
     if(p>=totalPages) p=0;
@@ -2658,6 +2959,7 @@ async function showDetail(code){
   // HKEX link
   const hkexLink=hkexLinkMap.get(s.c);
   const hkexHtml=hkexLink?'<a class="lnk" href="'+esc(hkexLink)+'" target="_blank" rel="noopener">HKEX 披露易</a>':'';
+  const kbarHtml='<a class="lnk" href="./kbar_matrix.html?mode=hk&amp;symbol='+encodeURIComponent(String(parseInt(s.c,10)))+'">Kbar 時間圖</a>';
 
   // Corp signal pills
   const sig=signalMap.get(s.c);
@@ -2695,9 +2997,9 @@ async function showDetail(code){
     +(s.hi52!=null?'<div class="dmeta"><span class="dmeta-label">52週高</span><span class="dmeta-val">'+(s.hi52<1?s.hi52.toFixed(3):s.hi52.toFixed(2))+'</span></div>':'')
     +(s.lo52!=null?'<div class="dmeta"><span class="dmeta-label">52週低</span><span class="dmeta-val">'+(s.lo52<1?s.lo52.toFixed(3):s.lo52.toFixed(2))+'</span></div>':'')
     +(s.fcf!=null?'<div class="dmeta"><span class="dmeta-label">FCF</span><span class="dmeta-val">'+s.fcf.toFixed(0)+'億</span></div>':'')
-    +(s.vol!=null?'<div class="dmeta"><span class="dmeta-label">成交額</span><span class="dmeta-val">'+(s.vol>=1e6?(s.vol/1e6).toFixed(1)+'M':(s.vol/1e3).toFixed(0)+'K')+'</span></div>':'')
+    +(s.vol!=null?'<div class="dmeta"><span class="dmeta-label">成交量</span><span class="dmeta-val">'+(s.vol>=1e6?(s.vol/1e6).toFixed(1)+'M':(s.vol/1e3).toFixed(0)+'K')+'</span></div>':'')
     +(s.beta!=null?'<div class="dmeta"><span class="dmeta-label">Beta</span><span class="dmeta-val">'+s.beta.toFixed(2)+'</span></div>':'')
-    +(s.avg_vol!=null?'<div class="dmeta"><span class="dmeta-label">均成交</span><span class="dmeta-val">'+(s.avg_vol>=1e6?(s.avg_vol/1e6).toFixed(1)+'M':(s.avg_vol/1e3).toFixed(0)+'K')+'</span></div>':'')
+    +(s.avg_vol!=null?'<div class="dmeta"><span class="dmeta-label">平均成交量</span><span class="dmeta-val">'+(s.avg_vol>=1e6?(s.avg_vol/1e6).toFixed(1)+'M':(s.avg_vol/1e3).toFixed(0)+'K')+'</span></div>':'')
     +'</div>'
     // P1+P3: Stop-loss / Risk / Target / Buy Zone row
     +(()=>{
@@ -2726,13 +3028,13 @@ async function showDetail(code){
     +'<div class="dmeta">'+(s.sd>1?'<span class="dmeta-val dn">❄️ '+s.sd+'日</span><span class="dmeta-sub">連續減持</span>':'<span class="dmeta-val" style="color:var(--mute-2)">—</span><span class="dmeta-sub">連續減持</span>')+'</div>'
     +'</div>'
     +((dsigHtml||techHtml)?'<div class="drawer-meta"><div class="dmeta" style="flex-direction:row;gap:6px;flex-wrap:wrap;padding:8px 14px;min-width:100%"><span class="dmeta-label" style="width:100%">訊號</span>'+(techHtml||'')+dsigHtml+'</div></div>':'')
-    +(hkexHtml?'<div class="drawer-meta"><div class="dmeta" style="flex-direction:row;gap:6px;padding:8px 14px;min-width:100%">'+hkexHtml+'</div></div>':'')
+    +'<div class="drawer-meta"><div class="dmeta" style="flex-direction:row;gap:8px;padding:8px 14px;min-width:100%">'+kbarHtml+hkexHtml+'</div></div>'
     +'<div class="dsection"><div class="dsection-title">持倉分布</div>'
     +'<div id="holdingsTable"><div class="loading-msg" style="padding:20px">載入股東明細…</div></div></div>';
 
   document.getElementById('holdingsTable').innerHTML=
     '<div style="padding:12px 0;color:var(--mute);font-size:12px;text-align:center">'
-    +'參與者明細數據只存於後端數據庫。每日 GitHub Actions 更新後可下載完整數據集。'
+    +'參與者明細數據只存於後端數據庫。每日本地管線更新後可下載完整數據集。'
     +'<br><br><a class="btn-ghost" style="display:inline-flex" href="./holdings.json" target="_blank">📥 下載 holdings.json</a>'
     +'</div>';
 }
@@ -2809,8 +3111,8 @@ function toggleFilter(mode){
   // Auto-sort based on filter mode
   if(mode==='placement'){sortCol='pldate';sortDir=-1;sortCol2='';}
   else if(mode==='rights'){sortCol='ridate';sortDir=-1;sortCol2='';}
-  else if(mode==='up'){sortCol='su';sortDir=-1;sortCol2='';}    // 連續增持最多在前
-  else if(mode==='dn'){sortCol='sd';sortDir=-1;sortCol2='';}     // 連續減持最多在前
+  else if(mode==='up'){sortCol='d5';sortDir=-1;sortCol2='';}
+  else if(mode==='dn'){sortCol='d5';sortDir=1;sortCol2='';}
   else if(mode==='concentrated'){sortCol='t5';sortDir=-1;sortCol2='';} // 集中度最高在前
   else if(mode==='small_mc'){sortCol='mc';sortDir=1;sortCol2='';}  // 市值最小在前
   else if(mode==='mid_mc'){sortCol='mc';sortDir=-1;sortCol2='';}   // 中間市值 desc
@@ -2959,6 +3261,9 @@ function renderMarket(snap){
     const partial=!!snap.market_partial || staleCount>0;
     left.textContent=(partial?'市場卡部分刷新 ':'市場卡更新於 ')+updated;
     right.textContent=partial ? ('⚠ 部分刷新 · 舊欄 '+staleCount+lbText+peText+cnbcText+m2Text) : '✅ fresh';
+    const staleNames=Array.isArray(snap.market_stale_fields)&&snap.market_stale_fields.length?snap.market_stale_fields.map(k=>({'spx_m2':'SPX/M2','hsi_m2':'HSI/M2'}[k]||k)).join(', '):'';
+    right.textContent=partial ? ('⚠ 部分市場資料更新 · '+staleCount+' 欄沿用舊快照'+(staleNames?'（'+staleNames+'）':'')+(lbCount?' · LB '+lbCount+'格':'')+(peCount?' · PE '+peCount+'格':'')+(cnbcCount?' · CNBC '+cnbcCount+'格':'')+(m2Count?' · M2 '+m2Count+'格':'')) : '✅ 市場資料已更新';
+    right.title=partial ? '部分來源更新成功；括號內欄位仍使用上一個成功快照。' : '所有市場卡片來源均已更新。';
     right.className=partial ? 'partial' : '';
     meta.style.display='';
   }
@@ -3250,9 +3555,11 @@ async function loadData(){
   renderHeatmapLoading();
   upd.textContent='載入中…';
   try{
-    const res=await fetch('./holdings.json?_='+Date.now()+'&v=2');
+    const res=await fetch('./holdings.json?_='+Date.now()+'&v=2', {cache:'no-store'});
     if(!res.ok) throw new Error('HTTP '+res.status);
     const data=await res.json();
+    smallCapDeskPartial=data.is_complete===false;
+    smallCapTrendRefs=data.trend_reference_dates||{};
     setBaseStocks(data.stocks);
     renderSummaryBar(data);
     applyFilters();
@@ -3260,13 +3567,13 @@ async function loadData(){
     // renderVrAlert();  // moved to gap_fvg.html
 
     // Fetch market.json
-    fetch('./market.json?_='+Date.now())
+    fetch('./market.json?_='+Date.now(), {cache:'no-store'})
       .then(r=>r.ok?r.json():null)
       .then(m=>{renderMarket(m);renderBreadth(m);})
       .catch(()=>{});
 
     // Fetch fund-flow data for main-page flow heatmap.
-    fetch('./data/fundflow.json?_='+Date.now())
+    fetch('./data/fundflow.json?_='+Date.now(), {cache:'no-store'})
       .then(r=>r.ok?r.json():null)
       .then(ff=>{
         if(!ff||!ff.all){
@@ -3287,7 +3594,7 @@ async function loadData(){
       .catch(()=>{fundflowUpdated='未載入';fundflowCount=0;markHeatmapFeedReady('fundflow');applyFilters();});
 
     // Fetch confluence data for pattern badges in main table
-    fetch('./data/confluence.json?_='+Date.now())
+    fetch('./data/confluence.json?_='+Date.now(), {cache:'no-store'})
       .then(r=>r.ok?r.json():null)
       .then(cf=>{if(cf){confluenceMap=new Map();cf.forEach(r=>{confluenceMap.set(String(r.code||'').padStart(5,'0'),r.pattern||'');});renderTable();}})
       .catch(()=>{});
@@ -3299,7 +3606,7 @@ async function loadData(){
       .catch(()=>{}); */
 
     // Fetch latest feed from signals.json (fresher than prices.json)
-    fetch('./data/signals.json?_='+Date.now())
+    fetch('./data/signals.json?_='+Date.now(), {cache:'no-store'})
       .then(r=>r.ok?r.json():null)
     .then(d=>{
         if(d&&d.groups){
@@ -3362,8 +3669,9 @@ async function loadData(){
           hkexLinkMap = newHkexLinkMap;
           techSignalMap = newTechSignalMap;
           markHeatmapFeedReady('signals');
+          renderSmallCapDesk();
           // Merge technical alerts (POC/FVG/Gap) from alerts.json
-          fetch('./data/alerts.json?_='+Date.now())
+          fetch('./data/alerts.json?_='+Date.now(), {cache:'no-store'})
             .then(r=>r.ok?r.json():null)
             .then(ad=>{
               if(ad&&ad.alerts){
@@ -3402,12 +3710,12 @@ async function loadData(){
         renderBT();
         renderRecent(d?.recentCorps||[]);
         // Also load local announcements archive
-        fetch('./data/announcements.json?_='+Date.now())
+        fetch('./data/announcements.json?_='+Date.now(), {cache:'no-store'})
           .then(r=>r.ok?r.json():null)
           .then(a=>{if(a&&a.length)renderRecent(a);})
           .catch(()=>{});
         // Load breakthrough data
-        fetch('./data/breakthroughs.json?_='+Date.now())
+        fetch('./data/breakthroughs.json?_='+Date.now(), {cache:'no-store'})
           .then(r=>r.ok?r.json():null)
           .then(bt=>{if(bt){
             // breakthroughs (real-time crossings) — higher priority
@@ -3422,7 +3730,7 @@ async function loadData(){
       }).catch(()=>{markHeatmapFeedReady('signals');markHeatmapFeedReady('alerts');applyFilters();});
     dot.className=data.is_complete===false?'dot warn':'dot';
     upd.textContent='CCASS持倉日 '+data.updated+' · 市場/訊號資料已按今日刷新';
-    fetch('./data/publish_bundle.json?_='+Date.now())
+    fetch('./data/publish_bundle.json?_='+Date.now(), {cache:'no-store'})
       .then(r=>r.ok?r.json():null)
       .then(b=>{
         if(!b) return;

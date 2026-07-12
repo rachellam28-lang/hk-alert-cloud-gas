@@ -6,6 +6,7 @@ from __future__ import annotations
 import html
 import json
 import math
+from datetime import datetime
 from pathlib import Path
 
 
@@ -139,6 +140,8 @@ a{color:inherit;text-decoration:none}
 
 def main() -> None:
     data = load_data()
+    page_updated = datetime.now().strftime("%Y-%m-%d %H:%M")
+    sample_updated = str(data.get("updated", "")).replace("T", " ")[:16] or "—"
     rows = []
     for bench in data.get("benchmarks", []) or []:
         label = bench.get("label") or bench.get("name") or bench.get("symbol") or bench.get("key")
@@ -190,7 +193,7 @@ def main() -> None:
       <div class="title">📉 分佈日訊號表</div>
       <div class="subtitle">用 HSI proxy 記錄市場壓力日期；表格直接顯示最近訊號、25D count 同狀態，唔再將第一屏放成績統計。</div>
     </div>
-    <div class="hero-meta">更新：<b>{esc(str(data.get("updated", ""))[:16].replace("T", " "))}</b><br>窗口：<b>{esc(data.get("window_days", 25))}D</b><br>跌幅門檻：<b>{esc(data.get("drop_pct", 0.2))}%</b></div>
+    <div class="hero-meta">頁面更新：<b>{esc(page_updated)}</b><br>樣本更新：<b>{esc(sample_updated)}</b><br>窗口：<b>{esc(data.get("window_days", 25))}D</b><br>跌幅門檻：<b>{esc(data.get("drop_pct", 0.2))}%</b></div>
   </section>
   <section class="cards">
     <div class="card"><div class="k">最新訊號</div><div class="v">{esc(latest.get("date", "—"))}</div><div class="s">{state_label(latest.get("state"))}</div></div>

@@ -355,6 +355,7 @@ def export_history_json(days: int = 30) -> Path:
 
     out = {
         "ok": True,
+        "updated": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
         "total": sum(len(d["alerts"]) for d in days_out),
         "days": days_out,
     }
@@ -375,3 +376,6 @@ def export_all() -> None:
 # ── Init on import ─────────────────────────────────────────────────────────────
 
 init_tables()
+
+if __name__ == "__main__":
+    export_all()

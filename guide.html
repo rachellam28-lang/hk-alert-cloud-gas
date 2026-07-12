@@ -43,22 +43,7 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 @media(max-width:640px){.site-nav{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:6px 8px;gap:6px}.site-nav a{flex:0 0 auto}.topbar-inner{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch}}
 </style>
 </head><body>
-  <nav class="site-nav">
-    <a href="./index.html">📦 Market</a>
-    <a href="./signals.html">🔔 訊號</a>
-    <a href="./watchlist.html">⭐ 自選</a>
-    <a href="./history.html">🕐 歷史</a>
-    <a href="./gap_fvg.html">⤴ Gap/FVG</a>
-    <a href="./fundflow.html">💰 資金</a>
-    <a href="./rights_analysis.html">📋 供配股</a>
-    <a href="./daily_trade_prompt.html">🚦 每日提示</a>
-    <a href="./timing_analysis.html">⏱ 時間窗口</a>
-    <a href="./jieqi_analysis.html">🧭 節氣窗口</a>
-    <a href="./distribution_day.html">📉 分佈日</a>
-    <a href="./vqc_analysis.html">📈 成交轉勢日</a>
-    <a href="./docs/ccass-warroom.html">⚡ 戰情室</a>
-    <a href="./guide.html">📖 說明</a>
-  </nav>
+  <nav class="site-nav" id="sharedSiteNav"></nav>
 
 
 <header class="topbar"><div class="topbar-inner">
@@ -75,11 +60,11 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 
 <main>
 <h1>📖 Market 使用說明書</h1>
-<div class="subtitle">港股 Market（中央結算系統）持倉追蹤 Dashboard · 最後更新：2026-06-20</div>
+<div class="subtitle">港股 Market（中央結算系統）持倉追蹤 Dashboard · 解讀以當前頁面與最新數據為準</div>
 
 <div class="card">
 <h2>🔍 呢個 Dashboard 係咩？</h2>
-<p>追蹤港股 Market 持倉數據 — 睇邊個大戶/券商正在收貨或散貨。</p>
+<p>追蹤港股 CCASS / 券商席位持倉變化，配合股價、公告同集中度，判斷係收集、派發、定只係轉倉。</p>
 
 <h3>📊 數據來源</h3>
 <table>
@@ -92,16 +77,25 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 
 <h3>🎯 點樣用嚟炒？</h3>
 <ol>
-<li><b>Market% ↑ + 股價 ↑</b> → 大戶收貨中，跟勢追入</li>
-<li><b>Market% ↑ + 股價 ↓</b> → 大戶壓價收貨，留意見底信號</li>
-<li><b>Market% ↓ + 股價 ↑</b> → 大戶散貨中，高位減持</li>
+<li><b>Market% ↑ + 股價 ↑</b> → 可能有強席位收集，先睇有冇消息、量能同連續性配合</li>
+<li><b>Market% ↑ + 股價 ↓</b> → 可能壓價收集，亦可能只係換手；唔好單靠一日判斷</li>
+<li><b>Market% ↓ + 股價 ↑</b> → 可能派發，亦可能係席位轉倉；要睇後續幾日有冇延續</li>
 <li><b>Top5% > 80%</b> → 高度集中，莊家股，大波動</li>
-<li><b>連續增持（🔥）</b> → 大戶持續買入，強勢信號</li>
-<li><b>連續減持（❄️）</b> → 大戶持續沽出，避開</li>
+<li><b>大席位連續多日增持</b> → 比單日變化更接近收集信號</li>
+<li><b>大席位突然大減而股價未跌</b> → 留意暗中派發風險</li>
+<li><b>多個細倉位突然分散出現</b> → 留意托價 / 分散派貨跡象</li>
 <li><b>🔺 年開突破</b> → 現價高過今年開市價，多頭趨勢</li>
 <li><b>52週%近0%</b> → 股價近52週低位，可能見底</li>
 <li><b>52週%近100%</b> → 股價近52週高位，小心高追</li>
 </ol>
+<p><b>注意：</b>倉位由一個大戶席位轉到另一個，可能只係轉倉，未必代表真買賣。</p>
+
+<h3>⚠️ 限制</h3>
+<ul>
+<li><b>CCASS 只顯示券商層面</b> 持倉，唔直接顯示最終投資者身分。</li>
+<li>同一個大戶可以用多個券商席位開倉，要靠連續性同經驗比對。</li>
+<li>數據屬 <b>T+2 交收</b> 邏輯，唔係即時盤口。</li>
+</ul>
 </div>
 
 <div class="card">
@@ -112,23 +106,21 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 <tr><td>名稱</td><td>公司名</td></tr>
 <tr><td>😻</td><td>現價 > 前年開盤價，顯示喺 code 旁邊</td></tr>
 <tr><td>前年Δ%</td><td>(現價-前年開)/前年開×100，sortable</td></tr>
-<tr><td>量比</td><td>今日成交量 / 平均成交量，sortable</td></tr>
 <tr><td>現價</td><td>實時股價，sortable</td></tr>
+<tr><td>今日Δ%</td><td>今日股價變幅，sortable</td></tr>
 <tr><td>今年Δ%🔺</td><td>(現價-今年開)/今年開×100，🔺=現價>年開，sortable</td></tr>
+<tr><td>量比</td><td>今日成交量 / 平均成交量，sortable</td></tr>
 <tr><td>信號</td><td>IPO/POC/FVG/配股/供股 signal pills</td></tr>
-<tr><td>Market%</td><td>Market 總持倉%</td></tr>
+<tr><td>Market%</td><td>Total in CCASS：所有券商/中介人合計持股佔已發行股本%</td></tr>
 <tr><td>Top5%</td><td>Top5 集中度</td></tr>
 <tr><td>Top10%</td><td>Top10 集中度</td></tr>
-<tr><td>5日Δ</td><td>5日 Market% 變化，🟢增持 🔴減持</td></tr>
-<tr><td>20日Δ</td><td>20日 Market% 變化</td></tr>
-<tr><td>60日Δ</td><td>60日 Market% 變化</td></tr>
-<tr><td>120日Δ</td><td>120日 Market% 變化</td></tr>
 <tr><td>⭐評分</td><td>綜合趨勢+信號評分</td></tr>
-<tr><td>🔁連續</td><td>連續增持🔥/減持❄️日數</td></tr>
+<tr><td>🔁連續</td><td>連續增持 / 連續減持日數</td></tr>
+<tr><td>CCASS 5/20/60/120日</td><td>所有券商 CCASS 合計持股相對可信基準日的股數及百分比變化；歷史不足顯示 —</td></tr>
+<tr><td>參與者</td><td>當日 CCASS participant 數</td></tr>
 <tr><td>市值(億)</td><td>市值（億港元）</td></tr>
-<tr><td>今日Δ%</td><td>今日股價變幅</td></tr>
-<tr><td>52週%</td><td>(現價-52低)/(52高-52低)×100，進度條</td></tr>
-<tr><td>PE</td><td>市盈率</td></tr>
+<tr><td>FCF(億)</td><td>公司自由現金流（億港元），唔係市場資金流</td></tr>
+<tr><td>連結</td><td>快速跳去外部圖表 / 報價</td></tr>
 </table>
 </div>
 
@@ -158,7 +150,7 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 <li>📈 向上FVG — Fair Value Gap 向上</li>
 <li>🔺 年開突破 — 現價突破今年開盤價 ≥5%</li>
 <li>🆕 IPO首日突破 — 現價突破 IPO 首日高位</li>
-<li>📈 Market增持 / 📉 Market減持 — 5日持倉增減</li>
+<li>📈 CCASS 5日增持 / 📉 CCASS 5日減持 — 合計持股變化達 ±0.10%</li>
 </ul>
 <p><b>市值按鈕：</b>小市值 (&lt;20億) · 中市值 (20-100億) · 大市值 (≥100億) — 三個分表獨立排序/分頁</p>
 <p><b>Confluence Pattern：</b>🚀催化 · 💎雙向 · 🦆搶跑 — 三種型態 filter</p>
@@ -168,11 +160,11 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 <h2>⚡ 快篩按鈕</h2>
 <table>
 <tr><th>按鈕</th><th>條件</th></tr>
-<tr><td><b>↑增持</b></td><td>5日Δ > 0</td></tr>
-<tr><td><b>↓減持</b></td><td>5日Δ < 0</td></tr>
+<tr><td><b>↑5日增持</b></td><td>CCASS 合計持股 5 日變化 ≥ +0.10%</td></tr>
+<tr><td><b>↓5日減持</b></td><td>CCASS 合計持股 5 日變化 ≤ -0.10%</td></tr>
 <tr><td><b>集中</b></td><td>Top5% ≥ 50</td></tr>
 <tr><td><b>配股</b></td><td>有配股記錄</td></tr>
-<tr><td><b>供股</b></td><td>有供股記錄</td></tr>
+<tr><td><b>供股公告</b></td><td>有供股公告記錄</td></tr>
 </table>
 </div>
 
@@ -195,6 +187,8 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 <tr><td><a href="./history.html">歷史</a></td><td>每日訊號 + 公告歷史</td></tr>
 <tr><td><a href="./watchlist.html">自選</a></td><td>⭐ 自選股監察</td></tr>
 <tr><td><a href="./gap_fvg.html">Gap/FVG</a></td><td>跳空缺口 + FVG 警報中心</td></tr>
+<tr><td><a href="./momentum_list.html">動量名單</a></td><td>跨市場動量清單整理 / 匯出</td></tr>
+<tr><td><a href="./kbar_matrix.html">Kbar</a></td><td>TradingView 多週期 K 線矩陣 (5m-4h)</td></tr>
 </table>
 
 <h2>⤴ Gap/FVG 說明</h2>
@@ -202,7 +196,7 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 <tr><th>類型</th><th>說明</th></tr>
 <tr><td>Bullish FVG</td><td>向上公平值缺口，股價回測後可能繼續上升</td></tr>
 <tr><td>量比異常</td><td>今日成交 / 平均量 ≥ 2，異常放量</td></tr>
-<tr><td>轉倉信號</td><td>Market 結算日前後大戶換倉跡象</td></tr>
+<tr><td>轉倉信號</td><td>券商席位之間有明顯換手 / 轉倉跡象；未必等於最終投資者買賣</td></tr>
 <tr><td>🎯 Confluence</td><td>公告＋技術訊號同時出現，信號疊加強化</td></tr>
 </table>
 
@@ -225,4 +219,5 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 
 <div class="foot">數據來源：HKEX Market · 僅供參考</div>
 </main>
+<script src="./shared-nav.js"></script>
 </body></html>

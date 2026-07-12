@@ -59,20 +59,7 @@ a.stock-link:hover{color:var(--primary)}
 .status-empty{background:#0f1a2e}
 </style>
 </head><body>
-  <nav class="site-nav">
-    <a href="./index.html">📦 Market</a>
-    <a href="./signals.html">🔔 訊號</a>
-    <a href="./watchlist.html">⭐ 自選</a>
-    <a href="./history.html">🕐 歷史</a>
-    <a href="./gap_fvg.html">⤴ Gap/FVG</a>
-    <a href="./fundflow.html">💰 資金</a>
-    <a href="./rights_analysis.html">📋 供配股</a>
-    <a href="./timing_analysis.html">⏱ 時間窗口</a>
-    <a href="./distribution_day.html">📉 分佈日</a>
-    <a href="./vqc_analysis.html">📈 成交轉勢日</a>
-    <a href="./docs/ccass-warroom.html">⚡ 戰情室</a>
-    <a href="./guide.html">📖 說明</a>
-  </nav>
+  <nav class="site-nav" id="sharedSiteNav" data-base="./"></nav>
 
 
 <div class="topbar">
@@ -139,13 +126,13 @@ function showEmpty(el,msg){
   // Load names
   let names = {};
   try {
-    let r = await fetch('holdings.json');
+    let r = await fetch('holdings.json?_=' + Date.now(), { cache: 'no-store' });
     let d = await r.json();
     for (let s of d.stocks) names[s.c] = s.n;
   } catch(e) {}
 
   // Load fundflow
-  let r = await fetch('data/fundflow.json');
+  let r = await fetch('data/fundflow.json?_=' + Date.now(), { cache: 'no-store' });
   let d = await r.json();
   document.getElementById('updated').textContent = d.updated || '';
   document.getElementById('footer').textContent = '數據來源: 騰訊自選股 westock-data | 更新: ' + (d.updated || '--');
@@ -211,4 +198,5 @@ document.querySelectorAll('.site-nav a').forEach(a => {
   }
 });
 </script>
+<script src="./shared-nav.js"></script>
 </body></html>

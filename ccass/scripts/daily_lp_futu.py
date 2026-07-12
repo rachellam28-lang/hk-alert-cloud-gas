@@ -1,39 +1,18 @@
 """Daily: fetch ALL market data from Futu OpenD — lp, mc, hi52, lo52, pe, vol, chg, vr.
 Run after HK market close (~5pm HKT). Requires Futu gateway.
 """
-import json, os, socket, sys, time, math
+import json, sys, time, math
 from pathlib import Path
 
 ROOT = Path(__file__).parent.parent.parent  # holdings-debug/
 PRICES = ROOT / "data" / "stock_prices.json"
 HOLDINGS = ROOT / "holdings.json"
 SUSPENDED = ROOT / "data" / "suspended_stocks.json"
+sys.path.insert(0, str(ROOT / "scripts"))
+from futu_env import ensure_futu_quote_backend_or_die
 
 
-def _load_env():
-    env_path = ROOT / ".env"
-    if not env_path.exists():
-        return
-    for line in env_path.read_text(encoding="utf-8").splitlines():
-        if not line or line.lstrip().startswith("#") or "=" not in line:
-            continue
-        key, val = line.split("=", 1)
-        os.environ.setdefault(key.strip(), val.strip().strip('"').strip("'"))
-
-
-_load_env()
-FUTU_HOST = os.environ.get("FUTU_HOST", "127.0.0.1")
-FUTU_PORT = int(os.environ.get("FUTU_PORT", "11111"))
-
-probe = socket.socket()
-probe.settimeout(float(os.environ.get("FUTU_CONNECT_TIMEOUT", "2")))
-try:
-    probe.connect((FUTU_HOST, FUTU_PORT))
-except OSError as exc:
-    print(f"ERROR: FutuOpenD not reachable at {FUTU_HOST}:{FUTU_PORT}: {exc}", file=sys.stderr)
-    sys.exit(2)
-finally:
-    probe.close()
+FUTU_HOST, FUTU_PORT = ensure_futu_quote_backend_or_die(ROOT)
 
 prices = json.loads(PRICES.read_text(encoding='utf-8'))
 codes = sorted(k for k,v in prices.items() if v.get('yo'))
@@ -118,8 +97,11 @@ q.close()
 for code, e in prices.items():
     if e.get('lp') and e.get('hi52') and e.get('lo52') and e['hi52'] > e['lo52']:
         e['p52'] = round((e['lp'] - e['lo52']) / (e['hi52'] - e['lo52']) * 100, 1)
-    if e.get('lp') and e.get('py') and e['py'] > 0:
-        e['py_pct'] = round((e['lp'] - e['py']) / e['py'] * 100, 2)
+    effective_py = e.get('apy', e.get('py'))
+    if e.get('lp') and effective_py and effective_py > 0:
+        e['py_pct'] = round((e['lp'] - effective_py) / effective_py * 100, 2)
+        if e.get('apy'):
+            e['apy_pct'] = e['py_pct']
 
 def sanitize(obj):
     if isinstance(obj, dict): return {k: sanitize(v) for k,v in obj.items()}
@@ -136,6 +118,9 @@ holdings = json.loads(HOLDINGS.read_text(encoding='utf-8'))
 for s in holdings['stocks']:
     code = s['c']
     e = prices.get(code, {})
+    effective_py = e.get('apy', e.get('py'))
+    if effective_py is not None:
+        s['py'] = effective_py
     for k in ['lp','mc','hi52','lo52','pe','vol','vr','chg','p52','py_pct']:
         if e.get(k) is not None:
             s[k] = e[k]

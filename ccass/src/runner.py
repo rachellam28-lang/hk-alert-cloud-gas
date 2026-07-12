@@ -278,8 +278,11 @@ def _run_child(cmd: list[str], timeout: int, input_text: str | None = None):
         return _sp.CompletedProcess(cmd, proc.returncode, stdout, stderr)
     except _sp.TimeoutExpired as e:
         try:
-            os.killpg(proc.pid, signal.SIGKILL)
-        except ProcessLookupError:
+            if os.name == "nt":
+                proc.kill()
+            else:
+                os.killpg(proc.pid, signal.SIGKILL)
+        except (ProcessLookupError, OSError):
             pass
         stdout, stderr = proc.communicate()
         raise _sp.TimeoutExpired(cmd, timeout, output=stdout, stderr=stderr) from e
@@ -306,20 +309,27 @@ def _scrape_stock_worker(args: tuple) -> tuple[str, bool, str]:
     """
     stock_code, date_str, sc_cfg = args
     from datetime import date as dt_date
-    from src.scraper import HOLDINGSScraper
+    from src.scraper import save_snapshot
 
     query_date = dt_date.fromisoformat(date_str)
-    scraper = HOLDINGSScraper(
-        user_agent=sc_cfg["user_agent"],
-        delay_min=sc_cfg["delay_min_seconds"],
-        delay_max=sc_cfg["delay_max_seconds"],
-        timeout=sc_cfg["timeout_seconds"],
-        max_retries=sc_cfg["max_retries"],
-    )
+    provider = os.environ.get("HOLDINGS_PROVIDER", "hkex").lower()
     try:
-        snap = scraper.scrape_stock(stock_code, query_date)
+        if provider == "longbridge":
+            from src.longbridge_provider import scrape_stock as provider_scrape_stock
+
+            snap = provider_scrape_stock(stock_code, query_date)
+        else:
+            from src.scraper import HOLDINGSScraper
+
+            scraper = HOLDINGSScraper(
+                user_agent=sc_cfg["user_agent"],
+                delay_min=sc_cfg["delay_min_seconds"],
+                delay_max=sc_cfg["delay_max_seconds"],
+                timeout=sc_cfg["timeout_seconds"],
+                max_retries=sc_cfg["max_retries"],
+            )
+            snap = scraper.scrape_stock(stock_code, query_date)
         if snap:
-            from src.scraper import save_snapshot
             save_snapshot(snap)
             return (stock_code, True, "")
         return (stock_code, False, "no data")
@@ -1162,7 +1172,7 @@ def _detect_and_log_events(t_date: date, y_date: date) -> list[dict]:
     """Compare per-broker HOLDINGS holdings between T and T-1 for all stocks.
 
     Queries holdings_holdings in bulk, groups by stock in Python, runs
-    detect_events(), logs new events to holdings_events, and returns
+    detect_events(), logs new events to ccass_events, and returns
     the list of newly logged events (with DB ids) for alert dispatch.
     """
     t_str = t_date.strftime("%Y-%m-%d")
@@ -1217,7 +1227,7 @@ def _detect_and_log_events(t_date: date, y_date: date) -> list[dict]:
 
             with get_conn() as conn:
                 cur = conn.execute(
-                    """INSERT INTO holdings_events
+                    """INSERT INTO ccass_events
                          (stock_code, trade_date, event_type, broker_from, broker_to,
                           pct, shares, detected_at, alerted)
                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0)""",

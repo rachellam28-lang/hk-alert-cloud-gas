@@ -1,16 +1,14 @@
 -- CCASS Tracker DB Schema
--- Design: per-stock-per-date flat table
+-- Design: per-stock-per-date flat tables plus participant-level caches.
 
--- 主表：每日每股 CCASS 總持倉
 CREATE TABLE IF NOT EXISTS ccass_daily (
-    stock_code TEXT NOT NULL,           -- '00700'
-    trade_date TEXT NOT NULL,           -- 'YYYY-MM-DD'
-    total_shares INTEGER NOT NULL,      -- CCASS 總持倉股數
-    total_pct REAL,                     -- 佔已發行 %
+    stock_code TEXT NOT NULL,
+    trade_date TEXT NOT NULL,
+    total_shares INTEGER NOT NULL,
+    total_pct REAL,
     num_participants INTEGER,
     top5_pct REAL,
     top10_pct REAL,
-    -- Sentinel Option A concentration metrics (ex-A00005)
     adj_hhi REAL,
     broker_top5_pct REAL,
     top_broker_id TEXT,
@@ -26,7 +24,6 @@ CREATE TABLE IF NOT EXISTS ccass_daily (
 
 CREATE INDEX IF NOT EXISTS idx_ccass_daily_date ON ccass_daily(trade_date);
 
--- Detail：每日每股每個 participant 持倉
 CREATE TABLE IF NOT EXISTS ccass_holdings (
     stock_code TEXT NOT NULL,
     trade_date TEXT NOT NULL,
@@ -41,7 +38,50 @@ CREATE INDEX IF NOT EXISTS idx_holdings_date ON ccass_holdings(trade_date);
 CREATE INDEX IF NOT EXISTS idx_holdings_participant ON ccass_holdings(participant_id);
 CREATE INDEX IF NOT EXISTS idx_holdings_stock_date ON ccass_holdings(stock_code, trade_date);
 
--- Trend cache：5日/20日/60日/120日 持倉變化
+CREATE TABLE IF NOT EXISTS ccass_participant_deltas (
+    stock_code TEXT NOT NULL,
+    trade_date TEXT NOT NULL,
+    previous_date TEXT NOT NULL,
+    participant_id TEXT NOT NULL,
+    participant_name TEXT,
+    shares_previous INTEGER NOT NULL DEFAULT 0,
+    shares_current INTEGER NOT NULL DEFAULT 0,
+    shares_delta INTEGER NOT NULL DEFAULT 0,
+    pct_previous REAL,
+    pct_current REAL,
+    pct_delta REAL,
+    is_new INTEGER NOT NULL DEFAULT 0,
+    is_exited INTEGER NOT NULL DEFAULT 0,
+    abs_shares_delta INTEGER NOT NULL DEFAULT 0,
+    abs_pct_delta REAL NOT NULL DEFAULT 0,
+    computed_at TEXT NOT NULL,
+    PRIMARY KEY (stock_code, trade_date, participant_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_participant_deltas_date ON ccass_participant_deltas(trade_date);
+CREATE INDEX IF NOT EXISTS idx_participant_deltas_participant ON ccass_participant_deltas(participant_id, trade_date);
+CREATE INDEX IF NOT EXISTS idx_participant_deltas_stock_date ON ccass_participant_deltas(stock_code, trade_date);
+
+CREATE TABLE IF NOT EXISTS ccass_participant_anomalies (
+    stock_code TEXT NOT NULL,
+    trade_date TEXT NOT NULL,
+    anomaly_type TEXT NOT NULL,
+    participant_id TEXT NOT NULL DEFAULT '',
+    participant_name TEXT,
+    stock_name TEXT,
+    previous_date TEXT,
+    severity TEXT,
+    score REAL NOT NULL DEFAULT 0,
+    shares_delta INTEGER,
+    pct_delta REAL,
+    details_json TEXT,
+    detected_at TEXT NOT NULL,
+    PRIMARY KEY (stock_code, trade_date, anomaly_type, participant_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_participant_anomalies_date ON ccass_participant_anomalies(trade_date);
+CREATE INDEX IF NOT EXISTS idx_participant_anomalies_type_date ON ccass_participant_anomalies(anomaly_type, trade_date);
+
 CREATE TABLE IF NOT EXISTS ccass_trends (
     stock_code TEXT NOT NULL,
     trade_date TEXT NOT NULL,
@@ -61,12 +101,11 @@ CREATE TABLE IF NOT EXISTS ccass_trends (
 
 CREATE INDEX IF NOT EXISTS idx_trends_date ON ccass_trends(trade_date);
 
--- Alerts log：避免重複 alert
 CREATE TABLE IF NOT EXISTS alerts_sent (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     stock_code TEXT NOT NULL,
     trade_date TEXT NOT NULL,
-    alert_type TEXT NOT NULL,           -- 'spike_up' | 'spike_down' | 'consecutive_buy' | 'consecutive_sell'
+    alert_type TEXT NOT NULL,
     message TEXT NOT NULL,
     sent_at TEXT NOT NULL,
     channel TEXT NOT NULL DEFAULT 'telegram'
@@ -75,7 +114,6 @@ CREATE TABLE IF NOT EXISTS alerts_sent (
 CREATE INDEX IF NOT EXISTS idx_alerts_stock_date ON alerts_sent(stock_code, trade_date);
 CREATE UNIQUE INDEX IF NOT EXISTS uq_alerts_dedup ON alerts_sent(stock_code, trade_date, alert_type);
 
--- Stock universe
 CREATE TABLE IF NOT EXISTS stock_universe (
     stock_code TEXT PRIMARY KEY,
     stock_name TEXT,
@@ -84,22 +122,20 @@ CREATE TABLE IF NOT EXISTS stock_universe (
     last_seen_at TEXT
 );
 
--- Trading calendar
 CREATE TABLE IF NOT EXISTS trading_calendar (
     trade_date TEXT PRIMARY KEY,
     is_trading_day INTEGER NOT NULL,
     description TEXT
 );
 
--- CCASS Events (Deposit / Transfer) — dedup via PK + alerted flag
 CREATE TABLE IF NOT EXISTS ccass_events (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     stock_code TEXT NOT NULL,
     trade_date TEXT NOT NULL,
-    event_type TEXT NOT NULL,           -- 'deposit' | 'transfer'
-    broker_from TEXT,                    -- for transfer: losing broker
-    broker_to TEXT,                      -- for transfer: gaining broker
-    pct REAL NOT NULL,                   -- % of issued shares
+    event_type TEXT NOT NULL,
+    broker_from TEXT,
+    broker_to TEXT,
+    pct REAL NOT NULL,
     shares INTEGER NOT NULL,
     detected_at TEXT NOT NULL,
     alerted INTEGER NOT NULL DEFAULT 0
@@ -108,7 +144,6 @@ CREATE TABLE IF NOT EXISTS ccass_events (
 CREATE INDEX IF NOT EXISTS idx_events_stock_trade ON ccass_events(stock_code, trade_date);
 CREATE INDEX IF NOT EXISTS idx_events_alerted ON ccass_events(alerted);
 
--- Scrape run metadata
 CREATE TABLE IF NOT EXISTS scrape_runs (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     run_date TEXT NOT NULL,
@@ -117,6 +152,6 @@ CREATE TABLE IF NOT EXISTS scrape_runs (
     stocks_attempted INTEGER,
     stocks_succeeded INTEGER,
     stocks_failed INTEGER,
-    status TEXT NOT NULL,               -- 'running' | 'success' | 'partial' | 'failed'
+    status TEXT NOT NULL,
     error_summary TEXT
 );
