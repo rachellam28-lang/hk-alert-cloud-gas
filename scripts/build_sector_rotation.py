@@ -9,6 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 RAW = ROOT / "raw"
 OUT = ROOT / "data" / "sector_rotation.json"
+MIN_FRESH_ROWS = 500
 
 SECTORS = {
     "tech": ["科技", "軟件", "芯", "智能", "AI", "電子", "電訊"],
@@ -28,13 +29,16 @@ def sector(name: str) -> str:
     return "other"
 
 
-def close(value):
+def close(value, snapshot_day: date):
     if isinstance(value, (int, float)) and value > 0:
         return float(value)
     if isinstance(value, dict):
-        value = value.get("close")
-        if isinstance(value, (int, float)) and value > 0:
-            return float(value)
+        source_date = str(value.get("source_date") or "")[:10]
+        if value.get("stale") is True or (source_date and source_date != snapshot_day.isoformat()):
+            return None
+        price = value.get("close")
+        if isinstance(price, (int, float)) and price > 0:
+            return float(price)
     return None
 
 
@@ -46,7 +50,13 @@ def load_snapshots():
             continue
         day = date.fromisoformat(match.group(1)[:4] + "-" + match.group(1)[4:6] + "-" + match.group(1)[6:])
         raw = json.loads(path.read_text(encoding="utf-8"))
-        snapshots[day] = {str(code).zfill(5): close(value) for code, value in raw.items()}
+        cleaned = {
+            str(code).zfill(5): price
+            for code, value in raw.items()
+            if (price := close(value, day)) is not None
+        }
+        if len(cleaned) >= MIN_FRESH_ROWS:
+            snapshots[day] = cleaned
     return snapshots
 
 
@@ -61,13 +71,20 @@ def nearest_reference(latest: date, snapshots: dict[date, dict], days: int):
 
 def main():
     snapshots = load_snapshots()
+    if not snapshots:
+        raise SystemExit(f"No price snapshot has at least {MIN_FRESH_ROWS} same-date non-stale rows")
     latest = max(snapshots)
     holdings = json.loads((ROOT / "holdings.json").read_text(encoding="utf-8"))
     names = {str(row.get("c", "")).zfill(5): str(row.get("n", "")) for row in holdings.get("stocks", [])}
     windows = {}
     for days in (5, 20, 60, 120):
         ref = nearest_reference(latest, snapshots, days)
-        windows[str(days)] = {"latest_date": latest.isoformat(), "reference_date": ref.isoformat() if ref else None}
+        windows[str(days)] = {
+            "latest_date": latest.isoformat(),
+            "latest_rows": len(snapshots[latest]),
+            "reference_date": ref.isoformat() if ref else None,
+            "reference_rows": len(snapshots[ref]) if ref else None,
+        }
 
     sectors = {key: {"name": key, "count": 0, "windows": {}} for key in [*SECTORS, "other"]}
     for key, item in sectors.items():
@@ -97,7 +114,8 @@ def main():
     out = {
         "updated": latest.isoformat(),
         "source": "raw/prices_YYYYMMDD.json + holdings.json names",
-        "method": "equal-weight mean price return; missing prices excluded",
+        "method": "equal-weight mean return; same-date non-stale closes only; missing prices excluded",
+        "minimum_fresh_rows": MIN_FRESH_ROWS,
         "windows": windows,
         "sectors": sectors,
     }

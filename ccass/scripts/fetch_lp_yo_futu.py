@@ -11,6 +11,23 @@ PRICES = ROOT / "data" / "stock_prices.json"
 sys.path.insert(0, str(ROOT / "scripts"))
 from futu_env import ensure_futu_quote_backend_or_die
 
+
+def sanitize(obj):
+    if isinstance(obj, dict):
+        return {key: sanitize(value) for key, value in obj.items()}
+    if isinstance(obj, list):
+        return [sanitize(value) for value in obj]
+    if isinstance(obj, float) and (math.isnan(obj) or math.isinf(obj)):
+        return None
+    return obj
+
+
+def save_prices():
+    PRICES.write_text(
+        json.dumps(sanitize(prices), ensure_ascii=False, indent=2, allow_nan=False),
+        encoding='utf-8',
+    )
+
 # Load
 prices = json.loads(PRICES.read_text(encoding='utf-8'))
 holdings = json.loads(HOLDINGS.read_text(encoding='utf-8'))
@@ -47,7 +64,7 @@ for i in range(0, len(codes), BATCH):
     time.sleep(0.3)
 
 # Save checkpoint
-PRICES.write_text(json.dumps(prices, ensure_ascii=False, indent=2), encoding='utf-8')
+save_prices()
 
 # === PHASE 2: 2026 year-open via request_history_kline ===
 print("\n--- Phase 2: 2026 year-open ---")
@@ -67,13 +84,13 @@ with open(ROOT / 'py_yoyo_futu.log', 'w') as log:
         
         if (i+1) % 500 == 0:
             print(f"  {i+1}/{len(codes)} updated={updated_yo}")
-            PRICES.write_text(json.dumps(prices, ensure_ascii=False, indent=2), encoding='utf-8')
+            save_prices()
         time.sleep(0.3)
 
 q.close()
 
 # Final save
-PRICES.write_text(json.dumps(prices, ensure_ascii=False, indent=2), encoding='utf-8')
+save_prices()
 
 # === Update holdings.json ===
 print("\n--- Updating holdings.json ---")
@@ -95,16 +112,10 @@ for s in holdings['stocks']:
         if prices[code].get('py_pct') is not None:
             s['py_pct'] = prices[code]['py_pct']
 
-# Sanitize
-def sanitize(obj):
-    if isinstance(obj, dict): return {k: sanitize(v) for k,v in obj.items()}
-    if isinstance(obj, list): return [sanitize(v) for v in obj]
-    if isinstance(obj, float) and (math.isnan(obj) or math.isinf(obj)): return None
-    return obj
 holdings['stocks'] = sanitize(holdings['stocks'])
 
 tmp = HOLDINGS.with_suffix('.tmp')
-tmp.write_text(json.dumps(holdings, ensure_ascii=False, indent=2), encoding='utf-8')
+tmp.write_text(json.dumps(holdings, ensure_ascii=False, indent=2, allow_nan=False), encoding='utf-8')
 tmp.replace(HOLDINGS)
 
 # Verify

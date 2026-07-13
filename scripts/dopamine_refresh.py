@@ -594,14 +594,28 @@ def _apply_m2_fallback(market: dict) -> bool:
     return bool(refreshed)
 
 def _load_fallback_dopamine(err: str | None = None) -> dict:
-    """Load last known dopamine snapshot or a neutral placeholder."""
+    """Load an observed stale snapshot, never an invented neutral score."""
     for f in [PROJECT / "ccass" / "data" / "dopamine.json", PROJECT / "data" / "dopamine.json"]:
         if f.exists():
             with open(f, encoding="utf-8") as fh:
                 data = json.load(fh)
+            if data.get("dopamine") is None and data.get("score") is None:
+                continue
+            data["stale"] = True
+            data["data_kind"] = "observed_stale_snapshot"
+            data["is_observed"] = True
+            data["error"] = err or data.get("error")
             print(f"[dopamine_refresh] loaded fallback dopamine from {f}", file=sys.stderr)
             return data
-    return {"dopamine": 50.0, "level": "normal", "error": err or "dopamine unavailable"}
+    return {
+        "dopamine": None,
+        "level": "unavailable",
+        "source": "unavailable",
+        "stale": True,
+        "data_kind": "unavailable",
+        "is_observed": False,
+        "error": err or "dopamine unavailable",
+    }
 
 
 def _run_dopamine_subprocess(timeout_s: int | None = None) -> tuple[dict, Path]:
@@ -652,11 +666,15 @@ print(json.dumps({{'result': result, 'path': str(path)}}))
 print("[dopamine_refresh] Running v5 Futu dopamine...", file=sys.stderr)
 try:
     dopa_result, dopa_path = _run_dopamine_subprocess()
+    if dopa_result.get("dopamine") is None:
+        raise RuntimeError("dopamine subprocess returned no observed score")
     dopa_fresh = True
-    print(f"[dopamine_refresh] v5 dopamine={dopa_result.get('dopamine', 50.0):.1f} saved to {dopa_path}", file=sys.stderr)
+    dopa_error = None
+    print(f"[dopamine_refresh] v5 dopamine={dopa_result['dopamine']:.1f} saved to {dopa_path}", file=sys.stderr)
 except Exception as e:
     print(f"[dopamine_refresh] v5 dopamine FAILED: {e}", file=sys.stderr)
     dopa_fresh = False
+    dopa_error = str(e)
     dopa_result = _load_fallback_dopamine(str(e))
 
 # ── Step 2: Load existing market.json ──
@@ -715,21 +733,42 @@ try:
 except Exception as e:
     print(f"[dopamine_refresh] M2 fallback failed: {e}", file=sys.stderr)
 
-# Inject dopamine data
-market["dopamine"] = {
-    "score": dopa_result.get("dopamine", 50.0),
-    "level": dopa_result.get("level", "normal"),
-    "level_emoji": dopa_result.get("level_emoji", ""),
-    "level_desc": dopa_result.get("level_desc", ""),
-    "version": dopa_result.get("version", 5),
-    "source": dopa_result.get("source", "futu"),
-    "updated": datetime.now(timezone.utc).isoformat() if dopa_fresh else market.get("dopamine", {}).get("updated", market.get("updated_at")),
-    "stale": not dopa_fresh,
-}
-if "components" in dopa_result:
-    c = dopa_result["components"]
-    market["dopamine"]["breadth_pct"] = c.get("breadth_pct")
-    market["dopamine"]["stocks_sampled"] = c.get("stocks_sampled")
+# Inject dopamine data. On failure, preserve the previous observed snapshot and
+# mark it stale; if no observed value exists, publish null/unavailable.
+previous_dopamine = market.get("dopamine") if isinstance(market.get("dopamine"), dict) else {}
+if dopa_fresh:
+    market["dopamine"] = {
+        "score": dopa_result["dopamine"],
+        "level": dopa_result.get("level"),
+        "level_emoji": dopa_result.get("level_emoji", ""),
+        "level_desc": dopa_result.get("level_desc", ""),
+        "version": dopa_result.get("version", 5),
+        "source": dopa_result.get("source", "futu"),
+        "updated": datetime.now(timezone.utc).isoformat(),
+        "stale": False,
+        "data_kind": "observed_provider_snapshot",
+        "is_observed": True,
+    }
+    if "components" in dopa_result:
+        c = dopa_result["components"]
+        market["dopamine"]["breadth_pct"] = c.get("breadth_pct")
+        market["dopamine"]["stocks_sampled"] = c.get("stocks_sampled")
+else:
+    fallback = previous_dopamine if previous_dopamine.get("score") is not None else dopa_result
+    fallback_score = fallback.get("score", fallback.get("dopamine"))
+    observed = fallback_score is not None
+    market["dopamine"] = {
+        **fallback,
+        "score": fallback_score,
+        "level": fallback.get("level") if observed else "unavailable",
+        "source": fallback.get("source") if observed else "unavailable",
+        "updated": fallback.get("updated", market.get("updated_at")),
+        "stale": True,
+        "data_kind": "observed_stale_snapshot" if observed else "unavailable",
+        "is_observed": observed,
+        "error": dopa_error or fallback.get("error") or "dopamine unavailable",
+    }
+    market["dopamine"].pop("dopamine", None)
 
 # Update timestamp
 if dopa_fresh:

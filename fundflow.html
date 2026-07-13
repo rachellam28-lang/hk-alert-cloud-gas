@@ -147,6 +147,10 @@ function showEmpty(el,msg){
 
   function renderTable(tbodyId, items, cols, formatters) {
     let tbody = document.getElementById(tbodyId);
+    if (!Array.isArray(items) || items.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="20" style="text-align:center;padding:24px;color:#64748b">資料源未提供此欄，沒有以 0 代替</td></tr>';
+      return;
+    }
     tbody.innerHTML = items.map((item, i) => {
       let code = item.c;
       let name = names[code] || '';

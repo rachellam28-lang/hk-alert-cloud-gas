@@ -69,7 +69,6 @@ DATA_DEPLOY_FILES = {
     Path("data/kbar_symbols/index.json"),
     Path("data/market.json"),
     Path("data/participant_anomalies.json"),
-    Path("data/placements_enriched.json"),
     Path("data/prices.json"),
     Path("data/publish_bundle.json"),
     Path("data/repo_audit.json"),

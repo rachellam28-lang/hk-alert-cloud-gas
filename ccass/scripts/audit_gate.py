@@ -77,6 +77,7 @@ def _latest_db_coverage(conn: sqlite3.Connection, trade_date: str) -> tuple[int,
         SELECT COUNT(DISTINCT stock_code)
         FROM ccass_daily
         WHERE trade_date = ? AND validation_failed = 0
+          AND total_pct IS NOT NULL
           AND stock_code NOT LIKE '029%'
           AND stock_code NOT LIKE '04%'
           AND stock_code NOT LIKE '8%'
@@ -102,7 +103,8 @@ def _latest_db_coverage(conn: sqlite3.Connection, trade_date: str) -> tuple[int,
 def _latest_publishable_db_date(conn: sqlite3.Connection, min_coverage: float) -> tuple[str | None, int | None, float | None]:
     rows = conn.execute(
         """
-        SELECT trade_date, COUNT(DISTINCT stock_code) AS stock_count
+        SELECT trade_date,
+               COUNT(DISTINCT CASE WHEN total_pct IS NOT NULL THEN stock_code END) AS stock_count
         FROM ccass_daily
         WHERE validation_failed = 0
           AND stock_code NOT LIKE '029%'
@@ -134,7 +136,8 @@ def _date_set(conn: sqlite3.Connection) -> set[str]:
 def _date_coverages(conn: sqlite3.Connection) -> dict[str, float]:
     rows = conn.execute(
         """
-        SELECT trade_date, COUNT(DISTINCT stock_code) AS stock_count
+        SELECT trade_date,
+               COUNT(DISTINCT CASE WHEN total_pct IS NOT NULL THEN stock_code END) AS stock_count
         FROM ccass_daily
         WHERE validation_failed = 0
           AND stock_code NOT LIKE '029%'
@@ -262,7 +265,7 @@ def _check_transfer_freshness(holdings_updated: str | None, errors: list[str]) -
 def main() -> int:
     parser = argparse.ArgumentParser(description="Unified audit gate for publish/deploy")
     parser.add_argument("--strict", action="store_true", help="Fail on warnings too")
-    parser.add_argument("--min-coverage", type=float, default=99.0, help="Minimum coverage_pct required for publish")
+    parser.add_argument("--min-coverage", type=float, default=98.0, help="Minimum trusted Market%% coverage required for publish")
     args = parser.parse_args()
 
     holdings_path = PROJECT_ROOT / "holdings.json"

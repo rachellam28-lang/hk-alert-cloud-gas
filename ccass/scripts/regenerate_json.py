@@ -31,6 +31,7 @@ def pick_latest_trade_date(db: sqlite3.Connection, min_coverage: float) -> date 
         SELECT trade_date, COUNT(DISTINCT stock_code) AS stock_count
         FROM ccass_daily
         WHERE validation_failed = 0
+          AND total_pct IS NOT NULL
         GROUP BY trade_date
         ORDER BY trade_date DESC
         """
@@ -44,7 +45,7 @@ def pick_latest_trade_date(db: sqlite3.Connection, min_coverage: float) -> date 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--date", help="Target date YYYY-MM-DD (default: latest in DB)")
-    parser.add_argument("--min-coverage", type=float, default=99.0, help="Minimum DB coverage for default publish date")
+    parser.add_argument("--min-coverage", type=float, default=98.0, help="Minimum trusted Market%% coverage for default publish date")
     args = parser.parse_args()
 
     if args.date:

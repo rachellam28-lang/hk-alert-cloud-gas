@@ -135,7 +135,7 @@ def merge_into_db(all_payloads: list[dict]) -> int:
                 trade_date=snap_dict["trade_date"],
                 total_shares=snap_dict["total_shares"],
                 total_pct=snap_dict["total_pct"],
-                num_participants=snap_dict.get("num_participants", 0),
+                num_participants=snap_dict.get("num_participants"),
                 holdings=snap_dict.get("holdings", []),
             )
             try:
@@ -147,7 +147,39 @@ def merge_into_db(all_payloads: list[dict]) -> int:
     return written
 
 
-def update_holdings_json(target_date: date) -> None:
+def _latest_publishable_date(db, min_coverage: float = 0.98) -> date | None:
+    total_row = db.execute(
+        """
+        SELECT COUNT(*) FROM stock_universe
+        WHERE is_active=1
+          AND stock_code NOT LIKE '029%'
+          AND stock_code NOT LIKE '04%'
+          AND stock_code NOT LIKE '8%'
+        """
+    ).fetchone()
+    total = int(total_row[0] or 0) if total_row else 0
+    if not total:
+        return None
+    rows = db.execute(
+        """
+        SELECT trade_date, COUNT(DISTINCT stock_code)
+        FROM ccass_daily
+        WHERE validation_failed=0
+          AND total_pct IS NOT NULL
+          AND stock_code NOT LIKE '029%'
+          AND stock_code NOT LIKE '04%'
+          AND stock_code NOT LIKE '8%'
+        GROUP BY trade_date
+        ORDER BY trade_date DESC
+        """
+    ).fetchall()
+    for trade_date, count in rows:
+        if int(count or 0) / total >= min_coverage:
+            return date.fromisoformat(str(trade_date))
+    return None
+
+
+def update_holdings_json(target_date: date) -> bool:
     """Update holdings.json with frontend-compatible fields from DB."""
     import sqlite3
     from src.db import DB_PATH
@@ -155,6 +187,16 @@ def update_holdings_json(target_date: date) -> None:
     
     db = sqlite3.connect(str(DB_PATH))
     db.row_factory = sqlite3.Row
+
+    latest_publishable = _latest_publishable_date(db)
+    force_historical = os.environ.get("HOLDINGS_ALLOW_HISTORICAL_PUBLISH") == "1"
+    if latest_publishable and target_date < latest_publishable and not force_historical:
+        print(
+            f"  DB-only historical merge: {target_date} < latest publishable "
+            f"{latest_publishable}; dashboard aliases unchanged"
+        )
+        db.close()
+        return False
     
     # Get stock names (exclude non-equity: temp codes, prefs, warrants)
     EXCLUDE_PATTERNS = [
@@ -262,9 +304,9 @@ def update_holdings_json(target_date: date) -> None:
     for row in rows:
         sc = row[0]
         tp = round(row[1], 2) if row[1] is not None else None
-        np_val = row[2] or 0
-        t5 = round(row[3] or 0, 2)
-        t10 = round(row[4] or 0, 2)
+        np_val = row[2] if row[2] is not None else None
+        t5 = round(row[3], 2) if row[3] is not None else None
+        t10 = round(row[4], 2) if row[4] is not None else None
         # Sentinel Option A fields (compact keys)
         ah = round(row[5], 1) if row[5] is not None else None       # adj_hhi
         bt5 = round(row[6], 2) if row[6] is not None else None      # broker_top5_pct
@@ -400,6 +442,7 @@ def update_holdings_json(target_date: date) -> None:
         SELECT COUNT(*)
         FROM holdings_daily
         WHERE trade_date = ? AND validation_failed = 0
+          AND total_pct IS NOT NULL
           AND stock_code NOT LIKE '029%'
           AND stock_code NOT LIKE '04%'
           AND stock_code NOT LIKE '8%'
@@ -471,6 +514,7 @@ def update_holdings_json(target_date: date) -> None:
         raise RuntimeError(f"ccass.json stock_count mismatch: {ccass_verified.get('stock_count')} != {len(stocks)}")
     print(f"  holdings.json + ccass.json updated: {len(stocks)} stocks")
     db.close()
+    return True
 
 
 def main():

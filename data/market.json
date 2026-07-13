@@ -162,6 +162,8 @@
     "source": "futu",
     "updated": "2026-07-12T15:13:17.989458+00:00",
     "stale": false,
+    "data_kind": "observed_provider_snapshot",
+    "is_observed": true,
     "breadth_pct": 61.2,
     "stocks_sampled": 644
   },

@@ -43,7 +43,7 @@ class HOLDINGSSnapshot:
     trade_date: str          # YYYY-MM-DD
     total_shares: int
     total_pct: Optional[float]
-    num_participants: int
+    num_participants: Optional[int]
     holdings: list[dict]     # [{participant_id, name, shares, pct}, ...]
 
 
@@ -521,8 +521,8 @@ def save_snapshot(snap: HOLDINGSSnapshot) -> None:
     sorted_shares = sorted([h["shares"] for h in snap.holdings if h.get("shares")], reverse=True)
     top5 = sum(sorted_shares[:5])
     top10 = sum(sorted_shares[:10])
-    top5_pct = round(top5 / snap.total_shares * 100, 2) if snap.total_shares > 0 else None
-    top10_pct = round(top10 / snap.total_shares * 100, 2) if snap.total_shares > 0 else None
+    top5_pct = round(top5 / snap.total_shares * 100, 2) if snap.total_shares > 0 and sorted_shares else None
+    top10_pct = round(top10 / snap.total_shares * 100, 2) if snap.total_shares > 0 and sorted_shares else None
 
     # Sentinel Option A concentration metrics (ex-A00005)
     cm = _compute_concentration_metrics(snap.holdings)

@@ -277,7 +277,8 @@ def build_db_report(threshold: float, limit: int) -> dict[str, Any]:
         expected = int(total_row[0] or 0)
         rows = conn.execute(
             f"""
-            SELECT trade_date, COUNT(DISTINCT stock_code) AS stock_count
+            SELECT trade_date,
+                   COUNT(DISTINCT CASE WHEN total_pct IS NOT NULL THEN stock_code END) AS stock_count
             FROM ccass_daily
             WHERE validation_failed = 0
               AND {_publish_scope_sql()}
@@ -330,7 +331,7 @@ def build_db_report(threshold: float, limit: int) -> dict[str, Any]:
         }
 
 
-def build_export_report(threshold: float = 99.0, limit: int = 100) -> dict[str, Any]:
+def build_export_report(threshold: float = 98.0, limit: int = 100) -> dict[str, Any]:
     return {
         "generated_at": datetime.now().isoformat(timespec="seconds"),
         "pages": build_pages_report()["pages"],
@@ -409,11 +410,11 @@ def main() -> int:
     dates_parser.add_argument("--files", nargs="*", help="Optional JSON paths to limit scan")
 
     db_parser = subparsers.add_parser("db", help="Audit CCASS DB gaps and low coverage dates")
-    db_parser.add_argument("--threshold", type=float, default=99.0, help="Publish coverage threshold")
+    db_parser.add_argument("--threshold", type=float, default=98.0, help="Trusted Market%% publish coverage threshold")
     db_parser.add_argument("--limit", type=int, default=20, help="Max listed rows per warning bucket")
 
     export_parser = subparsers.add_parser("export", help="Write combined audit snapshot to data/repo_audit.json")
-    export_parser.add_argument("--threshold", type=float, default=99.0, help="Publish coverage threshold")
+    export_parser.add_argument("--threshold", type=float, default=98.0, help="Trusted Market%% publish coverage threshold")
     export_parser.add_argument("--limit", type=int, default=100, help="Max listed rows per warning bucket")
 
     args = parser.parse_args()

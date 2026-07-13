@@ -27,7 +27,7 @@
           "from_date": "2026-04-30",
           "to_date": "2026-07-10",
           "latest": 99.5,
-          "recent_delta": 0.0,
+          "recent_delta": 0,
           "forecast": [
             99.5001,
             99.5,
@@ -36,7 +36,7 @@
             99.5
           ],
           "forecast_end": 99.5,
-          "forecast_delta": 0.0,
+          "forecast_delta": 0,
           "signal": "flat"
         },
         {
@@ -47,7 +47,7 @@
           "from_date": "2026-04-30",
           "to_date": "2026-07-10",
           "latest": 98.29,
-          "recent_delta": 0.0,
+          "recent_delta": 0,
           "forecast": [
             98.2901,
             98.2898,
@@ -67,7 +67,7 @@
           "from_date": "2026-04-30",
           "to_date": "2026-07-10",
           "latest": 97.88,
-          "recent_delta": 0.0,
+          "recent_delta": 0,
           "forecast": [
             97.88,
             97.88,
@@ -76,7 +76,7 @@
             97.88
           ],
           "forecast_end": 97.88,
-          "forecast_delta": -0.0,
+          "forecast_delta": 0,
           "signal": "flat"
         },
         {
@@ -87,7 +87,7 @@
           "from_date": "2026-04-30",
           "to_date": "2026-07-10",
           "latest": 97.48,
-          "recent_delta": 0.0,
+          "recent_delta": 0,
           "forecast": [
             97.4803,
             97.4803,
@@ -167,7 +167,7 @@
           "from_date": "2026-04-30",
           "to_date": "2026-07-10",
           "latest": 96.87,
-          "recent_delta": 0.0,
+          "recent_delta": 0,
           "forecast": [
             96.8692,
             96.8676,
@@ -267,7 +267,7 @@
           "from_date": "2026-04-30",
           "to_date": "2026-07-10",
           "latest": 95.88,
-          "recent_delta": 0.0,
+          "recent_delta": 0,
           "forecast": [
             95.8793,
             95.8793,
@@ -287,7 +287,7 @@
           "from_date": "2026-04-30",
           "to_date": "2026-07-10",
           "latest": 95.71,
-          "recent_delta": 0.0,
+          "recent_delta": 0,
           "forecast": [
             95.71,
             95.71,
@@ -296,7 +296,7 @@
             95.71
           ],
           "forecast_end": 95.71,
-          "forecast_delta": 0.0,
+          "forecast_delta": 0,
           "signal": "flat"
         },
         {
@@ -341,8 +341,8 @@
           "history_days": 25,
           "from_date": "2026-04-30",
           "to_date": "2026-07-07",
-          "latest": 100.0,
-          "recent_delta": 100.0,
+          "latest": 100,
+          "recent_delta": 100,
           "forecast": [
             103.1841,
             102.872,
@@ -656,17 +656,17 @@
           "history_days": 25,
           "from_date": "2026-04-30",
           "to_date": "2026-07-07",
-          "latest": 10000.0,
-          "recent_delta": 0.0,
+          "latest": 10000,
+          "recent_delta": 0,
           "forecast": [
-            10000.0,
-            10000.0,
-            10000.0,
-            10000.0,
-            10000.0
+            10000,
+            10000,
+            10000,
+            10000,
+            10000
           ],
-          "forecast_end": 10000.0,
-          "forecast_delta": 0.0,
+          "forecast_end": 10000,
+          "forecast_delta": 0,
           "signal": "flat"
         },
         {
@@ -777,7 +777,7 @@
           "from_date": "2026-04-30",
           "to_date": "2026-07-10",
           "latest": 8541.5,
-          "recent_delta": 0.0,
+          "recent_delta": 0,
           "forecast": [
             8541.5,
             8541.5,
@@ -786,7 +786,7 @@
             8541.5
           ],
           "forecast_end": 8541.5,
-          "forecast_delta": 0.0,
+          "forecast_delta": 0,
           "signal": "flat"
         },
         {
@@ -817,7 +817,7 @@
           "from_date": "2026-04-30",
           "to_date": "2026-07-10",
           "latest": 8427.7998,
-          "recent_delta": 0.0,
+          "recent_delta": 0,
           "forecast": [
             8427.7998,
             8427.7998,
@@ -826,7 +826,7 @@
             8427.7998
           ],
           "forecast_end": 8427.7998,
-          "forecast_delta": 0.0,
+          "forecast_delta": 0,
           "signal": "flat"
         },
         {
@@ -856,7 +856,7 @@
           "history_days": 34,
           "from_date": "2026-04-30",
           "to_date": "2026-07-10",
-          "latest": 8330.0,
+          "latest": 8330,
           "recent_delta": -0.3,
           "forecast": [
             8328.6748,
@@ -877,7 +877,7 @@
           "from_date": "2026-04-30",
           "to_date": "2026-07-10",
           "latest": 8266.9004,
-          "recent_delta": 0.0,
+          "recent_delta": 0,
           "forecast": [
             8266.9014,
             8266.9014,
@@ -917,7 +917,7 @@
           "from_date": "2026-04-30",
           "to_date": "2026-07-10",
           "latest": 8047.7998,
-          "recent_delta": 0.0,
+          "recent_delta": 0,
           "forecast": [
             8047.7998,
             8047.7998,
@@ -963,7 +963,7 @@
         "from_date": "2026-04-30",
         "to_date": "2026-07-10",
         "latest": 99.5,
-        "recent_delta": 0.0,
+        "recent_delta": 0,
         "forecast": [
           99.5001,
           99.5,
@@ -972,7 +972,7 @@
           99.5
         ],
         "forecast_end": 99.5,
-        "forecast_delta": 0.0,
+        "forecast_delta": 0,
         "signal": "flat"
       },
       {
@@ -983,7 +983,7 @@
         "from_date": "2026-04-30",
         "to_date": "2026-07-10",
         "latest": 98.29,
-        "recent_delta": 0.0,
+        "recent_delta": 0,
         "forecast": [
           98.2901,
           98.2898,
@@ -1003,7 +1003,7 @@
         "from_date": "2026-04-30",
         "to_date": "2026-07-10",
         "latest": 97.88,
-        "recent_delta": 0.0,
+        "recent_delta": 0,
         "forecast": [
           97.88,
           97.88,
@@ -1012,7 +1012,7 @@
           97.88
         ],
         "forecast_end": 97.88,
-        "forecast_delta": -0.0,
+        "forecast_delta": 0,
         "signal": "flat"
       },
       {
@@ -1023,7 +1023,7 @@
         "from_date": "2026-04-30",
         "to_date": "2026-07-10",
         "latest": 97.48,
-        "recent_delta": 0.0,
+        "recent_delta": 0,
         "forecast": [
           97.4803,
           97.4803,
@@ -1103,7 +1103,7 @@
         "from_date": "2026-04-30",
         "to_date": "2026-07-10",
         "latest": 96.87,
-        "recent_delta": 0.0,
+        "recent_delta": 0,
         "forecast": [
           96.8692,
           96.8676,
@@ -1203,7 +1203,7 @@
         "from_date": "2026-04-30",
         "to_date": "2026-07-10",
         "latest": 95.88,
-        "recent_delta": 0.0,
+        "recent_delta": 0,
         "forecast": [
           95.8793,
           95.8793,
@@ -1223,7 +1223,7 @@
         "from_date": "2026-04-30",
         "to_date": "2026-07-10",
         "latest": 95.71,
-        "recent_delta": 0.0,
+        "recent_delta": 0,
         "forecast": [
           95.71,
           95.71,
@@ -1232,7 +1232,7 @@
           95.71
         ],
         "forecast_end": 95.71,
-        "forecast_delta": 0.0,
+        "forecast_delta": 0,
         "signal": "flat"
       },
       {
@@ -1264,8 +1264,8 @@
         "history_days": 25,
         "from_date": "2026-04-30",
         "to_date": "2026-07-07",
-        "latest": 100.0,
-        "recent_delta": 100.0,
+        "latest": 100,
+        "recent_delta": 100,
         "forecast": [
           103.1841,
           102.872,
@@ -1566,17 +1566,17 @@
         "history_days": 25,
         "from_date": "2026-04-30",
         "to_date": "2026-07-07",
-        "latest": 10000.0,
-        "recent_delta": 0.0,
+        "latest": 10000,
+        "recent_delta": 0,
         "forecast": [
-          10000.0,
-          10000.0,
-          10000.0,
-          10000.0,
-          10000.0
+          10000,
+          10000,
+          10000,
+          10000,
+          10000
         ],
-        "forecast_end": 10000.0,
-        "forecast_delta": 0.0,
+        "forecast_end": 10000,
+        "forecast_delta": 0,
         "signal": "flat"
       },
       {
@@ -1687,7 +1687,7 @@
         "from_date": "2026-04-30",
         "to_date": "2026-07-10",
         "latest": 8541.5,
-        "recent_delta": 0.0,
+        "recent_delta": 0,
         "forecast": [
           8541.5,
           8541.5,
@@ -1696,7 +1696,7 @@
           8541.5
         ],
         "forecast_end": 8541.5,
-        "forecast_delta": 0.0,
+        "forecast_delta": 0,
         "signal": "flat"
       },
       {
@@ -1727,7 +1727,7 @@
         "from_date": "2026-04-30",
         "to_date": "2026-07-10",
         "latest": 8427.7998,
-        "recent_delta": 0.0,
+        "recent_delta": 0,
         "forecast": [
           8427.7998,
           8427.7998,
@@ -1736,7 +1736,7 @@
           8427.7998
         ],
         "forecast_end": 8427.7998,
-        "forecast_delta": 0.0,
+        "forecast_delta": 0,
         "signal": "flat"
       },
       {
@@ -1766,7 +1766,7 @@
         "history_days": 34,
         "from_date": "2026-04-30",
         "to_date": "2026-07-10",
-        "latest": 8330.0,
+        "latest": 8330,
         "recent_delta": -0.3,
         "forecast": [
           8328.6748,
@@ -1787,7 +1787,7 @@
         "from_date": "2026-04-30",
         "to_date": "2026-07-10",
         "latest": 8266.9004,
-        "recent_delta": 0.0,
+        "recent_delta": 0,
         "forecast": [
           8266.9014,
           8266.9014,
@@ -1827,7 +1827,7 @@
         "from_date": "2026-04-30",
         "to_date": "2026-07-10",
         "latest": 8047.7998,
-        "recent_delta": 0.0,
+        "recent_delta": 0,
         "forecast": [
           8047.7998,
           8047.7998,
@@ -1870,7 +1870,7 @@
       "from_date": "2026-04-30",
       "to_date": "2026-07-10",
       "latest": 99.5,
-      "recent_delta": 0.0,
+      "recent_delta": 0,
       "forecast": [
         99.5001,
         99.5,
@@ -1879,7 +1879,7 @@
         99.5
       ],
       "forecast_end": 99.5,
-      "forecast_delta": 0.0,
+      "forecast_delta": 0,
       "signal": "flat"
     },
     {
@@ -1890,7 +1890,7 @@
       "from_date": "2026-04-30",
       "to_date": "2026-07-10",
       "latest": 98.29,
-      "recent_delta": 0.0,
+      "recent_delta": 0,
       "forecast": [
         98.2901,
         98.2898,
@@ -1910,7 +1910,7 @@
       "from_date": "2026-04-30",
       "to_date": "2026-07-10",
       "latest": 97.88,
-      "recent_delta": 0.0,
+      "recent_delta": 0,
       "forecast": [
         97.88,
         97.88,
@@ -1919,7 +1919,7 @@
         97.88
       ],
       "forecast_end": 97.88,
-      "forecast_delta": -0.0,
+      "forecast_delta": 0,
       "signal": "flat"
     },
     {
@@ -1930,7 +1930,7 @@
       "from_date": "2026-04-30",
       "to_date": "2026-07-10",
       "latest": 97.48,
-      "recent_delta": 0.0,
+      "recent_delta": 0,
       "forecast": [
         97.4803,
         97.4803,
@@ -2010,7 +2010,7 @@
       "from_date": "2026-04-30",
       "to_date": "2026-07-10",
       "latest": 96.87,
-      "recent_delta": 0.0,
+      "recent_delta": 0,
       "forecast": [
         96.8692,
         96.8676,
@@ -2110,7 +2110,7 @@
       "from_date": "2026-04-30",
       "to_date": "2026-07-10",
       "latest": 95.88,
-      "recent_delta": 0.0,
+      "recent_delta": 0,
       "forecast": [
         95.8793,
         95.8793,
@@ -2130,7 +2130,7 @@
       "from_date": "2026-04-30",
       "to_date": "2026-07-10",
       "latest": 95.71,
-      "recent_delta": 0.0,
+      "recent_delta": 0,
       "forecast": [
         95.71,
         95.71,
@@ -2139,7 +2139,7 @@
         95.71
       ],
       "forecast_end": 95.71,
-      "forecast_delta": 0.0,
+      "forecast_delta": 0,
       "signal": "flat"
     },
     {
@@ -2163,5 +2163,8 @@
       "signal": "flat"
     }
   ],
-  "errors": 0
+  "errors": 0,
+  "source": "TimesFM model over observed CCASS holdings history",
+  "data_kind": "model_forecast",
+  "is_observed": false
 }

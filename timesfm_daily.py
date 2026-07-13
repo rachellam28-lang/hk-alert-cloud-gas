@@ -136,6 +136,9 @@ def main():
     payload = {
         "updated": latest_date,
         "generated_at": datetime.now().isoformat(timespec="seconds"),
+        "source": "TimesFM model over observed CCASS holdings history",
+        "data_kind": "model_forecast",
+        "is_observed": False,
         "horizon": args.horizon,
         "min_days": args.min_days,
         "lookback": args.lookback,

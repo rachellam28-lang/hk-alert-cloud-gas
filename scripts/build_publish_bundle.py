@@ -67,6 +67,10 @@ def latest_date(items, keys=("date", "ann_date", "announcement_date", "created_a
 def summarize_holdings():
     data = load_json(BASE / "holdings.json", {})
     stocks = data.get("stocks", []) if isinstance(data, dict) else []
+    trend_rows = [
+        stock for stock in stocks
+        if stock.get("d5s") is not None and stock.get("d5p") is not None
+    ]
     return {
         "path": "holdings.json",
         "updated": data.get("updated"),
@@ -76,13 +80,13 @@ def summarize_holdings():
         "first_date": data.get("first_date"),
         "is_complete": data.get("is_complete"),
         "trend_reference_dates": data.get("trend_reference_dates", {}),
-        "five_day_increase_count": sum(
-            1 for stock in stocks
-            if (stock.get("d5s") or 0) > 0 and (stock.get("d5p") or 0) > 0
+        "five_day_increase_count": (
+            sum(1 for stock in trend_rows if stock["d5s"] > 0 and stock["d5p"] > 0)
+            if trend_rows else None
         ),
-        "five_day_decrease_count": sum(
-            1 for stock in stocks
-            if (stock.get("d5s") or 0) < 0 and (stock.get("d5p") or 0) < 0
+        "five_day_decrease_count": (
+            sum(1 for stock in trend_rows if stock["d5s"] < 0 and stock["d5p"] < 0)
+            if trend_rows else None
         ),
     }
 
@@ -100,6 +104,8 @@ def summarize_signals():
             return False
         return shares > 0 and pct > 0
 
+    ccass_groups = [group for group in groups if isinstance(group, dict) and isinstance(group.get("ccass"), dict)]
+
     return {
         "path": "data/signals.json",
         "updated": data.get("updatedAt") or data.get("updated"),
@@ -107,7 +113,10 @@ def summarize_signals():
         "groups": len(groups),
         "with_signals": data.get("totalWithSignals"),
         "with_corp": data.get("totalWithCorp"),
-        "ccass_five_day_increase_count": sum(1 for group in groups if has_ccass_five_day(group)),
+        "ccass_five_day_increase_count": (
+            sum(1 for group in ccass_groups if has_ccass_five_day(group))
+            if ccass_groups else None
+        ),
     }
 
 
@@ -409,7 +418,7 @@ def previous_publish_fallback():
 def run_audit_gate():
     try:
         proc = subprocess.run(
-            [sys.executable, "scripts/audit_gate.py", "--min-coverage", "99.0"],
+            [sys.executable, "scripts/audit_gate.py", "--min-coverage", "98.0"],
             cwd=BASE / "ccass",
             capture_output=True,
             text=True,

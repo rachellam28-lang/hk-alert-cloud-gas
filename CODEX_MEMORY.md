@@ -741,3 +741,16 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - `ccass/scripts/_deploy_cf.py` now includes the `functions/` directory and `.js` files in its curated Pages package. Package verification confirmed `functions/api/kbar/[code].js` is included.
 - Local Wrangler runtime probes passed for success (`1069`, 260 bars), invalid code (400), and missing symbol (404). Canonical production API and API/data desktop/mobile Playwright tests passed `4/4`; mobile width stayed `393/393` with one SVG and zero iframe.
 - Deployment remains direct Wrangler to Cloudflare Pages only. No GitHub/`gh`/Actions route is involved.
+## 2026-07-13 Data Honesty Audit
+
+- Public completeness must use trusted CCASS rows (`total_pct IS NOT NULL`), not merely row presence. The publish threshold is 98% to allow a small suspended/new-listing tail while preserving missing values as `null`.
+- Canonical publish after the audit: `2026-07-10`, 2,742 rows; 2,736 trusted Market% rows out of 2,776 (98.6%); `is_complete=false`. Five-day trend values exist for 2,730 rows and 696 are genuine positive share-and-percent increases.
+- Historical/backfill runs are DB-only. They must never overwrite root/data publish aliases. Historical publish is blocked unless `HOLDINGS_ALLOW_HISTORICAL_PUBLISH=1` is explicitly set.
+- `rights_analysis.json`: missing amount, issue price, dilution, and announcement market price are `null`, never numeric zero.
+- `fundflow.json`: westock does not provide short-sale fields. `short_*` values are `null`, `top_short` is empty, and the page says the source did not provide the field.
+- TimesFM output is labeled `data_kind=model_forecast`, `is_observed=false`. Confluence/tradeable scores are labeled derived rule outputs; UI wording must not present them as observed facts or direct buy instructions.
+- Sector rotation accepts only same-date, non-stale closes and ignores snapshots with fewer than 500 fresh rows. The honest latest rotation snapshot is 2026-07-10, not the stale wrapper date 2026-07-12.
+- `data/placements_enriched.json` is an internal intermediate and is not deployed. Public JSON must remain strict JSON with no `NaN`, `Infinity`, or `undefined` literals.
+- Direct Cloudflare deploy only; do not use GitHub/gh.
+- Dopamine/Futu failures must never invent a neutral `50` score. Preserve the last observed snapshot with `stale=true`, or publish `score=null`, `level=unavailable`, `data_kind=unavailable`, and `is_observed=false` when no observation exists. Fresh Futu dopamine is labeled `observed_provider_snapshot`.
+- Missing CCASS participant/concentration inputs must stay `null`: shard merge no longer defaults `num_participants` to zero, and an empty holdings list cannot generate fake `top5_pct=0` or `top10_pct=0`.

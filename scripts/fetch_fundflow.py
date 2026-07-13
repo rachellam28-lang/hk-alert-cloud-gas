@@ -21,10 +21,10 @@ def load_top_codes(limit: int) -> list[str]:
     return [str(s["c"]).zfill(5) for s in stocks[:limit] if s.get("c")]
 
 
-def parse_number(value: str) -> float:
+def parse_number(value: str) -> float | None:
     value = (value or "").strip()
     if not value or value == "-":
-        return 0.0
+        return None
     return float(value.replace(",", ""))
 
 
@@ -59,12 +59,14 @@ def parse_output(text: str) -> dict[str, dict]:
             "retail_net": parse_number(row.get("RetailNetFlow", "")),
             "retail_out": parse_number(row.get("RetailOut", "")),
             "total_net": parse_number(row.get("TotalNetFlow", "")),
-            "short_amount": 0,
-            "short_ratio": 0,
-            "short_shares": 0,
-            "lgt_hold_ratio": parse_number(str(lgt.get("LgtHoldRatio", row.get("_lgtHoldInfo.LgtHoldRatio", "0")))),
-            "lgt_cap_chg_daily": parse_number(str(lgt.get("LgtCapChgDaily", row.get("_lgtHoldInfo.LgtCapChgDaily", "0")))),
-            "lgt_share_chg_daily": parse_number(str(lgt.get("LgtShareChgDaily", row.get("_lgtHoldInfo.LgtShareChgDaily", "0")))),
+            # The westock hkfund response does not provide short-sale fields.
+            # Missing is null, never a fabricated numeric zero.
+            "short_amount": None,
+            "short_ratio": None,
+            "short_shares": None,
+            "lgt_hold_ratio": parse_number(str(lgt.get("LgtHoldRatio", row.get("_lgtHoldInfo.LgtHoldRatio", "")))),
+            "lgt_cap_chg_daily": parse_number(str(lgt.get("LgtCapChgDaily", row.get("_lgtHoldInfo.LgtCapChgDaily", "")))),
+            "lgt_share_chg_daily": parse_number(str(lgt.get("LgtShareChgDaily", row.get("_lgtHoldInfo.LgtShareChgDaily", "")))),
         }
     return fundflow
 
@@ -92,13 +94,27 @@ def fetch_batch(codes: list[str], timeout: int) -> dict[str, dict]:
 
 
 def build_output(fundflow: dict[str, dict]) -> dict:
-    ranked_main_in = sorted(fundflow.items(), key=lambda x: x[1].get("main_net", 0), reverse=True)
-    ranked_main_out = sorted(fundflow.items(), key=lambda x: x[1].get("main_net", 0))
-    ranked_short = sorted(fundflow.items(), key=lambda x: x[1].get("short_ratio", 0), reverse=True)
-    ranked_sb = sorted(fundflow.items(), key=lambda x: abs(x[1].get("lgt_cap_chg_daily", 0)), reverse=True)
+    ranked_main_in = sorted(
+        ((c, d) for c, d in fundflow.items() if d.get("main_net") is not None),
+        key=lambda x: x[1]["main_net"], reverse=True,
+    )
+    ranked_main_out = sorted(
+        ((c, d) for c, d in fundflow.items() if d.get("main_net") is not None),
+        key=lambda x: x[1]["main_net"],
+    )
+    ranked_short = sorted(
+        ((c, d) for c, d in fundflow.items() if d.get("short_ratio") is not None),
+        key=lambda x: x[1]["short_ratio"], reverse=True,
+    )
+    ranked_sb = sorted(
+        ((c, d) for c, d in fundflow.items() if d.get("lgt_cap_chg_daily") is not None),
+        key=lambda x: abs(x[1]["lgt_cap_chg_daily"]), reverse=True,
+    )
     updated = next((v.get("date") for v in fundflow.values() if v.get("date")), "")
     return {
         "updated": updated,
+        "source": "westock-data-clawhub hkfund",
+        "data_kind": "observed_provider_snapshot",
         "top_main_in": [{"c": c, **{k: d[k] for k in ("main_net", "main_in", "main_out", "total_net")}} for c, d in ranked_main_in[:20]],
         "top_main_out": [{"c": c, **{k: d[k] for k in ("main_net", "main_in", "main_out", "total_net")}} for c, d in ranked_main_out[:20]],
         "top_short": [{"c": c, "short_ratio": d["short_ratio"], "short_amount": d["short_amount"]} for c, d in ranked_short[:20]],

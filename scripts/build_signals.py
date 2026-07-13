@@ -277,6 +277,8 @@ def build_signals_json(holdings, events, corp_map, issuer_map, supply_map):
     return {
         "ok": True,
         "schema_v": 1,
+        "source": "announcements.json + rights_analysis.json + alerts.json + holdings.json",
+        "data_kind": "derived_signal_index",
         "groups": groups,
         "updatedAt": datetime.now().isoformat(),
         "totalStocks": len(groups),

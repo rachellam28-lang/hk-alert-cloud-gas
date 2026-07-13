@@ -386,8 +386,8 @@ function stateScore(s) {
   return 50;
 }
 function verdict(score) {
-  if (score >= 75) return ['可以做', 'good'];
-  if (score >= 60) return ['選擇性做', 'warn'];
+  if (score >= 75) return ['條件較齊', 'good'];
+  if (score >= 60) return ['規則偏強', 'warn'];
   if (score >= 45) return ['偏保守', 'warn'];
   return ['唔好新開倉', 'bad'];
 }
@@ -560,8 +560,8 @@ async function renderWatchlistPrompt() {
   const cards = [
     ['本機自選', wl.length, 'localStorage hk_watchlist_v1'],
     ['有資料配對', bundles.filter(x => x.holding || x.signal || x.tradeable).length, '可對上 holdings / signals / tradeable'],
-    ['今日留意', hot.length, '高分 / 有訊號 / 有可炒形態'],
-    ['建議出手', active.length ? active.length : 0, active.length ? '可優先留意' : '暫時偏少'],
+    ['今日留意', hot.length, '規則高分 / 有觀測訊號'],
+    ['規則候選', active.length ? active.length : 0, active.length ? '仍需自行確認價量' : '暫時偏少'],
   ];
   document.getElementById('watchlistCards').innerHTML = cards.map(([k,v,s]) => `
     <div class="mini">
@@ -579,7 +579,7 @@ async function renderWatchlistPrompt() {
   }
 
   document.getElementById('watchlistNote').textContent =
-    '已按今日可留意程度排序：Tradeable 高分 / 有信號 / Market 走勢較強的排前。';
+    '已按規則評分排序：分數是衍生提示，不是觀測數據或買賣指示。';
 
   document.getElementById('watchlistTable').innerHTML = bundles.slice(0, 30).map(x => {
     const t = x.tradeable || {};

@@ -8,7 +8,12 @@ Scoring factors:
   - Direction (up=positive, neutral=neutral)
   - Proximity (T+0~3 signals are fresher)
 """
-import json, os
+import json, os, sys
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJ = os.path.dirname(SCRIPT_DIR)  # parent of scripts/
@@ -92,7 +97,7 @@ def score_confluence(conf: list[dict]) -> list[dict]:
 
         # --- Label ---
         if score >= 70:
-            label = "🔥 可炒上"
+            label = "🔥 規則高分"
             label_class = "strong-buy"
         elif score >= 50:
             label = "📈 留意"
@@ -112,6 +117,9 @@ def score_confluence(conf: list[dict]) -> list[dict]:
         entry["label"] = label
         entry["label_class"] = label_class
         entry["reasons"] = reasons
+        entry["data_kind"] = "derived_rule_score"
+        entry["is_observed"] = False
+        entry["score_method"] = "fixed confluence heuristic v1"
         scored.append(entry)
 
     # Sort by score descending
@@ -122,7 +130,7 @@ def score_confluence(conf: list[dict]) -> list[dict]:
 def print_tradeable(scored: list[dict], top_n: int = 20):
     """Print tradeable summary."""
     print(f"\n{'='*60}")
-    print(f"  🎯 可炒上評分 — Top {min(top_n, len(scored))}")
+    print(f"  🎯 規則評分 — Top {min(top_n, len(scored))}")
     print(f"{'='*60}")
     for i, s in enumerate(scored[:top_n]):
         label = s["label"]
@@ -151,11 +159,11 @@ def print_tradeable(scored: list[dict], top_n: int = 20):
 
 
 if __name__ == "__main__":
-    with open(CONF_PATH) as f:
+    with open(CONF_PATH, encoding="utf-8") as f:
         conf = json.load(f)
     scored = score_confluence(conf)
     print_tradeable(scored, top_n=25)
 
-    with open(SCORE_PATH, "w") as f:
+    with open(SCORE_PATH, "w", encoding="utf-8") as f:
         json.dump(scored, f, ensure_ascii=False, indent=2)
     print(f"\nSaved {len(scored)} to data/tradeable.json")

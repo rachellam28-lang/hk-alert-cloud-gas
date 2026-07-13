@@ -657,6 +657,12 @@ def trade_signal(p):
     }
 
 for p in data:
+    # Upstream enrichment uses numeric zero as a missing-value sentinel. Keep
+    # that implementation detail out of the published JSON: a zero issue
+    # price, dilution, fund-raising amount, or market price is not real data.
+    for numeric_field in ('amount_num', 'price_num', 'pct_num', 'market_price'):
+        numeric_value = _safe_num(p.get(numeric_field))
+        p[numeric_field] = numeric_value if numeric_value is not None and numeric_value > 0 else None
     p['announcement_stage'] = announcement_stage(p)
     p['category_display'] = display_category(p)
     p['announcement_market_price'] = p.get('market_price')

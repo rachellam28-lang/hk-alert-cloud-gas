@@ -72,6 +72,7 @@ def _date_coverage(date_str: str) -> tuple[int, int, float]:
             SELECT COUNT(*) AS n
             FROM holdings_daily
             WHERE trade_date = ? AND validation_failed = 0
+              AND total_pct IS NOT NULL
               AND stock_code NOT LIKE '029%'
               AND stock_code NOT LIKE '04%'
               AND stock_code NOT LIKE '8%'
@@ -256,7 +257,7 @@ def _shard_payload_from_snapshot(data: dict) -> dict:
         "trade_date": data["trade_date"],
         "total_shares": data.get("total_shares"),
         "total_pct": data.get("total_pct"),
-        "num_participants": data.get("num_participants", 0),
+        "num_participants": data.get("num_participants"),
         "holdings": data.get("holdings", []),
     }
 
@@ -298,6 +299,8 @@ def should_refresh_universe(force: bool = False) -> bool:
         ).fetchone()
         if row["n"] < 100:
             return True
+        if os.environ.get("HOLDINGS_BACKFILL_FAST", "0") == "1" and row["n"] >= 500:
+            return False
     return today_hk().weekday() == 0  # Monday
 
 
@@ -830,6 +833,13 @@ def run_daily(
             else:
                 logger.error("No valid HOLDINGS rows scraped for %s; skipping holdings.json export", query_date)
                 return 1
+        if skip_alerts and query_date_override is not None:
+            logger.info(
+                "Historical backfill for %s is DB-only; dashboard aliases are unchanged",
+                query_date,
+            )
+            _clear_cooldown()
+            return 0
         if not _export_json(query_date, len(alerts_found)):
             logger.error("holdings.json export failed; returning failure")
             return 1
@@ -961,9 +971,9 @@ def _export_json(query_date: date, alerts_today: int) -> bool:
             # P3: Include Sentinel Option A concentration fields (matches merge_shards.py)
             sc = r["stock_code"]
             tp_val = round(r["total_pct"], 2) if r["total_pct"] is not None else None
-            np_val = r["num_participants"] or 0
-            t5_val = round(r["top5_pct"] or 0, 2)
-            t10_val = round(r["top10_pct"] or 0, 2)
+            np_val = r["num_participants"] if r["num_participants"] is not None else None
+            t5_val = round(r["top5_pct"], 2) if r["top5_pct"] is not None else None
+            t10_val = round(r["top10_pct"], 2) if r["top10_pct"] is not None else None
 
             stocks.append({
                 "c": sc,
@@ -1031,6 +1041,7 @@ def _export_json(query_date: date, alerts_today: int) -> bool:
                 SELECT COUNT(*) AS n
                 FROM holdings_daily
                 WHERE trade_date = ? AND validation_failed = 0
+                  AND total_pct IS NOT NULL
                   AND stock_code NOT LIKE '029%'
                   AND stock_code NOT LIKE '04%'
                   AND stock_code NOT LIKE '8%'

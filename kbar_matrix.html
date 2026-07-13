@@ -1464,7 +1464,7 @@ async function refreshConsole(context) {
     lines.push('[publish] bundle unavailable');
   }
   if (timesfm) {
-    lines.push(`[timesfm] updated=${timesfm.generated_at || timesfm.updated || '-'} fields=${timesfm.field_count || 0} primary=${timesfm.primary_field || '-'}`);
+    lines.push(`[timesfm-forecast] model output, not observed data | updated=${timesfm.generated_at || timesfm.updated || '-'} fields=${timesfm.field_count || 0} primary=${timesfm.primary_field || '-'}`);
     if (context.resolvedSymbol) {
       const lbCode = context.resolvedSymbol.split('.')[0].padStart(5, '0');
       const rawCode = context.resolvedSymbol.split('.')[0];
@@ -1474,7 +1474,7 @@ async function refreshConsole(context) {
         const rec = (byField[field] || []).find(item => item.stock_code === lbCode || item.stock_code === rawCode);
         if (rec) hits.push(`${field}:${rec.forecast_delta >= 0 ? '+' : ''}${rec.forecast_delta}`);
       });
-      if (hits.length) lines.push(`[timesfm-symbol] ${hits.join(' | ')}`);
+      if (hits.length) lines.push(`[timesfm-forecast-symbol] ${hits.join(' | ')}`);
     }
   } else {
     lines.push('[timesfm] cache unavailable');
