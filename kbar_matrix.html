@@ -18,15 +18,15 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .page{max-width:1480px;margin:0 auto;padding:16px;display:flex;flex-direction:column}.band{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px 16px}.band + .band{margin-top:12px}.band-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}.band-title{font-size:15px;font-weight:700}.band-sub{margin-top:4px;font-size:11px;color:var(--mute)}
 .controls{display:grid;grid-template-columns:minmax(240px,1.2fr) auto auto auto auto;gap:10px;align-items:center}.input{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);font:500 13px inherit;color:var(--text);outline:none}.input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(2,132,199,.12)}.seg{display:inline-flex;align-items:center;gap:4px;background:var(--surface-soft);border:1px solid var(--line);border-radius:8px;padding:4px}.seg button,.btn,.chip{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--text-soft);padding:8px 10px;border-radius:7px;font:600 12px inherit;cursor:pointer;white-space:nowrap}.seg button{border-color:transparent;background:transparent}.seg button.active,.btn.primary,.chip.active{background:var(--primary-soft);border-color:var(--primary-border);color:var(--primary)}.btn:hover,.chip:hover,.seg button:hover{border-color:var(--primary-border);background:var(--surface-soft)}
 .preset-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.hint{margin-top:10px;font-size:11px;color:var(--mute)}
-.matrix{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.pane{background:var(--surface-soft);border:1px solid var(--line-soft);border-radius:8px;overflow:hidden}.pane-head{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:7px 9px;border-bottom:1px solid var(--line-soft);background:#fff}.pane-title{font-size:11px;font-weight:700}.pane-meta{font-size:9px;color:var(--mute)}.pane-link{font-size:10px;font-weight:600}.chart-box{display:block;width:100%;height:320px;border:0;background:#fff;position:relative}.chart-svg,.tv-widget-host,.tradingview-widget-container__widget{display:block;width:100%;height:100%;border:0}.chart-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:14px;text-align:center;color:var(--mute);font-size:11px;line-height:1.5}
+.matrix{display:block}.pane{background:var(--surface-soft);border:1px solid var(--line-soft);border-radius:8px;overflow:hidden}.pane-head{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:9px 11px;border-bottom:1px solid var(--line-soft);background:#fff}.pane-title{font-size:12px;font-weight:700}.pane-meta{font-size:10px;color:var(--mute)}.pane-link{font-size:12px;font-weight:700}.chart-box{display:block;width:100%;height:clamp(430px,62vh,720px);border:0;background:#fff;position:relative}.chart-svg,.tv-widget-host,.tradingview-widget-container__widget{display:block;width:100%;height:100%;border:0}.chart-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:14px;text-align:center;color:var(--mute);font-size:11px;line-height:1.5}
 .legend-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px;font-size:11px;color:var(--mute)}.legend-chip{display:inline-flex;align-items:center;gap:6px}.legend-color{width:10px;height:10px;border-radius:999px}.legend-up{background:var(--up)}.legend-down{background:var(--down)}.legend-vqc{background:#22c55e}.legend-jieqi{background:#38bdf8}.legend-reclaim{background:#818cf8}
 .trend-guard{margin-top:12px;padding:10px 12px;border:1px solid var(--line);border-left:4px solid #64748b;border-radius:8px;background:var(--surface-soft);font-size:12px}.trend-guard strong{font-size:13px}.trend-guard small{display:block;margin-top:3px;color:var(--mute);line-height:1.45}.trend-guard.bull{border-left-color:#16a34a;background:#f0fdf4}.trend-guard.bear{border-left-color:#dc2626;background:#fef2f2}.trend-guard.watch{border-left-color:#d97706;background:#fffbeb}.trend-guard.neutral{border-left-color:#64748b}
 .setup-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.setup-card{border:1px solid var(--line);border-radius:8px;background:var(--surface-soft);padding:12px 12px 10px;min-height:188px}.setup-card.active{box-shadow:0 0 0 1px rgba(2,132,199,.18)}.setup-card.breakout.active{border-color:#86efac;background:#f0fdf4}.setup-card.base.active{border-color:#fcd34d;background:#fffbeb}.setup-card.breaklow.active{border-color:#7dd3fc;background:#f0f9ff}.setup-card.rebound.active{border-color:#fca5a5;background:#fef2f2}.setup-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}.setup-name{font-size:13px;font-weight:800}.setup-score{font-size:20px;font-weight:800;line-height:1}.setup-kicker{margin-top:2px;font-size:11px;color:var(--mute)}.setup-tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;border:1px solid var(--line);background:#fff;color:var(--text-soft)}.setup-card.active .setup-tag{border-color:transparent}.setup-meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}.setup-stat{padding:8px;border:1px solid var(--line-soft);border-radius:8px;background:#fff}.setup-stat-label{font-size:10px;color:var(--mute);text-transform:uppercase;letter-spacing:.05em}.setup-stat-value{margin-top:3px;font-size:12px;font-weight:700}.setup-note{margin-top:10px;font-size:12px;line-height:1.5;color:var(--text-soft)}.setup-empty{padding:16px;border:1px dashed var(--line);border-radius:8px;background:var(--surface-soft);font-size:12px;color:var(--mute)}
 .setup-scout-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.setup-scout-card{border:1px solid var(--line);border-radius:8px;background:var(--surface-soft);overflow:hidden;display:flex;flex-direction:column;min-height:356px}.setup-scout-card.breakout{box-shadow:inset 0 0 0 1px rgba(21,128,61,.10)}.setup-scout-card.base{box-shadow:inset 0 0 0 1px rgba(180,83,9,.10)}.setup-scout-card.breaklow{box-shadow:inset 0 0 0 1px rgba(2,132,199,.10)}.setup-scout-card.rebound{box-shadow:inset 0 0 0 1px rgba(185,28,28,.10)}.setup-scout-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:12px;border-bottom:1px solid var(--line-soft);background:#fff}.setup-scout-title{font-size:13px;font-weight:800}.setup-scout-sub{margin-top:2px;font-size:11px;color:var(--mute)}.setup-scout-count{display:inline-flex;align-items:center;justify-content:center;min-width:30px;padding:2px 8px;border-radius:999px;background:var(--surface-soft);border:1px solid var(--line);font-size:11px;font-weight:700}.setup-scout-chart{height:156px;background:#fff;border-bottom:1px solid var(--line-soft)}.setup-scout-chart .chart-svg{height:156px}.setup-scout-chart .chart-empty{font-size:11px}.setup-scout-body{padding:12px;display:flex;flex:1;flex-direction:column}.setup-scout-symbol-row{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}.setup-scout-symbol{font:800 15px "JetBrains Mono",ui-monospace,Consolas,monospace}.setup-scout-label{margin-top:3px;font-size:11px;color:var(--mute)}.setup-scout-score{font-size:22px;font-weight:800;line-height:1}.setup-scout-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}.setup-scout-stat{padding:8px;border:1px solid var(--line-soft);border-radius:8px;background:#fff}.setup-scout-stat-label{font-size:10px;color:var(--mute);text-transform:uppercase;letter-spacing:.05em}.setup-scout-stat-value{margin-top:3px;font-size:12px;font-weight:700}.setup-scout-note{margin-top:10px;font-size:12px;line-height:1.5;color:var(--text-soft)}.setup-scout-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.setup-scout-chip,.setup-scout-btn{appearance:none;border:1px solid var(--line);background:#fff;color:var(--text-soft);padding:6px 9px;border-radius:999px;font:600 11px inherit;cursor:pointer}.setup-scout-chip:hover,.setup-scout-btn:hover{border-color:var(--primary-border);background:var(--surface-soft)}.setup-scout-btn{border-radius:8px;background:var(--primary-soft);border-color:var(--primary-border);color:var(--primary)}
 .console{background:var(--surface-dark);color:#c8facc;border-radius:8px;padding:12px 14px;font:12px/1.55 "JetBrains Mono",ui-monospace,monospace;white-space:pre-wrap;min-height:150px;overflow:auto}.console .muted{color:#7dd3fc}
-@media (max-width:1380px){.matrix{grid-template-columns:repeat(2,minmax(0,1fr))}.chart-box{height:300px}}
-@media (max-width:1180px){.controls{grid-template-columns:minmax(220px,1fr) auto auto;}.controls .full{grid-column:1/-1}.matrix,.setup-grid,.setup-scout-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.chart-box{height:300px}}
-@media (max-width:760px){.page{padding:10px}.topbar-inner{padding:10px 12px 0}.controls{grid-template-columns:1fr}.controls .full{grid-column:auto}.matrix,.setup-grid,.setup-scout-grid{grid-template-columns:1fr}.chart-box{height:340px}.brandrow{align-items:flex-start;flex-direction:column}.status{white-space:normal}.setup-meta,.setup-scout-stats{grid-template-columns:1fr 1fr}}
+.chart-tabs{display:flex;gap:6px;margin-top:12px;padding-bottom:2px;overflow-x:auto;scrollbar-width:thin}.chart-tab{appearance:none;flex:0 0 auto;min-width:82px;border:1px solid var(--line);border-radius:7px;background:#fff;color:var(--text-soft);padding:8px 10px;font:700 12px inherit;cursor:pointer}.chart-tab.active{border-color:var(--primary);background:var(--primary-soft);color:var(--primary)}.chart-tab[data-inverted="1"]::after{content:" ↕";color:#7c3aed}.insight-grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(260px,.55fr);gap:20px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}.insight-grid>section{min-width:0}.insight-title-row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:9px}.insight-title{font-size:12px;font-weight:800}.insight-meta{font-size:10px;color:var(--mute);text-align:right}.signal-rail{display:flex;width:100%;max-width:100%;gap:8px;overflow-x:auto;padding:1px 1px 7px;min-height:78px;scrollbar-width:thin}.signal-event{flex:0 0 158px;border-left:3px solid #64748b;background:var(--surface-soft);color:var(--text);text-decoration:none;padding:8px 9px;border-radius:0 6px 6px 0}.signal-event:hover{background:#f1f5f9;text-decoration:none}.signal-event.vqc{border-color:#16a34a}.signal-event.jieqi{border-color:#0284c7}.signal-event.corp{border-color:#d97706}.signal-event.ccass{border-color:#7c3aed}.signal-event.technical{border-color:#475569}.signal-date{font:700 10px ui-monospace,Consolas,monospace;color:var(--mute)}.signal-label{margin-top:4px;font-size:12px;font-weight:800;line-height:1.3}.signal-note{margin-top:3px;font-size:10px;color:var(--mute);line-height:1.35}.signal-empty{padding:14px 0;color:var(--mute);font-size:11px}.level-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.level-item{min-width:0;padding:8px 0;border-top:1px solid var(--line-soft)}.level-name{font-size:10px;color:var(--mute)}.level-value{margin-top:2px;font:800 14px ui-monospace,Consolas,monospace;overflow-wrap:anywhere}.level-note{margin-top:2px;font-size:9px;color:var(--mute)}
+@media (max-width:1180px){.controls{grid-template-columns:minmax(220px,1fr) auto auto;}.controls .full{grid-column:1/-1}.setup-grid,.setup-scout-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:760px){.page{padding:10px}.topbar-inner{padding:10px 12px 0}.controls{grid-template-columns:1fr}.controls .full{grid-column:auto}.setup-grid,.setup-scout-grid{grid-template-columns:1fr}.chart-box{height:460px}.brandrow{align-items:flex-start;flex-direction:column}.status{white-space:normal}.setup-meta,.setup-scout-stats{grid-template-columns:1fr 1fr}.insight-grid{grid-template-columns:1fr;gap:12px}.chart-tab{min-width:74px;padding:7px 9px}.level-list{grid-template-columns:repeat(3,minmax(0,1fr))}}
 </style>
 </head>
 <body>
@@ -37,7 +37,7 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
         <div class="logo">K</div>
         <div>
           <h1>Kbar Matrix</h1>
-          <p>多週期 Kbar 主體；本地真實 cache 優先，未快取港股直接顯示 TradingView。</p>
+          <p>單圖檢視；港股 cache 配 TradingView 外連，其他市場可直接嵌入。</p>
         </div>
       </div>
       <div class="status" id="pageStatus">loading...</div>
@@ -50,7 +50,7 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
     <div class="band-head">
       <div>
         <div class="band-title">多重時間矩陣</div>
-        <div class="band-sub">有本地 cache 就顯示完整自製圖；未快取港股直連 TradingView 六圖。</div>
+        <div class="band-sub">切換週期只用一個圖位；港股嵌入受交易所限制，未 cache 股票會直接外連 TradingView。</div>
       </div>
     </div>
     <div class="controls" style="margin-top:12px">
@@ -69,14 +69,12 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
     <div class="hint" id="resolvedHint"></div>
     <div class="trend-guard watch" id="fallbackNotice" style="display:none;margin-top:10px"></div>
     <div class="legend-row">
-      <span class="legend-chip"><span class="legend-color" style="background:#facc15"></span>年開線</span>
-      <span class="legend-chip"><span class="legend-color" style="background:#38bdf8"></span>IPO O / H / L（有資料先顯示）</span>
-      <span class="legend-chip"><span class="legend-color legend-up"></span>收高訊號</span>
-      <span class="legend-chip"><span class="legend-color legend-down"></span>收低訊號</span>
-      <span class="legend-chip"><span class="legend-color legend-vqc"></span>VQC 成交轉勢日</span>
-      <span class="legend-chip"><span class="legend-color legend-jieqi"></span>節氣窗口</span>
-      <span class="legend-chip"><span class="legend-color legend-reclaim"></span>破底翻：跌穿支持後收回</span>
-      <span class="legend-chip">季、半年、日線均提供正常 / 反向圖</span>
+      <span class="legend-chip"><span class="legend-color" style="background:#facc15"></span>下方價位列：年開 / IPO / 52週</span>
+      <span class="legend-chip"><span class="legend-color legend-vqc"></span>下方時間軸：VQC</span>
+      <span class="legend-chip"><span class="legend-color legend-jieqi"></span>節氣</span>
+      <span class="legend-chip"><span class="legend-color" style="background:#d97706"></span>供配股 / 公告</span>
+      <span class="legend-chip"><span class="legend-color" style="background:#7c3aed"></span>CCASS</span>
+      <span class="legend-chip">反向模式只倒轉股價高低，日期方向不變</span>
     </div>
   </section>
 
@@ -84,11 +82,28 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
     <div class="band-head">
       <div>
         <div class="band-title">Kbar 主體</div>
-        <div class="band-sub">季圖 / 反向季圖 / 半年圖 / 反向半年圖 / 日圖 / 反向日圖。</div>
+        <div class="band-sub">季、半年、日圖可切換正常或反向股價刻度；下方日期列顯示系統真實訊號。</div>
       </div>
     </div>
     <div class="trend-guard neutral" id="trendGuard"><strong>多空 Trend 守位</strong><small>等 Kbar cache 計出守位線。</small></div>
+    <div class="chart-tabs" id="chartTabs" role="tablist" aria-label="圖表週期"></div>
     <div class="matrix" id="matrix" style="margin-top:12px"></div>
+    <div class="insight-grid">
+      <section aria-labelledby="signalRailTitle">
+        <div class="insight-title-row">
+          <div class="insight-title" id="signalRailTitle">訊號時間軸</div>
+          <div class="insight-meta" id="signalMeta">讀取中</div>
+        </div>
+        <div class="signal-rail" id="signalRail"></div>
+      </section>
+      <section aria-labelledby="keyLevelsTitle">
+        <div class="insight-title-row">
+          <div class="insight-title" id="keyLevelsTitle">關鍵價位</div>
+          <div class="insight-meta">只顯示有來源數值</div>
+        </div>
+        <div class="level-list" id="keyLevels"></div>
+      </section>
+    </div>
   </section>
 
   <section class="band">
@@ -144,13 +159,14 @@ const presets = [
   { label: 'EWJ', raw: 'EWJ', mode: 'us' },
   { label: 'ASHR', raw: 'ASHR', mode: 'us' },
 ];
-const state = { mode: 'hk', raw: '700' };
+const state = { mode: 'hk', raw: '700', view: '3m' };
 let kbarCache = null;
 let kbarShardIndex = null;
 let tradeEngine = null;
 let aliasMap = new Map();
 let timingOverlay = null;
-let levelData = { yearOpen: new Map(), ipo: new Map() };
+let levelData = { yearOpen: new Map(), latest: new Map(), ipo: new Map() };
+let signalCatalog = null;
 const attemptedKbarShards = new Set();
 
 const matrixEl = document.getElementById('matrix');
@@ -164,6 +180,10 @@ const statusEl = document.getElementById('pageStatus');
 const consoleEl = document.getElementById('console');
 const presetRow = document.getElementById('presetRow');
 const fallbackNoticeEl = document.getElementById('fallbackNotice');
+const chartTabsEl = document.getElementById('chartTabs');
+const signalRailEl = document.getElementById('signalRail');
+const signalMetaEl = document.getElementById('signalMeta');
+const keyLevelsEl = document.getElementById('keyLevels');
 
 function escapeHtml(value) {
   return String(value ?? '')
@@ -362,6 +382,16 @@ async function ensureLevelData() {
   Object.entries(prices || {}).forEach(([code, row]) => {
     const value = Number(row && row.yo);
     if (Number.isFinite(value)) levelData.yearOpen.set(String(code).padStart(5, '0'), { value, date: row.yo_date || '' });
+    const latest = Number(row && row.lp);
+    if (Number.isFinite(latest)) {
+      levelData.latest.set(String(code).padStart(5, '0'), {
+        value: latest,
+        date: row.lp_time || row.price_updated_at || '',
+        source: row.price_source || '',
+        high52: Number(row.hi52),
+        low52: Number(row.lo52),
+      });
+    }
   });
   const alerts = Array.isArray(alertsPayload) ? alertsPayload : ((alertsPayload && alertsPayload.alerts) || []);
   alerts.filter(item => String(item.category || '').toLowerCase() === 'ipo').forEach(item => {
@@ -414,6 +444,199 @@ async function ensureTimingOverlay() {
   return timingOverlay;
 }
 
+async function ensureSignalCatalog() {
+  if (signalCatalog) return signalCatalog;
+  const [signalsPayload, rightsPayload, holdingsPayload] = await Promise.all([
+    loadJson('./data/signals.json'),
+    loadJson('./data/rights_analysis.json'),
+    loadJson('./holdings.json'),
+  ]);
+  const signalByCode = new Map();
+  const groups = signalsPayload && Array.isArray(signalsPayload.groups) ? signalsPayload.groups : [];
+  groups.forEach(group => {
+    const code = String(group && group.code || '').replace(/\D/g, '').padStart(5, '0');
+    if (code) signalByCode.set(code, group);
+  });
+  const rightsByCode = new Map();
+  (Array.isArray(rightsPayload) ? rightsPayload : []).forEach(item => {
+    const code = String(item && item.code || '').replace(/\D/g, '').padStart(5, '0');
+    if (!code) return;
+    if (!rightsByCode.has(code)) rightsByCode.set(code, []);
+    rightsByCode.get(code).push(item);
+  });
+  signalCatalog = {
+    signalByCode,
+    rightsByCode,
+    signalsUpdated: signalsPayload && signalsPayload.updatedAt || '',
+    rightsCount: Array.isArray(rightsPayload) ? rightsPayload.length : 0,
+    holdings: holdingsPayload || null,
+  };
+  return signalCatalog;
+}
+
+function viewDefinition(value = state.view) {
+  return intervals.find(item => item.value === value) || intervals[0];
+}
+
+function viewTradingViewConfig(value = state.view) {
+  return {
+    '3m': ['D', '3M', false],
+    '3m_flip': ['D', '3M', true],
+    '6m': ['D', '6M', false],
+    '6m_flip': ['D', '6M', true],
+    '1d': ['D', '12M', false],
+    '1d_flip': ['D', '12M', true],
+  }[value] || ['D', '3M', false];
+}
+
+function renderChartTabs() {
+  if (!chartTabsEl) return;
+  chartTabsEl.innerHTML = intervals.map(item => (
+    `<button class="chart-tab${item.value === state.view ? ' active' : ''}" type="button" role="tab" aria-selected="${item.value === state.view}" data-view="${item.value}" data-inverted="${paneReversePriceScale(item.value) ? '1' : '0'}">${escapeHtml(item.label)}</button>`
+  )).join('');
+}
+
+function eventRangeStart(view = state.view) {
+  const days = view.startsWith('3m') ? 100 : (view.startsWith('6m') ? 190 : 380);
+  const date = new Date();
+  date.setHours(0, 0, 0, 0);
+  date.setDate(date.getDate() - days);
+  return date.toISOString().slice(0, 10);
+}
+
+function addSignalEvent(events, item) {
+  const date = String(item && item.date || '').slice(0, 10);
+  const label = String(item && item.label || '').trim();
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !label) return;
+  events.push({
+    date,
+    label,
+    note: String(item.note || ''),
+    tone: String(item.tone || 'technical'),
+    href: String(item.href || ''),
+  });
+}
+
+function buildSignalEvents(context) {
+  const events = [];
+  const code = context.code;
+  if (!code) return events;
+  (timingOverlay && timingOverlay.vqcByCode.get(code) || new Set()).forEach(date => {
+    addSignalEvent(events, { date, label: 'VQC 成交轉勢日', note: '成交量邊界轉勢', tone: 'vqc' });
+  });
+  if (timingOverlay) {
+    timingOverlay.jieqiDates.forEach((name, date) => {
+      addSignalEvent(events, { date, label: '節氣窗口', note: '全市場時間窗口', tone: 'jieqi' });
+    });
+  }
+  const group = signalCatalog && signalCatalog.signalByCode.get(code);
+  ((group && group.signals) || []).forEach(signal => {
+    addSignalEvent(events, {
+      date: signal.date,
+      label: signal.label || '技術訊號',
+      note: signal.category || 'signals.json',
+      tone: signal.category === 'corp' ? 'corp' : 'technical',
+    });
+  });
+  const corpDefs = [
+    ['placement', '配股公告'],
+    ['rights', '供股公告'],
+    ['increase', '股東增持公告'],
+  ];
+  corpDefs.forEach(([key, label]) => {
+    const value = group && group.corpTypes && group.corpTypes[key];
+    if (value && value.date) addSignalEvent(events, { date: value.date, label, note: `披露易 ${value.count || 1} 份`, tone: 'corp', href: value.link });
+  });
+  ((signalCatalog && signalCatalog.rightsByCode.get(code)) || []).forEach(item => {
+    const supply = item.supply && item.supply.label ? ` · ${item.supply.label}` : '';
+    addSignalEvent(events, {
+      date: item.date_parsed,
+      label: item.category_display || item.category || '供配股',
+      note: `${item.announcement_stage || item.source || '公告'}${supply}`,
+      tone: 'corp',
+      href: item.pdf_url,
+    });
+  });
+  const ccass = context.entry && context.entry.ccass;
+  const delta = Number(ccass && (ccass.pct_delta_5d ?? ccass.pct_delta));
+  if (ccass && ccass.date && Number.isFinite(delta)) {
+    addSignalEvent(events, {
+      date: ccass.date,
+      label: `CCASS 合計持股 ${delta >= 0 ? '+' : ''}${delta.toFixed(2)}%`,
+      note: `基準 ${ccass.previous_date || '未提供'} · ${delta > 0 ? '增持' : (delta < 0 ? '減持' : '無變化')}`,
+      tone: 'ccass',
+    });
+  }
+  const deduped = new Map();
+  events.forEach(item => deduped.set(`${item.date}|${item.label}`, item));
+  return [...deduped.values()]
+    .filter(item => item.date >= eventRangeStart())
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .slice(0, 30);
+}
+
+function renderSignalRail(context) {
+  if (!signalRailEl || !signalMetaEl) return;
+  if (!context.code) {
+    signalMetaEl.textContent = '只支援港股系統訊號';
+    signalRailEl.innerHTML = '<div class="signal-empty">TradingView 圖可正常使用；此市場未有 CCASS 系統訊號。</div>';
+    return;
+  }
+  const events = buildSignalEvents(context);
+  const label = viewDefinition().label;
+  signalMetaEl.textContent = `${label} · ${events.length} 個已發布事件`;
+  if (!events.length) {
+    signalRailEl.innerHTML = '<div class="signal-empty">此範圍內無已發布訊號；唔會用估算資料補位。</div>';
+    return;
+  }
+  signalRailEl.innerHTML = events.map(item => {
+    const tag = item.href ? 'a' : 'div';
+    const attrs = item.href ? ` href="${escapeHtml(item.href)}" target="_blank" rel="noopener"` : '';
+    return `<${tag} class="signal-event ${escapeHtml(item.tone)}"${attrs}><div class="signal-date">${escapeHtml(item.date)}</div><div class="signal-label">${escapeHtml(item.label)}</div><div class="signal-note">${escapeHtml(item.note)}</div></${tag}>`;
+  }).join('');
+}
+
+function formatLevel(value) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return '--';
+  return number < 1 ? number.toFixed(3) : number.toFixed(2);
+}
+
+function renderKeyLevels(context) {
+  if (!keyLevelsEl) return;
+  if (!context.code) {
+    keyLevelsEl.innerHTML = '<div class="signal-empty">未有此市場關鍵價位資料。</div>';
+    return;
+  }
+  const latest = levelData.latest.get(context.code);
+  const yearOpen = levelData.yearOpen.get(context.code);
+  const ipo = levelData.ipo.get(context.code);
+  const items = [];
+  const add = (name, value, note) => {
+    if (!Number.isFinite(Number(value))) return;
+    let distance = '';
+    if (latest && name !== '現價' && Number(latest.value)) {
+      const pct = (Number(latest.value) / Number(value) - 1) * 100;
+      distance = ` · 現價${pct >= 0 ? '高' : '低'} ${Math.abs(pct).toFixed(1)}%`;
+    }
+    items.push({ name, value: formatLevel(value), note: `${note || ''}${distance}` });
+  };
+  if (latest) {
+    add('現價', latest.value, `${String(latest.date || '').slice(0, 10)}${latest.source ? ' · ' + latest.source : ''}`);
+    add('52週高', latest.high52, 'stock_prices.json');
+    add('52週低', latest.low52, 'stock_prices.json');
+  }
+  if (yearOpen) add('年開線', yearOpen.value, yearOpen.date || 'stock_prices.json');
+  if (ipo) {
+    add('IPO Open', ipo.open, ipo.date || 'alerts.json');
+    add('IPO High', ipo.high, ipo.date || 'alerts.json');
+    add('IPO Low', ipo.low, ipo.date || 'alerts.json');
+  }
+  keyLevelsEl.innerHTML = items.length
+    ? items.map(item => `<div class="level-item"><div class="level-name">${escapeHtml(item.name)}</div><div class="level-value">${escapeHtml(item.value)}</div><div class="level-note">${escapeHtml(item.note)}</div></div>`).join('')
+    : '<div class="signal-empty">此股票未有已發布價位資料。</div>';
+}
+
 function timingMarkersFor(symbol, bars, xForIndex, priceHeight, padTop) {
   if (!timingOverlay || !bars.length) return '';
   const code = hkCodeFromSymbol(symbol);
@@ -438,7 +661,7 @@ function timingMarkersFor(symbol, bars, xForIndex, priceHeight, padTop) {
     const resonance = events.length > 1;
     const label = resonance ? events.map(item => item.type).join('+') : events[0].label;
     const color = resonance ? '#f472b6' : events[0].color;
-    const y = padTop + 20 + (markerIndex % 2) * 10;
+    const y = padTop + 40 + (markerIndex % 2) * 12;
     return `<g><title>${escapeHtml(day+' '+events.map(item => item.label).join(' + '))}</title><line x1="${x.toFixed(2)}" y1="${(padTop + 14).toFixed(2)}" x2="${x.toFixed(2)}" y2="${(padTop + priceHeight - 8).toFixed(2)}" stroke="${color}" stroke-width="1.8" stroke-dasharray="4 3" opacity=".9"/><text x="${(x + 3).toFixed(2)}" y="${y.toFixed(2)}" fill="${color}" font-size="9" font-weight="800" style="paint-order:stroke;stroke:#0b1018;stroke-width:2px;stroke-linejoin:round">${escapeHtml(label)}</text></g>`;
   }).join('');
 }
@@ -740,7 +963,7 @@ function renderCandleSvg(bars, interval, symbol, options = {}) {
       ${timeTicks}
       ${showVolume ? `<line x1="${padLeft}" y1="${priceHeight + padTop}" x2="${width - padRight}" y2="${priceHeight + padTop}" stroke="#334155" stroke-width="1"/>` : ''}
       <text x="${padLeft}" y="16" fill="#cbd5e1" font-size="11">${escapeHtml(lastLabel)}</text>
-      <text x="${reverseX ? padLeft : width - padRight}" y="16" fill="#94a3b8" font-size="11" text-anchor="${reverseX ? 'start' : 'end'}">${escapeHtml(String(last.time || '').slice(0, 16).replace('T', ' '))}</text>
+      <text x="${padLeft}" y="31" fill="#94a3b8" font-size="10" text-anchor="start">${escapeHtml(String(last.time || '').slice(0, 16).replace('T', ' '))}</text>
     </svg>
   `;
 }
@@ -840,13 +1063,6 @@ function trendGuardForSetup(setup) {
   if (m.trend4 === 'up' && aboveGuard) return { key: 'watch', label: '多頭轉勢觀察', note: '中短線仍偏多，等短線再同步。' };
   if (m.trend4 === 'down' && belowGuard) return { key: 'watch', label: '空頭轉勢觀察', note: '中短線仍偏空，等短線止跌再確認。' };
   return { key: 'neutral', label: '多空未明', note: '高低週期未完全同向，先等守位線確認。' };
-}
-
-function renderTrendGuard(setup) {
-  if (!trendGuardEl) return;
-  const guard = trendGuardForSetup(setup);
-  trendGuardEl.className = `trend-guard ${guard.key}`;
-  trendGuardEl.innerHTML = `<strong>${escapeHtml(guard.label)}</strong><small>${escapeHtml(guard.note)} 守位線：短線 EMA21。</small>`;
 }
 
 function buildSetupCard(card) {
@@ -1012,32 +1228,6 @@ function buildSetupScoutCard(def, rows) {
   `;
 }
 
-function renderSetupScoutBoard() {
-  if (!setupScoutGridEl || !setupScoutMetaEl) return;
-  if (!kbarCache || !kbarCache.symbols) {
-    setupScoutMetaEl.textContent = 'setup universe unavailable';
-    setupScoutGridEl.innerHTML = `<div class="setup-empty">未能讀取 Kbar cache。</div>`;
-    return;
-  }
-  const groups = { breakout: [], base: [], breaklow: [], rebound: [] };
-  let resolved = 0;
-  Object.values(kbarCache.symbols).forEach(entry => {
-    const setup = analyzeSetups(entry);
-    if (!setup) return;
-    resolved += 1;
-    const key = setup.activeKey;
-    groups[key].push({ key, entry, setup, score: setup.scores[key] });
-  });
-  setupScoutDefs.forEach(def => {
-    groups[def.key].sort((a, b) => {
-      if (b.score !== a.score) return b.score - a.score;
-      return String(a.entry.symbol).localeCompare(String(b.entry.symbol));
-    });
-  });
-  setupScoutGridEl.innerHTML = setupScoutDefs.map(def => buildSetupScoutCard(def, groups[def.key])).join('');
-  setupScoutMetaEl.textContent = `Kbar cache ${Object.keys(kbarCache.symbols).length} 隻 | engine ${tradeEngine && tradeEngine.scope_count ? tradeEngine.scope_count : 0} 隻 | setup ${resolved} 隻`;
-}
-
 function analyzeSetups(entry) {
   const bars1 = seriesForInterval(entry, '1h');
   const bars4 = seriesForInterval(entry, '4h');
@@ -1200,55 +1390,13 @@ function analyzeSetups(entry) {
   };
 }
 
-function renderSetupLens(context) {
-  if (!context || !context.entry) {
-    setupLensEl.innerHTML = buildSetupFallback();
-    return null;
-  }
-  const analysis = analyzeSetups(context.entry);
-  if (!analysis) {
-    setupLensEl.innerHTML = `<div class="setup-empty">${escapeHtml(context.entry.symbol)} 目前 Kbar cache 深度不足，未能穩定分類追勢突破、盤底築台、破底翻或弱勢反抽。</div>`;
-    return null;
-  }
-  setupLensEl.innerHTML = analysis.cards.map(buildSetupCard).join('');
-  return analysis;
-}
-
 function updateQuery(resolvedSymbol) {
   const url = new URL(location.href);
   url.searchParams.set('mode', state.mode);
   url.searchParams.set('symbol', state.raw);
+  url.searchParams.set('view', state.view);
   if (resolvedSymbol) url.searchParams.set('resolved', resolvedSymbol);
   history.replaceState({}, '', url);
-}
-
-function renderMatrix() {
-  const resolvedSymbol = resolveCachedSymbol(state.raw, state.mode);
-  const fallbackSymbol = fallbackTvSymbol(state.raw, state.mode);
-  const supported = cacheUniversePreview();
-  document.getElementById('tvOpenBtn').href = fallbackSymbol ? tvChartUrl(fallbackSymbol) : '#';
-
-  if (!resolvedSymbol || !kbarCache || !kbarCache.symbols || !kbarCache.symbols[resolvedSymbol]) {
-    renderFallbackNotice(fallbackSymbol, supported);
-    resolvedHint.textContent = fallbackSymbol
-      ? `${fallbackSymbol} 使用 TradingView 直連六圖；本地訊號 overlay 需要 Futu cache。`
-      : '請先輸入 symbol';
-    statusEl.textContent = fallbackSymbol ? fallbackSymbol + ' | TradingView direct' : 'waiting for symbol';
-    matrixEl.innerHTML = intervals.map(interval => buildEmptyPane(interval, fallbackSymbol, supported)).join('');
-    mountTradingViewWidgets();
-    renderTrendGuard(null);
-    updateQuery(fallbackSymbol);
-    return { resolvedSymbol: null, fallbackSymbol };
-  }
-
-  const entry = kbarCache.symbols[resolvedSymbol];
-  renderFallbackNotice('', []);
-  renderTrendGuard(analyzeSetups(entry));
-  resolvedHint.textContent = `cache symbol: ${resolvedSymbol} | ${entry.label}`;
-  statusEl.textContent = `${resolvedSymbol} 路 ${intervals.length} panes`;
-  matrixEl.innerHTML = intervals.map(interval => buildPane(entry, interval)).join('');
-  updateQuery(resolvedSymbol);
-  return { resolvedSymbol, fallbackSymbol, entry };
 }
 
 async function refreshConsole(context) {
@@ -1260,7 +1408,7 @@ async function refreshConsole(context) {
   const lines = [];
   lines.push(`[session] ${now}`);
   lines.push(`[symbol] raw=${state.raw || '-'} mode=${state.mode} resolved=${context.resolvedSymbol || context.fallbackSymbol || '-'}`);
-  lines.push(`[matrix] intervals=${intervals.map(x => x.label).join(', ')}`);
+  lines.push(`[chart] source=${context.chartSource || 'unavailable'} view=${viewDefinition().label}`);
   if (kbarCache) {
     const count = kbarCache.symbols ? Object.keys(kbarCache.symbols).length : 0;
     lines.push(`[kbar-cache] updated=${kbarCache.updated_at || '-'} symbols=${count}`);
@@ -1295,17 +1443,8 @@ async function refreshConsole(context) {
   } else {
     lines.push('[setup] unavailable');
   }
-  lines.push('[note] 本地 Futu cache 顯示完整自製圖；未快取 symbol 直連 TradingView 六圖。');
+  lines.push('[note] 港股 embedded chart 受 TradingView 授權限制；publish JSON 獨立負責訊號時間軸、價位及 Playbook。');
   consoleEl.textContent = lines.join('\n');
-}
-
-async function applyState() {
-  await Promise.all([ensureKbarCache(), ensureTimingOverlay(), ensureLevelData()]);
-  renderSetupScoutBoard();
-  state.raw = symbolInput.value.trim();
-  updateModeButtons();
-  const context = renderMatrix();
-  await refreshConsole(context);
 }
 
 function copyLink() {
@@ -1321,8 +1460,10 @@ function hydrateFromQuery() {
   const qs = new URLSearchParams(location.search);
   const mode = qs.get('mode');
   const symbol = qs.get('symbol');
+  const view = qs.get('view');
   if (mode && ['hk','us','fx','tv'].includes(mode)) state.mode = mode;
   if (symbol) state.raw = symbol;
+  if (view && intervals.some(item => item.value === view)) state.view = view;
   symbolInput.value = state.raw;
 }
 
@@ -1334,6 +1475,12 @@ document.getElementById('modeSeg').addEventListener('click', (event) => {
 });
 document.getElementById('applyBtn').addEventListener('click', () => applyState());
 document.getElementById('copyLinkBtn').addEventListener('click', copyLink);
+chartTabsEl.addEventListener('click', (event) => {
+  const btn = event.target.closest('button[data-view]');
+  if (!btn || btn.dataset.view === state.view) return;
+  state.view = btn.dataset.view;
+  applyState();
+});
 symbolInput.addEventListener('keydown', (event) => {
   if (event.key === 'Enter') applyState();
 });
@@ -1406,65 +1553,99 @@ function renderSetupLens(context) {
   return analysis;
 }
 
-function renderMatrix() {
-  const resolvedSymbol = resolveCachedSymbol(state.raw, state.mode);
-  const fallbackSymbol = fallbackTvSymbol(state.raw, state.mode);
-  const supported = presets.map(item => item.raw);
-  document.getElementById('tvOpenBtn').href = fallbackSymbol ? tvChartUrl(fallbackSymbol) : '#';
-
-  if (!resolvedSymbol || !kbarCache || !kbarCache.symbols || !kbarCache.symbols[resolvedSymbol]) {
-    resolvedHint.textContent = fallbackSymbol
-      ? `${fallbackSymbol} 使用 TradingView 直連六圖；本地訊號 overlay 需要 Futu cache。`
-      : '請先輸入 symbol';
-    statusEl.textContent = fallbackSymbol ? fallbackSymbol + ' | TradingView direct' : 'waiting for symbol';
-    matrixEl.innerHTML = intervals.map(interval => buildEmptyPane(interval, fallbackSymbol, supported)).join('');
-    mountTradingViewWidgets();
-    renderTrendGuard(null);
-    updateQuery(fallbackSymbol);
-    return { resolvedSymbol: null, fallbackSymbol };
+function buildSingleTradingViewPane(tvSymbol, entry) {
+  const view = viewDefinition();
+  const config = viewTradingViewConfig(view.value);
+  const useLocalHk = state.mode === 'hk' && entry;
+  const blockedHkEmbed = state.mode === 'hk' && !entry;
+  const meta = [
+    tvSymbol,
+    config[1],
+    config[2] ? '反向股價刻度' : '正常股價刻度',
+    useLocalHk ? '本地真實 cache' : (blockedHkEmbed ? 'TradingView 外連' : 'TradingView 直連'),
+  ];
+  let chartBody = '';
+  if (useLocalHk) {
+    const bars = seriesForInterval(entry, view.value);
+    chartBody = renderCandleSvg(bars, view.label, entry.symbol, {
+      overlays: levelOverlays(entry),
+      lookback: paneLookback(view.value),
+      reversePriceScale: paneReversePriceScale(view.value),
+      width: 1180,
+      height: 520,
+    });
+  } else if (blockedHkEmbed) {
+    chartBody = `<div class="chart-empty"><div><strong>TradingView 不准免費 widget 嵌入此港股</strong><br>系統訊號仍顯示於下方；K 線請用右上角外連查看。<br><br><a class="btn primary" href="${tvChartUrl(tvSymbol, config[0])}" target="_blank" rel="noopener">開 TradingView</a></div></div>`;
+  } else {
+    chartBody = `<div class="tv-widget-host" data-symbol="${escapeHtml(tvSymbol)}" data-interval="${config[0]}" data-range="${config[1]}" data-inverted="${config[2] ? '1' : '0'}"><div class="tradingview-widget-container__widget"></div></div>`;
   }
-
-  const entry = kbarCache.symbols[resolvedSymbol];
-  renderTrendGuard(setupAnalysisForSymbol(resolvedSymbol) || analyzeSetups(entry));
-  resolvedHint.textContent = `cache symbol: ${resolvedSymbol} | ${entry.label}`;
-  statusEl.textContent = `${resolvedSymbol} | ${intervals.length} panes`;
-  matrixEl.innerHTML = intervals.map(interval => buildPane(entry, interval)).join('');
-  updateQuery(resolvedSymbol);
-  return { resolvedSymbol, fallbackSymbol, entry };
+  return `
+    <article class="pane single-chart">
+      <div class="pane-head">
+        <div>
+          <div class="pane-title">${escapeHtml(view.label)}</div>
+          <div class="pane-meta">${escapeHtml(meta.join(' | '))}</div>
+        </div>
+        <a class="pane-link" href="${tvChartUrl(tvSymbol, config[0])}" target="_blank" rel="noopener" title="在 TradingView 開啟">↗</a>
+      </div>
+      <div class="chart-box">
+        ${chartBody}
+      </div>
+    </article>
+  `;
 }
 
-// Final runtime override: keep the fallback path explicit when a symbol is not in local cache.
+// Final runtime: TradingView owns the K-line; local publish JSON owns the signal rail.
 function renderMatrix() {
   const resolvedSymbol = resolveCachedSymbol(state.raw, state.mode);
   const fallbackSymbol = fallbackTvSymbol(state.raw, state.mode);
-  const supported = cacheUniversePreview();
   document.getElementById('tvOpenBtn').href = fallbackSymbol ? tvChartUrl(fallbackSymbol) : '#';
-
-  if (!resolvedSymbol || !kbarCache || !kbarCache.symbols || !kbarCache.symbols[resolvedSymbol]) {
-    renderFallbackNotice(fallbackSymbol, supported);
-    resolvedHint.textContent = fallbackSymbol
-      ? `${fallbackSymbol} 使用 TradingView 直連六圖；本地訊號 overlay 需要 Futu cache。`
-      : '請先輸入 symbol';
-    statusEl.textContent = fallbackSymbol ? fallbackSymbol + ' | TradingView direct' : 'waiting for symbol';
-    matrixEl.innerHTML = intervals.map(interval => buildEmptyPane(interval, fallbackSymbol, supported)).join('');
-    mountTradingViewWidgets();
+  renderChartTabs();
+  if (!fallbackSymbol) {
+    renderFallbackNotice('', []);
+    resolvedHint.textContent = '請先輸入 symbol';
+    statusEl.textContent = 'waiting for symbol';
+    matrixEl.innerHTML = '<div class="chart-empty">請輸入股票代號。</div>';
     renderTrendGuard(null);
-    updateQuery(fallbackSymbol);
-    return { resolvedSymbol: null, fallbackSymbol };
+    const context = { resolvedSymbol: null, fallbackSymbol: '', entry: null, code: '' };
+    renderSignalRail(context);
+    renderKeyLevels(context);
+    return context;
   }
-
-  const entry = kbarCache.symbols[resolvedSymbol];
-  renderFallbackNotice('', []);
-  renderTrendGuard(setupAnalysisForSymbol(resolvedSymbol) || analyzeSetups(entry));
-  resolvedHint.textContent = `cache symbol: ${resolvedSymbol} | ${entry.label}`;
-  statusEl.textContent = `${resolvedSymbol} | ${intervals.length} panes`;
-  matrixEl.innerHTML = intervals.map(interval => buildPane(entry, interval)).join('');
-  updateQuery(resolvedSymbol);
-  return { resolvedSymbol, fallbackSymbol, entry };
+  const entry = resolvedSymbol && kbarCache && kbarCache.symbols ? kbarCache.symbols[resolvedSymbol] : null;
+  if (entry) {
+    renderFallbackNotice('', []);
+  } else {
+    fallbackNoticeEl.style.display = 'block';
+    fallbackNoticeEl.className = 'trend-guard watch';
+    fallbackNoticeEl.innerHTML = state.mode === 'hk'
+      ? `<strong>${escapeHtml(fallbackSymbol)} 未有本地 Kbar cache</strong><small>TradingView 免費 widget 不准嵌入港股；請用外連看 K 線。訊號時間軸仍會讀取現有 publish JSON，唔會假裝有圖。</small>`
+      : `<strong>${escapeHtml(fallbackSymbol)} 由 TradingView 直接顯示</strong><small>圖表毋須下載 K 線；訊號時間軸只支援現有港股 publish JSON。</small>`;
+  }
+  renderTrendGuard(entry ? (setupAnalysisForSymbol(resolvedSymbol) || analyzeSetups(entry)) : null);
+  const chartSource = state.mode === 'hk' ? (entry ? 'local-cache' : 'tradingview-link') : 'tradingview-embed';
+  const localStatus = state.mode === 'hk'
+    ? (entry ? '港股訊號及 Playbook cache 已連接' : '未有本地 Kbar cache')
+    : (entry ? 'Playbook cache 已連接；港股訊號不適用' : '港股訊號不適用');
+  resolvedHint.textContent = `${fallbackSymbol} · ${chartSource} · ${localStatus}`;
+  statusEl.textContent = `${fallbackSymbol} | ${viewDefinition().label}`;
+  matrixEl.innerHTML = buildSingleTradingViewPane(fallbackSymbol, entry);
+  mountTradingViewWidgets();
+  const context = {
+    resolvedSymbol: entry ? resolvedSymbol : null,
+    fallbackSymbol,
+    entry,
+    code: state.mode === 'hk' ? (hkCodeFromSymbol(resolvedSymbol) || normalizedHkCode(state.raw)) : '',
+    chartSource,
+  };
+  renderSignalRail(context);
+  renderKeyLevels(context);
+  updateQuery(resolvedSymbol || fallbackSymbol);
+  return context;
 }
 
 async function applyState() {
-  await Promise.all([ensureKbarCache(), ensureTradeEngine(), ensureTimingOverlay(), ensureLevelData()]);
+  await Promise.all([ensureKbarCache(), ensureTradeEngine(), ensureTimingOverlay(), ensureLevelData(), ensureSignalCatalog()]);
   state.raw = symbolInput.value.trim();
   await ensureSearchedKbarShard();
   renderSetupScoutBoard();

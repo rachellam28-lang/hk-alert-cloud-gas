@@ -6,23 +6,39 @@ import os
 BASE_URL = os.getenv("HK_ALERT_BASE_URL", "https://hk-alert-cloud-gas.pages.dev").rstrip("/")
 
 
-def test_kbar_uses_real_vqc_timing_marker(page):
+def test_kbar_single_chart_and_signal_rail(page):
     page_errors: list[str] = []
     page.on("pageerror", lambda exc: page_errors.append(str(exc)))
 
     page.goto(
-        f"{BASE_URL}/kbar_matrix.html?mode=hk&symbol=1933",
+        f"{BASE_URL}/kbar_matrix.html?mode=hk&symbol=1733&view=3m",
         wait_until="domcontentloaded",
     )
-    page.wait_for_selector(".chart-svg", timeout=45_000)
-    page.wait_for_function(
-        """() => [...document.querySelectorAll('.chart-svg text')]
-          .some(node => node.textContent.trim().split('+').includes('VQC'))""",
-        timeout=20_000,
-    )
+    page.wait_for_selector("#matrix .chart-svg", timeout=45_000)
 
-    labels = page.locator(".legend-row").inner_text()
-    assert "VQC 成交轉勢" in labels
-    assert "節氣窗口" in labels
-    assert "分佈日" in labels
+    assert page.locator(".chart-tab").count() == 6
+    assert page.locator("#matrix .chart-svg").count() == 1
+    assert page.locator("#matrix iframe").count() == 0
+    assert page.locator(".signal-event").count() > 0
+    assert page.locator(".level-item").count() > 0
+
+    page.locator('.chart-tab[data-view="6m_flip"]').click()
+    page.wait_for_selector('.chart-tab[data-view="6m_flip"].active')
+    assert page.locator("#matrix .chart-svg").count() == 1
+    assert page.locator("#matrix iframe").count() == 0
+    assert "view=6m_flip" in page.url
     assert not page_errors
+
+
+def test_uncached_hk_uses_honest_tradingview_link(page):
+    page.goto(
+        f"{BASE_URL}/kbar_matrix.html?mode=hk&symbol=1069&view=6m",
+        wait_until="domcontentloaded",
+    )
+    page.wait_for_selector("#matrix .chart-empty", timeout=45_000)
+
+    assert page.locator("#matrix .chart-svg").count() == 0
+    assert page.locator("#matrix iframe").count() == 0
+    assert "TradingView 不准免費 widget 嵌入此港股" in page.locator("#matrix").inner_text()
+    assert page.locator(".signal-event").count() > 0
+    assert "undefined" not in page.locator("main").inner_text()

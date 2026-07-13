@@ -1,6 +1,6 @@
 # HK Alert Cloud GAS Memory
 
-Last updated: 2026-07-12 HKT
+Last updated: 2026-07-13 HKT
 
 ## Latest Audit
 
@@ -720,3 +720,14 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - Added `rotation_matrix.html`: a Hong Kong sector rotation template using existing `holdings.json` only. It provides Leading/Weakening/Lagging/Improving quadrants, 5/20, 20/60, and 60/120 CCASS windows, sector detail rows, and links back to the main sector filter. Navigation exposes it as `板塊輪動`.
 - Shared primary navigation now exposes `動量名單`, `每日提示`, `Gap/FVG`, `資金`, and `供配股`; only lower-frequency reference pages remain under `更多`.
 - Kbar terminology is `破底翻`, not `破底返`: it requires a support/prior-low break followed by a close back above that same level. The chart now draws the broken support line and marks the reclaim candle with `翻`; a break without reclaim is not classified as 破底翻.
+### 2026-07-13 Kbar single-chart TradingView trial
+
+- User wanted system signals beside a TradingView-connected chart without downloading the whole market every day.
+- Reworked `kbar_matrix.html` from six simultaneous chart panes to one large chart with six tabs: quarter, inverted quarter, half-year, inverted half-year, daily, inverted daily. Switching tabs rebuilds only one chart host.
+- Added a date-filtered signal rail below the chart using only existing published JSON: VQC, jieqi dates, `data/signals.json` technical/corporate signals, rights/placement records, and CCASS delta only when the selected cached symbol has a real dated CCASS payload.
+- Added a sourced key-level strip for latest price, 52-week high/low, year open, and IPO open/high/low. Missing values remain absent; no estimated data is inserted.
+- Actual Chrome verification found TradingView's free Advanced Chart widget rejects embedded HKEX symbols, including `HKEX:700` and `HKEX:1733`, with "This symbol is only available on TradingView." This is an embed/licensing limit, not a symbol-search bug.
+- Honest hybrid rule: cached HK symbols use one local real Kbar chart plus a TradingView external link; uncached HK symbols show the signal rail and an explicit TradingView external-link notice instead of a blank/fake chart; US/other supported markets keep one embedded TradingView widget.
+- Cleaned duplicate runtime declarations so `renderMatrix`, `renderSetupLens`, `renderTrendGuard`, `renderSetupScoutBoard`, and `applyState` each have one active definition.
+- Mobile overflow from the horizontal signal rail was fixed with zero-min-width grid children; verified 393px document width stays 393px.
+- Updated `tests/test_kbar_timing_markers.py` for the single-chart contract and honest uncached-HK fallback.
