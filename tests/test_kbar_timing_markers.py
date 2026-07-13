@@ -16,7 +16,7 @@ def test_kbar_single_chart_and_signal_rail(page):
     )
     page.wait_for_selector("#matrix .chart-svg", timeout=45_000)
 
-    assert page.locator(".chart-tab").count() == 6
+    assert page.locator(".chart-tab").count() == 8
     assert page.locator("#matrix .chart-svg").count() == 1
     assert page.locator("#matrix iframe").count() == 0
     assert page.locator(".signal-event").count() > 0
@@ -96,6 +96,16 @@ def test_inverted_price_chart_preserves_candle_and_profile_geometry(page):
     assert flipped_profile == normal_profile
     assert flipped_poc == normal_poc
     assert any(height > 1.5 for height in flipped_bodies)
+
+    page.locator('.chart-tab[data-view="1y"]').click()
+    page.wait_for_selector('.chart-tab[data-view="1y"].active')
+    page.wait_for_function("() => document.querySelectorAll('#matrix .candle-body').length === 260")
+    assert "260 根 D 燭" in page.locator("#matrix .pane-meta").inner_text()
+
+    page.locator('.chart-tab[data-view="1y_flip"]').click()
+    page.wait_for_selector('.chart-tab[data-view="1y_flip"].active')
+    page.wait_for_function("() => document.querySelectorAll('#matrix .candle-body').length === 260")
+    assert "反向股價刻度" in page.locator("#matrix .pane-meta").inner_text()
 
     page.locator('.chart-tab[data-view="1d"]').click()
     page.wait_for_selector('.chart-tab[data-view="1d"].active')

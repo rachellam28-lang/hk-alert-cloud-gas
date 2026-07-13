@@ -784,3 +784,10 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - Vibe's approved local bridge default is also 520. Verified `01733` with 520 observed bars from 2024-05-29 through 2026-07-13 and 520 rows reloaded through Vibe local loader without yfinance.
 - On 520-bar charts, all timing lines and hover titles remain. Ordinary jieqi text labels are suppressed to prevent mobile overlap; VQC and multi-signal resonance labels remain visible. Stable mobile screenshot confirmed 520 bodies with valid first/last coordinates.
 - Latest direct Cloudflare deployment: `https://6d983c16.hk-alert-cloud-gas.pages.dev`; canonical remains `https://hk-alert-cloud-gas.pages.dev`.
+
+### 2026-07-14 year Kbar views restored
+
+- `kbar_matrix.html` has eight ordered tabs: quarter, inverted quarter, half-year, inverted half-year, year, inverted year, daily, inverted daily.
+- Year and inverted-year views use exactly 260 observed daily bars. Quarter remains 66, half-year 126, and daily/deep-history remains up to 520; no resampling or synthetic candles are used.
+- Signal-rail date range for year views is 380 calendar days, while the 520-bar daily view keeps the two-year range.
+- Deployed Kbar/API test suite passes `6/6`; mobile visual audit confirmed the year tab is active with 260 candle bodies. Direct Cloudflare deployment: `https://694e64a5.hk-alert-cloud-gas.pages.dev`; canonical remains `https://hk-alert-cloud-gas.pages.dev`.

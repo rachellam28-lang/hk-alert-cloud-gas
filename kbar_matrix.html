@@ -83,7 +83,7 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
     <div class="band-head">
       <div>
         <div class="band-title">Kbar 主體</div>
-        <div class="band-sub">季、半年、日圖可切換正常或反向股價刻度；下方日期列顯示系統真實訊號。</div>
+        <div class="band-sub">季、半年、年、日圖可切換正常或反向股價刻度；下方日期列顯示系統真實訊號。</div>
       </div>
     </div>
     <div class="trend-guard neutral" id="trendGuard"><strong>多空 Trend 守位</strong><small>等 Kbar cache 計出守位線。</small></div>
@@ -145,6 +145,8 @@ const intervals = [
   { label: '反向季圖', value: '3m_flip' },
   { label: '半年圖', value: '6m' },
   { label: '反向半年圖', value: '6m_flip' },
+  { label: '年圖', value: '1y' },
+  { label: '反向年圖', value: '1y_flip' },
   { label: '日圖', value: '1d' },
   { label: '反向日圖', value: '1d_flip' },
 ];
@@ -257,7 +259,7 @@ function tvEmbedUrl(tvSymbol, interval='D', range='', inverted=false) {
 }
 
 function tvIntervalForPane(value) {
-  if (['1d', '1d_flip', '6m', '6m_flip', '3m', '3m_flip'].includes(value)) return 'D';
+  if (['1d', '1d_flip', '1y', '1y_flip', '6m', '6m_flip', '3m', '3m_flip'].includes(value)) return 'D';
   if (value === '1h') return '60';
   if (value === '4h') return '240';
   return '60';
@@ -265,6 +267,7 @@ function tvIntervalForPane(value) {
 
 function paneLookback(value) {
   if (value === '1d' || value === '1d_flip') return dailyBarTarget;
+  if (value === '1y' || value === '1y_flip') return 260;
   if (value === '6m' || value === '6m_flip') return 126;
   if (value === '3m' || value === '3m_flip') return 66;
   return 48;
@@ -275,7 +278,7 @@ function paneReverseX(value) {
 }
 
 function paneReversePriceScale(value) {
-  return ['1d_flip', '6m_flip', '3m_flip'].includes(value);
+  return ['1d_flip', '1y_flip', '6m_flip', '3m_flip'].includes(value);
 }
 
 function modeFromCacheSymbol(symbol) {
@@ -341,7 +344,7 @@ function renderFallbackNotice(fallbackSymbol, supportedSymbols) {
   const preview = supportedSymbols.slice(0, 12).join(' / ');
   fallbackNoticeEl.style.display = 'block';
   fallbackNoticeEl.className = 'trend-guard watch';
-  fallbackNoticeEl.innerHTML = `<strong>${escapeHtml(fallbackSymbol)} 使用 TradingView 直連六圖</strong><small>正常/反向季圖、半年及日圖由 TradingView 即時載入；節氣/VQC、年開線及 CCASS overlay 只會在本地 Futu cache 圖顯示。現時完整 cache 共 ${cacheCount} 隻。</small>`;
+  fallbackNoticeEl.innerHTML = `<strong>${escapeHtml(fallbackSymbol)} 使用 TradingView 直連八圖</strong><small>正常/反向季圖、半年、年及日圖由 TradingView 即時載入；節氣/VQC、年開線及 CCASS overlay 只會在本地 Futu cache 圖顯示。現時完整 cache 共 ${cacheCount} 隻。</small>`;
 }
 
 async function ensureKbarCache() {
@@ -596,6 +599,8 @@ function viewTradingViewConfig(value = state.view) {
     '3m_flip': ['D', '3M', true],
     '6m': ['D', '6M', false],
     '6m_flip': ['D', '6M', true],
+    '1y': ['D', '12M', false],
+    '1y_flip': ['D', '12M', true],
     '1d': ['D', '12M', false],
     '1d_flip': ['D', '12M', true],
   }[value] || ['D', '3M', false];
@@ -609,7 +614,7 @@ function renderChartTabs() {
 }
 
 function eventRangeStart(view = state.view) {
-  const days = view.startsWith('3m') ? 100 : (view.startsWith('6m') ? 190 : 760);
+  const days = view.startsWith('3m') ? 100 : (view.startsWith('6m') ? 190 : (view.startsWith('1y') ? 380 : 760));
   const date = new Date();
   date.setHours(0, 0, 0, 0);
   date.setDate(date.getDate() - days);
@@ -872,7 +877,7 @@ function aggregateBars(sourceBars, group) {
 }
 
 function seriesForInterval(entry, interval) {
-  if (interval === '6m' || interval === '6m_flip' || interval === '3m' || interval === '3m_flip' || interval === '1d_flip') {
+  if (interval === '1y' || interval === '1y_flip' || interval === '6m' || interval === '6m_flip' || interval === '3m' || interval === '3m_flip' || interval === '1d_flip') {
     return entry && entry.series ? (entry.series['1d'] || []) : [];
   }
   const direct = entry && entry.series ? entry.series[interval] : null;
@@ -1119,6 +1124,8 @@ function buildEmptyPane(interval, fallbackSymbol, supportedSymbols) {
   const directConfig = {
     '1d': ['D', '12M', false],
     '1d_flip': ['D', '12M', true],
+    '1y': ['D', '12M', false],
+    '1y_flip': ['D', '12M', true],
     '6m': ['D', '6M', false],
     '6m_flip': ['D', '6M', true],
     '3m': ['D', '3M', false],
