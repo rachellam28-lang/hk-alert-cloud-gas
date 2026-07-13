@@ -66,6 +66,7 @@ DATA_DEPLOY_FILES = {
     Path("data/jieqi_backtest.json"),
     Path("data/jieqi_calendar.json"),
     Path("data/kbar_cache.json"),
+    Path("data/kbar_symbols/index.json"),
     Path("data/market.json"),
     Path("data/participant_anomalies.json"),
     Path("data/placements_enriched.json"),
@@ -128,7 +129,8 @@ def copy_site_files(src: Path, tmp: Path) -> int:
             rel = src_file.relative_to(src)
             if rel in DATA_DEPLOY_SKIP:
                 continue
-            if rel.parts and rel.parts[0] == "data" and rel not in DATA_DEPLOY_FILES:
+            is_kbar_shard = len(rel.parts) == 3 and rel.parts[:2] == ("data", "kbar_symbols") and rel.suffix.lower() == ".json"
+            if rel.parts and rel.parts[0] == "data" and rel not in DATA_DEPLOY_FILES and not is_kbar_shard:
                 continue
             if rel.suffix.lower() not in {".html", ".json", ".png", ".webp", ".jpg", ".jpeg", ".svg", ".ico", ".txt"}:
                 continue

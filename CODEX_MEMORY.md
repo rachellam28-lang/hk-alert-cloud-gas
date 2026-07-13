@@ -694,6 +694,15 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - Current honest gate state remains WARN, not PASS: latest publishable CCASS is 2026-07-09 at 99.4% coverage; historical date gaps and current/historical verification backlog still need backfill/repair.
 - Deploy public changes directly with `ccass/scripts/_deploy_cf.py`; do not use GitHub Pages or GitHub Actions as the deployment path.
 
+### 2026-07-13 all-HK Kbar access
+
+- `kbar_matrix.html` uses a hybrid source model. A searched HK symbol first lazy-loads `data/kbar_symbols/<5-digit-code>.json`; cached symbols retain the custom normal/inverted day, half-year, quarter, and 4H charts with CCASS and timing overlays.
+- An HK symbol without a local shard must show seven direct TradingView Advanced Chart widgets instead of an empty/fake cache pane. Inverted panes use TradingView's native `mainSeriesProperties.priceAxisProperties.isInverted` override.
+- `scripts/build_kbar_cache.py --symbols 1733` writes real per-symbol Futu shards. `--all-hk --resume` is resumable, and `--workers` controls concurrency. No yfinance or synthetic OHLC is allowed.
+- Futu Rust gateway history quota was the reason uncached symbols failed (`100/100`). Local `.env` now sets `FUTU_HISTORY_KL_QUOTA_MAX=4000`; this setting is local-only and must never be deployed.
+- Verified `01733` with 260 real daily bars through 2026-07-13 and 120 real 60-minute bars. Test bootstrap shards were removed after finding the Futu pagination bug; direct TradingView is the no-download path for every other HK symbol.
+- Cloudflare deploy allowlist includes `data/kbar_symbols/*.json`. Deploy remains direct Wrangler through `ccass/scripts/_deploy_cf.py`, never GitHub.
+
 ### 2026-07-12 display fixes
 
 - `index.html` market-cap sections now paginate independently at 10 stocks per page for small, mid, and large caps. Existing sorting, filters, signals, and rows are preserved; only the visible page size changed.

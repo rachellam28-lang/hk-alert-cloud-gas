@@ -4,15 +4,21 @@ import json
 import os
 import subprocess
 import sys
-from datetime import datetime
+import argparse
+import threading
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from datetime import datetime, timedelta
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "data" / "kbar_cache.json"
+SHARD_DIR = ROOT / "data" / "kbar_symbols"
 LONGBRIDGE = "longbridge"
 _FUTU_CTX = None
+_FUTU_CTX_LOCK = threading.Lock()
+_CCASS_METRICS = None
 
-def fetch_futu_daily(symbol: str, count: int) -> list[dict]:
+def fetch_futu_series(symbol: str, period: str, count: int) -> list[dict]:
     global _FUTU_CTX
     try:
         from futu import OpenQuoteContext, KLType, AuType, RET_OK
@@ -22,18 +28,45 @@ def fetch_futu_daily(symbol: str, count: int) -> list[dict]:
             from futu_env import load_repo_env, get_futu_host, get_futu_port
         load_repo_env(ROOT)
         if _FUTU_CTX is None:
-            _FUTU_CTX = OpenQuoteContext(host=get_futu_host(), port=get_futu_port())
+            with _FUTU_CTX_LOCK:
+                if _FUTU_CTX is None:
+                    _FUTU_CTX = OpenQuoteContext(host=get_futu_host(), port=get_futu_port())
         code = f"HK.{str(int(symbol.split('.')[0])).zfill(5)}"
-        ret, data, _ = _FUTU_CTX.request_history_kline(code, start=f"{datetime.now().year}-01-01", end=datetime.now().strftime("%Y-%m-%d"), ktype=KLType.K_DAY, autype=AuType.QFQ, max_count=count)
-        if ret != RET_OK or data is None or data.empty:
-            raise RuntimeError(f"Futu daily unavailable: {ret}")
+        if period == "1d":
+            ktype = KLType.K_DAY
+            start = (datetime.now() - timedelta(days=max(550, count * 2))).strftime("%Y-%m-%d")
+        elif period == "1h":
+            ktype = KLType.K_60M
+            start = (datetime.now() - timedelta(days=max(120, count))).strftime("%Y-%m-%d")
+        else:
+            raise ValueError(f"unsupported Futu period: {period}")
         rows = []
-        for _, row in data.tail(count).iterrows():
-            rows.append({"time": str(row.get("time_key", row.get("time", ""))), "open": float(row["open"]), "high": float(row["high"]), "low": float(row["low"]), "close": float(row["close"]), "volume": float(row.get("volume", 0) or 0), "turnover": float(row.get("turnover", 0) or 0)})
-        return rows
+        page_req_key = None
+        while True:
+            ret, data, page_req_key = _FUTU_CTX.request_history_kline(
+                code,
+                start=start,
+                end=datetime.now().strftime("%Y-%m-%d"),
+                ktype=ktype,
+                autype=AuType.QFQ,
+                max_count=1000,
+                page_req_key=page_req_key,
+            )
+            if ret != RET_OK or data is None or data.empty:
+                detail = str(data) if data is not None else str(ret)
+                raise RuntimeError(f"Futu {period} unavailable: {detail}")
+            for _, row in data.iterrows():
+                rows.append({"time": str(row.get("time_key", row.get("time", ""))), "open": float(row["open"]), "high": float(row["high"]), "low": float(row["low"]), "close": float(row["close"]), "volume": float(row.get("volume", 0) or 0), "turnover": float(row.get("turnover", 0) or 0)})
+            if not page_req_key:
+                break
+        return rows[-count:]
     except Exception as exc:
-        print(f"[futu-daily] {symbol} failed: {exc}", file=sys.stderr, flush=True)
+        print(f"[futu-{period}] {symbol} failed: {exc}", file=sys.stderr, flush=True)
         return []
+
+
+def fetch_futu_daily(symbol: str, count: int) -> list[dict]:
+    return fetch_futu_series(symbol, "1d", count)
 
 PRESETS = [
     {
@@ -94,7 +127,6 @@ PRESETS = [
 
 PERIOD_COUNTS = {
     "1d": 260,
-    "5m": 144,
     "1h": 120,
 }
 
@@ -263,12 +295,106 @@ def fetch_quotes(symbols: list[str]) -> tuple[dict[str, dict], list[dict]]:
 
 
 def fetch_series(symbol: str, period: str, count: int) -> list[dict]:
-    if period == "1d" and symbol.endswith(".HK"):
-        futu_rows = fetch_futu_daily(symbol, count)
+    if symbol.endswith(".HK") and period in {"1d", "1h"}:
+        futu_rows = fetch_futu_series(symbol, period, count)
         if futu_rows:
             return futu_rows
     rows = run_longbridge(["kline", symbol, "--period", period, "--count", str(count)], timeout=12)
     return [normalize_bar(row) for row in rows if isinstance(row, dict)]
+
+
+def hk_entry(code: str) -> dict:
+    global _CCASS_METRICS
+    normalized = str(int(code)).zfill(5)
+    symbol = f"{int(normalized)}.HK"
+    series = {
+        period: fetch_futu_series(symbol, period, count)
+        for period, count in PERIOD_COUNTS.items()
+    }
+    daily = series.get("1d") or []
+    hourly = series.get("1h") or []
+    if not daily:
+        raise RuntimeError(f"{normalized}: no Futu daily bars")
+    last = daily[-1]
+    previous = daily[-2] if len(daily) > 1 else last
+    prev_close = to_float(previous.get("close"))
+    last_close = to_float(last.get("close"))
+    change = (last_close - prev_close) if last_close is not None and prev_close is not None else None
+    change_pct = (change / prev_close * 100) if change is not None and prev_close else None
+    entry = {
+        "symbol": symbol,
+        "label": normalized,
+        "market": "hk",
+        "aliases": [normalized, str(int(normalized)), f"HKEX:{normalized}", f"HKEX:{int(normalized)}"],
+        "quote": {
+            "symbol": symbol,
+            "last": last_close,
+            "open": to_float(last.get("open")),
+            "high": to_float(last.get("high")),
+            "low": to_float(last.get("low")),
+            "prev_close": prev_close,
+            "change_value": change,
+            "change_percentage": change_pct,
+            "volume": to_float(last.get("volume")),
+            "turnover": to_float(last.get("turnover")),
+            "status": "cached",
+        },
+        "series": series,
+        "series_meta": {
+            "1d": {"count": len(daily), "stale": False, "error": None},
+            "1h": {"count": len(hourly), "stale": False, "error": None},
+        },
+        "ccass": (_CCASS_METRICS if _CCASS_METRICS is not None else load_ccass_metrics()).get(normalized),
+    }
+    return {
+        "updated_at": datetime.now().isoformat(timespec="seconds"),
+        "source": "Futu OpenD real K-line cache",
+        "entry": entry,
+    }
+
+
+def build_hk_shards(codes: list[str], resume: bool = False, workers: int = 1, progress_every: int = 1) -> None:
+    global _CCASS_METRICS
+    _CCASS_METRICS = load_ccass_metrics()
+    SHARD_DIR.mkdir(parents=True, exist_ok=True)
+    failures = []
+    jobs = []
+    for raw in codes:
+        digits = "".join(ch for ch in str(raw) if ch.isdigit())
+        if not digits:
+            failures.append({"code": str(raw), "error": "invalid code"})
+            continue
+        code = str(int(digits)).zfill(5)
+        target = SHARD_DIR / f"{code}.json"
+        if resume and target.exists() and target.stat().st_size > 500:
+            continue
+        jobs.append((code, target))
+
+    def build_one(code: str, target: Path):
+        payload = hk_entry(code)
+        target.write_text(json.dumps(payload, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+        return payload
+
+    with ThreadPoolExecutor(max_workers=max(1, workers)) as pool:
+        future_map = {pool.submit(build_one, code, target): code for code, target in jobs}
+        for index, future in enumerate(as_completed(future_map), 1):
+            code = future_map[future]
+            try:
+                payload = future.result()
+                counts = payload["entry"]["series_meta"]
+                if index == 1 or index == len(jobs) or index % max(1, progress_every) == 0:
+                    print(f"[kbar-shard] {index}/{len(jobs)} {code} daily={counts['1d']['count']} hourly={counts['1h']['count']}", flush=True)
+            except Exception as exc:
+                failures.append({"code": code, "error": str(exc)})
+                print(f"[kbar-shard] {index}/{len(jobs)} {code} FAIL {exc}", file=sys.stderr, flush=True)
+    index_payload = {
+        "updated_at": datetime.now().isoformat(timespec="seconds"),
+        "source": "Futu OpenD real K-line cache",
+        "available": sorted(path.stem for path in SHARD_DIR.glob("*.json") if path.name != "index.json"),
+        "failures": failures,
+    }
+    (SHARD_DIR / "index.json").write_text(json.dumps(index_payload, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    print(f"Kbar shards ready={len(index_payload['available'])} failed={len(failures)}", flush=True)
 
 
 def main():
@@ -281,7 +407,7 @@ def main():
         "updated_at": datetime.now().isoformat(timespec="seconds"),
         "source": "Longbridge core + daily signal K-line cache",
         "periods": list(PERIOD_COUNTS.keys()),
-        "supported_intervals": ["1d", "5m", "15m", "30m", "1h", "2h", "4h"],
+        "supported_intervals": ["1d", "1d_flip", "6m", "6m_flip", "3m", "3m_flip", "1h", "4h"],
         "symbols": {},
         "errors": errors,
     }
@@ -353,7 +479,7 @@ def main_daily_only():
             entry.setdefault("series", {})["1d"] = rows
             entry.setdefault("series_meta", {})["1d"] = {"count": len(rows), "stale": False, "error": None}
         print(f"[daily-futu] {idx}/{total} {symbol} rows={len(entry.get('series', {}).get('1d', []))}", flush=True)
-    payload["supported_intervals"] = ["1d", "5m", "15m", "30m", "1h", "2h", "4h"]
+    payload["supported_intervals"] = ["1d", "1d_flip", "6m", "6m_flip", "3m", "3m_flip", "1h", "4h"]
     missing = [symbol for symbol, entry in symbols.items() if not entry.get("series", {}).get("1d")]
     payload["daily_chart_ready"] = {"ready": not missing, "symbols": len(symbols), "missing": missing}
     OUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -366,15 +492,30 @@ if __name__ == "__main__":
         sys.stderr.reconfigure(encoding="utf-8", errors="replace")
     except AttributeError:
         pass
-    if "--help" in sys.argv or "-h" in sys.argv:
-        print("usage: build_kbar_cache.py [--ccass-only]")
-        raise SystemExit(0)
-    if "--ccass-only" in sys.argv:
+    parser = argparse.ArgumentParser(description="Build Kbar caches from real market sources")
+    parser.add_argument("--ccass-only", action="store_true")
+    parser.add_argument("--daily-only", action="store_true")
+    parser.add_argument("--symbols", help="Comma-separated HK codes to write as lazy-load shards")
+    parser.add_argument("--all-hk", action="store_true", help="Build every code in data/stock_universe.json")
+    parser.add_argument("--resume", action="store_true", help="Skip existing non-empty shard files")
+    parser.add_argument("--workers", type=int, default=4, help="Concurrent Futu requests for shard builds")
+    parser.add_argument("--progress-every", type=int, default=1, help="Print one success line per N completed shards")
+    args = parser.parse_args()
+    if args.symbols or args.all_hk:
+        if args.all_hk:
+            universe = load_json(ROOT / "data" / "stock_universe.json", {})
+            codes = universe.get("codes", []) if isinstance(universe, dict) else []
+        else:
+            codes = [item.strip() for item in args.symbols.split(",") if item.strip()]
+        build_hk_shards(codes, resume=args.resume, workers=args.workers, progress_every=args.progress_every)
+    elif args.ccass_only:
         payload = load_json(OUT, {})
         attach_ccass(payload)
         OUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
         print(f"Updated CCASS metrics in {OUT}")
-    elif "--daily-only" in sys.argv:
+    elif args.daily_only:
         main_daily_only()
     else:
         main()
+    if _FUTU_CTX is not None:
+        _FUTU_CTX.close()
