@@ -47,6 +47,7 @@ WATCH_FILES = {
     "announcements.json":   {"path": os.path.join(BASE, "data", "announcements.json"), "max_age_h": 26},
     "events.json":          {"path": os.path.join(BASE, "events.json"),                "max_age_h": 26},
     "price_snapshot":       {"path": os.path.join(BASE, "data", "stock_prices.json"),  "max_age_h": 26},
+    "trade_engine":        {"path": os.path.join(BASE, "data", "trade_engine.json"),  "max_age_h": 30},
     "jieqi_backtest":       {"path": os.path.join(BASE, "data", "jieqi_backtest.json"), "max_age_h": 72},
 }
 
@@ -208,6 +209,39 @@ def check_freshness():
                 "name": name,
                 "status": status,
                 "detail": f"updated={updated} coverage={coverage}% stock_count={stock_count} complete={complete}",
+            })
+        elif name == "trade_engine":
+            data = load_json(cfg["path"], default={}) or {}
+            built_at = data.get("built_at") or data.get("updated_at")
+            source_date = str(data.get("source_updated_at") or "")[:10]
+            universe = int(data.get("universe_count") or 0)
+            candidates = int(data.get("candidate_count") or 0)
+            analyzed = int(data.get("analyzed_count") or 0)
+            momentum = int(data.get("momentum_count") or 0)
+            ratio = analyzed / candidates if candidates else 0
+            age_h = None
+            try:
+                parsed = datetime.fromisoformat(str(built_at).replace("Z", "+00:00"))
+                age_h = (
+                    (datetime.now().astimezone() - parsed).total_seconds() / 3600
+                    if parsed.tzinfo else (datetime.now() - parsed).total_seconds() / 3600
+                )
+            except Exception:
+                pass
+            if not built_at or not source_date or analyzed <= 0:
+                status = ICON_FAIL
+            elif ratio < 0.8 or (age_h is not None and age_h > cfg["max_age_h"]):
+                status = ICON_WARN
+            else:
+                status = ICON_OK
+            rows.append({
+                "name": name,
+                "status": status,
+                "detail": (
+                    f"source={source_date or 'n/a'} built={str(built_at or 'n/a')[:19]} "
+                    f"analyzed={analyzed}/{candidates} universe={universe} momentum={momentum} "
+                    f"errors={len(data.get('errors') or [])} kind={data.get('data_kind') or 'n/a'}"
+                ),
             })
         elif name == "publish_bundle":
             data = load_json(cfg["path"], default={}) or {}
@@ -460,6 +494,7 @@ def check_ccass_publish():
         rights = files.get("rights_analysis", {}) or {}
         fundflow = files.get("fundflow", {}) or {}
         transfers = files.get("transfers", {}) or {}
+        engine = files.get("trade_engine", {}) or {}
         latest_db = publish.get("latest_db_date", "—")
         latest_db_count = publish.get("latest_db_stock_count", "—")
         latest_db_cov = publish.get("latest_db_coverage_pct", "—")
@@ -485,6 +520,11 @@ def check_ccass_publish():
                 f" | transfers {transfers.get('updated', 'n/a')}"
                 " | verify_data "
             ),
+        )
+        detail += (
+            f" | engine {engine.get('source_updated') or 'n/a'} "
+            f"{engine.get('analyzed_count') or 0}/{engine.get('candidate_count') or 0} "
+            f"of {engine.get('universe_count') or 0}"
         )
         if publish.get("status") == "PASS":
             return {"status": "🟢", "detail": detail, "raw": bundle}

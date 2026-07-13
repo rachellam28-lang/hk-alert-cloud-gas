@@ -824,6 +824,8 @@ function renderSetupPick(item, setup, labelMap){
   const resolved = item.resolvedSymbol || item.symbol;
   const href = './kbar_matrix.html?mode=' + encodeURIComponent(modeFromSymbol(resolved)) + '&symbol=' + encodeURIComponent(resolved);
   const score = setup.scores[item.setupKey];
+  const timeframes = setup.analysis_timeframes || {short:'1H', long:'4H'};
+  const thrust = Number.isFinite(Number(setup.metrics.thrust1)) ? Number(setup.metrics.thrust1) : Number(setup.metrics.thrust5);
   const stat3Label = item.setupKey === 'breaklow' ? '收回前低' : '距 20-bar 高位';
   const stat3Value = item.setupKey === 'breaklow' ? fmtSigned(setup.metrics.reclaimPrevLow, '%') : fmtSigned(setup.metrics.gapHigh20, '%');
   const stat4Label = item.setupKey === 'breaklow' ? '破位低點' : '離 20-bar 低位';
@@ -842,12 +844,12 @@ function renderSetupPick(item, setup, labelMap){
       </div>
       <div class="setup-pick-meta">
         <div class="setup-pick-stat">
-          <div class="setup-pick-stat-label">1H / 4H</div>
+          <div class="setup-pick-stat-label">${safeText(timeframes.short)} / ${safeText(timeframes.long)}</div>
           <div class="setup-pick-stat-value">${safeText(setup.metrics.trend1)} / ${safeText(setup.metrics.trend4)}</div>
         </div>
         <div class="setup-pick-stat">
-          <div class="setup-pick-stat-label">5m thrust</div>
-          <div class="setup-pick-stat-value">${safeText(fmtSigned(setup.metrics.thrust5, '%'))}</div>
+          <div class="setup-pick-stat-label">動量</div>
+          <div class="setup-pick-stat-value">${safeText(fmtSigned(thrust, '%'))}</div>
         </div>
         <div class="setup-pick-stat">
           <div class="setup-pick-stat-label">${safeText(stat3Label)}</div>
@@ -1185,6 +1187,73 @@ async function renderSetupBoard(){
 
   metaEl.textContent = `共用 engine ${tradeEngine && tradeEngine.scope_count ? tradeEngine.scope_count : 0} 路 命中 ${resolvedItems} / ${totalItems}`;
 }
+
+// Runtime setup board: the shared engine is authoritative; Kbar cache is only a chart cache.
+async function renderSetupBoard(){
+  const metaEl = document.getElementById('setupLensMeta');
+  const listEls = {
+    breakout: document.getElementById('setupListBreakout'),
+    base: document.getElementById('setupListBase'),
+    breaklow: document.getElementById('setupListBreaklow'),
+    rebound: document.getElementById('setupListRebound'),
+  };
+  const countEls = {
+    breakout: document.getElementById('setupCountBreakout'),
+    base: document.getElementById('setupCountBase'),
+    breaklow: document.getElementById('setupCountBreaklow'),
+    rebound: document.getElementById('setupCountRebound'),
+  };
+  if(!metaEl || Object.values(listEls).some(el => !el)) return;
+  metaEl.textContent = '載入全市場交易引擎...';
+  const engine = await ensureTradeEngine();
+  const labels = {breakout:'追勢突破', base:'盤底築台', breaklow:'破底翻', rebound:'弱勢反抽'};
+  const notes = {
+    breakout:'接近或突破 20 日高位，守住失效位先保留追勢。',
+    base:'波幅正在收窄，等成交量及突破位確認。',
+    breaklow:'曾破前低後收回，只在企穩前低後成立。',
+    rebound:'仍屬逆勢反彈，未收復趨勢線前不可當轉勢。',
+  };
+  let analyzed = 0;
+  ['breakout','base','breaklow','rebound'].forEach(key => {
+    const sourceRows = engine && engine.groups && Array.isArray(engine.groups[key]) ? engine.groups[key] : [];
+    const rows = sourceRows.map(row => {
+      const setup = setupEntryFromEngine(row.symbol);
+      if(!setup) return null;
+      analyzed += 1;
+      return {
+        bucket:(setup.stage1 && setup.stage1.bucket) || 'ranked',
+        symbol:row.symbol,
+        resolvedSymbol:row.symbol,
+        setupKey:key,
+        setupLabel:labels[key],
+        note:notes[key],
+        setup,
+      };
+    }).filter(Boolean).sort((a,b) => b.setup.scores[key] - a.setup.scores[key]).slice(0,15);
+    countEls[key].textContent = sourceRows.length;
+    listEls[key].innerHTML = rows.length
+      ? rows.map(row => renderSetupPick(row, row.setup, {small:'小市值',mid:'中市值',large:'大市值',ranked:'候選'})).join('')
+      : '<div class="setup-empty">目前未有足夠真實資料對應此 setup。</div>';
+  });
+  metaEl.textContent = engine
+    ? `全市場 ${engine.universe_count || '--'} · 候選 ${engine.candidate_count || '--'} · 已分析 ${engine.analyzed_count || analyzed}`
+    : '交易引擎資料未載入';
+  const scopeEl = document.getElementById('momentumScope');
+  if(scopeEl && engine){
+    scopeEl.textContent = `全市場 ${engine.universe_count || '--'} · 候選 ${engine.candidate_count || '--'} · 已分析 ${engine.analyzed_count || engine.scope_count || '--'} · 動量排名 ${engine.momentum_count || '--'}`;
+  }
+}
+
+const renderMomentumRankBase = renderMomentumRank;
+renderMomentumRank = async function(){
+  const result = await renderMomentumRankBase();
+  const engine = await ensureTradeEngine();
+  const scopeEl = document.getElementById('momentumScope');
+  if(scopeEl && engine){
+    scopeEl.textContent = `全市場 ${engine.universe_count || '--'} · 候選 ${engine.candidate_count || '--'} · 已分析 ${engine.analyzed_count || engine.scope_count || '--'} · 動量排名 ${engine.momentum_count || '--'}`;
+  }
+  return result;
+};
 
 renderAll();
 </script>

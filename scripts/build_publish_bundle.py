@@ -295,7 +295,14 @@ def summarize_trade_engine():
         "path": "data/trade_engine.json",
         "updated": data.get("built_at") or data.get("updated_at") if isinstance(data, dict) else None,
         "source_updated": data.get("source_updated_at") if isinstance(data, dict) else None,
-        "source": "shared trading engine from kbar cache",
+        "source": data.get("source") if isinstance(data, dict) else None,
+        "runtime_version": data.get("runtime_version") if isinstance(data, dict) else None,
+        "data_kind": data.get("data_kind") if isinstance(data, dict) else None,
+        "is_observed": data.get("is_observed") if isinstance(data, dict) else None,
+        "source_snapshot_dates": data.get("source_snapshot_dates") if isinstance(data, dict) else None,
+        "universe_count": data.get("universe_count") if isinstance(data, dict) else None,
+        "candidate_count": data.get("candidate_count") if isinstance(data, dict) else None,
+        "analyzed_count": data.get("analyzed_count") if isinstance(data, dict) else None,
         "scope_count": data.get("scope_count") if isinstance(data, dict) else None,
         "momentum_count": data.get("momentum_count") if isinstance(data, dict) else None,
         "setup_counts": summary.get("setup_counts") if isinstance(summary, dict) else None,
@@ -534,6 +541,10 @@ def main():
         "timesfm_primary_field": bundle["files"]["timesfm"].get("primary_field"),
         "trade_engine_updated": bundle["files"]["trade_engine"].get("updated"),
         "trade_engine_source_updated": bundle["files"]["trade_engine"].get("source_updated"),
+        "trade_engine_universe_count": bundle["files"]["trade_engine"].get("universe_count"),
+        "trade_engine_candidate_count": bundle["files"]["trade_engine"].get("candidate_count"),
+        "trade_engine_analyzed_count": bundle["files"]["trade_engine"].get("analyzed_count"),
+        "trade_engine_momentum_count": bundle["files"]["trade_engine"].get("momentum_count"),
         "kbar_cache_updated": bundle["files"]["kbar_cache"].get("updated"),
         "prices_updated": bundle["files"]["prices"]["updated"],
         "market_updated": bundle["files"]["market"]["updated"],
@@ -572,6 +583,12 @@ def main():
             f" | flow={bundle['files']['fundflow']['updated'] or 'n/a'}"
             " | transfers="
         ),
+    )
+    engine = bundle["files"]["trade_engine"]
+    bundle["telegram"]["summary"] += (
+        f" | engine={engine.get('source_updated') or 'n/a'} "
+        f"{engine.get('analyzed_count') or 0}/{engine.get('candidate_count') or 0} "
+        f"of {engine.get('universe_count') or 0}"
     )
 
     OUT.write_text(json.dumps(bundle, ensure_ascii=False, indent=2), encoding="utf-8")

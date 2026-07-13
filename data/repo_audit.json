@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-13T16:23:38",
+  "generated_at": "2026-07-14T01:11:28",
   "pages": [
     {
       "page": "404.html",
@@ -103,6 +103,7 @@
         "data/fundflow.json",
         "data/publish_bundle.json",
         "data/signals.json",
+        "data/trade_engine.json",
         "data/transfers.json",
         "holdings.json",
         "market.json"
@@ -122,6 +123,7 @@
       "page": "kbar_matrix.html",
       "data_refs": [
         "data/alerts.json",
+        "data/hk_symbols.json",
         "data/jieqi_calendar.json",
         "data/kbar_cache.json",
         "data/kbar_symbols/index.json",
@@ -217,143 +219,143 @@
     }
   ],
   "dates": {
-    "freshest_date": "2026-07-13",
+    "freshest_date": "2026-07-14",
     "oldest_date": "2026-07-10",
-    "spread_days": 3,
+    "spread_days": 4,
     "files": [
       {
         "path": "holdings.json",
         "key": "updated",
         "raw": "2026-07-10",
         "normalized_date": "2026-07-10",
-        "age_days": 3,
-        "lag_vs_freshest_days": 3
+        "age_days": 4,
+        "lag_vs_freshest_days": 4
       },
       {
         "path": "data/holdings.json",
         "key": "updated",
         "raw": "2026-07-10",
         "normalized_date": "2026-07-10",
-        "age_days": 3,
-        "lag_vs_freshest_days": 3
+        "age_days": 4,
+        "lag_vs_freshest_days": 4
       },
       {
         "path": "ccass.json",
         "key": "updated",
         "raw": "2026-07-10",
         "normalized_date": "2026-07-10",
-        "age_days": 3,
-        "lag_vs_freshest_days": 3
+        "age_days": 4,
+        "lag_vs_freshest_days": 4
       },
       {
         "path": "data/ccass.json",
         "key": "updated",
         "raw": "2026-07-10",
         "normalized_date": "2026-07-10",
-        "age_days": 3,
-        "lag_vs_freshest_days": 3
+        "age_days": 4,
+        "lag_vs_freshest_days": 4
       },
       {
         "path": "market.json",
         "key": "updated_at",
         "raw": "2026-07-12T15:13:17.989476+00:00",
         "normalized_date": "2026-07-12",
-        "age_days": 1,
-        "lag_vs_freshest_days": 1
+        "age_days": 2,
+        "lag_vs_freshest_days": 2
       },
       {
         "path": "data/market.json",
         "key": "updated_at",
         "raw": "2026-07-12T15:13:17.989476+00:00",
         "normalized_date": "2026-07-12",
-        "age_days": 1,
-        "lag_vs_freshest_days": 1
+        "age_days": 2,
+        "lag_vs_freshest_days": 2
       },
       {
         "path": "data/signals.json",
         "key": "updatedAt",
         "raw": "2026-07-12T23:16:37.131540",
         "normalized_date": "2026-07-12",
-        "age_days": 1,
-        "lag_vs_freshest_days": 1
+        "age_days": 2,
+        "lag_vs_freshest_days": 2
       },
       {
         "path": "data/alerts.json",
         "key": "updated",
         "raw": "2026-07-12 15:16 UTC",
         "normalized_date": "2026-07-12",
-        "age_days": 1,
-        "lag_vs_freshest_days": 1
+        "age_days": 2,
+        "lag_vs_freshest_days": 2
       },
       {
         "path": "data/announcements.json",
         "key": "date",
         "raw": "2026-07-10",
         "normalized_date": "2026-07-10",
-        "age_days": 3,
-        "lag_vs_freshest_days": 3
+        "age_days": 4,
+        "lag_vs_freshest_days": 4
       },
       {
         "path": "data/rights_analysis.json",
         "key": "date",
         "raw": "2026-07-10",
         "normalized_date": "2026-07-10",
-        "age_days": 3,
-        "lag_vs_freshest_days": 3
+        "age_days": 4,
+        "lag_vs_freshest_days": 4
       },
       {
         "path": "data/fundflow.json",
         "key": "updated",
         "raw": "2026-07-10",
         "normalized_date": "2026-07-10",
-        "age_days": 3,
-        "lag_vs_freshest_days": 3
+        "age_days": 4,
+        "lag_vs_freshest_days": 4
       },
       {
         "path": "data/transfers.json",
         "key": "updated",
         "raw": "2026-07-10 vs 2026-07-09",
         "normalized_date": "2026-07-10",
-        "age_days": 3,
-        "lag_vs_freshest_days": 3
+        "age_days": 4,
+        "lag_vs_freshest_days": 4
       },
       {
         "path": "data/participant_anomalies.json",
         "key": "generated_at",
         "raw": "2026-07-13T16:15:16",
         "normalized_date": "2026-07-13",
-        "age_days": 0,
-        "lag_vs_freshest_days": 0
+        "age_days": 1,
+        "lag_vs_freshest_days": 1
       },
       {
         "path": "data/history.json",
         "key": "updated",
         "raw": "2026-07-12 15:16 UTC",
         "normalized_date": "2026-07-12",
-        "age_days": 1,
-        "lag_vs_freshest_days": 1
+        "age_days": 2,
+        "lag_vs_freshest_days": 2
       },
       {
         "path": "data/publish_bundle.json",
         "key": "publish.latest_publishable_date",
         "raw": "2026-07-10",
         "normalized_date": "2026-07-10",
-        "age_days": 3,
-        "lag_vs_freshest_days": 3
+        "age_days": 4,
+        "lag_vs_freshest_days": 4
       },
       {
         "path": "data/kbar_cache.json",
         "key": "updated_at",
         "raw": "2026-07-12T23:51:46",
         "normalized_date": "2026-07-12",
-        "age_days": 1,
-        "lag_vs_freshest_days": 1
+        "age_days": 2,
+        "lag_vs_freshest_days": 2
       },
       {
         "path": "data/trade_engine.json",
         "key": "updated_at",
-        "raw": "2026-07-13T11:07:18",
-        "normalized_date": "2026-07-13",
+        "raw": "2026-07-14T01:03:44",
+        "normalized_date": "2026-07-14",
         "age_days": 0,
         "lag_vs_freshest_days": 0
       },
@@ -362,16 +364,16 @@
         "key": "generated_at",
         "raw": "2026-07-12T23:24:42",
         "normalized_date": "2026-07-12",
-        "age_days": 1,
-        "lag_vs_freshest_days": 1
+        "age_days": 2,
+        "lag_vs_freshest_days": 2
       },
       {
         "path": "data/sector_rotation.json",
         "key": "updated",
         "raw": "2026-07-10",
         "normalized_date": "2026-07-10",
-        "age_days": 3,
-        "lag_vs_freshest_days": 3
+        "age_days": 4,
+        "lag_vs_freshest_days": 4
       }
     ],
     "alias_pairs": [
@@ -537,7 +539,7 @@
         "trade_date": "2026-05-12",
         "stock_count": 0,
         "coverage_pct": 0.0,
-        "holdings_rows": 114194
+        "holdings_rows": 250190
       },
       {
         "trade_date": "2026-05-11",

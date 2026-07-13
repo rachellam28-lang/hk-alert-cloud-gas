@@ -1,12 +1,12 @@
 {
- "at": "2026-07-12T23:47:38.349278",
+ "at": "2026-07-14T01:11:48.810546",
  "overall_status": "WARN",
  "ccass_publish": {
   "status": "⚠️",
-  "detail": "bundle 2026-07-12 23:47:06 | DB 2026-07-10 rows=2742 cov=99.4% | publish 2026-07-10 | coverage 99.4% | signals 2026-07-12T23:16:37.131540 | alerts 2026-07-12 15:16 UTC | anns 2026-07-10 | rights 2026-07-10 | flow 2026-07-10 | transfers 2026-07-10 vs 2026-07-09 | verify_data PASS | verify_dashboard WARN",
+  "detail": "bundle 2026-07-14 01:11:30 | DB 2026-07-10 rows=2736 cov=98.6% | publish 2026-07-10 | coverage 98.6% | signals 2026-07-12T23:16:37.131540 | alerts 2026-07-12 15:16 UTC | anns 2026-07-10 | rights 2026-07-10 | flow 2026-07-10 | transfers 2026-07-10 vs 2026-07-09 | verify_data PASS | verify_dashboard PASS | engine 2026-07-13 240/240 of 2722",
   "raw": {
    "schema_v": 1,
-   "generated_at": "2026-07-12T23:47:06",
+   "generated_at": "2026-07-14T01:11:30",
    "source_of_truth": {
     "db": "ccass/holdings.db",
     "primary_holdings": "holdings.json",
@@ -19,7 +19,7 @@
      "updated": "2026-07-10",
      "source": "holdings.db / holdings export",
      "stock_count": 2742,
-     "coverage_pct": 99.4,
+     "coverage_pct": 98.6,
      "first_date": "2026-04-30",
      "is_complete": false,
      "trend_reference_dates": {
@@ -38,7 +38,7 @@
      "groups": 2742,
      "with_signals": 500,
      "with_corp": 282,
-     "ccass_five_day_increase_count": 0
+     "ccass_five_day_increase_count": null
     },
     "alerts": {
      "path": "data/alerts.json",
@@ -77,7 +77,7 @@
     "fundflow": {
      "path": "data/fundflow.json",
      "updated": "2026-07-10",
-     "source": null,
+     "source": "westock-data-clawhub hkfund",
      "count": 500
     },
     "breakthroughs": {
@@ -193,22 +193,35 @@
     },
     "trade_engine": {
      "path": "data/trade_engine.json",
-     "updated": "2026-07-12T23:43:24",
-     "source_updated": "2026-07-12T23:25:10",
-     "source": "shared trading engine from kbar cache",
-     "scope_count": 41,
-     "momentum_count": 41,
-     "setup_counts": {
-      "breakout": 13,
-      "base": 19,
-      "breaklow": 1,
-      "rebound": 8
+     "updated": "2026-07-14T01:03:44",
+     "source_updated": "2026-07-13",
+     "source": "CCASS + observed price snapshots + Tencent observed daily K-line",
+     "runtime_version": "two-stage-hk-trading-engine-v1",
+     "data_kind": "derived_rule_output",
+     "is_observed": false,
+     "source_snapshot_dates": {
+      "holdings": "2026-07-10",
+      "prices": "2026-07-10",
+      "daily_kbar": "2026-07-13",
+      "signals": "2026-07-12T23:16:37.131540",
+      "fundflow": "2026-07-10"
      },
-     "top_momentum_symbol": "1808.HK"
+     "universe_count": 2722,
+     "candidate_count": 240,
+     "analyzed_count": 240,
+     "scope_count": 246,
+     "momentum_count": 246,
+     "setup_counts": {
+      "breakout": 110,
+      "base": 29,
+      "breaklow": 16,
+      "rebound": 91
+     },
+     "top_momentum_symbol": "1327.HK"
     },
     "kbar_cache": {
      "path": "data/kbar_cache.json",
-     "updated": "2026-07-12T23:25:10",
+     "updated": "2026-07-12T23:51:46",
      "source": "Longbridge core + daily signal K-line cache",
      "symbol_count": 41,
      "symbols": [
@@ -256,14 +269,15 @@
      ],
      "supported_intervals": [
       "1d",
-      "5m",
-      "15m",
-      "30m",
+      "1d_flip",
+      "6m",
+      "6m_flip",
+      "3m",
+      "3m_flip",
       "1h",
-      "2h",
       "4h"
      ],
-     "errors": 4
+     "errors": 1
     },
     "prices": {
      "path": "data/stock_prices.json",
@@ -274,26 +288,34 @@
     },
     "sector_rotation": {
      "path": "data/sector_rotation.json",
-     "updated": "2026-07-12",
+     "updated": "2026-07-10",
      "source": "raw/prices_YYYYMMDD.json + holdings.json names",
-     "method": "equal-weight mean price return; missing prices excluded",
+     "method": "equal-weight mean return; same-date non-stale closes only; missing prices excluded",
      "sector_count": 8,
      "windows": {
       "5": {
-       "latest_date": "2026-07-12",
-       "reference_date": "2026-07-08"
+       "latest_date": "2026-07-10",
+       "latest_rows": 1829,
+       "reference_date": "2026-07-03",
+       "reference_rows": 2437
       },
       "20": {
-       "latest_date": "2026-07-12",
-       "reference_date": "2026-06-22"
+       "latest_date": "2026-07-10",
+       "latest_rows": 1829,
+       "reference_date": "2026-06-19",
+       "reference_rows": 2737
       },
       "60": {
-       "latest_date": "2026-07-12",
-       "reference_date": null
+       "latest_date": "2026-07-10",
+       "latest_rows": 1829,
+       "reference_date": null,
+       "reference_rows": null
       },
       "120": {
-       "latest_date": "2026-07-12",
-       "reference_date": null
+       "latest_date": "2026-07-10",
+       "latest_rows": 1829,
+       "reference_date": null,
+       "reference_rows": null
       }
      }
     },
@@ -311,14 +333,14 @@
     },
     "repo_audit": {
      "path": "data/repo_audit.json",
-     "updated": "2026-07-12T23:43:43",
+     "updated": "2026-07-14T01:11:28",
      "source": "repo-native audit snapshot",
      "page_count": 19,
      "missing_ref_pages": 0,
-     "date_spread_days": 3,
+     "date_spread_days": 4,
      "alias_mismatches": 0,
-     "db_gap_count": 4,
-     "db_low_coverage_count": 20
+     "db_gap_count": 1,
+     "db_low_coverage_count": 27
     },
     "vqc_backtest": {
      "path": "data/vqc_backtest.json",
@@ -382,13 +404,13 @@
    "publish": {
     "status": "WARN",
     "latest_db_date": "2026-07-10",
-    "latest_db_stock_count": 2742,
-    "latest_db_coverage_pct": 99.4,
+    "latest_db_stock_count": 2736,
+    "latest_db_coverage_pct": 98.6,
     "latest_publishable_date": "2026-07-10",
-    "latest_publishable_stock_count": 2742,
-    "latest_publishable_coverage_pct": 99.4,
+    "latest_publishable_stock_count": 2736,
+    "latest_publishable_coverage_pct": 98.6,
     "holdings_updated": "2026-07-10",
-    "coverage_pct": 99.4,
+    "coverage_pct": 98.6,
     "verify_data": {
      "date": "2026-07-10",
      "status": "PASS",
@@ -396,9 +418,9 @@
      "warnings": 0
     },
     "verify_dashboard": {
-     "status": "WARN",
+     "status": "PASS",
      "errors": 0,
-     "warnings": 66
+     "warnings": 0
     }
    },
    "headline": {
@@ -411,11 +433,11 @@
     },
     "ccass_five_day_increase_count": 696,
     "latest_db_date": "2026-07-10",
-    "latest_db_stock_count": 2742,
-    "latest_db_coverage_pct": 99.4,
+    "latest_db_stock_count": 2736,
+    "latest_db_coverage_pct": 98.6,
     "latest_publishable_date": "2026-07-10",
-    "latest_publishable_stock_count": 2742,
-    "latest_publishable_coverage_pct": 99.4,
+    "latest_publishable_stock_count": 2736,
+    "latest_publishable_coverage_pct": 98.6,
     "signals_updated": "2026-07-12T23:16:37.131540",
     "alerts_updated": "2026-07-12 15:16 UTC",
     "watchlist_updated": "2026-07-12 15:16 UTC",
@@ -431,15 +453,19 @@
     "participant_anomalies_date": "2026-07-10",
     "timesfm_updated": "2026-07-12T23:24:42",
     "timesfm_primary_field": "broker_top5_pct",
-    "trade_engine_updated": "2026-07-12T23:43:24",
-    "trade_engine_source_updated": "2026-07-12T23:25:10",
-    "kbar_cache_updated": "2026-07-12T23:25:10",
+    "trade_engine_updated": "2026-07-14T01:03:44",
+    "trade_engine_source_updated": "2026-07-13",
+    "trade_engine_universe_count": 2722,
+    "trade_engine_candidate_count": 240,
+    "trade_engine_analyzed_count": 240,
+    "trade_engine_momentum_count": 246,
+    "kbar_cache_updated": "2026-07-12T23:51:46",
     "prices_updated": "2026-07-10T08:41:51.277026+00:00",
     "market_updated": "2026-07-12T15:13:17.989476+00:00",
     "market_stale": true,
-    "repo_audit_updated": "2026-07-12T23:43:43",
+    "repo_audit_updated": "2026-07-14T01:11:28",
     "repo_audit_missing_ref_pages": 0,
-    "repo_audit_date_spread_days": 3,
+    "repo_audit_date_spread_days": 4,
     "backtests_updated": {
      "vqc": "2026-07-12T23:20:23",
      "distribution_day": "2026-07-12T23:20:26",
@@ -447,7 +473,7 @@
     }
    },
    "telegram": {
-    "summary": "publish=WARN | holdings=2026-07-10 | latest_db=2026-07-10 (99.4%) | publishable=2026-07-10 | signals=2026-07-12T23:16:37.131540 | alerts=2026-07-12 15:16 UTC | anns=2026-07-10 | rights=2026-07-10 | flow=2026-07-10 | transfers=2026-07-10 vs 2026-07-09 | market=2026-07-12T15:13:17.989476+00:00"
+    "summary": "publish=WARN | holdings=2026-07-10 | latest_db=2026-07-10 (98.6%) | publishable=2026-07-10 | signals=2026-07-12T23:16:37.131540 | alerts=2026-07-12 15:16 UTC | anns=2026-07-10 | rights=2026-07-10 | flow=2026-07-10 | transfers=2026-07-10 vs 2026-07-09 | market=2026-07-12T15:13:17.989476+00:00 | engine=2026-07-13 240/240 of 2722"
    }
   }
  },
@@ -455,17 +481,17 @@
   {
    "name": "holdings.json",
    "status": "⚠️",
-   "detail": "updated=2026-07-10 coverage=99.4% stock_count=2742 complete=False"
+   "detail": "updated=2026-07-10 coverage=98.6% stock_count=2742 complete=False"
   },
   {
    "name": "data/holdings.json",
    "status": "⚠️",
-   "detail": "updated=2026-07-10 coverage=99.4% stock_count=2742 complete=False"
+   "detail": "updated=2026-07-10 coverage=98.6% stock_count=2742 complete=False"
   },
   {
    "name": "publish_bundle",
    "status": "⚠️",
-   "detail": "generated=2026-07-12 23:47:06 publish=WARN holdings=2026-07-10 signals=2026-07-12T23:16:37.131540 alerts=2026-07-12 15:16 UTC"
+   "detail": "generated=2026-07-14 01:11:30 publish=WARN holdings=2026-07-10 signals=2026-07-12T23:16:37.131540 alerts=2026-07-12 15:16 UTC"
   },
   {
    "name": "signals.json",
@@ -489,8 +515,13 @@
   },
   {
    "name": "price_snapshot",
-   "status": "🟢",
+   "status": "⚠️",
    "detail": "latest_price=2026-07-10T08:41:51.277026+00:00 stocks=2783"
+  },
+  {
+   "name": "trade_engine",
+   "status": "🟢",
+   "detail": "source=2026-07-13 built=2026-07-14T01:03:44 analyzed=240/240 universe=2722 momentum=246 errors=0 kind=derived_rule_output"
   },
   {
    "name": "jieqi_backtest",
@@ -499,8 +530,8 @@
   }
  ],
  "ann_volume": {
-  "status": "⚪",
-  "detail": "non-trading day, today=0, median 16"
+  "status": "⚠️",
+  "detail": "today 0 vs median 16 — check scraper"
  },
  "deepseek": {
   "status": "⚪",
@@ -520,12 +551,12 @@
   {
    "name": "events",
    "status": "🟢",
-   "detail": "967 total, 22 recent, 852 filled"
+   "detail": "967 total, 0 recent, 852 filled"
   },
   {
    "name": "repo_audit",
    "status": "⚠️",
-   "detail": "pages=19 missing_ref_pages=0 alias_mismatches=0 date_spread=3d db_gaps=4 db_low_cov=20"
+   "detail": "pages=19 missing_ref_pages=0 alias_mismatches=0 date_spread=4d db_gaps=1 db_low_cov=27"
   }
  ]
 }

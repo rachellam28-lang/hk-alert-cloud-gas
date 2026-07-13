@@ -1307,13 +1307,17 @@ function buildSetupScoutCard(def, rows) {
   const lead = rows[0];
   const stats = scoutStatRows(lead);
   const alternates = rows.slice(1, 4);
-  const chart = renderCandleSvg(seriesForInterval(lead.entry, '4h'), '4h', lead.entry.symbol, {
+  const scoutBars = seriesForInterval(lead.entry, '4h');
+  const ccassText = lead.entry.ccass
+    ? ccassSummary(lead.entry)
+    : (((lead.setup.stage1 && lead.setup.stage1.reasons) || []).filter(reason => reason.indexOf('CCASS') >= 0).join(' · ') || '未有可核實 CCASS 增持訊號');
+  const chart = scoutBars && scoutBars.length ? renderCandleSvg(scoutBars, '4h', lead.entry.symbol, {
     width: 520,
     height: 156,
     lookback: 36,
     showVolume: false,
     overlays: [...buildScoutOverlays(lead), ...levelOverlays(lead.entry)],
-  });
+  }) : '<div class="setup-empty">按「睇呢隻圖」即時載入真實日 K；排名本身不依賴靜態圖表 cache。</div>';
   return `
     <article class="setup-scout-card ${def.tone}">
       <div class="setup-scout-head">
@@ -1345,7 +1349,7 @@ function buildSetupScoutCard(def, rows) {
         </div>
         <div class="setup-scout-stat" style="margin-top:10px">
           <div class="setup-scout-stat-label">CCASS 合計持股增持</div>
-          <div class="setup-scout-stat-value">${escapeHtml(ccassSummary(lead.entry))}</div>
+          <div class="setup-scout-stat-value">${escapeHtml(ccassText)}</div>
         </div>
         <div class="setup-scout-note">${escapeHtml(def.note)}</div>
         <div class="setup-scout-actions">
@@ -1647,7 +1651,7 @@ function renderTrendGuard(setup) {
 
 function renderSetupScoutBoard() {
   if (!setupScoutGridEl || !setupScoutMetaEl) return;
-  if (!kbarCache || !kbarCache.symbols || !tradeEngine || !tradeEngine.groups) {
+  if (!tradeEngine || !tradeEngine.groups) {
     setupScoutMetaEl.textContent = 'setup universe unavailable';
     setupScoutGridEl.innerHTML = `<div class="setup-empty">未能讀取 Kbar cache。</div>`;
     return;
@@ -1657,15 +1661,21 @@ function renderSetupScoutBoard() {
   setupScoutDefs.forEach(def => {
     const rows = Array.isArray(tradeEngine.groups[def.key]) ? tradeEngine.groups[def.key] : [];
     groups[def.key] = rows.map(row => {
-      const entry = kbarCache.symbols[row.symbol];
       const setup = setupAnalysisForSymbol(row.symbol);
-      if (!entry || !setup) return null;
+      if (!setup) return null;
+      const entry = (kbarCache && kbarCache.symbols && kbarCache.symbols[row.symbol]) || {
+        symbol: row.symbol,
+        label: row.label || row.symbol,
+        market: row.market || 'hk',
+        series: {},
+        ccass: null,
+      };
       resolved += 1;
       return { key: def.key, entry, setup, score: row.score };
     }).filter(Boolean);
   });
   setupScoutGridEl.innerHTML = setupScoutDefs.map(def => buildSetupScoutCard(def, groups[def.key])).join('');
-  setupScoutMetaEl.textContent = `Kbar cache ${Object.keys(kbarCache.symbols).length} 隻 | engine ${tradeEngine && tradeEngine.scope_count ? tradeEngine.scope_count : 0} 隻 | setup ${resolved} 隻`;
+  setupScoutMetaEl.textContent = `全市場 ${tradeEngine.universe_count || '--'} 隻 | 候選 ${tradeEngine.candidate_count || '--'} 隻 | 已分析 ${tradeEngine.analyzed_count || resolved} 隻`;
 }
 
 function renderSetupLens(context) {

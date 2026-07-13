@@ -116,6 +116,10 @@ tbody tr{cursor:pointer}
 .supply-watch{background:var(--amber-soft);color:var(--amber);border-color:var(--amber-border)}
 .supply-ended{background:#1f2937;color:var(--mute);border-color:var(--border)}
 .cpill-increase{background:var(--up-soft);color:var(--up);border-color:var(--up-border)}
+.cpill-skill{background:#e8f1ff;color:#174ea6;border-color:#a8c7fa;text-decoration:none}
+.cpill-skill.breakout{background:#e7f7ee;color:#137333;border-color:#81c995}
+.cpill-skill.breaklow{background:#eef0ff;color:#4f46a5;border-color:#b8b5ee}
+.cpill-skill.rebound{background:#fff4e5;color:#9a4b00;border-color:#f2c078}
 .cpill-decrease{background:var(--down-soft);color:var(--down);border-color:var(--down-border)}
 .cpill-buyback{background:var(--primary-soft);color:var(--primary);border-color:var(--primary-border)}
 .cpill-acquisition{background:var(--violet-soft);color:var(--violet);border-color:var(--violet-border)}
@@ -2147,12 +2151,30 @@ let hkexLinkMap=new Map();
 let techSignalMap=new Map();
 let breakthroughMap={};
 let confluenceMap=new Map();
+let tradeEngineMap=new Map();
+let tradeEngineMeta=null;
+let holdingsMeta=null;
 let conFilter='';
 let activePrices={};
 let corpFilter='all';
 let allCorpData=[];
 let smallCapDeskMode='priority';
 let smallCapDeskPartial=true;
+
+function tradeSkillBadge(code){
+  const setup=tradeEngineMap.get(String(code||'').padStart(5,'0'));
+  if(!setup||!setup.activeKey||!setup.scores)return'';
+  const labels={breakout:'追勢突破',base:'盤底築台',breaklow:'破底翻',rebound:'弱勢反抽'};
+  const key=setup.activeKey;
+  const score=Number(setup.scores[key]);
+  if(!labels[key]||!Number.isFinite(score))return'';
+  const plan=setup.trade_plan||{};
+  const fmt=function(v){v=Number(v);return Number.isFinite(v)?(v<1?v.toFixed(3):v.toFixed(2)):'--';};
+  const date=(setup.observed_source&&setup.observed_source.trade_date)||'';
+  const title=labels[key]+' '+score+'/10'+(date?' · '+date:'')+' · 入場 '+fmt(plan.entry)+' · 失效 '+fmt(plan.invalidation)+' · 目標 '+fmt(plan.target)+'（規則推導）';
+  const symbol=String(parseInt(String(code),10))+'.HK';
+  return '<a class="cpill cpill-skill '+esc(key)+'" href="./kbar_matrix.html?mode=hk&amp;symbol='+encodeURIComponent(symbol)+'" title="'+esc(title)+'" onclick="event.stopPropagation()">'+esc(labels[key])+' '+score+'</a>';
+}
 let smallCapTrendRefs={};
 const CORP_CACHE_KEY='hk_corp_signal_cache_v2';
 
@@ -2689,6 +2711,9 @@ function renderSummaryBar(data){
     +'<span class="scnt"><b>'+data.first_date+'</b> 至 <b>'+esc(data.updated)+'</b></span>'
     +(pCnt?'<span class="scnt">配股 <b>'+pCnt+'</b></span>':'')
     +(rCnt?'<span class="scnt">供股公告 <b>'+rCnt+'</b></span>':'');
+  if(tradeEngineMeta){
+    bar.innerHTML+='<span class="scnt" title="規則推導，不是觀察數據">策略 <b>'+esc(tradeEngineMeta.analyzed_count||tradeEngineMeta.scope_count||'--')+'</b> / 候選 '+esc(tradeEngineMeta.candidate_count||'--')+' / 全市場 '+esc(tradeEngineMeta.universe_count||'--')+(tradeEngineMeta.source_updated_at?' · '+esc(String(tradeEngineMeta.source_updated_at).slice(5)):'')+'</span>';
+  }
 }
 
 function renderTable(){
@@ -2743,7 +2768,8 @@ function renderTable(){
       else if(conPat==='frontrun') conBadge='<span class="cpill cpill-confluence cpill-con-frontrun">🦆搶跑</span>';
       var issuerBadge=issuerFavorBadge(sig);
       var mergedSig=(techHtml||'')+(issuerBadge||'')+(corpHtml?'<div class="cpillrow">'+corpHtml+'</div>':'');
-      var sigDisplay=(conBadge||'')+(btHtml||'')+(mergedSig||'<span class="mc-null">—</span>');
+      var skillHtml=tradeSkillBadge(s.c);
+      var sigDisplay=(conBadge||'')+(btHtml||'')+skillHtml+(mergedSig||(!skillHtml?'<span class="mc-null">—</span>':''));
       var priceVal=priceMap.get(s.c) ?? s.lp;
       var aboveYO = s.lp && s.yo && s.lp > s.yo;
       var yoPct = s.lp!=null && s.yo ? (s.lp/s.yo*100-100) : null;
@@ -2837,7 +2863,7 @@ function renderTable(){
       return ss.link?'<a class="splink" href="'+esc(ss.link)+'" target="_blank" rel="noopener">'+body+'</a>':body;
     }).join(' ');
     var issuerBadge=issuerFavorBadge(sig);
-    var sigPills=conBadge+(btHtml||'')+(techHtml||'')+(issuerBadge?issuerBadge:'')+(corpHtml?' '+corpHtml:'');
+    var sigPills=conBadge+(btHtml||'')+tradeSkillBadge(s.c)+(techHtml||'')+(issuerBadge?issuerBadge:'')+(corpHtml?' '+corpHtml:'');
     var techCount=techSig.length;
     var corpCount=sig?[sig.pl,sig.ri,sig.inc].filter(Boolean).length:0;
     var totalSigCount=techCount+corpCount;
@@ -2980,6 +3006,7 @@ async function showDetail(code){
     const body='<span class="'+cls+'">'+esc(shortLabel(sig.label))+dateStr+'</span>';
     return sig.link?'<a class="splink" href="'+esc(sig.link)+'" target="_blank" rel="noopener">'+body+'</a>':body;
   }).join(' ');
+  const tradeSkillHtml=tradeSkillBadge(s.c);
   const concHtml=s.tp!=null
     ? '<span class="conc-badge conc-'+cc(s.tp)+'">● '+cl(s.tp)+'集中</span>'
     : '<span class="mc-null">—</span>';
@@ -3028,7 +3055,7 @@ async function showDetail(code){
     +'<div class="dmeta">'+(s.su>1?'<span class="dmeta-val up">🔥 '+s.su+'日</span><span class="dmeta-sub">連續增持</span>':'<span class="dmeta-val" style="color:var(--mute-2)">—</span><span class="dmeta-sub">連續增持</span>')+'</div>'
     +'<div class="dmeta">'+(s.sd>1?'<span class="dmeta-val dn">❄️ '+s.sd+'日</span><span class="dmeta-sub">連續減持</span>':'<span class="dmeta-val" style="color:var(--mute-2)">—</span><span class="dmeta-sub">連續減持</span>')+'</div>'
     +'</div>'
-    +((dsigHtml||techHtml)?'<div class="drawer-meta"><div class="dmeta" style="flex-direction:row;gap:6px;flex-wrap:wrap;padding:8px 14px;min-width:100%"><span class="dmeta-label" style="width:100%">訊號</span>'+(techHtml||'')+dsigHtml+'</div></div>':'')
+    +((dsigHtml||techHtml||tradeSkillHtml)?'<div class="drawer-meta"><div class="dmeta" style="flex-direction:row;gap:6px;flex-wrap:wrap;padding:8px 14px;min-width:100%"><span class="dmeta-label" style="width:100%">訊號</span>'+tradeSkillHtml+(techHtml||'')+dsigHtml+'</div></div>':'')
     +'<div class="drawer-meta"><div class="dmeta" style="flex-direction:row;gap:8px;padding:8px 14px;min-width:100%">'+kbarHtml+hkexHtml+'</div></div>'
     +'<div class="dsection"><div class="dsection-title">持倉分布</div>'
     +'<div id="holdingsTable"><div class="loading-msg" style="padding:20px">載入股東明細…</div></div></div>';
@@ -3561,10 +3588,28 @@ async function loadData(){
     const data=await res.json();
     smallCapDeskPartial=data.is_complete===false;
     smallCapTrendRefs=data.trend_reference_dates||{};
+    holdingsMeta=data;
     setBaseStocks(data.stocks);
     renderSummaryBar(data);
     applyFilters();
     updateSortInfo();
+    fetch('./data/trade_engine.json?_='+Date.now(), {cache:'no-store'})
+      .then(r=>r.ok?r.json():null)
+      .then(engine=>{
+        if(!engine||!engine.by_symbol)return;
+        const nextMap=new Map();
+        Object.entries(engine.by_symbol).forEach(function(pair){
+          const symbol=String(pair[0]||'');
+          if(!/\.HK$/i.test(symbol))return;
+          const digits=String(symbol.split('.')[0]||'').replace(/\D/g,'');
+          if(digits)nextMap.set(String(parseInt(digits,10)).padStart(5,'0'),pair[1]);
+        });
+        tradeEngineMap=nextMap;
+        tradeEngineMeta=engine;
+        renderSummaryBar(holdingsMeta||data);
+        renderTable();
+      })
+      .catch(()=>{tradeEngineMap=new Map();tradeEngineMeta=null;});
     // renderVrAlert();  // moved to gap_fvg.html
 
     // Fetch market.json

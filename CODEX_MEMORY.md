@@ -1,6 +1,6 @@
 # HK Alert Cloud GAS Memory
 
-Last updated: 2026-07-13 HKT
+Last updated: 2026-07-14 HKT
 
 ## Latest Audit
 
@@ -791,3 +791,15 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - Year and inverted-year views use exactly 260 observed daily bars. Quarter remains 66, half-year 126, and daily/deep-history remains up to 520; no resampling or synthetic candles are used.
 - Signal-rail date range for year views is 380 calendar days, while the 520-bar daily view keeps the two-year range.
 - Deployed Kbar/API test suite passes `6/6`; mobile visual audit confirmed the year tab is active with 260 candle bodies. Direct Cloudflare deployment: `https://694e64a5.hk-alert-cloud-gas.pages.dev`; canonical remains `https://hk-alert-cloud-gas.pages.dev`.
+
+### 2026-07-14 runtime trading-skill integration
+
+- Installed trading skills are agent instructions, not automatic website features. The runtime integration point is now `scripts/build_trade_engine.py` and its single public output `data/trade_engine.json`; do not create duplicate per-skill signal JSON files.
+- The engine is two-stage. Stage 1 screens the full observed HK CCASS/price universe using CCASS changes, concentration streaks, liquidity, 52-week position, relative volume, fund flow, technical signals, and supply-event risk. It selects a balanced 240-stock pool: 101 small, 79 mid, and 60 large caps from the current 2,722 usable names.
+- Stage 2 downloads only the selected stocks' real Tencent unadjusted daily OHLCV with six-worker bounded concurrency and stores a local ignored cache in `raw/trading_skill_kbars/`. Invalid OHLC, duplicate dates, missing history, and fewer than 50 observed bars are rejected; bars are never padded or synthesized.
+- Daily technical analysis now classifies every successful candidate as one of breakout, base, breaklow reclaim, or weak rebound. It calculates EMA20/50/200 regime, high20/high55, relative volume, 5/20/60-day momentum, and derived entry/invalidation/target levels. Output is explicitly `data_kind=derived_rule_output`, `is_observed=false`; source bars remain marked observed.
+- Unadjusted corporate-action/extreme-move returns are retained as real observations but their ranking contribution is capped. `extremeMove=true` identifies 50%+ lookback moves so a split, resumption, or genuine spike cannot produce an unbounded ranking score.
+- `momentum_list.html` now ranks the expanded engine universe and its four setup boards no longer require a stock to exist in the old 41-symbol static Kbar cache. `kbar_matrix.html` setup scout also works from engine metadata; clicking a candidate loads the real on-demand chart.
+- `index.html` loads the same engine and shows one compact derived setup badge in desktop rows, mobile cards, and stock detail. Hover text includes source date and derived entry/invalidation/target. The summary reports analyzed/candidate/universe scope.
+- `build_publish_bundle.py` and `health_check.py` expose engine source date, runtime version, universe/candidate/analyzed counts, errors, and data kind. Hermes receives one batched engine status in the existing health summary; no per-stock Telegram flood.
+- Current verified build: universe 2,722; candidates 240; analyzed 240; errors 0; momentum rows 246 including six retained non-HK presets. Source daily Kbar date is 2026-07-13.

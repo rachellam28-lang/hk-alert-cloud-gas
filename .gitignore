@@ -59,4 +59,5 @@ ccass/holdings.db.gz
 ccass/holdings_before_pct_repair_*.db
 logs/
 raw/prices_*.json
+raw/trading_skill_kbars/
 scanner/corp_graded_result.json
