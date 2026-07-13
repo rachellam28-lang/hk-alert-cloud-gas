@@ -915,17 +915,21 @@ function renderCandleSvg(bars, interval, symbol, options = {}) {
   const binSize = (maxPrice - minPrice) / profileBins;
   const pocLow = minPrice + pocIndex * binSize;
   const pocHigh = pocLow + binSize;
-  const pocTop = priceY(pocHigh);
-  const pocBottom = priceY(pocLow);
-  const valueZone = `<rect x="${padLeft}" y="${pocTop.toFixed(2)}" width="${usableWidth.toFixed(2)}" height="${Math.max(2, pocBottom - pocTop).toFixed(2)}" fill="rgba(234,179,8,.15)"/>`;
+  const pocHighY = priceY(pocHigh);
+  const pocLowY = priceY(pocLow);
+  const pocTop = Math.min(pocHighY, pocLowY);
+  const pocBottom = Math.max(pocHighY, pocLowY);
+  const valueZone = `<rect class="poc-zone" x="${padLeft}" y="${pocTop.toFixed(2)}" width="${usableWidth.toFixed(2)}" height="${Math.max(2, pocBottom - pocTop).toFixed(2)}" fill="rgba(234,179,8,.15)"/>`;
   const profileMarkup = profile.map((volume, idx) => {
     const low = minPrice + idx * binSize;
     const high = low + binSize;
-    const y = priceY(high);
-    const h = Math.max(2, priceY(low) - y);
+    const highY = priceY(high);
+    const lowY = priceY(low);
+    const y = Math.min(highY, lowY);
+    const h = Math.max(2, Math.abs(lowY - highY));
     const w = (volume / profileMax) * (profileWidth - 8);
     const fill = idx === pocIndex ? '#f59e0b' : 'rgba(148,163,184,.48)';
-    return `<rect x="${(width - 10 - w).toFixed(2)}" y="${y.toFixed(2)}" width="${w.toFixed(2)}" height="${h.toFixed(2)}" fill="${fill}"/>`;
+    return `<rect class="volume-profile-bar" data-bin="${idx}" x="${(width - 10 - w).toFixed(2)}" y="${y.toFixed(2)}" width="${w.toFixed(2)}" height="${h.toFixed(2)}" fill="${fill}"/>`;
   }).join('');
 
   const emaPath = (period, color) => {
@@ -944,7 +948,8 @@ function renderCandleSvg(bars, interval, symbol, options = {}) {
     const priorLow = Math.min(...slice.slice(idx - 5, idx).map(item => Number(item.low)));
     if (!(Number(bar.low) < priorLow && Number(bar.close) > priorLow)) return '';
     const x = padLeft + idx * step + step / 2;
-    const y = Math.max(18, priceY(Number(bar.high)) - 7);
+    const candleTop = Math.min(priceY(Number(bar.high)), priceY(Number(bar.low)));
+    const y = Math.max(18, candleTop - 7);
     const supportY = priceY(priorLow);
     const supportStart = padLeft + Math.max(0, idx - 5) * step;
     return `<line x1="${supportStart.toFixed(2)}" y1="${supportY.toFixed(2)}" x2="${(x + step / 2).toFixed(2)}" y2="${supportY.toFixed(2)}" stroke="#818cf8" stroke-width="1.4" stroke-dasharray="4 3"/><rect x="${(x - 3).toFixed(2)}" y="${(y - 3).toFixed(2)}" width="6" height="6" fill="#818cf8"/><text x="${x.toFixed(2)}" y="${(y - 5).toFixed(2)}" fill="#c4b5fd" font-size="9" font-weight="800" text-anchor="middle" style="paint-order:stroke;stroke:#0b1018;stroke-width:2px">翻</text>`;
@@ -1006,12 +1011,13 @@ function renderCandleSvg(bars, interval, symbol, options = {}) {
     const x = xCenter - candleWidth / 2;
     const up = close >= open;
     const color = up ? '#10b981' : '#ef4444';
-    const bodyTop = priceY(Math.max(open, close));
-    const bodyBottom = priceY(Math.min(open, close));
-    const bodyHeight = Math.max(1.5, bodyBottom - bodyTop);
+    const openY = priceY(open);
+    const closeY = priceY(close);
+    const bodyTop = Math.min(openY, closeY);
+    const bodyHeight = Math.max(1.5, Math.abs(closeY - openY));
     return [
-      `<line x1="${xCenter.toFixed(2)}" y1="${priceY(high).toFixed(2)}" x2="${xCenter.toFixed(2)}" y2="${priceY(low).toFixed(2)}" stroke="${color}" stroke-width="1.2"/>`,
-      `<rect x="${x.toFixed(2)}" y="${bodyTop.toFixed(2)}" width="${candleWidth.toFixed(2)}" height="${bodyHeight.toFixed(2)}" fill="${up ? '#10b981' : '#ef4444'}" stroke="${color}" stroke-width="1.1"/>`
+      `<line class="candle-wick" data-index="${idx}" x1="${xCenter.toFixed(2)}" y1="${priceY(high).toFixed(2)}" x2="${xCenter.toFixed(2)}" y2="${priceY(low).toFixed(2)}" stroke="${color}" stroke-width="1.2"/>`,
+      `<rect class="candle-body" data-index="${idx}" x="${x.toFixed(2)}" y="${bodyTop.toFixed(2)}" width="${candleWidth.toFixed(2)}" height="${bodyHeight.toFixed(2)}" fill="${up ? '#10b981' : '#ef4444'}" stroke="${color}" stroke-width="1.1"/>`
     ].join('');
   }).join('');
 

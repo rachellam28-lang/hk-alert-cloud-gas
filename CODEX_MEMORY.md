@@ -767,3 +767,10 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - Data-honesty follow-up: the small-cap desk must not call `Number(null)` for price. That coerced missing prices to zero, then falsely classified every triggered stock as a zero-turnover risk and emptied the priority list. Missing price/turnover now stays unknown. A genuine zero-row VQC/turn list renders an honest empty state; tests must not require a fabricated candidate.
 - Latest direct Cloudflare deployment for this change: `https://f0059d87.hk-alert-cloud-gas.pages.dev`. Canonical domain is `https://hk-alert-cloud-gas.pages.dev`; no GitHub deployment was used.
 - Final verification against the deployed build: all official tests under `tests/` pass `17/17`. Running bare repo-wide `pytest` still collects retired `scripts/full_test.py`, which intentionally raises `SystemExit`; use `pytest tests` until that legacy collector path is removed.
+
+### 2026-07-13 inverted Kbar geometry fix
+
+- Inverted price charts must invert only the price-to-screen Y mapping. Candle direction/color still follows observed `close >= open`; body and wick geometry must use screen-coordinate `min/max/abs`, never assume a higher price always has a smaller Y coordinate.
+- The old renderer inverted `priceY()` but calculated `bodyBottom - bodyTop` using the normal-axis assumption. This made nearly every inverted candle collapse to the 1.5px minimum. The same signed-height bug affected the POC value zone and right-side volume profile.
+- `kbar_matrix.html` now normalizes candle bodies, POC bands, volume-profile bins, and reclaim-marker placement for both axis directions. Normal and inverted views preserve identical candle/profile/POC heights and differ only in vertical orientation.
+- Mobile visual audit for `1733` inverted quarter chart found 66 candles and 46 non-doji bodies with real height. Focused deployed Kbar/API tests pass `6/6` at `https://08eb0ad6.hk-alert-cloud-gas.pages.dev`; canonical remains `https://hk-alert-cloud-gas.pages.dev`.

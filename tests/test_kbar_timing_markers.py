@@ -63,3 +63,36 @@ def test_full_hk_universe_supports_gem_code_and_exact_name(page):
 
     assert "HKEX:8131" in page.locator("#resolvedHint").inner_text()
     assert page.locator("#matrix .chart-svg").count() == 1
+
+
+def test_inverted_price_chart_preserves_candle_and_profile_geometry(page):
+    page.goto(
+        f"{BASE_URL}/kbar_matrix.html?mode=hk&symbol=1733&view=3m",
+        wait_until="domcontentloaded",
+    )
+    page.wait_for_selector("#matrix .candle-body", timeout=45_000)
+
+    normal_bodies = page.locator("#matrix .candle-body").evaluate_all(
+        "nodes => nodes.map(node => Number(node.getAttribute('height')))"
+    )
+    normal_profile = page.locator("#matrix .volume-profile-bar").evaluate_all(
+        "nodes => nodes.map(node => Number(node.getAttribute('height')))"
+    )
+    normal_poc = float(page.locator("#matrix .poc-zone").get_attribute("height"))
+
+    page.locator('.chart-tab[data-view="3m_flip"]').click()
+    page.wait_for_selector('.chart-tab[data-view="3m_flip"].active')
+    page.wait_for_selector("#matrix .candle-body")
+
+    flipped_bodies = page.locator("#matrix .candle-body").evaluate_all(
+        "nodes => nodes.map(node => Number(node.getAttribute('height')))"
+    )
+    flipped_profile = page.locator("#matrix .volume-profile-bar").evaluate_all(
+        "nodes => nodes.map(node => Number(node.getAttribute('height')))"
+    )
+    flipped_poc = float(page.locator("#matrix .poc-zone").get_attribute("height"))
+
+    assert flipped_bodies == normal_bodies
+    assert flipped_profile == normal_profile
+    assert flipped_poc == normal_poc
+    assert any(height > 1.5 for height in flipped_bodies)
