@@ -50,7 +50,7 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
     <div class="band-head">
       <div>
         <div class="band-title">多重時間矩陣</div>
-        <div class="band-sub">有本地 cache 就顯示完整自製圖；未快取港股直連 TradingView 七圖。</div>
+        <div class="band-sub">有本地 cache 就顯示完整自製圖；未快取港股直連 TradingView 六圖。</div>
       </div>
     </div>
     <div class="controls" style="margin-top:12px">
@@ -77,7 +77,7 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
       <span class="legend-chip"><span class="legend-color legend-jieqi"></span>節氣窗口</span>
       <span class="legend-chip"><span class="legend-color legend-dd"></span>分佈日</span>
       <span class="legend-chip"><span class="legend-color legend-reclaim"></span>破底翻：跌穿支持後收回</span>
-      <span class="legend-chip">大級別提供正常 / 反向圖；短線只留 4H</span>
+      <span class="legend-chip">季、半年、日線均提供正常 / 反向圖</span>
     </div>
   </section>
 
@@ -85,7 +85,7 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
     <div class="band-head">
       <div>
         <div class="band-title">Kbar 主體</div>
-        <div class="band-sub">日圖 / 反向日圖 / 半年圖 / 反向半年圖 / 季圖 / 反向季圖 / 4H，同步睇方向同節奏。</div>
+        <div class="band-sub">季圖 / 反向季圖 / 半年圖 / 反向半年圖 / 日圖 / 反向日圖。</div>
       </div>
     </div>
     <div class="trend-guard neutral" id="trendGuard"><strong>多空 Trend 守位</strong><small>等 Kbar cache 計出守位線。</small></div>
@@ -126,14 +126,13 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 <script src="./shared-nav.js"></script>
 <script>
 const intervals = [
-  { label: '日圖', value: '1d' },
-  { label: '半年圖', value: '6m' },
   { label: '季圖', value: '3m' },
-  { label: '4H', value: '4h' },
+  { label: '反向季圖', value: '3m_flip' },
+  { label: '半年圖', value: '6m' },
+  { label: '反向半年圖', value: '6m_flip' },
+  { label: '日圖', value: '1d' },
+  { label: '反向日圖', value: '1d_flip' },
 ];
-intervals.splice(1, 0, { label: '反向日圖', value: '1d_flip' });
-intervals.splice(3, 0, { label: '反向半年圖', value: '6m_flip' });
-intervals.splice(5, 0, { label: '反向季圖', value: '3m_flip' });
 
 const presets = [
   { label: '騰訊', raw: '700', mode: 'hk' },
@@ -316,7 +315,7 @@ function renderFallbackNotice(fallbackSymbol, supportedSymbols) {
   const preview = supportedSymbols.slice(0, 12).join(' / ');
   fallbackNoticeEl.style.display = 'block';
   fallbackNoticeEl.className = 'trend-guard watch';
-  fallbackNoticeEl.innerHTML = `<strong>${escapeHtml(fallbackSymbol)} 使用 TradingView 直連七圖</strong><small>正常/反向日圖、半年、季圖及 4H 由 TradingView 即時載入；節氣/VQC、年開線及 CCASS overlay 只會在本地 Futu cache 圖顯示。現時完整 cache 共 ${cacheCount} 隻。</small>`;
+  fallbackNoticeEl.innerHTML = `<strong>${escapeHtml(fallbackSymbol)} 使用 TradingView 直連六圖</strong><small>正常/反向季圖、半年及日圖由 TradingView 即時載入；節氣/VQC、年開線及 CCASS overlay 只會在本地 Futu cache 圖顯示。現時完整 cache 共 ${cacheCount} 隻。</small>`;
 }
 
 async function ensureKbarCache() {
@@ -788,7 +787,6 @@ function buildEmptyPane(interval, fallbackSymbol, supportedSymbols) {
     '6m_flip': ['D', '6M', true],
     '3m': ['D', '3M', false],
     '3m_flip': ['D', '3M', true],
-    '4h': ['240', '1M', false],
   }[interval.value];
   const chartBody = fallbackSymbol && directConfig
     ? `<div class="tv-widget-host" data-symbol="${escapeHtml(fallbackSymbol)}" data-interval="${directConfig[0]}" data-range="${directConfig[1]}" data-inverted="${directConfig[2] ? '1' : '0'}"><div class="tradingview-widget-container__widget"></div></div>`
@@ -846,10 +844,10 @@ function trendGuardForSetup(setup) {
   const m = setup.metrics;
   const aboveGuard = Number.isFinite(m.close1) && Number.isFinite(m.ema21_1) && m.close1 >= m.ema21_1;
   const belowGuard = Number.isFinite(m.close1) && Number.isFinite(m.ema21_1) && m.close1 < m.ema21_1;
-  if (m.trend1 === 'up' && m.trend4 === 'up' && aboveGuard) return { key: 'bull', label: m.newHigh ? '多頭突破守位' : '多頭守位 / 未創新高', note: m.newHigh ? '4H 向上並創近 20 根新高，守住短線 EMA21 才保留突破。' : '4H 向上但未創新高，未失守短線 EMA21 前先守勢。' };
-  if (m.trend1 === 'down' && m.trend4 === 'down' && belowGuard) return { key: 'bear', label: m.newLow ? '空頭破底守位' : '空頭守位 / 未創新低', note: m.newLow ? '4H 向下並創近 20 根新低，收復短線 EMA21 才解除弱勢。' : '4H 向下但未創新低，未收復短線 EMA21 前反彈先當弱勢。' };
-  if (m.trend4 === 'up' && aboveGuard) return { key: 'watch', label: '多頭轉勢觀察', note: '4H 仍偏多，等短線再同步。' };
-  if (m.trend4 === 'down' && belowGuard) return { key: 'watch', label: '空頭轉勢觀察', note: '4H 仍偏空，等短線止跌再確認。' };
+  if (m.trend1 === 'up' && m.trend4 === 'up' && aboveGuard) return { key: 'bull', label: m.newHigh ? '多頭突破守位' : '多頭守位 / 未創新高', note: m.newHigh ? '中短線向上並創近 20 根新高，守住短線 EMA21 才保留突破。' : '中短線向上但未創新高，未失守短線 EMA21 前先守勢。' };
+  if (m.trend1 === 'down' && m.trend4 === 'down' && belowGuard) return { key: 'bear', label: m.newLow ? '空頭破底守位' : '空頭守位 / 未創新低', note: m.newLow ? '中短線向下並創近 20 根新低，收復短線 EMA21 才解除弱勢。' : '中短線向下但未創新低，未收復短線 EMA21 前反彈先當弱勢。' };
+  if (m.trend4 === 'up' && aboveGuard) return { key: 'watch', label: '多頭轉勢觀察', note: '中短線仍偏多，等短線再同步。' };
+  if (m.trend4 === 'down' && belowGuard) return { key: 'watch', label: '空頭轉勢觀察', note: '中短線仍偏空，等短線止跌再確認。' };
   return { key: 'neutral', label: '多空未明', note: '高低週期未完全同向，先等守位線確認。' };
 }
 
@@ -922,7 +920,7 @@ function scoutStatRows(row) {
   const metrics = row.setup && row.setup.metrics ? row.setup.metrics : {};
   if (row.key === 'breakout') {
     return [
-      { label: '4H 趨勢', value: `${metrics.trend4}` },
+      { label: '中短線趨勢', value: `${metrics.trend4}` },
       { label: '距前高', value: fmtSigned(metrics.gapHigh20, '%') },
       { label: '短線 thrust', value: fmtSigned(metrics.thrust1, '%') },
       { label: '箱內位置', value: `${Math.round((metrics.posInRange || 0) * 100)}%` },
@@ -931,7 +929,7 @@ function scoutStatRows(row) {
   if (row.key === 'base') {
     return [
       { label: 'Range', value: fmtSigned(metrics.rangePct, '%') },
-      { label: '4H 趨勢', value: `${metrics.trend4}` },
+      { label: '中短線趨勢', value: `${metrics.trend4}` },
       { label: '短線 EMA spread', value: fmtSigned(metrics.emaSpread1, '%') },
       { label: '箱內位置', value: `${Math.round((metrics.posInRange || 0) * 100)}%` },
     ];
@@ -940,14 +938,14 @@ function scoutStatRows(row) {
     return [
       { label: '收回前低', value: fmtSigned(metrics.reclaimPrevLow, '%') },
       { label: '破位低點', value: fmtSigned(metrics.recentLow) },
-      { label: '4H 趨勢', value: `${metrics.trend4}` },
+      { label: '中短線趨勢', value: `${metrics.trend4}` },
       { label: '短線 thrust', value: fmtSigned(metrics.thrust1, '%') },
     ];
   }
   return [
     { label: '離低位', value: fmtSigned(metrics.bounceLow20, '%') },
     { label: '離高位', value: fmtSigned(metrics.gapHigh20, '%') },
-    { label: '4H 趨勢', value: `${metrics.trend4}` },
+    { label: '中短線趨勢', value: `${metrics.trend4}` },
     { label: '短線 thrust', value: fmtSigned(metrics.thrust1, '%') },
   ];
 }
@@ -1152,7 +1150,7 @@ function analyzeSetups(entry) {
         score: scores.breakout,
         active: activeKey === 'breakout',
         stats: [
-          { label: '4H 趨勢', value: '' + trend4 },
+          { label: '中短線趨勢', value: '' + trend4 },
           { label: '距前高', value: fmtSigned(gapHigh20, '%') },
           { label: '短線 thrust', value: fmtSigned(thrust1, '%') },
           { label: '箱內位置', value: Math.round(posInRange * 100) + '%' },
@@ -1170,7 +1168,7 @@ function analyzeSetups(entry) {
         stats: [
           { label: 'Range size', value: fmtSigned(rangePct, '%') },
           { label: '短線 EMA spread', value: fmtSigned(emaSpread1, '%') },
-          { label: 'EMA spread 4H', value: fmtSigned(emaSpread4, '%') },
+          { label: '中短線 EMA spread', value: fmtSigned(emaSpread4, '%') },
           { label: '箱內位置', value: Math.round(posInRange * 100) + '%' },
         ],
         note: '未放量破頂前先當觀察池；最值得留意係由弱轉強嗰一下。',
@@ -1200,7 +1198,7 @@ function analyzeSetups(entry) {
         score: scores.rebound,
         active: activeKey === 'rebound',
         stats: [
-          { label: '4H 趨勢', value: '' + trend4 },
+          { label: '中短線趨勢', value: '' + trend4 },
           { label: '離低位', value: fmtSigned(bounceLow20, '%') },
           { label: '離高位', value: fmtSigned(gapHigh20, '%') },
           { label: '短線 thrust', value: fmtSigned(thrust1, '%') },
@@ -1242,7 +1240,7 @@ function renderMatrix() {
   if (!resolvedSymbol || !kbarCache || !kbarCache.symbols || !kbarCache.symbols[resolvedSymbol]) {
     renderFallbackNotice(fallbackSymbol, supported);
     resolvedHint.textContent = fallbackSymbol
-      ? `${fallbackSymbol} 使用 TradingView 直連七圖；本地訊號 overlay 需要 Futu cache。`
+      ? `${fallbackSymbol} 使用 TradingView 直連六圖；本地訊號 overlay 需要 Futu cache。`
       : '請先輸入 symbol';
     statusEl.textContent = fallbackSymbol ? fallbackSymbol + ' | TradingView direct' : 'waiting for symbol';
     matrixEl.innerHTML = intervals.map(interval => buildEmptyPane(interval, fallbackSymbol, supported)).join('');
@@ -1300,13 +1298,13 @@ async function refreshConsole(context) {
     lines.push('[timesfm] cache unavailable');
   }
   if (setup) {
-    lines.push(`[trend-guard] ${trendGuard.label} | 4H=${setup.metrics.trend4} | guard=短線 EMA21`);
+    lines.push(`[trend-guard] ${trendGuard.label} | 中短線=${setup.metrics.trend4} | guard=短線 EMA21`);
     lines.push(`[setup] active=${setup.activeKey} breakout=${setup.scores.breakout}/10 base=${setup.scores.base}/10 breaklow=${setup.scores.breaklow}/10 rebound=${setup.scores.rebound}/10`);
     lines.push(`[setup-metrics] short=${setup.metrics.trend1} 4h=${setup.metrics.trend4} high20=${fmtSigned(setup.metrics.gapHigh20, '%')} low20=${fmtSigned(setup.metrics.bounceLow20, '%')} reclaim=${fmtSigned(setup.metrics.reclaimPrevLow, '%')} range=${fmtSigned(setup.metrics.rangePct, '%')}`);
   } else {
     lines.push('[setup] unavailable');
   }
-  lines.push('[note] 本地 Futu cache 顯示完整自製圖；未快取 symbol 直連 TradingView 七圖。');
+  lines.push('[note] 本地 Futu cache 顯示完整自製圖；未快取 symbol 直連 TradingView 六圖。');
   consoleEl.textContent = lines.join('\n');
 }
 
@@ -1425,7 +1423,7 @@ function renderMatrix() {
 
   if (!resolvedSymbol || !kbarCache || !kbarCache.symbols || !kbarCache.symbols[resolvedSymbol]) {
     resolvedHint.textContent = fallbackSymbol
-      ? `${fallbackSymbol} 使用 TradingView 直連七圖；本地訊號 overlay 需要 Futu cache。`
+      ? `${fallbackSymbol} 使用 TradingView 直連六圖；本地訊號 overlay 需要 Futu cache。`
       : '請先輸入 symbol';
     statusEl.textContent = fallbackSymbol ? fallbackSymbol + ' | TradingView direct' : 'waiting for symbol';
     matrixEl.innerHTML = intervals.map(interval => buildEmptyPane(interval, fallbackSymbol, supported)).join('');
@@ -1454,7 +1452,7 @@ function renderMatrix() {
   if (!resolvedSymbol || !kbarCache || !kbarCache.symbols || !kbarCache.symbols[resolvedSymbol]) {
     renderFallbackNotice(fallbackSymbol, supported);
     resolvedHint.textContent = fallbackSymbol
-      ? `${fallbackSymbol} 使用 TradingView 直連七圖；本地訊號 overlay 需要 Futu cache。`
+      ? `${fallbackSymbol} 使用 TradingView 直連六圖；本地訊號 overlay 需要 Futu cache。`
       : '請先輸入 symbol';
     statusEl.textContent = fallbackSymbol ? fallbackSymbol + ' | TradingView direct' : 'waiting for symbol';
     matrixEl.innerHTML = intervals.map(interval => buildEmptyPane(interval, fallbackSymbol, supported)).join('');

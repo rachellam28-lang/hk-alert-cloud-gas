@@ -696,6 +696,7 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 
 ### 2026-07-13 all-HK Kbar access
 
+- Visible Kbar order is fixed at quarter normal/inverted, half-year normal/inverted, then daily normal/inverted. The 4H pane and visible 4H wording were removed; hourly data remains internal to setup/trend calculations.
 - `kbar_matrix.html` uses a hybrid source model. A searched HK symbol first lazy-loads `data/kbar_symbols/<5-digit-code>.json`; cached symbols retain the custom normal/inverted day, half-year, quarter, and 4H charts with CCASS and timing overlays.
 - An HK symbol without a local shard must show seven direct TradingView Advanced Chart widgets instead of an empty/fake cache pane. Inverted panes use TradingView's native `mainSeriesProperties.priceAxisProperties.isInverted` override.
 - `scripts/build_kbar_cache.py --symbols 1733` writes real per-symbol Futu shards. `--all-hk --resume` is resumable, and `--workers` controls concurrency. No yfinance or synthetic OHLC is allowed.

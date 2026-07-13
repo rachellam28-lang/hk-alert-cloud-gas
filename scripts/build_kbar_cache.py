@@ -407,7 +407,7 @@ def main():
         "updated_at": datetime.now().isoformat(timespec="seconds"),
         "source": "Longbridge core + daily signal K-line cache",
         "periods": list(PERIOD_COUNTS.keys()),
-        "supported_intervals": ["1d", "1d_flip", "6m", "6m_flip", "3m", "3m_flip", "1h", "4h"],
+        "supported_intervals": ["3m", "3m_flip", "6m", "6m_flip", "1d", "1d_flip"],
         "symbols": {},
         "errors": errors,
     }
@@ -479,7 +479,7 @@ def main_daily_only():
             entry.setdefault("series", {})["1d"] = rows
             entry.setdefault("series_meta", {})["1d"] = {"count": len(rows), "stale": False, "error": None}
         print(f"[daily-futu] {idx}/{total} {symbol} rows={len(entry.get('series', {}).get('1d', []))}", flush=True)
-    payload["supported_intervals"] = ["1d", "1d_flip", "6m", "6m_flip", "3m", "3m_flip", "1h", "4h"]
+    payload["supported_intervals"] = ["3m", "3m_flip", "6m", "6m_flip", "1d", "1d_flip"]
     missing = [symbol for symbol, entry in symbols.items() if not entry.get("series", {}).get("1d")]
     payload["daily_chart_ready"] = {"ready": not missing, "symbols": len(symbols), "missing": missing}
     OUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
