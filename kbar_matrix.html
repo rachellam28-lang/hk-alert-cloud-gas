@@ -173,6 +173,7 @@ let signalCatalog = null;
 const attemptedKbarShards = new Set();
 const dynamicKbarCacheKey = 'hk-alert-dynamic-kbar-v1';
 const dynamicKbarTtlMs = 15 * 60 * 1000;
+const dailyBarTarget = 520;
 
 const matrixEl = document.getElementById('matrix');
 const trendGuardEl = document.getElementById('trendGuard');
@@ -263,7 +264,7 @@ function tvIntervalForPane(value) {
 }
 
 function paneLookback(value) {
-  if (value === '1d' || value === '1d_flip') return 260;
+  if (value === '1d' || value === '1d_flip') return dailyBarTarget;
   if (value === '6m' || value === '6m_flip') return 126;
   if (value === '3m' || value === '3m_flip') return 66;
   return 48;
@@ -388,22 +389,34 @@ function normalizedHkCode(raw) {
 }
 
 async function ensureSearchedKbarShard() {
-  if (state.mode !== 'hk' || resolveCachedSymbol(state.raw, state.mode)) return;
+  if (state.mode !== 'hk') return;
   const code = normalizedHkCode(state.raw);
-  if (!code || attemptedKbarShards.has(code)) return;
+  if (!code) return;
+  const resolved = resolveCachedSymbol(state.raw, state.mode);
+  const existingEntry = resolved && kbarCache && kbarCache.symbols ? kbarCache.symbols[resolved] : null;
+  const existingDaily = existingEntry && existingEntry.series && Array.isArray(existingEntry.series['1d'])
+    ? existingEntry.series['1d'].length
+    : 0;
+  if (existingDaily >= dailyBarTarget || attemptedKbarShards.has(code)) return;
   attemptedKbarShards.add(code);
   state.kbarError = '';
-  statusEl.textContent = `${code} | 載入真實港股日 K...`;
+  statusEl.textContent = `${code} | 載入 ${dailyBarTarget} 根真實港股日 K...`;
   const staticCodes = kbarShardIndex && Array.isArray(kbarShardIndex.available)
     ? new Set(kbarShardIndex.available.map(item => String(item).padStart(5, '0')))
     : new Set();
-  let payload = staticCodes.has(code) ? await loadJson(`./data/kbar_symbols/${code}.json`) : null;
-  if (!payload || !payload.entry || !Array.isArray(payload.entry.series && payload.entry.series['1d'])) {
-    payload = readDynamicKbarCache(code);
+  let baseEntry = existingEntry;
+  if (!baseEntry && staticCodes.has(code)) {
+    const staticPayload = await loadJson(`./data/kbar_symbols/${code}.json`);
+    baseEntry = staticPayload && staticPayload.entry ? staticPayload.entry : null;
   }
+  let payload = readDynamicKbarCache(code);
+  const cachedDaily = payload && payload.entry && payload.entry.series && Array.isArray(payload.entry.series['1d'])
+    ? payload.entry.series['1d'].length
+    : 0;
+  if (cachedDaily < dailyBarTarget) payload = null;
   if (!payload) {
     try {
-      const res = await fetch(`/api/kbar/${code}?count=260`, { headers: { accept: 'application/json' } });
+      const res = await fetch(`/api/kbar/${code}?count=${dailyBarTarget}`, { headers: { accept: 'application/json' } });
       if (res.ok) {
         payload = await res.json();
         writeDynamicKbarCache(code, payload);
@@ -416,7 +429,24 @@ async function ensureSearchedKbarShard() {
       payload = null;
     }
   }
-  const entry = payload && payload.entry;
+  const dynamicEntry = payload && payload.entry;
+  let entry = dynamicEntry || baseEntry;
+  if (baseEntry && dynamicEntry) {
+    const hasIntraday = Boolean(baseEntry.series && Array.isArray(baseEntry.series['1h']) && baseEntry.series['1h'].length);
+    entry = {
+      ...baseEntry,
+      label: dynamicEntry.label || baseEntry.label,
+      aliases: [...new Set([...(baseEntry.aliases || []), ...(dynamicEntry.aliases || [])])],
+      quote: {
+        ...(baseEntry.quote || {}),
+        ...(dynamicEntry.quote || {}),
+        status: hasIntraday ? 'hybrid-cache' : (dynamicEntry.quote && dynamicEntry.quote.status),
+      },
+      series: { ...(baseEntry.series || {}), ...(dynamicEntry.series || {}) },
+      series_meta: { ...(baseEntry.series_meta || {}), ...(dynamicEntry.series_meta || {}) },
+      ccass: baseEntry.ccass || dynamicEntry.ccass || null,
+    };
+  }
   if (!entry || !entry.symbol || !entry.series || !Array.isArray(entry.series['1d'])) {
     attemptedKbarShards.delete(code);
     return;
@@ -579,7 +609,7 @@ function renderChartTabs() {
 }
 
 function eventRangeStart(view = state.view) {
-  const days = view.startsWith('3m') ? 100 : (view.startsWith('6m') ? 190 : 380);
+  const days = view.startsWith('3m') ? 100 : (view.startsWith('6m') ? 190 : 760);
   const date = new Date();
   date.setHours(0, 0, 0, 0);
   date.setDate(date.getDate() - days);
@@ -744,7 +774,11 @@ function timingMarkersFor(symbol, bars, xForIndex, priceHeight, padTop) {
     const label = resonance ? events.map(item => item.type).join('+') : events[0].label;
     const color = resonance ? '#f472b6' : events[0].color;
     const y = padTop + 40 + (markerIndex % 2) * 12;
-    return `<g><title>${escapeHtml(day+' '+events.map(item => item.label).join(' + '))}</title><line x1="${x.toFixed(2)}" y1="${(padTop + 14).toFixed(2)}" x2="${x.toFixed(2)}" y2="${(padTop + priceHeight - 8).toFixed(2)}" stroke="${color}" stroke-width="1.8" stroke-dasharray="4 3" opacity=".9"/><text x="${(x + 3).toFixed(2)}" y="${y.toFixed(2)}" fill="${color}" font-size="9" font-weight="800" style="paint-order:stroke;stroke:#0b1018;stroke-width:2px;stroke-linejoin:round">${escapeHtml(label)}</text></g>`;
+    const showLabel = bars.length <= 260 || resonance || events.some(item => item.type === 'VQC');
+    const text = showLabel
+      ? `<text x="${(x + 3).toFixed(2)}" y="${y.toFixed(2)}" fill="${color}" font-size="9" font-weight="800" style="paint-order:stroke;stroke:#0b1018;stroke-width:2px;stroke-linejoin:round">${escapeHtml(label)}</text>`
+      : '';
+    return `<g><title>${escapeHtml(day+' '+events.map(item => item.label).join(' + '))}</title><line x1="${x.toFixed(2)}" y1="${(padTop + 14).toFixed(2)}" x2="${x.toFixed(2)}" y2="${(padTop + priceHeight - 8).toFixed(2)}" stroke="${color}" stroke-width="1.8" stroke-dasharray="4 3" opacity=".9"/>${text}</g>`;
   }).join('');
 }
 
@@ -1647,16 +1681,17 @@ function buildSingleTradingViewPane(tvSymbol, entry) {
   const useLocalHk = state.mode === 'hk' && entry;
   const blockedHkEmbed = state.mode === 'hk' && !entry;
   const dynamicHk = Boolean(entry && entry.quote && entry.quote.status === 'on-demand-cache');
+  const localBars = useLocalHk ? seriesForInterval(entry, view.value) : [];
+  const rangeLabel = useLocalHk ? `${Math.min(localBars.length, paneLookback(view.value))} 根 D 燭` : config[1];
   const meta = [
     tvSymbol,
-    config[1],
+    rangeLabel,
     config[2] ? '反向股價刻度' : '正常股價刻度',
     useLocalHk ? (dynamicHk ? 'Cloudflare 按需真實日 K' : '本地真實 cache') : (blockedHkEmbed ? 'TradingView 外連' : 'TradingView 直連'),
   ];
   let chartBody = '';
   if (useLocalHk) {
-    const bars = seriesForInterval(entry, view.value);
-    chartBody = renderCandleSvg(bars, view.label, entry.symbol, {
+    chartBody = renderCandleSvg(localBars, view.label, entry.symbol, {
       overlays: levelOverlays(entry),
       lookback: paneLookback(view.value),
       reversePriceScale: paneReversePriceScale(view.value),

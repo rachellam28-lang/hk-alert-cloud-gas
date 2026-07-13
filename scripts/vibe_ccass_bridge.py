@@ -168,7 +168,7 @@ def parse_args() -> argparse.Namespace:
         description="Load observed HK daily Kbars into Vibe-Trading without yfinance."
     )
     parser.add_argument("symbol", help="HK code, e.g. 1733, 01733, or 1733.HK")
-    parser.add_argument("--count", type=int, default=260, choices=range(30, 261), metavar="30..260")
+    parser.add_argument("--count", type=int, default=520, choices=range(30, 521), metavar="30..520")
     parser.add_argument("--base-url", default=DEFAULT_BASE_URL)
     parser.add_argument("--verify", action="store_true", help="Read the bars back through Vibe local loader")
     parser.add_argument("--json", action="store_true", help="Print machine-readable status")

@@ -17,14 +17,15 @@ def request(path: str) -> Request:
 
 
 def test_hk_kbar_api_returns_valid_real_ohlcv():
-    with urlopen(request("/api/kbar/1069?count=260"), timeout=30) as response:
+    with urlopen(request("/api/kbar/1069?count=520"), timeout=30) as response:
         payload = json.load(response)
 
     entry = payload["entry"]
     bars = entry["series"]["1d"]
     assert payload["source"] == "Tencent public HK daily K-line (unadjusted)"
     assert entry["symbol"] == "1069.HK"
-    assert 30 <= len(bars) <= 260
+    assert 260 <= len(bars) <= 520
+    assert entry["series_meta"]["1d"]["requested_count"] == 520
     assert bars == sorted(bars, key=lambda row: row["time"])
     assert entry["quote"]["trade_date"] == bars[-1]["time"]
     assert entry["quote"]["last"] == bars[-1]["close"]

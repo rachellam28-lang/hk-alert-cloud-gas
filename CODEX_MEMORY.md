@@ -774,3 +774,13 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - The old renderer inverted `priceY()` but calculated `bodyBottom - bodyTop` using the normal-axis assumption. This made nearly every inverted candle collapse to the 1.5px minimum. The same signed-height bug affected the POC value zone and right-side volume profile.
 - `kbar_matrix.html` now normalizes candle bodies, POC bands, volume-profile bins, and reclaim-marker placement for both axis directions. Normal and inverted views preserve identical candle/profile/POC heights and differ only in vertical orientation.
 - Mobile visual audit for `1733` inverted quarter chart found 66 candles and 46 non-doji bodies with real height. Focused deployed Kbar/API tests pass `6/6` at `https://08eb0ad6.hk-alert-cloud-gas.pages.dev`; canonical remains `https://hk-alert-cloud-gas.pages.dev`.
+
+### 2026-07-13 deeper daily Kbar history
+
+- Tencent's observed HK endpoint was probed with 520/780/1,000/1,500 daily bars and returned each requested depth for an established listing. The UI target is deliberately 520 bars: about two trading years and the largest count that remains distinguishable in the current 1,180-unit SVG without candle overlap.
+- Quarter and half-year views remain 66 and 126 bars. Normal and inverted daily views now request and render up to 520 bars; their pane metadata reports the actual candle count.
+- Existing 260-bar static/Futu entries are supplemented on demand and merged with the deeper daily series. The merge must preserve static `1h`, CCASS, aliases, and metadata; it must not replace the whole entry with the daily-only API payload.
+- The Kbar Function caps requests at 520 and retries transient empty/network responses before falling back to a real 260-bar request. `series_meta.1d.requested_count` records intent, while `count` records actual observed bars; newly listed stocks are never padded.
+- Vibe's approved local bridge default is also 520. Verified `01733` with 520 observed bars from 2024-05-29 through 2026-07-13 and 520 rows reloaded through Vibe local loader without yfinance.
+- On 520-bar charts, all timing lines and hover titles remain. Ordinary jieqi text labels are suppressed to prevent mobile overlap; VQC and multi-signal resonance labels remain visible. Stable mobile screenshot confirmed 520 bodies with valid first/last coordinates.
+- Latest direct Cloudflare deployment: `https://6d983c16.hk-alert-cloud-gas.pages.dev`; canonical remains `https://hk-alert-cloud-gas.pages.dev`.

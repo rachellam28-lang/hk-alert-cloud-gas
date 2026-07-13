@@ -96,3 +96,8 @@ def test_inverted_price_chart_preserves_candle_and_profile_geometry(page):
     assert flipped_profile == normal_profile
     assert flipped_poc == normal_poc
     assert any(height > 1.5 for height in flipped_bodies)
+
+    page.locator('.chart-tab[data-view="1d"]').click()
+    page.wait_for_selector('.chart-tab[data-view="1d"].active')
+    page.wait_for_function("() => document.querySelectorAll('#matrix .candle-body').length === 520")
+    assert "520 根 D 燭" in page.locator("#matrix .pane-meta").inner_text()

@@ -1,5 +1,5 @@
 const UPSTREAM_HOST = 'web.ifzq.gtimg.cn';
-const MAX_BARS = 260;
+const MAX_BARS = 520;
 
 function json(payload, status = 200, cacheControl = 'no-store') {
   return new Response(JSON.stringify(payload), {
@@ -52,28 +52,40 @@ export async function onRequestGet(context) {
   const requestedCount = Number.parseInt(requestUrl.searchParams.get('count') || String(MAX_BARS), 10);
   const count = Math.max(30, Math.min(MAX_BARS, Number.isFinite(requestedCount) ? requestedCount : MAX_BARS));
   const upstreamSymbol = `hk${code}`;
-  const upstreamUrl = new URL(`https://${UPSTREAM_HOST}/appstock/app/kline/kline`);
-  upstreamUrl.searchParams.set('param', `${upstreamSymbol},day,,,${count}`);
-
-  let upstream;
-  try {
-    upstream = await fetch(upstreamUrl.toString(), {
-      headers: { accept: 'application/json' },
-      cf: { cacheEverything: true, cacheTtl: 300 },
-    });
-  } catch (error) {
-    return json({ error: 'upstream_unreachable', detail: String(error && error.message || error) }, 502);
+  let node = null;
+  let bars = [];
+  let lastUpstreamError = null;
+  const candidateCounts = count > 260 ? [count, count, 260] : [count, count];
+  for (let attempt = 0; attempt < candidateCounts.length && !bars.length; attempt += 1) {
+    const candidateCount = candidateCounts[attempt];
+    const upstreamUrl = new URL(`https://${UPSTREAM_HOST}/appstock/app/kline/kline`);
+    upstreamUrl.searchParams.set('param', `${upstreamSymbol},day,,,${candidateCount}`);
+    if (attempt > 0) upstreamUrl.searchParams.set('_retry', `${Date.now()}-${attempt}`);
+    try {
+      const upstream = await fetch(upstreamUrl.toString(), {
+        headers: { accept: 'application/json', ...(attempt > 0 ? { 'cache-control': 'no-cache' } : {}) },
+        cf: { cacheEverything: attempt === 0, cacheTtl: 300 },
+      });
+      if (!upstream.ok) {
+        lastUpstreamError = `HTTP ${upstream.status}`;
+        continue;
+      }
+      const payload = await upstream.json();
+      const candidateNode = payload && payload.data && payload.data[upstreamSymbol];
+      const candidateBars = (candidateNode && Array.isArray(candidateNode.day) ? candidateNode.day : [])
+        .map(normalizeBar)
+        .filter(Boolean)
+        .slice(-candidateCount);
+      if (candidateBars.length) {
+        node = candidateNode;
+        bars = candidateBars;
+      } else {
+        lastUpstreamError = 'empty K-line response';
+      }
+    } catch (error) {
+      lastUpstreamError = String(error && error.message || error);
+    }
   }
-  if (!upstream.ok) return json({ error: 'upstream_http_error', status: upstream.status }, 502);
-
-  let payload;
-  try {
-    payload = await upstream.json();
-  } catch {
-    return json({ error: 'upstream_invalid_json' }, 502);
-  }
-  const node = payload && payload.data && payload.data[upstreamSymbol];
-  const bars = (node && Array.isArray(node.day) ? node.day : []).map(normalizeBar).filter(Boolean).slice(-count);
   if (!bars.length) return json({ error: 'symbol_or_kbar_not_found', code }, 404, 'public, max-age=60, s-maxage=300');
 
   bars.sort((a, b) => a.time.localeCompare(b.time));
@@ -107,7 +119,13 @@ export async function onRequestGet(context) {
       },
       series: { '1d': bars },
       series_meta: {
-        '1d': { count: bars.length, stale: false, error: null, source: 'Tencent public HK daily K-line (unadjusted)' },
+        '1d': {
+          count: bars.length,
+          requested_count: count,
+          stale: false,
+          error: bars.length < count ? lastUpstreamError : null,
+          source: 'Tencent public HK daily K-line (unadjusted)',
+        },
       },
       ccass: null,
     },
