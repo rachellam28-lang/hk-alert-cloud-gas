@@ -119,7 +119,7 @@ def copy_site_files(src: Path, tmp: Path) -> int:
         shutil.copy2(src_file, dst)
         copied += 1
 
-    for rel_dir in ("icons", "data", "docs"):
+    for rel_dir in ("icons", "data", "docs", "functions"):
         src_dir = src / rel_dir
         if not src_dir.exists():
             continue
@@ -132,7 +132,7 @@ def copy_site_files(src: Path, tmp: Path) -> int:
             is_kbar_shard = len(rel.parts) == 3 and rel.parts[:2] == ("data", "kbar_symbols") and rel.suffix.lower() == ".json"
             if rel.parts and rel.parts[0] == "data" and rel not in DATA_DEPLOY_FILES and not is_kbar_shard:
                 continue
-            if rel.suffix.lower() not in {".html", ".json", ".png", ".webp", ".jpg", ".jpeg", ".svg", ".ico", ".txt"}:
+            if rel.suffix.lower() not in {".html", ".json", ".js", ".png", ".webp", ".jpg", ".jpeg", ".svg", ".ico", ".txt"}:
                 continue
             if ".bak" in src_file.name or src_file.name == "scanner.db":
                 continue

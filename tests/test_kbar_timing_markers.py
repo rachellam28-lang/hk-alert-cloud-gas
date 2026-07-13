@@ -30,15 +30,16 @@ def test_kbar_single_chart_and_signal_rail(page):
     assert not page_errors
 
 
-def test_uncached_hk_uses_honest_tradingview_link(page):
+def test_uncached_hk_uses_on_demand_daily_kbar(page):
     page.goto(
         f"{BASE_URL}/kbar_matrix.html?mode=hk&symbol=1069&view=6m",
         wait_until="domcontentloaded",
     )
-    page.wait_for_selector("#matrix .chart-empty", timeout=45_000)
+    page.wait_for_selector("#matrix .chart-svg", timeout=45_000)
 
-    assert page.locator("#matrix .chart-svg").count() == 0
+    assert page.locator("#matrix .chart-svg").count() == 1
     assert page.locator("#matrix iframe").count() == 0
-    assert "TradingView 不准免費 widget 嵌入此港股" in page.locator("#matrix").inner_text()
+    assert "Cloudflare 按需真實日 K" in page.locator("#matrix").inner_text()
+    assert "cloudflare-on-demand" in page.locator("#resolvedHint").inner_text()
     assert page.locator(".signal-event").count() > 0
     assert "undefined" not in page.locator("main").inner_text()

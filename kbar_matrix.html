@@ -168,6 +168,8 @@ let timingOverlay = null;
 let levelData = { yearOpen: new Map(), latest: new Map(), ipo: new Map() };
 let signalCatalog = null;
 const attemptedKbarShards = new Set();
+const dynamicKbarCacheKey = 'hk-alert-dynamic-kbar-v1';
+const dynamicKbarTtlMs = 15 * 60 * 1000;
 
 const matrixEl = document.getElementById('matrix');
 const trendGuardEl = document.getElementById('trendGuard');
@@ -359,12 +361,53 @@ async function ensureSearchedKbarShard() {
   const code = normalizedHkCode(state.raw);
   if (!code || attemptedKbarShards.has(code)) return;
   attemptedKbarShards.add(code);
-  statusEl.textContent = `${code} | 載入真實 Futu K 線...`;
-  const payload = await loadJson(`./data/kbar_symbols/${code}.json`);
+  statusEl.textContent = `${code} | 載入真實港股日 K...`;
+  let payload = await loadJson(`./data/kbar_symbols/${code}.json`);
+  if (!payload || !payload.entry || !Array.isArray(payload.entry.series && payload.entry.series['1d'])) {
+    payload = readDynamicKbarCache(code);
+  }
+  if (!payload) {
+    try {
+      const res = await fetch(`/api/kbar/${code}?count=260`, { headers: { accept: 'application/json' } });
+      if (res.ok) {
+        payload = await res.json();
+        writeDynamicKbarCache(code, payload);
+      }
+    } catch {
+      payload = null;
+    }
+  }
   const entry = payload && payload.entry;
-  if (!entry || !entry.symbol || !entry.series || !Array.isArray(entry.series['1d'])) return;
+  if (!entry || !entry.symbol || !entry.series || !Array.isArray(entry.series['1d'])) {
+    attemptedKbarShards.delete(code);
+    return;
+  }
   kbarCache.symbols[entry.symbol] = entry;
   aliasMap = buildAliasMap(kbarCache);
+}
+
+function readDynamicKbarCache(code) {
+  try {
+    const cache = JSON.parse(localStorage.getItem(dynamicKbarCacheKey) || '{}');
+    const item = cache && cache[code];
+    if (!item || Date.now() - Number(item.cached_at || 0) > dynamicKbarTtlMs) return null;
+    return item.payload || null;
+  } catch {
+    return null;
+  }
+}
+
+function writeDynamicKbarCache(code, payload) {
+  try {
+    const cache = JSON.parse(localStorage.getItem(dynamicKbarCacheKey) || '{}');
+    cache[code] = { cached_at: Date.now(), payload };
+    const kept = Object.entries(cache)
+      .sort((a, b) => Number(b[1] && b[1].cached_at || 0) - Number(a[1] && a[1].cached_at || 0))
+      .slice(0, 20);
+    localStorage.setItem(dynamicKbarCacheKey, JSON.stringify(Object.fromEntries(kept)));
+  } catch {
+    // Storage can be unavailable in private browsing; the Cloudflare cache still applies.
+  }
 }
 
 async function ensureTradeEngine() {
@@ -1558,11 +1601,12 @@ function buildSingleTradingViewPane(tvSymbol, entry) {
   const config = viewTradingViewConfig(view.value);
   const useLocalHk = state.mode === 'hk' && entry;
   const blockedHkEmbed = state.mode === 'hk' && !entry;
+  const dynamicHk = Boolean(entry && entry.quote && entry.quote.status === 'on-demand-cache');
   const meta = [
     tvSymbol,
     config[1],
     config[2] ? '反向股價刻度' : '正常股價刻度',
-    useLocalHk ? '本地真實 cache' : (blockedHkEmbed ? 'TradingView 外連' : 'TradingView 直連'),
+    useLocalHk ? (dynamicHk ? 'Cloudflare 按需真實日 K' : '本地真實 cache') : (blockedHkEmbed ? 'TradingView 外連' : 'TradingView 直連'),
   ];
   let chartBody = '';
   if (useLocalHk) {
@@ -1595,7 +1639,7 @@ function buildSingleTradingViewPane(tvSymbol, entry) {
   `;
 }
 
-// Final runtime: TradingView owns the K-line; local publish JSON owns the signal rail.
+// HK daily K-lines are loaded from static shards or the restricted Cloudflare API.
 function renderMatrix() {
   const resolvedSymbol = resolveCachedSymbol(state.raw, state.mode);
   const fallbackSymbol = fallbackTvSymbol(state.raw, state.mode);
@@ -1619,13 +1663,14 @@ function renderMatrix() {
     fallbackNoticeEl.style.display = 'block';
     fallbackNoticeEl.className = 'trend-guard watch';
     fallbackNoticeEl.innerHTML = state.mode === 'hk'
-      ? `<strong>${escapeHtml(fallbackSymbol)} 未有本地 Kbar cache</strong><small>TradingView 免費 widget 不准嵌入港股；請用外連看 K 線。訊號時間軸仍會讀取現有 publish JSON，唔會假裝有圖。</small>`
+      ? `<strong>${escapeHtml(fallbackSymbol)} 暫時取不到港股日 K</strong><small>已嘗試靜態 cache、瀏覽器短 cache及 Cloudflare 即時 API；請稍後重試或用 TradingView 外連。訊號時間軸仍會讀取現有 publish JSON，唔會假裝有圖。</small>`
       : `<strong>${escapeHtml(fallbackSymbol)} 由 TradingView 直接顯示</strong><small>圖表毋須下載 K 線；訊號時間軸只支援現有港股 publish JSON。</small>`;
   }
   renderTrendGuard(entry ? (setupAnalysisForSymbol(resolvedSymbol) || analyzeSetups(entry)) : null);
-  const chartSource = state.mode === 'hk' ? (entry ? 'local-cache' : 'tradingview-link') : 'tradingview-embed';
+  const isDynamicHk = Boolean(entry && entry.quote && entry.quote.status === 'on-demand-cache');
+  const chartSource = state.mode === 'hk' ? (entry ? (isDynamicHk ? 'cloudflare-on-demand' : 'local-cache') : 'tradingview-link') : 'tradingview-embed';
   const localStatus = state.mode === 'hk'
-    ? (entry ? '港股訊號及 Playbook cache 已連接' : '未有本地 Kbar cache')
+    ? (entry ? (isDynamicHk ? '真實日 K 已按搜尋載入；即市 Playbook 需 1H cache' : '港股訊號及 Playbook cache 已連接') : '即時日 K 暫不可用')
     : (entry ? 'Playbook cache 已連接；港股訊號不適用' : '港股訊號不適用');
   resolvedHint.textContent = `${fallbackSymbol} · ${chartSource} · ${localStatus}`;
   statusEl.textContent = `${fallbackSymbol} | ${viewDefinition().label}`;

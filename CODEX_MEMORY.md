@@ -699,10 +699,10 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - Kbar charts must not render Distribution Day (DD) lines or load the DD backtest JSON. The standalone Distribution Day page/data remain intact.
 - Visible Kbar order is fixed at quarter normal/inverted, half-year normal/inverted, then daily normal/inverted. The 4H pane and visible 4H wording were removed; hourly data remains internal to setup/trend calculations.
 - `kbar_matrix.html` uses a hybrid source model. A searched HK symbol first lazy-loads `data/kbar_symbols/<5-digit-code>.json`; cached symbols retain the custom normal/inverted day, half-year, quarter, and 4H charts with CCASS and timing overlays.
-- An HK symbol without a local shard must show seven direct TradingView Advanced Chart widgets instead of an empty/fake cache pane. Inverted panes use TradingView's native `mainSeriesProperties.priceAxisProperties.isInverted` override.
+- Superseded: the direct TradingView HK widget fallback was rejected by TradingView licensing. See the on-demand Cloudflare Kbar section below.
 - `scripts/build_kbar_cache.py --symbols 1733` writes real per-symbol Futu shards. `--all-hk --resume` is resumable, and `--workers` controls concurrency. No yfinance or synthetic OHLC is allowed.
 - Futu Rust gateway history quota was the reason uncached symbols failed (`100/100`). Local `.env` now sets `FUTU_HISTORY_KL_QUOTA_MAX=4000`; this setting is local-only and must never be deployed.
-- Verified `01733` with 260 real daily bars through 2026-07-13 and 120 real 60-minute bars. Test bootstrap shards were removed after finding the Futu pagination bug; direct TradingView is the no-download path for every other HK symbol.
+- Verified `01733` with 260 real daily bars through 2026-07-13 and 120 real 60-minute bars. Static Futu shards remain useful for symbols needing 1H Playbook analysis; all other HK symbols use the on-demand daily path below.
 - Cloudflare deploy allowlist includes `data/kbar_symbols/*.json`. Deploy remains direct Wrangler through `ccass/scripts/_deploy_cf.py`, never GitHub.
 
 ### 2026-07-12 display fixes
@@ -731,3 +731,13 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - Cleaned duplicate runtime declarations so `renderMatrix`, `renderSetupLens`, `renderTrendGuard`, `renderSetupScoutBoard`, and `applyState` each have one active definition.
 - Mobile overflow from the horizontal signal rail was fixed with zero-min-width grid children; verified 393px document width stays 393px.
 - Updated `tests/test_kbar_timing_markers.py` for the single-chart contract and honest uncached-HK fallback.
+
+### 2026-07-13 on-demand all-HK daily Kbar
+
+- Added `functions/api/kbar/[code].js`, a restricted Cloudflare Pages Function for real unadjusted HK daily OHLCV. It accepts only a 1-5 digit HK code, hardcodes Tencent's public K-line host, caps output at 260 bars, validates every OHLC row, and never reads or exposes Longbridge/Futu secrets.
+- Cross-checked the public source against the installed `westock-data-clawhub` CLI for `00700`, `01733`, and `01069`. Historical OHLCV matched; for a no-trade day on `01069`, the source correctly kept the last actual trading date instead of fabricating an O/H/L zero candle.
+- `kbar_matrix.html` lookup order is now static Futu shard -> 15-minute browser cache -> `/api/kbar/<code>` -> honest TradingView external-link error. Cloudflare edge caching is five minutes, so intraday daily candles do not stay stale all day.
+- On-demand entries provide daily/quarter/half-year normal and inverted charts plus the existing signal rail and key levels. They do not pretend to provide 1H-based Playbook classifications; those still require a real static Futu shard.
+- `ccass/scripts/_deploy_cf.py` now includes the `functions/` directory and `.js` files in its curated Pages package. Package verification confirmed `functions/api/kbar/[code].js` is included.
+- Local Wrangler runtime probes passed for success (`1069`, 260 bars), invalid code (400), and missing symbol (404). Canonical production API and API/data desktop/mobile Playwright tests passed `4/4`; mobile width stayed `393/393` with one SVG and zero iframe.
+- Deployment remains direct Wrangler to Cloudflare Pages only. No GitHub/`gh`/Actions route is involved.
