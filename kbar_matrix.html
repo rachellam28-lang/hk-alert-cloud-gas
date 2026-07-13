@@ -54,7 +54,8 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
       </div>
     </div>
     <div class="controls" style="margin-top:12px">
-      <input id="symbolInput" class="input full" placeholder="例如：700 / 9988 / NVDA / SPY / GLD / EWJ / ASHR" value="700">
+      <input id="symbolInput" class="input full" list="hkSymbolOptions" placeholder="港股代碼或名稱，例如：700 / 騰訊控股" value="700" autocomplete="off">
+      <datalist id="hkSymbolOptions"></datalist>
       <div class="seg" id="modeSeg" aria-label="market mode">
         <button data-mode="hk" class="active">HK</button>
         <button data-mode="us">US</button>
@@ -159,9 +160,11 @@ const presets = [
   { label: 'EWJ', raw: 'EWJ', mode: 'us' },
   { label: 'ASHR', raw: 'ASHR', mode: 'us' },
 ];
-const state = { mode: 'hk', raw: '700', view: '3m' };
+const state = { mode: 'hk', raw: '700', view: '3m', kbarError: '' };
 let kbarCache = null;
 let kbarShardIndex = null;
+let hkSymbolIndex = null;
+let hkSymbolNameMap = new Map();
 let tradeEngine = null;
 let aliasMap = new Map();
 let timingOverlay = null;
@@ -177,6 +180,7 @@ const setupLensEl = document.getElementById('setupLens');
 const setupScoutGridEl = document.getElementById('setupScoutGrid');
 const setupScoutMetaEl = document.getElementById('setupScoutMeta');
 const symbolInput = document.getElementById('symbolInput');
+const hkSymbolOptions = document.getElementById('hkSymbolOptions');
 const resolvedHint = document.getElementById('resolvedHint');
 const statusEl = document.getElementById('pageStatus');
 const consoleEl = document.getElementById('console');
@@ -341,19 +345,46 @@ function renderFallbackNotice(fallbackSymbol, supportedSymbols) {
 
 async function ensureKbarCache() {
   if (kbarCache) return kbarCache;
-  [kbarCache, kbarShardIndex] = await Promise.all([
+  [kbarCache, kbarShardIndex, hkSymbolIndex] = await Promise.all([
     loadJson('./data/kbar_cache.json'),
     loadJson('./data/kbar_symbols/index.json'),
+    loadJson('./data/hk_symbols.json'),
   ]);
   aliasMap = buildAliasMap(kbarCache || {});
+  buildHkSymbolLookup();
   return kbarCache;
+}
+
+function compactHkName(value) {
+  return String(value || '').trim().toUpperCase().replace(/[\s\-－_()（）]+/g, '');
+}
+
+function buildHkSymbolLookup() {
+  const rows = hkSymbolIndex && Array.isArray(hkSymbolIndex.symbols) ? hkSymbolIndex.symbols : [];
+  const nameCounts = new Map();
+  rows.forEach(row => {
+    const key = compactHkName(row && row.name);
+    if (key) nameCounts.set(key, (nameCounts.get(key) || 0) + 1);
+  });
+  hkSymbolNameMap = new Map();
+  rows.forEach(row => {
+    const code = String(row && row.code || '').padStart(5, '0');
+    const key = compactHkName(row && row.name);
+    if (/^\d{5}$/.test(code) && key && nameCounts.get(key) === 1) hkSymbolNameMap.set(key, code);
+  });
+  if (hkSymbolOptions) {
+    hkSymbolOptions.innerHTML = rows.map(row => (
+      `<option value="${escapeHtml(row.code)}">${escapeHtml(row.name || row.code)}</option>`
+    )).join('');
+  }
 }
 
 function normalizedHkCode(raw) {
   const value = String(raw || '').trim().toUpperCase();
-  const digits = value.replace(/^(?:HKEX:|HK\.)/i, '').replace(/\.HK$/i, '').replace(/\D/g, '');
-  if (!digits || digits.length > 5) return '';
-  return String(parseInt(digits, 10)).padStart(5, '0');
+  const stripped = value.replace(/^(?:HKEX:|HK\.)/i, '').replace(/\.HK$/i, '').trim();
+  const direct = stripped.match(/^0*(\d{1,5})(?:\s+.*)?$/);
+  if (direct) return String(parseInt(direct[1], 10)).padStart(5, '0');
+  return hkSymbolNameMap.get(compactHkName(stripped)) || '';
 }
 
 async function ensureSearchedKbarShard() {
@@ -361,8 +392,12 @@ async function ensureSearchedKbarShard() {
   const code = normalizedHkCode(state.raw);
   if (!code || attemptedKbarShards.has(code)) return;
   attemptedKbarShards.add(code);
+  state.kbarError = '';
   statusEl.textContent = `${code} | 載入真實港股日 K...`;
-  let payload = await loadJson(`./data/kbar_symbols/${code}.json`);
+  const staticCodes = kbarShardIndex && Array.isArray(kbarShardIndex.available)
+    ? new Set(kbarShardIndex.available.map(item => String(item).padStart(5, '0')))
+    : new Set();
+  let payload = staticCodes.has(code) ? await loadJson(`./data/kbar_symbols/${code}.json`) : null;
   if (!payload || !payload.entry || !Array.isArray(payload.entry.series && payload.entry.series['1d'])) {
     payload = readDynamicKbarCache(code);
   }
@@ -372,8 +407,12 @@ async function ensureSearchedKbarShard() {
       if (res.ok) {
         payload = await res.json();
         writeDynamicKbarCache(code, payload);
+      } else {
+        const failure = await res.json().catch(() => ({}));
+        state.kbarError = failure.error || `HTTP ${res.status}`;
       }
-    } catch {
+    } catch (error) {
+      state.kbarError = error && error.message ? error.message : 'network_error';
       payload = null;
     }
   }
@@ -714,10 +753,10 @@ function resolveCachedSymbol(raw, mode) {
   if (!value || !aliasMap.size) return null;
   const candidates = [value];
   if (mode === 'hk') {
-    const digits = value.replace(/\D+/g, '');
-    if (digits) {
-      const stripped = String(parseInt(digits, 10));
-      candidates.push(stripped, digits.padStart(5, '0'), `${stripped}.HK`, `HKEX:${stripped}`, `HKEX:${digits.padStart(5, '0')}`);
+    const code = normalizedHkCode(raw);
+    if (code) {
+      const stripped = String(parseInt(code, 10));
+      candidates.push(stripped, code, `${stripped}.HK`, `HKEX:${stripped}`, `HKEX:${code}`);
     }
   } else if (mode === 'us') {
     const code = value.replace(/\.US$/,'');
@@ -1642,7 +1681,10 @@ function buildSingleTradingViewPane(tvSymbol, entry) {
 // HK daily K-lines are loaded from static shards or the restricted Cloudflare API.
 function renderMatrix() {
   const resolvedSymbol = resolveCachedSymbol(state.raw, state.mode);
-  const fallbackSymbol = fallbackTvSymbol(state.raw, state.mode);
+  const lookupCode = state.mode === 'hk' ? normalizedHkCode(state.raw) : '';
+  const fallbackSymbol = resolvedSymbol
+    ? tvSymbolFromCacheSymbol(resolvedSymbol)
+    : (lookupCode ? `HKEX:${parseInt(lookupCode, 10)}` : fallbackTvSymbol(state.raw, state.mode));
   document.getElementById('tvOpenBtn').href = fallbackSymbol ? tvChartUrl(fallbackSymbol) : '#';
   renderChartTabs();
   if (!fallbackSymbol) {
@@ -1663,7 +1705,7 @@ function renderMatrix() {
     fallbackNoticeEl.style.display = 'block';
     fallbackNoticeEl.className = 'trend-guard watch';
     fallbackNoticeEl.innerHTML = state.mode === 'hk'
-      ? `<strong>${escapeHtml(fallbackSymbol)} 暫時取不到港股日 K</strong><small>已嘗試靜態 cache、瀏覽器短 cache及 Cloudflare 即時 API；請稍後重試或用 TradingView 外連。訊號時間軸仍會讀取現有 publish JSON，唔會假裝有圖。</small>`
+      ? `<strong>${escapeHtml(fallbackSymbol)} 暫時取不到港股日 K</strong><small>已嘗試瀏覽器短 cache及 Cloudflare 即時 API${state.kbarError ? `；來源回應 ${escapeHtml(state.kbarError)}` : ''}。請稍後重試或用 TradingView 外連；系統唔會假裝有圖。</small>`
       : `<strong>${escapeHtml(fallbackSymbol)} 由 TradingView 直接顯示</strong><small>圖表毋須下載 K 線；訊號時間軸只支援現有港股 publish JSON。</small>`;
   }
   renderTrendGuard(entry ? (setupAnalysisForSymbol(resolvedSymbol) || analyzeSetups(entry)) : null);
@@ -1673,6 +1715,9 @@ function renderMatrix() {
     ? (entry ? (isDynamicHk ? '真實日 K 已按搜尋載入；即市 Playbook 需 1H cache' : '港股訊號及 Playbook cache 已連接') : '即時日 K 暫不可用')
     : (entry ? 'Playbook cache 已連接；港股訊號不適用' : '港股訊號不適用');
   resolvedHint.textContent = `${fallbackSymbol} · ${chartSource} · ${localStatus}`;
+  if (state.mode === 'hk' && hkSymbolIndex && hkSymbolIndex.count) {
+    resolvedHint.textContent += ` · 全港股索引 ${hkSymbolIndex.count.toLocaleString()} 隻`;
+  }
   statusEl.textContent = `${fallbackSymbol} | ${viewDefinition().label}`;
   matrixEl.innerHTML = buildSingleTradingViewPane(fallbackSymbol, entry);
   mountTradingViewWidgets();

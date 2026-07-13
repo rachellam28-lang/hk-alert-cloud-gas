@@ -120,6 +120,7 @@ fi
 
 echo "3.497/5 Build Kbar preset cache (best-effort)..."
 "$PYTHON_BIN" "$REPO_ROOT/scripts/build_kbar_cache.py" || echo "WARN: Kbar cache refresh unavailable; keeping existing kbar cache"
+"$PYTHON_BIN" "$REPO_ROOT/scripts/build_hk_symbol_index.py" || { echo "ERROR: HK symbol index build failed"; exit 1; }
 
 echo "3.498/5 Build HK sector rotation snapshot..."
 "$PYTHON_BIN" "$REPO_ROOT/scripts/build_sector_rotation.py" || { echo "ERROR: sector rotation build failed"; exit 1; }

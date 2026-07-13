@@ -754,3 +754,16 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - Direct Cloudflare deploy only; do not use GitHub/gh.
 - Dopamine/Futu failures must never invent a neutral `50` score. Preserve the last observed snapshot with `stale=true`, or publish `score=null`, `level=unavailable`, `data_kind=unavailable`, and `is_observed=false` when no observation exists. Fresh Futu dopamine is labeled `observed_provider_snapshot`.
 - Missing CCASS participant/concentration inputs must stay `null`: shard merge no longer defaults `num_participants` to zero, and an empty holdings list cannot generate fake `top5_pct=0` or `top10_pct=0`.
+
+### 2026-07-13 full-universe Kbar lookup and Vibe-Trading
+
+- `scripts/build_hk_symbol_index.py` exports every active canonical `stock_universe` row to `data/hk_symbols.json`. Current observed index is 2,823 HK codes; daily refresh/rebuild must regenerate it, and the Cloudflare deploy allowlist must include it.
+- `kbar_matrix.html` accepts any 1-5 digit HK code, HKEX form, `.HK` form, or an exact unique Chinese stock name. Uncached symbols load real daily OHLCV on demand from `/api/kbar/<code>`; no all-market Kbar download is required.
+- The resolver must map a Chinese name back to an already loaded code entry. Otherwise a second lookup of the same stock can incorrectly fall back to TradingView even though the real Kbar is already in browser cache.
+- Production verification: canonical `data/hk_symbols.json` reports 2,823 rows; `08131` and exact name `諾亞智能` both render the same local SVG from 260 observed Tencent daily bars. Focused Kbar/API/UI tests pass `6/6`.
+- Installed official `HKUDS/Vibe-Trading` main release `0.1.11` in isolated `.tools/vibe-trading/.venv`. Its upstream dependency set contains yfinance and its generic HK auto-route defaults to Yahoo, so that route is forbidden for CCASS integration.
+- `scripts/vibe_ccass_bridge.py` is the approved Vibe HK data path: it accepts only this project's Cloudflare Kbar API payload with exact source `Tencent public HK daily K-line (unadjusted)`, validates OHLC/date uniqueness, writes an isolated CSV/config, and verifies through Vibe's official `local` loader. `scripts/vibe_ccass.ps1` is the launcher; it uses an isolated Vibe home and never reads the CCASS `.env` or enables a live trading connector.
+- Verified bridge example: `01733` produced and reloaded 260 observed bars from 2025-06-20 through 2026-07-13 with `uses_yfinance=false`.
+- Data-honesty follow-up: the small-cap desk must not call `Number(null)` for price. That coerced missing prices to zero, then falsely classified every triggered stock as a zero-turnover risk and emptied the priority list. Missing price/turnover now stays unknown. A genuine zero-row VQC/turn list renders an honest empty state; tests must not require a fabricated candidate.
+- Latest direct Cloudflare deployment for this change: `https://f0059d87.hk-alert-cloud-gas.pages.dev`. Canonical domain is `https://hk-alert-cloud-gas.pages.dev`; no GitHub deployment was used.
+- Final verification against the deployed build: all official tests under `tests/` pass `17/17`. Running bare repo-wide `pytest` still collects retired `scripts/full_test.py`, which intentionally raises `SystemExit`; use `pytest tests` until that legacy collector path is removed.

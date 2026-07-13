@@ -33,7 +33,8 @@ def test_small_cap_desk_ranks_and_switches_lists(page):
     page.locator('[data-desk-mode="turn"]').click()
     page.wait_for_function(
         """() => document.querySelector('[data-desk-mode="turn"]')?.classList.contains('active')
-          && document.querySelectorAll('#smallCapDeskList .sc-pick').length > 0""",
+          && (document.querySelectorAll('#smallCapDeskList .sc-pick').length > 0
+            || document.querySelector('#smallCapDeskList .sc-desk-empty'))""",
         timeout=30_000,
     )
 

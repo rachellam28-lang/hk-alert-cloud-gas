@@ -155,6 +155,7 @@ def main() -> int:
             required=False,
         )
     _run([PYTHON, REPO_ROOT / "scripts" / "build_kbar_cache.py"], REPO_ROOT, required=False)
+    _run([PYTHON, REPO_ROOT / "scripts" / "build_hk_symbol_index.py"], REPO_ROOT, required=True)
     _run([PYTHON, REPO_ROOT / "scripts" / "build_sector_rotation.py"], REPO_ROOT, required=True)
     _run([PYTHON, REPO_ROOT / "scripts" / "build_trade_engine.py"], REPO_ROOT, required=True)
     _run([PYTHON, REPO_ROOT / "scripts" / "repo_audit.py", "export"], REPO_ROOT, required=True)

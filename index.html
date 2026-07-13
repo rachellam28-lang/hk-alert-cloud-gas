@@ -2225,7 +2225,8 @@ function smallCapProfile(s){
   var sig=signalMap.get(s.c)||null;
   var tech=techSignalMap.get(s.c)||[];
   var labels=tech.map(function(x){return String(x.label||'');}).join(' ');
-  var price=Number(priceMap.get(s.c)??s.lp);
+  var rawPrice=priceMap.get(s.c)??s.lp;
+  var price=rawPrice==null||rawPrice===''?null:Number(rawPrice);
   if(!Number.isFinite(price))price=null;
   var turnover=price!=null&&Number.isFinite(Number(s.vol))?price*Number(s.vol):null;
   var supply=deskSupplyKind(sig);
@@ -2278,7 +2279,7 @@ function smallCapProfile(s){
 
   var trigger=techSetup||collect||Number(s.vr)>=1.2||Math.abs(Number(s.chg)||0)>=4||corpRisk||supply;
   var hardRisk=s.suspended||supply==='cash'||Number(s.chg)<=-15||(turnover!=null&&turnover<1e5&&trigger)||corpRisk&&supply!=='stock';
-  var known=[price,s.mc,s.vr,s.p52,s.t5,turnover].filter(function(v){return Number.isFinite(Number(v));}).length;
+  var known=[price,s.mc,s.vr,s.p52,s.t5,turnover].filter(function(v){return v!=null&&v!==''&&Number.isFinite(Number(v));}).length;
   var confidence=known>=5?'高':known>=3?'中':'低';
   var kind=hardRisk?'risk':(score>=6&&trigger?'priority':((techSetup||collect)&&score>=3?'setup':(trigger&&score>=1.5?'confirm':'')));
   var displayReasons=(kind==='risk'?warnings.concat(reasons):reasons.concat(warnings)).slice(0,4);

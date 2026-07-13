@@ -43,3 +43,23 @@ def test_uncached_hk_uses_on_demand_daily_kbar(page):
     assert "cloudflare-on-demand" in page.locator("#resolvedHint").inner_text()
     assert page.locator(".signal-event").count() > 0
     assert "undefined" not in page.locator("main").inner_text()
+
+
+def test_full_hk_universe_supports_gem_code_and_exact_name(page):
+    page.goto(
+        f"{BASE_URL}/kbar_matrix.html?mode=hk&symbol=08131&view=3m",
+        wait_until="domcontentloaded",
+    )
+    page.wait_for_selector("#matrix .chart-svg", timeout=45_000)
+
+    assert "全港股索引 2,823 隻" in page.locator("#resolvedHint").inner_text()
+    assert "HKEX:8131" in page.locator("#resolvedHint").inner_text()
+    assert page.locator("#matrix .chart-svg").count() == 1
+
+    page.locator("#symbolInput").fill("諾亞智能")
+    page.locator("#applyBtn").click()
+    page.wait_for_function("() => new URL(location.href).searchParams.get('symbol') === '諾亞智能'")
+    page.wait_for_selector("#matrix .chart-svg", timeout=45_000)
+
+    assert "HKEX:8131" in page.locator("#resolvedHint").inner_text()
+    assert page.locator("#matrix .chart-svg").count() == 1

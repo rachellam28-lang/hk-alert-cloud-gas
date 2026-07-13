@@ -63,6 +63,7 @@ DATA_DEPLOY_FILES = {
     Path("data/distribution_day_backtest.json"),
     Path("data/fundflow.json"),
     Path("data/history.json"),
+    Path("data/hk_symbols.json"),
     Path("data/jieqi_backtest.json"),
     Path("data/jieqi_calendar.json"),
     Path("data/kbar_cache.json"),

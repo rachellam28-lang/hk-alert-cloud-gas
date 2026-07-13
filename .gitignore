@@ -29,6 +29,7 @@ Daily/
 __pycache__/
 *.pyc
 .venv/
+.tools/
 *.egg-info/
 
 # Secrets
