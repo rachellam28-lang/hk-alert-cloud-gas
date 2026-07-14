@@ -25,6 +25,9 @@ def test_trading_desk_fuses_real_candidate_sources(page):
     assert page.locator("#inspector .detail-section").count() >= 5
     assert "Longbridge" in page.locator("#inspector").inner_text()
     assert "SFC" in page.locator("#inspector").inner_text()
+    assert "公告事件" in page.locator("#inspector").inner_text()
+    assert "技術盤路" in page.locator("#inspector").inner_text()
+    assert "CCASS 合計持股" in page.locator("#inspector").inner_text()
     assert "未涵蓋 ≠ 0" in page.locator("#inspector").inner_text() or "申報淡倉" in page.locator("#inspector").inner_text()
     assert page.locator("#inspector a[href*='kbar_matrix.html']").count() == 1
     assert not errors

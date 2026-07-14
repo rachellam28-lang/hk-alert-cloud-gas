@@ -26,6 +26,20 @@ Last updated: 2026-07-15 HKT
   - page dependency audit: 20 pages, 0 missing refs, 0 alias mismatch.
   - Playwright: desktop and 393px mobile tests pass with no JS errors or horizontal overflow.
 
+### Financial-event x tape x CCASS model
+
+- Method reference supplied by the user: `財技X盤路 倍升股全攻略`, plus the local `殼股財技.pdf`. Treat these as research frameworks, not copied content or deterministic trading truth.
+- Announcement events and technical setups are equal-level triggers, but they must be separate evidence lanes so one published event cannot be counted again as a technical signal.
+- `scripts/build_trade_engine.py` partitions every signal into exactly one lane:
+  - event: placement, rights, shareholder increase, takeover/resumption and other corporate announcements;
+  - technical tape: POC, year-open, IPO, FVG, gap and the derived Kbar setup;
+  - CCASS accumulation: aggregate `total_shares` streak and 5D/20D changes.
+- Event direction is explicit: shareholder increase and `supply-stock` can support a setup; `supply-cash` remains a risk; unknown/watch announcements are catalysts only and never automatic bullish evidence.
+- CCASS aggregate consecutive increase is now a first-class signal. `strong` requires at least 3 consecutive increases plus positive 5D and 20D aggregate changes; `building` requires at least 2 consecutive increases and positive 5D change. Neutral days do not break the streak, matching `ccass/src/trend.py`.
+- The trading desk shows the three lanes side by side, sorts three-lane confluence first, and displays streak days plus 5D/20D share and percentage changes. CCASS still represents broker-level holdings, not final-investor identity.
+- Verified 2026-07-15 candidate set: 57 event triggers, 48 strong CCASS accumulations, and 14 event + Kbar + strong-CCASS confluences among 240 analyzed HK candidates.
+- `data/trade_engine.json` is minified at write time to reduce daily mobile transfer while preserving every field.
+
 ## Latest Audit
 
 ### 2026-07-12 CCASS historical DB audit / repair

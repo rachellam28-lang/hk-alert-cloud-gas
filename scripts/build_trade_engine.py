@@ -653,6 +653,67 @@ def signal_map() -> dict[str, dict]:
     return {hk_code(item.get("code")): item for item in (groups or []) if isinstance(item, dict) and hk_code(item.get("code"))}
 
 
+def signal_label(item: object) -> str:
+    if isinstance(item, str):
+        return item.strip()
+    if not isinstance(item, dict):
+        return ""
+    return str(item.get("label") or item.get("type") or item.get("name") or item.get("signal") or "").strip()
+
+
+def classify_signal_lanes(group: dict) -> dict:
+    """Partition every published signal into exactly one evidence lane."""
+    technical: list[dict] = []
+    events: list[dict] = []
+    ccass: list[dict] = []
+    for raw in group.get("signals") or []:
+        item = raw if isinstance(raw, dict) else {"label": str(raw), "category": "unknown"}
+        label = signal_label(item)
+        category = str(item.get("category") or "unknown").lower()
+        normalized = {"label": label, "category": category, "date": item.get("date")}
+        if label.upper().startswith("CCASS"):
+            ccass.append(normalized)
+        elif category in {"corp", "unknown"}:
+            events.append(normalized)
+        else:
+            technical.append(normalized)
+
+    corp_types = group.get("corpTypes") if isinstance(group.get("corpTypes"), dict) else {}
+    supply = group.get("supply") if isinstance(group.get("supply"), dict) else {}
+    supply_class = str(supply.get("cls") or "")
+    event_active = bool(events or any(bool(value) for value in corp_types.values()) or supply_class)
+    if supply_class == "supply-stock":
+        event_direction = "positive_supply"
+    elif supply_class == "supply-cash":
+        event_direction = "negative_supply"
+    elif corp_types.get("increase"):
+        event_direction = "shareholder_increase"
+    elif supply_class in {"supply-watch", "supply-ended"}:
+        event_direction = "watch"
+    else:
+        event_direction = "neutral"
+    return {
+        "event": {
+            "active": event_active,
+            "direction": event_direction,
+            "supply_class": supply_class or None,
+            "labels": events,
+            "is_observed": True,
+        },
+        "technical": {
+            "active": bool(technical),
+            "count": len(technical),
+            "labels": technical,
+            "is_observed": True,
+        },
+        "ccass_signals": {
+            "active": bool(ccass),
+            "labels": ccass,
+            "is_observed": True,
+        },
+    }
+
+
 def fundflow_map() -> dict[str, dict]:
     payload = load_json(FUNDFLOW_PATH, {})
     rows = payload.get("all") if isinstance(payload, dict) else {}
@@ -688,6 +749,8 @@ def stage1_candidates(limit: int) -> tuple[list[dict], dict]:
         turnover = num(price.get("turnover"))
         d5p = num(holding.get("d5p"))
         d20p = num(holding.get("d20p"))
+        d5s = num(holding.get("d5s"))
+        d20s = num(holding.get("d20s"))
         streak = int(num(holding.get("su")) or 0)
         if p52 is not None:
             score += clamp((p52 - 50) / 6, -5, 8)
@@ -709,21 +772,52 @@ def stage1_candidates(limit: int) -> tuple[list[dict], dict]:
                 reasons.append("CCASS 5D increase")
         if d20p is not None:
             score += clamp(d20p * 2, -4, 6)
+        if d5p is not None and d20p is not None and d5p > 0 and d20p > 0:
+            score += 2.5
+            reasons.append("CCASS 5D/20D increase")
         if streak >= 2:
-            score += min(streak, 7) * 0.7
+            score += min(6.0, 1.2 + streak * 0.65)
             reasons.append(f"CCASS streak {streak}D")
         sig = signals.get(code) or {}
-        technical = sig.get("signals") if isinstance(sig.get("signals"), list) else []
+        lanes = classify_signal_lanes(sig)
+        technical = lanes["technical"]["labels"]
         score += min(len(technical), 4) * 1.5
         if technical:
             reasons.append("existing technical signal")
         corp_types = sig.get("corpTypes") or {}
         if corp_types.get("increase"):
-            score += 2
-            reasons.append("shareholder increase")
-        if corp_types.get("placement") or corp_types.get("rights"):
-            score -= 3
+            score += 2.5
+            reasons.append("event: shareholder increase")
+        if lanes["event"]["direction"] == "positive_supply":
+            score += 1.5
+            reasons.append("event: stock-supply setup")
+        elif lanes["event"]["direction"] == "negative_supply":
+            score -= 4
             reasons.append("supply event risk")
+        elif (corp_types.get("placement") or corp_types.get("rights")) and lanes["event"]["direction"] != "watch":
+            score -= 2
+            reasons.append("supply event risk")
+        elif lanes["event"]["active"]:
+            reasons.append("corporate event trigger")
+        if streak >= 3 and (d5p or 0) > 0 and (d20p or 0) > 0:
+            ccass_tier = "strong"
+        elif streak >= 2 and (d5p or 0) > 0:
+            ccass_tier = "building"
+        elif streak > 0:
+            ccass_tier = "early"
+        else:
+            ccass_tier = "none"
+        lanes["ccass"] = {
+            "active": ccass_tier != "none",
+            "tier": ccass_tier,
+            "consecutive_increase_days": streak,
+            "d5_pct": d5p,
+            "d20_pct": d20p,
+            "d5_shares": d5s,
+            "d20_shares": d20s,
+            "basis": "CCASS aggregate total_shares; neutral days do not break the streak",
+            "is_observed": True,
+        }
         flow = flows.get(code) or {}
         main_net = num(flow.get("main_net"))
         if main_net is not None:
@@ -747,8 +841,11 @@ def stage1_candidates(limit: int) -> tuple[list[dict], dict]:
                 "change_pct": chg,
                 "ccass_d5_pct": d5p,
                 "ccass_d20_pct": d20p,
+                "ccass_d5_shares": d5s,
+                "ccass_d20_shares": d20s,
                 "ccass_increase_days": streak,
             },
+            "evidence_lanes": lanes,
         })
     ranked.sort(key=lambda item: (-item["stage1_score"], item["code"]))
     quotas = {
@@ -922,11 +1019,24 @@ def build_engine(
         if not setup:
             failures.append({"code": candidate["code"], "error": "daily setup analysis unavailable"})
             continue
+        lanes = candidate["evidence_lanes"]
+        published_technical = lanes["technical"]
+        lanes["technical"] = {
+            **published_technical,
+            "active": True,
+            "published_signal_active": bool(published_technical.get("active")),
+            "derived_setup_active": True,
+            "setup_key": setup.get("activeKey"),
+            "setup_score": (setup.get("scores") or {}).get(setup.get("activeKey")),
+            "data_kind": "mixed_observed_signals_and_derived_kbar_setup",
+            "setup_is_observed": False,
+        }
         setup["stage1"] = {
             "score": candidate["stage1_score"],
             "bucket": candidate["bucket"],
             "reasons": candidate["reasons"],
             "snapshot": candidate["snapshot"],
+            "evidence_lanes": lanes,
         }
         meta = entry["series_meta"]["1d"]
         setup["observed_source"] = {
@@ -1042,7 +1152,7 @@ def main() -> int:
         cache_max_age_hours=max(0, args.cache_max_age_hours),
         offline=args.offline,
     )
-    OUT_PATH.write_text(json.dumps(engine, ensure_ascii=False, indent=2), encoding="utf-8")
+    OUT_PATH.write_text(json.dumps(engine, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     print(
         f"wrote {OUT_PATH}: universe={engine['universe_count']} candidates={engine['candidate_count']} "
         f"analyzed={engine['analyzed_count']} errors={len(engine['errors'])} momentum={engine['momentum_count']}"

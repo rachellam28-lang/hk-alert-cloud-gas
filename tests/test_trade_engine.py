@@ -50,11 +50,28 @@ def test_daily_setup_is_derived_from_observed_bars_with_trade_plan():
     assert setup["trade_plan"]["target"] is not None
 
 
+def test_signal_lanes_do_not_double_count_corporate_or_ccass_signals():
+    lanes = ENGINE.classify_signal_lanes({
+        "signals": [
+            {"label": "配股公告", "category": "corp", "date": "2026-07-14"},
+            {"label": "年開線突破", "category": "year_open", "date": "2026-07-14"},
+            {"label": "CCASS合計持股增持", "category": "tech", "date": "2026-07-13"},
+        ],
+        "corpTypes": {"placement": True, "rights": False, "increase": False},
+        "supply": {"cls": "supply-cash", "label": "圈錢"},
+    })
+    assert [item["label"] for item in lanes["event"]["labels"]] == ["配股公告"]
+    assert [item["label"] for item in lanes["technical"]["labels"]] == ["年開線突破"]
+    assert [item["label"] for item in lanes["ccass_signals"]["labels"]] == ["CCASS合計持股增持"]
+    assert lanes["event"]["direction"] == "negative_supply"
+
+
 def test_stage1_covers_real_universe_and_balances_buckets():
     candidates, meta = ENGINE.stage1_candidates(60)
     assert meta["universe_count"] > 2_000
     assert len(candidates) == 60
     assert all(item["symbol"].endswith(".HK") for item in candidates)
     assert all(item["snapshot"]["price"] > 0 for item in candidates)
+    assert all(set(item["evidence_lanes"]) >= {"event", "technical", "ccass"} for item in candidates)
     assert set(meta["selected_by_bucket"]) == {"small", "mid", "large"}
     assert all(count > 0 for count in meta["selected_by_bucket"].values())

@@ -88,6 +88,9 @@
     .plan-strip{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid var(--line)}
     .plan-cell{padding:12px 8px;border-right:1px solid var(--line)}.plan-cell:last-child{border-right:0}
     .plan-label{font-size:9px;color:var(--muted);margin-bottom:5px}.plan-value{font-size:14px;font-weight:750}
+    .lane-grid{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid var(--line)}
+    .lane{padding:11px 8px;border-right:1px solid var(--line);min-width:0}.lane:last-child{border-right:0}
+    .lane-label{font-size:9px;color:var(--muted);margin-bottom:5px}.lane-state{font-size:11px;font-weight:750}.lane-meta{font-size:9px;color:var(--muted);margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     .detail-section{padding:14px 0;border-bottom:1px solid var(--line)}
     .detail-section h3{font-size:11px;margin:0 0 9px;color:var(--soft);font-weight:760}
     .fact-list{display:grid;gap:7px}.fact{display:flex;justify-content:space-between;gap:12px}.fact span:first-child{color:var(--muted)}.fact span:last-child{text-align:right}
@@ -158,7 +161,7 @@
           <option value="all">所有市值</option><option value="small">小市值</option><option value="mid">中市值</option><option value="large">大市值</option>
         </select>
         <select id="sortSelect" class="control" aria-label="排序">
-          <option value="evidence">證據優先</option><option value="stage1">初篩分數</option><option value="ccass">CCASS 5日</option><option value="flow">主力資金</option><option value="vr">相對成交</option>
+          <option value="evidence">證據優先</option><option value="stage1">初篩分數</option><option value="ccass">CCASS 連增</option><option value="flow">主力資金</option><option value="vr">相對成交</option>
         </select>
         <select id="pageSizeSelect" class="control" aria-label="每頁數量">
           <option value="10">每頁 10</option><option value="15" selected>每頁 15</option><option value="30">每頁 30</option>
@@ -167,7 +170,7 @@
       <div class="setup-tabs" id="setupTabs" role="tablist" aria-label="Kbar setup"></div>
       <div class="table-wrap" id="candidateTable">
         <table>
-          <thead><tr><th>股票</th><th>行動</th><th>形態</th><th>證據</th><th>CCASS 5日</th><th>資金</th><th>觸發 / 失效</th></tr></thead>
+          <thead><tr><th>股票</th><th>行動</th><th>形態</th><th>三鏈證據</th><th>CCASS 累積</th><th>資金</th><th>觸發 / 失效</th></tr></thead>
           <tbody id="candidateBody"></tbody>
         </table>
         <div class="status" id="tableStatus">正在融合資料</div>
@@ -214,6 +217,7 @@
   const num=value=>Number.isFinite(Number(value))?Number(value):null;
   const codeOf=value=>String(value||'').replace(/\.HK$/i,'').replace(/^HK\./i,'').replace(/\D/g,'').padStart(5,'0');
   const money=value=>{const n=num(value);if(n===null)return '—';const a=Math.abs(n);if(a>=1e8)return `${n<0?'-':''}${(a/1e8).toFixed(2)}億`;if(a>=1e4)return `${n<0?'-':''}${(a/1e4).toFixed(0)}萬`;return n.toFixed(0)};
+  const shares=value=>{const n=num(value);if(n===null)return '—';const a=Math.abs(n);if(a>=1e8)return `${n<0?'-':''}${(a/1e8).toFixed(2)}億股`;if(a>=1e4)return `${n<0?'-':''}${(a/1e4).toFixed(0)}萬股`;return `${n.toLocaleString('en-US')}股`};
   const pct=(value,digits=2)=>{const n=num(value);return n===null?'—':`${n>=0?'+':''}${n.toFixed(digits)}%`};
   const price=value=>{const n=num(value);if(n===null)return '—';return n<1?n.toFixed(3):n<10?n.toFixed(2):n.toFixed(2)};
   const tone=value=>{const n=num(value);return n===null?'flat':n>0?'up':n<0?'down':'flat'};
@@ -266,6 +270,8 @@
     if(typeof signal==='string')return signal;
     return signal&&(signal.label||signal.type||signal.name||signal.signal)||'';
   }
+  function eventDirectionLabel(value){return ({positive_supply:'圈股事件',negative_supply:'圈錢事件',shareholder_increase:'股東增持',watch:'事件待確認',neutral:'公告事件'})[value]||'未觸發'}
+  function ccassTierLabel(value){return ({strong:'強累積',building:'累積中',early:'初步增加',none:'未連增'})[value]||'資料不足'}
   function supplyLabel(signal,right){return String(signal?.supply?.label||right?.supply?.label||right?.trade?.supply?.label||'')}
   function buildRows(data){
     const holdings=new Map((data.holdings.stocks||[]).map(row=>[codeOf(row.c),row]));
@@ -273,19 +279,24 @@
     const flow=mapFlow(data.flow), rights=mapRights(data.rights), anomalies=mapAnomalies(data.anomalies);
     return Object.values(data.engine.by_symbol||{}).map(engine=>{
       const code=codeOf(engine.symbol), hold=holdings.get(code)||{}, signal=signals.get(code)||{}, f=flow.get(code)||{}, right=rights.get(code)||null, anoms=anomalies.get(code)||[];
-      const setup=engine.activeKey||'rebound', snap=engine.stage1?.snapshot||{}, label=supplyLabel(signal,right);
+      const setup=engine.activeKey||'rebound', snap=engine.stage1?.snapshot||{}, label=supplyLabel(signal,right), lanes=engine.stage1?.evidence_lanes||{};
       const d5=num(snap.ccass_d5_pct??hold.d5p), d20=num(snap.ccass_d20_pct??hold.d20p), mainNet=num(f.main_net??f.mainNetFlow), southNet=num(f.lgt_cap_chg_daily??f.southbound_net);
       const signalLabels=(signal.signals||[]).map(signalText).filter(Boolean);
+      const eventLabels=(lanes.event?.labels||[]).map(signalText).filter(Boolean), technicalLabels=(lanes.technical?.labels||[]).map(signalText).filter(Boolean);
+      const ccassLane=lanes.ccass||{}, streak=num(ccassLane.consecutive_increase_days??snap.ccass_increase_days??hold.su)??0;
+      const tripleConfluence=Boolean(lanes.event?.active&&lanes.technical?.active&&ccassLane.tier==='strong');
       const distribution=anoms.some(a=>['distribution_cluster','seat_exit','seat_decrease'].includes(a.type)&&['severe','high'].includes(a.severity));
       const circleMoney=label.includes('圈錢'), circleStock=label.includes('圈股');
       const evidence=[];
       if(engine.trendGuard?.key==='bull')evidence.push('日線 / 長窗同向');
       if((num(engine.scores?.[setup])||0)>=8)evidence.push('形態分數達標');
-      if(d5!==null&&d5>=.1)evidence.push('CCASS 5日增加');
+      if(lanes.technical?.active)evidence.push('技術盤路觸發');
+      if(lanes.event?.active)evidence.push(eventDirectionLabel(lanes.event.direction));
+      if(ccassLane.tier==='strong')evidence.push(`CCASS 強累積 ${streak}日`);
+      else if(ccassLane.tier==='building')evidence.push(`CCASS 累積中 ${streak}日`);
       if(mainNet!==null&&mainNet>0)evidence.push('主力淨流入');
       if(southNet!==null&&southNet>0)evidence.push('南向增加');
-      if(signalLabels.length)evidence.push('已有訊號');
-      if(circleStock)evidence.push('圈股判斷');
+      if(tripleConfluence)evidence.push('事件 × 盤路 × CCASS');
       const risks=[];
       if(circleMoney)risks.push('圈錢供應風險');
       if((engine.stage1?.reasons||[]).includes('supply event risk')&&!circleStock&&!circleMoney)risks.push('供應事件待核實');
@@ -296,8 +307,8 @@
       let action='confirm';
       if(circleMoney||distribution||(num(snap.change_pct??hold.chg)||0)<=-15)action='avoid';
       else if(setup==='rebound')action='tactical';
-      else if(setup==='breakout'&&engine.trendGuard?.key==='bull'&&evidence.length>=4&&(num(engine.stage1?.score)||0)>=12&&!risks.length)action='focus';
-      return {code,name:engine.label||hold.n||signal.name||code,engine,hold,signal,flow:f,right,anoms,setup,action,evidence,risks,d5,d20,mainNet,southNet,supply:label,signalLabels};
+      else if(engine.trendGuard?.key==='bull'&&!risks.length&&((setup==='breakout'&&evidence.length>=4&&(num(engine.stage1?.score)||0)>=12)||(tripleConfluence&&['breakout','base','breaklow'].includes(setup)&&(num(engine.stage1?.score)||0)>=10)))action='focus';
+      return {code,name:engine.label||hold.n||signal.name||code,engine,hold,signal,flow:f,right,anoms,setup,action,evidence,risks,d5,d20,mainNet,southNet,supply:label,signalLabels,eventLabels,technicalLabels,lanes,ccassLane,streak,tripleConfluence};
     });
   }
 
@@ -328,9 +339,9 @@
     const q=state.query.trim().toLowerCase();
     const rows=state.rows.filter(row=>row.action===state.action&&(state.setup==='all'||row.setup===state.setup)&&(state.bucket==='all'||row.engine.stage1?.bucket===state.bucket)&&(!q||row.code.includes(q)||String(row.name).toLowerCase().includes(q)));
     const sorters={
-      evidence:(a,b)=>b.evidence.length-a.evidence.length||(num(b.engine.stage1?.score)||0)-(num(a.engine.stage1?.score)||0),
+      evidence:(a,b)=>Number(b.tripleConfluence)-Number(a.tripleConfluence)||b.evidence.length-a.evidence.length||b.streak-a.streak||(num(b.engine.stage1?.score)||0)-(num(a.engine.stage1?.score)||0),
       stage1:(a,b)=>(num(b.engine.stage1?.score)||0)-(num(a.engine.stage1?.score)||0),
-      ccass:(a,b)=>(b.d5??-999)-(a.d5??-999),flow:(a,b)=>(b.mainNet??-Infinity)-(a.mainNet??-Infinity),
+      ccass:(a,b)=>b.streak-a.streak||(b.d5??-999)-(a.d5??-999),flow:(a,b)=>(b.mainNet??-Infinity)-(a.mainNet??-Infinity),
       vr:(a,b)=>(num(b.engine.stage1?.snapshot?.vr)||0)-(num(a.engine.stage1?.snapshot?.vr)||0)
     };
     return rows.sort(sorters[state.sort]||sorters.evidence);
@@ -345,8 +356,8 @@
         <td><div class="stock-main"><span class="rank">${start+index+1}</span><div><div class="stock-code">${row.code}</div><div class="stock-name">${esc(row.name)}</div></div></div></td>
         <td><span class="tag ${row.action}">${ACTIONS[row.action].label}</span></td>
         <td><span class="tag ${row.setup}">${SETUPS[row.setup]}</span><span class="metric-sub">${trendLabel(row.engine.trendGuard?.key)}</span></td>
-        <td><span class="evidence">${row.evidence.length} 項</span><span class="metric-sub ${row.risks.length?'risk-mark':''}">${row.risks.length?`${row.risks.length} 風險`:'無硬風險'}</span></td>
-        <td><span class="metric-main ${tone(row.d5)}">${pct(row.d5)}</span><span class="metric-sub">20日 ${pct(row.d20)}</span></td>
+        <td><span class="evidence">${row.tripleConfluence?'三鏈合流':`${row.evidence.length} 項`}</span><span class="metric-sub ${row.risks.length?'risk-mark':''}">${row.risks.length?`${row.risks.length} 風險`:'無硬風險'}</span></td>
+        <td><span class="metric-main ${tone(row.streak)}">連增 ${row.streak} 日</span><span class="metric-sub">5D ${pct(row.d5)} · 20D ${pct(row.d20)}</span></td>
         <td><span class="metric-main ${flowTone}">${money(row.mainNet)}</span><span class="metric-sub">VR ${vr===null?'—':vr.toFixed(1)}</span></td>
         <td><span class="metric-main">${price(plan.entry)} / ${price(plan.invalidation)}</span><span class="metric-sub">目標 ${price(plan.target)}</span></td>
       </tr>`;
@@ -360,17 +371,21 @@
     const row=state.rows.find(item=>item.code===code);if(!row)return;state.selected=code;
     const plan=row.engine.trade_plan||{}, snap=row.engine.stage1?.snapshot||{}, latestAnoms=row.anoms.slice(0,4);
     const evidence=[...row.evidence.map(text=>`<span class="evidence-chip yes">${esc(text)}</span>`),...row.risks.map(text=>`<span class="evidence-chip risk">${esc(text)}</span>`)].join('')||'<span class="quiet">暫無額外證據</span>';
-    const signals=row.signalLabels.length?row.signalLabels.slice(0,6).map(text=>`<span class="evidence-chip">${esc(text)}</span>`).join(''):'<span class="quiet">暫無訊號</span>';
+    const technicalSignals=row.technicalLabels.length?row.technicalLabels.slice(0,6).map(text=>`<span class="evidence-chip">${esc(text)}</span>`).join(''):'<span class="quiet">未見技術觸發</span>';
+    const eventState=row.lanes.event?.active?eventDirectionLabel(row.lanes.event.direction):'未觸發', techState=row.lanes.technical?.active?`${SETUPS[row.lanes.technical.setup_key]||SETUPS[row.setup]}${row.lanes.technical.count?` + ${row.lanes.technical.count} 訊號`:''}`:'未觸發', ccassState=ccassTierLabel(row.ccassLane.tier);
+    const eventSignals=row.eventLabels.length?row.eventLabels.slice(0,6).map(text=>`<span class="evidence-chip">${esc(text)}</span>`).join(''):(row.lanes.event?.active?`<span class="evidence-chip">${esc(eventState)}</span>`:'<span class="quiet">未見公告觸發</span>');
     const liveRanks=Object.entries(row.live?.ranks||{}).map(([key,item])=>`${key.replace('-hk','')} #${item.rank}`).join(' · ');
     const liveMove=row.live?.movers?.[0], liveAnomaly=row.live?.anomalies?.[0];
     const externalSection=`<section class="detail-section"><h3>外部市場證據（觀測）</h3><div class="fact-list"><div class="fact"><span>Longbridge 熱度</span><span>${esc(liveRanks||'未入榜')}</span></div><div class="fact"><span>Longbridge 異動</span><span>${esc(liveAnomaly?.type||liveMove?.reason||'未見異動')}</span></div><div class="fact"><span>SFC 申報淡倉</span><span>${row.short?`${Number(row.short.short_shares||0).toLocaleString('en-US')} 股 · ${money(row.short.short_value_hkd)}`:'未涵蓋 ≠ 0'}</span></div><div class="fact"><span>淡倉周比</span><span class="${tone(row.short?.change_pct)}">${row.short?.change_pct==null?'未有兩期資料':pct(row.short.change_pct)}</span></div><div class="fact"><span>來源日期</span><span>LB ${dateText(row.liveUpdated)} · SFC ${dateText(row.shortReportDate)}</span></div></div></section>`;
     $('inspector').innerHTML=`
       <div class="inspector-head"><div><div class="inspector-title">${row.code} <span class="tag ${row.action}">${ACTIONS[row.action].label}</span></div><div class="inspector-name">${esc(row.name)} · ${SETUPS[row.setup]}</div></div><button class="close-inspector" id="closeInspector" type="button" aria-label="關閉詳情">×</button></div>
       <div class="plan-strip"><div class="plan-cell"><div class="plan-label">觸發</div><div class="plan-value">${price(plan.entry)}</div></div><div class="plan-cell"><div class="plan-label">失效</div><div class="plan-value down">${price(plan.invalidation)}</div></div><div class="plan-cell"><div class="plan-label">第一目標</div><div class="plan-value up">${price(plan.target)}</div></div></div>
+      <div class="lane-grid"><div class="lane"><div class="lane-label">1 公告事件</div><div class="lane-state ${row.lanes.event?.direction==='negative_supply'?'down':row.lanes.event?.active?'up':'flat'}">${esc(eventState)}</div><div class="lane-meta">只計一次 catalyst</div></div><div class="lane"><div class="lane-label">2 技術盤路</div><div class="lane-state ${row.lanes.technical?.active?'up':'flat'}">${esc(techState)}</div><div class="lane-meta">POC / FVG / Kbar</div></div><div class="lane"><div class="lane-label">3 CCASS 累積</div><div class="lane-state ${row.ccassLane.tier==='strong'?'up':'flat'}">${esc(ccassState)}</div><div class="lane-meta">合計連增 ${row.streak} 日</div></div></div>
       <section class="detail-section"><h3>合流證據（衍生規則）</h3><div class="evidence-list">${evidence}</div></section>
-      <section class="detail-section"><h3>價格 / CCASS（觀測）</h3><div class="fact-list"><div class="fact"><span>現價 / 今日</span><span>${price(snap.price??row.hold.lp)} · <b class="${tone(snap.change_pct??row.hold.chg)}">${pct(snap.change_pct??row.hold.chg)}</b></span></div><div class="fact"><span>52周位置 / VR</span><span>${pct(snap.p52,1)} · ${num(snap.vr)===null?'—':num(snap.vr).toFixed(2)}</span></div><div class="fact"><span>CCASS 5日</span><span class="${tone(row.d5)}">${pct(row.d5)} · ${num(snap.ccass_increase_days)??'—'} 連增日</span></div><div class="fact"><span>CCASS 20日</span><span class="${tone(row.d20)}">${pct(row.d20)}</span></div></div></section>
+      <section class="detail-section"><h3>價格 / CCASS 合計持股（觀測）</h3><div class="fact-list"><div class="fact"><span>現價 / 今日</span><span>${price(snap.price??row.hold.lp)} · <b class="${tone(snap.change_pct??row.hold.chg)}">${pct(snap.change_pct??row.hold.chg)}</b></span></div><div class="fact"><span>52周位置 / VR</span><span>${pct(snap.p52,1)} · ${num(snap.vr)===null?'—':num(snap.vr).toFixed(2)}</span></div><div class="fact"><span>連續增持</span><span class="${row.streak>=3?'up':'flat'}">${row.streak} 日 · ${ccassTierLabel(row.ccassLane.tier)}</span></div><div class="fact"><span>5日合計變化</span><span class="${tone(row.d5)}">${shares(row.ccassLane.d5_shares??snap.ccass_d5_shares)} · ${pct(row.d5)}</span></div><div class="fact"><span>20日合計變化</span><span class="${tone(row.d20)}">${shares(row.ccassLane.d20_shares??snap.ccass_d20_shares)} · ${pct(row.d20)}</span></div><div class="fact"><span>計算口徑</span><span>CCASS total_shares；不以券商身份代替最終投資者</span></div></div></section>
       <section class="detail-section"><h3>資金 / 供應（觀測）</h3><div class="fact-list"><div class="fact"><span>主力淨流</span><span class="${tone(row.mainNet)}">${money(row.mainNet)}</span></div><div class="fact"><span>總資金淨流</span><span class="${tone(row.flow.total_net)}">${money(row.flow.total_net)}</span></div><div class="fact"><span>南向變化</span><span class="${tone(row.southNet)}">${money(row.southNet)}</span></div><div class="fact"><span>供配股判斷</span><span>${esc(row.supply||'—')}</span></div></div></section>
-      <section class="detail-section"><h3>訊號 / 時間</h3><div class="evidence-list">${signals}</div></section>
+      <section class="detail-section"><h3>公告事件觸發</h3><div class="evidence-list">${eventSignals}</div></section>
+      <section class="detail-section"><h3>技術盤路 / 時間觸發</h3><div class="evidence-list">${technicalSignals}</div></section>
       <section class="detail-section"><h3>券商席位異動</h3>${latestAnoms.length?latestAnoms.map(a=>`<div class="anomaly-row"><div class="anomaly-type">${esc(anomalyLabel(a.type))} · ${esc(a.participant_name||'—')}</div><div class="anomaly-meta">${dateText(a.date)} · ${esc(a.severity||'—')} · 股數 ${Number(num(a.shares_delta)||0).toLocaleString('en-US')}</div></div>`).join(''):'<div class="quiet">今期沒有已發布席位異動</div>'}</section>
       <section class="detail-section"><h3>資料口徑</h3><div class="fact-list"><div class="fact"><span>Kbar</span><span>${dateText(row.engine.observed_source?.trade_date)} · ${row.engine.observed_source?.bar_count||'—'} bars</span></div><div class="fact"><span>CCASS</span><span>${dateText(APP.bundle.files?.holdings?.updated)}</span></div><div class="fact"><span>資金流</span><span>${dateText(APP.bundle.files?.fundflow?.updated)}</span></div><div class="fact"><span>供配股</span><span>${dateText(row.right?.date_parsed)}</span></div></div></section>
       <div class="detail-links"><a href="./kbar_matrix.html?mode=hk&symbol=${parseInt(row.code,10)}">開 Kbar</a><a href="./signals.html?code=${row.code}">訊號頁</a><a href="./fundflow.html?code=${row.code}">資金頁</a><a href="./rights_analysis.html?code=${row.code}">供配股頁</a></div>`;
