@@ -18,6 +18,8 @@ def test_trading_desk_fuses_real_candidate_sources(page):
     assert page.locator("#actionGrid .action-btn").count() == 4
     assert "引擎分析" in page.locator("#queueCount").inner_text()
     assert "CCASS" in page.locator("#sourceDates").inner_text()
+    headers = page.locator("#candidateTable th").all_inner_texts()
+    assert headers.index("CCASS 20日") == headers.index("CCASS 5日") + 1
     assert "當前資料可用" in page.locator("#healthState").inner_text()
 
     page.locator("#candidateBody tr").first.click()

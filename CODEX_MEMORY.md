@@ -37,6 +37,7 @@ Last updated: 2026-07-15 HKT
 - Event direction is explicit: shareholder increase and `supply-stock` can support a setup; `supply-cash` remains a risk; unknown/watch announcements are catalysts only and never automatic bullish evidence.
 - CCASS aggregate consecutive increase is now a first-class signal. `strong` requires at least 3 consecutive increases plus positive 5D and 20D aggregate changes; `building` requires at least 2 consecutive increases and positive 5D change. Neutral days do not break the streak, matching `ccass/src/trend.py`.
 - The trading desk shows the three lanes side by side, sorts three-lane confluence first, and displays streak days plus 5D/20D share and percentage changes. CCASS still represents broker-level holdings, not final-investor identity.
+- The candidate table keeps separate adjacent columns in this order: `CCASS 連增`, `CCASS 5日`, `CCASS 20日`; do not collapse 5D and 20D back into one cell.
 - Verified 2026-07-15 candidate set: 57 event triggers, 48 strong CCASS accumulations, and 14 event + Kbar + strong-CCASS confluences among 240 analyzed HK candidates.
 - `data/trade_engine.json` is minified at write time to reduce daily mobile transfer while preserving every field.
 

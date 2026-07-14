@@ -63,7 +63,7 @@
     .setup-btn{flex:0 0 auto;border:1px solid var(--line);border-radius:5px;background:transparent;padding:7px 10px;cursor:pointer;color:var(--soft)}
     .setup-btn:hover{background:var(--surface)}.setup-btn.active{border-color:#397a78;background:#15302f;color:#81ded3}
     .table-wrap{overflow-x:auto;border-bottom:1px solid var(--line)}
-    table{width:100%;border-collapse:collapse;min-width:860px}
+    table{width:100%;border-collapse:collapse;min-width:1020px}
     th{padding:9px 8px;text-align:left;color:var(--muted);font-size:10px;font-weight:700;border-bottom:1px solid var(--line);white-space:nowrap}
     td{padding:10px 8px;border-bottom:1px solid rgba(39,53,68,.68);vertical-align:middle}
     tbody tr{cursor:pointer;transition:background .16s}
@@ -107,7 +107,7 @@
       .context-band{grid-template-columns:1fr}.workspace{display:block}.action-grid{grid-template-columns:1fr 1fr}.action-btn:nth-child(2){border-right:0}.action-btn:nth-child(-n+2){border-bottom:1px solid var(--line)}
       .toolbar{grid-template-columns:1fr 1fr}.toolbar .search{grid-column:1/-1}.table-wrap{overflow:visible}table{min-width:0}thead{display:none}tbody{display:grid;gap:8px}
       tbody tr{display:grid;grid-template-columns:minmax(0,1.4fr) 1fr 1fr;gap:8px;border:1px solid var(--line);border-radius:6px;padding:10px;background:var(--surface)}
-      tbody td{padding:0;border:0;min-width:0}tbody td:nth-child(1){grid-column:1/3}tbody td:nth-child(2){justify-self:end}tbody td:nth-child(3){grid-column:1}tbody td:nth-child(4){grid-column:2}tbody td:nth-child(5){grid-column:3}tbody td:nth-child(6){grid-column:1}tbody td:nth-child(7){grid-column:2/4;text-align:right}
+      tbody td{padding:0;border:0;min-width:0}tbody td:nth-child(1){grid-column:1/3}tbody td:nth-child(2){justify-self:end}tbody td:nth-child(3){grid-column:1}tbody td:nth-child(4){grid-column:2}tbody td:nth-child(5){grid-column:3}tbody td:nth-child(6){grid-column:1}tbody td:nth-child(7){grid-column:2}tbody td:nth-child(8){grid-column:3}tbody td:nth-child(9){grid-column:1/4;text-align:right}
       .stock-main{min-width:0}.stock-name{max-width:160px}.inspector{display:none;position:fixed;inset:42px 0 0 0;z-index:90;background:var(--bg);overflow:auto;padding:18px 16px 40px;border:0;box-shadow:var(--shadow)}
       .inspector.open{display:block}.close-inspector{display:block}.source-bar{display:block}.source-bar span{display:block;margin-top:5px}
     }
@@ -170,7 +170,7 @@
       <div class="setup-tabs" id="setupTabs" role="tablist" aria-label="Kbar setup"></div>
       <div class="table-wrap" id="candidateTable">
         <table>
-          <thead><tr><th>股票</th><th>行動</th><th>形態</th><th>三鏈證據</th><th>CCASS 累積</th><th>資金</th><th>觸發 / 失效</th></tr></thead>
+          <thead><tr><th>股票</th><th>行動</th><th>形態</th><th>三鏈證據</th><th>CCASS 連增</th><th>CCASS 5日</th><th>CCASS 20日</th><th>資金</th><th>觸發 / 失效</th></tr></thead>
           <tbody id="candidateBody"></tbody>
         </table>
         <div class="status" id="tableStatus">正在融合資料</div>
@@ -357,7 +357,9 @@
         <td><span class="tag ${row.action}">${ACTIONS[row.action].label}</span></td>
         <td><span class="tag ${row.setup}">${SETUPS[row.setup]}</span><span class="metric-sub">${trendLabel(row.engine.trendGuard?.key)}</span></td>
         <td><span class="evidence">${row.tripleConfluence?'三鏈合流':`${row.evidence.length} 項`}</span><span class="metric-sub ${row.risks.length?'risk-mark':''}">${row.risks.length?`${row.risks.length} 風險`:'無硬風險'}</span></td>
-        <td><span class="metric-main ${tone(row.streak)}">連增 ${row.streak} 日</span><span class="metric-sub">5D ${pct(row.d5)} · 20D ${pct(row.d20)}</span></td>
+        <td><span class="metric-main ${tone(row.streak)}">${row.streak} 日</span><span class="metric-sub">連續增持</span></td>
+        <td><span class="metric-main ${tone(row.d5)}">${pct(row.d5)}</span><span class="metric-sub">${shares(row.ccassLane.d5_shares??row.engine.stage1?.snapshot?.ccass_d5_shares)}</span></td>
+        <td><span class="metric-main ${tone(row.d20)}">${pct(row.d20)}</span><span class="metric-sub">${shares(row.ccassLane.d20_shares??row.engine.stage1?.snapshot?.ccass_d20_shares)}</span></td>
         <td><span class="metric-main ${flowTone}">${money(row.mainNet)}</span><span class="metric-sub">VR ${vr===null?'—':vr.toFixed(1)}</span></td>
         <td><span class="metric-main">${price(plan.entry)} / ${price(plan.invalidation)}</span><span class="metric-sub">目標 ${price(plan.target)}</span></td>
       </tr>`;
