@@ -48,6 +48,8 @@ WATCH_FILES = {
     "events.json":          {"path": os.path.join(BASE, "events.json"),                "max_age_h": 26},
     "price_snapshot":       {"path": os.path.join(BASE, "data", "stock_prices.json"),  "max_age_h": 26},
     "trade_engine":        {"path": os.path.join(BASE, "data", "trade_engine.json"),  "max_age_h": 30},
+    "market_intel":       {"path": os.path.join(BASE, "data", "market_intel.json"), "max_age_h": 30},
+    "sfc_short_positions": {"path": os.path.join(BASE, "data", "short_positions.json"), "max_age_h": 240},
     "jieqi_backtest":       {"path": os.path.join(BASE, "data", "jieqi_backtest.json"), "max_age_h": 72},
 }
 

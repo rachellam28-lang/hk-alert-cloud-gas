@@ -1,6 +1,30 @@
 # HK Alert Cloud GAS Memory
 
-Last updated: 2026-07-14 HKT
+Last updated: 2026-07-15 HKT
+
+## 2026-07-15 Unified Trading Desk
+
+- Added `trading_desk.html` as a new daily decision layer. No old page was deleted or replaced.
+- The page fuses the existing canonical sources instead of copying them into another large duplicate cache:
+  - market regime: `market.json`
+  - installed trading-skill rules / Kbar setups: `data/trade_engine.json`
+  - CCASS trend: `holdings.json`
+  - corporate signals and supply judgement: `data/signals.json` + `data/rights_analysis.json`
+  - fund flow / southbound: `data/fundflow.json`
+  - broker-seat anomalies: `data/participant_anomalies.json`
+  - sector pulse: `data/sector_rotation.json`
+- The decision queues are `優先研究`, `等確認`, `反抽短打`, and `避開 / 高風險`. They are derived research queues, not observed facts or buy instructions. Trigger, invalidation, target, evidence, risk, and source dates remain visible per stock.
+- Added two real external observation layers:
+  - `scripts/fetch_market_intel.py` -> `data/market_intel.json`: Longbridge HK popularity ranks, real-time anomalies, and top-mover events.
+  - `scripts/fetch_sfc_short_positions.py` -> `data/short_positions.json`: official SFC weekly aggregate reportable short positions.
+- SFC coverage rule: a missing stock means `未涵蓋`, never zero short interest. Week-over-week change is shown only when two different official report dates exist.
+- External fetch failure rule: preserve the previous snapshot and mark it `stale`; never manufacture fallback observations.
+- `ccass/scripts/daily_refresh.sh`, `data/publish_bundle.json`, health checks, the direct Cloudflare deploy allowlist, and shared navigation now include the trading desk and both external sources.
+- Current verified snapshot on 2026-07-15:
+  - Longbridge: 120 rank positions, 100 intraday anomalies, 46 top-mover events.
+  - SFC: report date `2026-07-03`, 1,231 reportable rows.
+  - page dependency audit: 20 pages, 0 missing refs, 0 alias mismatch.
+  - Playwright: desktop and 393px mobile tests pass with no JS errors or horizontal overflow.
 
 ## Latest Audit
 

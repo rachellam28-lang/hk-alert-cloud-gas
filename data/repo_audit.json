@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-15T02:07:23",
+  "generated_at": "2026-07-15T02:33:30",
   "pages": [
     {
       "page": "404.html",
@@ -187,6 +187,25 @@
       "data_refs": [],
       "missing_refs": [],
       "uses_publish_bundle": false,
+      "source_label": null
+    },
+    {
+      "page": "trading_desk.html",
+      "data_refs": [
+        "data/fundflow.json",
+        "data/market_intel.json",
+        "data/participant_anomalies.json",
+        "data/publish_bundle.json",
+        "data/rights_analysis.json",
+        "data/sector_rotation.json",
+        "data/short_positions.json",
+        "data/signals.json",
+        "data/trade_engine.json",
+        "holdings.json",
+        "market.json"
+      ],
+      "missing_refs": [],
+      "uses_publish_bundle": true,
       "source_label": null
     },
     {

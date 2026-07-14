@@ -374,6 +374,44 @@ def summarize_market():
     }
 
 
+def summarize_market_intel():
+    data = load_json(DATA / "market_intel.json", {})
+    ranks = data.get("ranks") if isinstance(data, dict) else {}
+    rank_rows = sum(
+        len(item.get("rows") or []) for item in (ranks or {}).values()
+        if isinstance(item, dict)
+    )
+    movers = data.get("top_movers") if isinstance(data, dict) else {}
+    return {
+        "path": "data/market_intel.json",
+        "updated": data.get("generated_at") if isinstance(data, dict) else None,
+        "source": data.get("provider") if isinstance(data, dict) else "Longbridge CLI",
+        "data_kind": data.get("data_kind") if isinstance(data, dict) else None,
+        "is_observed": data.get("is_observed") if isinstance(data, dict) else None,
+        "stale": data.get("stale") if isinstance(data, dict) else None,
+        "rank_rows": rank_rows,
+        "anomaly_count": len(data.get("anomalies") or []) if isinstance(data, dict) else None,
+        "mover_count": len((movers or {}).get("rows") or []) if isinstance(movers, dict) else None,
+        "refresh_errors": data.get("refresh_errors") if isinstance(data, dict) else None,
+    }
+
+
+def summarize_short_positions():
+    data = load_json(DATA / "short_positions.json", {})
+    return {
+        "path": "data/short_positions.json",
+        "updated": data.get("generated_at") if isinstance(data, dict) else None,
+        "report_date": data.get("report_date") if isinstance(data, dict) else None,
+        "previous_report_date": data.get("previous_report_date") if isinstance(data, dict) else None,
+        "source": data.get("provider") if isinstance(data, dict) else "SFC Hong Kong",
+        "data_kind": data.get("data_kind") if isinstance(data, dict) else None,
+        "is_observed": data.get("is_observed") if isinstance(data, dict) else None,
+        "stale": data.get("stale") if isinstance(data, dict) else None,
+        "row_count": data.get("row_count") if isinstance(data, dict) else None,
+        "coverage_note": data.get("coverage_note") if isinstance(data, dict) else None,
+    }
+
+
 def summarize_repo_audit():
     data = load_json(DATA / "repo_audit.json", {})
     pages = data.get("pages") if isinstance(data, dict) else []
@@ -496,6 +534,8 @@ def main():
             "prices": summarize_prices(),
             "sector_rotation": summarize_sector_rotation(),
             "market": summarize_market(),
+            "market_intel": summarize_market_intel(),
+            "short_positions": summarize_short_positions(),
             "repo_audit": summarize_repo_audit(),
             "vqc_backtest": summarize_backtest(
                 "vqc_backtest",
@@ -553,6 +593,9 @@ def main():
         "prices_updated": bundle["files"]["prices"]["updated"],
         "market_updated": bundle["files"]["market"]["updated"],
         "market_stale": bundle["files"]["market"].get("stale"),
+        "market_intel_updated": bundle["files"]["market_intel"].get("updated"),
+        "market_intel_stale": bundle["files"]["market_intel"].get("stale"),
+        "short_positions_report_date": bundle["files"]["short_positions"].get("report_date"),
         "repo_audit_updated": bundle["files"]["repo_audit"].get("updated"),
         "repo_audit_missing_ref_pages": bundle["files"]["repo_audit"].get("missing_ref_pages"),
         "repo_audit_date_spread_days": bundle["files"]["repo_audit"].get("date_spread_days"),

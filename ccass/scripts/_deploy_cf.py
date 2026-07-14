@@ -22,6 +22,7 @@ DEFAULT_BRANCH = "main"
 # Root files to deploy (relative to source dir). Keep this list tight: never
 # deploy the repo root directly because it contains local tools and backups.
 ROOT_DEPLOY_FILES = [
+    "trading_desk.html",
     "index.html",
     "404.html",
     "ccass.html",
@@ -69,6 +70,7 @@ DATA_DEPLOY_FILES = {
     Path("data/kbar_cache.json"),
     Path("data/kbar_symbols/index.json"),
     Path("data/market.json"),
+    Path("data/market_intel.json"),
     Path("data/participant_anomalies.json"),
     Path("data/prices.json"),
     Path("data/publish_bundle.json"),
@@ -76,6 +78,7 @@ DATA_DEPLOY_FILES = {
     Path("data/rights_analysis.json"),
     Path("data/signals.json"),
     Path("data/sector_rotation.json"),
+    Path("data/short_positions.json"),
     Path("data/stock_prices.json"),
     Path("data/trade_engine.json"),
     Path("data/timesfm.json"),

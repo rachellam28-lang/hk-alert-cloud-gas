@@ -100,6 +100,12 @@ echo "2.7/5 Refresh Futu dopamine (best-effort)..."
 echo "2.8/5 Refresh HK fund flow (best-effort)..."
 "$PYTHON_BIN" "$REPO_ROOT/scripts/fetch_fundflow.py" || echo "WARN: fund flow refresh unavailable; keeping existing fundflow cache"
 
+echo "2.85/5 Refresh Longbridge market intelligence (best-effort)..."
+"$PYTHON_BIN" "$REPO_ROOT/scripts/fetch_market_intel.py" --best-effort || echo "WARN: market intelligence unavailable; keeping existing cache"
+
+echo "2.86/5 Refresh SFC weekly short positions (best-effort)..."
+"$PYTHON_BIN" "$REPO_ROOT/scripts/fetch_sfc_short_positions.py" --best-effort || echo "WARN: SFC short positions unavailable; keeping existing weekly cache"
+
 echo "3.40/5 Refresh corporate announcement feed (best-effort)..."
 "$PYTHON_BIN" "$REPO_ROOT/scanner/_corp_scan_only.py" || echo "WARN: corporate announcement scan unavailable; keeping existing announcements/breakthroughs"
 
@@ -181,7 +187,7 @@ fi
 echo "5/5 Stage refreshed files..."
 cd "$REPO_ROOT"
 if [[ "${AUTO_STAGE_REFRESHED_FILES:-1}" == "1" ]]; then
-    git add holdings.json data/holdings.json ccass.json data/ccass.json market.json data/market.json data/stock_prices.json data/suspended_stocks.json data/prices.json data/fundflow.json data/announcements.json data/placements_enriched.json data/rights_analysis.json data/signals.json data/transfers.json ccass/data/transfers.json data/participant_anomalies.json ccass/data/participant_anomalies.json data/timesfm.json data/kbar_cache.json data/trade_engine.json data/repo_audit.json data/alerts.json data/watchlist.json data/history.json data/breakthroughs.json data/corp_graded_scan.json data/publish_bundle.json data/vqc_backtest.json data/distribution_day_backtest.json data/jieqi_backtest.json events.json events_watchlist.json raw/prices_*.json daily_trade_prompt.html timing_analysis.html vqc_analysis.html distribution_day.html jieqi_analysis.html rights_analysis.html
+    git add holdings.json data/holdings.json ccass.json data/ccass.json market.json data/market.json data/stock_prices.json data/suspended_stocks.json data/prices.json data/fundflow.json data/market_intel.json data/short_positions.json data/announcements.json data/placements_enriched.json data/rights_analysis.json data/signals.json data/transfers.json ccass/data/transfers.json data/participant_anomalies.json ccass/data/participant_anomalies.json data/timesfm.json data/kbar_cache.json data/trade_engine.json data/repo_audit.json data/alerts.json data/watchlist.json data/history.json data/breakthroughs.json data/corp_graded_scan.json data/publish_bundle.json data/vqc_backtest.json data/distribution_day_backtest.json data/jieqi_backtest.json events.json events_watchlist.json raw/prices_*.json daily_trade_prompt.html timing_analysis.html vqc_analysis.html distribution_day.html jieqi_analysis.html rights_analysis.html trading_desk.html
     echo "Refreshed files staged. Commit/deploy should be handled explicitly; no GitHub push from daily_refresh.sh."
 else
     echo "AUTO_STAGE_REFRESHED_FILES=0; leaving the git index unchanged for unattended refresh."

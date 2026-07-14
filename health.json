@@ -1,13 +1,13 @@
 {
- "at": "2026-07-15T02:08:16.544851",
+ "at": "2026-07-15T02:36:35.920273",
  "overall_status": "PASS",
  "maintenance_status": "WARN",
  "ccass_publish": {
   "status": "🟢",
-  "detail": "bundle 2026-07-15 02:07:24 | DB 2026-07-13 rows=2755 cov=99.2% | publish 2026-07-13 | coverage 99.2% | signals 2026-07-15T02:07:20.942635 | alerts 2026-07-14 17:57 UTC | anns 2026-07-14 | rights 2026-07-14 | flow 2026-07-14 | transfers 2026-07-13 vs 2026-07-10 | verify_data PASS | verify_dashboard PASS | engine 2026-07-14 240/240 of 2722",
+  "detail": "bundle 2026-07-15 02:36:19 | DB 2026-07-13 rows=2755 cov=99.2% | publish 2026-07-13 | coverage 99.2% | signals 2026-07-15T02:07:20.942635 | alerts 2026-07-14 17:57 UTC | anns 2026-07-14 | rights 2026-07-14 | flow 2026-07-14 | transfers 2026-07-13 vs 2026-07-10 | verify_data PASS | verify_dashboard PASS | engine 2026-07-14 240/240 of 2722",
   "raw": {
    "schema_v": 1,
-   "generated_at": "2026-07-15T02:07:24",
+   "generated_at": "2026-07-15T02:36:19",
    "source_of_truth": {
     "db": "ccass/holdings.db",
     "primary_holdings": "holdings.json",
@@ -327,11 +327,35 @@
      "partial": false,
      "dopamine_stale": false
     },
+    "market_intel": {
+     "path": "data/market_intel.json",
+     "updated": "2026-07-15T02:36:01+08:00",
+     "source": "Longbridge CLI",
+     "data_kind": "observed_provider_snapshot",
+     "is_observed": true,
+     "stale": false,
+     "rank_rows": 120,
+     "anomaly_count": 100,
+     "mover_count": 46,
+     "refresh_errors": []
+    },
+    "short_positions": {
+     "path": "data/short_positions.json",
+     "updated": "2026-07-15T02:36:08+08:00",
+     "report_date": "2026-07-03",
+     "previous_report_date": null,
+     "source": "Securities and Futures Commission (Hong Kong)",
+     "data_kind": "official_weekly_reportable_short_positions",
+     "is_observed": true,
+     "stale": false,
+     "row_count": 1231,
+     "coverage_note": "Specified shares above the SFC reporting threshold only. Missing code means not covered, not zero short interest."
+    },
     "repo_audit": {
      "path": "data/repo_audit.json",
-     "updated": "2026-07-15T02:07:23",
+     "updated": "2026-07-15T02:33:30",
      "source": "repo-native audit snapshot",
-     "page_count": 19,
+     "page_count": 20,
      "missing_ref_pages": 0,
      "date_spread_days": 2,
      "alias_mismatches": 0,
@@ -467,7 +491,10 @@
     "prices_updated": "2026-07-10T08:41:51.277026+00:00",
     "market_updated": "2026-07-14T17:54:08.590646+00:00",
     "market_stale": false,
-    "repo_audit_updated": "2026-07-15T02:07:23",
+    "market_intel_updated": "2026-07-15T02:36:01+08:00",
+    "market_intel_stale": false,
+    "short_positions_report_date": "2026-07-03",
+    "repo_audit_updated": "2026-07-15T02:33:30",
     "repo_audit_missing_ref_pages": 0,
     "repo_audit_date_spread_days": 2,
     "backtests_updated": {
@@ -495,7 +522,7 @@
   {
    "name": "publish_bundle",
    "status": "🟢",
-   "detail": "generated=2026-07-15 02:07:24 publish=PASS holdings=2026-07-13 signals=2026-07-15T02:07:20.942635 alerts=2026-07-14 17:57 UTC"
+   "detail": "generated=2026-07-15 02:36:19 publish=PASS holdings=2026-07-13 signals=2026-07-15T02:07:20.942635 alerts=2026-07-14 17:57 UTC"
   },
   {
    "name": "signals.json",
@@ -526,6 +553,16 @@
    "name": "trade_engine",
    "status": "🟢",
    "detail": "source=2026-07-14 built=2026-07-15T02:07:21 analyzed=240/240 universe=2722 momentum=246 errors=0 kind=derived_rule_output"
+  },
+  {
+   "name": "market_intel",
+   "status": "🟢",
+   "detail": "0.0h old"
+  },
+  {
+   "name": "sfc_short_positions",
+   "status": "🟢",
+   "detail": "0.0h old"
   },
   {
    "name": "jieqi_backtest",
@@ -560,7 +597,7 @@
   {
    "name": "repo_audit",
    "status": "🟢",
-   "detail": "pages=19 missing_ref_pages=0 alias_mismatches=0 date_spread=2d db_gaps=1 db_low_cov=27"
+   "detail": "pages=20 missing_ref_pages=0 alias_mismatches=0 date_spread=2d db_gaps=1 db_low_cov=27"
   }
  ]
 }
