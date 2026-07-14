@@ -272,6 +272,7 @@ def main() -> int:
     ccass_path = PROJECT_ROOT / "ccass.json"
     errors: list[str] = []
     warnings: list[str] = []
+    maintenance_warnings: list[str] = []
 
     if not holdings_path.exists():
         errors.append(f"Missing file: {holdings_path}")
@@ -356,7 +357,7 @@ def main() -> int:
         end_db = publishable_db or max(present_dates)
         missing_days = _missing_trading_days(start_db, end_db, present_dates)
         if missing_days:
-            warnings.append(
+            maintenance_warnings.append(
                 f"Historical DB gaps in range {start_db}..{end_db}: "
                 + ", ".join(missing_days[:12])
                 + (" ..." if len(missing_days) > 12 else "")
@@ -367,7 +368,7 @@ def main() -> int:
             if start_db <= trade_date <= end_db and cov * 100 < args.min_coverage
         ]
         if incomplete_days:
-            warnings.append(
+            maintenance_warnings.append(
                 f"Historical low-coverage DB dates below {args.min_coverage}%: "
                 + ", ".join(incomplete_days[:12])
                 + (" ..." if len(incomplete_days) > 12 else "")
@@ -407,7 +408,7 @@ def main() -> int:
         history_report, history_rc, _, _ = _run_json_script("scripts/verify_data.py", "--json", "--publish-scope")
     except Exception as exc:
         history_report, history_rc = {"status": "FAIL", "errors": [str(exc)], "warnings": []}, 1
-        warnings.append(f"historical verify_data failed to run: {exc}")
+        maintenance_warnings.append(f"historical verify_data failed to run: {exc}")
     try:
         dash_report, dash_rc, _, _ = _run_json_script("scripts/verify_dashboard.py")
     except Exception as exc:
@@ -422,7 +423,7 @@ def main() -> int:
     if data_report.get("warnings"):
         warnings.append(f"verify_data {verify_date} warnings={len(data_report['warnings'])}")
     if history_report.get("errors") or history_report.get("warnings"):
-        warnings.append(
+        maintenance_warnings.append(
             "historical verify_data backlog "
             f"errors={len(history_report.get('errors', []))} "
             f"warnings={len(history_report.get('warnings', []))}"
@@ -430,8 +431,14 @@ def main() -> int:
     if dash_report.get("status") == "WARN":
         warnings.append("verify_dashboard WARN")
 
+    publish_status = "FAIL" if errors else ("WARN" if warnings else "PASS")
+    maintenance_status = "WARN" if maintenance_warnings else "PASS"
     report = {
-        "status": "FAIL" if errors else ("WARN" if warnings else "PASS"),
+        # status remains the full audit result for backwards compatibility.
+        # publish_status is the current operational gate used by the dashboard.
+        "status": "FAIL" if errors else ("WARN" if warnings or maintenance_warnings else "PASS"),
+        "publish_status": publish_status,
+        "maintenance_status": maintenance_status,
         "latest_db_date": latest_db,
         "latest_db_stock_count": latest_db_stock_count,
         "latest_db_coverage_pct": latest_db_coverage_pct,
@@ -442,7 +449,9 @@ def main() -> int:
         "coverage_pct": coverage_pct,
         "stock_count": stock_count,
         "errors": errors,
-        "warnings": warnings,
+        "warnings": warnings + maintenance_warnings,
+        "current_warnings": warnings,
+        "maintenance_warnings": maintenance_warnings,
         "verify_data": {
             "date": verify_date or None,
             "status": "FAIL" if data_report.get("errors") else ("WARN" if data_report.get("warnings") else "PASS"),
@@ -462,7 +471,7 @@ def main() -> int:
     }
 
     print(json.dumps(report, ensure_ascii=False, indent=2))
-    return 1 if errors or (args.strict and warnings) else 0
+    return 1 if errors or (args.strict and (warnings or maintenance_warnings)) else 0
 
 
 if __name__ == "__main__":

@@ -156,8 +156,12 @@ try {
         try {
             $state = Get-Content -LiteralPath $StateFile -Raw -Encoding UTF8 | ConvertFrom-Json
             if ([string]$state.local_date -eq (Get-Date -Format "yyyy-MM-dd")) {
-                Write-Step "Today's full refresh already succeeded at $($state.completed_at); retry trigger skipped"
-                exit 0
+                $completed = [DateTimeOffset]::Parse([string]$state.completed_at).LocalDateTime
+                if ($completed.TimeOfDay -ge [TimeSpan]::FromHours(17.5)) {
+                    Write-Step "Today's post-close refresh already succeeded at $($state.completed_at); retry trigger skipped"
+                    exit 0
+                }
+                Write-Step "Earlier refresh completed at $($state.completed_at); post-close refresh still required"
             }
         } catch {
             Write-Step "WARN: unreadable success state; running the refresh"
@@ -184,6 +188,9 @@ try {
         $env:AUTO_STAGE_REFRESHED_FILES = "0"
         $env:FUTU_PRICE_TIMEOUT_SECONDS = if ($futuReady) { "180" } else { "12" }
         $env:HOLDINGS_PROVIDER = if ($env:HOLDINGS_PROVIDER) { $env:HOLDINGS_PROVIDER } else { "longbridge" }
+        # The PowerShell runner already captures exit state and logs. The nested
+        # Python wrapper cannot directly CreateProcess a .sh file on Windows.
+        $env:SENTRY_CRON_DISABLED = "1"
         $bashRoot = $RepoRoot.Replace("\", "/").Replace("C:", "/c")
         Invoke-Native "Run complete daily refresh" { & $Bash -lc "cd '$bashRoot' && ./ccass/scripts/daily_refresh.sh" } | Out-Null
     }

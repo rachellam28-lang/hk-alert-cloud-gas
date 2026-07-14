@@ -444,7 +444,11 @@ def run_audit_gate():
             if fallback:
                 return fallback
         return {
-            "status": data.get("status", "FAIL"),
+            "status": data.get("publish_status") or data.get("status", "FAIL"),
+            "audit_status": data.get("status", "FAIL"),
+            "maintenance_status": data.get("maintenance_status", "PASS"),
+            "current_warnings": data.get("current_warnings") or [],
+            "maintenance_warnings": data.get("maintenance_warnings") or [],
             "latest_db_date": data.get("latest_db_date"),
             "latest_db_stock_count": data.get("latest_db_stock_count"),
             "latest_db_coverage_pct": data.get("latest_db_coverage_pct"),

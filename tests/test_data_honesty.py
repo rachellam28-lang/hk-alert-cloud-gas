@@ -1,10 +1,32 @@
 import json
 import ast
 import sqlite3
+from datetime import datetime
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def test_health_market_date_uses_previous_session_before_close():
+    from scripts.health_check import _expected_latest_market_date
+
+    assert _expected_latest_market_date(datetime(2026, 7, 15, 2, 0)).isoformat() == "2026-07-14"
+    assert _expected_latest_market_date(datetime(2026, 7, 15, 19, 0)).isoformat() == "2026-07-15"
+    assert _expected_latest_market_date(datetime(2026, 7, 18, 12, 0)).isoformat() == "2026-07-17"
+
+
+def test_futu_price_refresh_records_provider_observation_time():
+    source = (ROOT / "ccass" / "scripts" / "daily_lp_futu.py").read_text(encoding="utf-8")
+    assert "row.get('update_time')" in source
+    assert "e['lp_time'] = observed_at.date().isoformat()" in source
+    assert "e['price_updated_at'] = observed_at.isoformat()" in source
+
+
+def test_price_snapshot_uses_provider_session_not_process_date():
+    source = (ROOT / "scripts" / "build_signals.py").read_text(encoding="utf-8")
+    assert "snapshot_date = Counter(source_dates).most_common(1)[0][0]" in source
+    assert "prices_{snapshot_date.replace('-', '')}.json" in source
 
 
 def test_publish_coverage_counts_trusted_market_pct_only():

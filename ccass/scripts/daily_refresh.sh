@@ -41,8 +41,26 @@ if [[ "${HOLDINGS_SKIP_SCRAPE:-0}" == "1" ]]; then
     echo "1/5 Skip HOLDINGS scrape (HOLDINGS_SKIP_SCRAPE=1)"
 else
     echo "1/5 Run HOLDINGS scrape (bounded daily mode)..."
+    RUNNER_ARGS=()
+    if [[ "${HOLDINGS_PROVIDER:-}" == "longbridge" ]]; then
+        echo "1.0/5 Probe latest observed Longbridge CCASS date..."
+        if [[ -n "${HOLDINGS_QUERY_DATE:-}" ]]; then
+            provider_date="$HOLDINGS_QUERY_DATE"
+        else
+            provider_date="$($PYTHON_BIN scripts/latest_longbridge_ccass_date.py)" || {
+                echo "ERROR: cannot resolve Longbridge CCASS date; refusing a full-universe blind scrape"
+                exit 1
+            }
+        fi
+        if [[ ! "$provider_date" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
+            echo "ERROR: invalid Longbridge CCASS date: $provider_date"
+            exit 1
+        fi
+        echo "Longbridge latest observed CCASS date: $provider_date"
+        RUNNER_ARGS+=(--query-date "$provider_date")
+    fi
     set +e
-    "$PYTHON_BIN" -m src.runner
+    "$PYTHON_BIN" -m src.runner "${RUNNER_ARGS[@]}"
     runner_rc=$?
     set -e
     if [[ "$runner_rc" -eq 1 ]]; then
@@ -107,9 +125,13 @@ echo "3.48/5 Sync publish aliases..."
 "$PYTHON_BIN" "$REPO_ROOT/scripts/sync_publish_aliases.py" || { echo "ERROR: publish alias sync failed"; exit 1; }
 
 echo "3.49/5 Rebuild timing sample JSON..."
-"$PYTHON_BIN" "$REPO_ROOT/scripts/build_vqc_backtest.py" || { echo "ERROR: VQC backtest build failed"; exit 1; }
-"$PYTHON_BIN" "$REPO_ROOT/scripts/build_distribution_day_backtest.py" || { echo "ERROR: distribution day backtest build failed"; exit 1; }
-"$PYTHON_BIN" "$REPO_ROOT/scripts/build_jieqi_backtest.py" || { echo "ERROR: jieqi backtest build failed"; exit 1; }
+if [[ "${TIMING_BACKTEST_REFRESH_ENABLED:-0}" == "1" ]]; then
+    timeout "${TIMING_BACKTEST_TIMEOUT_SECONDS:-180}" "$PYTHON_BIN" "$REPO_ROOT/scripts/build_vqc_backtest.py" || echo "WARN: VQC timing cache refresh unavailable; keeping existing observed cache"
+    timeout "${TIMING_BACKTEST_TIMEOUT_SECONDS:-180}" "$PYTHON_BIN" "$REPO_ROOT/scripts/build_distribution_day_backtest.py" || echo "WARN: distribution-day cache refresh unavailable; keeping existing observed cache"
+    timeout "${TIMING_BACKTEST_TIMEOUT_SECONDS:-180}" "$PYTHON_BIN" "$REPO_ROOT/scripts/build_jieqi_backtest.py" || echo "WARN: jieqi timing cache refresh unavailable; keeping existing observed cache"
+else
+    echo "Skip legacy TradingView backtests (TIMING_BACKTEST_REFRESH_ENABLED=0); timing pages keep observed cache"
+fi
 
 echo "3.495/5 Build TimesFM multi-field cache (best-effort)..."
 if [[ -n "${TIMESFM_PY:-}" ]]; then

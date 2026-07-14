@@ -53,6 +53,7 @@ WATCH_FILES = {
 
 DEEPSEEK_BALANCE_WARN = 5.0
 ANN_DEVIATION_WARN = 0.7
+PUBLISH_COVERAGE_OK = 98.0
 HEALTH_OUT = os.path.join(BASE, "health.json")
 HEALTH_TELEGRAM_STATE = os.path.join(BASE, "logs", "health_telegram_state.json")
 ICON_OK = "🟢"
@@ -187,6 +188,16 @@ def _recent_trading_dates(now_dt: datetime, count: int = 2) -> set[str]:
     return set(days)
 
 
+def _expected_latest_market_date(now_dt: datetime) -> date:
+    """Latest completed HK cash-market session at the observation time."""
+    current = now_dt.date()
+    if current.weekday() >= 5:
+        return _previous_weekday(current)
+    if now_dt.hour < 18:
+        return _previous_weekday(current - timedelta(days=1))
+    return current
+
+
 def check_freshness():
     rows = []
     for name, cfg in WATCH_FILES.items():
@@ -199,9 +210,10 @@ def check_freshness():
             coverage = data.get("coverage_pct")
             stock_count = data.get("stock_count")
             complete = data.get("is_complete")
+            coverage_ok = isinstance(coverage, (int, float)) and float(coverage) >= PUBLISH_COVERAGE_OK
             if updated in (None, "", "—"):
                 status = ICON_FAIL
-            elif complete is True:
+            elif coverage_ok:
                 status = ICON_OK
             else:
                 status = ICON_WARN
@@ -315,8 +327,9 @@ def check_freshness():
         elif name == "price_snapshot":
             data = load_json(cfg["path"], default={}) or {}
             latest = _latest_price_time(data)
-            today = datetime.now().date()
-            expected = _previous_weekday(today)
+            now_dt = datetime.now()
+            today = now_dt.date()
+            expected = _expected_latest_market_date(now_dt)
             latest_date = None
             if latest:
                 try:
@@ -348,7 +361,8 @@ def check_announcement_volume():
     if not anns:
         return {"status": "⚪", "detail": "announcements.json empty"}
 
-    today = datetime.now().strftime("%Y-%m-%d")
+    now_dt = datetime.now()
+    today = now_dt.strftime("%Y-%m-%d")
     by_date = {}
     for a in anns:
         d = parse_announcement_date(a.get("date") or a.get("release_time"))
@@ -367,9 +381,11 @@ def check_announcement_volume():
         return {"status": "⚪", "detail": "baseline median=0"}
 
     dev = abs(today_n - med) / med
-    is_weekday = datetime.now().weekday() < 5
+    is_weekday = now_dt.weekday() < 5
     if not is_weekday:
         return {"status": "⚪", "detail": f"non-trading day, today={today_n}, median {med:.0f}"}
+    if now_dt.hour < 8:
+        return {"status": "⚪", "detail": f"before announcement window, today={today_n}, median {med:.0f}"}
     if today_n == 0 and is_weekday:
         return {"status": "⚠️", "detail": f"today 0 vs median {med:.0f} — check scraper"}
     elif dev > ANN_DEVIATION_WARN:
@@ -574,10 +590,26 @@ def check_ccass_publish():
 
 
 def classify_overall_status(freshness, publish, ann_vol, balance, integrity):
-    items = list(freshness) + list(integrity) + [publish, ann_vol, balance]
+    # Historical backlog remains visible under maintenance, but it must not turn
+    # a truthful, publishable current snapshot into an operational WARN.
+    operational_integrity = [item for item in integrity if item.get("name") != "repo_audit"]
+    items = list(freshness) + operational_integrity + [publish, ann_vol, balance]
     if any(item.get("status") == ICON_FAIL for item in items):
         return "FAIL"
     if any(item.get("status") == ICON_WARN for item in items):
+        return "WARN"
+    return "PASS"
+
+
+def classify_maintenance_status(integrity, publish):
+    repo_items = [item for item in integrity if item.get("name") == "repo_audit"]
+    audit = publish.get("raw") if isinstance(publish.get("raw"), dict) else {}
+    if isinstance(audit.get("publish"), dict):
+        audit = audit["publish"]
+    maintenance = str(audit.get("maintenance_status") or "PASS").upper()
+    if any(item.get("status") == ICON_FAIL for item in repo_items):
+        return "FAIL"
+    if maintenance == "WARN" or any(item.get("status") == ICON_WARN for item in repo_items):
         return "WARN"
     return "PASS"
 
@@ -596,6 +628,7 @@ def format_report(freshness, publish, ann_vol, balance, integrity):
         for r in integrity:
             lines.append(f"  {r['status']} {r['name']}: {r['detail']}")
     overall = classify_overall_status(freshness, publish, ann_vol, balance, integrity)
+    lines.append(f"Maintenance backlog: {classify_maintenance_status(integrity, publish)}")
     lines.append("")
     lines.append("ISSUES" if overall == "FAIL" else ("WARNINGS" if overall == "WARN" else "ALL OK"))
     return "\n".join(lines)
@@ -667,6 +700,7 @@ def main():
         json.dump({
             "at": datetime.now().isoformat(),
             "overall_status": classify_overall_status(freshness, publish, ann_vol, balance, integrity),
+            "maintenance_status": classify_maintenance_status(integrity, publish),
             "ccass_publish": publish,
             "freshness": freshness, "ann_volume": ann_vol,
             "deepseek": balance, "integrity": integrity,

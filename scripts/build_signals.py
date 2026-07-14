@@ -288,11 +288,8 @@ def build_signals_json(holdings, events, corp_map, issuer_map, supply_map):
 
 
 def save_price_snapshot(holdings):
-    """Save today's price snapshot to raw/prices_YYYYMMDD.json.
+    """Save a provider-dated price snapshot to raw/prices_YYYYMMDD.json.
     Fields: lp (close), vol, hi52, lo52 — stored per code for zombie detection + future OHLC needs."""
-    today = datetime.now().strftime("%Y%m%d")
-    today_dash = datetime.now().strftime("%Y-%m-%d")
-    out_path = os.path.join(BASE, "raw", f"prices_{today}.json")
     price_cache = load_json(os.path.join(BASE, "data", "stock_prices.json"), default={}) or {}
 
     def source_date(entry):
@@ -306,6 +303,24 @@ def save_price_snapshot(holdings):
         return None
     
     stocks = holdings.get("stocks", [])
+    source_dates = []
+    for stock in stocks:
+        code = str(stock.get("c", "")).zfill(5)
+        cache_entry = price_cache.get(code) if isinstance(price_cache, dict) else None
+        src = cache_entry if isinstance(cache_entry, dict) else stock
+        observed = source_date(src)
+        if observed and isinstance(src.get("lp"), (int, float)) and src.get("lp", 0) > 0:
+            source_dates.append(observed)
+    if not source_dates:
+        print("  price snapshot skipped: no provider-dated prices")
+        return
+
+    # The batch can run after midnight. Name the snapshot for the dominant
+    # provider session, not the process date, so rotation never treats old
+    # closes as a new trading day.
+    from collections import Counter
+    snapshot_date = Counter(source_dates).most_common(1)[0][0]
+    out_path = os.path.join(BASE, "raw", f"prices_{snapshot_date.replace('-', '')}.json")
     out = {}
     for s in stocks:
         code = str(s.get("c", "")).zfill(5)
@@ -320,7 +335,7 @@ def save_price_snapshot(holdings):
         }
         if src_date:
             row["source_date"] = src_date
-            if src_date != today_dash:
+            if src_date != snapshot_date:
                 row["stale"] = True
         if src.get("price_source"):
             row["source"] = src.get("price_source")

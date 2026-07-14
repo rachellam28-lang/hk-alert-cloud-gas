@@ -2,6 +2,7 @@
 Run after HK market close (~5pm HKT). Requires Futu gateway.
 """
 import json, sys, time, math
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).parent.parent.parent  # holdings-debug/
@@ -49,6 +50,15 @@ for i in range(0, len(codes), BATCH):
                 e = prices.get(code, {})
                 changed = False
                 lp_seen = False
+                observed_at = None
+                raw_update_time = str(row.get('update_time') or '').strip()
+                if raw_update_time:
+                    try:
+                        observed_at = datetime.strptime(
+                            raw_update_time, '%Y-%m-%d %H:%M:%S'
+                        ).replace(tzinfo=timezone(timedelta(hours=8)))
+                    except ValueError:
+                        print(f"  WARN: invalid Futu update_time for {code}: {raw_update_time}")
 
                 for futu_key, our_key, scale in [
                     ('last_price','lp',1), ('total_market_val','mc',1e8),
@@ -73,6 +83,15 @@ for i in range(0, len(codes), BATCH):
                     if e.get('chg') != c:
                         e['chg'] = c
                         counts['chg'] += 1
+
+                # Timestamp the provider observation even when the numeric price
+                # is unchanged. Health checks must reflect Futu's market time,
+                # never the wall-clock time of this refresh process.
+                if lp_seen and observed_at is not None:
+                    e['lp_time'] = observed_at.date().isoformat()
+                    e['price_updated_at'] = observed_at.isoformat()
+                    e['price_source'] = 'futu:opend'
+                    changed = True
 
                 if changed:
                     prices[code] = e
