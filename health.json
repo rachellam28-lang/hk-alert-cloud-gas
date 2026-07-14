@@ -1,13 +1,13 @@
 {
- "at": "2026-07-15T02:53:09.648350",
+ "at": "2026-07-15T03:12:03.529089",
  "overall_status": "PASS",
  "maintenance_status": "WARN",
  "ccass_publish": {
   "status": "🟢",
-  "detail": "bundle 2026-07-15 02:52:53 | DB 2026-07-13 rows=2755 cov=99.2% | publish 2026-07-13 | coverage 99.2% | signals 2026-07-15T02:07:20.942635 | alerts 2026-07-14 17:57 UTC | anns 2026-07-14 | rights 2026-07-14 | flow 2026-07-14 | transfers 2026-07-13 vs 2026-07-10 | verify_data PASS | verify_dashboard PASS | engine 2026-07-14 240/240 of 2722",
+  "detail": "bundle 2026-07-15 03:11:37 | DB 2026-07-13 rows=2755 cov=99.2% | publish 2026-07-13 | coverage 99.2% | signals 2026-07-15T02:07:20.942635 | alerts 2026-07-14 17:57 UTC | anns 2026-07-14 | rights 2026-07-14 | flow 2026-07-14 | transfers 2026-07-13 vs 2026-07-10 | verify_data PASS | verify_dashboard PASS | engine 2026-07-14 240/240 of 2722",
   "raw": {
    "schema_v": 1,
-   "generated_at": "2026-07-15T02:52:53",
+   "generated_at": "2026-07-15T03:11:37",
    "source_of_truth": {
     "db": "ccass/holdings.db",
     "primary_holdings": "holdings.json",
@@ -193,7 +193,7 @@
     },
     "trade_engine": {
      "path": "data/trade_engine.json",
-     "updated": "2026-07-15T02:52:15",
+     "updated": "2026-07-15T03:11:32",
      "source_updated": "2026-07-14",
      "source": "CCASS + observed price snapshots + Tencent observed daily K-line",
      "runtime_version": "two-stage-hk-trading-engine-v1",
@@ -353,9 +353,9 @@
     },
     "repo_audit": {
      "path": "data/repo_audit.json",
-     "updated": "2026-07-15T02:52:52",
+     "updated": "2026-07-15T03:11:36",
      "source": "repo-native audit snapshot",
-     "page_count": 20,
+     "page_count": 21,
      "missing_ref_pages": 0,
      "date_spread_days": 2,
      "alias_mismatches": 0,
@@ -481,7 +481,7 @@
     "participant_anomalies_date": "2026-07-13",
     "timesfm_updated": "2026-07-15T01:57:46",
     "timesfm_primary_field": "broker_top5_pct",
-    "trade_engine_updated": "2026-07-15T02:52:15",
+    "trade_engine_updated": "2026-07-15T03:11:32",
     "trade_engine_source_updated": "2026-07-14",
     "trade_engine_universe_count": 2722,
     "trade_engine_candidate_count": 240,
@@ -494,7 +494,7 @@
     "market_intel_updated": "2026-07-15T02:36:01+08:00",
     "market_intel_stale": false,
     "short_positions_report_date": "2026-07-03",
-    "repo_audit_updated": "2026-07-15T02:52:52",
+    "repo_audit_updated": "2026-07-15T03:11:36",
     "repo_audit_missing_ref_pages": 0,
     "repo_audit_date_spread_days": 2,
     "backtests_updated": {
@@ -522,7 +522,7 @@
   {
    "name": "publish_bundle",
    "status": "🟢",
-   "detail": "generated=2026-07-15 02:52:53 publish=PASS holdings=2026-07-13 signals=2026-07-15T02:07:20.942635 alerts=2026-07-14 17:57 UTC"
+   "detail": "generated=2026-07-15 03:11:37 publish=PASS holdings=2026-07-13 signals=2026-07-15T02:07:20.942635 alerts=2026-07-14 17:57 UTC"
   },
   {
    "name": "signals.json",
@@ -552,17 +552,17 @@
   {
    "name": "trade_engine",
    "status": "🟢",
-   "detail": "source=2026-07-14 built=2026-07-15T02:52:15 analyzed=240/240 universe=2722 momentum=246 errors=0 kind=derived_rule_output"
+   "detail": "source=2026-07-14 built=2026-07-15T03:11:32 analyzed=240/240 universe=2722 momentum=246 errors=0 kind=derived_rule_output"
   },
   {
    "name": "market_intel",
    "status": "🟢",
-   "detail": "0.3h old"
+   "detail": "0.6h old"
   },
   {
    "name": "sfc_short_positions",
    "status": "🟢",
-   "detail": "0.3h old"
+   "detail": "0.6h old"
   },
   {
    "name": "jieqi_backtest",
@@ -597,7 +597,7 @@
   {
    "name": "repo_audit",
    "status": "🟢",
-   "detail": "pages=20 missing_ref_pages=0 alias_mismatches=0 date_spread=2d db_gaps=1 db_low_cov=27"
+   "detail": "pages=21 missing_ref_pages=0 alias_mismatches=0 date_spread=2d db_gaps=1 db_low_cov=27"
   }
  ]
 }

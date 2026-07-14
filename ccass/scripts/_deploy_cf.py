@@ -23,6 +23,7 @@ DEFAULT_BRANCH = "main"
 # deploy the repo root directly because it contains local tools and backups.
 ROOT_DEPLOY_FILES = [
     "trading_desk.html",
+    "smallcap_playbook.html",
     "index.html",
     "404.html",
     "ccass.html",

@@ -2,6 +2,22 @@
 
 Last updated: 2026-07-15 HKT
 
+## 2026-07-15 Small-cap Finance x Tape Playbook
+
+- Added `smallcap_playbook.html` as a new page; no existing page was removed or replaced.
+- Method source is limited to the official Google Play / bookseller description and full table of contents for `財技X盤路：倍升股全攻略`, plus the user's supplied screenshots. The local `.acsm` is only a fulfilment token, not readable book content. Never claim the protected full text was read unless the user's licensed reader is actually accessible.
+- The page translates only source-backed, data-supported ideas into three independent lanes:
+  - finance / supply: observed HKEX announcement titles and the existing canonical circle-stock / circle-cash judgement;
+  - tape confirmation: `Gap 跳升`, `向上 FVG`, and `突破中長期 POC` from published signals;
+  - CCASS aggregate holdings: consecutive increase plus separate 5D and 20D changes.
+- `scripts/build_trade_engine.py` now classifies observed placement, rights, shareholder increase, buyback, acquisition / offer, resumption, convertible bond, share consolidation, capital reduction and failed-sale / transaction-termination events. It does not infer an event absent from the announcement title/type.
+- Supply-cash risk always outranks apparent three-lane confluence. The output is an evidence funnel, not a buy instruction.
+- The book's order-book concepts (sparse/dense book, refill, queue withdrawal/jump, order-book scaffolding) require historical Level 2 snapshots. Current OHLC/CCASS data cannot honestly identify them, so the page labels Kbar signals as a proxy and does not manufacture order-book observations.
+- The new page reuses `data/trade_engine.json` and `data/publish_bundle.json`; no duplicate heavy JSON source was added.
+- Verified snapshot after rebuild: 240/240 HK candidates analyzed, 0 errors; 44 medium/long POC confirmations, 3 upward FVG, 1 upward gap and 3 all-market three-lane confluences. Small-cap view contains 101 candidates and paginates 10 per page.
+- Shared navigation, guide, daily refresh staging and direct Cloudflare deploy allowlist include the new page.
+- Tests: 14 targeted engine/page tests pass; 393px mobile has no horizontal overflow. Repo audit: 21 pages, 0 missing refs, 0 alias mismatches.
+
 ## 2026-07-15 Unified Trading Desk
 
 - Added `trading_desk.html` as a new daily decision layer. No old page was deleted or replaced.

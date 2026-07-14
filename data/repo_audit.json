@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-15T02:52:52",
+  "generated_at": "2026-07-15T03:11:36",
   "pages": [
     {
       "page": "404.html",
@@ -181,6 +181,16 @@
       "missing_refs": [],
       "uses_publish_bundle": true,
       "source_label": "data/signals.json · data/alerts.json · market.json · localStorage（corp cache / 自選）"
+    },
+    {
+      "page": "smallcap_playbook.html",
+      "data_refs": [
+        "data/publish_bundle.json",
+        "data/trade_engine.json"
+      ],
+      "missing_refs": [],
+      "uses_publish_bundle": true,
+      "source_label": null
     },
     {
       "page": "timing_analysis.html",
@@ -373,7 +383,7 @@
       {
         "path": "data/trade_engine.json",
         "key": "updated_at",
-        "raw": "2026-07-15T02:52:15",
+        "raw": "2026-07-15T03:11:32",
         "normalized_date": "2026-07-15",
         "age_days": 0,
         "lag_vs_freshest_days": 0

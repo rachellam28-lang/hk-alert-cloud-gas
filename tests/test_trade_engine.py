@@ -75,3 +75,44 @@ def test_stage1_covers_real_universe_and_balances_buckets():
     assert all(set(item["evidence_lanes"]) >= {"event", "technical", "ccass"} for item in candidates)
     assert set(meta["selected_by_bucket"]) == {"small", "mid", "large"}
     assert all(count > 0 for count in meta["selected_by_bucket"].values())
+
+
+def test_tape_confirmations_are_three_distinct_observed_signals():
+    lanes = ENGINE.classify_signal_lanes({
+        "signals": [
+            {"label": "向上跳空缺口", "category": "gap", "date": "2026-07-14"},
+            {"label": "向上FVG", "category": "fvg", "date": "2026-07-14"},
+            {"label": "半年POC + 12個月POC", "category": "poc", "date": "2026-07-14"},
+            {"label": "年開突破", "category": "year_open", "date": "2026-07-14"},
+        ]
+    })
+    confirmations = lanes["technical"]["tape_confirmations"]
+    assert [item["key"] for item in confirmations] == ["gap_up", "fvg_up", "poc_break"]
+    assert all(item["is_observed"] is True for item in confirmations)
+
+
+def test_finance_event_classifier_uses_announcement_title_only():
+    events = ENGINE.classify_finance_events([
+        {
+            "date": "2026-07-14",
+            "type": "placement",
+            "title": "PROPOSED SHARE CONSOLIDATION AND PLACING OF CONVERTIBLE BONDS",
+            "url": "https://example.test/announcement.pdf",
+        }
+    ])
+    assert {item["key"] for item in events} == {"placement", "consolidation", "convertible"}
+    assert all(item["is_observed"] is True for item in events)
+
+
+def test_smallcap_playbook_keeps_supply_risk_ahead_of_confluence():
+    playbook = ENGINE.build_smallcap_playbook(
+        {"bucket": "small"},
+        {"activeKey": "breakout"},
+        {
+            "event": {"active": True, "direction": "negative_supply", "finance_events": []},
+            "technical": {"tape_confirmations": [{"key": "gap_up"}]},
+            "ccass": {"tier": "strong", "consecutive_increase_days": 5},
+        },
+    )
+    assert playbook["three_lane"] is False
+    assert playbook["state_key"] == "supply_risk"

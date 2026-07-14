@@ -19,6 +19,7 @@ OUT_PATH = DATA / "trade_engine.json"
 HOLDINGS_PATH = BASE / "holdings.json"
 PRICES_PATH = DATA / "stock_prices.json"
 SIGNALS_PATH = DATA / "signals.json"
+ANNOUNCEMENTS_PATH = DATA / "announcements.json"
 FUNDFLOW_PATH = DATA / "fundflow.json"
 DAILY_CACHE_DIR = BASE / "raw" / "trading_skill_kbars"
 TENCENT_KLINE_URL = "https://web.ifzq.gtimg.cn/appstock/app/kline/kline"
@@ -661,7 +662,96 @@ def signal_label(item: object) -> str:
     return str(item.get("label") or item.get("type") or item.get("name") or item.get("signal") or "").strip()
 
 
-def classify_signal_lanes(group: dict) -> dict:
+def classify_tape_confirmations(technical: list[dict]) -> list[dict]:
+    """Map published technical signals to the three user-selected tape confirmations."""
+    found: dict[str, dict] = {}
+    for item in technical:
+        label = str(item.get("label") or "")
+        category = str(item.get("category") or "").lower()
+        key = display = None
+        if category == "gap" and ("向上" in label or "跳空" in label):
+            key, display = "gap_up", "Gap 跳升"
+        elif category == "fvg" and ("向上" in label or "bullish" in label.lower()):
+            key, display = "fvg_up", "向上 FVG"
+        elif category == "poc" and any(token in label for token in ("半年", "12個月", "3年", "12M")):
+            key, display = "poc_break", "突破中長期 POC"
+        if key and key not in found:
+            found[key] = {
+                "key": key,
+                "label": display,
+                "source_label": label,
+                "date": item.get("date"),
+                "is_observed": True,
+            }
+    return [found[key] for key in ("gap_up", "fvg_up", "poc_break") if key in found]
+
+
+def classify_finance_events(rows: list[dict] | None) -> list[dict]:
+    """Classify observed announcement titles without inferring an unreported event."""
+    type_labels = {
+        "placement": ("placement", "配股 / 配售", "risk"),
+        "rights": ("rights", "供股", "risk"),
+        "increase": ("increase", "股東增持", "support"),
+        "buyback": ("buyback", "股份回購", "support"),
+        "acquisition": ("acquisition", "收購 / 要約", "watch"),
+        "resume": ("resume", "復牌", "watch"),
+        "block_trade": ("block_trade", "大手交易", "watch"),
+    }
+    results: list[dict] = []
+    seen: set[str] = set()
+    ordered_rows = sorted(rows or [], key=lambda row: str(row.get("date") or row.get("release_date") or ""), reverse=True)
+    for row in ordered_rows:
+        title = str(row.get("title") or "")
+        upper = title.upper()
+        event_type = str(row.get("type") or "").lower()
+        matches: list[tuple[str, str, str]] = []
+        if event_type in type_labels:
+            matches.append(type_labels[event_type])
+        if "CONVERTIBLE BOND" in upper or "CONVERTIBLE NOTE" in upper:
+            matches.append(("convertible", "可換股債", "risk"))
+        if "SHARE CONSOLIDATION" in upper:
+            matches.append(("consolidation", "合股", "risk"))
+        if "SHARE SUBDIVISION" in upper:
+            matches.append(("subdivision", "拆股", "watch"))
+        if "CAPITAL REDUCTION" in upper:
+            matches.append(("capital_reduction", "股本削減", "watch"))
+        termination = any(token in upper for token in ("TERMINATION", "TERMINATED", "LAPSE", "LAPSED"))
+        transaction = any(token in upper for token in ("SALE", "DISPOSAL", "ACQUISITION", "OFFER"))
+        if termination and transaction:
+            matches.append(("failed_sale", "賣盤 / 交易終止", "watch"))
+        if "GENERAL OFFER" in upper or "TAKEOVERS CODE" in upper:
+            matches.append(("general_offer", "全購 / 要約", "watch"))
+        for key, label, tone in matches:
+            if key in seen:
+                continue
+            seen.add(key)
+            results.append({
+                "key": key,
+                "label": label,
+                "tone": tone,
+                "date": row.get("date") or row.get("release_date"),
+                "title": title,
+                "url": row.get("url"),
+                "is_observed": True,
+            })
+    results.sort(key=lambda item: (str(item.get("date") or ""), item["key"]), reverse=True)
+    return results[:8]
+
+
+def announcement_map() -> dict[str, list[dict]]:
+    payload = load_json(ANNOUNCEMENTS_PATH, [])
+    rows = payload if isinstance(payload, list) else []
+    by_code: dict[str, list[dict]] = {}
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        code = hk_code(row.get("code"))
+        if code:
+            by_code.setdefault(code, []).append(row)
+    return by_code
+
+
+def classify_signal_lanes(group: dict, announcements: list[dict] | None = None) -> dict:
     """Partition every published signal into exactly one evidence lane."""
     technical: list[dict] = []
     events: list[dict] = []
@@ -681,7 +771,8 @@ def classify_signal_lanes(group: dict) -> dict:
     corp_types = group.get("corpTypes") if isinstance(group.get("corpTypes"), dict) else {}
     supply = group.get("supply") if isinstance(group.get("supply"), dict) else {}
     supply_class = str(supply.get("cls") or "")
-    event_active = bool(events or any(bool(value) for value in corp_types.values()) or supply_class)
+    finance_events = classify_finance_events(announcements)
+    event_active = bool(events or finance_events or any(bool(value) for value in corp_types.values()) or supply_class)
     if supply_class == "supply-stock":
         event_direction = "positive_supply"
     elif supply_class == "supply-cash":
@@ -692,18 +783,22 @@ def classify_signal_lanes(group: dict) -> dict:
         event_direction = "watch"
     else:
         event_direction = "neutral"
+    tape_confirmations = classify_tape_confirmations(technical)
     return {
         "event": {
             "active": event_active,
             "direction": event_direction,
             "supply_class": supply_class or None,
             "labels": events,
+            "finance_events": finance_events,
             "is_observed": True,
         },
         "technical": {
             "active": bool(technical),
             "count": len(technical),
             "labels": technical,
+            "tape_confirmations": tape_confirmations,
+            "tape_confirmation_count": len(tape_confirmations),
             "is_observed": True,
         },
         "ccass_signals": {
@@ -726,6 +821,7 @@ def stage1_candidates(limit: int) -> tuple[list[dict], dict]:
     holdings = load_json(HOLDINGS_PATH, {})
     prices = load_json(PRICES_PATH, {})
     signals = signal_map()
+    announcements = announcement_map()
     flows = fundflow_map()
     rows = holdings.get("stocks") if isinstance(holdings, dict) else []
     ranked: list[dict] = []
@@ -779,7 +875,7 @@ def stage1_candidates(limit: int) -> tuple[list[dict], dict]:
             score += min(6.0, 1.2 + streak * 0.65)
             reasons.append(f"CCASS streak {streak}D")
         sig = signals.get(code) or {}
-        lanes = classify_signal_lanes(sig)
+        lanes = classify_signal_lanes(sig, announcements.get(code))
         technical = lanes["technical"]["labels"]
         score += min(len(technical), 4) * 1.5
         if technical:
@@ -884,6 +980,57 @@ def momentum_return(bars: list[dict], lookback: int) -> float | None:
     if now is None or old is None or old <= 0:
         return None
     return (now / old - 1) * 100
+
+
+def build_smallcap_playbook(candidate: dict, setup: dict, lanes: dict) -> dict:
+    """Build an auditable finance x tape x CCASS funnel, never a buy instruction."""
+    event = lanes.get("event") or {}
+    technical = lanes.get("technical") or {}
+    ccass = lanes.get("ccass") or {}
+    confirmations = technical.get("tape_confirmations") or []
+    confirmation_keys = [item.get("key") for item in confirmations if item.get("key")]
+    ccass_confirmed = ccass.get("tier") in {"strong", "building"}
+    supply_risk = event.get("direction") == "negative_supply"
+    event_active = bool(event.get("active"))
+    tape_active = bool(confirmations)
+    three_lane = event_active and tape_active and ccass_confirmed and not supply_risk
+
+    if supply_risk:
+        state_key, state_label = "supply_risk", "圈錢 / 攤薄風險"
+    elif three_lane:
+        state_key, state_label = "three_lane", "財技 × 盤路 × CCASS"
+    elif len(confirmations) >= 2:
+        state_key, state_label = "tape_confirmed", "盤路雙確認"
+    elif event_active and not tape_active:
+        state_key, state_label = "event_wait_tape", "財技後等盤路"
+    elif ccass_confirmed and not tape_active:
+        state_key, state_label = "ccass_wait_tape", "收集後等盤路"
+    elif tape_active:
+        state_key, state_label = "tape_watch", "盤路確認"
+    else:
+        state_key, state_label = "observe", "證據未齊"
+
+    return {
+        "scope": candidate.get("bucket"),
+        "state_key": state_key,
+        "state_label": state_label,
+        "three_lane": three_lane,
+        "evidence_lane_count": int(event_active) + int(tape_active) + int(ccass_confirmed),
+        "finance_event_active": event_active,
+        "finance_events": event.get("finance_events") or [],
+        "supply_direction": event.get("direction"),
+        "supply_class": event.get("supply_class"),
+        "tape_active": tape_active,
+        "tape_confirmation_keys": confirmation_keys,
+        "tape_confirmations": confirmations,
+        "derived_kbar_setup": setup.get("activeKey"),
+        "ccass_confirmed": ccass_confirmed,
+        "ccass_tier": ccass.get("tier"),
+        "ccass_increase_days": ccass.get("consecutive_increase_days"),
+        "data_kind": "derived_evidence_funnel",
+        "is_observed": False,
+        "basis": "Observed announcements, published Kbar signals and CCASS aggregate holdings are kept as separate lanes.",
+    }
 
 
 def momentum_trend_label(setup: dict | None) -> str:
@@ -1038,6 +1185,7 @@ def build_engine(
             "snapshot": candidate["snapshot"],
             "evidence_lanes": lanes,
         }
+        setup["smallcap_playbook"] = build_smallcap_playbook(candidate, setup, lanes)
         meta = entry["series_meta"]["1d"]
         setup["observed_source"] = {
             "source": meta.get("source"),
