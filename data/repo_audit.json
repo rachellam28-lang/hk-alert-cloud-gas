@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-14T01:11:28",
+  "generated_at": "2026-07-15T02:07:23",
   "pages": [
     {
       "page": "404.html",
@@ -219,161 +219,161 @@
     }
   ],
   "dates": {
-    "freshest_date": "2026-07-14",
-    "oldest_date": "2026-07-10",
-    "spread_days": 4,
+    "freshest_date": "2026-07-15",
+    "oldest_date": "2026-07-13",
+    "spread_days": 2,
     "files": [
       {
         "path": "holdings.json",
         "key": "updated",
-        "raw": "2026-07-10",
-        "normalized_date": "2026-07-10",
-        "age_days": 4,
-        "lag_vs_freshest_days": 4
+        "raw": "2026-07-13",
+        "normalized_date": "2026-07-13",
+        "age_days": 2,
+        "lag_vs_freshest_days": 2
       },
       {
         "path": "data/holdings.json",
         "key": "updated",
-        "raw": "2026-07-10",
-        "normalized_date": "2026-07-10",
-        "age_days": 4,
-        "lag_vs_freshest_days": 4
+        "raw": "2026-07-13",
+        "normalized_date": "2026-07-13",
+        "age_days": 2,
+        "lag_vs_freshest_days": 2
       },
       {
         "path": "ccass.json",
         "key": "updated",
-        "raw": "2026-07-10",
-        "normalized_date": "2026-07-10",
-        "age_days": 4,
-        "lag_vs_freshest_days": 4
+        "raw": "2026-07-13",
+        "normalized_date": "2026-07-13",
+        "age_days": 2,
+        "lag_vs_freshest_days": 2
       },
       {
         "path": "data/ccass.json",
         "key": "updated",
-        "raw": "2026-07-10",
-        "normalized_date": "2026-07-10",
-        "age_days": 4,
-        "lag_vs_freshest_days": 4
+        "raw": "2026-07-13",
+        "normalized_date": "2026-07-13",
+        "age_days": 2,
+        "lag_vs_freshest_days": 2
       },
       {
         "path": "market.json",
         "key": "updated_at",
-        "raw": "2026-07-12T15:13:17.989476+00:00",
-        "normalized_date": "2026-07-12",
-        "age_days": 2,
-        "lag_vs_freshest_days": 2
-      },
-      {
-        "path": "data/market.json",
-        "key": "updated_at",
-        "raw": "2026-07-12T15:13:17.989476+00:00",
-        "normalized_date": "2026-07-12",
-        "age_days": 2,
-        "lag_vs_freshest_days": 2
-      },
-      {
-        "path": "data/signals.json",
-        "key": "updatedAt",
-        "raw": "2026-07-12T23:16:37.131540",
-        "normalized_date": "2026-07-12",
-        "age_days": 2,
-        "lag_vs_freshest_days": 2
-      },
-      {
-        "path": "data/alerts.json",
-        "key": "updated",
-        "raw": "2026-07-12 15:16 UTC",
-        "normalized_date": "2026-07-12",
-        "age_days": 2,
-        "lag_vs_freshest_days": 2
-      },
-      {
-        "path": "data/announcements.json",
-        "key": "date",
-        "raw": "2026-07-10",
-        "normalized_date": "2026-07-10",
-        "age_days": 4,
-        "lag_vs_freshest_days": 4
-      },
-      {
-        "path": "data/rights_analysis.json",
-        "key": "date",
-        "raw": "2026-07-10",
-        "normalized_date": "2026-07-10",
-        "age_days": 4,
-        "lag_vs_freshest_days": 4
-      },
-      {
-        "path": "data/fundflow.json",
-        "key": "updated",
-        "raw": "2026-07-10",
-        "normalized_date": "2026-07-10",
-        "age_days": 4,
-        "lag_vs_freshest_days": 4
-      },
-      {
-        "path": "data/transfers.json",
-        "key": "updated",
-        "raw": "2026-07-10 vs 2026-07-09",
-        "normalized_date": "2026-07-10",
-        "age_days": 4,
-        "lag_vs_freshest_days": 4
-      },
-      {
-        "path": "data/participant_anomalies.json",
-        "key": "generated_at",
-        "raw": "2026-07-13T16:15:16",
-        "normalized_date": "2026-07-13",
+        "raw": "2026-07-14T17:54:08.590646+00:00",
+        "normalized_date": "2026-07-14",
         "age_days": 1,
         "lag_vs_freshest_days": 1
       },
       {
-        "path": "data/history.json",
+        "path": "data/market.json",
+        "key": "updated_at",
+        "raw": "2026-07-14T17:54:08.590646+00:00",
+        "normalized_date": "2026-07-14",
+        "age_days": 1,
+        "lag_vs_freshest_days": 1
+      },
+      {
+        "path": "data/signals.json",
+        "key": "updatedAt",
+        "raw": "2026-07-15T02:07:20.942635",
+        "normalized_date": "2026-07-15",
+        "age_days": 0,
+        "lag_vs_freshest_days": 0
+      },
+      {
+        "path": "data/alerts.json",
         "key": "updated",
-        "raw": "2026-07-12 15:16 UTC",
-        "normalized_date": "2026-07-12",
+        "raw": "2026-07-14 17:57 UTC",
+        "normalized_date": "2026-07-14",
+        "age_days": 1,
+        "lag_vs_freshest_days": 1
+      },
+      {
+        "path": "data/announcements.json",
+        "key": "date",
+        "raw": "2026-07-14",
+        "normalized_date": "2026-07-14",
+        "age_days": 1,
+        "lag_vs_freshest_days": 1
+      },
+      {
+        "path": "data/rights_analysis.json",
+        "key": "date",
+        "raw": "2026-07-14",
+        "normalized_date": "2026-07-14",
+        "age_days": 1,
+        "lag_vs_freshest_days": 1
+      },
+      {
+        "path": "data/fundflow.json",
+        "key": "updated",
+        "raw": "2026-07-14",
+        "normalized_date": "2026-07-14",
+        "age_days": 1,
+        "lag_vs_freshest_days": 1
+      },
+      {
+        "path": "data/transfers.json",
+        "key": "updated",
+        "raw": "2026-07-13 vs 2026-07-10",
+        "normalized_date": "2026-07-13",
         "age_days": 2,
         "lag_vs_freshest_days": 2
+      },
+      {
+        "path": "data/participant_anomalies.json",
+        "key": "generated_at",
+        "raw": "2026-07-15T01:53:40",
+        "normalized_date": "2026-07-15",
+        "age_days": 0,
+        "lag_vs_freshest_days": 0
+      },
+      {
+        "path": "data/history.json",
+        "key": "updated",
+        "raw": "2026-07-14 17:57 UTC",
+        "normalized_date": "2026-07-14",
+        "age_days": 1,
+        "lag_vs_freshest_days": 1
       },
       {
         "path": "data/publish_bundle.json",
         "key": "publish.latest_publishable_date",
-        "raw": "2026-07-10",
-        "normalized_date": "2026-07-10",
-        "age_days": 4,
-        "lag_vs_freshest_days": 4
-      },
-      {
-        "path": "data/kbar_cache.json",
-        "key": "updated_at",
-        "raw": "2026-07-12T23:51:46",
-        "normalized_date": "2026-07-12",
+        "raw": "2026-07-13",
+        "normalized_date": "2026-07-13",
         "age_days": 2,
         "lag_vs_freshest_days": 2
       },
       {
+        "path": "data/kbar_cache.json",
+        "key": "updated_at",
+        "raw": "2026-07-15T01:58:04",
+        "normalized_date": "2026-07-15",
+        "age_days": 0,
+        "lag_vs_freshest_days": 0
+      },
+      {
         "path": "data/trade_engine.json",
         "key": "updated_at",
-        "raw": "2026-07-14T01:03:44",
-        "normalized_date": "2026-07-14",
+        "raw": "2026-07-15T02:07:21",
+        "normalized_date": "2026-07-15",
         "age_days": 0,
         "lag_vs_freshest_days": 0
       },
       {
         "path": "data/timesfm.json",
         "key": "generated_at",
-        "raw": "2026-07-12T23:24:42",
-        "normalized_date": "2026-07-12",
-        "age_days": 2,
-        "lag_vs_freshest_days": 2
+        "raw": "2026-07-15T01:57:46",
+        "normalized_date": "2026-07-15",
+        "age_days": 0,
+        "lag_vs_freshest_days": 0
       },
       {
         "path": "data/sector_rotation.json",
         "key": "updated",
-        "raw": "2026-07-10",
-        "normalized_date": "2026-07-10",
-        "age_days": 4,
-        "lag_vs_freshest_days": 4
+        "raw": "2026-07-14",
+        "normalized_date": "2026-07-14",
+        "age_days": 1,
+        "lag_vs_freshest_days": 1
       }
     ],
     "alias_pairs": [
@@ -381,22 +381,22 @@
         "left": "holdings.json",
         "right": "data/holdings.json",
         "match": true,
-        "left_date": "2026-07-10",
-        "right_date": "2026-07-10"
+        "left_date": "2026-07-13",
+        "right_date": "2026-07-13"
       },
       {
         "left": "ccass.json",
         "right": "data/ccass.json",
         "match": true,
-        "left_date": "2026-07-10",
-        "right_date": "2026-07-10"
+        "left_date": "2026-07-13",
+        "right_date": "2026-07-13"
       },
       {
         "left": "market.json",
         "right": "data/market.json",
         "match": true,
-        "left_date": "2026-07-12",
-        "right_date": "2026-07-12"
+        "left_date": "2026-07-14",
+        "right_date": "2026-07-14"
       }
     ]
   },
@@ -405,16 +405,16 @@
     "expected_publish_scope_count": 2776,
     "first_date": "2026-04-30",
     "latest_date": {
-      "trade_date": "2026-07-10",
-      "stock_count": 2736,
-      "coverage_pct": 98.6,
-      "holdings_rows": 400702
+      "trade_date": "2026-07-13",
+      "stock_count": 2755,
+      "coverage_pct": 99.2,
+      "holdings_rows": 404507
     },
     "latest_publishable_date": {
-      "trade_date": "2026-07-10",
-      "stock_count": 2736,
-      "coverage_pct": 98.6,
-      "holdings_rows": 400702
+      "trade_date": "2026-07-13",
+      "stock_count": 2755,
+      "coverage_pct": 99.2,
+      "holdings_rows": 404507
     },
     "missing_trading_days": [
       "2026-05-13"
@@ -539,7 +539,7 @@
         "trade_date": "2026-05-12",
         "stock_count": 0,
         "coverage_pct": 0.0,
-        "holdings_rows": 250190
+        "holdings_rows": 255409
       },
       {
         "trade_date": "2026-05-11",

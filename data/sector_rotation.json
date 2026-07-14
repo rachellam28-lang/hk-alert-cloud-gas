@@ -1,30 +1,30 @@
 {
-  "updated": "2026-07-10",
+  "updated": "2026-07-14",
   "source": "raw/prices_YYYYMMDD.json + holdings.json names",
   "method": "equal-weight mean return; same-date non-stale closes only; missing prices excluded",
   "minimum_fresh_rows": 500,
   "windows": {
     "5": {
-      "latest_date": "2026-07-10",
-      "latest_rows": 1829,
-      "reference_date": "2026-07-03",
-      "reference_rows": 2437
+      "latest_date": "2026-07-14",
+      "latest_rows": 2660,
+      "reference_date": "2026-07-10",
+      "reference_rows": 1829
     },
     "20": {
-      "latest_date": "2026-07-10",
-      "latest_rows": 1829,
-      "reference_date": "2026-06-19",
+      "latest_date": "2026-07-14",
+      "latest_rows": 2660,
+      "reference_date": "2026-06-22",
       "reference_rows": 2737
     },
     "60": {
-      "latest_date": "2026-07-10",
-      "latest_rows": 1829,
-      "reference_date": null,
-      "reference_rows": null
+      "latest_date": "2026-07-14",
+      "latest_rows": 2660,
+      "reference_date": "2026-05-29",
+      "reference_rows": 2732
     },
     "120": {
-      "latest_date": "2026-07-10",
-      "latest_rows": 1829,
+      "latest_date": "2026-07-14",
+      "latest_rows": 2660,
       "reference_date": null,
       "reference_rows": null
     }
@@ -35,16 +35,22 @@
       "count": 0,
       "windows": {
         "5": {
-          "pct": -1.17,
-          "stocks": 142,
-          "reference_date": "2026-07-03",
-          "latest_date": "2026-07-10"
+          "pct": -1.38,
+          "stocks": 140,
+          "reference_date": "2026-07-10",
+          "latest_date": "2026-07-14"
         },
         "20": {
-          "pct": -3.51,
-          "stocks": 154,
-          "reference_date": "2026-06-19",
-          "latest_date": "2026-07-10"
+          "pct": -5.02,
+          "stocks": 203,
+          "reference_date": "2026-06-22",
+          "latest_date": "2026-07-14"
+        },
+        "60": {
+          "pct": -6.54,
+          "stocks": 203,
+          "reference_date": "2026-05-29",
+          "latest_date": "2026-07-14"
         }
       }
     },
@@ -53,16 +59,22 @@
       "count": 0,
       "windows": {
         "5": {
-          "pct": 0.48,
-          "stocks": 53,
-          "reference_date": "2026-07-03",
-          "latest_date": "2026-07-10"
+          "pct": -0.55,
+          "stocks": 55,
+          "reference_date": "2026-07-10",
+          "latest_date": "2026-07-14"
         },
         "20": {
-          "pct": -1.4,
-          "stocks": 55,
-          "reference_date": "2026-06-19",
-          "latest_date": "2026-07-10"
+          "pct": -2.29,
+          "stocks": 82,
+          "reference_date": "2026-06-22",
+          "latest_date": "2026-07-14"
+        },
+        "60": {
+          "pct": -1.36,
+          "stocks": 82,
+          "reference_date": "2026-05-29",
+          "latest_date": "2026-07-14"
         }
       }
     },
@@ -71,16 +83,22 @@
       "count": 0,
       "windows": {
         "5": {
-          "pct": 1.87,
-          "stocks": 25,
-          "reference_date": "2026-07-03",
-          "latest_date": "2026-07-10"
+          "pct": 1.02,
+          "stocks": 27,
+          "reference_date": "2026-07-10",
+          "latest_date": "2026-07-14"
         },
         "20": {
-          "pct": -3.18,
-          "stocks": 27,
-          "reference_date": "2026-06-19",
-          "latest_date": "2026-07-10"
+          "pct": -3.38,
+          "stocks": 45,
+          "reference_date": "2026-06-22",
+          "latest_date": "2026-07-14"
+        },
+        "60": {
+          "pct": -9.58,
+          "stocks": 45,
+          "reference_date": "2026-05-29",
+          "latest_date": "2026-07-14"
         }
       }
     },
@@ -89,16 +107,22 @@
       "count": 0,
       "windows": {
         "5": {
-          "pct": -2.4,
-          "stocks": 52,
-          "reference_date": "2026-07-03",
-          "latest_date": "2026-07-10"
+          "pct": -0.7,
+          "stocks": 55,
+          "reference_date": "2026-07-10",
+          "latest_date": "2026-07-14"
         },
         "20": {
-          "pct": -5.99,
-          "stocks": 55,
-          "reference_date": "2026-06-19",
-          "latest_date": "2026-07-10"
+          "pct": -6.33,
+          "stocks": 93,
+          "reference_date": "2026-06-22",
+          "latest_date": "2026-07-14"
+        },
+        "60": {
+          "pct": -13.22,
+          "stocks": 93,
+          "reference_date": "2026-05-29",
+          "latest_date": "2026-07-14"
         }
       }
     },
@@ -107,16 +131,22 @@
       "count": 0,
       "windows": {
         "5": {
-          "pct": 1.36,
-          "stocks": 100,
-          "reference_date": "2026-07-03",
-          "latest_date": "2026-07-10"
+          "pct": -0.39,
+          "stocks": 101,
+          "reference_date": "2026-07-10",
+          "latest_date": "2026-07-14"
         },
         "20": {
-          "pct": 1.89,
-          "stocks": 103,
-          "reference_date": "2026-06-19",
-          "latest_date": "2026-07-10"
+          "pct": 1.77,
+          "stocks": 128,
+          "reference_date": "2026-06-22",
+          "latest_date": "2026-07-14"
+        },
+        "60": {
+          "pct": -5.82,
+          "stocks": 128,
+          "reference_date": "2026-05-29",
+          "latest_date": "2026-07-14"
         }
       }
     },
@@ -125,16 +155,22 @@
       "count": 0,
       "windows": {
         "5": {
-          "pct": -0.41,
+          "pct": -0.48,
           "stocks": 13,
-          "reference_date": "2026-07-03",
-          "latest_date": "2026-07-10"
+          "reference_date": "2026-07-10",
+          "latest_date": "2026-07-14"
         },
         "20": {
-          "pct": -5.04,
-          "stocks": 13,
-          "reference_date": "2026-06-19",
-          "latest_date": "2026-07-10"
+          "pct": -2.6,
+          "stocks": 19,
+          "reference_date": "2026-06-22",
+          "latest_date": "2026-07-14"
+        },
+        "60": {
+          "pct": -5.9,
+          "stocks": 19,
+          "reference_date": "2026-05-29",
+          "latest_date": "2026-07-14"
         }
       }
     },
@@ -143,16 +179,22 @@
       "count": 0,
       "windows": {
         "5": {
-          "pct": -0.12,
+          "pct": 2.16,
           "stocks": 21,
-          "reference_date": "2026-07-03",
-          "latest_date": "2026-07-10"
+          "reference_date": "2026-07-10",
+          "latest_date": "2026-07-14"
         },
         "20": {
-          "pct": -2.34,
-          "stocks": 21,
-          "reference_date": "2026-06-19",
-          "latest_date": "2026-07-10"
+          "pct": -0.87,
+          "stocks": 32,
+          "reference_date": "2026-06-22",
+          "latest_date": "2026-07-14"
+        },
+        "60": {
+          "pct": -5.95,
+          "stocks": 32,
+          "reference_date": "2026-05-29",
+          "latest_date": "2026-07-14"
         }
       }
     },
@@ -161,16 +203,22 @@
       "count": 0,
       "windows": {
         "5": {
-          "pct": -0.25,
-          "stocks": 1329,
-          "reference_date": "2026-07-03",
-          "latest_date": "2026-07-10"
+          "pct": -0.13,
+          "stocks": 1373,
+          "reference_date": "2026-07-10",
+          "latest_date": "2026-07-14"
         },
         "20": {
-          "pct": -1.88,
-          "stocks": 1399,
-          "reference_date": "2026-06-19",
-          "latest_date": "2026-07-10"
+          "pct": 2.17,
+          "stocks": 2057,
+          "reference_date": "2026-06-22",
+          "latest_date": "2026-07-14"
+        },
+        "60": {
+          "pct": 0.94,
+          "stocks": 2058,
+          "reference_date": "2026-05-29",
+          "latest_date": "2026-07-14"
         }
       }
     }

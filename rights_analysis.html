@@ -85,6 +85,7 @@ tr:hover td { background: #161b22; }
 </style>
 </head>
 <body>
+<nav class="site-nav" id="sharedSiteNav" data-base="./"></nav>
 
 <div class="nav">
   <a href="index.html">🇭🇰 港股版</a>
@@ -105,12 +106,12 @@ tr:hover td { background: #161b22; }
 </div>
 
 <div class="tabs">
-  <div class="tab active" onclick="filter('all')">全部<span class="count">532</span></div>
+  <div class="tab active" onclick="filter('all')">全部<span class="count">543</span></div>
   <div class="tab" onclick="filter('🟢')">🟢 跟<span class="count">35</span></div>
   <div class="tab" onclick="filter('🟡')">🟡 等<span class="count">30</span></div>
   <div class="tab" onclick="filter('🔴')">🔴 避<span class="count">47</span></div>
-  <div class="tab" onclick="filter('供股')">供股<span class="count">53</span></div>
-  <div class="tab" onclick="filter('先舊後新')">先舊後新<span class="count">20</span></div>
+  <div class="tab" onclick="filter('供股')">供股<span class="count">54</span></div>
+  <div class="tab" onclick="filter('先舊後新')">先舊後新<span class="count">21</span></div>
 </div>
 
 <div class="search-box">
@@ -420,5 +421,6 @@ async function loadData() {
 
 loadData();
 </script>
+<script src="./shared-nav.js"></script>
 </body>
 </html>
