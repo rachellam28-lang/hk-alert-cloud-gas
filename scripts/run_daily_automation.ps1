@@ -82,7 +82,11 @@ function Ensure-Futu {
     }
 
     Write-Step "Futu OpenD is unavailable; starting the local gateway"
-    & $Python $starter --background
+    & $Python $starter --stop-existing --background
+    if ($LASTEXITCODE -ne 0) {
+        Write-Step "WARN: Futu gateway restart failed; the refresh will use Longbridge fallback"
+        return $false
+    }
     for ($attempt = 1; $attempt -le 12; $attempt++) {
         Start-Sleep -Seconds 5
         if (-not (Test-TcpPort $hostName $port)) { continue }
@@ -171,12 +175,12 @@ try {
     if (-not (Test-Path -LiteralPath $Python)) { throw "Repo Python not found: $Python" }
     if (-not (Test-Path -LiteralPath $Bash)) { throw "Git Bash not found: $Bash" }
     if (-not (Get-Command longbridge -ErrorAction SilentlyContinue)) { throw "Longbridge CLI is not installed" }
-    if (-not (Get-Command npx -ErrorAction SilentlyContinue)) { throw "npx/Wrangler is not installed" }
+    if (-not (Get-Command wrangler -ErrorAction SilentlyContinue)) { throw "Cloudflare Wrangler is not installed" }
 
     $futuReady = Ensure-Futu
     Invoke-Native "Verify Longbridge fallback with live NVDA quote" { longbridge quote NVDA.US } | Out-Null
     if (-not $SkipDeploy) {
-        Invoke-Native "Verify Cloudflare Wrangler OAuth" { npx wrangler whoami } | Out-Null
+        Invoke-Native "Verify Cloudflare Wrangler OAuth" { wrangler whoami } | Out-Null
     }
 
     if ($PreflightOnly) {

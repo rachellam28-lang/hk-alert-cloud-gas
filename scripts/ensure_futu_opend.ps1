@@ -17,7 +17,11 @@ try {
     & $Python $Probe
     if ($LASTEXITCODE -eq 0) { exit 0 }
 
-    & $Python $Starter --background
+    # A listening socket is not enough: the gateway can stay alive after its
+    # upstream quote session dies. Replace that unhealthy process so the new
+    # instance can bind 11111 and re-establish the backend session.
+    & $Python $Starter --stop-existing --background
+    if ($LASTEXITCODE -ne 0) { exit 1 }
     for ($attempt = 1; $attempt -le 12; $attempt++) {
         Start-Sleep -Seconds 5
         & $Python $Probe

@@ -2,6 +2,16 @@
 
 Last updated: 2026-07-15 HKT
 
+## 2026-07-15 Full-system audit and Futu watchdog repair
+
+- Live audit covered all 21 public HTML routes on the canonical Cloudflare Pages domain at a 393px viewport: every route returned HTTP 200, same-origin data requests had no 404s, no page-level JavaScript exceptions were observed, and no document-level horizontal overflow was found.
+- Canonical data aliases are synchronized; source dates span only the current market/publish boundary (2026-07-14 CCASS and 2026-07-15 price/signals/events). The current publish gate and dashboard verifier pass.
+- SQLite `PRAGMA quick_check` passes. The production CCASS DB is about 3.46 GB with 106,635 daily rows and 14,835,135 participant rows. Core stock/date and participant indexes exist. Do not add duplicate indexes casually; historical participant storage is the main size driver.
+- Remaining maintenance debt is real and must stay visible: one missing trading date (`2026-05-13`), 12 sub-99% historical dates, and participant-detail gaps on `2026-06-17` and `2026-06-18`. These do not contaminate the latest publish, but maintenance is correctly WARN rather than PASS.
+- Root cause of the Futu watchdog failure: a gateway could keep port 11111 open after losing its upstream quote backend. Both `scripts/ensure_futu_opend.ps1` and the daily runner now replace that unhealthy process with `start_futu_opend_rs.py --stop-existing --background`, then require a real market snapshot before declaring Futu ready.
+- Verified recovery on account configuration already stored in repo-local `.env`: new gateway process, live `HK.00700` snapshot, daily automation preflight, and scheduled task result 0. No secret was printed or committed.
+- Daily Cloudflare preflight now uses the installed global `wrangler` directly, matching the deploy helper, instead of routing through `npx`. OAuth verification passes. Deployment remains direct Cloudflare only.
+
 ## 2026-07-15 Unified page theme
 
 - Root cause of mixed black/white pages was two legacy CSS families plus `prefers-color-scheme` overrides. It was not a data or handset fault.
