@@ -16,19 +16,19 @@ def test_kbar_quarterly_pair_and_signal_rail(page):
     )
     page.wait_for_selector("#matrix .chart-svg", timeout=45_000)
 
-    assert page.locator(".chart-tab").count() == 7
-    assert page.locator('.quarterly-pair .pane').count() == 2
-    assert page.locator('.quarterly-pair .pane-title').all_inner_texts() == ["季圖", "反向季圖"]
+    assert page.locator(".chart-tab").count() == 4
+    assert page.locator('.paired-view .pane').count() == 2
+    assert page.locator('.paired-view .pane-title').all_inner_texts() == ["季圖", "反向季圖"]
     assert page.locator("#matrix .chart-svg").count() == 2
     assert page.locator("#matrix iframe").count() == 0
     assert page.locator(".signal-event").count() > 0
     assert page.locator(".level-item").count() > 0
 
-    page.locator('.chart-tab[data-view="6m_flip"]').click()
-    page.wait_for_selector('.chart-tab[data-view="6m_flip"].active')
-    assert page.locator("#matrix .chart-svg").count() == 1
+    page.locator('.chart-tab[data-view="6m_pair"]').click()
+    page.wait_for_selector('.chart-tab[data-view="6m_pair"].active')
+    assert page.locator("#matrix .chart-svg").count() == 2
     assert page.locator("#matrix iframe").count() == 0
-    assert "view=6m_flip" in page.url
+    assert "view=6m_pair" in page.url
     assert not page_errors
 
 
@@ -39,7 +39,7 @@ def test_uncached_hk_uses_on_demand_daily_kbar(page):
     )
     page.wait_for_selector("#matrix .chart-svg", timeout=45_000)
 
-    assert page.locator("#matrix .chart-svg").count() == 1
+    assert page.locator("#matrix .chart-svg").count() == 2
     assert page.locator("#matrix iframe").count() == 0
     assert "Cloudflare 按需真實日 K" in page.locator("#matrix").inner_text()
     assert "cloudflare-on-demand" in page.locator("#resolvedHint").inner_text()
@@ -99,18 +99,16 @@ def test_inverted_price_chart_preserves_candle_and_profile_geometry(page):
     assert flipped_poc == normal_poc
     assert any(height > 1.5 for height in flipped_bodies)
 
-    page.locator('.chart-tab[data-view="1y"]').click()
-    page.wait_for_selector('.chart-tab[data-view="1y"].active')
-    page.wait_for_function("() => document.querySelectorAll('#matrix .candle-body').length === 260")
-    assert "260 根 D 燭" in page.locator("#matrix .pane-meta").inner_text()
+    page.locator('.chart-tab[data-view="1y_pair"]').click()
+    page.wait_for_selector('.chart-tab[data-view="1y_pair"].active')
+    page.wait_for_function("() => document.querySelectorAll('#matrix .pane').length === 2")
+    assert page.locator("#matrix .pane").nth(0).locator(".candle-body").count() == 260
+    assert page.locator("#matrix .pane").nth(1).locator(".candle-body").count() == 260
 
-    page.locator('.chart-tab[data-view="1y_flip"]').click()
-    page.wait_for_selector('.chart-tab[data-view="1y_flip"].active')
-    page.wait_for_function("() => document.querySelectorAll('#matrix .candle-body').length === 260")
-    assert "反向股價刻度" in page.locator("#matrix .pane-meta").inner_text()
-
-    page.locator('.chart-tab[data-view="1d"]').click()
-    page.wait_for_selector('.chart-tab[data-view="1d"].active')
-    page.wait_for_function("() => document.querySelectorAll('#matrix .candle-body').length >= 260")
-    daily_count = page.locator("#matrix .candle-body").count()
-    assert f"{daily_count} 根 D 燭" in page.locator("#matrix .pane-meta").inner_text()
+    page.locator('.chart-tab[data-view="1d_pair"]').click()
+    page.wait_for_selector('.chart-tab[data-view="1d_pair"].active')
+    page.wait_for_function("() => document.querySelectorAll('#matrix .pane').length === 2")
+    daily_normal = page.locator("#matrix .pane").nth(0).locator(".candle-body").count()
+    daily_inverted = page.locator("#matrix .pane").nth(1).locator(".candle-body").count()
+    assert daily_normal >= 260
+    assert daily_inverted == daily_normal

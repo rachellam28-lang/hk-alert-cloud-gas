@@ -25,13 +25,16 @@ def test_shared_theme_exposes_one_semantic_market_palette() -> None:
     assert "html.suite-light .sc-reason.bad" in nav
 
 
-def test_kbar_defaults_to_true_quarterly_pair_in_dark_workspace() -> None:
+def test_kbar_uses_true_paired_views_in_dark_workspace() -> None:
     page = read("kbar_matrix.html")
 
-    assert "value: '3m_pair'" in page
-    assert "data-layout=\"quarterly-pair\"" in page
-    assert "buildTradingViewPane(tvSymbol, entry, '3m')" in page
-    assert "buildTradingViewPane(tvSymbol, entry, '3m_flip')" in page
+    for value in ("3m_pair", "6m_pair", "1y_pair", "1d_pair"):
+        assert f"value: '{value}'" in page
+
+    assert 'class="matrix-grid paired-view"' in page
+    for base in ("3m", "6m", "1y", "1d"):
+        assert f"'{base}_pair': ['{base}', '{base}_flip']" in page
+
     assert "theme: 'dark'" in page
     assert "theme: 'light'" not in page
     assert "u.searchParams.set('theme', 'dark')" in page

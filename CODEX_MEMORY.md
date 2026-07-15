@@ -2,15 +2,15 @@
 
 Last updated: 2026-07-16 HKT
 
-## 2026-07-16 Semantic colour system and Kbar quarterly pair
+## 2026-07-16 Semantic colour system and Kbar paired views
 
 - `shared-nav.js` is the canonical colour layer for ordinary pages. Semantic colours are fixed across the suite: teal = selected/action, green = positive/up, red = downside/risk, amber = waiting/caution, purple = CCASS, and muted blue = information/timing.
 - Ordinary data pages use the same cool light-gray background, white data surfaces and cool-gray borders. The legacy dark `細價股 Desk` embedded in `index.html` is normalized to the light workspace by the shared theme; it must not return as a random dark block.
 - Kbar is now a coherent dark chart workspace from controls through chart panes. TradingView embeds also request dark mode. `docs/ccass-warroom.html` remains the only other intentionally dark tool.
-- Kbar's default quarterly view is `3m_pair`: normal quarterly and inverted-price quarterly charts render together from the exact same real daily-bar series. Desktop uses two columns; mobile stacks both readable charts. The inverted chart changes only price-axis direction, never candle data or date direction.
-- Old links with `view=3m` or `view=3m_flip` are normalized to `view=3m_pair`, preserving bookmarks. Half-year, year and daily normal/inverted modes remain separate tabs.
+- Kbar has four paired modes: `3m_pair`, `6m_pair`, `1y_pair` and `1d_pair`. Every mode renders its normal and inverted-price charts together from the exact same real daily-bar series. Desktop uses two columns; mobile stacks the pair. Inversion changes only price-axis direction, never OHLCV values or date direction.
+- Old normal/inverted links for quarter, half-year, year and daily views are normalized to their paired mode, preserving bookmarks while removing split single-chart states.
 - Kbar must report the actual available candle count. A source shard with 260 daily bars is shown as 260; tests must not require or invent 520 bars when the source does not contain them.
-- Verified locally at 393px and 1440px: 17 active routes return 200 with no document overflow; 15 ordinary pages are light and Kbar/warroom are dark. Quarterly pair uses 66 real bars per pane with identical candle/profile/POC geometry and inverted Y positions. Targeted UI/source suite: 10 passed.
+- Pair definitions use 66 real bars for quarter, 126 for half-year, 260 for year, and up to the available 520-bar source for daily. Each pair must report its actual source count and have identical candle/profile/POC geometry with opposite price-axis Y positions. No extra data download is introduced by paired rendering.
 
 ## 2026-07-15 Navigation consolidation
 

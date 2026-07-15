@@ -73,7 +73,7 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
         <div class="logo">K</div>
         <div>
           <h1>Kbar Matrix</h1>
-          <p>季圖雙視角；港股 cache 配 TradingView 外連，其他市場可直接嵌入。</p>
+          <p>全週期雙視角；港股 cache 配 TradingView 外連，其他市場可直接嵌入。</p>
         </div>
       </div>
       <div class="status" id="pageStatus">loading...</div>
@@ -86,7 +86,7 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
     <div class="band-head">
       <div>
         <div class="band-title">多重時間圖</div>
-        <div class="band-sub">季圖同時顯示正常與反向股價刻度；其他週期保留單圖檢視。未 cache 港股會嘗試 Cloudflare 按需真實日 K。</div>
+        <div class="band-sub">季、半年、年、日圖都同時顯示正常與反向股價刻度。未 cache 港股會嘗試 Cloudflare 按需真實日 K。</div>
       </div>
     </div>
     <div class="controls" style="margin-top:12px">
@@ -119,7 +119,7 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
     <div class="band-head">
       <div>
         <div class="band-title">Kbar 主體</div>
-        <div class="band-sub">季圖兩個價格軸同時對照；半年、年、日圖可分別切換正常或反向刻度。日期方向始終不變。</div>
+        <div class="band-sub">每個週期一次對照兩個價格軸；兩幅圖共用同一份真實 OHLCV，日期方向始終不變。</div>
       </div>
     </div>
     <div class="trend-guard neutral" id="trendGuard"><strong>多空 Trend 守位</strong><small>等 Kbar cache 計出守位線。</small></div>
@@ -178,12 +178,9 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 <script>
 const intervals = [
   { label: '季圖雙視角', value: '3m_pair' },
-  { label: '半年圖', value: '6m' },
-  { label: '反向半年圖', value: '6m_flip' },
-  { label: '年圖', value: '1y' },
-  { label: '反向年圖', value: '1y_flip' },
-  { label: '日圖', value: '1d' },
-  { label: '反向日圖', value: '1d_flip' },
+  { label: '半年雙視角', value: '6m_pair' },
+  { label: '年圖雙視角', value: '1y_pair' },
+  { label: '日圖雙視角', value: '1d_pair' },
 ];
 
 const paneDefinitions = {
@@ -646,6 +643,9 @@ function paneDefinition(value) {
 function viewTradingViewConfig(value = state.view) {
   return {
     '3m_pair': ['D', '3M', false],
+    '6m_pair': ['D', '6M', false],
+    '1y_pair': ['D', '12M', false],
+    '1d_pair': ['D', '12M', false],
     '3m': ['D', '3M', false],
     '3m_flip': ['D', '3M', true],
     '6m': ['D', '6M', false],
@@ -1647,7 +1647,13 @@ function hydrateFromQuery() {
   const view = qs.get('view');
   if (mode && ['hk','us','fx','tv'].includes(mode)) state.mode = mode;
   if (symbol) state.raw = symbol;
-  if (view === '3m' || view === '3m_flip') state.view = '3m_pair';
+  const legacyPair = {
+    '3m': '3m_pair', '3m_flip': '3m_pair',
+    '6m': '6m_pair', '6m_flip': '6m_pair',
+    '1y': '1y_pair', '1y_flip': '1y_pair',
+    '1d': '1d_pair', '1d_flip': '1d_pair',
+  };
+  if (view && legacyPair[view]) state.view = legacyPair[view];
   else if (view && intervals.some(item => item.value === view)) state.view = view;
   symbolInput.value = state.raw;
 }
@@ -1789,13 +1795,16 @@ function buildTradingViewPane(tvSymbol, entry, viewValue) {
 }
 
 function buildChartWorkspace(tvSymbol, entry) {
-  if (state.view === '3m_pair') {
-    return `<div class="matrix-grid quarterly-pair" data-layout="quarterly-pair">
-      ${buildTradingViewPane(tvSymbol, entry, '3m')}
-      ${buildTradingViewPane(tvSymbol, entry, '3m_flip')}
-    </div>`;
-  }
-  return buildTradingViewPane(tvSymbol, entry, state.view);
+  const pair = {
+    '3m_pair': ['3m', '3m_flip'],
+    '6m_pair': ['6m', '6m_flip'],
+    '1y_pair': ['1y', '1y_flip'],
+    '1d_pair': ['1d', '1d_flip'],
+  }[state.view] || ['3m', '3m_flip'];
+  return `<div class="matrix-grid paired-view" data-layout="${escapeHtml(state.view)}">
+    ${buildTradingViewPane(tvSymbol, entry, pair[0])}
+    ${buildTradingViewPane(tvSymbol, entry, pair[1])}
+  </div>`;
 }
 
 // HK daily K-lines are loaded from static shards or the restricted Cloudflare API.
