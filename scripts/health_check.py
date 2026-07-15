@@ -95,6 +95,49 @@ def _env_int(name, default):
         return default
 
 
+def check_futu_dependency():
+    """Verify that OpenD can return a quote, not merely accept a TCP socket."""
+    enabled = str(os.environ.get("USE_FUTU", "true")).strip().lower()
+    if enabled in {"0", "false", "no", "off"}:
+        return {"name": "Futu/OpenD", "status": ICON_SKIP, "detail": "disabled by USE_FUTU"}
+
+    probe = os.path.join(BASE, "scripts", "check_futu_setup.py")
+    if not os.path.exists(probe):
+        return {"name": "Futu/OpenD", "status": ICON_WARN, "detail": "quote probe is missing"}
+    try:
+        proc = subprocess.run(
+            [sys.executable, probe],
+            cwd=BASE,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=20,
+        )
+    except subprocess.TimeoutExpired:
+        return {"name": "Futu/OpenD", "status": ICON_WARN, "detail": "quote probe timed out; Longbridge fallback required"}
+    except Exception as exc:
+        return {"name": "Futu/OpenD", "status": ICON_WARN, "detail": f"quote probe failed: {exc}"}
+
+    if proc.returncode == 0:
+        return {"name": "Futu/OpenD", "status": ICON_OK, "detail": "live HK quote snapshot verified"}
+
+    output = "\n".join(part for part in (proc.stdout, proc.stderr) if part)
+    reason = next(
+        (
+            line.split(":", 1)[1].strip()
+            for line in output.splitlines()
+            if line.lower().startswith("probe detail:") and ":" in line
+        ),
+        "quote snapshot unavailable",
+    )
+    return {
+        "name": "Futu/OpenD",
+        "status": ICON_WARN,
+        "detail": f"{reason}; Longbridge fallback required",
+    }
+
+
 def health_telegram_state_path():
     return str(os.environ.get("HEALTH_TELEGRAM_STATE_PATH", "")).strip() or HEALTH_TELEGRAM_STATE
 
@@ -690,6 +733,7 @@ def main():
     args = ap.parse_args()
 
     freshness = check_freshness()
+    freshness.append(check_futu_dependency())
     ann_vol = check_announcement_volume()
     balance = check_deepseek_balance()
     integrity = check_integrity()
