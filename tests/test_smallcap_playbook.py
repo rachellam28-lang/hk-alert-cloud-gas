@@ -33,3 +33,14 @@ def test_smallcap_playbook_mobile_has_no_horizontal_overflow(page):
     widths = page.evaluate("() => [document.documentElement.scrollWidth, window.innerWidth]")
     assert widths[0] <= widths[1]
     assert page.locator("#detail .detail-section").count() == 3
+
+
+def test_shared_theme_keeps_data_pages_light_and_chart_tool_dark(page):
+    for path in ("smallcap_playbook.html", "trading_desk.html", "rights_analysis.html", "timing_analysis.html"):
+        page.goto(f"{BASE_URL}/{path}", wait_until="domcontentloaded")
+        page.wait_for_function("() => document.documentElement.classList.contains('suite-light')")
+        background = page.evaluate("() => getComputedStyle(document.body).backgroundColor")
+        assert background == "rgb(237, 241, 243)"
+
+    page.goto(f"{BASE_URL}/kbar_matrix.html", wait_until="domcontentloaded")
+    assert not page.evaluate("() => document.documentElement.classList.contains('suite-light')")

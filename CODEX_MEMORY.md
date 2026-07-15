@@ -2,6 +2,14 @@
 
 Last updated: 2026-07-15 HKT
 
+## 2026-07-15 Unified page theme
+
+- Root cause of mixed black/white pages was two legacy CSS families plus `prefers-color-scheme` overrides. It was not a data or handset fault.
+- `shared-nav.js` now applies one persistent light data-workspace theme to ordinary pages after their generated/local CSS loads: light gray page background, white data surfaces, cool-gray borders and readable light controls.
+- Kbar and `docs/ccass-warroom.html` intentionally remain dark tools for chart contrast and live-monitor use.
+- Time-window pages no longer auto-open the `更多` menu on navigation; the current group is still marked active, but the panel opens only on user action.
+- This is centralized in the shared navigation layer so regenerated timing, rights, daily-prompt and analysis HTML cannot revert to mixed themes on the next refresh.
+
 ## 2026-07-15 Full-book finance event chain integration
 
 - The user confirmed that the 97 screenshots in `C:\Users\Administrator\Desktop\財技X盤路_倍升股全攻略-pdf` are the complete substantive book capture; blank/no-text pages were intentionally omitted. Do not describe this source as incomplete again.

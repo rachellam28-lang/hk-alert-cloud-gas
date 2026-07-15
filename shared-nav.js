@@ -34,6 +34,9 @@
   ];
 
   const path = location.pathname.toLowerCase().replace(/\/+$/, '');
+  const darkTools = ['/kbar_matrix.html', '/docs/ccass-warroom.html'];
+  const useUnifiedLightTheme = !darkTools.some(item => path.endsWith(item));
+  document.documentElement.classList.toggle('suite-light', useUnifiedLightTheme);
   const active = href => {
     const rel = href.toLowerCase().replace(/^\.\//, '');
     return path.endsWith('/' + rel) || (rel === 'index.html' && (path.endsWith('/') || !path));
@@ -47,7 +50,7 @@
     </section>`).join('');
   nav.innerHTML = `
     <div class="suite-nav-primary">${primary.map(link).join('')}</div>
-    <details class="suite-nav-more"${secondaryActive ? ' open' : ''}>
+    <details class="suite-nav-more">
       <summary${secondaryActive ? ' class="active"' : ''}>\u66f4\u591a</summary>
       <div class="suite-nav-panel">${groupMarkup}</div>
     </details>`;
@@ -72,6 +75,62 @@
       #sharedSiteNav .suite-nav-group{display:grid;align-content:start;gap:2px}
       #sharedSiteNav .suite-nav-group strong{padding:4px 9px;color:#65758a;font-size:10px;text-transform:uppercase}
       body{font-variant-numeric:tabular-nums}
+      html.suite-light{
+        color-scheme:light;
+        --bg:#edf1f3!important;--surface:#fff!important;--surface-2:#f5f7f8!important;
+        --surface-soft:#f5f7f8!important;--panel:#fff!important;--panel2:#f5f7f8!important;
+        --text:#17202b!important;--txt:#17202b!important;--text-soft:#3d4b59!important;
+        --soft:#3d4b59!important;--muted:#697887!important;--dim:#697887!important;
+        --mute:#697887!important;--mute-2:#8b98a5!important;--line:#d5dde4!important;
+        --line-soft:#e6ebef!important;--shadow:0 1px 2px rgba(31,45,58,.06)!important
+      }
+      html.suite-light body{background:#edf1f3!important;color:#17202b!important}
+      html.suite-light .hero,html.suite-light .card,html.suite-light .panel,html.suite-light .mini,
+      html.suite-light .detail,html.suite-light .event-card,html.suite-light .action-btn,
+      html.suite-light .control,html.suite-light .pager button,html.suite-light .inspector-empty,
+      html.suite-light .market-cell,html.suite-light .day-section,html.suite-light .summary-item{
+        background:#fff!important;color:#17202b!important;border-color:#d5dde4!important;box-shadow:none!important
+      }
+      html.suite-light .topbar,html.suite-light .nav,html.suite-light .day-header,
+      html.suite-light th,html.suite-light thead th,html.suite-light .drawer-head{
+        background:#f5f7f8!important;color:#697887!important;border-color:#d5dde4!important
+      }
+      html.suite-light td,html.suite-light .lane,html.suite-light .detail-section,
+      html.suite-light .market-tape,html.suite-light .context-band,html.suite-light .table-wrap,
+      html.suite-light .rotation-row,html.suite-light .timeline-row{
+        border-color:#d5dde4!important
+      }
+      html.suite-light tbody tr:hover,html.suite-light tbody tr.selected,
+      html.suite-light .action-btn:hover,html.suite-light .card-head:hover{
+        background:#f3f7f8!important;color:#17202b!important
+      }
+      html.suite-light .action-btn.active,html.suite-light .tab.active,
+      html.suite-light .setup-btn.active{background:#e4f2f1!important;color:#075f66!important;border-color:#70aaa9!important}
+      html.suite-light input,html.suite-light select,html.suite-light button{
+        background:#fff!important;color:#17202b!important;border-color:#cbd5dd!important
+      }
+      html.suite-light .search-box input,html.suite-light .search-row input,html.suite-light .tab,
+      html.suite-light .btn,html.suite-light .fbtn{
+        background:#fff!important;color:#3d4b59!important;border-color:#d5dde4!important
+      }
+      html.suite-light .btn.active,html.suite-light .btn.blue,html.suite-light .btn.teal{
+        background:#e4f2f1!important;color:#075f66!important;border-color:#70aaa9!important
+      }
+      html.suite-light .btn.gold{background:#fff4d6!important;color:#8a6100!important;border-color:#dfbd57!important}
+      html.suite-light .btn.red{background:#fde9eb!important;color:#a52b34!important;border-color:#df949a!important}
+      html.suite-light .subtitle,html.suite-light .hero-meta,html.suite-light .section-note,
+      html.suite-light .lead,html.suite-light .stamp,html.suite-light .quiet,
+      html.suite-light .thesis,html.suite-light .footer,html.suite-light .foot{
+        color:#697887!important
+      }
+      html.suite-light .log-track{background:#e3e9ee!important;border-color:#cbd5dd!important}
+      html.suite-light .trade-buy,html.suite-light .supply-stock,html.suite-light .issuer-low,
+      html.suite-light .issuer-react-up,html.suite-light .year-open-up{background:#e5f5ea!important;color:#19733c!important}
+      html.suite-light .trade-wait,html.suite-light .supply-watch{background:#fff4d6!important;color:#8a6100!important}
+      html.suite-light .trade-avoid,html.suite-light .supply-cash,html.suite-light .issuer-high,
+      html.suite-light .issuer-react-down,html.suite-light .year-open-down{background:#fde9eb!important;color:#a52b34!important}
+      html.suite-light .issuer-neutral,html.suite-light .issuer-react-neutral,
+      html.suite-light .supply-ended,html.suite-light .year-open-missing{background:#f1f4f6!important;color:#697887!important}
       .status-loading,.status-error,.status-empty{padding:18px;text-align:center;border:1px solid #d8dee8;border-radius:6px;background:#f6f8fb;color:#64748b}
       .status-error{border-color:#efb5b9;background:#fff1f2;color:#a52b34}
       button,a,input,select,summary{transition:border-color .18s,background-color .18s,color .18s,transform .1s}
