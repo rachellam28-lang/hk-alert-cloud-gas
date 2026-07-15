@@ -9,10 +9,10 @@
 <meta http-equiv="Expires" content="0">
 <title>Kbar Matrix</title>
 <style>
-:root{--bg:#f5f7fa;--surface:#fff;--surface-soft:#f8fafc;--surface-dark:#0b1220;--text:#0f172a;--text-soft:#334155;--mute:#64748b;--line:#e2e8f0;--line-soft:#eef2f7;--primary:#0284c7;--primary-soft:#e0f2fe;--primary-border:#bae6fd;--up:#15803d;--up-soft:#dcfce7;--down:#b91c1c;--down-soft:#fee2e2;--radius:8px;--shadow:0 1px 2px rgba(15,23,42,.04)}
+:root{--bg:#0c1216;--surface:#121a1f;--surface-soft:#172126;--surface-dark:#090e12;--text:#e7edef;--text-soft:#b9c5c9;--mute:#819096;--line:#2c3a40;--line-soft:#223037;--primary:#65c7bf;--primary-soft:#173c3b;--primary-border:#357b77;--up:#4fc38a;--up-soft:#173a2b;--down:#ed747b;--down-soft:#421f24;--amber:#d4a64f;--amber-soft:#3c301d;--ccass:#aa97d2;--ccass-soft:#2d2840;--radius:7px;--shadow:0 12px 30px rgba(2,8,10,.18)}
 *{box-sizing:border-box}html,body{margin:0;padding:0}body{background:var(--bg);color:var(--text);font:14px/1.45 Inter,system-ui,"PingFang TC","Noto Sans TC",Arial,sans-serif;-webkit-font-smoothing:antialiased}
 a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
-.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(12,18,22,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
 .topbar-inner{max-width:1480px;margin:0 auto;padding:10px 16px 0}.brandrow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:10px}.brand{display:flex;align-items:center;gap:10px}.logo{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#0284c7,#0ea5e9);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px}.brand h1{margin:0;font-size:16px}.brand p{margin:2px 0 0;color:var(--mute);font-size:11px}.status{font-size:11px;color:var(--mute);white-space:nowrap}
 #sharedSiteNav{display:flex;gap:10px;flex-wrap:wrap;padding:8px 0 12px;border-top:1px solid var(--line-soft)}#sharedSiteNav a{display:inline-flex;align-items:center;padding:6px 10px;border-radius:999px;border:1px solid transparent;color:var(--text-soft);font-size:12px;font-weight:600;text-decoration:none}#sharedSiteNav a:hover{background:var(--surface-soft);border-color:var(--line)}#sharedSiteNav a.active{background:var(--primary-soft);border-color:var(--primary-border);color:var(--primary)}
 .page{max-width:1480px;margin:0 auto;padding:16px;display:flex;flex-direction:column}.band{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px 16px}.band + .band{margin-top:12px}.band-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}.band-title{font-size:15px;font-weight:700}.band-sub{margin-top:4px;font-size:11px;color:var(--mute)}
@@ -25,8 +25,44 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .setup-scout-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.setup-scout-card{border:1px solid var(--line);border-radius:8px;background:var(--surface-soft);overflow:hidden;display:flex;flex-direction:column;min-height:356px}.setup-scout-card.breakout{box-shadow:inset 0 0 0 1px rgba(21,128,61,.10)}.setup-scout-card.base{box-shadow:inset 0 0 0 1px rgba(180,83,9,.10)}.setup-scout-card.breaklow{box-shadow:inset 0 0 0 1px rgba(2,132,199,.10)}.setup-scout-card.rebound{box-shadow:inset 0 0 0 1px rgba(185,28,28,.10)}.setup-scout-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:12px;border-bottom:1px solid var(--line-soft);background:#fff}.setup-scout-title{font-size:13px;font-weight:800}.setup-scout-sub{margin-top:2px;font-size:11px;color:var(--mute)}.setup-scout-count{display:inline-flex;align-items:center;justify-content:center;min-width:30px;padding:2px 8px;border-radius:999px;background:var(--surface-soft);border:1px solid var(--line);font-size:11px;font-weight:700}.setup-scout-chart{height:156px;background:#fff;border-bottom:1px solid var(--line-soft)}.setup-scout-chart .chart-svg{height:156px}.setup-scout-chart .chart-empty{font-size:11px}.setup-scout-body{padding:12px;display:flex;flex:1;flex-direction:column}.setup-scout-symbol-row{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}.setup-scout-symbol{font:800 15px "JetBrains Mono",ui-monospace,Consolas,monospace}.setup-scout-label{margin-top:3px;font-size:11px;color:var(--mute)}.setup-scout-score{font-size:22px;font-weight:800;line-height:1}.setup-scout-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}.setup-scout-stat{padding:8px;border:1px solid var(--line-soft);border-radius:8px;background:#fff}.setup-scout-stat-label{font-size:10px;color:var(--mute);text-transform:uppercase;letter-spacing:.05em}.setup-scout-stat-value{margin-top:3px;font-size:12px;font-weight:700}.setup-scout-note{margin-top:10px;font-size:12px;line-height:1.5;color:var(--text-soft)}.setup-scout-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.setup-scout-chip,.setup-scout-btn{appearance:none;border:1px solid var(--line);background:#fff;color:var(--text-soft);padding:6px 9px;border-radius:999px;font:600 11px inherit;cursor:pointer}.setup-scout-chip:hover,.setup-scout-btn:hover{border-color:var(--primary-border);background:var(--surface-soft)}.setup-scout-btn{border-radius:8px;background:var(--primary-soft);border-color:var(--primary-border);color:var(--primary)}
 .console{background:var(--surface-dark);color:#c8facc;border-radius:8px;padding:12px 14px;font:12px/1.55 "JetBrains Mono",ui-monospace,monospace;white-space:pre-wrap;min-height:150px;overflow:auto}.console .muted{color:#7dd3fc}
 .chart-tabs{display:flex;gap:6px;margin-top:12px;padding-bottom:2px;overflow-x:auto;scrollbar-width:thin}.chart-tab{appearance:none;flex:0 0 auto;min-width:82px;border:1px solid var(--line);border-radius:7px;background:#fff;color:var(--text-soft);padding:8px 10px;font:700 12px inherit;cursor:pointer}.chart-tab.active{border-color:var(--primary);background:var(--primary-soft);color:var(--primary)}.chart-tab[data-inverted="1"]::after{content:" ↕";color:#7c3aed}.insight-grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(260px,.55fr);gap:20px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}.insight-grid>section{min-width:0}.insight-title-row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:9px}.insight-title{font-size:12px;font-weight:800}.insight-meta{font-size:10px;color:var(--mute);text-align:right}.signal-rail{display:flex;width:100%;max-width:100%;gap:8px;overflow-x:auto;padding:1px 1px 7px;min-height:78px;scrollbar-width:thin}.signal-event{flex:0 0 158px;border-left:3px solid #64748b;background:var(--surface-soft);color:var(--text);text-decoration:none;padding:8px 9px;border-radius:0 6px 6px 0}.signal-event:hover{background:#f1f5f9;text-decoration:none}.signal-event.vqc{border-color:#16a34a}.signal-event.jieqi{border-color:#0284c7}.signal-event.corp{border-color:#d97706}.signal-event.ccass{border-color:#7c3aed}.signal-event.technical{border-color:#475569}.signal-date{font:700 10px ui-monospace,Consolas,monospace;color:var(--mute)}.signal-label{margin-top:4px;font-size:12px;font-weight:800;line-height:1.3}.signal-note{margin-top:3px;font-size:10px;color:var(--mute);line-height:1.35}.signal-empty{padding:14px 0;color:var(--mute);font-size:11px}.level-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.level-item{min-width:0;padding:8px 0;border-top:1px solid var(--line-soft)}.level-name{font-size:10px;color:var(--mute)}.level-value{margin-top:2px;font:800 14px ui-monospace,Consolas,monospace;overflow-wrap:anywhere}.level-note{margin-top:2px;font-size:9px;color:var(--mute)}
+/* One dark chart workspace: semantic colour, no white shell around dark K-lines. */
+.logo{border-radius:7px;background:#267d79}
+.band{background:var(--surface);border-color:var(--line);box-shadow:var(--shadow)}
+.input{border-color:var(--line);border-radius:7px;background:#0e161a;color:var(--text)}
+.input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(101,199,191,.12)}
+.seg{border-color:var(--line);border-radius:7px;background:#0e161a}
+.seg button,.btn,.chip{border-color:var(--line);border-radius:6px;background:var(--surface);color:var(--text-soft)}
+.seg button.active,.btn.primary,.chip.active{background:var(--primary-soft);border-color:var(--primary-border);color:var(--primary)}
+.btn:hover,.chip:hover,.seg button:hover{border-color:var(--primary-border);background:#1a292e}
+.matrix-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.pane{min-width:0;background:var(--surface-soft);border-color:var(--line);border-radius:7px}
+.pane-head{background:#10181d;border-color:var(--line-soft)}
+.chart-box{background:#0b1018}
+.matrix-grid .chart-box{height:clamp(390px,54vh,620px)}
+.trend-guard{border-color:var(--line);border-left-color:#65757c;border-radius:7px;background:var(--surface-soft)}
+.trend-guard.bull{border-left-color:var(--up);background:var(--up-soft)}
+.trend-guard.bear{border-left-color:var(--down);background:var(--down-soft)}
+.trend-guard.watch{border-left-color:var(--amber);background:var(--amber-soft)}
+.setup-card,.setup-scout-card,.setup-stat,.setup-scout-stat,.setup-scout-head,
+.setup-scout-chart,.setup-tag,.setup-scout-chip,.setup-scout-btn{background:var(--surface-soft);border-color:var(--line)}
+.setup-card.active{box-shadow:0 0 0 1px rgba(101,199,191,.2)}
+.setup-card.breakout.active{border-color:var(--up);background:var(--up-soft)}
+.setup-card.base.active{border-color:var(--amber);background:var(--amber-soft)}
+.setup-card.breaklow.active{border-color:#5da8c7;background:#162e39}
+.setup-card.rebound.active{border-color:var(--down);background:var(--down-soft)}
+.setup-scout-btn{background:var(--primary-soft);border-color:var(--primary-border);color:var(--primary)}
+.console{color:#a8d8c8}.console .muted{color:#77b9d2}
+.legend-vqc{background:var(--up)}.legend-jieqi{background:#5da8c7}.legend-reclaim{background:var(--ccass)}
+.chart-tab{border-color:var(--line);border-radius:6px;background:#0e161a;color:var(--text-soft)}
+.chart-tab.active{border-color:var(--primary-border);background:var(--primary-soft);color:var(--primary)}
+.chart-tab[data-inverted="1"]::after{color:var(--ccass)}
+.signal-event{background:var(--surface-soft);color:var(--text)}
+.signal-event:hover{background:#1c292f}
+.signal-event.vqc{border-color:var(--up)}.signal-event.jieqi{border-color:#5da8c7}
+.signal-event.corp{border-color:var(--amber)}.signal-event.ccass{border-color:var(--ccass)}
 @media (max-width:1180px){.controls{grid-template-columns:minmax(220px,1fr) auto auto;}.controls .full{grid-column:1/-1}.setup-grid,.setup-scout-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:760px){.page{padding:10px}.topbar-inner{padding:10px 12px 0}.controls{grid-template-columns:1fr}.controls .full{grid-column:auto}.setup-grid,.setup-scout-grid{grid-template-columns:1fr}.chart-box{height:460px}.brandrow{align-items:flex-start;flex-direction:column}.status{white-space:normal}.setup-meta,.setup-scout-stats{grid-template-columns:1fr 1fr}.insight-grid{grid-template-columns:1fr;gap:12px}.chart-tab{min-width:74px;padding:7px 9px}.level-list{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:980px){.matrix-grid{grid-template-columns:1fr}}
+@media (max-width:760px){.page{padding:10px}.topbar-inner{padding:10px 12px 0}.controls{grid-template-columns:1fr}.controls .full{grid-column:auto}.setup-grid,.setup-scout-grid{grid-template-columns:1fr}.chart-box,.matrix-grid .chart-box{height:460px}.brandrow{align-items:flex-start;flex-direction:column}.status{white-space:normal}.setup-meta,.setup-scout-stats{grid-template-columns:1fr 1fr}.insight-grid{grid-template-columns:1fr;gap:12px}.chart-tab{min-width:74px;padding:7px 9px}.level-list{grid-template-columns:repeat(3,minmax(0,1fr))}}
 </style>
 </head>
 <body>
@@ -37,7 +73,7 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
         <div class="logo">K</div>
         <div>
           <h1>Kbar Matrix</h1>
-          <p>單圖檢視；港股 cache 配 TradingView 外連，其他市場可直接嵌入。</p>
+          <p>季圖雙視角；港股 cache 配 TradingView 外連，其他市場可直接嵌入。</p>
         </div>
       </div>
       <div class="status" id="pageStatus">loading...</div>
@@ -49,8 +85,8 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
   <section class="band">
     <div class="band-head">
       <div>
-        <div class="band-title">多重時間矩陣</div>
-        <div class="band-sub">切換週期只用一個圖位；港股嵌入受交易所限制，未 cache 股票會直接外連 TradingView。</div>
+        <div class="band-title">多重時間圖</div>
+        <div class="band-sub">季圖同時顯示正常與反向股價刻度；其他週期保留單圖檢視。未 cache 港股會嘗試 Cloudflare 按需真實日 K。</div>
       </div>
     </div>
     <div class="controls" style="margin-top:12px">
@@ -83,7 +119,7 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
     <div class="band-head">
       <div>
         <div class="band-title">Kbar 主體</div>
-        <div class="band-sub">季、半年、年、日圖可切換正常或反向股價刻度；下方日期列顯示系統真實訊號。</div>
+        <div class="band-sub">季圖兩個價格軸同時對照；半年、年、日圖可分別切換正常或反向刻度。日期方向始終不變。</div>
       </div>
     </div>
     <div class="trend-guard neutral" id="trendGuard"><strong>多空 Trend 守位</strong><small>等 Kbar cache 計出守位線。</small></div>
@@ -141,8 +177,7 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 <script src="./shared-nav.js"></script>
 <script>
 const intervals = [
-  { label: '季圖', value: '3m' },
-  { label: '反向季圖', value: '3m_flip' },
+  { label: '季圖雙視角', value: '3m_pair' },
   { label: '半年圖', value: '6m' },
   { label: '反向半年圖', value: '6m_flip' },
   { label: '年圖', value: '1y' },
@@ -150,6 +185,17 @@ const intervals = [
   { label: '日圖', value: '1d' },
   { label: '反向日圖', value: '1d_flip' },
 ];
+
+const paneDefinitions = {
+  '3m': { label: '季圖', value: '3m' },
+  '3m_flip': { label: '反向季圖', value: '3m_flip' },
+  '6m': { label: '半年圖', value: '6m' },
+  '6m_flip': { label: '反向半年圖', value: '6m_flip' },
+  '1y': { label: '年圖', value: '1y' },
+  '1y_flip': { label: '反向年圖', value: '1y_flip' },
+  '1d': { label: '日圖', value: '1d' },
+  '1d_flip': { label: '反向日圖', value: '1d_flip' },
+};
 
 const presets = [
   { label: '騰訊', raw: '700', mode: 'hk' },
@@ -162,7 +208,7 @@ const presets = [
   { label: 'EWJ', raw: 'EWJ', mode: 'us' },
   { label: 'ASHR', raw: 'ASHR', mode: 'us' },
 ];
-const state = { mode: 'hk', raw: '700', view: '3m', kbarError: '' };
+const state = { mode: 'hk', raw: '700', view: '3m_pair', kbarError: '' };
 let kbarCache = null;
 let kbarShardIndex = null;
 let hkSymbolIndex = null;
@@ -243,7 +289,7 @@ function tvEmbedUrl(tvSymbol, interval='D', range='', inverted=false) {
   const u = new URL('https://s.tradingview.com/widgetembed/');
   u.searchParams.set('symbol', tvSymbol);
   u.searchParams.set('interval', interval);
-  u.searchParams.set('theme', 'light');
+  u.searchParams.set('theme', 'dark');
   u.searchParams.set('style', '1');
   u.searchParams.set('timezone', 'Asia/Hong_Kong');
   u.searchParams.set('hidesidetoolbar', '1');
@@ -593,8 +639,13 @@ function viewDefinition(value = state.view) {
   return intervals.find(item => item.value === value) || intervals[0];
 }
 
+function paneDefinition(value) {
+  return paneDefinitions[value] || paneDefinitions['3m'];
+}
+
 function viewTradingViewConfig(value = state.view) {
   return {
+    '3m_pair': ['D', '3M', false],
     '3m': ['D', '3M', false],
     '3m_flip': ['D', '3M', true],
     '6m': ['D', '6M', false],
@@ -1163,7 +1214,7 @@ function mountTradingViewWidgets() {
       interval: host.dataset.interval,
       range: host.dataset.range,
       timezone: 'Asia/Hong_Kong',
-      theme: 'light',
+      theme: 'dark',
       style: '1',
       locale: 'en',
       hide_side_toolbar: true,
@@ -1596,7 +1647,8 @@ function hydrateFromQuery() {
   const view = qs.get('view');
   if (mode && ['hk','us','fx','tv'].includes(mode)) state.mode = mode;
   if (symbol) state.raw = symbol;
-  if (view && intervals.some(item => item.value === view)) state.view = view;
+  if (view === '3m' || view === '3m_flip') state.view = '3m_pair';
+  else if (view && intervals.some(item => item.value === view)) state.view = view;
   symbolInput.value = state.raw;
 }
 
@@ -1692,8 +1744,8 @@ function renderSetupLens(context) {
   return analysis;
 }
 
-function buildSingleTradingViewPane(tvSymbol, entry) {
-  const view = viewDefinition();
+function buildTradingViewPane(tvSymbol, entry, viewValue) {
+  const view = paneDefinition(viewValue);
   const config = viewTradingViewConfig(view.value);
   const useLocalHk = state.mode === 'hk' && entry;
   const blockedHkEmbed = state.mode === 'hk' && !entry;
@@ -1734,6 +1786,16 @@ function buildSingleTradingViewPane(tvSymbol, entry) {
       </div>
     </article>
   `;
+}
+
+function buildChartWorkspace(tvSymbol, entry) {
+  if (state.view === '3m_pair') {
+    return `<div class="matrix-grid quarterly-pair" data-layout="quarterly-pair">
+      ${buildTradingViewPane(tvSymbol, entry, '3m')}
+      ${buildTradingViewPane(tvSymbol, entry, '3m_flip')}
+    </div>`;
+  }
+  return buildTradingViewPane(tvSymbol, entry, state.view);
 }
 
 // HK daily K-lines are loaded from static shards or the restricted Cloudflare API.
@@ -1777,7 +1839,7 @@ function renderMatrix() {
     resolvedHint.textContent += ` · 全港股索引 ${hkSymbolIndex.count.toLocaleString()} 隻`;
   }
   statusEl.textContent = `${fallbackSymbol} | ${viewDefinition().label}`;
-  matrixEl.innerHTML = buildSingleTradingViewPane(fallbackSymbol, entry);
+  matrixEl.innerHTML = buildChartWorkspace(fallbackSymbol, entry);
   mountTradingViewWidgets();
   const context = {
     resolvedSymbol: entry ? resolvedSymbol : null,

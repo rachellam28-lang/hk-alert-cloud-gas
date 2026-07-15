@@ -40,7 +40,8 @@ def test_shared_theme_keeps_data_pages_light_and_chart_tool_dark(page):
         page.goto(f"{BASE_URL}/{path}", wait_until="domcontentloaded")
         page.wait_for_function("() => document.documentElement.classList.contains('suite-light')")
         background = page.evaluate("() => getComputedStyle(document.body).backgroundColor")
-        assert background == "rgb(237, 241, 243)"
+        assert background == "rgb(237, 241, 242)"
 
     page.goto(f"{BASE_URL}/kbar_matrix.html", wait_until="domcontentloaded")
     assert not page.evaluate("() => document.documentElement.classList.contains('suite-light')")
+    assert page.evaluate("() => getComputedStyle(document.body).backgroundColor") == "rgb(12, 18, 22)"

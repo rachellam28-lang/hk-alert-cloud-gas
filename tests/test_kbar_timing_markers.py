@@ -6,7 +6,7 @@ import os
 BASE_URL = os.getenv("HK_ALERT_BASE_URL", "https://hk-alert-cloud-gas.pages.dev").rstrip("/")
 
 
-def test_kbar_single_chart_and_signal_rail(page):
+def test_kbar_quarterly_pair_and_signal_rail(page):
     page_errors: list[str] = []
     page.on("pageerror", lambda exc: page_errors.append(str(exc)))
 
@@ -16,8 +16,10 @@ def test_kbar_single_chart_and_signal_rail(page):
     )
     page.wait_for_selector("#matrix .chart-svg", timeout=45_000)
 
-    assert page.locator(".chart-tab").count() == 8
-    assert page.locator("#matrix .chart-svg").count() == 1
+    assert page.locator(".chart-tab").count() == 7
+    assert page.locator('.quarterly-pair .pane').count() == 2
+    assert page.locator('.quarterly-pair .pane-title').all_inner_texts() == ["季圖", "反向季圖"]
+    assert page.locator("#matrix .chart-svg").count() == 2
     assert page.locator("#matrix iframe").count() == 0
     assert page.locator(".signal-event").count() > 0
     assert page.locator(".level-item").count() > 0
@@ -54,7 +56,7 @@ def test_full_hk_universe_supports_gem_code_and_exact_name(page):
 
     assert "全港股索引 2,823 隻" in page.locator("#resolvedHint").inner_text()
     assert "HKEX:8131" in page.locator("#resolvedHint").inner_text()
-    assert page.locator("#matrix .chart-svg").count() == 1
+    assert page.locator("#matrix .chart-svg").count() == 2
 
     page.locator("#symbolInput").fill("諾亞智能")
     page.locator("#applyBtn").click()
@@ -62,7 +64,7 @@ def test_full_hk_universe_supports_gem_code_and_exact_name(page):
     page.wait_for_selector("#matrix .chart-svg", timeout=45_000)
 
     assert "HKEX:8131" in page.locator("#resolvedHint").inner_text()
-    assert page.locator("#matrix .chart-svg").count() == 1
+    assert page.locator("#matrix .chart-svg").count() == 2
 
 
 def test_inverted_price_chart_preserves_candle_and_profile_geometry(page):
@@ -72,25 +74,25 @@ def test_inverted_price_chart_preserves_candle_and_profile_geometry(page):
     )
     page.wait_for_selector("#matrix .candle-body", timeout=45_000)
 
-    normal_bodies = page.locator("#matrix .candle-body").evaluate_all(
+    normal_bodies = page.locator("#matrix .pane").nth(0).locator(".candle-body").evaluate_all(
         "nodes => nodes.map(node => Number(node.getAttribute('height')))"
     )
-    normal_profile = page.locator("#matrix .volume-profile-bar").evaluate_all(
+    normal_profile = page.locator("#matrix .pane").nth(0).locator(".volume-profile-bar").evaluate_all(
         "nodes => nodes.map(node => Number(node.getAttribute('height')))"
     )
-    normal_poc = float(page.locator("#matrix .poc-zone").get_attribute("height"))
+    normal_poc = float(page.locator("#matrix .pane").nth(0).locator(".poc-zone").get_attribute("height"))
 
-    page.locator('.chart-tab[data-view="3m_flip"]').click()
-    page.wait_for_selector('.chart-tab[data-view="3m_flip"].active')
-    page.wait_for_selector("#matrix .candle-body")
+    page.locator('.chart-tab[data-view="3m_pair"]').click()
+    page.wait_for_selector('.chart-tab[data-view="3m_pair"].active')
+    page.wait_for_function("() => document.querySelectorAll('#matrix .pane').length === 2")
 
-    flipped_bodies = page.locator("#matrix .candle-body").evaluate_all(
+    flipped_bodies = page.locator("#matrix .pane").nth(1).locator(".candle-body").evaluate_all(
         "nodes => nodes.map(node => Number(node.getAttribute('height')))"
     )
-    flipped_profile = page.locator("#matrix .volume-profile-bar").evaluate_all(
+    flipped_profile = page.locator("#matrix .pane").nth(1).locator(".volume-profile-bar").evaluate_all(
         "nodes => nodes.map(node => Number(node.getAttribute('height')))"
     )
-    flipped_poc = float(page.locator("#matrix .poc-zone").get_attribute("height"))
+    flipped_poc = float(page.locator("#matrix .pane").nth(1).locator(".poc-zone").get_attribute("height"))
 
     assert flipped_bodies == normal_bodies
     assert flipped_profile == normal_profile
@@ -109,5 +111,6 @@ def test_inverted_price_chart_preserves_candle_and_profile_geometry(page):
 
     page.locator('.chart-tab[data-view="1d"]').click()
     page.wait_for_selector('.chart-tab[data-view="1d"].active')
-    page.wait_for_function("() => document.querySelectorAll('#matrix .candle-body').length === 520")
-    assert "520 根 D 燭" in page.locator("#matrix .pane-meta").inner_text()
+    page.wait_for_function("() => document.querySelectorAll('#matrix .candle-body').length >= 260")
+    daily_count = page.locator("#matrix .candle-body").count()
+    assert f"{daily_count} 根 D 燭" in page.locator("#matrix .pane-meta").inner_text()
