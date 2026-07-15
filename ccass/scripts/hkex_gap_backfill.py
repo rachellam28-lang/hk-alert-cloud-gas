@@ -18,7 +18,7 @@ import sqlite3
 import sys
 import tempfile
 import time
-from datetime import date
+from datetime import date, timedelta
 from pathlib import Path
 
 PROJECT = Path(__file__).resolve().parents[1]
@@ -96,72 +96,116 @@ def _load_scraper() -> HOLDINGSScraper:
     )
 
 
-def _missing_codes(trade_date: str) -> list[str]:
+def _target_codes(trade_date: str) -> tuple[set[str], list[str]]:
+    """Build a historical candidate set from nearby complete dates, not today's universe."""
     with sqlite3.connect(DB_PATH) as con:
         clauses = " AND ".join(["stock_code NOT LIKE ?" for _ in EXCLUDE_PATTERNS])
-        full = {
-            r[0]
-            for r in con.execute(
+        complete_dates = [
+            str(row[0])
+            for row in con.execute(
                 f"""
-                SELECT stock_code
-                FROM stock_universe
-                WHERE is_active=1 AND {clauses}
-                ORDER BY stock_code
+                SELECT trade_date
+                FROM ccass_daily
+                WHERE validation_failed=0 AND total_shares>0 AND {clauses}
+                GROUP BY trade_date
+                HAVING COUNT(DISTINCT stock_code) >= 2000
+                ORDER BY trade_date
                 """,
                 EXCLUDE_PATTERNS,
             ).fetchall()
-        }
-        have = {
-            r[0]
-            for r in con.execute(
-                """
-                SELECT DISTINCT stock_code
-                FROM ccass_daily
-                WHERE trade_date=? AND validation_failed=0
-                """,
-                (trade_date,),
-            ).fetchall()
-        }
-    return sorted(full - have)
+        ]
+        before = max((d for d in complete_dates if d < trade_date), default=None)
+        after = min((d for d in complete_dates if d > trade_date), default=None)
+        references = [d for d in (before, after) if d]
+        if references:
+            placeholders = ",".join("?" for _ in references)
+            candidates = {
+                str(row[0])
+                for row in con.execute(
+                    f"""
+                    SELECT DISTINCT stock_code
+                    FROM ccass_daily
+                    WHERE trade_date IN ({placeholders})
+                      AND validation_failed=0 AND total_shares>0 AND {clauses}
+                    """,
+                    (*references, *EXCLUDE_PATTERNS),
+                ).fetchall()
+            }
+        else:
+            candidates = {
+                str(row[0])
+                for row in con.execute(
+                    f"SELECT stock_code FROM stock_universe WHERE is_active=1 AND {clauses}",
+                    EXCLUDE_PATTERNS,
+                ).fetchall()
+            }
+    return candidates, references
 
 
-def _coverage(trade_date: str) -> tuple[int, int, float]:
+def _missing_codes(trade_date: str, candidates: set[str], require_participants: bool = False) -> list[str]:
     with sqlite3.connect(DB_PATH) as con:
-        clauses = " AND ".join(["stock_code NOT LIKE ?" for _ in EXCLUDE_PATTERNS])
-        total = int(
-            con.execute(
-                f"""
-                SELECT COUNT(*)
-                FROM stock_universe
-                WHERE is_active=1 AND {clauses}
-                """,
-                EXCLUDE_PATTERNS,
-            ).fetchone()[0]
-            or 0
-        )
-        have = int(
-            con.execute(
-                f"""
-                SELECT COUNT(DISTINCT stock_code)
-                FROM ccass_daily
-                WHERE trade_date=? AND validation_failed=0 AND {clauses}
-                """,
-                (trade_date, *EXCLUDE_PATTERNS),
-            ).fetchone()[0]
-            or 0
-        )
+        if require_participants:
+            have = {
+                r[0]
+                for r in con.execute(
+                    "SELECT DISTINCT stock_code FROM ccass_holdings WHERE trade_date=?",
+                    (trade_date,),
+                ).fetchall()
+            }
+        else:
+            have = {
+                r[0]
+                for r in con.execute(
+                    """
+                    SELECT DISTINCT stock_code
+                    FROM ccass_daily
+                    WHERE trade_date=? AND validation_failed=0 AND total_shares>0
+                    """,
+                    (trade_date,),
+                ).fetchall()
+            }
+    return sorted(candidates - have)
+
+
+def _coverage(trade_date: str, candidates: set[str], require_participants: bool = False) -> tuple[int, int, float]:
+    with sqlite3.connect(DB_PATH) as con:
+        if require_participants:
+            sql = "SELECT DISTINCT stock_code FROM ccass_holdings WHERE trade_date=?"
+        else:
+            sql = (
+                "SELECT DISTINCT stock_code FROM ccass_daily "
+                "WHERE trade_date=? AND validation_failed=0 AND total_shares>0"
+            )
+        have_codes = {str(row[0]) for row in con.execute(sql, (trade_date,)).fetchall()}
+    total = len(candidates)
+    have = len(candidates & have_codes)
     return have, total, (have / total if total else 0.0)
 
 
-def backfill_date(trade_date: str, limit: int | None = None) -> int:
+def backfill_date(
+    trade_date: str,
+    limit: int | None = None,
+    target_coverage: float = 0.99,
+    require_participants: bool = False,
+) -> int:
     target = date.fromisoformat(trade_date)
-    todo = _missing_codes(trade_date)
+    candidates, references = _target_codes(trade_date)
+    todo = _missing_codes(trade_date, candidates, require_participants)
     if limit:
         todo = todo[:limit]
 
-    have, total, pct = _coverage(trade_date)
-    logger.info("DATE %s start coverage=%d/%d (%.1f%%) missing=%d", trade_date, have, total, pct * 100, len(todo))
-    if not todo:
+    have, total, pct = _coverage(trade_date, candidates, require_participants)
+    logger.info(
+        "DATE %s mode=%s references=%s start coverage=%d/%d (%.1f%%) missing=%d",
+        trade_date,
+        "participant" if require_participants else "aggregate",
+        ",".join(references) or "active-universe-fallback",
+        have,
+        total,
+        pct * 100,
+        len(todo),
+    )
+    if not todo or pct >= target_coverage:
         return 0
 
     scraper = _load_scraper()
@@ -185,7 +229,7 @@ def backfill_date(trade_date: str, limit: int | None = None) -> int:
                 logger.warning("%s %s failed: %s", trade_date, code, exc)
 
             if i % 25 == 0 or i == len(todo):
-                cur_have, _, cur_pct = _coverage(trade_date)
+                cur_have, _, cur_pct = _coverage(trade_date, candidates, require_participants)
                 elapsed = max(time.time() - started, 0.1)
                 rate = i / elapsed
                 eta = (len(todo) - i) / rate if rate > 0 else 0
@@ -202,25 +246,83 @@ def backfill_date(trade_date: str, limit: int | None = None) -> int:
                     rate,
                     eta,
                 )
+                if cur_pct >= target_coverage:
+                    logger.info("DATE %s target %.1f%% reached", trade_date, target_coverage * 100)
+                    break
     finally:
         try:
             scraper.session.close()
         except Exception:
             pass
 
-    cur_have, _, cur_pct = _coverage(trade_date)
+    cur_have, _, cur_pct = _coverage(trade_date, candidates, require_participants)
     logger.info("DATE %s done ok=%d fail=%d coverage=%d/%d (%.1f%%)", trade_date, ok, fail, cur_have, total, cur_pct * 100)
-    return 0 if fail == 0 else 3
+    return 0 if cur_pct >= target_coverage else 3
+
+
+def _auto_target(target_coverage: float) -> tuple[str, bool] | None:
+    """Pick the newest genuine aggregate gap, then participant-detail gaps."""
+    from src.trading_calendar import is_trading_day
+
+    with sqlite3.connect(DB_PATH) as con:
+        bounds = con.execute(
+            "SELECT MIN(trade_date), MAX(trade_date) FROM ccass_daily WHERE validation_failed=0"
+        ).fetchone()
+    if not bounds or not bounds[0] or not bounds[1]:
+        return None
+
+    start = date.fromisoformat(str(bounds[0]))
+    end = date.fromisoformat(str(bounds[1]))
+    trading_dates: list[str] = []
+    current = start
+    while current <= end:
+        if is_trading_day(current):
+            trading_dates.append(current.isoformat())
+        current += timedelta(days=1)
+
+    for trade_date in reversed(trading_dates):
+        candidates, _ = _target_codes(trade_date)
+        if candidates and _coverage(trade_date, candidates)[2] < target_coverage:
+            return trade_date, False
+
+    for trade_date in reversed(trading_dates):
+        candidates, _ = _target_codes(trade_date)
+        if candidates and _coverage(trade_date, candidates, True)[2] < target_coverage:
+            return trade_date, True
+    return None
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dates", required=True, help="Comma-separated trade dates YYYY-MM-DD")
+    target_group = parser.add_mutually_exclusive_group(required=True)
+    target_group.add_argument("--dates", help="Comma-separated trade dates YYYY-MM-DD")
+    target_group.add_argument("--auto", action="store_true", help="Repair the newest audited gap")
     parser.add_argument("--limit", type=int, help="Optional cap for smoke testing")
+    parser.add_argument("--request-budget", type=int, default=1200, help="Per-run cap used by --auto")
+    parser.add_argument("--target-coverage", type=float, default=0.99)
+    parser.add_argument("--require-participants", action="store_true")
     args = parser.parse_args()
 
     init_db()
-    dates = [d.strip() for d in args.dates.split(",") if d.strip()]
+    if args.auto:
+        selected = _auto_target(args.target_coverage)
+        if selected is None:
+            logger.info("AUTO_COMPLETE no aggregate or participant gaps remain")
+            return 0
+        selected_date, selected_participant_mode = selected
+        dates = [selected_date]
+        require_participants = selected_participant_mode
+        limit = args.request_budget
+        logger.info(
+            "AUTO_SELECT date=%s mode=%s request_budget=%d",
+            selected_date,
+            "participant" if require_participants else "aggregate",
+            limit,
+        )
+    else:
+        dates = [d.strip() for d in (args.dates or "").split(",") if d.strip()]
+        require_participants = args.require_participants
+        limit = args.limit
     for d in dates:
         date.fromisoformat(d)
 
@@ -229,8 +331,11 @@ def main() -> int:
     try:
         rc = 0
         for d in dates:
-            rc = backfill_date(d, args.limit)
+            rc = backfill_date(d, limit, args.target_coverage, require_participants)
             if rc != 0:
+                if args.auto:
+                    logger.info("AUTO_BUDGET_EXHAUSTED date=%s; next run will resume", d)
+                    return 0
                 return rc
         return 0
     finally:

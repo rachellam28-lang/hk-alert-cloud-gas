@@ -19,6 +19,7 @@ import sys
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta
 from pathlib import Path
+from statistics import median
 from typing import Any
 
 try:
@@ -262,6 +263,18 @@ def business_days_missing(start_iso: str, end_iso: str, present: set[str]) -> li
     return missing
 
 
+def _local_expected_count(counts: list[int], index: int) -> int:
+    """Median of the nearest complete dates, excluding obvious partial runs."""
+    if not counts:
+        return 0
+    complete_floor = max(counts) * 0.8
+    complete_indexes = [i for i, count in enumerate(counts) if count >= complete_floor]
+    before = [i for i in complete_indexes if i <= index][-3:]
+    after = [i for i in complete_indexes if i > index][:3]
+    reference_counts = [counts[i] for i in before + after]
+    return int(round(median(reference_counts))) if reference_counts else 0
+
+
 def build_db_report(threshold: float, limit: int) -> dict[str, Any]:
     if not DB_PATH.exists():
         return {"db_path": str(DB_PATH), "error": "missing"}
@@ -278,7 +291,12 @@ def build_db_report(threshold: float, limit: int) -> dict[str, Any]:
         rows = conn.execute(
             f"""
             SELECT trade_date,
-                   COUNT(DISTINCT CASE WHEN total_pct IS NOT NULL THEN stock_code END) AS stock_count
+                   COUNT(DISTINCT CASE
+                       WHEN total_shares > 0 THEN stock_code
+                   END) AS stock_count,
+                   COUNT(DISTINCT CASE
+                       WHEN total_shares > 0 AND total_pct IS NOT NULL THEN stock_code
+                   END) AS pct_count
             FROM ccass_daily
             WHERE validation_failed = 0
               AND {_publish_scope_sql()}
@@ -288,24 +306,38 @@ def build_db_report(threshold: float, limit: int) -> dict[str, Any]:
         ).fetchall()
         if not rows:
             return {"db_path": str(DB_PATH), "expected_publish_scope_count": expected, "error": "no_rows"}
+        aggregate_counts = [int(row["stock_count"] or 0) for row in rows]
         date_rows = []
-        for row in rows:
+        for index, row in enumerate(rows):
             trade_date = str(row["trade_date"])
             stock_count = int(row["stock_count"] or 0)
-            coverage_pct = round((stock_count / expected) * 100, 1) if expected else None
+            pct_count = int(row["pct_count"] or 0)
+            local_expected = _local_expected_count(aggregate_counts, index)
+            coverage_pct = round(min(stock_count / local_expected, 1.0) * 100, 1) if local_expected else None
+            pct_availability_pct = round((pct_count / stock_count) * 100, 1) if stock_count else None
             holdings_row = conn.execute(
                 """
-                SELECT COUNT(*) AS holdings_rows
+                SELECT COUNT(*) AS holdings_rows,
+                       COUNT(DISTINCT stock_code) AS participant_stock_count
                 FROM ccass_holdings
                 WHERE trade_date = ?
+                  AND stock_code NOT LIKE '029%'
+                  AND stock_code NOT LIKE '04%'
+                  AND stock_code NOT LIKE '8%'
                 """,
                 (trade_date,),
             ).fetchone()
+            participant_stock_count = int(holdings_row[1] or 0)
             date_rows.append(
                 {
                     "trade_date": trade_date,
                     "stock_count": stock_count,
+                    "expected_local_count": local_expected,
                     "coverage_pct": coverage_pct,
+                    "pct_available_count": pct_count,
+                    "pct_availability_pct": pct_availability_pct,
+                    "participant_stock_count": participant_stock_count,
+                    "participant_coverage_pct": round((participant_stock_count / stock_count) * 100, 1) if stock_count else None,
                     "holdings_rows": int(holdings_row[0] or 0),
                 }
             )
@@ -318,9 +350,15 @@ def build_db_report(threshold: float, limit: int) -> dict[str, Any]:
         present_dates = {row["trade_date"] for row in date_rows}
         missing_days = business_days_missing(date_rows[0]["trade_date"], date_rows[-1]["trade_date"], present_dates)
         low_coverage = [row for row in reversed(date_rows) if (row["coverage_pct"] or 0) < threshold]
+        low_participant_coverage = [
+            row for row in reversed(date_rows)
+            if (row["participant_coverage_pct"] or 0) < threshold
+        ]
         return {
             "db_path": str(DB_PATH),
             "expected_publish_scope_count": expected,
+            "coverage_basis": "valid total_shares rows against robust nearby-date baseline",
+            "pct_availability_is_coverage": False,
             "first_date": date_rows[0]["trade_date"],
             "latest_date": latest,
             "latest_publishable_date": publishable,
@@ -328,6 +366,8 @@ def build_db_report(threshold: float, limit: int) -> dict[str, Any]:
             "missing_trading_day_count": len(missing_days),
             "low_coverage_dates": low_coverage[:limit],
             "low_coverage_count": len(low_coverage),
+            "low_participant_coverage_dates": low_participant_coverage[:limit],
+            "low_participant_coverage_count": len(low_participant_coverage),
         }
 
 
@@ -377,7 +417,8 @@ def print_db(report: dict[str, Any]) -> None:
     latest = report["latest_date"]
     print(
         f"latest: {latest['trade_date']} | stocks={latest['stock_count']} | "
-        f"coverage={latest['coverage_pct']}% | holdings_rows={latest['holdings_rows']}"
+        f"coverage={latest['coverage_pct']}% | pct_available={latest['pct_availability_pct']}% | "
+        f"participant_coverage={latest['participant_coverage_pct']}% | holdings_rows={latest['holdings_rows']}"
     )
     publishable = report.get("latest_publishable_date")
     if publishable:
@@ -394,7 +435,14 @@ def print_db(report: dict[str, Any]) -> None:
     for item in report["low_coverage_dates"]:
         print(
             f"  low: {item['trade_date']} | stocks={item['stock_count']} | "
-            f"coverage={item['coverage_pct']}% | holdings_rows={item['holdings_rows']}"
+            f"expected={item['expected_local_count']} | coverage={item['coverage_pct']}% | "
+            f"pct_available={item['pct_availability_pct']}% | holdings_rows={item['holdings_rows']}"
+        )
+    print(f"low participant coverage dates: {report['low_participant_coverage_count']}")
+    for item in report["low_participant_coverage_dates"]:
+        print(
+            f"  participant-low: {item['trade_date']} | stocks={item['participant_stock_count']}/"
+            f"{item['stock_count']} | coverage={item['participant_coverage_pct']}%"
         )
 
 

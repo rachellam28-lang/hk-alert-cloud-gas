@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-15T03:11:36",
+  "generated_at": "2026-07-15T11:33:02",
   "pages": [
     {
       "page": "404.html",
@@ -383,7 +383,7 @@
       {
         "path": "data/trade_engine.json",
         "key": "updated_at",
-        "raw": "2026-07-15T03:11:32",
+        "raw": "2026-07-15T10:27:26",
         "normalized_date": "2026-07-15",
         "age_days": 0,
         "lag_vs_freshest_days": 0
@@ -432,18 +432,30 @@
   "db": {
     "db_path": "C:\\Users\\Administrator\\Desktop\\automatic\\hk-alert-cloud-gas\\ccass\\holdings.db",
     "expected_publish_scope_count": 2776,
+    "coverage_basis": "valid total_shares rows against robust nearby-date baseline",
+    "pct_availability_is_coverage": false,
     "first_date": "2026-04-30",
     "latest_date": {
       "trade_date": "2026-07-13",
-      "stock_count": 2755,
-      "coverage_pct": 99.2,
-      "holdings_rows": 404507
+      "stock_count": 2765,
+      "expected_local_count": 2742,
+      "coverage_pct": 100.0,
+      "pct_available_count": 2755,
+      "pct_availability_pct": 99.6,
+      "participant_stock_count": 2765,
+      "participant_coverage_pct": 100.0,
+      "holdings_rows": 402951
     },
     "latest_publishable_date": {
       "trade_date": "2026-07-13",
-      "stock_count": 2755,
-      "coverage_pct": 99.2,
-      "holdings_rows": 404507
+      "stock_count": 2765,
+      "expected_local_count": 2742,
+      "coverage_pct": 100.0,
+      "pct_available_count": 2755,
+      "pct_availability_pct": 99.6,
+      "participant_stock_count": 2765,
+      "participant_coverage_pct": 100.0,
+      "holdings_rows": 402951
     },
     "missing_trading_days": [
       "2026-05-13"
@@ -451,168 +463,163 @@
     "missing_trading_day_count": 1,
     "low_coverage_dates": [
       {
-        "trade_date": "2026-07-09",
-        "stock_count": 2510,
-        "coverage_pct": 90.4,
-        "holdings_rows": 401556
-      },
-      {
         "trade_date": "2026-07-08",
-        "stock_count": 0,
-        "coverage_pct": 0.0,
+        "stock_count": 410,
+        "expected_local_count": 2753,
+        "coverage_pct": 14.9,
+        "pct_available_count": 0,
+        "pct_availability_pct": 0.0,
+        "participant_stock_count": 410,
+        "participant_coverage_pct": 100.0,
         "holdings_rows": 73235
       },
       {
-        "trade_date": "2026-07-07",
-        "stock_count": 0,
-        "coverage_pct": 0.0,
-        "holdings_rows": 402001
-      },
-      {
-        "trade_date": "2026-07-06",
-        "stock_count": 0,
-        "coverage_pct": 0.0,
-        "holdings_rows": 402567
-      },
-      {
         "trade_date": "2026-07-02",
-        "stock_count": 0,
-        "coverage_pct": 0.0,
+        "stock_count": 48,
+        "expected_local_count": 2744,
+        "coverage_pct": 1.7,
+        "pct_available_count": 0,
+        "pct_availability_pct": 0.0,
+        "participant_stock_count": 48,
+        "participant_coverage_pct": 100.0,
         "holdings_rows": 9577
       },
       {
         "trade_date": "2026-06-30",
-        "stock_count": 0,
-        "coverage_pct": 0.0,
+        "stock_count": 233,
+        "expected_local_count": 2744,
+        "coverage_pct": 8.5,
+        "pct_available_count": 0,
+        "pct_availability_pct": 0.0,
+        "participant_stock_count": 233,
+        "participant_coverage_pct": 100.0,
         "holdings_rows": 41836
       },
       {
         "trade_date": "2026-06-29",
-        "stock_count": 0,
+        "stock_count": 1,
+        "expected_local_count": 2744,
         "coverage_pct": 0.0,
+        "pct_available_count": 0,
+        "pct_availability_pct": 0.0,
+        "participant_stock_count": 1,
+        "participant_coverage_pct": 100.0,
         "holdings_rows": 314
       },
       {
         "trade_date": "2026-06-26",
-        "stock_count": 0,
-        "coverage_pct": 0.0,
+        "stock_count": 25,
+        "expected_local_count": 2744,
+        "coverage_pct": 0.9,
+        "pct_available_count": 0,
+        "pct_availability_pct": 0.0,
+        "participant_stock_count": 25,
+        "participant_coverage_pct": 100.0,
         "holdings_rows": 5850
       },
       {
         "trade_date": "2026-06-25",
-        "stock_count": 0,
+        "stock_count": 1,
+        "expected_local_count": 2744,
         "coverage_pct": 0.0,
+        "pct_available_count": 0,
+        "pct_availability_pct": 0.0,
+        "participant_stock_count": 1,
+        "participant_coverage_pct": 100.0,
         "holdings_rows": 313
       },
       {
         "trade_date": "2026-06-24",
-        "stock_count": 0,
+        "stock_count": 1,
+        "expected_local_count": 2744,
         "coverage_pct": 0.0,
+        "pct_available_count": 0,
+        "pct_availability_pct": 0.0,
+        "participant_stock_count": 1,
+        "participant_coverage_pct": 100.0,
         "holdings_rows": 313
       },
       {
         "trade_date": "2026-06-23",
-        "stock_count": 0,
+        "stock_count": 1,
+        "expected_local_count": 2744,
         "coverage_pct": 0.0,
+        "pct_available_count": 0,
+        "pct_availability_pct": 0.0,
+        "participant_stock_count": 1,
+        "participant_coverage_pct": 100.0,
         "holdings_rows": 313
       },
       {
         "trade_date": "2026-06-22",
-        "stock_count": 0,
-        "coverage_pct": 0.0,
+        "stock_count": 10,
+        "expected_local_count": 2744,
+        "coverage_pct": 0.4,
+        "pct_available_count": 0,
+        "pct_availability_pct": 0.0,
+        "participant_stock_count": 10,
+        "participant_coverage_pct": 100.0,
         "holdings_rows": 2794
       },
       {
         "trade_date": "2026-06-16",
-        "stock_count": 0,
-        "coverage_pct": 0.0,
+        "stock_count": 32,
+        "expected_local_count": 2740,
+        "coverage_pct": 1.2,
+        "pct_available_count": 0,
+        "pct_availability_pct": 0.0,
+        "participant_stock_count": 32,
+        "participant_coverage_pct": 100.0,
         "holdings_rows": 7179
       },
       {
-        "trade_date": "2026-06-09",
-        "stock_count": 0,
-        "coverage_pct": 0.0,
-        "holdings_rows": 403049
-      },
-      {
-        "trade_date": "2026-06-08",
-        "stock_count": 557,
-        "coverage_pct": 20.1,
-        "holdings_rows": 403089
-      },
-      {
-        "trade_date": "2026-06-05",
-        "stock_count": 561,
-        "coverage_pct": 20.2,
-        "holdings_rows": 403262
-      },
-      {
-        "trade_date": "2026-05-29",
-        "stock_count": 2692,
-        "coverage_pct": 97.0,
-        "holdings_rows": 397678
-      },
-      {
-        "trade_date": "2026-05-28",
-        "stock_count": 2718,
-        "coverage_pct": 97.9,
-        "holdings_rows": 400412
-      },
-      {
-        "trade_date": "2026-05-27",
-        "stock_count": 2715,
-        "coverage_pct": 97.8,
-        "holdings_rows": 402344
-      },
-      {
         "trade_date": "2026-05-12",
-        "stock_count": 0,
-        "coverage_pct": 0.0,
+        "stock_count": 1615,
+        "expected_local_count": 2723,
+        "coverage_pct": 59.3,
+        "pct_available_count": 0,
+        "pct_availability_pct": 0.0,
+        "participant_stock_count": 1615,
+        "participant_coverage_pct": 100.0,
         "holdings_rows": 255409
       },
       {
-        "trade_date": "2026-05-11",
-        "stock_count": 0,
-        "coverage_pct": 0.0,
-        "holdings_rows": 400436
-      },
-      {
         "trade_date": "2026-05-08",
-        "stock_count": 1094,
-        "coverage_pct": 39.4,
+        "stock_count": 1098,
+        "expected_local_count": 2722,
+        "coverage_pct": 40.3,
+        "pct_available_count": 1094,
+        "pct_availability_pct": 99.6,
+        "participant_stock_count": 1098,
+        "participant_coverage_pct": 100.0,
         "holdings_rows": 187052
-      },
-      {
-        "trade_date": "2026-05-07",
-        "stock_count": 2710,
-        "coverage_pct": 97.6,
-        "holdings_rows": 401191
-      },
-      {
-        "trade_date": "2026-05-06",
-        "stock_count": 2609,
-        "coverage_pct": 94.0,
-        "holdings_rows": 386884
-      },
-      {
-        "trade_date": "2026-05-05",
-        "stock_count": 2709,
-        "coverage_pct": 97.6,
-        "holdings_rows": 400963
-      },
-      {
-        "trade_date": "2026-05-04",
-        "stock_count": 2708,
-        "coverage_pct": 97.6,
-        "holdings_rows": 400884
-      },
-      {
-        "trade_date": "2026-04-30",
-        "stock_count": 2702,
-        "coverage_pct": 97.3,
-        "holdings_rows": 400773
       }
     ],
-    "low_coverage_count": 27
+    "low_coverage_count": 12,
+    "low_participant_coverage_dates": [
+      {
+        "trade_date": "2026-06-18",
+        "stock_count": 2741,
+        "expected_local_count": 2744,
+        "coverage_pct": 99.9,
+        "pct_available_count": 2732,
+        "pct_availability_pct": 99.7,
+        "participant_stock_count": 0,
+        "participant_coverage_pct": 0.0,
+        "holdings_rows": 0
+      },
+      {
+        "trade_date": "2026-06-17",
+        "stock_count": 2740,
+        "expected_local_count": 2740,
+        "coverage_pct": 100.0,
+        "pct_available_count": 2731,
+        "pct_availability_pct": 99.7,
+        "participant_stock_count": 0,
+        "participant_coverage_pct": 0.0,
+        "holdings_rows": 0
+      }
+    ],
+    "low_participant_coverage_count": 2
   }
 }

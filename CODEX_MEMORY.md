@@ -800,8 +800,8 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - Deployment remains direct Wrangler to Cloudflare Pages only. No GitHub/`gh`/Actions route is involved.
 ## 2026-07-13 Data Honesty Audit
 
-- Public completeness must use trusted CCASS rows (`total_pct IS NOT NULL`), not merely row presence. The publish threshold is 98% to allow a small suspended/new-listing tail while preserving missing values as `null`.
-- Canonical publish after the audit: `2026-07-10`, 2,742 rows; 2,736 trusted Market% rows out of 2,776 (98.6%); `is_complete=false`. Five-day trend values exist for 2,730 rows and 696 are genuine positive share-and-percent increases.
+- CCASS aggregate completeness uses validated rows with observed `total_shares > 0`. Official `total_pct` can legitimately be absent and must remain `null`; its availability is reported separately and must never stand in for stock/date coverage.
+- Current publish coverage uses the active publish-scope universe. Historical coverage uses the median of the nearest three complete dates before and after each date, so later IPOs and a run of partial dates cannot distort the baseline.
 - Historical/backfill runs are DB-only. They must never overwrite root/data publish aliases. Historical publish is blocked unless `HOLDINGS_ALLOW_HISTORICAL_PUBLISH=1` is explicitly set.
 - `rights_analysis.json`: missing amount, issue price, dilution, and announcement market price are `null`, never numeric zero.
 - `fundflow.json`: westock does not provide short-sale fields. `short_*` values are `null`, `top_short` is empty, and the page says the source did not provide the field.
@@ -885,3 +885,12 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - A trusted 99.2% current CCASS snapshot is operationally healthy at the documented 98% publish threshold even though exact `is_complete` remains honestly `false`.
 - A successful refresh before 17:30 does not suppress the same day's 18:30 post-close task. Only a post-close success skips the 22:00 retry.
 - Verified canonical production after direct Cloudflare deploy: health `PASS`; CCASS 2026-07-13 at 99.2%; market/prices/rights/fundflow/trade engine/sector rotation through 2026-07-14; signals generated 2026-07-15. Historical maintenance remains `WARN` for the recorded backlog.
+
+### 2026-07-15 historical CCASS maintenance
+
+- `scripts/repo_audit.py` and `ccass/scripts/audit_gate.py` now report aggregate stock coverage, official `total_pct` availability, and participant-detail coverage independently. Historical verifier observations remain visible but no longer masquerade as missing-date maintenance failures.
+- Never import apparent full historical rows from `C:\Users\Administrator\Desktop\automatic\ccass-debug\ccass\ccass.db` for 2026-06-19 through 2026-07-02. Cross-checking showed identical per-stock holdings repeated across requested dates and written on 2026-07-07; they came from the old Longbridge date mismatch and are not valid history.
+- Before repair writes, `ccass/backups/holdings.db.bak.before-gap-repair-20260715_110440` passed SQLite `integrity_check=ok`.
+- Official serial HKEX repair raised 2026-05-29 to 2725/2742 (99.4%) and 2026-05-06 to 2700/2725 (99.1%) against date-eligible candidate sets. No-record responses stayed missing and official null percentages stayed null.
+- `ccass/scripts/hkex_gap_backfill.py --auto` selects the newest genuine aggregate gap first, then participant-detail gaps. It derives target codes from nearby complete dates, reuses one HKEX session, stays single-threaded, and resumes after a bounded request budget.
+- Scheduled task `HKAlert-CCASSMaintenance` runs at 00:15, 06:15, and 12:15 HKT with a 1,200-request budget. It shares `Local\HKAlertDailyAutomation` with production refresh, so it exits without touching the DB if another writer is active. Remaining official backfill stays `maintenance_status=WARN` until rows really reach threshold.

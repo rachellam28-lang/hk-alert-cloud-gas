@@ -29,7 +29,7 @@ def test_price_snapshot_uses_provider_session_not_process_date():
     assert "prices_{snapshot_date.replace('-', '')}.json" in source
 
 
-def test_publish_coverage_counts_trusted_market_pct_only():
+def test_publish_coverage_counts_valid_aggregate_rows_not_optional_pct():
     from ccass.scripts.audit_gate import (
         _latest_db_coverage,
         _latest_publishable_db_date,
@@ -45,6 +45,7 @@ def test_publish_coverage_counts_trusted_market_pct_only():
         CREATE TABLE ccass_daily (
             stock_code TEXT NOT NULL,
             trade_date TEXT NOT NULL,
+            total_shares INTEGER NOT NULL,
             total_pct REAL,
             validation_failed INTEGER NOT NULL DEFAULT 0
         );
@@ -55,17 +56,38 @@ def test_publish_coverage_counts_trusted_market_pct_only():
         [(f"{code:05d}",) for code in range(1, 101)],
     )
     conn.executemany(
-        "INSERT INTO ccass_daily VALUES (?, '2026-07-09', 50.0, 0)",
+        "INSERT INTO ccass_daily VALUES (?, '2026-07-09', 1000, 50.0, 0)",
         [(f"{code:05d}",) for code in range(1, 99)],
     )
     conn.executemany(
-        "INSERT INTO ccass_daily VALUES (?, '2026-07-10', ?, 0)",
+        "INSERT INTO ccass_daily VALUES (?, '2026-07-10', 1000, ?, 0)",
         [(f"{code:05d}", 50.0 if code == 1 else None) for code in range(1, 100)],
     )
 
     count, total, pct = _latest_db_coverage(conn, "2026-07-10")
-    assert (count, total, pct) == (1, 100, 1.0)
-    assert _latest_publishable_db_date(conn, 98.0) == ("2026-07-09", 98, 98.0)
+    assert (count, total, pct) == (99, 100, 99.0)
+    assert _latest_publishable_db_date(conn, 98.0) == ("2026-07-10", 99, 99.0)
+
+
+def test_historical_coverage_uses_local_baseline_and_flags_partial_cluster():
+    from ccass.scripts.audit_gate import _date_coverages
+
+    conn = sqlite3.connect(":memory:")
+    conn.execute(
+        "CREATE TABLE ccass_daily (stock_code TEXT, trade_date TEXT, total_shares INTEGER, "
+        "validation_failed INTEGER NOT NULL DEFAULT 0)"
+    )
+    counts = [100, 100, 99, 100, 10, 8, 12, 100, 100, 100]
+    for day, count in enumerate(counts, 1):
+        conn.executemany(
+            "INSERT INTO ccass_daily VALUES (?, ?, 1000, 0)",
+            [(f"{code:05d}", f"2026-07-{day:02d}") for code in range(1, count + 1)],
+        )
+
+    coverages = _date_coverages(conn)
+    assert coverages["2026-07-03"] >= 0.99
+    assert coverages["2026-07-05"] < 0.2
+    assert coverages["2026-07-06"] < 0.2
 
 
 def test_fundflow_missing_short_data_stays_missing():

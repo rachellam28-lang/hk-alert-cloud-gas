@@ -1,7 +1,8 @@
 [CmdletBinding()]
 param(
     [string]$RefreshTask = "HKAlert-DailyRefresh",
-    [string]$FutuTask = "HKAlert-FutuOpenD"
+    [string]$FutuTask = "HKAlert-FutuOpenD",
+    [string]$MaintenanceTask = "HKAlert-CCASSMaintenance"
 )
 
 $ErrorActionPreference = "Stop"
@@ -10,9 +11,10 @@ $PowerShell = "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe"
 $Python = Join-Path $RepoRoot ".venv\Scripts\python.exe"
 $Runner = Join-Path $RepoRoot "scripts\run_daily_automation.ps1"
 $FutuWatchdog = Join-Path $RepoRoot "scripts\ensure_futu_opend.ps1"
+$MaintenanceRunner = Join-Path $RepoRoot "scripts\run_ccass_maintenance.ps1"
 $UserId = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
 
-foreach ($path in @($PowerShell, $Python, $Runner, $FutuWatchdog)) {
+foreach ($path in @($PowerShell, $Python, $Runner, $FutuWatchdog, $MaintenanceRunner)) {
     if (-not (Test-Path -LiteralPath $path)) { throw "Required automation path is missing: $path" }
 }
 
@@ -43,6 +45,33 @@ Register-ScheduledTask `
     -Description "Refresh all CCASS pages, audit real data, and deploy directly to Cloudflare. 22:00 is a same-day retry only." `
     -Force | Out-Null
 
+$maintenanceAction = New-ScheduledTaskAction `
+    -Execute $PowerShell `
+    -Argument ('-NoProfile -NonInteractive -ExecutionPolicy Bypass -File "{0}" -RequestBudget 1200' -f $MaintenanceRunner) `
+    -WorkingDirectory $RepoRoot
+$maintenanceTriggers = @(
+    (New-ScheduledTaskTrigger -Daily -At "00:15"),
+    (New-ScheduledTaskTrigger -Daily -At "06:15"),
+    (New-ScheduledTaskTrigger -Daily -At "12:15")
+)
+$maintenanceSettings = New-ScheduledTaskSettingsSet `
+    -StartWhenAvailable `
+    -RunOnlyIfNetworkAvailable `
+    -AllowStartIfOnBatteries `
+    -DontStopIfGoingOnBatteries `
+    -WakeToRun `
+    -ExecutionTimeLimit (New-TimeSpan -Hours 5) `
+    -MultipleInstances IgnoreNew
+
+Register-ScheduledTask `
+    -TaskName $MaintenanceTask `
+    -Action $maintenanceAction `
+    -Trigger $maintenanceTriggers `
+    -Principal $principal `
+    -Settings $maintenanceSettings `
+    -Description "Serial HKEX repair of genuine historical CCASS aggregate and participant gaps; shares the daily-refresh mutex." `
+    -Force | Out-Null
+
 $futuAction = New-ScheduledTaskAction `
     -Execute $PowerShell `
     -Argument ('-NoProfile -NonInteractive -ExecutionPolicy Bypass -File "{0}"' -f $FutuWatchdog) `
@@ -70,7 +99,7 @@ Register-ScheduledTask `
     -Description "Keep the local Futu OpenD quote gateway healthy; start it only when the real quote probe fails." `
     -Force | Out-Null
 
-Get-ScheduledTask -TaskName $FutuTask, $RefreshTask | ForEach-Object {
+Get-ScheduledTask -TaskName $FutuTask, $RefreshTask, $MaintenanceTask | ForEach-Object {
     $info = Get-ScheduledTaskInfo -TaskName $_.TaskName
     [pscustomobject]@{
         TaskName = $_.TaskName

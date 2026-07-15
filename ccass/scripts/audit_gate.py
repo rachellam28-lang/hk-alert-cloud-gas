@@ -18,6 +18,7 @@ import subprocess
 import sys
 from datetime import date, timedelta
 from pathlib import Path
+from statistics import median
 
 try:
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -77,7 +78,7 @@ def _latest_db_coverage(conn: sqlite3.Connection, trade_date: str) -> tuple[int,
         SELECT COUNT(DISTINCT stock_code)
         FROM ccass_daily
         WHERE trade_date = ? AND validation_failed = 0
-          AND total_pct IS NOT NULL
+          AND total_shares > 0
           AND stock_code NOT LIKE '029%'
           AND stock_code NOT LIKE '04%'
           AND stock_code NOT LIKE '8%'
@@ -104,7 +105,7 @@ def _latest_publishable_db_date(conn: sqlite3.Connection, min_coverage: float) -
     rows = conn.execute(
         """
         SELECT trade_date,
-               COUNT(DISTINCT CASE WHEN total_pct IS NOT NULL THEN stock_code END) AS stock_count
+               COUNT(DISTINCT CASE WHEN total_shares > 0 THEN stock_code END) AS stock_count
         FROM ccass_daily
         WHERE validation_failed = 0
           AND stock_code NOT LIKE '029%'
@@ -133,11 +134,23 @@ def _date_set(conn: sqlite3.Connection) -> set[str]:
     return {r[0] for r in rows if r and r[0]}
 
 
+def _local_expected_count(counts: list[int], index: int) -> float:
+    """Median of the nearest complete dates, excluding obvious partial runs."""
+    if not counts:
+        return 0.0
+    complete_floor = max(counts) * 0.8
+    complete_indexes = [i for i, count in enumerate(counts) if count >= complete_floor]
+    before = [i for i in complete_indexes if i <= index][-3:]
+    after = [i for i in complete_indexes if i > index][:3]
+    reference_counts = [counts[i] for i in before + after]
+    return float(median(reference_counts)) if reference_counts else 0.0
+
+
 def _date_coverages(conn: sqlite3.Connection) -> dict[str, float]:
     rows = conn.execute(
         """
         SELECT trade_date,
-               COUNT(DISTINCT CASE WHEN total_pct IS NOT NULL THEN stock_code END) AS stock_count
+               COUNT(DISTINCT CASE WHEN total_shares > 0 THEN stock_code END) AS stock_count
         FROM ccass_daily
         WHERE validation_failed = 0
           AND stock_code NOT LIKE '029%'
@@ -147,21 +160,45 @@ def _date_coverages(conn: sqlite3.Connection) -> dict[str, float]:
         ORDER BY trade_date
         """
     ).fetchall()
-    total_row = conn.execute(
-        """
-        SELECT COUNT(*)
-        FROM stock_universe
-        WHERE is_active=1
-          AND stock_code NOT LIKE '029%'
-          AND stock_code NOT LIKE '04%'
-          AND stock_code NOT LIKE '8%'
-        """
-    ).fetchone()
-    total = int(total_row[0] or 0)
     out: dict[str, float] = {}
-    for trade_date, stock_count in rows:
-        out[str(trade_date)] = (float(stock_count) / total) if total else 0.0
+    counts = [int(row[1] or 0) for row in rows]
+    for index, (trade_date, stock_count) in enumerate(rows):
+        expected = _local_expected_count(counts, index)
+        out[str(trade_date)] = min(float(stock_count) / expected, 1.0) if expected else 0.0
     return out
+
+
+def _date_participant_coverages(conn: sqlite3.Connection) -> dict[str, float]:
+    rows = conn.execute(
+        """
+        WITH aggregate_rows AS (
+            SELECT trade_date, COUNT(DISTINCT stock_code) AS stock_count
+            FROM ccass_daily
+            WHERE validation_failed = 0
+              AND total_shares > 0
+              AND stock_code NOT LIKE '029%'
+              AND stock_code NOT LIKE '04%'
+              AND stock_code NOT LIKE '8%'
+            GROUP BY trade_date
+        ), participant_rows AS (
+            SELECT trade_date, COUNT(DISTINCT stock_code) AS stock_count
+            FROM ccass_holdings
+            WHERE stock_code NOT LIKE '029%'
+              AND stock_code NOT LIKE '04%'
+              AND stock_code NOT LIKE '8%'
+            GROUP BY trade_date
+        )
+        SELECT a.trade_date, a.stock_count, COALESCE(p.stock_count, 0)
+        FROM aggregate_rows a
+        LEFT JOIN participant_rows p ON p.trade_date = a.trade_date
+        ORDER BY a.trade_date
+        """
+    ).fetchall()
+    return {
+        str(trade_date): min(float(participant_count) / float(aggregate_count), 1.0)
+        if aggregate_count else 0.0
+        for trade_date, aggregate_count, participant_count in rows
+    }
 
 
 def _table_exists(conn: sqlite3.Connection, table: str) -> bool:
@@ -302,6 +339,7 @@ def main() -> int:
     publishable_coverage_pct = None
     present_dates: set[str] = set()
     date_coverages: dict[str, float] = {}
+    participant_coverages: dict[str, float] = {}
     conn = sqlite3.connect(str(DB_PATH))
     try:
         if not _table_exists(conn, "ccass_daily") or not _table_exists(conn, "stock_universe"):
@@ -313,6 +351,7 @@ def main() -> int:
             publishable_db, publishable_count, publishable_coverage_pct = _latest_publishable_db_date(conn, args.min_coverage)
             present_dates = _date_set(conn)
             date_coverages = _date_coverages(conn)
+            participant_coverages = _date_participant_coverages(conn)
     except sqlite3.Error as exc:
         errors.append(f"Database audit failed: {exc}")
     finally:
@@ -373,6 +412,17 @@ def main() -> int:
                 + ", ".join(incomplete_days[:12])
                 + (" ..." if len(incomplete_days) > 12 else "")
             )
+        incomplete_participant_days = [
+            trade_date
+            for trade_date, cov in sorted(participant_coverages.items(), reverse=True)
+            if start_db <= trade_date <= end_db and cov * 100 < args.min_coverage
+        ]
+        if incomplete_participant_days:
+            maintenance_warnings.append(
+                f"Historical low participant-detail coverage below {args.min_coverage}%: "
+                + ", ".join(incomplete_participant_days[:12])
+                + (" ..." if len(incomplete_participant_days) > 12 else "")
+            )
         if publishable_db and latest_db and publishable_db != latest_db:
             tail_missing = _missing_trading_days(publishable_db, latest_db, present_dates)
             tail_missing = [d for d in tail_missing if d != publishable_db]
@@ -422,12 +472,16 @@ def main() -> int:
 
     if data_report.get("warnings"):
         warnings.append(f"verify_data {verify_date} warnings={len(data_report['warnings'])}")
-    if history_report.get("errors") or history_report.get("warnings"):
+    if history_report.get("errors"):
         maintenance_warnings.append(
             "historical verify_data backlog "
             f"errors={len(history_report.get('errors', []))} "
             f"warnings={len(history_report.get('warnings', []))}"
         )
+    history_warning_counts: dict[str, int] = {}
+    for item in history_report.get("warnings", []):
+        check = str(item.get("check") or "unknown")
+        history_warning_counts[check] = history_warning_counts.get(check, 0) + 1
     if dash_report.get("status") == "WARN":
         warnings.append("verify_dashboard WARN")
 
@@ -462,6 +516,8 @@ def main() -> int:
             "status": "FAIL" if history_report.get("errors") else ("WARN" if history_report.get("warnings") else "PASS"),
             "errors": len(history_report.get("errors", [])),
             "warnings": len(history_report.get("warnings", [])),
+            "warning_counts": history_warning_counts,
+            "classification": "observations; coverage and participant gaps are gated separately",
         },
         "verify_dashboard": {
             "status": dash_report.get("status"),
