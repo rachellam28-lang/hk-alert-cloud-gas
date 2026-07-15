@@ -186,9 +186,10 @@ def main():
         if account_id:
             env["CLOUDFLARE_ACCOUNT_ID"] = account_id
 
+        deploy_timeout = max(120, int(os.getenv("CLOUDFLARE_DEPLOY_TIMEOUT_SEC", "300")))
         r = subprocess.run(
             [
-                "cmd.exe", "/c", "npx", "wrangler", "pages", "deploy", str(tmp),
+                "cmd.exe", "/c", "wrangler", "pages", "deploy", str(tmp),
                 f"--project-name={args.project}",
                 f"--branch={args.branch}",
                 "--commit-dirty=true",
@@ -198,7 +199,7 @@ def main():
             text=True,
             encoding="utf-8",
             errors="replace",
-            timeout=120,
+            timeout=deploy_timeout,
         )
 
         output = (r.stderr or "") + "\n" + (r.stdout or "")
