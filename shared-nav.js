@@ -7,7 +7,7 @@
   const base = (nav.dataset.base || './').replace(/\/+$/, '/');
   const primary = [
     ['trading_desk.html', '交易台'],
-    ['smallcap_playbook.html', '財技盤路'],
+    ['smallcap_playbook.html', '細價股財技'],
     ['index.html', '\ud83d\udce6 Market'],
     ['signals.html', '\ud83d\udd02 \u8a0a\u865f'],
     ['watchlist.html', '\u2b50 \u81ea\u9078'],

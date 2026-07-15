@@ -20,7 +20,9 @@ HOLDINGS_PATH = BASE / "holdings.json"
 PRICES_PATH = DATA / "stock_prices.json"
 SIGNALS_PATH = DATA / "signals.json"
 ANNOUNCEMENTS_PATH = DATA / "announcements.json"
+RIGHTS_ANALYSIS_PATH = DATA / "rights_analysis.json"
 FUNDFLOW_PATH = DATA / "fundflow.json"
+PARTICIPANT_ANOMALIES_PATH = DATA / "participant_anomalies.json"
 DAILY_CACHE_DIR = BASE / "raw" / "trading_skill_kbars"
 TENCENT_KLINE_URL = "https://web.ifzq.gtimg.cn/appstock/app/kline/kline"
 DEFAULT_CANDIDATES = 240
@@ -50,6 +52,45 @@ SETUP_META = {
         "sub": "counter-trend bounce",
         "note": "Treat as a bounce until key levels are recovered.",
         "tone": "rebound",
+    },
+}
+
+FINANCE_EVENT_LENS = {
+    "placement": {
+        "lens": "配股不等於利好；先核對比例、折讓、授權方式、公司背景與資金用途。",
+        "requires": ["配售比例", "折讓", "一般/特別授權", "資金用途"],
+    },
+    "rights": {
+        "lens": "供股目的可能是供錢、供大、供乾或供賣殼；未有條款、股權變化與價格確認前不可定性。",
+        "requires": ["供股比例", "折讓", "包銷/承諾", "集資用途", "完成後股權"],
+    },
+    "convertible": {
+        "lens": "可換股債要同時核對承配人、息率、年期及換股價，不能只看換股價。",
+        "requires": ["承配人", "息率", "到期日", "換股價", "全面兌換攤薄"],
+    },
+    "increase": {
+        "lens": "大股東增持可降低流通量；若增持後股價仍逆向下跌，視為警號而非自動利好。",
+        "requires": ["增持人", "作價", "股權變化", "增持後價格反應"],
+    },
+    "buyback": {
+        "lens": "回購可減少流通股份；若回購後持續下跌，需防暗手持貨派發。",
+        "requires": ["回購量", "回購價", "註銷狀態", "回購後價格反應"],
+    },
+    "failed_sale": {
+        "lens": "賣盤洽談終止後，觀察一個月內能否重越洽談期高位；未突破只列觀察。",
+        "requires": ["洽談期高位", "終止日期", "一個月期限", "突破收市確認"],
+    },
+    "general_offer": {
+        "lens": "全購後要分開看新主背景、貨源集中與後續配供股，不因易手本身直接看升。",
+        "requires": ["新主背景", "要約價", "完成狀態", "公眾持股", "後續股本事件"],
+    },
+    "consolidation": {
+        "lens": "合股只改變股本單位；必須連同供配股、買賣單位與後續價格行為解讀。",
+        "requires": ["合股比例", "每手股數", "同期供配股", "生效後價格"],
+    },
+    "subdivision": {
+        "lens": "拆股不增加公司價值；留意入場門檻下降後是否配合派貨。",
+        "requires": ["拆股比例", "每手股數", "生效後成交", "後續股權事件"],
     },
 }
 
@@ -662,8 +703,8 @@ def signal_label(item: object) -> str:
     return str(item.get("label") or item.get("type") or item.get("name") or item.get("signal") or "").strip()
 
 
-def classify_tape_confirmations(technical: list[dict]) -> list[dict]:
-    """Map published technical signals to the three user-selected tape confirmations."""
+def classify_technical_confirmations(technical: list[dict]) -> list[dict]:
+    """Map published signals to the three selected technical confirmations."""
     found: dict[str, dict] = {}
     for item in technical:
         label = str(item.get("label") or "")
@@ -686,7 +727,130 @@ def classify_tape_confirmations(technical: list[dict]) -> list[dict]:
     return [found[key] for key in ("gap_up", "fvg_up", "poc_break") if key in found]
 
 
-def classify_finance_events(rows: list[dict] | None) -> list[dict]:
+def _clean_term(value) -> str | None:
+    if value is None:
+        return None
+    text = str(value).strip()
+    if not text or text.lower() in {"--", "—", "n/a", "na", "none", "null"}:
+        return None
+    return text
+
+
+def _authorization_label(row: dict) -> str | None:
+    blob = " ".join(str(row.get(key) or "") for key in ("method", "purpose", "title")).upper()
+    if "SPECIAL MANDATE" in blob or "特別授權" in blob:
+        return "特別授權"
+    if "GENERAL MANDATE" in blob or "一般授權" in blob:
+        return "一般授權"
+    return None
+
+
+def capital_action_terms(row: dict | None) -> dict | None:
+    """Expose only terms already extracted by the canonical rights pipeline."""
+    if not isinstance(row, dict):
+        return None
+    dilution = num(row.get("pct_num"))
+    if dilution is None:
+        dilution = num(row.get("pct_shares"))
+    discount = num(row.get("discount_pct"))
+    ratio = _clean_term(row.get("ratio"))
+    authorization = _authorization_label(row)
+    purpose = _clean_term(row.get("purpose"))
+    title = _clean_term(row.get("title"))
+    if purpose and (purpose == title or purpose.startswith("公司公告：")):
+        purpose = None
+    supply = row.get("supply") if isinstance(row.get("supply"), dict) else {}
+
+    ratio_value = ratio or (f"{dilution:.3f}%" if dilution is not None else None)
+    if discount is None:
+        discount_value = None
+    elif discount < 0:
+        discount_value = f"折讓 {abs(discount):.1f}%"
+    elif discount > 0:
+        discount_value = f"溢價 {discount:.1f}%"
+    else:
+        discount_value = "無折溢價"
+    checks = [
+        {"key": "ratio", "label": "比例 / 攤薄", "value": ratio_value, "status": "observed" if ratio_value else "missing"},
+        {"key": "discount", "label": "折讓 / 溢價", "value": discount_value, "status": "observed" if discount_value else "missing"},
+        {"key": "authorization", "label": "授權方式", "value": authorization, "status": "observed" if authorization else "missing"},
+        {"key": "purpose", "label": "資金用途", "value": purpose, "status": "observed" if purpose else "missing"},
+    ]
+    observed_count = sum(item["status"] == "observed" for item in checks)
+    missing = [item["label"] for item in checks if item["status"] == "missing"]
+    pending = [str(item) for item in (supply.get("pending") or []) if str(item).strip()]
+    for label in missing:
+        note = f"未抽到{label}"
+        if note not in pending:
+            pending.append(note)
+    dilution_tier = None
+    if dilution is not None:
+        dilution_tier = "極高" if dilution >= 50 else "高" if dilution >= 20 else "中" if dilution >= 10 else "低"
+    discount_abs = abs(discount) if discount is not None else None
+    discount_tier = None
+    if discount_abs is not None:
+        discount_tier = "極深" if discount_abs >= 30 else "深" if discount_abs >= 15 else "中" if discount_abs >= 5 else "低"
+    return {
+        "source_date": row.get("date_parsed") or row.get("date"),
+        "source_url": row.get("pdf_url"),
+        "stage": row.get("announcement_stage"),
+        "category": row.get("category_display") or row.get("category"),
+        "ratio": ratio,
+        "dilution_pct": dilution,
+        "dilution_tier": dilution_tier,
+        "discount_pct": discount,
+        "discount_tier": discount_tier,
+        "issue_price": num(row.get("price_num")),
+        "amount": _clean_term(row.get("amount")),
+        "authorization": authorization,
+        "purpose": purpose,
+        "placing_agent": _clean_term(row.get("placing_agent")),
+        "supply_label": supply.get("label"),
+        "supply_class": supply.get("cls"),
+        "supply_basis": supply.get("basis"),
+        "positive": supply.get("positive") or [],
+        "negative": supply.get("negative") or [],
+        "pending": pending,
+        "checks": checks,
+        "coverage": {"observed": observed_count, "total": len(checks), "complete": observed_count == len(checks)},
+        "data_kind": "observed_extracted_terms",
+        "is_observed": True,
+    }
+
+
+def rights_analysis_map() -> dict[str, list[dict]]:
+    payload = load_json(RIGHTS_ANALYSIS_PATH, [])
+    rows = payload if isinstance(payload, list) else []
+    by_code: dict[str, list[dict]] = {}
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        code = hk_code(row.get("code"))
+        if code:
+            by_code.setdefault(code, []).append(row)
+    for code in by_code:
+        by_code[code].sort(key=lambda item: str(item.get("date_parsed") or item.get("date") or ""), reverse=True)
+    return by_code
+
+
+def _terms_for_event(event_row: dict, event_key: str, rights_rows: list[dict] | None) -> dict | None:
+    event_date = str(event_row.get("date") or event_row.get("release_date") or "")[:10]
+    for row in rights_rows or []:
+        source_date = str(row.get("date_parsed") or row.get("date") or "")[:10]
+        event_type = str(row.get("announcement_type") or "").lower()
+        title = str(row.get("title") or "").upper()
+        compatible = (
+            (event_key == "placement" and event_type == "placement")
+            or (event_key == "rights" and event_type == "rights")
+            or (event_key == "consolidation" and "CONSOLIDATION" in title)
+            or (event_key == "capital_reduction" and "CAPITAL REDUCTION" in title)
+        )
+        if compatible and source_date == event_date:
+            return capital_action_terms(row)
+    return None
+
+
+def classify_finance_events(rows: list[dict] | None, rights_rows: list[dict] | None = None) -> list[dict]:
     """Classify observed announcement titles without inferring an unreported event."""
     type_labels = {
         "placement": ("placement", "配股 / 配售", "risk"),
@@ -725,6 +889,15 @@ def classify_finance_events(rows: list[dict] | None) -> list[dict]:
             if key in seen:
                 continue
             seen.add(key)
+            method = FINANCE_EVENT_LENS.get(key) or {}
+            terms = _terms_for_event(row, key, rights_rows)
+            coverage = (terms or {}).get("coverage") or {}
+            if not terms or not coverage.get("observed"):
+                terms_status = "not_extracted"
+            elif coverage.get("complete"):
+                terms_status = "complete"
+            else:
+                terms_status = "partial"
             results.append({
                 "key": key,
                 "label": label,
@@ -732,6 +905,10 @@ def classify_finance_events(rows: list[dict] | None) -> list[dict]:
                 "date": row.get("date") or row.get("release_date"),
                 "title": title,
                 "url": row.get("url"),
+                "method_lens": method.get("lens"),
+                "requires": method.get("requires") or [],
+                "terms": terms,
+                "terms_status": terms_status,
                 "is_observed": True,
             })
     results.sort(key=lambda item: (str(item.get("date") or ""), item["key"]), reverse=True)
@@ -751,7 +928,72 @@ def announcement_map() -> dict[str, list[dict]]:
     return by_code
 
 
-def classify_signal_lanes(group: dict, announcements: list[dict] | None = None) -> dict:
+def participant_anomaly_map() -> dict[str, list[dict]]:
+    """Return only observed stock-level CCASS patterns; participant rows stay in the source file."""
+    payload = load_json(PARTICIPANT_ANOMALIES_PATH, {})
+    rows = payload.get("anomalies") if isinstance(payload, dict) else []
+    allowed = {"accumulation_cluster", "distribution_cluster", "suspected_transfer"}
+    by_code: dict[str, list[dict]] = {}
+    for row in rows or []:
+        if not isinstance(row, dict) or row.get("scope") != "stock" or row.get("type") not in allowed:
+            continue
+        code = hk_code(row.get("code"))
+        if not code:
+            continue
+        details = row.get("details") if isinstance(row.get("details"), dict) else {}
+        by_code.setdefault(code, []).append({
+            "key": row.get("type"),
+            "date": row.get("date"),
+            "previous_date": row.get("previous_date"),
+            "severity": row.get("severity"),
+            "shares_delta": num(row.get("shares_delta")),
+            "pct_delta": num(row.get("pct_delta")),
+            "top5_delta": num(details.get("top5_delta")),
+            "top10_delta": num(details.get("top10_delta")),
+            "participants_delta": num(details.get("participants_delta")),
+            "matched_turnover_pct": num(details.get("matched_turnover_pct")),
+            "is_observed": True,
+        })
+    priority = {"suspected_transfer": 3, "distribution_cluster": 2, "accumulation_cluster": 1}
+    for code in by_code:
+        by_code[code].sort(
+            key=lambda item: (str(item.get("date") or ""), priority.get(str(item.get("key")), 0)),
+            reverse=True,
+        )
+    return by_code
+
+
+def ccass_concentration_proxy(market_pct, top5_pct) -> dict:
+    """Book-method proxy: non-CCASS plus top-five share of the in-CCASS balance."""
+    market = num(market_pct)
+    top5 = num(top5_pct)
+    if market is None or top5 is None or not (0 <= market <= 100 and 0 <= top5 <= 100):
+        return {
+            "available": False,
+            "top5_plus_non_ccass_pct": None,
+            "tier": "unavailable",
+            "is_observed": False,
+        }
+    value = (100 - market) + market * top5 / 100
+    tier = "concentrated" if value >= 90 else "watch" if value >= 80 else "broad"
+    return {
+        "available": True,
+        "market_pct": round(market, 4),
+        "top5_share_of_ccass_pct": round(top5, 4),
+        "non_ccass_pct": round(100 - market, 4),
+        "top5_plus_non_ccass_pct": round(value, 4),
+        "tier": tier,
+        "threshold_pct": 90,
+        "basis": "(100 - Market%) + Market% x Top5%; derived from observed broker-level CCASS distribution",
+        "is_observed": False,
+    }
+
+
+def classify_signal_lanes(
+    group: dict,
+    announcements: list[dict] | None = None,
+    rights_rows: list[dict] | None = None,
+) -> dict:
     """Partition every published signal into exactly one evidence lane."""
     technical: list[dict] = []
     events: list[dict] = []
@@ -771,7 +1013,7 @@ def classify_signal_lanes(group: dict, announcements: list[dict] | None = None) 
     corp_types = group.get("corpTypes") if isinstance(group.get("corpTypes"), dict) else {}
     supply = group.get("supply") if isinstance(group.get("supply"), dict) else {}
     supply_class = str(supply.get("cls") or "")
-    finance_events = classify_finance_events(announcements)
+    finance_events = classify_finance_events(announcements, rights_rows)
     event_active = bool(events or finance_events or any(bool(value) for value in corp_types.values()) or supply_class)
     if supply_class == "supply-stock":
         event_direction = "positive_supply"
@@ -783,7 +1025,7 @@ def classify_signal_lanes(group: dict, announcements: list[dict] | None = None) 
         event_direction = "watch"
     else:
         event_direction = "neutral"
-    tape_confirmations = classify_tape_confirmations(technical)
+    technical_confirmations = classify_technical_confirmations(technical)
     return {
         "event": {
             "active": event_active,
@@ -797,8 +1039,8 @@ def classify_signal_lanes(group: dict, announcements: list[dict] | None = None) 
             "active": bool(technical),
             "count": len(technical),
             "labels": technical,
-            "tape_confirmations": tape_confirmations,
-            "tape_confirmation_count": len(tape_confirmations),
+            "technical_confirmations": technical_confirmations,
+            "technical_confirmation_count": len(technical_confirmations),
             "is_observed": True,
         },
         "ccass_signals": {
@@ -822,6 +1064,8 @@ def stage1_candidates(limit: int) -> tuple[list[dict], dict]:
     prices = load_json(PRICES_PATH, {})
     signals = signal_map()
     announcements = announcement_map()
+    rights_rows = rights_analysis_map()
+    participant_patterns = participant_anomaly_map()
     flows = fundflow_map()
     rows = holdings.get("stocks") if isinstance(holdings, dict) else []
     ranked: list[dict] = []
@@ -848,6 +1092,9 @@ def stage1_candidates(limit: int) -> tuple[list[dict], dict]:
         d5s = num(holding.get("d5s"))
         d20s = num(holding.get("d20s"))
         streak = int(num(holding.get("su")) or 0)
+        concentration = ccass_concentration_proxy(holding.get("tp"), holding.get("t5"))
+        observed_patterns = participant_patterns.get(code) or []
+        participant_pattern = observed_patterns[0] if observed_patterns else None
         if p52 is not None:
             score += clamp((p52 - 50) / 6, -5, 8)
             if p52 >= 80:
@@ -874,8 +1121,21 @@ def stage1_candidates(limit: int) -> tuple[list[dict], dict]:
         if streak >= 2:
             score += min(6.0, 1.2 + streak * 0.65)
             reasons.append(f"CCASS streak {streak}D")
+        if concentration.get("tier") == "concentrated" and streak >= 2:
+            score += 2
+            reasons.append("CCASS concentrated + rising")
+        if participant_pattern:
+            pattern_key = participant_pattern.get("key")
+            if pattern_key == "accumulation_cluster":
+                score += 2
+                reasons.append("observed multi-seat accumulation")
+            elif pattern_key == "distribution_cluster":
+                score -= 3
+                reasons.append("observed multi-seat distribution")
+            elif pattern_key == "suspected_transfer":
+                reasons.append("suspected broker-seat transfer")
         sig = signals.get(code) or {}
-        lanes = classify_signal_lanes(sig, announcements.get(code))
+        lanes = classify_signal_lanes(sig, announcements.get(code), rights_rows.get(code))
         technical = lanes["technical"]["labels"]
         score += min(len(technical), 4) * 1.5
         if technical:
@@ -904,13 +1164,15 @@ def stage1_candidates(limit: int) -> tuple[list[dict], dict]:
         else:
             ccass_tier = "none"
         lanes["ccass"] = {
-            "active": ccass_tier != "none",
+            "active": ccass_tier != "none" or bool(participant_pattern) or concentration.get("tier") == "concentrated",
             "tier": ccass_tier,
             "consecutive_increase_days": streak,
             "d5_pct": d5p,
             "d20_pct": d20p,
             "d5_shares": d5s,
             "d20_shares": d20s,
+            "concentration": concentration,
+            "participant_pattern": participant_pattern,
             "basis": "CCASS aggregate total_shares; neutral days do not break the streak",
             "is_observed": True,
         }
@@ -940,6 +1202,9 @@ def stage1_candidates(limit: int) -> tuple[list[dict], dict]:
                 "ccass_d5_shares": d5s,
                 "ccass_d20_shares": d20s,
                 "ccass_increase_days": streak,
+                "ccass_market_pct": num(holding.get("tp")),
+                "ccass_top5_pct": num(holding.get("t5")),
+                "ccass_concentration_proxy_pct": concentration.get("top5_plus_non_ccass_pct"),
             },
             "evidence_lanes": lanes,
         })
@@ -983,30 +1248,37 @@ def momentum_return(bars: list[dict], lookback: int) -> float | None:
 
 
 def build_smallcap_playbook(candidate: dict, setup: dict, lanes: dict) -> dict:
-    """Build an auditable finance x tape x CCASS funnel, never a buy instruction."""
+    """Build an auditable finance x technical x CCASS funnel, never a buy instruction."""
     event = lanes.get("event") or {}
     technical = lanes.get("technical") or {}
     ccass = lanes.get("ccass") or {}
-    confirmations = technical.get("tape_confirmations") or []
+    confirmations = technical.get("technical_confirmations") or []
     confirmation_keys = [item.get("key") for item in confirmations if item.get("key")]
     ccass_confirmed = ccass.get("tier") in {"strong", "building"}
+    concentration = ccass.get("concentration") or {}
+    participant_pattern = ccass.get("participant_pattern")
+    ccass_structure_key = (participant_pattern or {}).get("key") or concentration.get("tier")
+    ccass_structure_support = (
+        concentration.get("tier") == "concentrated"
+        or (participant_pattern or {}).get("key") == "accumulation_cluster"
+    )
     supply_risk = event.get("direction") == "negative_supply"
     event_active = bool(event.get("active"))
-    tape_active = bool(confirmations)
-    three_lane = event_active and tape_active and ccass_confirmed and not supply_risk
+    technical_active = bool(confirmations)
+    three_lane = event_active and technical_active and ccass_confirmed and not supply_risk
 
     if supply_risk:
         state_key, state_label = "supply_risk", "圈錢 / 攤薄風險"
     elif three_lane:
-        state_key, state_label = "three_lane", "財技 × 盤路 × CCASS"
+        state_key, state_label = "three_lane", "財技 × 技術 × CCASS"
     elif len(confirmations) >= 2:
-        state_key, state_label = "tape_confirmed", "盤路雙確認"
-    elif event_active and not tape_active:
-        state_key, state_label = "event_wait_tape", "財技後等盤路"
-    elif ccass_confirmed and not tape_active:
-        state_key, state_label = "ccass_wait_tape", "收集後等盤路"
-    elif tape_active:
-        state_key, state_label = "tape_watch", "盤路確認"
+        state_key, state_label = "technical_confirmed", "技術雙確認"
+    elif event_active and not technical_active:
+        state_key, state_label = "event_wait_technical", "財技後等技術"
+    elif ccass_confirmed and not technical_active:
+        state_key, state_label = "ccass_wait_technical", "收集後等技術"
+    elif technical_active:
+        state_key, state_label = "technical_watch", "技術確認"
     else:
         state_key, state_label = "observe", "證據未齊"
 
@@ -1015,21 +1287,25 @@ def build_smallcap_playbook(candidate: dict, setup: dict, lanes: dict) -> dict:
         "state_key": state_key,
         "state_label": state_label,
         "three_lane": three_lane,
-        "evidence_lane_count": int(event_active) + int(tape_active) + int(ccass_confirmed),
+        "evidence_lane_count": int(event_active) + int(technical_active) + int(ccass_confirmed),
         "finance_event_active": event_active,
         "finance_events": event.get("finance_events") or [],
         "supply_direction": event.get("direction"),
         "supply_class": event.get("supply_class"),
-        "tape_active": tape_active,
-        "tape_confirmation_keys": confirmation_keys,
-        "tape_confirmations": confirmations,
+        "technical_active": technical_active,
+        "technical_confirmation_keys": confirmation_keys,
+        "technical_confirmations": confirmations,
         "derived_kbar_setup": setup.get("activeKey"),
         "ccass_confirmed": ccass_confirmed,
         "ccass_tier": ccass.get("tier"),
         "ccass_increase_days": ccass.get("consecutive_increase_days"),
+        "ccass_structure_key": ccass_structure_key,
+        "ccass_structure_support": ccass_structure_support,
+        "ccass_concentration": concentration,
+        "ccass_participant_pattern": participant_pattern,
         "data_kind": "derived_evidence_funnel",
         "is_observed": False,
-        "basis": "Observed announcements, published Kbar signals and CCASS aggregate holdings are kept as separate lanes.",
+        "basis": "Observed announcements, published Kbar signals, aggregate holdings and broker-seat patterns stay separate; concentration is a derived broker-level proxy, not investor identity.",
     }
 
 
@@ -1259,8 +1535,8 @@ def build_engine(
     }
 
     return {
-        "schema_v": 2,
-        "runtime_version": "two-stage-hk-trading-engine-v1",
+        "schema_v": 3,
+        "runtime_version": "two-stage-hk-trading-engine-v2-finance-terms",
         "updated_at": built_at,
         "built_at": built_at,
         "source_updated_at": source_updated_at,

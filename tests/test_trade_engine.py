@@ -77,7 +77,7 @@ def test_stage1_covers_real_universe_and_balances_buckets():
     assert all(count > 0 for count in meta["selected_by_bucket"].values())
 
 
-def test_tape_confirmations_are_three_distinct_observed_signals():
+def test_technical_confirmations_are_three_distinct_observed_signals():
     lanes = ENGINE.classify_signal_lanes({
         "signals": [
             {"label": "向上跳空缺口", "category": "gap", "date": "2026-07-14"},
@@ -86,7 +86,7 @@ def test_tape_confirmations_are_three_distinct_observed_signals():
             {"label": "年開突破", "category": "year_open", "date": "2026-07-14"},
         ]
     })
-    confirmations = lanes["technical"]["tape_confirmations"]
+    confirmations = lanes["technical"]["technical_confirmations"]
     assert [item["key"] for item in confirmations] == ["gap_up", "fvg_up", "poc_break"]
     assert all(item["is_observed"] is True for item in confirmations)
 
@@ -110,9 +110,40 @@ def test_smallcap_playbook_keeps_supply_risk_ahead_of_confluence():
         {"activeKey": "breakout"},
         {
             "event": {"active": True, "direction": "negative_supply", "finance_events": []},
-            "technical": {"tape_confirmations": [{"key": "gap_up"}]},
+            "technical": {"technical_confirmations": [{"key": "gap_up"}]},
             "ccass": {"tier": "strong", "consecutive_increase_days": 5},
         },
     )
     assert playbook["three_lane"] is False
     assert playbook["state_key"] == "supply_risk"
+
+
+def test_finance_event_uses_only_matching_observed_rights_terms():
+    events = ENGINE.classify_finance_events(
+        [{"date": "2026-07-14", "type": "placement", "title": "PLACING OF NEW SHARES UNDER GENERAL MANDATE"}],
+        [{
+            "date_parsed": "2026-07-14",
+            "announcement_type": "placement",
+            "title": "PLACING OF NEW SHARES UNDER GENERAL MANDATE",
+            "pct_num": 20,
+            "discount_pct": -15.4,
+            "price_num": 0.11,
+            "method": "配售（一般授權）",
+            "purpose": "公告標題未有資金用途",
+            "supply": {"label": "待確認", "cls": "supply-watch", "pending": ["未有完成錨點"]},
+        }],
+    )
+    terms = events[0]["terms"]
+    assert terms["dilution_pct"] == 20
+    assert terms["discount_pct"] == -15.4
+    assert terms["authorization"] == "一般授權"
+    assert terms["coverage"]["observed"] == 4
+
+
+def test_finance_event_does_not_attach_terms_from_another_date():
+    events = ENGINE.classify_finance_events(
+        [{"date": "2026-07-14", "type": "rights", "title": "RIGHTS ISSUE"}],
+        [{"date_parsed": "2026-06-01", "announcement_type": "rights", "pct_num": 50}],
+    )
+    assert events[0]["terms"] is None
+    assert events[0]["terms_status"] == "not_extracted"

@@ -2,21 +2,23 @@
 
 Last updated: 2026-07-15 HKT
 
-## 2026-07-15 Small-cap Finance x Tape Playbook
+## 2026-07-15 Small-cap Finance x Technical x CCASS Playbook
 
 - Added `smallcap_playbook.html` as a new page; no existing page was removed or replaced.
-- Method source is limited to the official Google Play / bookseller description and full table of contents for `財技X盤路：倍升股全攻略`, plus the user's supplied screenshots. The local `.acsm` is only a fulfilment token, not readable book content. Never claim the protected full text was read unless the user's licensed reader is actually accessible.
+- Method source now includes all 97 licensed-reader screenshots supplied by the user, covering the substantive table of contents and text through page 220 of `財技X盤路：倍升股全攻略`; blank/no-text pages were intentionally not captured. Summarize methods only and do not reproduce protected book text. The local `.acsm` remains a fulfilment token, not readable book content.
 - The page translates only source-backed, data-supported ideas into three independent lanes:
   - finance / supply: observed HKEX announcement titles and the existing canonical circle-stock / circle-cash judgement;
-  - tape confirmation: `Gap 跳升`, `向上 FVG`, and `突破中長期 POC` from published signals;
+  - technical confirmation: `Gap 跳升`, `向上 FVG`, and `突破中長期 POC` from published signals;
   - CCASS aggregate holdings: consecutive increase plus separate 5D and 20D changes.
-- `scripts/build_trade_engine.py` now classifies observed placement, rights, shareholder increase, buyback, acquisition / offer, resumption, convertible bond, share consolidation, capital reduction and failed-sale / transaction-termination events. It does not infer an event absent from the announcement title/type.
+- `scripts/build_trade_engine.py` classifies observed placement, rights, shareholder increase, buyback, acquisition / offer, resumption, convertible bond, share consolidation, capital reduction and failed-sale / transaction-termination events. It does not infer an event absent from the announcement title/type.
+- Placement/rights events are now matched to same-code, same-date rows in canonical `data/rights_analysis.json`. Extracted ratio/dilution, discount, authorization and use-of-funds fields are shown independently as observed or missing. A row from another date is never attached as fallback.
+- Finance-event term status is `complete`, `partial`, or `not_extracted`; a matched announcement with zero extracted terms remains `not_extracted`. Existing circle-stock/circle-cash judgement and its positive/negative/pending basis are carried through without recalculation.
 - Supply-cash risk always outranks apparent three-lane confluence. The output is an evidence funnel, not a buy instruction.
-- The book's order-book concepts (sparse/dense book, refill, queue withdrawal/jump, order-book scaffolding) require historical Level 2 snapshots. Current OHLC/CCASS data cannot honestly identify them, so the page labels Kbar signals as a proxy and does not manufacture order-book observations.
+- Per the user's decision, order-book/tape concepts are excluded from this system feature. User-facing Kbar evidence is named `技術確認`, never `盤路`; the trading desk uses the same terminology.
 - The new page reuses `data/trade_engine.json` and `data/publish_bundle.json`; no duplicate heavy JSON source was added.
-- Verified snapshot after rebuild: 240/240 HK candidates analyzed, 0 errors; 44 medium/long POC confirmations, 3 upward FVG, 1 upward gap and 3 all-market three-lane confluences. Small-cap view contains 101 candidates and paginates 10 per page.
+- Verified snapshot after rebuild: 240/240 HK candidates analyzed, 0 errors; 74 classified finance events, 16 with partial same-date extracted terms, 58 honestly marked not extracted, and 3 three-lane confluences. Small-cap view contains 101 candidates and paginates 10 per page.
 - Shared navigation, guide, daily refresh staging and direct Cloudflare deploy allowlist include the new page.
-- Tests: 14 targeted engine/page tests pass; 393px mobile has no horizontal overflow. Repo audit: 21 pages, 0 missing refs, 0 alias mismatches.
+- Tests: 16 targeted engine/page tests pass; 393px mobile has no horizontal overflow. Repo audit: 21 pages, 0 missing refs, 0 alias mismatches. Current publish gate is PASS; maintenance remains WARN for genuine historical CCASS gaps/low-coverage dates.
 
 ## 2026-07-15 Unified Trading Desk
 
@@ -42,13 +44,13 @@ Last updated: 2026-07-15 HKT
   - page dependency audit: 20 pages, 0 missing refs, 0 alias mismatch.
   - Playwright: desktop and 393px mobile tests pass with no JS errors or horizontal overflow.
 
-### Financial-event x tape x CCASS model
+### Financial-event x technical x CCASS model
 
 - Method reference supplied by the user: `財技X盤路 倍升股全攻略`, plus the local `殼股財技.pdf`. Treat these as research frameworks, not copied content or deterministic trading truth.
 - Announcement events and technical setups are equal-level triggers, but they must be separate evidence lanes so one published event cannot be counted again as a technical signal.
 - `scripts/build_trade_engine.py` partitions every signal into exactly one lane:
   - event: placement, rights, shareholder increase, takeover/resumption and other corporate announcements;
-  - technical tape: POC, year-open, IPO, FVG, gap and the derived Kbar setup;
+  - technical: POC, year-open, IPO, FVG, gap and the derived Kbar setup;
   - CCASS accumulation: aggregate `total_shares` streak and 5D/20D changes.
 - Event direction is explicit: shareholder increase and `supply-stock` can support a setup; `supply-cash` remains a risk; unknown/watch announcements are catalysts only and never automatic bullish evidence.
 - CCASS aggregate consecutive increase is now a first-class signal. `strong` requires at least 3 consecutive increases plus positive 5D and 20D aggregate changes; `building` requires at least 2 consecutive increases and positive 5D change. Neutral days do not break the streak, matching `ccass/src/trend.py`.
