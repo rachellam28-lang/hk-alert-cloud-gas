@@ -34,7 +34,7 @@
   ];
 
   const path = location.pathname.toLowerCase().replace(/\/+$/, '');
-  const darkTools = ['/kbar_matrix.html', '/docs/ccass-warroom.html'];
+  const darkTools = ['/kbar_matrix', '/kbar_matrix.html', '/docs/ccass-warroom', '/docs/ccass-warroom.html'];
   const useUnifiedLightTheme = !darkTools.some(item => path.endsWith(item));
   document.documentElement.classList.toggle('suite-light', useUnifiedLightTheme);
   const active = href => {
