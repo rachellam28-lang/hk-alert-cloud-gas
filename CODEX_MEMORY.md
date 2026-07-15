@@ -2,6 +2,13 @@
 
 Last updated: 2026-07-16 HKT
 
+## 2026-07-16 Navigation and semantic colour consolidation
+
+- Primary navigation order is `交易台 -> Market -> 訊號 -> 細價股 -> Kbar -> 動量 -> 事件 -> 自選 -> 更多`. `事件` is a direct link to `rights_analysis.html`; it must not be moved back under `更多`. `更多` follows `自選` in both DOM and visual order.
+- `更多` contains lower-frequency stock selection, timing and records. CCASS 戰情室 is under records; duplicate momentum, watchlist and event entries were removed from the panel.
+- `shared-nav.js` maps legacy palette aliases (`teal/green/red/blue/gold/accent/pos/neg`) to the canonical semantic palette. Legacy positive, risk, wait and info badges are normalized centrally so regenerated pages do not return to unrelated hard-coded colours.
+- Ordinary pages remain one cool light workspace. Kbar and CCASS warroom remain dark tools but retain the same colour meanings: teal action, green positive, red risk, amber caution, purple CCASS and muted blue information.
+
 ## 2026-07-16 Semantic colour system and Kbar paired views
 
 - `shared-nav.js` is the canonical colour layer for ordinary pages. Semantic colours are fixed across the suite: teal = selected/action, green = positive/up, red = downside/risk, amber = waiting/caution, purple = CCASS, and muted blue = information/timing.

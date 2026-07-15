@@ -17,12 +17,20 @@ def test_shared_theme_exposes_one_semantic_market_palette() -> None:
         "--down:#b43a42",
         "--amber:#986308",
         "--violet:#6c5f91",
+        "--teal:#0b7475",
+        "--green:#157a4b",
+        "--red:#b43a42",
+        "--blue:#286f91",
     ):
         assert token in nav
 
     assert "html.suite-light .sc-desk" in nav
     assert "html.suite-light .sc-reason.good" in nav
     assert "html.suite-light .sc-reason.bad" in nav
+    assert "html.suite-light .pill.yes" in nav
+    assert "html.suite-light .pill.risk" in nav
+    assert "html.suite-light .pill.wait" in nav
+    assert "html.suite-light .pill.info" in nav
 
 
 def test_kbar_uses_true_paired_views_in_dark_workspace() -> None:

@@ -17,6 +17,7 @@ def test_shared_navigation_uses_workflow_order_without_retired_pages() -> None:
         "smallcap_playbook.html",
         "kbar_matrix.html",
         "momentum_list.html",
+        "rights_analysis.html",
         "watchlist.html",
     ]
     positions = [nav.index(page) for page in expected]
@@ -24,6 +25,7 @@ def test_shared_navigation_uses_workflow_order_without_retired_pages() -> None:
     assert positions == sorted(positions)
     assert "daily_trade_prompt.html" not in nav
     assert "gap_fvg.html" not in nav
+    assert "['\\u4e8b\\u4ef6', [" not in nav
 
 
 def test_retired_routes_redirect_without_loading_data() -> None:
