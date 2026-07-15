@@ -2,6 +2,18 @@
 
 Last updated: 2026-07-15 HKT
 
+## 2026-07-15 Full-book finance event chain integration
+
+- The user confirmed that the 97 screenshots in `C:\Users\Administrator\Desktop\財技X盤路_倍升股全攻略-pdf` are the complete substantive book capture; blank/no-text pages were intentionally omitted. Do not describe this source as incomplete again.
+- `scripts/build_trade_engine.py` now turns observed announcement order into an auditable finance-event chain instead of showing isolated badges only.
+- Every classified event carries a title-derived lifecycle stage: announced, proposed, delayed/revised, completed, results/acceptance, or terminated/lapsed. A stage is never inferred without matching words in the observed announcement title.
+- Added source-backed event classes for privatization, control change, transfer to Main Board, bonus issue and disposal, while retaining placement, rights, convertible bonds, shareholder increase, buyback, acquisition/offer, resumption, consolidation/subdivision, capital reduction and failed transactions.
+- Derived sequence labels now expose repeated financing, control/offer followed on a later date by financing, privatization progress, transaction termination, increase/buyback observation and other multi-step events. Same-date mixed announcements do not qualify as "control then financing".
+- `smallcap_playbook.html` adds a visible `財技階段` column, event timeline, filters for multi-step finance/control-then-financing/increase-buyback/terminated events, and a broker-level CCASS supply label (`多席收集`, `多席派發`, `疑似轉倉`, `集中兼增持`, `貨源集中`, `合計增持`, or `未確認`).
+- The page still keeps finance events, technical confirmations and CCASS as separate evidence lanes. It does not copy order-book/tape methods into the site, and it does not manufacture sponsor, IPO subscription or unavailable transaction terms.
+- The existing `data/trade_engine.json` remains the only runtime output; no duplicate heavy JSON was added. Its source snapshot metadata now includes announcements and rights-analysis dates.
+- Verified local rebuild: 2,722-stock universe, 240/240 HK candidates analyzed, 0 errors. Targeted source/UI tests pass on desktop and 393px mobile with no horizontal overflow.
+
 ## 2026-07-15 Small-cap Finance x Technical x CCASS Playbook
 
 - Added `smallcap_playbook.html` as a new page; no existing page was removed or replaced.

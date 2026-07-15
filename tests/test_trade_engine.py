@@ -104,6 +104,23 @@ def test_finance_event_classifier_uses_announcement_title_only():
     assert all(item["is_observed"] is True for item in events)
 
 
+def test_finance_event_chain_preserves_lifecycle_and_detects_control_then_financing():
+    chain = ENGINE.build_finance_event_chain([
+        {"date": "2026-06-01", "type": "acquisition", "title": "MANDATORY GENERAL OFFER"},
+        {"date": "2026-06-18", "type": "placement", "title": "PROPOSED PLACING OF NEW SHARES"},
+        {"date": "2026-07-01", "type": "placement", "title": "COMPLETION OF PLACING OF NEW SHARES"},
+    ])
+    assert chain["sequence_key"] == "control_then_financing"
+    assert chain["control_then_financing"] is True
+    assert chain["repeated_financing"] is True
+    assert [item["stage_key"] for item in chain["timeline"]] == ["completed", "proposed", "announced"]
+
+
+def test_finance_event_stage_does_not_invent_completion():
+    assert ENGINE.finance_event_stage("FURTHER UPDATE ON POSSIBLE OFFER")[0] == "update"
+    assert ENGINE.finance_event_stage("TERMINATION OF THE TRANSACTION")[0] == "ended"
+
+
 def test_smallcap_playbook_keeps_supply_risk_ahead_of_confluence():
     playbook = ENGINE.build_smallcap_playbook(
         {"bucket": "small"},
@@ -116,6 +133,7 @@ def test_smallcap_playbook_keeps_supply_risk_ahead_of_confluence():
     )
     assert playbook["three_lane"] is False
     assert playbook["state_key"] == "supply_risk"
+    assert playbook["ccass_supply_label"] == "合計增持"
 
 
 def test_finance_event_uses_only_matching_observed_rights_terms():

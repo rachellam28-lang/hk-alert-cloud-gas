@@ -92,6 +92,26 @@ FINANCE_EVENT_LENS = {
         "lens": "拆股不增加公司價值；留意入場門檻下降後是否配合派貨。",
         "requires": ["拆股比例", "每手股數", "生效後成交", "後續股權事件"],
     },
+    "privatization": {
+        "lens": "私有化只按已公告條款觀察；先核對作價、先決條件、接納門檻與時間表。",
+        "requires": ["私有化作價", "溢價/折讓", "先決條件", "接納門檻", "時間表"],
+    },
+    "control_change": {
+        "lens": "控制權變動後要追蹤新主背景、公眾持股與後續供配股，不能只因易主直接看升。",
+        "requires": ["新主身份", "控制權比例", "交易作價", "公眾持股", "後續股本事件"],
+    },
+    "main_board_transfer": {
+        "lens": "轉主板屬制度事件；要由成交、價格與貨源確認，不能把申請或批准本身當升勢。",
+        "requires": ["申請/批准階段", "生效日期", "成交變化", "價格確認"],
+    },
+    "bonus_issue": {
+        "lens": "紅股只改變股數與每股價格表達；要連同貨源、每手股數及後續融資解讀。",
+        "requires": ["紅股比例", "除權日", "每手股數", "後續股本事件"],
+    },
+    "disposal": {
+        "lens": "出售資產先分清是否改變主營、現金用途或控制權；完成前只列事件觀察。",
+        "requires": ["出售標的", "交易作價", "所得用途", "完成條件", "剩餘業務"],
+    },
 }
 
 
@@ -850,8 +870,26 @@ def _terms_for_event(event_row: dict, event_key: str, rights_rows: list[dict] | 
     return None
 
 
-def classify_finance_events(rows: list[dict] | None, rights_rows: list[dict] | None = None) -> list[dict]:
-    """Classify observed announcement titles without inferring an unreported event."""
+def finance_event_stage(title: str) -> tuple[str, str]:
+    """Classify only the lifecycle words observed in an announcement title."""
+    upper = str(title or "").upper()
+    if any(token in upper for token in ("TERMINATION", "TERMINATED", "LAPSE", "LAPSED", "WITHDRAWAL")):
+        return "ended", "終止 / 失效"
+    if any(token in upper for token in ("COMPLETION", "COMPLETED", "CLOSING OF")):
+        return "completed", "已完成"
+    if any(token in upper for token in ("RESULTS OF", "LEVEL OF ACCEPTANCE", "VALID ACCEPTANCES")):
+        return "results", "結果 / 接納"
+    if any(token in upper for token in ("DELAY", "EXTENSION", "REVISED TIMETABLE", "LONG STOP DATE")):
+        return "delayed", "延期 / 修訂"
+    if any(token in upper for token in ("PROPOSED", "PROPOSAL", "INTENTION TO")):
+        return "proposed", "建議 / 擬進行"
+    if any(token in upper for token in ("UPDATE", "FURTHER ANNOUNCEMENT", "PROGRESS")):
+        return "update", "進展更新"
+    return "announced", "已公告"
+
+
+def finance_event_matches(row: dict) -> list[tuple[str, str, str]]:
+    """Return source-backed finance event classes for one announcement row."""
     type_labels = {
         "placement": ("placement", "配股 / 配售", "risk"),
         "rights": ("rights", "供股", "risk"),
@@ -861,31 +899,48 @@ def classify_finance_events(rows: list[dict] | None, rights_rows: list[dict] | N
         "resume": ("resume", "復牌", "watch"),
         "block_trade": ("block_trade", "大手交易", "watch"),
     }
+    title = str(row.get("title") or "")
+    upper = title.upper()
+    event_type = str(row.get("type") or "").lower()
+    matches: list[tuple[str, str, str]] = []
+    if event_type in type_labels:
+        matches.append(type_labels[event_type])
+    if "CONVERTIBLE BOND" in upper or "CONVERTIBLE NOTE" in upper:
+        matches.append(("convertible", "可換股債", "risk"))
+    if "SHARE CONSOLIDATION" in upper:
+        matches.append(("consolidation", "合股", "risk"))
+    if "SHARE SUBDIVISION" in upper or "SUBDIVISION OF SHARES" in upper:
+        matches.append(("subdivision", "拆股", "watch"))
+    if "BONUS ISSUE" in upper or "BONUS SHARES" in upper:
+        matches.append(("bonus_issue", "紅股", "watch"))
+    if "CAPITAL REDUCTION" in upper:
+        matches.append(("capital_reduction", "股本削減", "watch"))
+    if "PRIVATI" in upper:
+        matches.append(("privatization", "私有化", "watch"))
+    if "TRANSFER OF LISTING" in upper and "MAIN BOARD" in upper:
+        matches.append(("main_board_transfer", "轉主板", "watch"))
+    if "CHANGE OF CONTROL" in upper or "CHANGE IN CONTROL" in upper:
+        matches.append(("control_change", "控制權變動", "watch"))
+    termination = any(token in upper for token in ("TERMINATION", "TERMINATED", "LAPSE", "LAPSED"))
+    transaction = any(token in upper for token in ("SALE", "DISPOSAL", "ACQUISITION", "OFFER"))
+    if termination and transaction:
+        matches.append(("failed_sale", "賣盤 / 交易終止", "watch"))
+    if "GENERAL OFFER" in upper or "TAKEOVERS CODE" in upper:
+        matches.append(("general_offer", "全購 / 要約", "watch"))
+    if "DISPOSAL" in upper and not termination:
+        matches.append(("disposal", "出售資產", "watch"))
+    return list(dict.fromkeys(matches))
+
+
+def classify_finance_events(rows: list[dict] | None, rights_rows: list[dict] | None = None) -> list[dict]:
+    """Classify observed announcement titles without inferring an unreported event."""
     results: list[dict] = []
     seen: set[str] = set()
     ordered_rows = sorted(rows or [], key=lambda row: str(row.get("date") or row.get("release_date") or ""), reverse=True)
     for row in ordered_rows:
         title = str(row.get("title") or "")
-        upper = title.upper()
-        event_type = str(row.get("type") or "").lower()
-        matches: list[tuple[str, str, str]] = []
-        if event_type in type_labels:
-            matches.append(type_labels[event_type])
-        if "CONVERTIBLE BOND" in upper or "CONVERTIBLE NOTE" in upper:
-            matches.append(("convertible", "可換股債", "risk"))
-        if "SHARE CONSOLIDATION" in upper:
-            matches.append(("consolidation", "合股", "risk"))
-        if "SHARE SUBDIVISION" in upper:
-            matches.append(("subdivision", "拆股", "watch"))
-        if "CAPITAL REDUCTION" in upper:
-            matches.append(("capital_reduction", "股本削減", "watch"))
-        termination = any(token in upper for token in ("TERMINATION", "TERMINATED", "LAPSE", "LAPSED"))
-        transaction = any(token in upper for token in ("SALE", "DISPOSAL", "ACQUISITION", "OFFER"))
-        if termination and transaction:
-            matches.append(("failed_sale", "賣盤 / 交易終止", "watch"))
-        if "GENERAL OFFER" in upper or "TAKEOVERS CODE" in upper:
-            matches.append(("general_offer", "全購 / 要約", "watch"))
-        for key, label, tone in matches:
+        stage_key, stage_label = finance_event_stage(title)
+        for key, label, tone in finance_event_matches(row):
             if key in seen:
                 continue
             seen.add(key)
@@ -902,6 +957,8 @@ def classify_finance_events(rows: list[dict] | None, rights_rows: list[dict] | N
                 "key": key,
                 "label": label,
                 "tone": tone,
+                "stage_key": stage_key,
+                "stage_label": stage_label,
                 "date": row.get("date") or row.get("release_date"),
                 "title": title,
                 "url": row.get("url"),
@@ -913,6 +970,66 @@ def classify_finance_events(rows: list[dict] | None, rights_rows: list[dict] | N
             })
     results.sort(key=lambda item: (str(item.get("date") or ""), item["key"]), reverse=True)
     return results[:8]
+
+
+def build_finance_event_chain(rows: list[dict] | None) -> dict:
+    """Keep announcement order visible so a later capital action is not read in isolation."""
+    timeline: list[dict] = []
+    for row in sorted(rows or [], key=lambda item: str(item.get("date") or item.get("release_date") or ""), reverse=True):
+        matches = finance_event_matches(row)
+        if not matches:
+            continue
+        stage_key, stage_label = finance_event_stage(str(row.get("title") or ""))
+        keys = [item[0] for item in matches]
+        timeline.append({
+            "date": row.get("date") or row.get("release_date"),
+            "keys": keys,
+            "labels": [item[1] for item in matches],
+            "stage_key": stage_key,
+            "stage_label": stage_label,
+            "title": row.get("title"),
+            "url": row.get("url"),
+            "is_observed": True,
+        })
+
+    control_keys = {"acquisition", "general_offer", "control_change", "privatization"}
+    financing_keys = {"placement", "rights", "convertible"}
+    control_dates = [str(item.get("date") or "") for item in timeline if control_keys.intersection(item["keys"])]
+    financing_dates = [str(item.get("date") or "") for item in timeline if financing_keys.intersection(item["keys"])]
+    control_then_financing = any(finance_date > control_date for control_date in control_dates for finance_date in financing_dates)
+    repeated_financing = sum(bool(financing_keys.intersection(item["keys"])) for item in timeline) >= 2
+    ended = any(item.get("stage_key") == "ended" for item in timeline)
+    support_action = any({"increase", "buyback"}.intersection(item["keys"]) for item in timeline)
+
+    if control_then_financing:
+        sequence_key, sequence_label = "control_then_financing", "易主 / 要約後再融資"
+    elif any("privatization" in item["keys"] for item in timeline):
+        sequence_key, sequence_label = "privatization", "私有化進程"
+    elif ended:
+        sequence_key, sequence_label = "ended_transaction", "交易終止 / 失效"
+    elif repeated_financing:
+        sequence_key, sequence_label = "repeated_financing", "連續融資事件"
+    elif support_action:
+        sequence_key, sequence_label = "support_action", "增持 / 回購觀察"
+    elif len(timeline) >= 2:
+        sequence_key, sequence_label = "multi_step", "多步財技事件"
+    elif timeline:
+        sequence_key, sequence_label = "single_event", "單一公告事件"
+    else:
+        sequence_key, sequence_label = "none", "未有已分類事件"
+
+    return {
+        "sequence_key": sequence_key,
+        "sequence_label": sequence_label,
+        "step_count": len(timeline),
+        "control_then_financing": control_then_financing,
+        "repeated_financing": repeated_financing,
+        "ended": ended,
+        "support_action": support_action,
+        "timeline": timeline[:12],
+        "data_kind": "derived_from_observed_announcement_order",
+        "is_observed": False,
+    }
 
 
 def announcement_map() -> dict[str, list[dict]]:
@@ -1014,6 +1131,7 @@ def classify_signal_lanes(
     supply = group.get("supply") if isinstance(group.get("supply"), dict) else {}
     supply_class = str(supply.get("cls") or "")
     finance_events = classify_finance_events(announcements, rights_rows)
+    finance_event_chain = build_finance_event_chain(announcements)
     event_active = bool(events or finance_events or any(bool(value) for value in corp_types.values()) or supply_class)
     if supply_class == "supply-stock":
         event_direction = "positive_supply"
@@ -1033,6 +1151,7 @@ def classify_signal_lanes(
             "supply_class": supply_class or None,
             "labels": events,
             "finance_events": finance_events,
+            "finance_event_chain": finance_event_chain,
             "is_observed": True,
         },
         "technical": {
@@ -1262,8 +1381,24 @@ def build_smallcap_playbook(candidate: dict, setup: dict, lanes: dict) -> dict:
         concentration.get("tier") == "concentrated"
         or (participant_pattern or {}).get("key") == "accumulation_cluster"
     )
+    participant_key = (participant_pattern or {}).get("key")
+    if participant_key == "suspected_transfer":
+        ccass_supply_key, ccass_supply_label = "transfer_unclear", "疑似轉倉"
+    elif participant_key == "distribution_cluster":
+        ccass_supply_key, ccass_supply_label = "distribution", "多席派發"
+    elif participant_key == "accumulation_cluster":
+        ccass_supply_key, ccass_supply_label = "accumulation", "多席收集"
+    elif concentration.get("tier") == "concentrated" and ccass_confirmed:
+        ccass_supply_key, ccass_supply_label = "concentrated_rising", "集中兼增持"
+    elif concentration.get("tier") == "concentrated":
+        ccass_supply_key, ccass_supply_label = "concentrated", "貨源集中"
+    elif ccass_confirmed:
+        ccass_supply_key, ccass_supply_label = "aggregate_rising", "合計增持"
+    else:
+        ccass_supply_key, ccass_supply_label = "unconfirmed", "未確認"
     supply_risk = event.get("direction") == "negative_supply"
     event_active = bool(event.get("active"))
+    event_chain = event.get("finance_event_chain") or {}
     technical_active = bool(confirmations)
     three_lane = event_active and technical_active and ccass_confirmed and not supply_risk
 
@@ -1290,6 +1425,7 @@ def build_smallcap_playbook(candidate: dict, setup: dict, lanes: dict) -> dict:
         "evidence_lane_count": int(event_active) + int(technical_active) + int(ccass_confirmed),
         "finance_event_active": event_active,
         "finance_events": event.get("finance_events") or [],
+        "finance_event_chain": event_chain,
         "supply_direction": event.get("direction"),
         "supply_class": event.get("supply_class"),
         "technical_active": technical_active,
@@ -1301,6 +1437,8 @@ def build_smallcap_playbook(candidate: dict, setup: dict, lanes: dict) -> dict:
         "ccass_increase_days": ccass.get("consecutive_increase_days"),
         "ccass_structure_key": ccass_structure_key,
         "ccass_structure_support": ccass_structure_support,
+        "ccass_supply_key": ccass_supply_key,
+        "ccass_supply_label": ccass_supply_label,
         "ccass_concentration": concentration,
         "ccass_participant_pattern": participant_pattern,
         "data_kind": "derived_evidence_funnel",
@@ -1526,17 +1664,39 @@ def build_engine(
         for item in (prices.values() if isinstance(prices, dict) else [])
         if isinstance(item, dict) and (item.get("price_updated_at") or item.get("lp_time"))
     ]
+    announcement_rows = load_json(ANNOUNCEMENTS_PATH, [])
+    rights_rows = load_json(RIGHTS_ANALYSIS_PATH, [])
+    announcement_dates = [
+        str(item.get("date") or item.get("release_date"))[:10]
+        for item in (announcement_rows if isinstance(announcement_rows, list) else [])
+        if isinstance(item, dict) and (item.get("date") or item.get("release_date"))
+    ]
+    rights_dates = [
+        str(item.get("date_parsed") or item.get("date"))[:10]
+        for item in (rights_rows if isinstance(rights_rows, list) else [])
+        if isinstance(item, dict) and (item.get("date_parsed") or item.get("date"))
+    ]
+    sequence_counts: dict[str, int] = {}
+    for symbol, setup in by_symbol.items():
+        if not symbol.endswith(".HK"):
+            continue
+        chain = ((setup.get("smallcap_playbook") or {}).get("finance_event_chain") or {})
+        key = str(chain.get("sequence_key") or "none")
+        sequence_counts[key] = sequence_counts.get(key, 0) + 1
+
     source_snapshot_dates = {
         "holdings": holdings.get("updated") if isinstance(holdings, dict) else None,
         "prices": max(price_dates) if price_dates else None,
         "daily_kbar": source_updated_at,
         "signals": (load_json(SIGNALS_PATH, {}) or {}).get("updatedAt"),
         "fundflow": (load_json(FUNDFLOW_PATH, {}) or {}).get("updated"),
+        "announcements": max(announcement_dates) if announcement_dates else None,
+        "rights_analysis": max(rights_dates) if rights_dates else None,
     }
 
     return {
         "schema_v": 3,
-        "runtime_version": "two-stage-hk-trading-engine-v2-finance-terms",
+        "runtime_version": "two-stage-hk-trading-engine-v3-finance-chain",
         "updated_at": built_at,
         "built_at": built_at,
         "source_updated_at": source_updated_at,
@@ -1556,6 +1716,7 @@ def build_engine(
             "setup_counts": {key: len(value) for key, value in groups.items()},
             "top_momentum_symbol": momentum_rows[0]["symbol"] if momentum_rows else None,
             "error_count": len(failures),
+            "finance_sequence_counts": sequence_counts,
         },
         "by_symbol": by_symbol,
         "groups": groups,

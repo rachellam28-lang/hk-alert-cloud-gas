@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-15T11:33:02",
+  "generated_at": "2026-07-15T13:27:29",
   "pages": [
     {
       "page": "404.html",
@@ -383,7 +383,7 @@
       {
         "path": "data/trade_engine.json",
         "key": "updated_at",
-        "raw": "2026-07-15T10:27:26",
+        "raw": "2026-07-15T13:23:06",
         "normalized_date": "2026-07-15",
         "age_days": 0,
         "lag_vs_freshest_days": 0
@@ -464,14 +464,14 @@
     "low_coverage_dates": [
       {
         "trade_date": "2026-07-08",
-        "stock_count": 410,
+        "stock_count": 1083,
         "expected_local_count": 2753,
-        "coverage_pct": 14.9,
+        "coverage_pct": 39.3,
         "pct_available_count": 0,
         "pct_availability_pct": 0.0,
-        "participant_stock_count": 410,
+        "participant_stock_count": 1083,
         "participant_coverage_pct": 100.0,
-        "holdings_rows": 73235
+        "holdings_rows": 184307
       },
       {
         "trade_date": "2026-07-02",

@@ -14,8 +14,9 @@ def test_smallcap_playbook_keeps_three_evidence_lanes_separate(page):
 
     headers = page.locator("thead th").all_inner_texts()
     assert headers.index("CCASS 20日") == headers.index("CCASS 5日") + 1
+    assert "財技階段" in headers
     assert {"Gap 跳升", "向上 FVG", "中長期 POC"}.issubset(set(headers))
-    assert page.locator("#tabs .tab").count() == 11
+    assert page.locator("#tabs .tab").count() == 15
     assert "技術確認" in page.locator(".funnel").inner_text()
     assert "盤路確認" not in page.locator("body").inner_text()
     assert "觀測資料已載入" in page.locator("#health").inner_text()
