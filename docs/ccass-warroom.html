@@ -130,7 +130,8 @@ header{display:flex; align-items:center; gap:16px; padding:12px 20px; border-bot
 footer{padding:8px 20px 16px; font-size:10px; color:var(--dim)}
 footer a{color:var(--cy)}
 @media(max-width:980px){
-  .main{grid-template-columns:1fr}
+  .main{grid-template-columns:minmax(0,1fr);padding-left:8px;padding-right:8px}
+  .panel,.rcol,.detail-grid,.dleft,.dright,.elist{min-width:0;max-width:100%}
   .statbar{grid-template-columns:repeat(2,1fr)}
   .detail-grid{grid-template-columns:1fr}
   .dleft{border-right:none; border-bottom:1px solid var(--line)}
@@ -221,8 +222,7 @@ footer a{color:var(--cy)}
         ⑤ 數據過期警告(holdings超過26個鐘 = 你後台管線冇出新數據,唔係app壞)
         ⑥ Pages設定錯誤自動診斷提示
    ════════════════════════════════════════════════════ */
-const SITE = "https://rachellam28-lang.github.io/hk-alert-cloud-gas";
-const BASES = ["..", ".", SITE];          // 順序試
+const BASES = ["..", "."];                 // Cloudflare 相對路徑 only
 const FILES = {holdings:"holdings.json", signals:"data/signals.json",
                ann:"data/announcements.json", brk:"data/breakthroughs.json"};
 const SIG_FRESH_DAYS = 30, REFRESH_MIN = 10, STALE_HOURS = 26;
@@ -278,7 +278,7 @@ async function boot(retry=0){
   catch(e){ sysmsg(`❌ 數據解析出錯:${e.message}。可能後台檔案格式改咗,要通知 AI 跟進。`); return; }
 
   LAST_OK = Date.now(); nextAt = Date.now()+REFRESH_MIN*60000;
-  $('dsrc').textContent = "LIVE · "+(BASE===SITE?"絕對路徑":"相對路徑");
+  $('dsrc').textContent = "LIVE · Cloudflare";
   $('upd').textContent = updated ? updated.slice(5,16) : "--";
 }
 
@@ -406,11 +406,11 @@ function select(i){
     r.ann?`<span>最新公告 <b>${r.ann.date}</b></span>`:'',
     r.ann?`<span style="max-width:380px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${(r.ann.title||'')}</span>`:'',
     r.hkex?`<a href="${r.hkex}" target="_blank">公告 ↗</a>`:'',
-    `<a href="${BASE===SITE?SITE:'..'}/rights_analysis.html" target="_blank">供配股分析 ↗</a>`,
-    `<a href="${BASE===SITE?SITE:'..'}/daily_trade_prompt.html" target="_blank">每日提示 ↗</a>`,
-    `<a href="${BASE===SITE?SITE:'..'}/timing_analysis.html" target="_blank">時間窗口總覽 ↗</a>`,
-    `<a href="${BASE===SITE?SITE:'..'}/jieqi_analysis.html" target="_blank">節氣窗口 ↗</a>`,
-    `<a href="${BASE===SITE?SITE:'..'}/distribution_day.html" target="_blank">分佈日分析 ↗</a>`,
+    `<a href="../rights_analysis.html" target="_blank">供配股分析 ↗</a>`,
+    `<a href="../daily_trade_prompt.html" target="_blank">每日提示 ↗</a>`,
+    `<a href="../timing_analysis.html" target="_blank">時間窗口總覽 ↗</a>`,
+    `<a href="../jieqi_analysis.html" target="_blank">節氣窗口 ↗</a>`,
+    `<a href="../distribution_day.html" target="_blank">分佈日分析 ↗</a>`,
   ].filter(Boolean).join('');
 
   const lvDefs = [

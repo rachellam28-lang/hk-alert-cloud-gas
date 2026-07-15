@@ -12,6 +12,7 @@ Last updated: 2026-07-15 HKT
 - `scripts/health_check.py` now runs the same real-quote probe. A broken Futu backend is operational WARN with an explicit Longbridge-fallback label; an open TCP port alone can no longer leave health at a misleading PASS.
 - Verified recovery on account configuration already stored in repo-local `.env`: new gateway process, live `HK.00700` snapshot, daily automation preflight, and scheduled task result 0. No secret was printed or committed.
 - Daily Cloudflare preflight now uses the installed global `wrangler` directly, matching the deploy helper, instead of routing through `npx`. OAuth verification passes. Deployment remains direct Cloudflare only.
+- Removed the last production GitHub Pages fallback from `docs/ccass-warroom.html`; its data and page links now remain on Cloudflare-relative paths only.
 
 ## 2026-07-15 Unified page theme
 
