@@ -168,7 +168,7 @@ echo "3.55/5 Regenerate timing analysis pages..."
 "$PYTHON_BIN" "$REPO_ROOT/scripts/gen_jieqi_analysis.py" || { echo "ERROR: jieqi page generation failed"; exit 1; }
 "$PYTHON_BIN" "$REPO_ROOT/scripts/gen_timing_analysis.py" || { echo "ERROR: timing analysis page generation failed"; exit 1; }
 
-echo "3.6/5 Regenerate daily trade prompt..."
+echo "3.6/5 Refresh retired daily prompt redirect..."
 "$PYTHON_BIN" "$REPO_ROOT/scripts/gen_daily_trade_prompt.py" || { echo "ERROR: daily trade prompt generation failed"; exit 1; }
 "$PYTHON_BIN" "$REPO_ROOT/scripts/apply_shared_shell.py" || { echo "ERROR: shared page shell generation failed"; exit 1; }
 

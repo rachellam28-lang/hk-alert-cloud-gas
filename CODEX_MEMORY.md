@@ -2,6 +2,14 @@
 
 Last updated: 2026-07-15 HKT
 
+## 2026-07-15 Navigation consolidation
+
+- Navigation now follows the trading workflow: `交易台 -> Market -> 訊號 -> 細價股 -> Kbar`, with desktop shortcuts for momentum and watchlist. Less frequent tools are grouped under `更多` as stock selection, events, timing and records.
+- `daily_trade_prompt.html` is retired as a separate data consumer because its useful decisions already exist in Trading Desk, Market and Signals. The old URL remains as a lightweight redirect to `trading_desk.html`; no bookmark is broken and no analysis data was deleted.
+- `gap_fvg.html` is retired as a separate data consumer because Gap, FVG and POC alerts already exist in Signals and Market. The old URL remains as a lightweight redirect to `signals.html`.
+- Page generators and the rights-page legacy navigation no longer restore either retired link during daily refresh. The deploy allowlist intentionally keeps both redirect files.
+- The guide page catalog uses the same workflow order and its duplicate top shortcut row has been reduced to one Trading Desk return action.
+
 ## 2026-07-15 Full-system audit and Futu watchdog repair
 
 - Live audit covered all 21 public HTML routes on the canonical Cloudflare Pages domain at a 393px viewport: every route returned HTTP 200, same-origin data requests had no 404s, no page-level JavaScript exceptions were observed, and no document-level horizontal overflow was found.
@@ -203,7 +211,7 @@ Primary layers:
 - Raw sources: `ccass/holdings.db`, `holdings.db`, HKEX disclosures, Futu/Longbridge cache, local JSON snapshots.
 - Compute: `ccass/src/runner.py`, `ccass/scripts/*.py`, `scripts/*.py`.
 - Publish: `holdings.json`, `ccass.json`, `market.json`, `data/*.json`, `data/publish_bundle.json`.
-- Pages: `index.html`, `signals.html`, `rights_analysis.html`, `timing_analysis.html`, `jieqi_analysis.html`, `distribution_day.html`, `daily_trade_prompt.html`, and related static pages.
+- Pages: `trading_desk.html`, `index.html`, `signals.html`, `smallcap_playbook.html`, `kbar_matrix.html`, `rights_analysis.html`, timing pages, and related static pages. `daily_trade_prompt.html` and `gap_fvg.html` are compatibility redirects only.
 - Notify: Telegram and health checks should read the same publish metadata as the dashboard.
 
 ## Canonical Data Rules

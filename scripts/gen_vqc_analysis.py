@@ -156,10 +156,9 @@ tr:hover td {{ background: rgba(39,49,74,.22); }}
   <a href="index.html">🇭🇰 港股版</a>
   <a href="watchlist.html">⭐ 自選</a>
   <a href="history.html">🕐 歷史</a>
-  <a href="gap_fvg.html">⤴ Gap/FVG</a>
   <a href="fundflow.html">💰 資金</a>
   <a href="rights_analysis.html">📋 供配股</a>
-  <a href="daily_trade_prompt.html">🚦 每日提示</a>
+  <a href="trading_desk.html">交易台</a>
   <a href="timing_analysis.html">⏱ 時間窗口</a>
   <a class="active" href="vqc_analysis.html">📈 成交轉勢日</a>
   <a href="docs/ccass-warroom.html">⚡ 戰情室</a>

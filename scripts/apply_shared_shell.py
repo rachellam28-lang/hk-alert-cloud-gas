@@ -9,7 +9,6 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 PAGES = (
-    "daily_trade_prompt.html",
     "distribution_day.html",
     "fundflow.html",
     "jieqi_analysis.html",
