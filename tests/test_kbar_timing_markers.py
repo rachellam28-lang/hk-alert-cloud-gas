@@ -16,7 +16,7 @@ def test_kbar_quarterly_pair_and_signal_rail(page):
     )
     page.wait_for_selector("#matrix .chart-svg", timeout=45_000)
 
-    assert page.locator(".chart-tab").count() == 4
+    assert page.locator(".chart-tab").count() == 5
     assert page.locator('.paired-view .pane').count() == 2
     assert page.locator('.paired-view .pane-title').all_inner_texts() == ["季圖", "反向季圖"]
     assert page.locator("#matrix .chart-svg").count() == 2
@@ -29,6 +29,52 @@ def test_kbar_quarterly_pair_and_signal_rail(page):
     assert page.locator("#matrix .chart-svg").count() == 2
     assert page.locator("#matrix iframe").count() == 0
     assert "view=6m_pair" in page.url
+    assert not page_errors
+
+
+def test_weekly_pair_uses_calendar_week_ohlcv_and_timing_markers(page):
+    page_errors: list[str] = []
+    page.on("pageerror", lambda exc: page_errors.append(str(exc)))
+    page.goto(
+        f"{BASE_URL}/kbar_matrix.html?mode=hk&symbol=1733&view=1w_pair",
+        wait_until="domcontentloaded",
+    )
+    page.wait_for_selector("#matrix .chart-svg", timeout=45_000)
+
+    assert page.locator('.chart-tab[data-view="1w_pair"]').get_attribute("aria-selected") == "true"
+    assert page.locator(".paired-view .pane-title").all_inner_texts() == ["週圖", "反向週圖"]
+    assert page.locator("#matrix .chart-svg").count() == 2
+    assert "根 W 燭" in page.locator("#matrix .pane-meta").first.inner_text()
+
+    weekly = page.evaluate(
+        """() => {
+          const symbol = resolveCachedSymbol('1733', 'hk');
+          const daily = kbarCache.symbols[symbol].series['1d'];
+          const rows = aggregateDailyToWeekly(daily);
+          const nullTurnover = aggregateDailyToWeekly([
+            {time:'2026-07-13',open:1,high:2,low:1,close:2,volume:10,turnover:null},
+            {time:'2026-07-14',open:2,high:3,low:2,close:3,volume:20,turnover:null},
+          ])[0].turnover;
+          return {
+            count: rows.length,
+            unique: new Set(rows.map(row => row.week_key)).size,
+            validRanges: rows.every(row => row.period_start <= row.period_end),
+            lastDaily: daily[daily.length - 1].time.slice(0, 10),
+            lastWeekly: rows[rows.length - 1].period_end,
+            nullTurnover,
+          };
+        }"""
+    )
+    normal_count = page.locator("#matrix .pane").nth(0).locator(".candle-body").count()
+    inverted_count = page.locator("#matrix .pane").nth(1).locator(".candle-body").count()
+    assert weekly["count"] >= 50
+    assert weekly["unique"] == weekly["count"]
+    assert weekly["validRanges"] is True
+    assert weekly["lastWeekly"] == weekly["lastDaily"]
+    assert weekly["nullTurnover"] is None
+    assert normal_count == min(104, weekly["count"])
+    assert inverted_count == normal_count
+    assert page.locator("#matrix .pane").nth(0).locator(".chart-svg g title").count() > 0
     assert not page_errors
 
 

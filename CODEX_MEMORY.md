@@ -989,3 +989,10 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - Divergence labels fail closed: narrowing requires a positive candidate median five-day return with EMA20 breadth falling at least five percentage points; improving requires the reverse. Otherwise the result is broad strength, broad weakness, or mixed participation.
 - Current observed run: 240 candidates; EMA20 67.92% (+17.50pp over five sessions), EMA50 60.00% (+10.21pp), EMA200 73.64% (+5.00pp). These values must be regenerated from bars and never hard-coded.
 - Direct Wrangler deployment: `https://b30723fb.hk-alert-cloud-gas.pages.dev`; no GitHub deployment was used. Mobile and browser regression checks found no JavaScript error or horizontal overflow.
+
+### 2026-07-16 weekly Kbar dual view
+
+- `kbar_matrix.html` adds `週圖雙視角`: normal and inverted weekly candles derived only from the existing observed daily OHLCV. The inverted pane changes the price-axis direction only; candle direction, date order, volume, POC geometry, and overlays remain identical.
+- Weekly aggregation is calendar aligned from Monday through Sunday, not a blind five-row grouping. Open is the first observed session, high/low cover the whole trading week, close is the last observed session, and volume/available turnover are summed. The current unfinished week remains visible and no missing week is synthesized.
+- Each weekly bar stores its observed `period_start` and `period_end`. Solar-term and VQC markers map to the weekly bar containing their actual date, so the timing overlay is retained rather than dropped by weekly resampling.
+- The local one-year cache may honestly render about 57 weekly candles. The Cloudflare on-demand 520-daily-bar path can render up to 104 weekly candles; the UI never pads a shorter listing or failed fetch.

@@ -86,7 +86,7 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
     <div class="band-head">
       <div>
         <div class="band-title">多重時間圖</div>
-        <div class="band-sub">季、半年、年、日圖都同時顯示正常與反向股價刻度。未 cache 港股會嘗試 Cloudflare 按需真實日 K。</div>
+        <div class="band-sub">季、半年、年、週、日圖都同時顯示正常與反向股價刻度。週圖由真實日 K 按交易周聚合；未 cache 港股會嘗試 Cloudflare 按需真實日 K。</div>
       </div>
     </div>
     <div class="controls" style="margin-top:12px">
@@ -180,6 +180,7 @@ const intervals = [
   { label: '季圖雙視角', value: '3m_pair' },
   { label: '半年雙視角', value: '6m_pair' },
   { label: '年圖雙視角', value: '1y_pair' },
+  { label: '週圖雙視角', value: '1w_pair' },
   { label: '日圖雙視角', value: '1d_pair' },
 ];
 
@@ -190,6 +191,8 @@ const paneDefinitions = {
   '6m_flip': { label: '反向半年圖', value: '6m_flip' },
   '1y': { label: '年圖', value: '1y' },
   '1y_flip': { label: '反向年圖', value: '1y_flip' },
+  '1w': { label: '週圖', value: '1w' },
+  '1w_flip': { label: '反向週圖', value: '1w_flip' },
   '1d': { label: '日圖', value: '1d' },
   '1d_flip': { label: '反向日圖', value: '1d_flip' },
 };
@@ -302,6 +305,7 @@ function tvEmbedUrl(tvSymbol, interval='D', range='', inverted=false) {
 }
 
 function tvIntervalForPane(value) {
+  if (value === '1w' || value === '1w_flip') return 'W';
   if (['1d', '1d_flip', '1y', '1y_flip', '6m', '6m_flip', '3m', '3m_flip'].includes(value)) return 'D';
   if (value === '1h') return '60';
   if (value === '4h') return '240';
@@ -309,6 +313,7 @@ function tvIntervalForPane(value) {
 }
 
 function paneLookback(value) {
+  if (value === '1w' || value === '1w_flip') return 104;
   if (value === '1d' || value === '1d_flip') return dailyBarTarget;
   if (value === '1y' || value === '1y_flip') return 260;
   if (value === '6m' || value === '6m_flip') return 126;
@@ -321,7 +326,7 @@ function paneReverseX(value) {
 }
 
 function paneReversePriceScale(value) {
-  return ['1d_flip', '1y_flip', '6m_flip', '3m_flip'].includes(value);
+  return ['1d_flip', '1w_flip', '1y_flip', '6m_flip', '3m_flip'].includes(value);
 }
 
 function modeFromCacheSymbol(symbol) {
@@ -387,7 +392,7 @@ function renderFallbackNotice(fallbackSymbol, supportedSymbols) {
   const preview = supportedSymbols.slice(0, 12).join(' / ');
   fallbackNoticeEl.style.display = 'block';
   fallbackNoticeEl.className = 'trend-guard watch';
-  fallbackNoticeEl.innerHTML = `<strong>${escapeHtml(fallbackSymbol)} 使用 TradingView 直連八圖</strong><small>正常/反向季圖、半年、年及日圖由 TradingView 即時載入；節氣/VQC、年開線及 CCASS overlay 只會在本地 Futu cache 圖顯示。現時完整 cache 共 ${cacheCount} 隻。</small>`;
+  fallbackNoticeEl.innerHTML = `<strong>${escapeHtml(fallbackSymbol)} 使用 TradingView 直連十圖</strong><small>正常/反向季圖、半年、年、週及日圖由 TradingView 即時載入；節氣/VQC、年開線及 CCASS overlay 只會在本地真實 K 線圖顯示。現時完整 cache 共 ${cacheCount} 隻。</small>`;
 }
 
 async function ensureKbarCache() {
@@ -645,6 +650,7 @@ function viewTradingViewConfig(value = state.view) {
     '3m_pair': ['D', '3M', false],
     '6m_pair': ['D', '6M', false],
     '1y_pair': ['D', '12M', false],
+    '1w_pair': ['W', '24M', false],
     '1d_pair': ['D', '12M', false],
     '3m': ['D', '3M', false],
     '3m_flip': ['D', '3M', true],
@@ -652,6 +658,8 @@ function viewTradingViewConfig(value = state.view) {
     '6m_flip': ['D', '6M', true],
     '1y': ['D', '12M', false],
     '1y_flip': ['D', '12M', true],
+    '1w': ['W', '24M', false],
+    '1w_flip': ['W', '24M', true],
     '1d': ['D', '12M', false],
     '1d_flip': ['D', '12M', true],
   }[value] || ['D', '3M', false];
@@ -823,7 +831,15 @@ function timingMarkersFor(symbol, bars, xForIndex, priceHeight, padTop) {
     if (day && !firstIndexByDay.has(day)) firstIndexByDay.set(day, index);
   });
   return [...byDate.entries()].map(([day, events], markerIndex) => {
-    const idx = firstIndexByDay.get(day);
+    let idx = firstIndexByDay.get(day);
+    if (idx == null) {
+      idx = bars.findIndex(bar => {
+        const start = String(bar.period_start || '').slice(0, 10);
+        const end = String(bar.period_end || '').slice(0, 10);
+        return start && end && day >= start && day <= end;
+      });
+      if (idx < 0) idx = null;
+    }
     if (idx == null) return '';
     const x = xForIndex(idx);
     const resonance = events.length > 1;
@@ -927,7 +943,58 @@ function aggregateBars(sourceBars, group) {
   return out;
 }
 
+function aggregateDailyToWeekly(sourceBars) {
+  if (!Array.isArray(sourceBars) || !sourceBars.length) return [];
+  const out = [];
+  let current = null;
+  sourceBars.forEach(bar => {
+    const day = String(bar && bar.time || '').slice(0, 10);
+    const date = /^\d{4}-\d{2}-\d{2}$/.test(day) ? new Date(`${day}T00:00:00Z`) : null;
+    if (!date || Number.isNaN(date.getTime())) return;
+    const open = Number(bar.open);
+    const high = Number(bar.high);
+    const low = Number(bar.low);
+    const close = Number(bar.close);
+    if (![open, high, low, close].every(Number.isFinite)) return;
+    const rawTurnover = bar.turnover;
+    const turnover = rawTurnover == null || rawTurnover === '' ? null : Number(rawTurnover);
+    const monday = new Date(date);
+    monday.setUTCDate(monday.getUTCDate() - ((monday.getUTCDay() + 6) % 7));
+    const weekKey = monday.toISOString().slice(0, 10);
+    if (!current || current.week_key !== weekKey) {
+      current = {
+        week_key: weekKey,
+        period_start: day,
+        period_end: day,
+        time: day,
+        open,
+        high,
+        low,
+        close,
+        volume: Number(bar.volume) || 0,
+        turnover: Number.isFinite(turnover) ? turnover : null,
+      };
+      out.push(current);
+      return;
+    }
+    current.period_end = day;
+    current.time = day;
+    current.high = Math.max(current.high, high);
+    current.low = Math.min(current.low, low);
+    current.close = close;
+    current.volume += Number(bar.volume) || 0;
+    if (Number.isFinite(turnover)) {
+      current.turnover = (current.turnover || 0) + turnover;
+    }
+  });
+  return out.filter(bar => [bar.open, bar.high, bar.low, bar.close].every(Number.isFinite));
+}
+
 function seriesForInterval(entry, interval) {
+  if (interval === '1w' || interval === '1w_flip') {
+    const daily = entry && entry.series ? (entry.series['1d'] || []) : [];
+    return aggregateDailyToWeekly(daily);
+  }
   if (interval === '1y' || interval === '1y_flip' || interval === '6m' || interval === '6m_flip' || interval === '3m' || interval === '3m_flip' || interval === '1d_flip') {
     return entry && entry.series ? (entry.series['1d'] || []) : [];
   }
@@ -1651,6 +1718,7 @@ function hydrateFromQuery() {
     '3m': '3m_pair', '3m_flip': '3m_pair',
     '6m': '6m_pair', '6m_flip': '6m_pair',
     '1y': '1y_pair', '1y_flip': '1y_pair',
+    '1w': '1w_pair', '1w_flip': '1w_pair',
     '1d': '1d_pair', '1d_flip': '1d_pair',
   };
   if (view && legacyPair[view]) state.view = legacyPair[view];
@@ -1757,7 +1825,8 @@ function buildTradingViewPane(tvSymbol, entry, viewValue) {
   const blockedHkEmbed = state.mode === 'hk' && !entry;
   const dynamicHk = Boolean(entry && entry.quote && entry.quote.status === 'on-demand-cache');
   const localBars = useLocalHk ? seriesForInterval(entry, view.value) : [];
-  const rangeLabel = useLocalHk ? `${Math.min(localBars.length, paneLookback(view.value))} 根 D 燭` : config[1];
+  const barUnit = view.value === '1w' || view.value === '1w_flip' ? 'W' : 'D';
+  const rangeLabel = useLocalHk ? `${Math.min(localBars.length, paneLookback(view.value))} 根 ${barUnit} 燭` : config[1];
   const meta = [
     tvSymbol,
     rangeLabel,
@@ -1799,6 +1868,7 @@ function buildChartWorkspace(tvSymbol, entry) {
     '3m_pair': ['3m', '3m_flip'],
     '6m_pair': ['6m', '6m_flip'],
     '1y_pair': ['1y', '1y_flip'],
+    '1w_pair': ['1w', '1w_flip'],
     '1d_pair': ['1d', '1d_flip'],
   }[state.view] || ['3m', '3m_flip'];
   return `<div class="matrix-grid paired-view" data-layout="${escapeHtml(state.view)}">
