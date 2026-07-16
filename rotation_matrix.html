@@ -1,29 +1,87 @@
 <!doctype html>
 <html lang="zh-HK">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>港股板塊輪動</title>
 <style>
-:root{--bg:#f4f7f8;--surface:#fff;--line:#d8e1e5;--text:#10212b;--mute:#647783;--up:#138a62;--down:#c23d52;--amber:#ad7416}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:13px/1.45 system-ui,"Microsoft JhengHei",sans-serif}.page{max-width:1280px;margin:auto;padding:16px}.band{background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:14px;margin-bottom:12px}.head{display:flex;justify-content:space-between;gap:12px}.title{font-size:18px;font-weight:800}.sub,.note{color:var(--mute);font-size:12px;margin-top:4px}.controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.btn{border:1px solid var(--line);background:var(--surface);border-radius:7px;padding:7px 10px;color:var(--text);font:inherit;cursor:pointer}.btn.active{background:#dceff5;border-color:#76b8cc}.chart-wrap{margin-top:12px;border:1px solid #223246;border-radius:8px;background:#07131d;overflow:hidden}.chart-wrap svg{display:block;width:100%;height:auto}.chart-note{padding:8px 10px;background:#0d1d2a;color:#b5c8d3;font-size:11px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.quad{border:1px solid var(--line);border-radius:8px;padding:10px;min-height:150px}.quad h2{margin:0;font-size:14px}.quad p{margin:2px 0 8px;color:var(--mute);font-size:11px}.leading{background:#fff3f5;border-top:4px solid var(--down)}.weakening{background:#fff9eb;border-top:4px solid var(--amber)}.lagging{background:#f1f4f6;border-top:4px solid #85949d}.improving{background:#effaf5;border-top:4px solid var(--up)}.sector{display:flex;justify-content:space-between;gap:10px;border-top:1px solid rgba(100,119,131,.16);padding:7px 0;cursor:pointer}.sector strong{font-size:12px}.sector small{display:block;color:var(--mute)}.score{text-align:right;font-weight:800}.up{color:var(--up)}.down{color:var(--down)}.empty{color:var(--mute);padding:18px 0}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:8px;border-bottom:1px solid var(--line);white-space:nowrap}th{background:#eef3f5;font-size:11px;color:var(--mute)}.unavailable{color:var(--mute)}@media(max-width:700px){.page{padding:8px}.grid{grid-template-columns:1fr}.head{display:block}.title{font-size:16px}}
+:root{--bg:#edf1f2;--surface:#fff;--surface-2:#f5f7f7;--line:#d5dddf;--text:#172126;--muted:#68777d;--teal:#0b7475;--green:#157a4b;--red:#b43a42;--amber:#986308;--blue:#286f91}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:13px/1.45 system-ui,"Microsoft JhengHei",sans-serif}.page{max-width:1280px;margin:auto;padding:14px}.band{background:var(--surface);border:1px solid var(--line);border-radius:7px;padding:14px;margin-bottom:10px}.head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}.title{font-size:18px;font-weight:800}.sub,.note{color:var(--muted);font-size:12px;margin-top:4px}.status{text-align:right}.controls{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}.btn{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:7px 12px;color:var(--text);font:inherit;font-weight:700;cursor:pointer}.btn.active{background:#e1f1ef;border-color:#9ccfca;color:var(--teal)}.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}.metric{padding:9px 10px;background:var(--surface-2);border-left:3px solid var(--blue)}.metric b{display:block;font-size:15px}.metric span{color:var(--muted);font-size:11px}.chart-wrap{margin-top:12px;border:1px solid #26343a;border-radius:7px;background:#0b151a;overflow:hidden}.chart-wrap svg{display:block;width:100%;height:auto}.chart-note{padding:8px 10px;background:#122128;color:#b7c5c9;font-size:11px}.quad-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.quad{border:1px solid var(--line);border-top-width:3px;padding:10px;min-height:132px}.quad h2{margin:0 0 8px;font-size:13px}.quad[data-q="leading"]{border-top-color:var(--green)}.quad[data-q="improving"]{border-top-color:var(--blue)}.quad[data-q="weakening"]{border-top-color:var(--amber)}.quad[data-q="lagging"]{border-top-color:var(--red)}.sector{display:flex;justify-content:space-between;gap:8px;padding:7px 0;border-top:1px solid #e7ecec;cursor:pointer}.sector:first-child{border-top:0}.sector small{display:block;color:var(--muted)}.score{text-align:right;font-weight:800}.empty{color:var(--muted);padding:12px 0}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:8px;border-bottom:1px solid var(--line);white-space:nowrap}th{position:sticky;top:0;background:#eef3f5;color:var(--muted);font-size:11px}.pill{display:inline-block;padding:2px 6px;border-radius:4px;background:#e5f0f5;color:var(--blue);font-size:11px}.up{color:var(--green)}.down{color:var(--red)}.unavailable{padding:60px 15px;text-align:center;color:#afbec3}.source{border-left:3px solid var(--teal)}
+@media(max-width:820px){.page{padding:8px}.head{display:block}.status{text-align:left;margin-top:6px}.metrics{grid-template-columns:1fr 1fr}.quad-grid{grid-template-columns:1fr 1fr}.chart-wrap{overflow-x:auto}.chart-wrap svg{min-width:720px}}
+@media(max-width:480px){.quad-grid{grid-template-columns:1fr}.title{font-size:16px}}
 </style>
 </head>
-<body><header><div id="sharedSiteNav" data-base="./"></div></header>
+<body>
+<header><div id="sharedSiteNav" data-base="./"></div></header>
 <main class="page">
-<section class="band"><div class="head"><div><div class="title">港股板塊輪動</div><div class="sub">用港股實際價格快照計算相對強弱，與持股資料分開。</div></div><div id="status" class="sub">載入中…</div></div><div class="controls"><button class="btn active" data-pair="5,20">短線 5／20日</button><button class="btn" data-pair="20,60">中線 20／60日</button><button class="btn" data-pair="60,120">長線 60／120日</button></div></section>
-<section class="band"><div class="title">相對強弱輪動圖</div><div class="sub">右上＝領先，右下＝轉弱，左下＝落後，左上＝改善。每個點係板塊等權平均價格回報。</div><div class="chart-wrap"><svg id="rotationChart" viewBox="0 0 1000 560" role="img" aria-label="港股板塊相對強弱輪動圖"></svg><div id="chartNote" class="chart-note"></div></div></section>
-<section class="band"><div class="grid"><article class="quad leading"><h2>1 領先 Leading</h2><p>短窗及長窗均為正。</p><div id="leading"></div></article><article class="quad weakening"><h2>4 轉弱 Weakening</h2><p>長窗仍正，短窗轉負。</p><div id="weakening"></div></article><article class="quad lagging"><h2>3 落後 Lagging</h2><p>短窗及長窗均為負。</p><div id="lagging"></div></article><article class="quad improving"><h2>2 改善 Improving</h2><p>長窗為負，短窗轉正。</p><div id="improving"></div></article></div></section>
-<section class="band"><div class="title">板塊明細</div><div class="sub">日期係實際可用價格快照；缺少歷史快照會顯示歷史不足。</div><div class="table-wrap"><table><thead><tr><th>板塊</th><th>象限</th><th>短窗回報</th><th>長窗回報</th><th>有效股票數</th><th>實際基準日</th></tr></thead><tbody id="details"></tbody></table></div></section>
-<section class="band note">資料來源：data/sector_rotation.json，由 raw/prices_YYYYMMDD.json 及 holdings.json 名稱產生。只計有真實收市價及名稱配對的股票；沒有資料不會補零。</section>
+  <section class="band">
+    <div class="head"><div><div class="title">港股板塊輪動</div><div class="sub">先睇板塊相對全市場強弱，再由強勢板塊落到個股。數值以 100 為中軸。</div></div><div id="status" class="sub status">載入中…</div></div>
+    <div class="controls" aria-label="輪動週期">
+      <button class="btn active" data-profile="20">20日</button>
+      <button class="btn" data-profile="60">60日</button>
+      <button class="btn" data-profile="120">120日</button>
+    </div>
+    <div class="metrics"><div class="metric"><b id="asOf">—</b><span>價格快照</span></div><div class="metric"><b id="sample">—</b><span>共同樣本</span></div><div class="metric"><b id="coverage">—</b><span>已分類覆蓋</span></div><div class="metric"><b id="references">—</b><span>短／長基準日</span></div></div>
+  </section>
+
+  <section class="band">
+    <div class="title">相對旋轉圖</div>
+    <div class="sub">X＝板塊相對全市場嘅長窗強弱；Y＝短窗相對動能。尾線只連接真實快照，唔插值、唔預測。</div>
+    <div class="chart-wrap"><svg id="rotationChart" viewBox="0 0 1000 560" role="img" aria-label="港股板塊相對旋轉圖"></svg><div id="chartNote" class="chart-note"></div></div>
+  </section>
+
+  <section class="band"><div class="quad-grid">
+    <article class="quad" data-q="leading"><h2>領先 Leading</h2><div id="leading"></div></article>
+    <article class="quad" data-q="weakening"><h2>轉弱 Weakening</h2><div id="weakening"></div></article>
+    <article class="quad" data-q="lagging"><h2>落後 Lagging</h2><div id="lagging"></div></article>
+    <article class="quad" data-q="improving"><h2>改善 Improving</h2><div id="improving"></div></article>
+  </div></section>
+
+  <section class="band"><div class="title">板塊明細</div><div class="sub">「領先股」按該板塊長窗實際回報排序，只作落到個股嘅入口。</div><div class="table-wrap"><table><thead><tr><th>板塊</th><th>象限</th><th>RS-Ratio</th><th>RS-Momentum</th><th>相對長窗</th><th>相對短窗</th><th>樣本</th><th>領先股</th></tr></thead><tbody id="details"></tbody></table></div></section>
+  <section class="band note source">資料：同日非 stale 收市快照。板塊及市場均用股票回報中位數，避免單一暴升細價股扭曲整個板塊。「其他／未分類」會計入全市場基準及覆蓋率，但不畫入 RRG；120 日歷史不足時會如實顯示。</section>
 </main>
-<script src="./shared-nav.js"></script><script>
-const LABELS={tech:'科技／AI',finance:'金融／券商',property:'地產／物管',energy:'能源／資源',consumer:'消費／醫療',industrial:'工業／製造',utilities:'公用／基建',other:'其他／未分類'};
-const COLORS=['#f05b85','#f2b84b','#62d2a2','#78a9ff','#c59cff','#ff8c5a','#6ed0d9','#e1e7eb'];
-let data=null,pair=[5,20];
-const fmt=v=>Number.isFinite(v)?(v>=0?'+':'')+v.toFixed(2)+'%':'歷史不足';
-const quadrant=(short,long)=>{if(!Number.isFinite(short)||!Number.isFinite(long))return'unknown';if(short>=0&&long>=0)return'leading';if(short<0&&long<0)return'lagging';return short>=0?'improving':'weakening'};
-function points(){return Object.entries(data.sectors).map(([key,item],i)=>{const a=item.windows[String(pair[0])]||null,b=item.windows[String(pair[1])]||null;return{key,label:LABELS[key]||key,short:a&&Number.isFinite(a.pct)?a.pct:null,long:b&&Number.isFinite(b.pct)?b.pct:null,shortMeta:a,longMeta:b,color:COLORS[i%COLORS.length]}})}
-function draw(){const items=points(),midX=500,midY=266,scale=11;let svg='<rect width="1000" height="560" fill="#07131d"/><rect x="500" y="28" width="468" height="238" fill="#351426"/><rect x="70" y="28" width="430" height="238" fill="#102b35"/><rect x="70" y="266" width="430" height="242" fill="#10202a"/><rect x="500" y="266" width="468" height="242" fill="#302619"/><line x1="500" y1="28" x2="500" y2="508" stroke="#78909c" stroke-dasharray="4 5"/><line x1="70" y1="266" x2="968" y2="266" stroke="#78909c" stroke-dasharray="4 5"/><text x="92" y="52" fill="#4fa7a1" font-size="15">IMPROVING 改善</text><text x="820" y="52" fill="#e26a8d" font-size="15">LEADING 領先</text><text x="92" y="490" fill="#7293a2" font-size="15">LAGGING 落後</text><text x="820" y="490" fill="#d3a23c" font-size="15">WEAKENING 轉弱</text>';
-items.forEach(it=>{if(!Number.isFinite(it.short)||!Number.isFinite(it.long))return;const x=Math.max(80,Math.min(960,midX+it.short*scale)),y=Math.max(42,Math.min(496,midY-it.long*scale));svg+=`<circle cx="${x}" cy="${y}" r="8" fill="${it.color}"/><text x="${x+12}" y="${y+4}" fill="#edf5f7" font-size="12">${it.label}</text>`});document.getElementById('rotationChart').innerHTML=svg;document.getElementById('chartNote').textContent=`最新快照 ${data.updated} · 短窗 ${pair[0]}日／長窗 ${pair[1]}日 · 只顯示有實際價格基準的板塊`}
-function render(){const groups={leading:[],weakening:[],lagging:[],improving:[]},items=points();items.forEach(it=>{const q=quadrant(it.short,it.long);if(groups[q])groups[q].push(it)});Object.entries(groups).forEach(([q,list])=>{document.getElementById(q).innerHTML=list.length?list.map(it=>`<div class="sector" data-sector="${it.key}"><div><strong>${it.label}</strong><small>${it.shortMeta?.stocks||0} 隻有效 · 基準 ${it.shortMeta?.reference_date||'不足'}</small></div><div class="score ${it.short>=0?'up':'down'}">${fmt(it.short)}<br><small>${fmt(it.long)}</small></div></div>`).join(''):'<div class="empty">目前沒有足夠真實資料</div>'});document.getElementById('details').innerHTML=items.map(it=>`<tr><td>${it.label}</td><td>${quadrant(it.short,it.long)}</td><td>${fmt(it.short)}</td><td>${fmt(it.long)}</td><td>${it.shortMeta?.stocks||it.longMeta?.stocks||0}</td><td>${it.shortMeta?.reference_date||it.longMeta?.reference_date||'歷史不足'}</td></tr>`).join('');document.querySelectorAll('.sector').forEach(el=>el.onclick=()=>location.href='./index.html?sector='+encodeURIComponent(el.dataset.sector));draw()}
-fetch('./data/sector_rotation.json?_='+Date.now(),{cache:'no-store'}).then(r=>{if(!r.ok)throw Error(r.status);return r.json()}).then(d=>{data=d;document.getElementById('status').textContent=`價格快照 ${d.updated} · ${Object.keys(d.sectors).length} 個板塊`;render()}).catch(()=>document.getElementById('status').textContent='價格輪動資料載入失敗');document.querySelectorAll('[data-pair]').forEach(btn=>btn.onclick=()=>{document.querySelectorAll('[data-pair]').forEach(x=>x.classList.remove('active'));btn.classList.add('active');pair=btn.dataset.pair.split(',').map(Number);if(data)render()});
-</script></body></html>
+<script src="./shared-nav.js"></script>
+<script>
+const COLORS={tech:'#3d8f8b',healthcare:'#9a6ca5',property:'#a96b53',finance:'#4f77a1',energy:'#b28b28',auto:'#547f67',consumer:'#b05f75',infra:'#528b9b',shipping:'#687c9f',industrial:'#8a7459',conglomerate:'#767676'};
+const QUADRANTS={leading:'領先',weakening:'轉弱',lagging:'落後',improving:'改善',unavailable:'資料不足'};
+let payload=null,profileKey='20';
+const finite=value=>value!==null&&value!==''&&Number.isFinite(Number(value));
+const fmt=(value,suffix='')=>finite(value)?`${Number(value)>=0&&suffix==='%'?'+':''}${Number(value).toFixed(2)}${suffix}`:'—';
+const esc=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+function sectorLink(key){location.href=`./index.html?sector=${encodeURIComponent(key)}`}
+function chart(profile){
+  const svg=document.getElementById('rotationChart');
+  if(!profile.available){svg.innerHTML='<rect width="1000" height="560" fill="#0b151a"/><text x="500" y="280" fill="#afbec3" text-anchor="middle" font-size="18">此週期未有足夠真實歷史</text>';return}
+  const shown=Object.entries(profile.sectors).filter(([key,item])=>key!=='other'&&finite(item.rs_ratio)&&finite(item.rs_momentum));
+  const values=shown.flatMap(([,item])=>(item.tail||[]).flatMap(point=>[Math.abs(point.rs_ratio-100),Math.abs(point.rs_momentum-100)]));
+  const span=Math.max(2,Math.min(25,Math.ceil(Math.max(0,...values)*1.15)));
+  const x=value=>500+(value-100)*420/span;
+  const y=value=>280-(value-100)*220/span;
+  let out='<rect width="1000" height="560" fill="#0b151a"/><rect x="500" y="40" width="450" height="240" fill="#102d27"/><rect x="50" y="40" width="450" height="240" fill="#13262e"/><rect x="50" y="280" width="450" height="240" fill="#2b2023"/><rect x="500" y="280" width="450" height="240" fill="#2c291c"/><line x1="500" y1="40" x2="500" y2="520" stroke="#82939a" stroke-dasharray="5 6"/><line x1="50" y1="280" x2="950" y2="280" stroke="#82939a" stroke-dasharray="5 6"/><text x="70" y="66" fill="#7ab5c7" font-size="15">IMPROVING 改善</text><text x="804" y="66" fill="#6fc59a" font-size="15">LEADING 領先</text><text x="70" y="500" fill="#d47c82" font-size="15">LAGGING 落後</text><text x="790" y="500" fill="#d1af5d" font-size="15">WEAKENING 轉弱</text><text x="500" y="548" text-anchor="middle" fill="#9aabb1" font-size="12">RS-Ratio（長窗相對強弱）</text><text x="20" y="280" transform="rotate(-90 20 280)" text-anchor="middle" fill="#9aabb1" font-size="12">RS-Momentum（短窗相對動能）</text>';
+  const labels=[];shown.forEach(([key,item])=>{
+    const tail=(item.tail||[]).filter(point=>finite(point.rs_ratio)&&finite(point.rs_momentum));
+    if(tail.length>1)out+=`<polyline points="${tail.map(point=>`${x(point.rs_ratio)},${y(point.rs_momentum)}`).join(' ')}" fill="none" stroke="${COLORS[key]}" stroke-width="3" opacity=".62"/>`;
+    tail.slice(0,-1).forEach(point=>{out+=`<circle cx="${x(point.rs_ratio)}" cy="${y(point.rs_momentum)}" r="3" fill="${COLORS[key]}" opacity=".7"/>`});
+    const px=x(item.rs_ratio),py=y(item.rs_momentum);let labelY=py-9;while(labels.some(label=>Math.abs(label.x-px)<120&&Math.abs(label.y-labelY)<17))labelY+=18;if(labelY>500)labelY=py-9;labels.push({x:px,y:labelY});out+=`<circle cx="${px}" cy="${py}" r="7" fill="${COLORS[key]}"/><line x1="${px+5}" y1="${py-3}" x2="${px+9}" y2="${labelY-3}" stroke="${COLORS[key]}" opacity=".75"/><text x="${px+11}" y="${labelY}" fill="#eef6f7" font-size="12" paint-order="stroke" stroke="#0b151a" stroke-width="3">${esc(item.label)}</text>`;
+  });
+  svg.innerHTML=out;
+}
+function render(){
+  const profile=payload.profiles[profileKey];
+  document.getElementById('asOf').textContent=profile.as_of||payload.updated||'—';
+  document.getElementById('sample').textContent=profile.market_stocks?`${profile.market_stocks} 隻`:'不足';
+  document.getElementById('coverage').textContent=finite(payload.coverage?.classified_pct)?`${Number(payload.coverage.classified_pct).toFixed(1)}%`:'—';
+  document.getElementById('references').textContent=profile.short_reference_date&&profile.long_reference_date?`${profile.short_reference_date.slice(5)}／${profile.long_reference_date.slice(5)}`:'不足';
+  document.getElementById('chartNote').textContent=`${profile.label}視角：短窗 ${profile.short_days} 日／長窗 ${profile.long_days} 日 · 中軸 100 · 最新 ${profile.as_of}`;
+  const groups={leading:[],weakening:[],lagging:[],improving:[]};
+  Object.entries(profile.sectors).forEach(([key,item])=>{if(key!=='other'&&groups[item.quadrant])groups[item.quadrant].push([key,item])});
+  Object.entries(groups).forEach(([q,items])=>{items.sort((a,b)=>(b[1].rs_ratio||0)-(a[1].rs_ratio||0));document.getElementById(q).innerHTML=items.length?items.map(([key,item])=>`<div class="sector" data-sector="${key}"><div><strong>${esc(item.label)}</strong><small>${item.stocks||0} 隻 · ${fmt(item.relative_long_pct,'%')}</small></div><div class="score">${fmt(item.rs_ratio)}<small>${fmt(item.rs_momentum)}</small></div></div>`).join(''):'<div class="empty">目前沒有板塊</div>'});
+  const entries=Object.entries(profile.sectors).filter(([key])=>key!=='other');
+  document.getElementById('details').innerHTML=entries.map(([key,item])=>`<tr><td><button class="btn" data-sector="${key}">${esc(item.label)}</button></td><td><span class="pill">${QUADRANTS[item.quadrant]||item.quadrant}</span></td><td>${fmt(item.rs_ratio)}</td><td>${fmt(item.rs_momentum)}</td><td class="${Number(item.relative_long_pct)>=0?'up':'down'}">${fmt(item.relative_long_pct,'%')}</td><td class="${Number(item.relative_short_pct)>=0?'up':'down'}">${fmt(item.relative_short_pct,'%')}</td><td>${item.stocks||0}</td><td>${(item.leaders||[]).map(stock=>`<a href="./kbar_matrix.html?symbol=${stock.code}">${stock.code}</a>`).join(' · ')||'—'}</td></tr>`).join('');
+  document.querySelectorAll('[data-sector]').forEach(el=>el.onclick=()=>sectorLink(el.dataset.sector));chart(profile);
+}
+document.querySelectorAll('[data-profile]').forEach(button=>button.onclick=()=>{document.querySelectorAll('[data-profile]').forEach(item=>item.classList.remove('active'));button.classList.add('active');profileKey=button.dataset.profile;render()});
+fetch('./data/sector_rotation.json?_='+Date.now(),{cache:'no-store'}).then(response=>{if(!response.ok)throw Error(response.status);return response.json()}).then(data=>{if(data.schema_version!==2)throw Error('old schema');payload=data;document.getElementById('status').textContent=`真實快照 ${data.updated} · 未分類 ${data.coverage?.unclassified_stocks||0} 隻`;render()}).catch(error=>{document.getElementById('status').textContent='輪動資料載入失敗';document.getElementById('rotationChart').innerHTML='<rect width="1000" height="560" fill="#0b151a"/><text x="500" y="280" fill="#afbec3" text-anchor="middle" font-size="18">輪動資料暫不可用</text>';console.error(error)});
+</script>
+</body>
+</html>

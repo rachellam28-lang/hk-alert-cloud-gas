@@ -2,6 +2,18 @@
 
 Last updated: 2026-07-16 HKT
 
+## 2026-07-16 observed RRG and timing-stack integration
+
+- Public-source review covered QuantStock AI's published workflow description, `doubleupasset`, the image-only `futualgo_kayman` Threads post, and MOFI's public RRG write-up/source repository. The three supplied Facebook photo URLs remained login-gated; no unseen rule or proprietary QuantStock implementation was guessed, scraped, or represented as copied.
+- `scripts/build_sector_rotation.py` and `rotation_matrix.html` now produce schema-v2 RRG-style sector rotation from same-date, non-stale observed closes. Each sector's equal-weight median return is compared with the equal-weight market median; `RS-Ratio` uses the long relative return and `RS-Momentum` uses the short relative return around a neutral 100 axis.
+- Rotation profiles are 20-day (5/20), 60-day (20/60), and 120-day (60/120). Missing history remains unavailable. The 2026-07-15 snapshot has real 20/60-day profiles; 120-day is explicitly unavailable. Classification coverage is disclosed as 1,457 of 2,723 observed named stocks (53.5%); 1,266 unclassified stocks remain in the market benchmark but are excluded from plotted sector signals.
+- The generator reuses the main page's existing explicit `SECTOR_CODE_MAP` overrides instead of creating another heavy membership JSON. The output keeps truthful `windows` metadata for backward compatibility and publish/data-honesty tests.
+- Added `timing_stack.html` under the `時序` navigation group. It accepts any 1-5 digit HK code and loads real daily bars through the existing Cloudflare `/api/kbar/<code>` route, then falls back to a real static shard and finally the existing real `data/kbar_cache.json`; it never synthesizes candles.
+- The timing page combines observed price swing cadence, VQC dates, fixed jieqi dates, and HK distribution days on one log-price timeline. Projected pivot windows require at least three confirmed five-bar pivots and a median interval of at least 10 sessions. A future vertical line is a time-alert window only; no future OHLC or direction is generated.
+- The same page exposes an observed 20-day price channel, EMA20/EMA60 trend, 20-day momentum, ATR14 risk, support/resistance, and a fail-closed `未確認／不入場` state unless a real close-and-volume channel breakout confirms. This adapts the useful separation of trend/momentum/support/pressure/risk seen in the public Threads image without copying its scoring or inventing options data.
+- Daily refresh staging, guide, publish-bundle summary, direct Cloudflare allowlist, and shared navigation include the new page/schema. Browser audits at 393px and 1440px show populated SVGs, no JavaScript exceptions, and no document-level horizontal overflow.
+- Verification: all `tests/` pass `53/53`; page-source audit reports 22 pages with zero missing data references; date aliases match and current publish gate is PASS. Current market/signals/events/rights/fundflow/Kbar/rotation data are through 2026-07-15 while CCASS is the expected 2026-07-14 publish date. Historical CCASS gaps/low coverage and participant-detail gaps remain honest maintenance WARN.
+
 ## 2026-07-16 Navigation and semantic colour consolidation
 
 - Primary navigation order is `交易台 -> Market -> 訊號 -> 細價股 -> Kbar -> 動量 -> 事件 -> 自選 -> 更多`. `事件` is a direct link to `rights_analysis.html`; it must not be moved back under `更多`. `更多` follows `自選` in both DOM and visual order.

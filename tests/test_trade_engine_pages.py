@@ -1,9 +1,12 @@
 from __future__ import annotations
 
+import json
 import os
+from pathlib import Path
 
 
 BASE_URL = os.getenv("HK_ALERT_BASE_URL", "https://hk-alert-cloud-gas.pages.dev").rstrip("/")
+ROOT = Path(__file__).resolve().parents[1]
 
 
 def test_main_page_loads_real_trade_engine_badges(page):
@@ -15,7 +18,8 @@ def test_main_page_loads_real_trade_engine_badges(page):
         timeout=45_000,
     )
     assert "候選 240" in page.locator("#summaryBar").inner_text()
-    assert "全市場 2722" in page.locator("#summaryBar").inner_text()
+    engine = json.loads((ROOT / "data" / "trade_engine.json").read_text(encoding="utf-8"))
+    assert f"全市場 {engine['universe_count']}" in page.locator("#summaryBar").inner_text()
     assert not errors
 
 

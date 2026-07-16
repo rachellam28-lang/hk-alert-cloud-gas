@@ -40,6 +40,7 @@ ROOT_DEPLOY_FILES = [
     "rights_analysis.html",
     "signals.html",
     "timing_analysis.html",
+    "timing_stack.html",
     "vqc_analysis.html",
     "watchlist.html",
     "ccass.json",

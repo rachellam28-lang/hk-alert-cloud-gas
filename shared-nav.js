@@ -21,6 +21,7 @@
       ['fundflow.html', '\u8cc7\u91d1\u6d41'],
     ]],
     ['\u6642\u5e8f', [
+      ['timing_stack.html', '\u6642\u6a5f\u758a\u52a0'],
       ['vqc_analysis.html', '\u6210\u4ea4\u8f49\u52e2\u65e5'],
       ['timing_analysis.html', '\u6642\u9593\u7a97\u53e3'],
       ['jieqi_analysis.html', '\u7bc0\u6c23\u7a97\u53e3'],

@@ -343,14 +343,28 @@ def summarize_prices():
 def summarize_sector_rotation():
     data = load_json(DATA / "sector_rotation.json", {})
     sectors = data.get("sectors") if isinstance(data, dict) else {}
+    profiles = data.get("profiles") if isinstance(data, dict) else {}
     windows = data.get("windows") if isinstance(data, dict) else {}
     return {
         "path": "data/sector_rotation.json",
         "updated": data.get("updated") if isinstance(data, dict) else None,
         "source": data.get("source") if isinstance(data, dict) else None,
         "method": data.get("method") if isinstance(data, dict) else None,
+        "schema_version": data.get("schema_version") if isinstance(data, dict) else None,
         "sector_count": len(sectors) if isinstance(sectors, dict) else 0,
+        "coverage": data.get("coverage", {}) if isinstance(data, dict) else {},
         "windows": windows if isinstance(windows, dict) else {},
+        "profiles": {
+            key: {
+                "available": value.get("available"),
+                "as_of": value.get("as_of"),
+                "short_reference_date": value.get("short_reference_date"),
+                "long_reference_date": value.get("long_reference_date"),
+                "market_stocks": value.get("market_stocks"),
+            }
+            for key, value in profiles.items()
+            if isinstance(value, dict)
+        } if isinstance(profiles, dict) else {},
     }
 
 
