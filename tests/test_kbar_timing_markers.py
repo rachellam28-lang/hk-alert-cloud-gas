@@ -75,6 +75,8 @@ def test_weekly_pair_uses_calendar_week_ohlcv_and_timing_markers(page):
     assert normal_count == min(104, weekly["count"])
     assert inverted_count == normal_count
     assert page.locator("#matrix .pane").nth(0).locator(".chart-svg g title").count() > 0
+    assert "小暑/姤" in page.locator("#matrix .pane").nth(0).locator(".chart-svg").text_content()
+    assert "小暑／姤" in page.locator("#signalRail").inner_text()
     assert not page_errors
 
 

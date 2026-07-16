@@ -55,6 +55,7 @@ ROOT_DEPLOY_FILES = [
     "_headers",
     "service-worker.js",
     "shared-nav.js",
+    "timing-regime.js",
 ]
 
 DATA_DEPLOY_FILES = {

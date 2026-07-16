@@ -43,10 +43,10 @@
   <section class="band note source">港股個股來自 Cloudflare 即時代理的 Tencent 公開未復權日線；跨市場使用現有 Longbridge 真實日線 cache：盈富基金、SPY、ASHR、EWJ、GLD。節氣事件研究只係探索性歷史觀察，唔係樣本外保證。十二消息卦使用由冬至起、每兩個節氣一階的固定季節映射，唔以卦名直接推斷升跌。系統不合成價格、不填補缺失 Kbar。</section>
 </main>
 <script src="./shared-nav.js"></script>
+<script src="./timing-regime.js"></script>
 <script>
 const COLORS={grid:'#213039',text:'#dbe5e8',muted:'#819096',up:'#4fc38a',down:'#ed747b',channel:'#65c7bf',low:'#4fc38a',high:'#ed747b',jieqi:'#6aaee8',vqc:'#aa97d2',dd:'#d4a64f'};
 const MARKETS={hk:{label:'港股',symbol:'2800.HK',proxy:'盈富基金',dd:'hk'},us:{label:'美股',symbol:'SPY.US',proxy:'SPY'},cn:{label:'中國',symbol:'ASHR.US',proxy:'ASHR'},jp:{label:'日本',symbol:'EWJ.US',proxy:'EWJ'},gold:{label:'黃金',symbol:'GLD.US',proxy:'GLD'}};
-const GUAS=[['復',1,'一陽初生'],['臨',2,'陽氣漸長'],['泰',3,'陰陽交泰'],['大壯',4,'陽勢擴張'],['夬',5,'陽盛待變'],['乾',6,'純陽極盛'],['姤',5,'一陰初生'],['遯',4,'陽退陰進'],['否',3,'陰陽不交'],['觀',2,'陰勢漸長'],['剝',1,'陽氣將盡'],['坤',0,'純陰極盛']];
 let aux={symbols:[],jieqi:null,vqc:null,dd:null,cache:null,holdings:null};
 const byId=id=>document.getElementById(id);
 const finite=value=>value!==null&&value!==''&&Number.isFinite(Number(value));
@@ -63,8 +63,8 @@ function dayDiff(a,b){return Math.round((new Date(`${a}T12:00:00`)-new Date(`${b
 function normalizeBars(entry){return(entry?.series?.['1d']||[]).filter(bar=>finite(bar.open)&&finite(bar.high)&&finite(bar.low)&&finite(bar.close)).map(bar=>({...bar,time:String(bar.time||'').slice(0,10),open:Number(bar.open),high:Number(bar.high),low:Number(bar.low),close:Number(bar.close),volume:Number(bar.volume)||0})).filter(bar=>/^\d{4}-\d{2}-\d{2}$/.test(bar.time)).sort((a,b)=>a.time.localeCompare(b.time))}
 function pivots(bars,side=5){const highs=[],lows=[];for(let i=side;i<bars.length-side;i++){const range=bars.slice(i-side,i+side+1);if(range.every((bar,j)=>j===side||bars[i].high>bar.high))highs.push(i);if(range.every((bar,j)=>j===side||bars[i].low<bar.low))lows.push(i)}return{highs,lows}}
 function cycle(indices,bars){if(indices.length<3)return null;const gaps=indices.slice(1).map((value,index)=>value-indices[index]);const period=Math.round(median(gaps.slice(-8)));if(!period||period<10)return null;const last=indices.at(-1);return{period,last,target:addBusinessDays(bars[last].time,period),window:Math.max(2,Math.round(period*.12))}}
-function guaForTerm(index){const phase=Math.floor(((index+1)%24)/2),row=GUAS[phase];return{phase,name:row[0],yang:row[1],note:row[2]}}
-function allJieqi(){if(!aux.jieqi?.years)return[];return Object.entries(aux.jieqi.years).flatMap(([,year])=>Object.values(year).filter(item=>item&&item.date).sort((a,b)=>a.date.localeCompare(b.date)).map((item,index)=>({...item,gua:guaForTerm(index)}))).sort((a,b)=>a.date.localeCompare(b.date))}
+function guaForTerm(index){return HKTimingRegime.guaForTermIndex(index)}
+function allJieqi(){if(!aux.jieqi?.years)return[];return Object.values(aux.jieqi.years).flatMap(year=>HKTimingRegime.annotateTerms(year)).sort((a,b)=>a.date.localeCompare(b.date))}
 function guaAt(date){const events=allJieqi().filter(item=>item.date<=date);return events.at(-1)?.gua||null}
 function vqcEvents(code){return code?(aux.vqc?.events||[]).filter(item=>String(item.code||'').padStart(5,'0')===code).map(item=>({date:item.signal_date,name:'VQC 成交轉勢日'})).filter(item=>item.date):[]}
 function ddEvents(key){const row=(aux.dd?.benchmarks||[]).find(item=>item.key===key);return(row?.signals||[]).map(item=>({date:item.date,name:`分佈日 ${item.dd_count_25d||''}`.trim()}))}

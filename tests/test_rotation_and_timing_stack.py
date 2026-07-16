@@ -64,11 +64,17 @@ def test_timing_stack_uses_observed_market_and_signal_files() -> None:
 
 def test_timing_stack_has_fixed_cross_market_proxies_and_iching_phases() -> None:
     page = read("timing_stack.html")
+    kbar = read("kbar_matrix.html")
+    regime = read("timing-regime.js")
 
     for symbol in ("2800.HK", "SPY.US", "ASHR.US", "EWJ.US", "GLD.US"):
         assert symbol in page
     for phase in ("復", "臨", "泰", "大壯", "夬", "乾", "姤", "遯", "否", "觀", "剝", "坤"):
-        assert f"'{phase}'" in page
+        assert f"'{phase}'" in regime
+    assert "timing-regime.js" in page
+    assert "timing-regime.js" in kbar
+    assert "HKTimingRegime.annotateTerms" in kbar
+    assert "HKTimingRegime.annotateTerms" in page
     assert "只作季節標籤" in page
     assert "唔以卦名直接推斷升跌" in page
 
@@ -89,3 +95,4 @@ def test_new_page_is_in_navigation_and_direct_deploy_package() -> None:
     assert "timing_stack.html" in nav
     assert "timing_stack.html" in deploy
     assert "timing_stack.html" in guide
+    assert "timing-regime.js" in deploy

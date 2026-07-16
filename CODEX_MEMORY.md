@@ -997,3 +997,10 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - Each weekly bar stores its observed `period_start` and `period_end`. Solar-term and VQC markers map to the weekly bar containing their actual date, so the timing overlay is retained rather than dropped by weekly resampling.
 - The local one-year cache may honestly render about 57 weekly candles. The Cloudflare on-demand 520-daily-bar path can render up to 104 weekly candles; the UI never pads a shorter listing or failed fetch.
 - Direct Wrangler deployment: `https://944b52b4.hk-alert-cloud-gas.pages.dev`; production verification rendered 104 normal and 104 inverted weekly candles for `1733`, retained 33 timing markers, and passed all `58/58` tests without JavaScript errors or mobile overflow.
+
+### 2026-07-16 Kbar solar-term and I Ching overlay
+
+- `timing-regime.js` is the single browser source for the fixed twelve waxing/waning hexagram sequence used by both `timing_stack.html` and `kbar_matrix.html`. Do not copy a second phase array back into either page.
+- The mapping starts at winter solstice and advances every two solar terms: `復`, `臨`, `泰`, `大壯`, `夬`, `乾`, `姤`, `遯`, `否`, `觀`, `剝`, `坤`. Example: 2026-07-07 `小暑` maps deterministically to `姤`.
+- Kbar solar-term lines now carry the hexagram. Historical chart labels use the compact hexagram name; the most recent 20-day term, VQC resonance, and hover title expose the full `節氣/卦` label. Signal cards show the term, hexagram, and seasonal note.
+- Hexagrams are calendar-regime labels only. They never supply bullish/bearish direction, price targets, or synthetic turning dates; price-channel breaks and observed volume remain the direction confirmation gate.

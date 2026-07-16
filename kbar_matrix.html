@@ -108,7 +108,7 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
     <div class="legend-row">
       <span class="legend-chip"><span class="legend-color" style="background:#facc15"></span>下方價位列：年開 / IPO / 52週</span>
       <span class="legend-chip"><span class="legend-color legend-vqc"></span>下方時間軸：VQC</span>
-      <span class="legend-chip"><span class="legend-color legend-jieqi"></span>節氣</span>
+      <span class="legend-chip"><span class="legend-color legend-jieqi"></span>節氣／消息卦</span>
       <span class="legend-chip"><span class="legend-color legend-corp"></span>供配股 / 公告</span>
       <span class="legend-chip"><span class="legend-color legend-ccass"></span>CCASS</span>
       <span class="legend-chip">反向模式只倒轉股價高低，日期方向不變</span>
@@ -175,6 +175,7 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
   </section>
 </main>
 <script src="./shared-nav.js"></script>
+<script src="./timing-regime.js"></script>
 <script>
 const intervals = [
   { label: '季圖雙視角', value: '3m_pair' },
@@ -598,9 +599,12 @@ async function ensureTimingOverlay() {
   const jieqiDates = new Map();
   const years = (jieqi && jieqi.years) || {};
   Object.values(years).forEach(terms => {
-    Object.values(terms || {}).forEach(term => {
+    HKTimingRegime.annotateTerms(terms).forEach(term => {
       const day = String(term.date || '').slice(0, 10);
-      if (day) jieqiDates.set(day, String(term.name || '節氣'));
+      if (day) jieqiDates.set(day, {
+        name: String(term.name || '節氣'),
+        gua: term.gua,
+      });
     });
   });
   timingOverlay = { vqcByCode, jieqiDates };
@@ -701,8 +705,15 @@ function buildSignalEvents(context) {
     addSignalEvent(events, { date, label: 'VQC 成交轉勢日', note: '成交量邊界轉勢', tone: 'vqc' });
   });
   if (timingOverlay) {
-    timingOverlay.jieqiDates.forEach((name, date) => {
-      addSignalEvent(events, { date, label: '節氣窗口', note: '全市場時間窗口', tone: 'jieqi' });
+    timingOverlay.jieqiDates.forEach((term, date) => {
+      const name = term && term.name || '節氣';
+      const gua = term && term.gua;
+      addSignalEvent(events, {
+        date,
+        label: `${name}／${gua ? gua.name : '消息卦未提供'}`,
+        note: gua ? `${gua.note} · 固定季節狀態，只定時間窗口` : '全市場時間窗口',
+        tone: 'jieqi',
+      });
     });
   }
   const group = signalCatalog && signalCatalog.signalByCode.get(code);
@@ -818,13 +829,17 @@ function timingMarkersFor(symbol, bars, xForIndex, priceHeight, padTop) {
   const code = hkCodeFromSymbol(symbol);
   if (!code) return '';
   const byDate = new Map();
-  const add = (day, type, label, color) => {
+  const add = (day, type, label, color, compactLabel = '') => {
     if (!day) return;
     if (!byDate.has(day)) byDate.set(day, []);
-    byDate.get(day).push({ type, label, color });
+    byDate.get(day).push({ type, label, color, compactLabel });
   };
   (timingOverlay.vqcByCode.get(code) || new Set()).forEach(day => add(day, 'VQC', 'VQC', '#22c55e'));
-  timingOverlay.jieqiDates.forEach((name, day) => add(day, 'JQ', name, '#38bdf8'));
+  timingOverlay.jieqiDates.forEach((term, day) => {
+    const name = term && term.name || '節氣';
+    const gua = term && term.gua;
+    add(day, 'JQ', `${name}/${gua ? gua.name : '?'}`, '#38bdf8', gua ? gua.name : '卦');
+  });
   const firstIndexByDay = new Map();
   bars.forEach((bar, index) => {
     const day = String(bar.time || '').slice(0, 10);
@@ -846,9 +861,15 @@ function timingMarkersFor(symbol, bars, xForIndex, priceHeight, padTop) {
     const label = resonance ? events.map(item => item.type).join('+') : events[0].label;
     const color = resonance ? '#f472b6' : events[0].color;
     const y = padTop + 40 + (markerIndex % 2) * 12;
-    const showLabel = bars.length <= 260 || resonance || events.some(item => item.type === 'VQC');
-    const text = showLabel
-      ? `<text x="${(x + 3).toFixed(2)}" y="${y.toFixed(2)}" fill="${color}" font-size="9" font-weight="800" style="paint-order:stroke;stroke:#0b1018;stroke-width:2px;stroke-linejoin:round">${escapeHtml(label)}</text>`
+    const compactLabel = events.find(item => item.compactLabel)?.compactLabel || '';
+    const latestDay = String(bars[bars.length - 1] && bars[bars.length - 1].time || '').slice(0, 10);
+    const markerAgeDays = latestDay && day
+      ? Math.abs(new Date(`${latestDay}T00:00:00Z`) - new Date(`${day}T00:00:00Z`)) / 86400000
+      : Infinity;
+    const showFullLabel = resonance || events.some(item => item.type === 'VQC') || markerAgeDays <= 20;
+    const visibleLabel = showFullLabel ? label : compactLabel;
+    const text = visibleLabel
+      ? `<text x="${(x + 3).toFixed(2)}" y="${y.toFixed(2)}" fill="${color}" font-size="9" font-weight="800" style="paint-order:stroke;stroke:#0b1018;stroke-width:2px;stroke-linejoin:round">${escapeHtml(visibleLabel)}</text>`
       : '';
     return `<g><title>${escapeHtml(day+' '+events.map(item => item.label).join(' + '))}</title><line x1="${x.toFixed(2)}" y1="${(padTop + 14).toFixed(2)}" x2="${x.toFixed(2)}" y2="${(padTop + priceHeight - 8).toFixed(2)}" stroke="${color}" stroke-width="1.8" stroke-dasharray="4 3" opacity=".9"/>${text}</g>`;
   }).join('');
