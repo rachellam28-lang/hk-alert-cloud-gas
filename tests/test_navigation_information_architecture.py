@@ -1,7 +1,9 @@
+import os
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+BASE_URL = os.getenv("HK_ALERT_BASE_URL", "https://hk-alert-cloud-gas.pages.dev").rstrip("/")
 
 
 def read(path: str) -> str:
@@ -53,3 +55,39 @@ def test_generators_do_not_restore_retired_navigation() -> None:
         source = read(generator)
         assert 'href="gap_fvg.html"' not in source
         assert 'href="daily_trade_prompt.html"' not in source
+
+
+def test_system_guide_matches_current_data_contract() -> None:
+    guide = read("guide.html")
+
+    for text in (
+        "每日使用次序",
+        "PASS",
+        "PARTIAL",
+        "並非全港市場廣度",
+        "小暑/姤",
+        "週圖",
+        "T+2",
+        "Wrangler",
+    ):
+        assert text in guide
+
+    assert "約 7am" not in guide
+    assert "Futu 實時 + daily refresh" not in guide
+
+
+def test_guide_is_fixed_to_the_right_of_more(page) -> None:
+    page.goto(f"{BASE_URL}/guide.html", wait_until="domcontentloaded")
+    page.wait_for_selector("#sharedSiteNav .suite-nav-guide a")
+
+    order = page.locator("#sharedSiteNav > *").evaluate_all(
+        "nodes => nodes.map(node => node.className)"
+    )
+    assert order[-2:] == ["suite-nav-more", "suite-nav-guide"]
+    assert page.locator(
+        ".suite-nav-more .suite-nav-panel a[href$='guide.html']"
+    ).count() == 0
+
+    guide = page.locator(".suite-nav-guide a")
+    assert guide.inner_text() == "說明"
+    assert "active" in (guide.get_attribute("class") or "")

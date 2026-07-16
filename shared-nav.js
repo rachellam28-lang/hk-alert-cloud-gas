@@ -15,6 +15,7 @@
     ['rights_analysis.html', '\u4e8b\u4ef6'],
     ['watchlist.html', '\u81ea\u9078'],
   ];
+  const guide = ['guide.html', '\u8aaa\u660e'];
   const groups = [
     ['\u63c0\u80a1', [
       ['rotation_matrix.html', '\u677f\u584a\u8f2a\u52d5'],
@@ -30,7 +31,6 @@
     ['\u8a18\u9304', [
       ['docs/ccass-warroom.html', 'CCASS \u6230\u60c5\u5ba4'],
       ['history.html', '\u8a0a\u865f\u6b77\u53f2'],
-      ['guide.html', '\u7cfb\u7d71\u8aaa\u660e'],
     ]],
   ];
 
@@ -40,7 +40,10 @@
   document.documentElement.classList.toggle('suite-light', useUnifiedLightTheme);
   const active = href => {
     const rel = href.toLowerCase().replace(/^\.\//, '');
-    return path.endsWith('/' + rel) || (rel === 'index.html' && (path.endsWith('/') || !path));
+    const cleanRel = rel.endsWith('.html') ? rel.slice(0, -5) : rel;
+    return path.endsWith('/' + rel)
+      || path.endsWith('/' + cleanRel)
+      || (rel === 'index.html' && (path.endsWith('/') || !path));
   };
   const link = ([href, label, extraClass]) => {
     const classes = [extraClass, active(href) ? 'active' : ''].filter(Boolean).join(' ');
@@ -59,7 +62,8 @@
     <details class="suite-nav-more">
       <summary${secondaryActive ? ' class="active"' : ''}>\u66f4\u591a</summary>
       <div class="suite-nav-panel">${groupMarkup}</div>
-    </details>`;
+    </details>
+    <div class="suite-nav-guide">${link(guide)}</div>`;
 
   if (!document.getElementById('sharedNavStyles')) {
     const style = document.createElement('style');
@@ -74,6 +78,7 @@
       #sharedSiteNav a:focus-visible,#sharedSiteNav summary:focus-visible{outline:2px solid #63c7ca;outline-offset:2px}
       #sharedSiteNav a.active,#sharedSiteNav summary.active{background:#153d3d;color:#83ddd5}
       #sharedSiteNav .suite-nav-more{position:relative;margin-left:auto;flex:0 0 auto}
+      #sharedSiteNav .suite-nav-guide{flex:0 0 auto}
       #sharedSiteNav summary{list-style:none}
       #sharedSiteNav summary::-webkit-details-marker{display:none}
       #sharedSiteNav summary::after{content:'\\25be';margin-left:6px;font-size:9px}

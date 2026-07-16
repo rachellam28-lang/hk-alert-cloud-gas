@@ -2,6 +2,14 @@
 
 Last updated: 2026-07-16 HKT
 
+## 2026-07-16 System guide and navigation placement
+
+- `guide.html` is the current operating and data-contract manual, not a historical feature list. It documents the daily research order, PASS/WARN/PARTIAL/FAIL meanings, page ownership, CCASS limitations, event evidence, paired Kbar views, timing overlays, automation and fail-closed data rules.
+- The guide explicitly distinguishes observation dates from refresh time, candidate-pool breadth from full-market breadth, and timing windows from directional forecasts. Stale claims about a fixed 07:00 update and an always-live browser Futu price were removed.
+- `說明` is a standalone navigation link immediately to the right of `更多` on every page. It must not be nested back inside the `更多` panel.
+- Shared navigation active-state matching supports both source `.html` routes and Cloudflare Pages clean URLs such as `/guide`; otherwise deployed pages lose their current-page highlight after Cloudflare canonicalizes the URL.
+- Direct Cloudflare deployment: `https://93f484d9.hk-alert-cloud-gas.pages.dev`. Production-style browser/API/data-honesty audit passed `60/60`; desktop 1440px and mobile 393px guide checks had no JavaScript errors or document-level horizontal overflow.
+
 ## 2026-07-16 observed RRG and timing-stack integration
 
 - Public-source review covered QuantStock AI's published workflow description, `doubleupasset`, the image-only `futualgo_kayman` Threads post, and MOFI's public RRG write-up/source repository. The three supplied Facebook photo URLs remained login-gated; no unseen rule or proprietary QuantStock implementation was guessed, scraped, or represented as copied.
