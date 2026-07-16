@@ -44,18 +44,41 @@ def test_rotation_page_uses_rrg_axes_and_explicit_unavailable_state() -> None:
     assert "Math.random" not in page
 
 
-def test_timing_stack_uses_live_hk_bars_and_observed_signal_files() -> None:
+def test_timing_stack_uses_observed_market_and_signal_files() -> None:
     page = read("timing_stack.html")
 
     assert "/api/kbar/${code}?count=520" in page
     assert "data/vqc_backtest.json" in page
     assert "data/distribution_day_backtest.json" in page
     assert "data/jieqi_calendar.json" in page
-    assert "未確認／不入場" in page
-    assert "股價使用對數刻度" in page
+    assert "data/kbar_cache.json" in page
+    assert "holdings.json" in page
+    assert "上轉確認" in page
+    assert "下轉確認" in page
+    assert "窗口內未確認" in page
+    assert "價格使用對數刻度" in page
     assert "沒有合成未來價格" in page
     assert "Math.random" not in page
     assert "synthetic" not in page.lower()
+
+
+def test_timing_stack_has_fixed_cross_market_proxies_and_iching_phases() -> None:
+    page = read("timing_stack.html")
+
+    for symbol in ("2800.HK", "SPY.US", "ASHR.US", "EWJ.US", "GLD.US"):
+        assert symbol in page
+    for phase in ("復", "臨", "泰", "大壯", "夬", "乾", "姤", "遯", "否", "觀", "剝", "坤"):
+        assert f"'{phase}'" in page
+    assert "只作季節標籤" in page
+    assert "唔以卦名直接推斷升跌" in page
+
+
+def test_kbar_cache_limits_long_history_to_core_symbols() -> None:
+    builder = read("scripts/build_kbar_cache.py")
+
+    assert "CORE_DAILY_COUNT = 1600" in builder
+    assert 'CORE_SYMBOLS = {item["symbol"] for item in PRESETS}' in builder
+    assert 'period == "1d" and symbol in CORE_SYMBOLS' in builder
 
 
 def test_new_page_is_in_navigation_and_direct_deploy_package() -> None:

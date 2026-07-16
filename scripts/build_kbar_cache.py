@@ -130,6 +130,12 @@ PERIOD_COUNTS = {
     "1h": 120,
 }
 
+# A handful of benchmark/preset series need enough history for calendar-window
+# observation.  Dynamic stock charts stay compact; this does not expand the
+# full-market cache.
+CORE_DAILY_COUNT = 1600
+CORE_SYMBOLS = {item["symbol"] for item in PRESETS}
+
 DYNAMIC_LIMIT = 32
 
 
@@ -303,6 +309,12 @@ def fetch_series(symbol: str, period: str, count: int) -> list[dict]:
     return [normalize_bar(row) for row in rows if isinstance(row, dict)]
 
 
+def series_count(symbol: str, period: str) -> int:
+    if period == "1d" and symbol in CORE_SYMBOLS:
+        return CORE_DAILY_COUNT
+    return PERIOD_COUNTS[period]
+
+
 def hk_entry(code: str) -> dict:
     global _CCASS_METRICS
     normalized = str(int(code)).zfill(5)
@@ -426,7 +438,8 @@ def main():
         }
         previous_series = previous.get("series", {}) if isinstance(previous, dict) else {}
 
-        for period, count in PERIOD_COUNTS.items():
+        for period in PERIOD_COUNTS:
+            count = series_count(symbol, period)
             stale = False
             error_text = None
             try:
@@ -453,6 +466,11 @@ def main():
         "symbols": len(payload["symbols"]),
         "missing": missing_daily,
     }
+    payload["daily_history_target"] = {
+        "core_symbols": CORE_DAILY_COUNT,
+        "dynamic_symbols": PERIOD_COUNTS["1d"],
+        "core_scope": sorted(CORE_SYMBOLS),
+    }
     if missing_daily:
         payload["errors"].append({"scope": "daily_chart", "symbols": missing_daily, "error": "1d year-chart data unavailable"})
         print(f"WARN: {len(missing_daily)} Kbar symbols have no 1d year chart: {', '.join(missing_daily)}", file=sys.stderr)
@@ -467,14 +485,12 @@ def main_daily_only():
     symbols = payload.get("symbols", {}) if isinstance(payload, dict) else {}
     total = len(symbols)
     for idx, (symbol, entry) in enumerate(symbols.items(), 1):
-        rows = entry.get("series", {}).get("1d", []) if entry.get("series", {}).get("1d") else []
-        if not rows and symbol.endswith(".HK"):
-            rows = fetch_futu_daily(symbol, 260)
-        if not rows:
-            try:
-                rows = fetch_series(symbol, "1d", 260)
-            except Exception:
-                rows = []
+        previous = entry.get("series", {}).get("1d", []) if entry.get("series", {}).get("1d") else []
+        target = series_count(symbol, "1d")
+        try:
+            rows = fetch_series(symbol, "1d", target)
+        except Exception:
+            rows = previous
         if rows:
             entry.setdefault("series", {})["1d"] = rows
             entry.setdefault("series_meta", {})["1d"] = {"count": len(rows), "stale": False, "error": None}
@@ -482,6 +498,11 @@ def main_daily_only():
     payload["supported_intervals"] = ["3m", "3m_flip", "6m", "6m_flip", "1d", "1d_flip"]
     missing = [symbol for symbol, entry in symbols.items() if not entry.get("series", {}).get("1d")]
     payload["daily_chart_ready"] = {"ready": not missing, "symbols": len(symbols), "missing": missing}
+    payload["daily_history_target"] = {
+        "core_symbols": CORE_DAILY_COUNT,
+        "dynamic_symbols": PERIOD_COUNTS["1d"],
+        "core_scope": sorted(CORE_SYMBOLS),
+    }
     OUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"Wrote daily series for {total} cached symbols", flush=True)
 

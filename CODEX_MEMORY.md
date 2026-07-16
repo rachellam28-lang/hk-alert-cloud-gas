@@ -970,3 +970,11 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - `timing_stack.html` overlays confirmed swing-cycle projections, VQC dates, solar-term dates, Hong Kong distribution days, a real 20-day price channel, EMA20/60 trend, momentum, support/resistance, and ATR risk. Projected windows indicate time only; they never invent a future price or direction, and the page fails closed to `unconfirmed/no entry` without a real price-and-volume breakout.
 - Sector membership reuses the main dashboard map and all Kbar fetches use the existing live API/static observed-cache chain. Do not add duplicate sector universes or synthetic candles.
 - Direct Wrangler deployment succeeded at `https://a8072e51.hk-alert-cloud-gas.pages.dev`; canonical production is `https://hk-alert-cloud-gas.pages.dev`. Production mobile smoke verified `timing_stack?symbol=1733` and 20/60/120-day rotation switching with no JavaScript errors or document overflow.
+
+### 2026-07-16 cross-market turning-time radar
+
+- `timing_stack.html` now compares five real tradable proxies: `2800.HK` for Hong Kong, `SPY.US` for the US, `ASHR.US` for China, `EWJ.US` for Japan, and `GLD.US` for gold. Always label them as proxies, not the underlying indices.
+- The fixed seasonal mapping starts at winter solstice and assigns every two solar terms to one of the twelve waxing/waning hexagram states (`復` through `坤`). This is a deterministic calendar-regime label only; never infer bullish/bearish direction from a hexagram name.
+- Direction fails closed. A time window can come from a solar term, confirmed swing cadence, VQC, or distribution day, but `upturn confirmed` / `downturn confirmed` requires a real 20-day price-channel break with volume ratio at least 1.2. Outside a window or without a break, show waiting/unconfirmed.
+- Hong Kong stock views read observed CCASS 5-day and 20-day changes from `holdings.json`; non-HK proxies explicitly show not applicable. Solar-term reversal rate is an exploratory event study against an all-day baseline and must display sample size and lack of out-of-sample guarantee.
+- `scripts/build_kbar_cache.py` keeps the dynamic stock cache at 260 daily bars while targeting 1,600 bars only for the small preset/core proxy set. A provider timeout preserves previous real bars and must never trigger padding or synthetic history.
