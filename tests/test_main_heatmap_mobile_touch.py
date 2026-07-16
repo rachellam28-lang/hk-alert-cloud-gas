@@ -34,6 +34,20 @@ def test_main_heatmap_mobile_tap_switches_active_tile(page):
         timeout=45_000,
     )
 
+    momentum = page.locator('#themeHeatmap .heat-tile[data-heat-key="momentum"]')
+    compact = momentum.evaluate(
+        """el => ({
+          className: el.className,
+          height: el.getBoundingClientRect().height,
+          gridColumnStart: getComputedStyle(el).gridColumnStart,
+          gridColumnEnd: getComputedStyle(el).gridColumnEnd
+        })"""
+    )
+    assert "heat-wide" in compact["className"]
+    assert compact["height"] <= 40
+    assert compact["gridColumnStart"] == "1"
+    assert compact["gridColumnEnd"] == "-1"
+
     tiles = page.evaluate(
         """
         () => [...document.querySelectorAll('#themeHeatmap .heat-tile[data-heat-key]')]

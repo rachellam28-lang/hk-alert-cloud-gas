@@ -9,6 +9,9 @@ Last updated: 2026-07-16 HKT
 - `說明` is a standalone navigation link immediately to the right of `更多` on every page. It must not be nested back inside the `更多` panel.
 - Shared navigation active-state matching supports both source `.html` routes and Cloudflare Pages clean URLs such as `/guide`; otherwise deployed pages lose their current-page highlight after Cloudflare canonicalizes the URL.
 - Direct Cloudflare deployment: `https://93f484d9.hk-alert-cloud-gas.pages.dev`. Production-style browser/API/data-honesty audit passed `60/60`; desktop 1440px and mobile 393px guide checks had no JavaScript errors or document-level horizontal overflow.
+- Market's theme Heatmap renders only the `高動能` tile as a compact full-width horizontal row. It keeps its tappable stock chips while reducing mobile height; other Heatmap categories retain the normal grid.
+- Direct Cloudflare deployment: `https://7775d4fd.hk-alert-cloud-gas.pages.dev`; deployed Heatmap/mobile/navigation regression tests passed `7/7`.
+- The guide's four daily-workflow cards also stay in one compact horizontal row. Mobile uses horizontal scrolling instead of stacking them into a tall two-row block.
 
 ## 2026-07-16 observed RRG and timing-stack integration
 

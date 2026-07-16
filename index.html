@@ -780,6 +780,19 @@ main.wrap > .card{overflow:visible}
 .heat-meta{font-size:9.5px}
 .heat-stock{background:rgba(255,255,255,.72);border-color:rgba(154,166,178,.36);border-radius:5px}
 .heat-bar{height:3px;background:rgba(101,115,131,.16)}
+.heat-tile.heat-wide{
+  grid-column:1/-1;
+  min-height:38px;
+  padding:5px 7px;
+  display:grid;
+  grid-template-columns:minmax(76px,1fr) auto minmax(110px,1.25fr) auto;
+  align-items:center;
+  gap:6px;
+}
+.heat-wide .heat-main,.heat-wide .heat-meta,.heat-wide .heat-stocks{margin-top:0}
+.heat-wide .heat-meta{justify-content:flex-start;gap:8px}
+.heat-wide .heat-stocks{flex-wrap:nowrap;justify-content:flex-end}
+.heat-wide .heat-bar{position:absolute;left:7px;right:7px;bottom:2px;margin:0}
 .mc-section thead th{
   position:sticky;top:129px;z-index:5;
   padding:8px 9px;
@@ -856,6 +869,11 @@ main.wrap > .card{overflow:visible}
   .heat-main{font-size:11.5px}
   .heat-meta{font-size:7.5px}
   .heat-stock{font-size:7.2px;padding:0 2px}
+  .heat-tile.heat-wide{min-height:34px;padding:4px 5px;grid-template-columns:minmax(58px,auto) auto minmax(0,1fr);gap:4px}
+  .heat-wide .heat-title{justify-content:flex-start;gap:4px}
+  .heat-wide .heat-meta{display:none}
+  .heat-wide .heat-stocks{min-width:0;overflow:hidden;justify-content:flex-end}
+  .heat-wide .heat-bar{left:5px;right:5px;bottom:1px}
   .mc-section{margin:10px 0;border-radius:9px}
   .mc-section thead th{top:122px}
 }
@@ -1903,8 +1921,9 @@ function heatTileHtml(type,item,stat,activeKey,matches){
   var noMatches=!stat.count&&!isActive;
   var isDisabled=type!=='theme'&&noMatches;
   var disabled=isDisabled?' disabled':'';
+  var wide=type==='theme'&&item.key==='momentum'?' heat-wide':'';
   var tip=item.label+'｜'+stat.count+'隻｜平均Δ '+avg+'｜升股 '+up+'｜VR '+vr+'｜訊號 '+stat.signalN+(noMatches?'｜目前範圍沒有股票':'');
-  return '<div class="heat-tile '+vis.tone+active+empty+disabled+'"'+heatAttrs(type,item.key,isActive,isDisabled)+' style="--heat-alpha:'+vis.alpha+';--heat-width:'+vis.width+'" title="'+esc(tip)+'">'
+  return '<div class="heat-tile '+vis.tone+active+empty+disabled+wide+'"'+heatAttrs(type,item.key,isActive,isDisabled)+' style="--heat-alpha:'+vis.alpha+';--heat-width:'+vis.width+'" title="'+esc(tip)+'">'
     +'<div class="heat-title"><span>'+esc(item.label)+'</span><span class="heat-count">'+stat.count+'</span></div>'
     +'<div class="heat-main '+deltaClass(stat.avgChg)+'">'+avg+'</div>'
     +'<div class="heat-meta"><span>升 '+up+'</span><span>VR '+vr+'</span><span>訊 '+stat.signalN+'</span></div>'
