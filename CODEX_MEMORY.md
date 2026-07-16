@@ -963,3 +963,10 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - Official serial HKEX repair raised 2026-05-29 to 2725/2742 (99.4%) and 2026-05-06 to 2700/2725 (99.1%) against date-eligible candidate sets. No-record responses stayed missing and official null percentages stayed null.
 - `ccass/scripts/hkex_gap_backfill.py --auto` selects the newest genuine aggregate gap first, then participant-detail gaps. It derives target codes from nearby complete dates, reuses one HKEX session, stays single-threaded, and resumes after a bounded request budget.
 - Scheduled task `HKAlert-CCASSMaintenance` runs at 00:15, 06:15, and 12:15 HKT with a 1,200-request budget. It shares `Local\HKAlertDailyAutomation` with production refresh, so it exits without touching the DB if another writer is active. Remaining official backfill stays `maintenance_status=WARN` until rows really reach threshold.
+
+### 2026-07-16 observed rotation and timing windows
+
+- `rotation_matrix.html` is a real-data RRG-style rebuild, not a copy of a proprietary service. It calculates equal-weight sector median returns relative to the equal-weight observed HK market and exposes honest 20/60/120-day profiles. The 120-day view must remain unavailable until sufficient observed price history exists.
+- `timing_stack.html` overlays confirmed swing-cycle projections, VQC dates, solar-term dates, Hong Kong distribution days, a real 20-day price channel, EMA20/60 trend, momentum, support/resistance, and ATR risk. Projected windows indicate time only; they never invent a future price or direction, and the page fails closed to `unconfirmed/no entry` without a real price-and-volume breakout.
+- Sector membership reuses the main dashboard map and all Kbar fetches use the existing live API/static observed-cache chain. Do not add duplicate sector universes or synthetic candles.
+- Direct Wrangler deployment succeeded at `https://a8072e51.hk-alert-cloud-gas.pages.dev`; canonical production is `https://hk-alert-cloud-gas.pages.dev`. Production mobile smoke verified `timing_stack?symbol=1733` and 20/60/120-day rotation switching with no JavaScript errors or document overflow.
