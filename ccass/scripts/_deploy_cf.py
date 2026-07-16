@@ -55,6 +55,7 @@ ROOT_DEPLOY_FILES = [
     "_headers",
     "service-worker.js",
     "shared-nav.js",
+    "shared-table-sort.js",
     "timing-regime.js",
 ]
 

@@ -2,6 +2,15 @@
 
 Last updated: 2026-07-16 HKT
 
+## 2026-07-16 system-wide table sorting
+
+- All 16 pages containing data tables load `shared-table-sort.js` through `shared-nav.js`. The shared sorter decorates every labelled, single-column header and handles observed dates, percentages, plain numbers, HK units (`億`/`萬`), compact units (`K`/`M`/`B`), codes and text. Existing native sort handlers are detected and are not double-bound.
+- `trading_desk.html` has native full-dataset sorting for all nine columns: stock, action, setup, three-lane evidence, CCASS streak, CCASS 5-day, CCASS 20-day, fund flow and trigger level. Sorting happens before pagination.
+- `smallcap_playbook.html` has native full-dataset sorting for all eleven columns: stock, supply, finance event, finance stage, Gap, FVG, POC, CCASS supply, CCASS 5-day, CCASS 20-day and state. Sorting happens before pagination.
+- Remaining complete/static tables use the shared DOM sorter. Blank operation headers and grouped `colspan` headers are not treated as data fields. Keyboard Enter/Space, visible direction indicators and `aria-sort` are supported.
+- Deployment allowlist includes `shared-table-sort.js`; regression coverage audits every table page and verifies real ascending/descending order rather than CSS class presence only.
+- Direct Cloudflare deployment: `https://6fcf4a52.hk-alert-cloud-gas.pages.dev`; full production-style suite passed `65/65`, including all 16 table pages and existing Kbar/Heatmap/API workflows.
+
 ## 2026-07-16 System guide and navigation placement
 
 - `guide.html` is the current operating and data-contract manual, not a historical feature list. It documents the daily research order, PASS/WARN/PARTIAL/FAIL meanings, page ownership, CCASS limitations, event evidence, paired Kbar views, timing overlays, automation and fail-closed data rules.

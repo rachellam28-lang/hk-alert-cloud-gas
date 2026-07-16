@@ -161,7 +161,7 @@
           <option value="all">所有市值</option><option value="small">小市值</option><option value="mid">中市值</option><option value="large">大市值</option>
         </select>
         <select id="sortSelect" class="control" aria-label="排序">
-          <option value="evidence">證據優先</option><option value="stage1">初篩分數</option><option value="ccass">CCASS 連增</option><option value="flow">主力資金</option><option value="vr">相對成交</option>
+          <option value="evidence">證據優先</option><option value="stock">股票</option><option value="action">行動</option><option value="setup">形態</option><option value="ccass">CCASS 連增</option><option value="d5">CCASS 5日</option><option value="d20">CCASS 20日</option><option value="flow">主力資金</option><option value="trigger">觸發價</option><option value="stage1">初篩分數</option><option value="vr">相對成交</option>
         </select>
         <select id="pageSizeSelect" class="control" aria-label="每頁數量">
           <option value="10">每頁 10</option><option value="15" selected>每頁 15</option><option value="30">每頁 30</option>
@@ -170,7 +170,7 @@
       <div class="setup-tabs" id="setupTabs" role="tablist" aria-label="Kbar setup"></div>
       <div class="table-wrap" id="candidateTable">
         <table>
-          <thead><tr><th>股票</th><th>行動</th><th>形態</th><th>三鏈證據</th><th>CCASS 連增</th><th>CCASS 5日</th><th>CCASS 20日</th><th>資金</th><th>觸發 / 失效</th></tr></thead>
+          <thead><tr><th data-sort="stock">股票<span class="suite-sort-indicator"></span></th><th data-sort="action">行動<span class="suite-sort-indicator"></span></th><th data-sort="setup">形態<span class="suite-sort-indicator"></span></th><th data-sort="evidence">三鏈證據<span class="suite-sort-indicator"></span></th><th data-sort="ccass">CCASS 連增<span class="suite-sort-indicator"></span></th><th data-sort="d5">CCASS 5日<span class="suite-sort-indicator"></span></th><th data-sort="d20">CCASS 20日<span class="suite-sort-indicator"></span></th><th data-sort="flow">資金<span class="suite-sort-indicator"></span></th><th data-sort="trigger">觸發 / 失效<span class="suite-sort-indicator"></span></th></tr></thead>
           <tbody id="candidateBody"></tbody>
         </table>
         <div class="status" id="tableStatus">正在融合資料</div>
@@ -211,7 +211,7 @@
     avoid:{label:'避開 / 高風險',note:'供應、派發或價格風險'}
   };
   const SECTOR_NAMES={tech:'科技 / 電訊',finance:'金融',property:'地產 / 物管',energy:'能源 / 資源',consumer:'消費 / 醫藥',industrial:'工業 / 航運',utilities:'公用 / 基建',other:'其他'};
-  const state={action:'focus',setup:'all',bucket:'all',sort:'evidence',query:'',page:1,pageSize:15,selected:null,rows:[]};
+  const state={action:'focus',setup:'all',bucket:'all',sort:'evidence',sortDir:-1,query:'',page:1,pageSize:15,selected:null,rows:[]};
   const $=id=>document.getElementById(id);
   const esc=value=>String(value??'').replace(/[&<>'"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
   const num=value=>Number.isFinite(Number(value))?Number(value):null;
@@ -335,18 +335,41 @@
     $('setupTabs').innerHTML=Object.entries(SETUPS).map(([key,label])=>`<button type="button" role="tab" aria-selected="${state.setup===key}" class="setup-btn ${state.setup===key?'active':''}" data-setup="${key}">${label}</button>`).join('');
     $('setupTabs').querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>{state.setup=btn.dataset.setup;state.page=1;renderTable()}));
   }
+  function sortValue(row,key){
+    const plan=row.engine.trade_plan||{}, snap=row.engine.stage1?.snapshot||{};
+    if(key==='stock')return row.code;
+    if(key==='action')return ({focus:4,confirm:3,tactical:2,avoid:1})[row.action]||0;
+    if(key==='setup')return num(row.engine.scores?.[row.setup])??0;
+    if(key==='evidence')return Number(row.tripleConfluence)*10000+row.evidence.length*100-row.risks.length*10+(num(row.engine.stage1?.score)||0);
+    if(key==='ccass')return row.streak;
+    if(key==='d5')return row.d5;
+    if(key==='d20')return row.d20;
+    if(key==='flow')return row.mainNet;
+    if(key==='trigger')return num(plan.entry);
+    if(key==='stage1')return num(row.engine.stage1?.score);
+    if(key==='vr')return num(snap.vr);
+    return null;
+  }
+  function compareRows(a,b){
+    const av=sortValue(a,state.sort),bv=sortValue(b,state.sort);
+    if(av==null&&bv==null)return 0;if(av==null)return 1;if(bv==null)return -1;
+    const result=typeof av==='string'?av.localeCompare(String(bv),'zh-HK',{numeric:true}):av-bv;
+    return state.sortDir===1?result:-result;
+  }
+  function updateSortHeaders(){
+    $('candidateTable').querySelectorAll('thead th[data-sort]').forEach(th=>{
+      const active=th.dataset.sort===state.sort,indicator=th.querySelector('.suite-sort-indicator');
+      th.classList.toggle('sort-active',active);th.setAttribute('aria-sort',active?(state.sortDir===1?'ascending':'descending'):'none');
+      if(indicator)indicator.textContent=active?(state.sortDir===1?'▲':'▼'):'';
+    });
+  }
   function filteredRows(){
     const q=state.query.trim().toLowerCase();
     const rows=state.rows.filter(row=>row.action===state.action&&(state.setup==='all'||row.setup===state.setup)&&(state.bucket==='all'||row.engine.stage1?.bucket===state.bucket)&&(!q||row.code.includes(q)||String(row.name).toLowerCase().includes(q)));
-    const sorters={
-      evidence:(a,b)=>Number(b.tripleConfluence)-Number(a.tripleConfluence)||b.evidence.length-a.evidence.length||b.streak-a.streak||(num(b.engine.stage1?.score)||0)-(num(a.engine.stage1?.score)||0),
-      stage1:(a,b)=>(num(b.engine.stage1?.score)||0)-(num(a.engine.stage1?.score)||0),
-      ccass:(a,b)=>b.streak-a.streak||(b.d5??-999)-(a.d5??-999),flow:(a,b)=>(b.mainNet??-Infinity)-(a.mainNet??-Infinity),
-      vr:(a,b)=>(num(b.engine.stage1?.snapshot?.vr)||0)-(num(a.engine.stage1?.snapshot?.vr)||0)
-    };
-    return rows.sort(sorters[state.sort]||sorters.evidence);
+    return rows.sort(compareRows);
   }
   function renderTable(){
+    updateSortHeaders();
     const rows=filteredRows(), pages=Math.max(1,Math.ceil(rows.length/state.pageSize));state.page=Math.min(state.page,pages);
     const start=(state.page-1)*state.pageSize, visible=rows.slice(start,start+state.pageSize);
     $('queueCount').textContent=`${rows.length} 隻 · 引擎分析 ${state.rows.length} 隻`;
@@ -406,7 +429,8 @@
   }
   $('searchInput').addEventListener('input',e=>{state.query=e.target.value;state.page=1;renderTable()});
   $('bucketSelect').addEventListener('change',e=>{state.bucket=e.target.value;state.page=1;renderTable()});
-  $('sortSelect').addEventListener('change',e=>{state.sort=e.target.value;state.page=1;renderTable()});
+  $('sortSelect').addEventListener('change',e=>{state.sort=e.target.value;state.sortDir=state.sort==='stock'?1:-1;state.page=1;renderTable()});
+  $('candidateTable').querySelector('thead').addEventListener('click',e=>{const th=e.target.closest('th[data-sort]');if(!th)return;const key=th.dataset.sort;if(state.sort===key)state.sortDir*=-1;else{state.sort=key;state.sortDir=key==='stock'?1:-1}state.page=1;const select=$('sortSelect');if([...select.options].some(o=>o.value===key))select.value=key;renderTable()});
   $('pageSizeSelect').addEventListener('change',e=>{state.pageSize=Number(e.target.value)||15;state.page=1;renderTable()});
   $('prevBtn').addEventListener('click',()=>{if(state.page>1){state.page--;renderTable();scrollTo({top:$('candidateTable').offsetTop-80,behavior:'smooth'})}});
   $('nextBtn').addEventListener('click',()=>{state.page++;renderTable();scrollTo({top:$('candidateTable').offsetTop-80,behavior:'smooth'})});

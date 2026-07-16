@@ -5,6 +5,13 @@
   nav.classList.add('site-nav');
 
   const base = (nav.dataset.base || './').replace(/\/+$/, '/');
+  if (!document.querySelector('script[data-suite-table-sort]')) {
+    const tableSort = document.createElement('script');
+    tableSort.src = `${base}shared-table-sort.js`;
+    tableSort.defer = true;
+    tableSort.dataset.suiteTableSort = 'true';
+    document.head.appendChild(tableSort);
+  }
   const primary = [
     ['trading_desk.html', '交易台'],
     ['index.html', 'Market'],
