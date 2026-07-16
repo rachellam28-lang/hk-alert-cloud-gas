@@ -588,6 +588,11 @@ def analyze_daily_setups(entry: dict) -> dict | None:
     trend_long = "up" if ema50 >= long_guard and close >= ema50 else ("down" if ema50 < long_guard and close < ema50 else "flat")
     new_high = bool(last_high is not None and last_high > high20)
     new_low = bool(last_low is not None and last_low < low20)
+    bars_5d_ago = bars[:-5]
+    close_5d_ago = num(bars[-6].get("close")) if len(bars) >= 6 else None
+    ema20_5d_ago = ema(bars_5d_ago, 20)
+    ema50_5d_ago = ema(bars_5d_ago, 50)
+    ema200_5d_ago = ema(bars_5d_ago, 200)
 
     breakout_score = (3 if trend_short == "up" else 0) + (2 if trend_long == "up" else 0)
     breakout_score += 2 if close > ema8 else (1 if close > ema20 else 0)
@@ -666,6 +671,12 @@ def analyze_daily_setups(entry: dict) -> dict | None:
         "ema21_1": ema20,
         "ema50": ema50,
         "ema200": ema200,
+        "aboveEma20": close >= ema20,
+        "aboveEma50": close >= ema50,
+        "aboveEma200": close >= ema200 if ema200 is not None else None,
+        "aboveEma20_5dAgo": close_5d_ago >= ema20_5d_ago if close_5d_ago is not None and ema20_5d_ago is not None else None,
+        "aboveEma50_5dAgo": close_5d_ago >= ema50_5d_ago if close_5d_ago is not None and ema50_5d_ago is not None else None,
+        "aboveEma200_5dAgo": close_5d_ago >= ema200_5d_ago if close_5d_ago is not None and ema200_5d_ago is not None else None,
     }
     meta = SETUP_META[active_key]
     cards = []
@@ -1532,6 +1543,88 @@ def build_momentum_row(entry: dict, setup: dict | None) -> dict | None:
     }
 
 
+def build_candidate_breadth(by_symbol: dict[str, dict], momentum_rows: list[dict]) -> dict:
+    """Summarize MA participation for the selected HK research pool only."""
+    setups = [
+        setup for symbol, setup in by_symbol.items()
+        if symbol.endswith(".HK") and isinstance(setup, dict)
+    ]
+
+    def stat(current_key: str, previous_key: str) -> dict:
+        current = [
+            setup.get("metrics", {}).get(current_key)
+            for setup in setups
+            if isinstance(setup.get("metrics", {}).get(current_key), bool)
+        ]
+        previous = [
+            setup.get("metrics", {}).get(previous_key)
+            for setup in setups
+            if isinstance(setup.get("metrics", {}).get(previous_key), bool)
+        ]
+        above = sum(current)
+        previous_above = sum(previous)
+        pct_now = round(above / len(current) * 100, 2) if current else None
+        pct_previous = round(previous_above / len(previous) * 100, 2) if previous else None
+        delta = round(pct_now - pct_previous, 2) if pct_now is not None and pct_previous is not None else None
+        return {
+            "above": above,
+            "below": len(current) - above,
+            "sample": len(current),
+            "pct": pct_now,
+            "previous_5d_pct": pct_previous,
+            "delta_5d_pp": delta,
+        }
+
+    ma20 = stat("aboveEma20", "aboveEma20_5dAgo")
+    ma50 = stat("aboveEma50", "aboveEma50_5dAgo")
+    ma200 = stat("aboveEma200", "aboveEma200_5dAgo")
+    returns = sorted(
+        num(row.get("r5")) for row in momentum_rows
+        if str(row.get("symbol") or "").endswith(".HK") and num(row.get("r5")) is not None
+    )
+    median_5d = None
+    if returns:
+        middle = len(returns) // 2
+        median_5d = returns[middle] if len(returns) % 2 else (returns[middle - 1] + returns[middle]) / 2
+        median_5d = round(median_5d, 2)
+
+    signal_key = "mixed"
+    signal_label = "參與度混合"
+    signal_note = "候選池短中長線參與度未有一致方向。"
+    ma20_delta = ma20.get("delta_5d_pp")
+    if median_5d is not None and median_5d > 0 and ma20_delta is not None and ma20_delta <= -5:
+        signal_key = "narrowing_divergence"
+        signal_label = "升市寬度收縮"
+        signal_note = "候選池中位回報向上，但站上 EMA20 比例五日內下降至少 5 個百分點。"
+    elif median_5d is not None and median_5d < 0 and ma20_delta is not None and ma20_delta >= 5:
+        signal_key = "improving_divergence"
+        signal_label = "跌市內部改善"
+        signal_note = "候選池中位回報向下，但站上 EMA20 比例五日內增加至少 5 個百分點。"
+    elif ma50.get("pct") is not None and ma200.get("pct") is not None and ma50["pct"] >= 70 and ma200["pct"] >= 60:
+        signal_key = "broad_strength"
+        signal_label = "廣泛強勢"
+        signal_note = "候選池站上 EMA50 及 EMA200 的比例同時偏高。"
+    elif ma50.get("pct") is not None and ma200.get("pct") is not None and ma50["pct"] < 40 and ma200["pct"] < 40:
+        signal_key = "broad_weakness"
+        signal_label = "廣泛弱勢"
+        signal_note = "候選池站上 EMA50 及 EMA200 的比例同時低於 40%。"
+
+    return {
+        "scope": "selected_hk_candidate_pool",
+        "label": "港股候選池 MA 廣度",
+        "selection_bias": True,
+        "is_full_market": False,
+        "data_kind": "derived_rule_output_from_observed_daily_kbar",
+        "sample": len(setups),
+        "median_return_5d_pct": median_5d,
+        "ma20": ma20,
+        "ma50": ma50,
+        "ma200": ma200,
+        "signal": {"key": signal_key, "label": signal_label, "note": signal_note},
+        "coverage_note": "Only the selected HK research candidates with valid observed daily Kbars; not the full HK market.",
+    }
+
+
 def build_engine(
     candidate_count: int = DEFAULT_CANDIDATES,
     workers: int = DEFAULT_WORKERS,
@@ -1693,10 +1786,11 @@ def build_engine(
         "announcements": max(announcement_dates) if announcement_dates else None,
         "rights_analysis": max(rights_dates) if rights_dates else None,
     }
+    candidate_breadth = build_candidate_breadth(by_symbol, momentum_rows)
 
     return {
         "schema_v": 3,
-        "runtime_version": "two-stage-hk-trading-engine-v3-finance-chain",
+        "runtime_version": "two-stage-hk-trading-engine-v4-candidate-breadth",
         "updated_at": built_at,
         "built_at": built_at,
         "source_updated_at": source_updated_at,
@@ -1717,6 +1811,7 @@ def build_engine(
             "top_momentum_symbol": momentum_rows[0]["symbol"] if momentum_rows else None,
             "error_count": len(failures),
             "finance_sequence_counts": sequence_counts,
+            "candidate_breadth": candidate_breadth,
         },
         "by_symbol": by_symbol,
         "groups": groups,

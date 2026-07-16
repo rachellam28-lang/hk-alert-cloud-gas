@@ -23,6 +23,25 @@ def test_main_page_loads_real_trade_engine_badges(page):
     assert not errors
 
 
+def test_main_page_shows_honest_candidate_ma_breadth(page):
+    errors = []
+    page.on("pageerror", lambda exc: errors.append(str(exc)))
+    page.goto(BASE_URL, wait_until="domcontentloaded")
+    page.wait_for_function(
+        "() => (document.querySelector('#breadthRows')?.textContent || '').includes('EMA200')",
+        timeout=45_000,
+    )
+    text = page.locator("#breadthRows").inner_text()
+    engine = json.loads((ROOT / "data" / "trade_engine.json").read_text(encoding="utf-8"))
+    breadth = engine["summary"]["candidate_breadth"]
+    assert f"n={breadth['sample']}" in text
+    assert "EMA20" in text
+    assert "EMA50" in text
+    assert "EMA200" in text
+    assert "並非全港市場廣度" in text
+    assert not errors
+
+
 def test_momentum_page_uses_expanded_engine_universe(page):
     errors = []
     page.on("pageerror", lambda exc: errors.append(str(exc)))

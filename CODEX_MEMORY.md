@@ -979,3 +979,12 @@ Apps Script notes formerly kept in `apps_script/README_DEPLOY.md`:
 - Hong Kong stock views read observed CCASS 5-day and 20-day changes from `holdings.json`; non-HK proxies explicitly show not applicable. Solar-term reversal rate is an exploratory event study against an all-day baseline and must display sample size and lack of out-of-sample guarantee.
 - `scripts/build_kbar_cache.py` keeps the dynamic stock cache at 260 daily bars while targeting 1,600 bars only for the small preset/core proxy set. A provider timeout preserves previous real bars and must never trigger padding or synthetic history.
 - Direct Wrangler deployment completed at `https://197c624f.hk-alert-cloud-gas.pages.dev`. Canonical production mobile smoke loaded all five proxies and `1733` through the live API with 520 bars through 2026-07-16, 50 usable solar-term observations, no JavaScript errors, and no document overflow.
+
+### 2026-07-16 candidate-pool market breadth
+
+- Market-breadth reference: `https://stockfundamentalslab.com/articles/what-is-market-breadth-2026-02-12`. The useful concepts are participation above medium/long moving averages, breadth/price divergence, and sector breadth; they are context indicators, not standalone forecasts.
+- The existing `market.json.breadth` is a small observed 52-week-position sample. It must not be relabeled as MA breadth or full-market breadth.
+- `scripts/build_trade_engine.py` derives EMA20/50/200 participation from the same real unadjusted daily Kbars already loaded for the selected HK research candidates. It also compares each percentage with five trading sessions earlier and reports the candidate pool median five-day return.
+- The output remains inside `data/trade_engine.json` at `summary.candidate_breadth`; do not add a duplicate breadth JSON. It is always labeled `selection_bias=true`, `is_full_market=false`, and `scope=selected_hk_candidate_pool` until every eligible HK stock is genuinely observed.
+- Divergence labels fail closed: narrowing requires a positive candidate median five-day return with EMA20 breadth falling at least five percentage points; improving requires the reverse. Otherwise the result is broad strength, broad weakness, or mixed participation.
+- Current observed run: 240 candidates; EMA20 67.92% (+17.50pp over five sessions), EMA50 60.00% (+10.21pp), EMA200 73.64% (+5.00pp). These values must be regenerated from bars and never hard-coded.

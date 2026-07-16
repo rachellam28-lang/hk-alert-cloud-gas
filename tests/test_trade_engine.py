@@ -48,6 +48,34 @@ def test_daily_setup_is_derived_from_observed_bars_with_trade_plan():
     assert setup["trade_plan"]["entry"] is not None
     assert setup["trade_plan"]["invalidation"] is not None
     assert setup["trade_plan"]["target"] is not None
+    assert setup["metrics"]["aboveEma20"] is True
+    assert setup["metrics"]["aboveEma50"] is True
+    assert isinstance(setup["metrics"]["aboveEma200"], bool)
+
+
+def test_candidate_breadth_is_labeled_selected_pool_and_detects_narrowing():
+    base = {
+        "aboveEma20": True,
+        "aboveEma50": True,
+        "aboveEma200": True,
+        "aboveEma20_5dAgo": True,
+        "aboveEma50_5dAgo": True,
+        "aboveEma200_5dAgo": True,
+    }
+    weaker = {**base, "aboveEma20": False, "aboveEma50": False}
+    breadth = ENGINE.build_candidate_breadth(
+        {"1.HK": {"metrics": base}, "2.HK": {"metrics": weaker}, "SPY.US": {"metrics": base}},
+        [{"symbol": "1.HK", "r5": 2}, {"symbol": "2.HK", "r5": 4}, {"symbol": "SPY.US", "r5": -9}],
+    )
+
+    assert breadth["scope"] == "selected_hk_candidate_pool"
+    assert breadth["selection_bias"] is True
+    assert breadth["is_full_market"] is False
+    assert breadth["sample"] == 2
+    assert breadth["ma20"]["pct"] == 50
+    assert breadth["ma20"]["delta_5d_pp"] == -50
+    assert breadth["median_return_5d_pct"] == 3
+    assert breadth["signal"]["key"] == "narrowing_divergence"
 
 
 def test_signal_lanes_do_not_double_count_corporate_or_ccass_signals():
