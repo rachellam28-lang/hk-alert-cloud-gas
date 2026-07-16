@@ -12,6 +12,8 @@ Last updated: 2026-07-16 HKT
 - Market's theme Heatmap renders only the `高動能` tile as a compact full-width horizontal row. It keeps its tappable stock chips while reducing mobile height; other Heatmap categories retain the normal grid.
 - Direct Cloudflare deployment: `https://7775d4fd.hk-alert-cloud-gas.pages.dev`; deployed Heatmap/mobile/navigation regression tests passed `7/7`.
 - The guide's four daily-workflow cards also stay in one compact horizontal row. Mobile uses horizontal scrolling instead of stacking them into a tall two-row block.
+- Every visible Market stock-table column has a real sort key. `連結` sorts by observed HKEX disclosure-link availability; `連續` uses signed streak days so descending prioritizes accumulation and ascending prioritizes distribution. Removed CCASS 5/20/60/120 columns are not revived, though their dormant sort keys remain valid for compatibility.
+- Direct Cloudflare deployment: `https://e3086388.hk-alert-cloud-gas.pages.dev`; Market sorting, Heatmap touch and navigation regression tests passed `8/8`.
 
 ## 2026-07-16 observed RRG and timing-stack integration
 

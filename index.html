@@ -1016,6 +1016,7 @@ main.wrap > .card{overflow:visible}
           <option value="t5">Top5%</option>
           <option value="t10">Top10%</option>
           <option value="np">參與者數</option>
+          <option value="streak">連續方向</option>
           <option value="su">連續增持</option>
           <option value="sd">連續減持</option>
           <option value="sig">信號</option>
@@ -1029,6 +1030,7 @@ main.wrap > .card{overflow:visible}
           <option value="fcf">FCF(億)</option>
           <option value="yo_pct">今年Δ%</option>
           <option value="vr">量比</option>
+          <option value="link">HKEX連結</option>
         </select>
         <button class="btn-ghost active" id="dirBtn" title="切換排序方向" onclick="sortBy(sortCol)">↓</button>
         <span id="sortInfo" class="sort-info"></span>
@@ -1157,11 +1159,11 @@ main.wrap > .card{overflow:visible}
           <th class="sortable th-t5" data-sort="t5" onclick="sortBy('t5',event)"><span>Top5%</span><span class="sort-icon"></span></th>
           <th class="sortable th-t10" data-sort="t10" onclick="sortBy('t10',event)"><span>Top10%</span><span class="sort-icon"></span></th>
           <th class="sortable th-score" data-sort="score" onclick="sortBy('score',event)"><span>評分</span><span class="sort-icon"></span></th>
-          <th class="sortable th-streak" data-sort="su" onclick="sortBy('su',event)"><span>連升</span><span class="sort-icon"></span></th>
+          <th class="sortable th-streak" data-sort="streak" onclick="sortBy('streak',event)"><span>連續</span><span class="sort-icon"></span></th>
           <th class="sortable th-np" data-sort="np" onclick="sortBy('np',event)"><span>參與者</span><span class="sort-icon"></span></th>
           <th class="sortable th-mc" data-sort="mc" onclick="sortBy('mc',event)"><span>市值</span><span class="sort-icon"></span></th>
           <th class="sortable th-fcf" data-sort="fcf" onclick="sortBy('fcf',event)"><span>FCF(億)</span><span class="sort-icon"></span></th>
-          <th class="sortable th-link"><span>連結</span></th>
+          <th class="sortable th-link" data-sort="link" onclick="sortBy('link',event)"><span>連結</span><span class="sort-icon"></span></th>
         </tr></thead>
         <tbody id="mcHeatTbody"></tbody>
       </table></div>
@@ -1185,11 +1187,11 @@ main.wrap > .card{overflow:visible}
           <th class="sortable th-t5" data-sort="t5" onclick="sortBy('t5',event)"><span>Top5%</span><span class="sort-icon"></span></th>
           <th class="sortable th-t10" data-sort="t10" onclick="sortBy('t10',event)"><span>Top10%</span><span class="sort-icon"></span></th>
           <th class="sortable th-score" data-sort="score" onclick="sortBy('score',event)"><span>⭐評分</span><span class="sort-icon"></span></th>
-          <th class="sortable th-streak" data-sort="su" onclick="sortBy('su',event)"><span>🔁連續</span><span class="sort-icon"></span></th>
+          <th class="sortable th-streak" data-sort="streak" onclick="sortBy('streak',event)"><span>🔁連續</span><span class="sort-icon"></span></th>
           <th class="sortable th-np" data-sort="np" onclick="sortBy('np',event)"><span>參與者</span><span class="sort-icon"></span></th>
           <th class="sortable th-mc" data-sort="mc" onclick="sortBy('mc',event)"><span>市值</span><span class="sort-icon"></span></th>
           <th class="sortable th-fcf" data-sort="fcf" onclick="sortBy('fcf',event)"><span>FCF(億)</span><span class="sort-icon"></span></th>
-          <th class="sortable th-link"><span>連結</span></th>
+          <th class="sortable th-link" data-sort="link" onclick="sortBy('link',event)"><span>連結</span><span class="sort-icon"></span></th>
         </tr></thead>
         <tbody id="mcSmallTbody"><tr class="placeholder-row"><td colspan="16" style="text-align:center;padding:32px;color:#475569">⏳ 載入數據中…</td></tr></tbody>
       </table></div>
@@ -1214,11 +1216,11 @@ main.wrap > .card{overflow:visible}
           <th class="sortable th-t5" data-sort="t5" onclick="sortBy('t5',event)"><span>Top5%</span><span class="sort-icon"></span></th>
           <th class="sortable th-t10" data-sort="t10" onclick="sortBy('t10',event)"><span>Top10%</span><span class="sort-icon"></span></th>
           <th class="sortable th-score" data-sort="score" onclick="sortBy('score',event)"><span>⭐評分</span><span class="sort-icon"></span></th>
-          <th class="sortable th-streak" data-sort="su" onclick="sortBy('su',event)"><span>🔁連續</span><span class="sort-icon"></span></th>
+          <th class="sortable th-streak" data-sort="streak" onclick="sortBy('streak',event)"><span>🔁連續</span><span class="sort-icon"></span></th>
           <th class="sortable th-np" data-sort="np" onclick="sortBy('np',event)"><span>參與者</span><span class="sort-icon"></span></th>
           <th class="sortable th-mc" data-sort="mc" onclick="sortBy('mc',event)"><span>市值</span><span class="sort-icon"></span></th>
           <th class="sortable th-fcf" data-sort="fcf" onclick="sortBy('fcf',event)"><span>FCF(億)</span><span class="sort-icon"></span></th>
-          <th class="sortable th-link"><span>連結</span></th>
+          <th class="sortable th-link" data-sort="link" onclick="sortBy('link',event)"><span>連結</span><span class="sort-icon"></span></th>
         </tr></thead>
         <tbody id="mcMidTbody"><tr class="placeholder-row"><td colspan="16" style="text-align:center;padding:32px;color:#475569">⏳ 載入數據中…</td></tr></tbody>
       </table></div>
@@ -1243,11 +1245,11 @@ main.wrap > .card{overflow:visible}
           <th class="sortable th-t5" data-sort="t5" onclick="sortBy('t5',event)"><span>Top5%</span><span class="sort-icon"></span></th>
           <th class="sortable th-t10" data-sort="t10" onclick="sortBy('t10',event)"><span>Top10%</span><span class="sort-icon"></span></th>
           <th class="sortable th-score" data-sort="score" onclick="sortBy('score',event)"><span>⭐評分</span><span class="sort-icon"></span></th>
-          <th class="sortable th-streak" data-sort="su" onclick="sortBy('su',event)"><span>🔁連續</span><span class="sort-icon"></span></th>
+          <th class="sortable th-streak" data-sort="streak" onclick="sortBy('streak',event)"><span>🔁連續</span><span class="sort-icon"></span></th>
           <th class="sortable th-np" data-sort="np" onclick="sortBy('np',event)"><span>參與者</span><span class="sort-icon"></span></th>
           <th class="sortable th-mc" data-sort="mc" onclick="sortBy('mc',event)"><span>市值</span><span class="sort-icon"></span></th>
           <th class="sortable th-fcf" data-sort="fcf" onclick="sortBy('fcf',event)"><span>FCF(億)</span><span class="sort-icon"></span></th>
-          <th class="sortable th-link"><span>連結</span></th>
+          <th class="sortable th-link" data-sort="link" onclick="sortBy('link',event)"><span>連結</span><span class="sort-icon"></span></th>
         </tr></thead>
         <tbody id="mcLargeTbody"><tr class="placeholder-row"><td colspan="16" style="text-align:center;padding:32px;color:#475569">⏳ 載入數據中…</td></tr></tbody>
       </table></div>
@@ -2390,7 +2392,7 @@ function renderSmallCapDesk(){
 // --- new feature state ---
 let sortCol2='',sortDir2=1;
 let hiddenCols=new Set();
-const SORT_OPTIONS=new Set(['score','tp','t5','t10','np','su','sd','sig','price','code','n','prevyo','pypct','mc','chg','fcf','yo_pct','vr','pldate','ridate']);
+const SORT_OPTIONS=new Set(['score','tp','t5','t10','np','streak','su','sd','sig','price','code','n','prevyo','pypct','mc','chg','fcf','yo_pct','vr','link','pldate','ridate','d5','d20','d60','d120']);
 function sanitizeSortState(){
   if(!SORT_OPTIONS.has(sortCol))sortCol='vr';
   if(sortCol2&&!SORT_OPTIONS.has(sortCol2))sortCol2='';
@@ -2426,6 +2428,14 @@ function getSortVal(s,col){
   if(col==='vr'){
     return s.vr != null ? s.vr : null;
   }
+  if(col==='streak'){
+    if(Number(s.su)>1)return Number(s.su);
+    if(Number(s.sd)>1)return -Number(s.sd);
+    return 0;
+  }
+  if(col==='link'){
+    return hkexLinkMap.has(s.c) ? 1 : 0;
+  }
   if(col==='d5'||col==='d20'||col==='d60'||col==='d120'){
     var trendKey=col+'p';
     return s[trendKey] != null ? s[trendKey] : null;
@@ -2454,7 +2464,7 @@ function updateSortInfo(){
   sanitizeSortState();
   var el=document.getElementById('sortInfo');
   if(!el)return;
-  var names={code:'代碼',n:'名稱',price:'現價',yo_pct:'今年Δ%',tp:'Market%',t5:'Top5%',t10:'Top10%',np:'參與者',mc:'市值',chg:'今日Δ%',fcf:'FCF(億)',vr:'量比',sig:'信號',su:'連續增持',sd:'連續減持',d5:'CCASS 5日',d20:'CCASS 20日',d60:'CCASS 60日',d120:'CCASS 120日',yearyo:'🔺年開',prevyo:'😻前年',pypct:'前年Δ%',score:'⭐評分'};
+  var names={code:'代碼',n:'名稱',price:'現價',yo_pct:'今年Δ%',tp:'Market%',t5:'Top5%',t10:'Top10%',np:'參與者',mc:'市值',chg:'今日Δ%',fcf:'FCF(億)',vr:'量比',sig:'信號',streak:'連續方向',su:'連續增持',sd:'連續減持',link:'HKEX連結',d5:'CCASS 5日',d20:'CCASS 20日',d60:'CCASS 60日',d120:'CCASS 120日',yearyo:'🔺年開',prevyo:'😻前年',pypct:'前年Δ%',score:'⭐評分'};
   var p=names[sortCol]||sortCol,pa=sortDir===1?'▲':'▼';
   if(sortCol2){var sn=names[sortCol2]||sortCol2,sa=sortDir2===1?'▲':'▼';el.innerHTML='<b>'+p+' '+pa+'</b><span class=\"si-sep\">|</span><span style=\"opacity:.7\">'+sn+' '+sa+'</span>';}
   else el.innerHTML='<b>'+p+' '+pa+'</b>';
