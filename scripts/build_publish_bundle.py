@@ -410,6 +410,24 @@ def summarize_market_intel():
     }
 
 
+def summarize_options_levels():
+    data = load_json(DATA / "options_levels.json", {})
+    underlyings = data.get("underlyings") if isinstance(data, dict) else []
+    return {
+        "path": "data/options_levels.json",
+        "updated": data.get("generated_at") if isinstance(data, dict) else None,
+        "observed_date": data.get("observed_date") if isinstance(data, dict) else None,
+        "source": "Futu OpenD / MarketData.app observed option chains",
+        "data_kind": data.get("data_kind") if isinstance(data, dict) else None,
+        "is_observed": data.get("is_observed") if isinstance(data, dict) else None,
+        "status": data.get("status") if isinstance(data, dict) else None,
+        "stale": data.get("stale") if isinstance(data, dict) else None,
+        "symbols": [item.get("symbol") for item in underlyings if isinstance(item, dict)],
+        "expiry_count": sum(len(item.get("expiries") or []) for item in underlyings if isinstance(item, dict)),
+        "refresh_errors": data.get("refresh_errors") if isinstance(data, dict) else None,
+    }
+
+
 def summarize_short_positions():
     data = load_json(DATA / "short_positions.json", {})
     return {
@@ -549,6 +567,7 @@ def main():
             "sector_rotation": summarize_sector_rotation(),
             "market": summarize_market(),
             "market_intel": summarize_market_intel(),
+            "options_levels": summarize_options_levels(),
             "short_positions": summarize_short_positions(),
             "repo_audit": summarize_repo_audit(),
             "vqc_backtest": summarize_backtest(

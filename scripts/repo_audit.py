@@ -66,6 +66,7 @@ DEFAULT_DATE_FILES = (
     "data/trade_engine.json",
     "data/timesfm.json",
     "data/sector_rotation.json",
+    "data/options_levels.json",
 )
 EXPORT_PATH = BASE / "data" / "repo_audit.json"
 

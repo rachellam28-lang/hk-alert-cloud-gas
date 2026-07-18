@@ -31,7 +31,7 @@ ul,ol{margin:8px 0;padding-left:20px}li{margin:5px 0}.formula{display:inline-blo
 <main class="layout">
   <aside class="toc" aria-label="說明書章節">
     <strong>章節</strong>
-    <a href="#workflow">使用次序</a><a href="#status">資料狀態</a><a href="#pages">頁面分工</a><a href="#market">Market 主頁</a><a href="#ccass">CCASS 解讀</a><a href="#events">財技事件</a><a href="#kbar">Kbar／時機</a><a href="#automation">更新機制</a><a href="#limits">限制</a>
+    <a href="#workflow">使用次序</a><a href="#status">資料狀態</a><a href="#pages">頁面分工</a><a href="#market">Market 主頁</a><a href="#ccass">CCASS 解讀</a><a href="#events">財技事件</a><a href="#kbar">Kbar／時機</a><a href="#options">期權大位</a><a href="#automation">更新機制</a><a href="#limits">限制</a>
   </aside>
 
   <div class="content">
@@ -80,6 +80,7 @@ ul,ol{margin:8px 0;padding-left:20px}li{margin:5px 0}.formula{display:inline-blo
         <a class="page-link" href="./watchlist.html"><b>自選</b><span>瀏覽器本機自選、匯入及匯出。</span></a>
         <a class="page-link" href="./rotation_matrix.html"><b>板塊輪動</b><span>20／60／120 日相對強弱；歷史不足會停用。</span></a>
         <a class="page-link" href="./fundflow.html"><b>資金流</b><span>已觀察資金流、沽空與市場情緒欄位。</span></a>
+        <a class="page-link" href="./options_levels.html"><b>期權大位</b><span>已觀察 OI 推導 Call Wall、Put Wall、Max Pain 及 P/C 比率。</span></a>
         <a class="page-link" href="./timing_stack.html"><b>時機疊加</b><span>價格週期、節氣、消息卦、VQC 與分佈日共振。</span></a>
         <a class="page-link" href="./history.html"><b>訊號歷史</b><span>追查訊號與公告出現日期。</span></a>
       </div>
@@ -135,6 +136,17 @@ ul,ol{margin:8px 0;padding-left:20px}li{margin:5px 0}.formula{display:inline-blo
         <li>消息卦只定義季節時間狀態，不能由卦名直接推斷升跌。方向仍需 20 日價格通道突破與真實成交量確認。</li>
       </ul>
       <div class="callout warn">節氣、消息卦、VQC、週期投影都係時間觀察窗；系統不生成未來 OHLC，也不把歷史命中率當樣本外保證。</div>
+    </section>
+
+    <section class="section" id="options">
+      <h2>期權大位</h2>
+      <div class="table-wrap"><table><thead><tr><th>欄位</th><th>正確解讀</th></tr></thead><tbody>
+        <tr><td>Call Wall</td><td>已觀察 Call 未平倉量最大的履約價，只係持倉集中區，未證實做市商淨 Gamma 方向。</td></tr>
+        <tr><td>Put Wall</td><td>已觀察 Put 未平倉量最大的履約價，不可以單獨當保證支持位。</td></tr>
+        <tr><td>Max Pain</td><td>在已上市履約價中，以公開 OI 計出總內在值派彩最小的位置；不是到期價預測。</td></tr>
+        <tr><td>P/C OI</td><td>Put OI 除以 Call OI；只表示倉位結構，不能分辨買方／賣方或開倉／平倉。</td></tr>
+      </tbody></table></div>
+      <div class="callout warn">Options chain 會受 OPRA／券商權限限制。頁面逐一標示 provider、observation date、delay 及 OI coverage；缺資料顯示 unavailable，永不補 0。</div>
     </section>
 
     <section class="section" id="automation">

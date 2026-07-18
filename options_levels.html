@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="zh-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>期權大位</title>
+<style>
+:root{--bg:#edf1f2;--surface:#fff;--surface2:#f5f7f7;--line:#d5dddf;--text:#172126;--muted:#68777d;--teal:#0b7475;--green:#157a4b;--red:#b43a42;--amber:#986308;--purple:#6c5f91;--blue:#286f91}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:13px/1.45 system-ui,"Microsoft JhengHei",sans-serif}.page{max-width:1280px;margin:auto;padding:12px}.band{background:var(--surface);border:1px solid var(--line);border-radius:7px;padding:13px;margin-bottom:9px}.head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}.title{font-size:18px;font-weight:800}.sub,.note{color:var(--muted);font-size:12px}.status{display:flex;align-items:center;justify-content:flex-end;gap:7px;flex-wrap:wrap;text-align:right}.badge{display:inline-flex;align-items:center;min-height:24px;padding:3px 7px;border:1px solid var(--line);border-radius:4px;background:var(--surface2);font-size:11px;font-weight:800}.badge.pass{color:var(--green);background:#e2f2e9;border-color:#9dd3b5}.badge.partial{color:var(--amber);background:#fff1d8;border-color:#e3c27c}.badge.fail{color:var(--red);background:#f7e6e7;border-color:#e5a7ab}.controls{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:11px}.controls label{font-size:11px;font-weight:800;color:var(--muted)}select,button{min-height:34px;border:1px solid #cbd5d6;border-radius:5px;background:#fff;color:var(--text);padding:6px 10px;font:inherit}.expiry-tabs{display:flex;gap:5px;overflow:auto;scrollbar-width:none}.expiry-tabs::-webkit-scrollbar{display:none}.expiry-tabs button{white-space:nowrap;font-weight:700;cursor:pointer}.expiry-tabs button.active{background:#e1f1ef;border-color:#9ccfca;color:var(--teal)}.metrics{display:grid;grid-template-columns:repeat(5,minmax(132px,1fr));gap:7px;margin-top:10px}.metric{min-height:68px;padding:9px 10px;border:1px solid var(--line);border-left:3px solid var(--blue);background:var(--surface2)}.metric.put{border-left-color:var(--green)}.metric.call{border-left-color:var(--red)}.metric.pain{border-left-color:var(--purple)}.metric.ratio{border-left-color:var(--amber)}.metric span{display:block;color:var(--muted);font-size:10px;font-weight:700}.metric b{display:block;margin-top:3px;font-size:18px;line-height:1.1}.metric small{color:var(--muted);font-size:10px}.ladder{position:relative;height:144px;margin-top:10px;border:1px solid var(--line);border-radius:6px;background:linear-gradient(#f8faf9,#f2f5f5);overflow:hidden}.axis{position:absolute;left:5%;right:5%;top:86px;height:2px;background:#9eacb0}.axis::before,.axis::after{position:absolute;top:8px;color:var(--muted);font-size:10px}.axis::before{content:attr(data-low);left:0}.axis::after{content:attr(data-high);right:0}.marker{position:absolute;top:20px;width:0;height:68px;border-left:2px solid var(--blue)}.marker span{position:absolute;left:0;transform:translateX(-50%);min-width:72px;padding:3px 5px;border:1px solid currentColor;border-radius:4px;background:#fff;text-align:center;font-size:10px;font-weight:800;white-space:nowrap}.marker.put{color:var(--green);border-color:var(--green)}.marker.call{color:var(--red);border-color:var(--red)}.marker.pain{top:42px;color:var(--purple);border-color:var(--purple)}.marker.spot{top:64px;color:var(--teal);border-color:var(--teal)}.marker.pain span,.marker.spot span{top:-1px}.section-title{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:8px}.section-title b{font-size:14px}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:6px}table{width:100%;border-collapse:collapse}th,td{padding:8px 9px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}th{background:#f5f7f7;color:var(--muted);font-size:10px}th:first-child,td:first-child{text-align:left}.strike{font-weight:800}.up{color:var(--green)}.down{color:var(--red)}.empty{padding:48px 15px;text-align:center;color:var(--muted)}.disclosure{border-left:3px solid var(--amber)}.disclosure ul{margin:7px 0 0;padding-left:20px}.source-link{color:var(--blue)}
+@media(max-width:760px){.page{padding:7px}.head{display:block}.status{justify-content:flex-start;text-align:left;margin-top:7px}.metrics{display:flex;overflow-x:auto;scroll-snap-type:x mandatory}.metric{flex:0 0 145px;scroll-snap-align:start}.ladder{height:156px}.marker span{font-size:9px;min-width:64px}.controls{align-items:flex-start}.controls label{width:100%}}
+</style>
+</head>
+<body>
+<header><div id="sharedSiteNav" data-base="./"></div></header>
+<main class="page">
+  <section class="band">
+    <div class="head">
+      <div><div class="title">期權大位</div><div class="sub">用已觀察未平倉量找 Call Wall、Put Wall 及 Max Pain；大位係持倉集中區，不是保證支持／阻力。</div></div>
+      <div id="status" class="status"><span class="badge">載入中</span></div>
+    </div>
+    <div class="controls">
+      <label for="symbolSelect">標的</label><select id="symbolSelect" aria-label="期權標的"></select>
+      <label>到期日</label><div id="expiryTabs" class="expiry-tabs"></div>
+    </div>
+    <div class="metrics">
+      <div class="metric"><span>現貨／ETF</span><b id="spot">—</b><small id="spotMeta">—</small></div>
+      <div class="metric put"><span>Put Wall</span><b id="putWall">—</b><small id="putWallOi">—</small></div>
+      <div class="metric call"><span>Call Wall</span><b id="callWall">—</b><small id="callWallOi">—</small></div>
+      <div class="metric pain"><span>Max Pain</span><b id="maxPain">—</b><small>OI 加權最小派彩位</small></div>
+      <div class="metric ratio"><span>Put／Call OI</span><b id="pcRatio">—</b><small id="coverage">—</small></div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="section-title"><b>價位尺</b><span id="ladderNote" class="note">—</span></div>
+    <div id="ladder" class="ladder"><div class="axis" data-low="—" data-high="—"></div></div>
+  </section>
+
+  <section class="band">
+    <div class="section-title"><b>OI／成交量集中履約價</b><span class="note">先按總 OI 選首 36 個大位；欄位可排序</span></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>履約價</th><th>距現價</th><th>Call OI</th><th>Call 量</th><th>Put OI</th><th>Put 量</th><th>總 OI</th><th>總量</th><th>Call IV</th><th>Put IV</th></tr></thead>
+      <tbody id="levelsBody"><tr><td colspan="10" class="empty">載入中…</td></tr></tbody>
+    </table></div>
+  </section>
+
+  <section class="band disclosure note">
+    <b>解讀底線</b>
+    <ul>
+      <li>Open Interest 通常係上一交易日結算持倉；成交量係觀察快照，兩者唔係同一時間口徑。</li>
+      <li>Call Wall／Put Wall 只代表最大 OI 履約價。做市商對沖方向、淨 Gamma、開倉或平倉身份並未由此確認。</li>
+      <li>Max Pain 係公開 OI 嘅機械計算，不是到期價預測。OI 覆蓋低於 80% 時系統會停止計算。</li>
+      <li>目前頁面只發布成功抓到並有來源時間嘅標的；未抓到不會顯示成 0。</li>
+    </ul>
+  </section>
+</main>
+<script src="./shared-nav.js"></script>
+<script>
+const state={payload:null,symbol:null,expiry:null};
+const esc=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+const finite=value=>value!==null&&value!==''&&Number.isFinite(Number(value));
+const price=value=>finite(value)?Number(value).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}):'—';
+const compact=value=>finite(value)?new Intl.NumberFormat('zh-HK',{notation:'compact',maximumFractionDigits:1}).format(Number(value)):'—';
+const pct=value=>finite(value)?`${Number(value)>=0?'+':''}${Number(value).toFixed(2)}%`:'—';
+const iv=value=>finite(value)?`${(Number(value)*(Number(value)<=3?100:1)).toFixed(1)}%`:'—';
+function currentSymbol(){return state.payload.underlyings.find(item=>item.symbol===state.symbol)}
+function currentExpiry(){const item=currentSymbol();return item?.expiries.find(exp=>exp.expiry===state.expiry)}
+function setStatus(){
+  const p=state.payload, item=currentSymbol();
+  const klass=String(p.status||'FAIL').toLowerCase();
+  document.getElementById('status').innerHTML=`<span class="badge ${klass}">${esc(p.status||'FAIL')}</span><span class="sub">觀察 ${esc(p.observed_date||'—')} · ${esc(item?.provider||'來源不可用')} · ${esc(item?.delay||'')}</span>`;
+}
+function renderLadder(exp){
+  const values=[exp.put_wall?.strike,exp.call_wall?.strike,exp.max_pain,exp.spot].filter(finite).map(Number);
+  const box=document.getElementById('ladder');
+  if(!values.length){box.innerHTML='<div class="empty">暫無可畫大位</div>';return}
+  let low=Math.min(...values),high=Math.max(...values),pad=Math.max((high-low)*.18,exp.spot*.02,1);low-=pad;high+=pad;
+  const pos=value=>Math.max(5,Math.min(95,5+(Number(value)-low)/(high-low)*90));
+  const markers=[
+    ['put','Put Wall',exp.put_wall?.strike],['call','Call Wall',exp.call_wall?.strike],
+    ['pain','Max Pain',exp.max_pain],['spot','Spot',exp.spot]
+  ].filter(item=>finite(item[2]));
+  box.innerHTML=`<div class="axis" data-low="${price(low)}" data-high="${price(high)}"></div>${markers.map(([kind,label,value])=>`<div class="marker ${kind}" style="left:${pos(value)}%"><span>${label}<br>${price(value)}</span></div>`).join('')}`;
+  document.getElementById('ladderNote').textContent=`${exp.expiry} · ${exp.contracts} 張合約觀察`;
+}
+function renderTable(exp){
+  const body=document.getElementById('levelsBody');
+  if(!exp.rows?.length){body.innerHTML='<tr><td colspan="10" class="empty">沒有可用 OI 履約價</td></tr>';return}
+  body.innerHTML=exp.rows.map(row=>`<tr>
+    <td class="strike">${price(row.strike)}</td><td class="${Number(row.distance_pct)>=0?'up':'down'}">${pct(row.distance_pct)}</td>
+    <td>${compact(row.call_oi)}</td><td>${compact(row.call_volume)}</td><td>${compact(row.put_oi)}</td><td>${compact(row.put_volume)}</td>
+    <td>${compact(row.total_oi)}</td><td>${compact(row.total_volume)}</td><td>${iv(row.call_iv)}</td><td>${iv(row.put_iv)}</td>
+  </tr>`).join('');
+}
+function render(){
+  const item=currentSymbol(),exp=currentExpiry();if(!item||!exp)return;
+  setStatus();document.getElementById('spot').textContent=price(exp.spot);document.getElementById('spotMeta').textContent=item.label;
+  document.getElementById('putWall').textContent=price(exp.put_wall?.strike);document.getElementById('putWallOi').textContent=finite(exp.put_wall?.open_interest)?`OI ${compact(exp.put_wall.open_interest)}`:'OI 不足';
+  document.getElementById('callWall').textContent=price(exp.call_wall?.strike);document.getElementById('callWallOi').textContent=finite(exp.call_wall?.open_interest)?`OI ${compact(exp.call_wall.open_interest)}`:'OI 不足';
+  document.getElementById('maxPain').textContent=price(exp.max_pain);document.getElementById('pcRatio').textContent=finite(exp.put_call_oi_ratio)?Number(exp.put_call_oi_ratio).toFixed(2):'—';
+  document.getElementById('coverage').textContent=`OI 覆蓋 ${finite(exp.oi_coverage_pct)?Number(exp.oi_coverage_pct).toFixed(1)+'%':'不足'}`;
+  document.querySelectorAll('#expiryTabs button').forEach(button=>button.classList.toggle('active',button.dataset.expiry===state.expiry));
+  renderLadder(exp);renderTable(exp);
+}
+function selectSymbol(symbol){
+  state.symbol=symbol;const item=currentSymbol();state.expiry=item?.expiries?.[0]?.expiry||null;
+  document.getElementById('expiryTabs').innerHTML=(item?.expiries||[]).map(exp=>`<button type="button" data-expiry="${esc(exp.expiry)}">${esc(exp.expiry)} <small>${exp.contracts}</small></button>`).join('');
+  document.querySelectorAll('#expiryTabs button').forEach(button=>button.onclick=()=>{state.expiry=button.dataset.expiry;render()});render();
+}
+fetch('./data/options_levels.json?_='+Date.now(),{cache:'no-store'}).then(response=>{if(!response.ok)throw Error(response.status);return response.json()}).then(payload=>{
+  if(!payload.is_observed||!Array.isArray(payload.underlyings)||!payload.underlyings.length)throw Error('no observed options data');
+  state.payload=payload;const select=document.getElementById('symbolSelect');select.innerHTML=payload.underlyings.map(item=>`<option value="${esc(item.symbol)}">${esc(item.symbol)} · ${esc(item.label)}</option>`).join('');
+  select.onchange=()=>selectSymbol(select.value);selectSymbol(payload.underlyings[0].symbol);
+}).catch(error=>{document.getElementById('status').innerHTML='<span class="badge fail">FAIL</span><span class="sub">期權資料載入失敗</span>';document.getElementById('levelsBody').innerHTML='<tr><td colspan="10" class="empty">沒有已驗證期權快照</td></tr>';console.error(error)});
+</script>
+</body>
+</html>

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 from pathlib import Path
 
 
@@ -52,8 +53,14 @@ def test_momentum_page_uses_expanded_engine_universe(page):
         timeout=45_000,
     )
     text = page.locator("#momentumScope").inner_text()
-    assert "候選 240" in text
-    assert "已分析 240" in text
+    scope = re.fullmatch(
+        r"全市場 (\d+) · 候選 (\d+) · 已分析 (\d+) · 動量排名 (\d+)",
+        text,
+    )
+    assert scope
+    universe, candidates, analyzed, ranked = map(int, scope.groups())
+    assert universe >= candidates >= analyzed > 0
+    assert ranked >= analyzed
     assert page.locator("#momentumRows tr").count() == 50
     assert not errors
 

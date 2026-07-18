@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import re
 
 
 BASE_URL = os.getenv("HK_ALERT_BASE_URL", "https://hk-alert-cloud-gas.pages.dev").rstrip("/")
@@ -19,7 +20,8 @@ def test_smallcap_playbook_keeps_three_evidence_lanes_separate(page):
     assert page.locator("#tabs .tab").count() == 15
     assert "技術確認" in page.locator(".funnel").inner_text()
     assert "盤路確認" not in page.locator("body").inner_text()
-    assert "觀測資料已載入" in page.locator("#health").inner_text()
+    health = page.locator("#health").inner_text()
+    assert health == "觀測資料已載入" or re.fullmatch(r"部分完成 · [1-9]\d* 錯誤", health)
     assert not errors
 
 

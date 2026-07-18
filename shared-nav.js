@@ -15,6 +15,7 @@
   const primary = [
     ['trading_desk.html', '交易台'],
     ['index.html', 'Market'],
+    ['rotation_matrix.html', '\u677f\u584a\u8f2a\u52d5'],
     ['signals.html', '\u8a0a\u865f'],
     ['smallcap_playbook.html', '\u7d30\u50f9\u80a1'],
     ['kbar_matrix.html', 'Kbar'],
@@ -25,8 +26,8 @@
   const guide = ['guide.html', '\u8aaa\u660e'];
   const groups = [
     ['\u63c0\u80a1', [
-      ['rotation_matrix.html', '\u677f\u584a\u8f2a\u52d5'],
       ['fundflow.html', '\u8cc7\u91d1\u6d41'],
+      ['options_levels.html', '\u671f\u6b0a\u5927\u4f4d'],
     ]],
     ['\u6642\u5e8f', [
       ['timing_stack.html', '\u6642\u6a5f\u758a\u52a0'],

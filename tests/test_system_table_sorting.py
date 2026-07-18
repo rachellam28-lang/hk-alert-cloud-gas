@@ -15,6 +15,7 @@ TABLE_PAGES = (
     "index.html",
     "jieqi_analysis.html",
     "momentum_list.html",
+    "options_levels.html",
     "rights_analysis.html",
     "rotation_matrix.html",
     "signals.html",
