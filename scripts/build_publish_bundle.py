@@ -417,7 +417,7 @@ def summarize_options_levels():
         "path": "data/options_levels.json",
         "updated": data.get("generated_at") if isinstance(data, dict) else None,
         "observed_date": data.get("observed_date") if isinstance(data, dict) else None,
-        "source": "Futu OpenD / MarketData.app observed option chains",
+        "source": "HKEX official HSI daily report / Futu OpenD / MarketData.app observed option chains",
         "data_kind": data.get("data_kind") if isinstance(data, dict) else None,
         "is_observed": data.get("is_observed") if isinstance(data, dict) else None,
         "status": data.get("status") if isinstance(data, dict) else None,
