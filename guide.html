@@ -79,7 +79,7 @@ ul,ol{margin:8px 0;padding-left:20px}li{margin:5px 0}.formula{display:inline-blo
         <a class="page-link" href="./rights_analysis.html"><b>事件</b><span>供股、配股、圈股／圈錢條款與市場反應。</span></a>
         <a class="page-link" href="./watchlist.html"><b>自選</b><span>瀏覽器本機自選、匯入及匯出。</span></a>
         <a class="page-link" href="./rotation_matrix.html"><b>板塊輪動</b><span>20／60／120 日相對強弱；歷史不足會停用。</span></a>
-        <a class="page-link" href="./trend_matrix.html"><b>日夜 Trend</b><span>恒指／國指／科指日市加夜期，以及全港股日線趨勢矩陣。</span></a>
+        <a class="page-link" href="./trend_matrix.html"><b>日夜 Trend</b><span>日市／夜期五格、Daily／Weekly／Monthly 波幅 cycle、派吸階段及全港股日線。</span></a>
         <a class="page-link" href="./fundflow.html"><b>資金流</b><span>已觀察資金流、沽空與市場情緒欄位。</span></a>
         <a class="page-link" href="./options_levels.html"><b>期權大位</b><span>HKEX 恒指 CALL／PUT 倉位梯、OI 變化、成交、Wall、Max Pain 及 P/C 比率。</span></a>
         <a class="page-link" href="./timing_stack.html"><b>時機疊加</b><span>價格週期、節氣、消息卦、VQC 與分佈日共振。</span></a>
@@ -144,11 +144,13 @@ ul,ol{margin:8px 0;padding-left:20px}li{margin:5px 0}.formula{display:inline-blo
       <div class="table-wrap"><table><thead><tr><th>輸入</th><th>系統點樣判斷</th></tr></thead><tbody>
         <tr><td>恒指／國指／科指</td><td>Futu 指數日線，加相應主連期貨 17:15 至翌日 03:00 的已完成夜期；進行中夜期不計分。</td></tr>
         <tr><td>任何港股</td><td>沿用系統的 Tencent 未調整真實日線；個股沒有夜期，該因子標示不適用並不計分。</td></tr>
-        <tr><td>Trend</td><td>收市相對 EMA20、EMA20 相對 EMA50、5 日動量、收市相對當日高低中位、20 日通道、量能確認，以及適用時的完成夜期方向。</td></tr>
-        <tr><td>日／夜五格</td><td>逐項顯示該節真實 High、Low、(High+Low)/2、Open、Close。以 2026-06-05 恒指核對，截圖 25216／24928／25072／25186／24952 正好對應呢五欄，並非 Pivot 預測。</td></tr>
-        <tr><td>歷史上下線</td><td>只從當時以前 60 個交易日的真實高低位尋找最近上下價，不會引用未來資料；屬觀察線，不是保證支持或阻力。</td></tr>
+        <tr><td>日／夜五格</td><td>表格永遠只顯示日期加 High、Low、(High+Low)/2、Open、Close；日市與夜期用按鍵切換。未完成夜期只顯示最後觀察，不當正式收市計分。</td></tr>
+        <tr><td>三層 Cycle</td><td>Daily 是單日高低波幅；Weekly 是滾動 5 日最高減最低；Monthly 是滾動 20 日最高減最低。每層使用最近 60 個有效樣本顯示目前幅度、歷史中位及上四分位。</td></tr>
+        <tr><td>派／吸顏色</td><td>完整 Trend score 先以最近 3 個交易日平滑；平均 ≥ +1.5 為吸納／偏多（藍），≤ -1.5 為派發／偏空（紅），其餘為過渡（灰）。每連續 3 日以金線分拍。</td></tr>
+        <tr><td>價位標記</td><td>黃色只表示突破之前 20 個同類交易節的高／低極值；綠色只表示階段切換當日中位。數字及顏色均可由已觀察數據重算。</td></tr>
+        <tr><td>星期三／四</td><td>特別標成「反轉觀察窗」，但只是時間風險提示；必須再看五格中位得失、cycle 是否已達上四分位及完成夜期方向。</td></tr>
       </tbody></table></div>
-      <div class="callout warn">五欄數字已由 Futu 真實日線逐項驗證；但作者點樣揀選某一歷史高低位、以及紅藍顏色週期規則仍未公開，系統不冒認複製。Trend 採用完整列明、可重現及可測試的獨立規則。</div>
+      <div class="callout warn">五欄數字已由 Futu 真實資料逐項驗證；參考圖作者的私有紅藍公式及日期 cycle 未公開，系統不冒認複製。Cycle 達上四分位只代表歷史上較常見出現反應的波幅區，不代表必然見頂、見底或反轉。</div>
     </section>
 
     <section class="section" id="options">

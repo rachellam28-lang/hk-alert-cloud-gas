@@ -109,6 +109,13 @@ def test_trend_page_is_wired_to_navigation_refresh_and_cloudflare() -> None:
     assert '"trend_matrix.html"' in deploy
     assert 'Path("data/trend_matrix.json")' in deploy
     assert "exportCsv" not in page
+    table = page.split('<table id="matrixTable">', 1)[1].split("</table>", 1)[0]
+    assert table.count("<th ") == 6
+    assert 'data-session="day"' in page
+    assert 'data-session="night"' in page
+    assert "cycleRanges" in page
+    assert "weekdayInfo" in page
+    assert "Daily=單日高低" in page
 
 
 def test_deployed_trend_page_switches_index_and_any_hk_stock(page) -> None:
@@ -117,7 +124,27 @@ def test_deployed_trend_page_switches_index_and_any_hk_stock(page) -> None:
     page.goto(f"{BASE_URL}/trend_matrix.html", wait_until="domcontentloaded")
     page.wait_for_function("() => document.querySelectorAll('#matrixBody tr').length === 20", timeout=45_000)
     assert "恒生指數" in page.locator("#status").inner_text()
-    assert page.locator("#trend").inner_text() in {"強勢向上", "偏多", "區間", "偏空", "強勢向下"}
+    assert page.locator("#trend").inner_text() in {"吸納／偏多", "派發／偏空", "過渡／等確認"}
+    assert page.locator("#matrixBody tr").first.locator("td").count() == 6
+    assert "D " in page.locator("#swingRhythm").inner_text()
+    assert "W " in page.locator("#swingRhythm").inner_text()
+    assert "M " in page.locator("#swingRhythm").inner_text()
+    cycles = page.evaluate("() => cycleRanges(state.rows)")
+    for item in cycles.values():
+        assert item["current"] > 0
+        assert item["q25"] <= item["median"] <= item["q75"]
+    assert page.locator(".weekday-tag.turn-window").count() > 0
+    font_size = page.locator("#matrixBody tr td:nth-child(2)").first.evaluate(
+        "element => parseFloat(getComputedStyle(element).fontSize)"
+    )
+    assert font_size >= 15
+
+    day_value = page.locator("#matrixBody tr").first.locator("td:nth-child(2)").inner_text()
+    page.locator("button[data-session='night']").click()
+    assert "夜期五格" in page.locator("#matrixTitle").inner_text()
+    assert page.locator("button[data-session='night']").get_attribute("class") == "active"
+    night_value = page.locator("#matrixBody tr").first.locator("td:nth-child(2)").inner_text()
+    assert night_value != day_value
 
     page.locator("button[data-index='HSTECH']").click()
     assert "恒生科技指數" in page.locator("#status").inner_text()
@@ -127,6 +154,7 @@ def test_deployed_trend_page_switches_index_and_any_hk_stock(page) -> None:
     page.wait_for_function("() => (document.querySelector('#status')?.textContent || '').includes('01733')", timeout=45_000)
     assert "Tencent public HK daily K-line" in page.locator("#sourceMeta").inner_text()
     assert page.locator("#nightClose").inner_text() == "不適用"
+    assert page.locator("button[data-session='night']").is_disabled()
     assert not errors
 
 
