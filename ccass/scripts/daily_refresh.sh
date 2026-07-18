@@ -153,6 +153,9 @@ echo "3.497/5 Build Kbar preset cache (best-effort)..."
 echo "3.498/5 Build HK sector rotation snapshot..."
 "$PYTHON_BIN" "$REPO_ROOT/scripts/build_sector_rotation.py" || { echo "ERROR: sector rotation build failed"; exit 1; }
 
+echo "3.4982/5 Build observed index/night trend matrix (best-effort)..."
+"$PYTHON_BIN" "$REPO_ROOT/scripts/build_trend_matrix.py" --best-effort || echo "WARN: trend matrix unavailable; keeping existing observed snapshot"
+
 echo "3.4985/5 Build observed options key levels (best-effort)..."
 "$PYTHON_BIN" "$REPO_ROOT/scripts/build_options_levels.py" --best-effort || echo "WARN: options levels unavailable; keeping existing observed snapshot"
 

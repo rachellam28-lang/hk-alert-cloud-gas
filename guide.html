@@ -31,7 +31,7 @@ ul,ol{margin:8px 0;padding-left:20px}li{margin:5px 0}.formula{display:inline-blo
 <main class="layout">
   <aside class="toc" aria-label="說明書章節">
     <strong>章節</strong>
-    <a href="#workflow">使用次序</a><a href="#status">資料狀態</a><a href="#pages">頁面分工</a><a href="#market">Market 主頁</a><a href="#ccass">CCASS 解讀</a><a href="#events">財技事件</a><a href="#kbar">Kbar／時機</a><a href="#options">期權大位</a><a href="#automation">更新機制</a><a href="#limits">限制</a>
+    <a href="#workflow">使用次序</a><a href="#status">資料狀態</a><a href="#pages">頁面分工</a><a href="#market">Market 主頁</a><a href="#ccass">CCASS 解讀</a><a href="#events">財技事件</a><a href="#kbar">Kbar／時機</a><a href="#trend">日夜 Trend</a><a href="#options">期權大位</a><a href="#automation">更新機制</a><a href="#limits">限制</a>
   </aside>
 
   <div class="content">
@@ -79,6 +79,7 @@ ul,ol{margin:8px 0;padding-left:20px}li{margin:5px 0}.formula{display:inline-blo
         <a class="page-link" href="./rights_analysis.html"><b>事件</b><span>供股、配股、圈股／圈錢條款與市場反應。</span></a>
         <a class="page-link" href="./watchlist.html"><b>自選</b><span>瀏覽器本機自選、匯入及匯出。</span></a>
         <a class="page-link" href="./rotation_matrix.html"><b>板塊輪動</b><span>20／60／120 日相對強弱；歷史不足會停用。</span></a>
+        <a class="page-link" href="./trend_matrix.html"><b>日夜 Trend</b><span>恒指／國指／科指日市加夜期，以及全港股日線趨勢矩陣。</span></a>
         <a class="page-link" href="./fundflow.html"><b>資金流</b><span>已觀察資金流、沽空與市場情緒欄位。</span></a>
         <a class="page-link" href="./options_levels.html"><b>期權大位</b><span>已觀察 OI 推導 Call Wall、Put Wall、Max Pain 及 P/C 比率。</span></a>
         <a class="page-link" href="./timing_stack.html"><b>時機疊加</b><span>價格週期、節氣、消息卦、VQC 與分佈日共振。</span></a>
@@ -136,6 +137,18 @@ ul,ol{margin:8px 0;padding-left:20px}li{margin:5px 0}.formula{display:inline-blo
         <li>消息卦只定義季節時間狀態，不能由卦名直接推斷升跌。方向仍需 20 日價格通道突破與真實成交量確認。</li>
       </ul>
       <div class="callout warn">節氣、消息卦、VQC、週期投影都係時間觀察窗；系統不生成未來 OHLC，也不把歷史命中率當樣本外保證。</div>
+    </section>
+
+    <section class="section" id="trend">
+      <h2>日夜 Trend Matrix</h2>
+      <div class="table-wrap"><table><thead><tr><th>輸入</th><th>系統點樣判斷</th></tr></thead><tbody>
+        <tr><td>恒指／國指／科指</td><td>Futu 指數日線，加相應主連期貨 17:15 至翌日 03:00 的已完成夜期；進行中夜期不計分。</td></tr>
+        <tr><td>任何港股</td><td>沿用系統的 Tencent 未調整真實日線；個股沒有夜期，該因子標示不適用並不計分。</td></tr>
+        <tr><td>Trend</td><td>收市相對 EMA20、EMA20 相對 EMA50、5 日動量、收市相對當日高低中位、20 日通道、量能確認，以及適用時的完成夜期方向。</td></tr>
+        <tr><td>日／夜五格</td><td>逐項顯示該節真實 High、Low、(High+Low)/2、Open、Close。以 2026-06-05 恒指核對，截圖 25216／24928／25072／25186／24952 正好對應呢五欄，並非 Pivot 預測。</td></tr>
+        <tr><td>歷史上下線</td><td>只從當時以前 60 個交易日的真實高低位尋找最近上下價，不會引用未來資料；屬觀察線，不是保證支持或阻力。</td></tr>
+      </tbody></table></div>
+      <div class="callout warn">五欄數字已由 Futu 真實日線逐項驗證；但作者點樣揀選某一歷史高低位、以及紅藍顏色週期規則仍未公開，系統不冒認複製。Trend 採用完整列明、可重現及可測試的獨立規則。</div>
     </section>
 
     <section class="section" id="options">

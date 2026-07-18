@@ -16,6 +16,7 @@
     ['trading_desk.html', '交易台'],
     ['index.html', 'Market'],
     ['rotation_matrix.html', '\u677f\u584a\u8f2a\u52d5'],
+    ['trend_matrix.html', 'Trend'],
     ['signals.html', '\u8a0a\u865f'],
     ['smallcap_playbook.html', '\u7d30\u50f9\u80a1'],
     ['kbar_matrix.html', 'Kbar'],

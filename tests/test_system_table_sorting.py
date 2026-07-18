@@ -22,6 +22,7 @@ TABLE_PAGES = (
     "smallcap_playbook.html",
     "timing_analysis.html",
     "timing_stack.html",
+    "trend_matrix.html",
     "trading_desk.html",
     "vqc_analysis.html",
     "watchlist.html",

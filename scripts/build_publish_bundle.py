@@ -428,6 +428,33 @@ def summarize_options_levels():
     }
 
 
+def summarize_trend_matrix():
+    data = load_json(DATA / "trend_matrix.json", {})
+    indexes = data.get("indexes") if isinstance(data, dict) else {}
+    return {
+        "path": "data/trend_matrix.json",
+        "updated": data.get("generated_at") if isinstance(data, dict) else None,
+        "source": "Futu OpenD observed index daily and main-contract night-session K-lines",
+        "data_kind": data.get("data_kind") if isinstance(data, dict) else None,
+        "is_observed": data.get("is_observed") if isinstance(data, dict) else None,
+        "observations_are_real": data.get("observations_are_real") if isinstance(data, dict) else None,
+        "status": data.get("status") if isinstance(data, dict) else None,
+        "stale": data.get("stale") if isinstance(data, dict) else None,
+        "indexes": list(indexes) if isinstance(indexes, dict) else [],
+        "daily_observed_through": {
+            key: item.get("daily_observed_through")
+            for key, item in indexes.items()
+            if isinstance(item, dict)
+        } if isinstance(indexes, dict) else {},
+        "night_observed_through": {
+            key: item.get("night_observed_through")
+            for key, item in indexes.items()
+            if isinstance(item, dict)
+        } if isinstance(indexes, dict) else {},
+        "errors": data.get("errors") if isinstance(data, dict) else None,
+    }
+
+
 def summarize_short_positions():
     data = load_json(DATA / "short_positions.json", {})
     return {
@@ -568,6 +595,7 @@ def main():
             "market": summarize_market(),
             "market_intel": summarize_market_intel(),
             "options_levels": summarize_options_levels(),
+            "trend_matrix": summarize_trend_matrix(),
             "short_positions": summarize_short_positions(),
             "repo_audit": summarize_repo_audit(),
             "vqc_backtest": summarize_backtest(

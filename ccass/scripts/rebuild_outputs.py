@@ -79,6 +79,7 @@ def _stage_outputs() -> None:
         "data/timesfm.json",
         "data/kbar_cache.json",
         "data/trade_engine.json",
+        "data/trend_matrix.json",
         "data/options_levels.json",
         "data/repo_audit.json",
         "data/alerts.json",
@@ -158,6 +159,7 @@ def main() -> int:
     _run([PYTHON, REPO_ROOT / "scripts" / "build_kbar_cache.py"], REPO_ROOT, required=False)
     _run([PYTHON, REPO_ROOT / "scripts" / "build_hk_symbol_index.py"], REPO_ROOT, required=True)
     _run([PYTHON, REPO_ROOT / "scripts" / "build_sector_rotation.py"], REPO_ROOT, required=True)
+    _run([PYTHON, REPO_ROOT / "scripts" / "build_trend_matrix.py", "--best-effort"], REPO_ROOT, required=False)
     _run([PYTHON, REPO_ROOT / "scripts" / "build_options_levels.py", "--best-effort"], REPO_ROOT, required=False)
     _run([PYTHON, REPO_ROOT / "scripts" / "build_trade_engine.py"], REPO_ROOT, required=True)
     _run([PYTHON, REPO_ROOT / "scripts" / "repo_audit.py", "export"], REPO_ROOT, required=True)

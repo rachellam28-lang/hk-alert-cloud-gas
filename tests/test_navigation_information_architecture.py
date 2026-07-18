@@ -16,6 +16,7 @@ def test_shared_navigation_uses_workflow_order_without_retired_pages() -> None:
         "trading_desk.html",
         "index.html",
         "rotation_matrix.html",
+        "trend_matrix.html",
         "signals.html",
         "smallcap_playbook.html",
         "kbar_matrix.html",

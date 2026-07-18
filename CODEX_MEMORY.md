@@ -2,6 +2,15 @@
 
 Last updated: 2026-07-18 HKT
 
+## 2026-07-18 observed day/night Trend Matrix
+
+- Added `trend_matrix.html` as a primary navigation page after `板塊輪動`. It is an in-system automated table, not an Excel download. Every row is labelled `強勢向上`, `偏多`, `區間`, `偏空`, or `強勢向下`, with score, regime duration, and volume/channel confirmation.
+- The Facebook five columns were reverse-verified against genuine Futu HSI daily bars. They are observed `High`, `Low`, `(High+Low)/2`, `Open`, and `Close`; for 2026-06-05 they match `25216 / 24928 / 25072 / 25186 / 24952`. They are not a Pivot forecast. The author's rule for selecting highlighted historical levels and red/blue cycle colours remains undisclosed and must not be claimed as reproduced.
+- `scripts/build_trend_matrix.py` reads genuine Futu data for HSI (`HK.800000` + `HK.HSImain`), HSCEI (`HK.800100` + `HK.HHImain`), and HSTECH (`HK.800700` + `HK.HTImain`). Night sessions are grouped from 17:15 through 03:00; an incomplete session keeps its last observation but has `close=null` and contributes no trend score.
+- Any active HK stock can be queried by code or exact name. The page reuses `/api/kbar/<code>` and `data/hk_symbols.json`, calculates the same deterministic daily Trend rules in-browser, and explicitly marks the night factor not applicable. It does not download or precompute all-market stock Kbars.
+- Trend score combines close/EMA20, EMA20/EMA50, 5-day momentum, close/day midpoint, 20-day channel, volume confirmation, and completed night direction where applicable. Historical upper/lower lines use only prior 60-session observed highs/lows. It is `derived_rule_output_from_observed_futu_kbars`, not an observed fact or price forecast.
+- Daily refresh, Windows rebuild, publish bundle, repo audit, guide, sorting checks, and direct Cloudflare allowlist include the page and `data/trend_matrix.json`. No GitHub deployment route is used.
+
 ## 2026-07-16 observed options key-level page
 
 - Added `options_levels.html` under More -> stock selection. It shows observed underlying price, Call Wall, Put Wall, Max Pain, put/call OI ratio, an aligned price ladder, and a sortable strike table. The page explicitly treats these as positioning concentrations rather than guaranteed support/resistance or a directional forecast.
