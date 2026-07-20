@@ -225,7 +225,30 @@
       "grade": "🟡 WATCHLIST",
       "red": false,
       "watch": true,
-      "skip_reason": "type=收購/要約",
+      "skip_reason": "vol=N/A<1.5x; jump=N/A (insufficient history)",
+      "placement": true,
+      "increase": false,
+      "rights": false
+    },
+    {
+      "code": "00701",
+      "name": "CNT GROUP",
+      "types": [
+        "收購/要約",
+        "聯合公告"
+      ],
+      "types_str": "收購/要約 / 聯合公告",
+      "title": "公司公告：JOINT ANNOUNCEMENT (1) CLOSE OF THE CNT OFFER; (2) RESULTS OF THE CNT OFFE…",
+      "ann_date": "2026-07-02",
+      "rel_time": "02/07/2026 18:20",
+      "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0702/2026070203177.pdf",
+      "vol_ratio": null,
+      "price_jump_pct": null,
+      "jump_detail": "",
+      "grade": "🟡 WATCHLIST",
+      "red": false,
+      "watch": true,
+      "skip_reason": "type=收購/要約 / 聯合公告",
       "placement": false,
       "increase": false,
       "rights": false
