@@ -1,92 +1,162 @@
 [
   {
-    "code": "09982",
-    "name": "CENTRALCHINA MT",
-    "ann_date": "2026-06-18",
+    "code": "01950",
+    "name": "DIWANG IND H",
+    "ann_date": "2026-06-30",
     "best": "WATCH",
     "t_offset": 1,
-    "jump": -2.0201985993660987,
-    "vol_ratio": 4.197885653420281,
-    "ann_close": 0.0989999994635582
+    "jump": -1.8867892699548516,
+    "vol_ratio": 2.304642593957259,
+    "ann_close": 0.10599999874830246
   },
   {
-    "code": "06190",
-    "name": "BANKOFJIUJIANG",
-    "ann_date": "2026-06-18",
+    "code": "01842",
+    "name": "GROWN UP GROUP",
+    "ann_date": "2026-06-30",
     "best": "WATCH",
     "t_offset": 1,
-    "jump": -2.1739110153428576,
-    "vol_ratio": 1.7998075072184792,
-    "ann_close": 2.299999952316284
+    "jump": -2.564107707501292,
+    "vol_ratio": 9.239458347617415,
+    "ann_close": 0.039000000804662704
   },
   {
-    "code": "01736",
-    "name": "PARENTING NET",
-    "ann_date": "2026-06-17",
+    "code": "00377",
+    "name": "CHINA HUAJUN GP",
+    "ann_date": "2026-06-30",
+    "best": "WATCH",
+    "t_offset": 1,
+    "jump": -12.49999767169351,
+    "vol_ratio": 476.01785714285717,
+    "ann_close": 1.2799999713897705
+  },
+  {
+    "code": "02028",
+    "name": "JOLIMARK",
+    "ann_date": "2026-06-29",
     "best": "RED",
     "t_offset": 1,
-    "jump": 25.925923200519225,
-    "vol_ratio": 46.24,
-    "ann_close": 0.4050000011920929
+    "jump": 23.595510283408704,
+    "vol_ratio": 2.9368384320111667,
+    "ann_close": 0.8899999856948853
   },
   {
-    "code": "02889",
-    "name": "PATEO",
-    "ann_date": "2026-06-17",
+    "code": "01783",
+    "name": "ENVISION GREEN",
+    "ann_date": "2026-06-29",
+    "best": "WATCH",
+    "t_offset": 1,
+    "jump": 0.3305781867105094,
+    "vol_ratio": 1.5849640389818258,
+    "ann_close": 6.050000190734863
+  },
+  {
+    "code": "00632",
+    "name": "CHK OIL",
+    "ann_date": "2026-06-29",
+    "best": "WATCH",
+    "t_offset": 1,
+    "jump": -10.000003311369023,
+    "vol_ratio": 2.0876528976791326,
+    "ann_close": 0.27000001072883606
+  },
+  {
+    "code": "02863",
+    "name": "GOLDEN FAITH GP",
+    "ann_date": "2026-06-29",
+    "best": "RED",
+    "t_offset": 1,
+    "jump": 14.285711244660995,
+    "vol_ratio": 1.9054781288809164,
+    "ann_close": 0.5600000023841858
+  },
+  {
+    "code": "01662",
+    "name": "YEE HOP HLDGS",
+    "ann_date": "2026-06-29",
+    "best": "WATCH",
+    "t_offset": 1,
+    "jump": -23.17073161867245,
+    "vol_ratio": 12.545454545454545,
+    "ann_close": 0.8199999928474426
+  },
+  {
+    "code": "00167",
+    "name": "IDT INT'L",
+    "ann_date": "2026-06-29",
+    "best": "RED",
+    "t_offset": 1,
+    "jump": 14.285714285714285,
+    "vol_ratio": 5.60615663434667,
+    "ann_close": 7.0
+  },
+  {
+    "code": "01142",
+    "name": "E&P GLOBAL",
+    "ann_date": "2026-06-29",
+    "best": "RED",
+    "t_offset": 1,
+    "jump": 22.580643223053922,
+    "vol_ratio": 2.4885573383726958,
+    "ann_close": 0.06199999898672104
+  },
+  {
+    "code": "02333",
+    "name": "GWMOTOR",
+    "ann_date": "2026-06-26",
     "best": "WATCH",
     "t_offset": 2,
-    "jump": -6.535214706205986,
-    "vol_ratio": 1.5140746254885624,
-    "ann_close": 177.5
+    "jump": -3.0803049831295377,
+    "vol_ratio": 1.7422039637551738,
+    "ann_close": 8.674976348876953
   },
   {
-    "code": "00148",
-    "name": "KINGBOARD HLDG",
-    "ann_date": "2026-06-17",
+    "code": "01949",
+    "name": "PLATT NERA",
+    "ann_date": "2026-06-26",
+    "best": "RED",
+    "t_offset": 3,
+    "jump": 71.42858359278503,
+    "vol_ratio": 3.1718903036238983,
+    "ann_close": 0.41999998688697815
+  },
+  {
+    "code": "01156",
+    "name": "CHINANEWENERGY",
+    "ann_date": "2026-06-25",
     "best": "RED",
     "t_offset": 1,
-    "jump": 8.669526587228408,
-    "vol_ratio": 1.5893272784420591,
-    "ann_close": 116.5
+    "jump": 16.097564663226123,
+    "vol_ratio": 17.04302227843578,
+    "ann_close": 0.20499999821186066
   },
   {
-    "code": "02465",
-    "name": "LOPAL TECH",
-    "ann_date": "2026-06-17",
-    "best": "WATCH",
-    "t_offset": 2,
-    "jump": -0.8064560673226929,
-    "vol_ratio": 2.623167954152154,
-    "ann_close": 13.640000343322754
-  },
-  {
-    "code": "01208",
-    "name": "MMG",
-    "ann_date": "2026-06-16",
-    "best": "WATCH",
-    "t_offset": 1,
-    "jump": -0.11655278520697734,
-    "vol_ratio": 1.9106843582058046,
-    "ann_close": 8.579999923706055
-  },
-  {
-    "code": "01869",
-    "name": "KAFELAKU COFFEE",
-    "ann_date": "2026-06-16",
+    "code": "01943",
+    "name": "KING'S STONE",
+    "ann_date": "2026-06-25",
     "best": "RED",
     "t_offset": 1,
-    "jump": 23.076929374962592,
-    "vol_ratio": 90.16823444283646,
-    "ann_close": 0.09099999815225601
-  },
-  {
-    "code": "01920",
-    "name": "JUNWEA GROUP",
-    "ann_date": "2026-06-16",
-    "best": "RED",
-    "t_offset": 1,
-    "jump": 17.910448026752697,
-    "vol_ratio": 3.90058155635558,
+    "jump": 11.94029571909666,
+    "vol_ratio": 2.26208516886931,
     "ann_close": 0.6700000166893005
+  },
+  {
+    "code": "01364",
+    "name": "GUMING",
+    "ann_date": "2026-06-24",
+    "best": "WATCH",
+    "t_offset": 3,
+    "jump": 1.1549555495077655,
+    "vol_ratio": 1.6273956534333542,
+    "ann_close": 20.780000686645508
+  },
+  {
+    "code": "02651",
+    "name": "DAZHONG DENTAL",
+    "ann_date": "2026-06-24",
+    "best": "RED",
+    "t_offset": 1,
+    "jump": 18.16666920979818,
+    "vol_ratio": 3.65392435949573,
+    "ann_close": 12.0
   }
 ]

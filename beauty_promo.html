@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>mystery.beautyhk — 暑假大獎賞</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@300;400;500;700;900&display=swap');
+  
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  body {
+    font-family: 'Noto Sans HK', sans-serif;
+    background: #fdf2f8;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+  }
+  
+  .card {
+    max-width: 420px;
+    width: 100%;
+    background: linear-gradient(180deg, #fff5f9 0%, #ffffff 30%, #fff0f5 100%);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(219, 112, 147, 0.15);
+  }
+  
+  /* ── Header ── */
+  .header {
+    background: linear-gradient(135deg, #ec4899, #db2777);
+    color: white;
+    text-align: center;
+    padding: 28px 20px 22px;
+    position: relative;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -16px; left: 0; right: 0;
+    height: 32px;
+    background: linear-gradient(180deg, #db2777 0%, transparent 100%);
+    opacity: 0.15;
+  }
+  .brand {
+    font-size: 13px;
+    letter-spacing: 2px;
+    opacity: 0.85;
+    text-transform: uppercase;
+    font-weight: 300;
+  }
+  .title {
+    font-size: 28px;
+    font-weight: 900;
+    margin: 6px 0 4px;
+    letter-spacing: 1px;
+  }
+  .tagline {
+    font-size: 13px;
+    opacity: 0.85;
+    font-weight: 300;
+  }
+  
+  /* ── Price Hero ── */
+  .hero {
+    text-align: center;
+    padding: 28px 20px 12px;
+  }
+  .price {
+    font-size: 56px;
+    font-weight: 900;
+    color: #db2777;
+    line-height: 1;
+  }
+  .price span {
+    font-size: 24px;
+    font-weight: 500;
+    vertical-align: super;
+  }
+  .pick {
+    font-size: 18px;
+    font-weight: 700;
+    color: #be185d;
+    margin-top: 6px;
+    letter-spacing: 2px;
+  }
+  .extras {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+  .extra-tag {
+    background: #fce7f3;
+    color: #9d174d;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .extra-tag.whatsapp {
+    background: #ec4899;
+    color: white;
+  }
+  
+  /* ── Includes Bar ── */
+  .includes {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px 20px 0;
+    flex-wrap: wrap;
+  }
+  .inc {
+    background: white;
+    border: 1px solid #fbcfe8;
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 12px;
+    color: #831843;
+    font-weight: 500;
+  }
+  
+  /* ── Categories ── */
+  .categories {
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .cat {
+    background: white;
+    border-radius: 16px;
+    padding: 16px 18px;
+    border: 1px solid #fce7f3;
+    box-shadow: 0 2px 8px rgba(236, 72, 153, 0.06);
+    transition: transform 0.15s;
+  }
+  .cat:hover { transform: translateY(-1px); }
+  
+  .cat-num {
+    display: inline-block;
+    background: linear-gradient(135deg, #ec4899, #db2777);
+    color: white;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 26px;
+    font-size: 13px;
+    font-weight: 700;
+    margin-right: 8px;
+    flex-shrink: 0;
+  }
+  .cat-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #831843;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+  }
+  .cat-title .num { 
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #ec4899, #db2777);
+    color: white;
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 700;
+    margin-right: 8px;
+    flex-shrink: 0;
+  }
+  
+  .treatments {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-left: 4px;
+  }
+  .treat {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .treat-star {
+    color: #ec4899;
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .treat-name {
+    font-weight: 700;
+    font-size: 14px;
+    color: #4a044e;
+    white-space: nowrap;
+  }
+  .treat-desc {
+    font-size: 12px;
+    color: #9ca3af;
+    font-weight: 400;
+  }
+  
+  /* ── Footer ── */
+  .footer {
+    text-align: center;
+    padding: 8px 20px 24px;
+  }
+  .cta {
+    display: inline-block;
+    background: linear-gradient(135deg, #ec4899, #db2777);
+    color: white;
+    padding: 12px 32px;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 14px rgba(219, 39, 119, 0.35);
+    text-decoration: none;
+  }
+  .cta:hover { box-shadow: 0 6px 20px rgba(219, 39, 119, 0.45); transform: translateY(-1px); }
+  
+  .ig {
+    margin-top: 12px;
+    font-size: 13px;
+    color: #9d174d;
+    font-weight: 500;
+  }
+  
+  /* ── Responsive ── */
+  @media (max-width: 440px) {
+    .card { border-radius: 0; }
+    .title { font-size: 24px; }
+    .price { font-size: 48px; }
+    .categories { padding: 16px 10px; }
+    .cat { padding: 14px 14px; }
+  }
+</style>
+</head>
+<body>
+<div class="card">
+  
+  <!-- Header -->
+  <div class="header">
+    <div class="brand">mystery.beautyhk</div>
+    <div class="title">暑假大獎賞</div>
+    <div class="tagline">單次消費 · 買4送1</div>
+  </div>
+  
+  <!-- Price -->
+  <div class="hero">
+    <div class="price"><span>$</span>880</div>
+    <div class="pick">⭐ 任選 3 款儀器 ⭐</div>
+    <div class="extras">
+      <span class="extra-tag">包針清</span>
+      <span class="extra-tag">包鉗清</span>
+      <span class="extra-tag">包修雜眉</span>
+      <span class="extra-tag">包面膜</span>
+      <span class="extra-tag whatsapp">📱 92174011</span>
+    </div>
+  </div>
+  
+  <!-- Categories -->
+  <div class="categories">
+    
+    <!-- 1. 深層清潔 -->
+    <div class="cat">
+      <div class="cat-title"><span class="num">1</span>深層清潔</div>
+      <div class="treatments">
+        <div class="treat">
+          <span class="treat-star">★</span>
+          <div>
+            <div class="treat-name">AQUA PEEL</div>
+            <div class="treat-desc">深層清潔 · 平衡油脂</div>
+          </div>
+        </div>
+        <div class="treat">
+          <span class="treat-star">★</span>
+          <div>
+            <div class="treat-name">PTS 滑滑肌</div>
+            <div class="treat-desc">去角質 · 針對粗糙皮膚 · 黑頭</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 2. 高效保濕 -->
+    <div class="cat">
+      <div class="cat-title"><span class="num">2</span>高效保濕</div>
+      <div class="treatments">
+        <div class="treat">
+          <span class="treat-star">★</span>
+          <div>
+            <div class="treat-name">細胞機</div>
+            <div class="treat-desc">滋潤補水 · 微針 · 修復細胞 · 降紅</div>
+          </div>
+        </div>
+        <div class="treat">
+          <span class="treat-star">★</span>
+          <div>
+            <div class="treat-name">DEP 無針水光機</div>
+            <div class="treat-desc">肌肉運動 · 深層保濕補水 · 修復細紋</div>
+          </div>
+        </div>
+        <div class="treat">
+          <span class="treat-star">★</span>
+          <div>
+            <div class="treat-name">爆水針</div>
+            <div class="treat-desc">提升光澤感 · 收毛孔 · 深層補水</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 3. 消炎舒緩 / 眼部 -->
+    <div class="cat">
+      <div class="cat-title"><span class="num">3</span>消炎舒緩 / 眼部</div>
+      <div class="treatments">
+        <div class="treat">
+          <span class="treat-star">★</span>
+          <div>
+            <div class="treat-name">高頻率等離子</div>
+            <div class="treat-desc">抗炎 · 針對暗瘡</div>
+          </div>
+        </div>
+        <div class="treat">
+          <span class="treat-star">★</span>
+          <div>
+            <div class="treat-name">熊貓眼</div>
+            <div class="treat-desc">黑眼圈 · 促進血液循環</div>
+          </div>
+        </div>
+        <div class="treat">
+          <span class="treat-star">★</span>
+          <div>
+            <div class="treat-name">膠原眼</div>
+            <div class="treat-desc">改善眼紋 · 眼溝 · 魚尾紋</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 4. 緊緻提升 -->
+    <div class="cat">
+      <div class="cat-title"><span class="num">4</span>緊緻提升</div>
+      <div class="treatments">
+        <div class="treat">
+          <span class="treat-star">★</span>
+          <div>
+            <div class="treat-name">無針埋線 <small style="color:#9ca3af;font-weight:400;">（局部）</small></div>
+            <div class="treat-desc">改善鬆弛 · 提拉輪廓</div>
+          </div>
+        </div>
+        <div class="treat">
+          <span class="treat-star">★</span>
+          <div>
+            <div class="treat-name">Thermage 膠原槍</div>
+            <div class="treat-desc">刺激膠原蛋白增生</div>
+          </div>
+        </div>
+        <div class="treat">
+          <span class="treat-star">★</span>
+          <div>
+            <div class="treat-name">韓國水光機</div>
+            <div class="treat-desc">緊緻 · 光澤 · 提升</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+  
+  <!-- Footer -->
+  <div class="footer">
+    <a href="https://wa.me/85292174011" class="cta">📱 WhatsApp 查詢</a>
+    <div class="ig">@mystery.beautyhk</div>
+  </div>
+  
+</div>
+</body>
+</html>

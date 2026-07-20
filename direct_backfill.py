@@ -40,7 +40,7 @@ logger = logging.getLogger("direct_backfill")
 
 # Edit this list to target specific dates
 # When adding new dates, put newest first
-DATES = ["2026-06-23", "2026-06-22", "2026-06-19"]
+DATES = ["2026-07-07", "2026-07-06", "2026-07-03", "2026-07-02", "2026-06-30", "2026-06-27", "2026-06-26", "2026-06-25", "2026-06-24", "2026-06-23", "2026-06-20", "2026-06-19"]
 
 
 def get_conn():
@@ -95,9 +95,28 @@ def save_snapshot(stock_code, trade_date, snap):
                 ),
             )
             conn.execute("COMMIT")
-            # Also write participant-level holdings for dashboard detail
-            from src.db import _write_holdings
-            _write_holdings(conn, stock_code, trade_date, holdings)
+            # Write participant-level holdings for dashboard detail
+            conn.execute(
+                "DELETE FROM ccass_holdings WHERE stock_code=? AND trade_date=?",
+                (stock_code, trade_date),
+            )
+            for h in holdings:
+                conn.execute(
+                    """INSERT INTO ccass_holdings
+                    (stock_code, trade_date, participant_id, participant_name, shares, pct_of_issued)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                    ON CONFLICT(stock_code, trade_date, participant_id) DO UPDATE SET
+                    participant_name=excluded.participant_name,
+                    shares=excluded.shares,
+                    pct_of_issued=excluded.pct_of_issued""",
+                    (
+                        stock_code, trade_date,
+                        h.get("participant_id"),
+                        h.get("participant_name"),
+                        h.get("shares"),
+                        h.get("pct_of_issued"),
+                    ),
+                )
         except Exception:
             conn.execute("ROLLBACK")
             raise

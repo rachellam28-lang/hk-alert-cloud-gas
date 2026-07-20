@@ -1,14 +1,311 @@
 {
-  "updated": "2026-07-03 00:38 UTC",
-  "count": 34,
+  "updated": "2026-07-20 22:38 UTC",
+  "count": 66,
   "watchlist": [
     {
-      "code": "06651",
-      "name": "51WORLD",
+      "code": "01417",
+      "name": "RIVERINE CHINA",
+      "types": [
+        "收購/要約",
+        "聯合公告"
+      ],
+      "ann_date": "2026-07-06"
+    },
+    {
+      "code": "02559",
+      "name": "DIDA INC",
+      "types": [
+        "收購/要約"
+      ],
+      "ann_date": "2026-07-03"
+    },
+    {
+      "code": "00780",
+      "name": "TONGCHENGTRAVEL",
+      "types": [
+        "收購/要約",
+        "聯合公告"
+      ],
+      "ann_date": "2026-07-20"
+    },
+    {
+      "code": "01432",
+      "name": "CHINA SHENGMU",
+      "types": [
+        "收購/要約"
+      ],
+      "ann_date": "2026-07-03"
+    },
+    {
+      "code": "01117",
+      "name": "CH MODERN D",
+      "types": [
+        "收購/要約",
+        "聯合公告"
+      ],
+      "ann_date": "2026-07-20"
+    },
+    {
+      "code": "00381",
+      "name": "AOM INT'L",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-20"
+    },
+    {
+      "code": "00852",
+      "name": "STRONG PETRO",
+      "types": [
+        "收購/要約"
+      ],
+      "ann_date": "2026-07-20"
+    },
+    {
+      "code": "03669",
+      "name": "YONGDA AUTO",
+      "types": [
+        "股東增持"
+      ],
+      "ann_date": "2026-07-20"
+    },
+    {
+      "code": "01815",
+      "name": "EVEREST GOLD",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-06-08"
+    },
+    {
+      "code": "01302",
+      "name": "LIFETECH SCI",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-20"
+    },
+    {
+      "code": "00167",
+      "name": "IDT INT'L",
+      "types": [
+        "收購/要約",
+        "聯合公告"
+      ],
+      "ann_date": "2026-07-20"
+    },
+    {
+      "code": "00191",
+      "name": "LAI SUN INT'L",
+      "types": [
+        "聯合公告"
+      ],
+      "ann_date": "2026-07-20"
+    },
+    {
+      "code": "00488",
+      "name": "LAI SUN DEV",
+      "types": [
+        "聯合公告"
+      ],
+      "ann_date": "2026-07-20"
+    },
+    {
+      "code": "00571",
+      "name": "ESUN HOLDINGS",
+      "types": [
+        "聯合公告"
+      ],
+      "ann_date": "2026-07-20"
+    },
+    {
+      "code": "01125",
+      "name": "LAI FUNG HOLD",
+      "types": [
+        "聯合公告"
+      ],
+      "ann_date": "2026-07-20"
+    },
+    {
+      "code": "00195",
+      "name": "GREENTECH INTL",
+      "types": [
+        "收購/要約"
+      ],
+      "ann_date": "2026-07-20"
+    },
+    {
+      "code": "00419",
+      "name": "HONY MEDIA",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-06"
+    },
+    {
+      "code": "06083",
+      "name": "WORLD-LINK LOG",
+      "types": [
+        "復牌"
+      ],
+      "ann_date": "2026-07-20"
+    },
+    {
+      "code": "00736",
+      "name": "CHINA PPT INV",
+      "types": [
+        "復牌"
+      ],
+      "ann_date": "2026-07-20"
+    },
+    {
+      "code": "00064",
+      "name": "GET NICE",
+      "types": [
+        "復牌"
+      ],
+      "ann_date": "2026-07-20"
+    },
+    {
+      "code": "00643",
+      "name": "CARRY WEALTH",
+      "types": [
+        "復牌"
+      ],
+      "ann_date": "2026-07-02"
+    },
+    {
+      "code": "09982",
+      "name": "CENTRALCHINA MT",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-20"
+    },
+    {
+      "code": "01003",
+      "name": "HUANXI MEDIA",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-20"
+    },
+    {
+      "code": "01894",
+      "name": "HANG YICK HLDGS",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-07"
+    },
+    {
+      "code": "01716",
+      "name": "MOST KWAI CHUNG",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-07"
+    },
+    {
+      "code": "01830",
+      "name": "PERFECT MEDICAL",
+      "types": [
+        "股東增持"
+      ],
+      "ann_date": "2026-07-06"
+    },
+    {
+      "code": "00145",
+      "name": "CCIAM FUTURE EN",
+      "types": [
+        "復牌"
+      ],
+      "ann_date": "2026-07-06"
+    },
+    {
+      "code": "02500",
+      "name": "VENUS MEDTECH-B",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-02"
+    },
+    {
+      "code": "01912",
+      "name": "CONTEL",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-06-08"
+    },
+    {
+      "code": "01357",
+      "name": "MEITU",
+      "types": [
+        "股東增持"
+      ],
+      "ann_date": "2026-07-03"
+    },
+    {
+      "code": "03958",
+      "name": "DFZQ",
+      "types": [
+        "配股",
+        "收購/要約"
+      ],
+      "ann_date": "2026-07-03"
+    },
+    {
+      "code": "00219",
+      "name": "SHUNHO PROPERTY",
+      "types": [
+        "聯合公告",
+        "大手轉倉"
+      ],
+      "ann_date": "2026-07-03"
+    },
+    {
+      "code": "00201",
+      "name": "MAGNIFICENT",
+      "types": [
+        "聯合公告",
+        "大手轉倉"
+      ],
+      "ann_date": "2026-07-03"
+    },
+    {
+      "code": "01796",
+      "name": "METASPACEX",
+      "types": [
+        "收購/要約"
+      ],
+      "ann_date": "2026-07-03"
+    },
+    {
+      "code": "06938",
+      "name": "RIBOLIFE-B",
+      "types": [
+        "股東增持"
+      ],
+      "ann_date": "2026-07-03"
+    },
+    {
+      "code": "00139",
+      "name": "SMART FISH",
       "types": [
         "配股"
       ],
       "ann_date": "2026-07-03"
+    },
+    {
+      "code": "02295",
+      "name": "MAXICITY",
+      "types": [
+        "收購/要約",
+        "復牌",
+        "聯合公告"
+      ],
+      "ann_date": "2026-07-02"
     },
     {
       "code": "03317",
@@ -19,20 +316,18 @@
       "ann_date": "2026-07-03"
     },
     {
+      "code": "06651",
+      "name": "51WORLD",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-03"
+    },
+    {
       "code": "02503",
       "name": "ZHONGSHENJIANYE",
       "types": [
         "供股"
-      ],
-      "ann_date": "2026-07-02"
-    },
-    {
-      "code": "02295",
-      "name": "MAXICITY",
-      "types": [
-        "收購/要約",
-        "復牌",
-        "聯合公告"
       ],
       "ann_date": "2026-07-02"
     },
@@ -119,14 +414,6 @@
       "ann_date": "2026-07-02"
     },
     {
-      "code": "00643",
-      "name": "CARRY WEALTH",
-      "types": [
-        "復牌"
-      ],
-      "ann_date": "2026-07-02"
-    },
-    {
       "code": "09863",
       "name": "LEAPMOTOR",
       "types": [
@@ -155,14 +442,6 @@
       "name": "MODERN INNO DT",
       "types": [
         "復牌"
-      ],
-      "ann_date": "2026-07-02"
-    },
-    {
-      "code": "02500",
-      "name": "VENUS MEDTECH-B",
-      "types": [
-        "配股"
       ],
       "ann_date": "2026-07-02"
     },
@@ -239,14 +518,6 @@
       "ann_date": "2026-06-08"
     },
     {
-      "code": "01815",
-      "name": "EVEREST GOLD",
-      "types": [
-        "配股"
-      ],
-      "ann_date": "2026-06-08"
-    },
-    {
       "code": "09936",
       "name": "XIMEI RESOURCES",
       "types": [
@@ -259,14 +530,6 @@
       "name": "CHINASOFT INT'L",
       "types": [
         "股東增持"
-      ],
-      "ann_date": "2026-06-08"
-    },
-    {
-      "code": "01912",
-      "name": "CONTEL",
-      "types": [
-        "配股"
       ],
       "ann_date": "2026-06-08"
     },

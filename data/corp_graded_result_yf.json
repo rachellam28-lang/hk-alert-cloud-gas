@@ -1,0 +1,439 @@
+{
+  "scan_date": "2026-07-20",
+  "scan_time": "21:11:13",
+  "weekday": "Monday",
+  "total_raw": 113,
+  "total_same_day": 24,
+  "red_alerts": [],
+  "watchlist": [
+    {
+      "code": "00989",
+      "name": "CHINA CBS INTL",
+      "date": "2026-07-15",
+      "types": "配股 / 收購/要約 / 聯合公告",
+      "vol_ratio": null,
+      "tplus_jump": 4.17,
+      "skip": "vol=N/A<1.5x; jump=4.17%<8%",
+      "watch_type": "配售"
+    },
+    {
+      "code": "01115",
+      "name": "5100 XIZANG",
+      "date": "2026-07-15",
+      "types": "配股",
+      "vol_ratio": 0.46,
+      "tplus_jump": 1.12,
+      "skip": "vol=0.46x<1.5x; jump=1.12%<8%",
+      "watch_type": "配售"
+    },
+    {
+      "code": "00979",
+      "name": "GREEN ENERGY GP",
+      "date": "2026-07-15",
+      "types": "配股",
+      "vol_ratio": 5.262,
+      "tplus_jump": 1.64,
+      "skip": "jump=1.64%<8%",
+      "watch_type": "配售"
+    },
+    {
+      "code": "03669",
+      "name": "YONGDA AUTO",
+      "date": "2026-07-15",
+      "types": "配股",
+      "vol_ratio": 3.883,
+      "tplus_jump": 0.0,
+      "skip": "jump=0.0%<8%",
+      "watch_type": "配售"
+    },
+    {
+      "code": "03860",
+      "name": "EPS HEALTH TECH",
+      "date": "2026-07-15",
+      "types": "配股",
+      "vol_ratio": null,
+      "tplus_jump": 0.0,
+      "skip": "vol=N/A<1.5x; jump=0.0%<8%",
+      "watch_type": "配售"
+    },
+    {
+      "code": "01776",
+      "name": "GF SEC",
+      "date": "2026-07-15",
+      "types": "配股",
+      "vol_ratio": 1.142,
+      "tplus_jump": 0.0,
+      "skip": "vol=1.14x<1.5x; jump=0.0%<8%",
+      "watch_type": "配售"
+    },
+    {
+      "code": "02595",
+      "name": "GENFLEET-B",
+      "date": "2026-07-15",
+      "types": "配股",
+      "vol_ratio": 2.713,
+      "tplus_jump": 0.0,
+      "skip": "jump=0.0%<8%",
+      "watch_type": "配售"
+    },
+    {
+      "code": "00209",
+      "name": "POLY XVERSE IT",
+      "date": "2026-07-16",
+      "types": "配股",
+      "vol_ratio": 0.43,
+      "tplus_jump": 10.87,
+      "skip": "vol=0.43x<1.5x",
+      "watch_type": "配售"
+    },
+    {
+      "code": "00100",
+      "name": "MINIMAX-W",
+      "date": "2026-07-16",
+      "types": "配股",
+      "vol_ratio": 1.847,
+      "tplus_jump": 0.0,
+      "skip": "jump=0.0%<8%",
+      "watch_type": "配售"
+    },
+    {
+      "code": "09689",
+      "name": "JTF INTL",
+      "date": "2026-07-16",
+      "types": "配股",
+      "vol_ratio": 10.28,
+      "tplus_jump": 0.0,
+      "skip": "jump=0.0%<8%",
+      "watch_type": "配售"
+    },
+    {
+      "code": "06939",
+      "name": "MEGAIN",
+      "date": "2026-07-16",
+      "types": "配股 / 收購/要約",
+      "vol_ratio": 207.613,
+      "tplus_jump": 0.0,
+      "skip": "jump=0.0%<8%",
+      "watch_type": "配售"
+    },
+    {
+      "code": "02603",
+      "name": "JIHONG CO",
+      "date": "2026-07-16",
+      "types": "配股",
+      "vol_ratio": 1.379,
+      "tplus_jump": 0.0,
+      "skip": "vol=1.38x<1.5x; jump=0.0%<8%",
+      "watch_type": "配售"
+    },
+    {
+      "code": "02211",
+      "name": "UNI HEALTH",
+      "date": "2026-07-17",
+      "types": "供股 / 配股",
+      "vol_ratio": 0.692,
+      "tplus_jump": 8.43,
+      "skip": "vol=0.69x<1.5x",
+      "watch_type": "配售"
+    },
+    {
+      "code": "02369",
+      "name": "COOLPAD GROUP",
+      "date": "2026-07-17",
+      "types": "配股",
+      "vol_ratio": 1.292,
+      "tplus_jump": 6.35,
+      "skip": "vol=1.29x<1.5x; jump=6.35%<8%",
+      "watch_type": "配售"
+    },
+    {
+      "code": "01142",
+      "name": "E&P GLOBAL",
+      "date": "2026-07-17",
+      "types": "配股",
+      "vol_ratio": 0.086,
+      "tplus_jump": 1.45,
+      "skip": "vol=0.09x<1.5x; jump=1.45%<8%",
+      "watch_type": "配售"
+    },
+    {
+      "code": "01870",
+      "name": "ACME INTL HLDGS",
+      "date": "2026-07-17",
+      "types": "配股",
+      "vol_ratio": 1.359,
+      "tplus_jump": 0.0,
+      "skip": "vol=1.36x<1.5x; jump=0.0%<8%",
+      "watch_type": "配售"
+    },
+    {
+      "code": "01025",
+      "name": "KNT HOLDINGS",
+      "date": "2026-07-17",
+      "types": "配股",
+      "vol_ratio": 0.37,
+      "tplus_jump": 0.0,
+      "skip": "vol=0.37x<1.5x; jump=0.0%<8%",
+      "watch_type": "配售"
+    },
+    {
+      "code": "02380",
+      "name": "CHINA POWER",
+      "date": "2026-07-17",
+      "types": "配股",
+      "vol_ratio": 1.037,
+      "tplus_jump": 4.38,
+      "skip": "vol=1.04x<1.5x; jump=4.38%<8%",
+      "watch_type": "配售"
+    },
+    {
+      "code": "02495",
+      "name": "VOICECOMM",
+      "date": "2026-07-17",
+      "types": "配股",
+      "vol_ratio": 0.146,
+      "tplus_jump": 0.0,
+      "skip": "vol=0.15x<1.5x; jump=0.0%<8%",
+      "watch_type": "配售"
+    },
+    {
+      "code": "00607",
+      "name": "FULLSHARE",
+      "date": "2026-07-17",
+      "types": "配股",
+      "vol_ratio": null,
+      "tplus_jump": 0.0,
+      "skip": "vol=N/A<1.5x; jump=0.0%<8%",
+      "watch_type": "配售"
+    },
+    {
+      "code": "01520",
+      "name": "VIRTUAL MIND",
+      "date": "2026-07-17",
+      "types": "配股",
+      "vol_ratio": 0.131,
+      "tplus_jump": 1.01,
+      "skip": "vol=0.13x<1.5x; jump=1.01%<8%",
+      "watch_type": "配售"
+    },
+    {
+      "code": "02559",
+      "name": "DIDA INC",
+      "date": "2026-07-20",
+      "types": "收購/要約 / 聯合公告",
+      "skip": "type=其他",
+      "watch_type": "其他"
+    },
+    {
+      "code": "00780",
+      "name": "TONGCHENGTRAVEL",
+      "date": "2026-07-20",
+      "types": "收購/要約 / 聯合公告",
+      "skip": "type=其他",
+      "watch_type": "其他"
+    },
+    {
+      "code": "01432",
+      "name": "CHINA SHENGMU",
+      "date": "2026-07-20",
+      "types": "收購/要約 / 聯合公告",
+      "skip": "type=其他",
+      "watch_type": "其他"
+    },
+    {
+      "code": "01117",
+      "name": "CH MODERN D",
+      "date": "2026-07-20",
+      "types": "收購/要約 / 聯合公告",
+      "skip": "type=其他",
+      "watch_type": "其他"
+    },
+    {
+      "code": "00381",
+      "name": "AOM INT'L",
+      "date": "2026-07-20",
+      "types": "配股",
+      "skip": "today_no_post (T+0, no post-ann data)",
+      "watch_type": "配售"
+    },
+    {
+      "code": "00852",
+      "name": "STRONG PETRO",
+      "date": "2026-07-20",
+      "types": "收購/要約",
+      "skip": "type=其他",
+      "watch_type": "其他"
+    },
+    {
+      "code": "01815",
+      "name": "EVEREST GOLD",
+      "date": "2026-07-20",
+      "types": "配股",
+      "skip": "today_no_post (T+0, no post-ann data)",
+      "watch_type": "配售"
+    },
+    {
+      "code": "00064",
+      "name": "GET NICE",
+      "date": "2026-07-20",
+      "types": "復牌 / 聯合公告",
+      "skip": "type=其他",
+      "watch_type": "其他"
+    },
+    {
+      "code": "01302",
+      "name": "LIFETECH SCI",
+      "date": "2026-07-20",
+      "types": "配股",
+      "skip": "today_no_post (T+0, no post-ann data)",
+      "watch_type": "配售"
+    },
+    {
+      "code": "00167",
+      "name": "IDT INT'L",
+      "date": "2026-07-20",
+      "types": "收購/要約 / 聯合公告",
+      "skip": "type=其他",
+      "watch_type": "其他"
+    },
+    {
+      "code": "00191",
+      "name": "LAI SUN INT'L",
+      "date": "2026-07-20",
+      "types": "聯合公告",
+      "skip": "type=其他",
+      "watch_type": "其他"
+    },
+    {
+      "code": "00488",
+      "name": "LAI SUN DEV",
+      "date": "2026-07-20",
+      "types": "聯合公告",
+      "skip": "type=其他",
+      "watch_type": "其他"
+    },
+    {
+      "code": "00571",
+      "name": "ESUN HOLDINGS",
+      "date": "2026-07-20",
+      "types": "聯合公告",
+      "skip": "type=其他",
+      "watch_type": "其他"
+    },
+    {
+      "code": "01125",
+      "name": "LAI FUNG HOLD",
+      "date": "2026-07-20",
+      "types": "聯合公告",
+      "skip": "type=其他",
+      "watch_type": "其他"
+    },
+    {
+      "code": "00195",
+      "name": "GREENTECH INTL",
+      "date": "2026-07-20",
+      "types": "收購/要約",
+      "skip": "type=其他",
+      "watch_type": "其他"
+    },
+    {
+      "code": "00419",
+      "name": "HONY MEDIA",
+      "date": "2026-07-20",
+      "types": "配股",
+      "skip": "today_no_post (T+0, no post-ann data)",
+      "watch_type": "配售"
+    },
+    {
+      "code": "00643",
+      "name": "CARRY WEALTH",
+      "date": "2026-07-20",
+      "types": "復牌",
+      "skip": "type=其他",
+      "watch_type": "其他"
+    },
+    {
+      "code": "06083",
+      "name": "WORLD-LINK LOG",
+      "date": "2026-07-20",
+      "types": "復牌",
+      "skip": "type=其他",
+      "watch_type": "其他"
+    },
+    {
+      "code": "00736",
+      "name": "CHINA PPT INV",
+      "date": "2026-07-20",
+      "types": "復牌",
+      "skip": "type=其他",
+      "watch_type": "其他"
+    },
+    {
+      "code": "09982",
+      "name": "CENTRALCHINA MT",
+      "date": "2026-07-20",
+      "types": "配股",
+      "skip": "today_no_post (T+0, no post-ann data)",
+      "watch_type": "配售"
+    },
+    {
+      "code": "01003",
+      "name": "HUANXI MEDIA",
+      "date": "2026-07-20",
+      "types": "配股",
+      "skip": "today_no_post (T+0, no post-ann data)",
+      "watch_type": "配售"
+    },
+    {
+      "code": "00314",
+      "name": "SIPAI HEALTH",
+      "date": "2026-07-15",
+      "types": "股東增持",
+      "skip": "type=增持 (backtest pending)",
+      "watch_type": "增持"
+    },
+    {
+      "code": "01991",
+      "name": "TA YANG GROUP",
+      "date": "2026-07-17",
+      "types": "供股",
+      "skip": "type=供股 (backtest pending)",
+      "watch_type": "供股"
+    },
+    {
+      "code": "01079",
+      "name": "PINE TECH",
+      "date": "2026-07-16",
+      "types": "供股",
+      "skip": "type=供股 (backtest pending)",
+      "watch_type": "供股"
+    },
+    {
+      "code": "06610",
+      "name": "FLOWING CLOUD",
+      "date": "2026-07-15",
+      "types": "供股",
+      "skip": "type=供股 (backtest pending)",
+      "watch_type": "供股"
+    },
+    {
+      "code": "00905",
+      "name": "WALNUT CAP",
+      "date": "2026-07-15",
+      "types": "供股",
+      "skip": "type=供股 (backtest pending)",
+      "watch_type": "供股"
+    }
+  ],
+  "skip_reasons": {
+    "type=增持": 3,
+    "type=供股": 4,
+    "type=其他": 15,
+    "vol<1.5x": 15,
+    "jump<8%": 19,
+    "no_yf_data": 0,
+    "today_no_post": 6,
+    "完成/LAPSE": 0,
+    "CB/可換股": 0
+  }
+}
