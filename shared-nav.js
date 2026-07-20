@@ -142,9 +142,6 @@
       }
       html.suite-light .action-btn.active,html.suite-light .tab.active,
       html.suite-light .setup-btn.active{background:#e4f2f1!important;color:#075f66!important;border-color:#70aaa9!important}
-      html.suite-light input,html.suite-light select,html.suite-light button{
-        background:#fff!important;color:#172126!important;border-color:#cbd5d6!important
-      }
       html.suite-light .search-box input,html.suite-light .search-row input,html.suite-light .tab,
       html.suite-light .btn,html.suite-light .fbtn{
         background:#fff!important;color:#3f4d53!important;border-color:#d5dddf!important
