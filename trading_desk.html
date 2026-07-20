@@ -423,10 +423,23 @@
   const APP={bundle:null};
   async function init(){
     try{
-      const keys=Object.keys(URLS), values=await Promise.all(keys.map(key=>load(URLS[key]))), data=Object.fromEntries(keys.map((key,i)=>[key,values[i]]));APP.bundle=data.bundle;
-      renderHealth(data.bundle);renderMarket(data.market);renderRotation(data.rotation);state.rows=enrichExternal(buildRows(data),data);render();
-      if(matchMedia('(min-width:821px)').matches){const first=filteredRows()[0];if(first)openInspector(first.code)}
-      const dates=data.engine.source_snapshot_dates||{};$('sourceDates').textContent=`CCASS ${dates.holdings||'—'} · 價格 ${dates.prices||'—'} · Kbar ${dates.daily_kbar||'—'} · 資金 ${dates.fundflow||'—'}`;
+      const keys=Object.keys(URLS);
+      const critical=new Set(['bundle','market','engine','holdings','signals']);
+      const results=await Promise.allSettled(keys.map(key=>load(URLS[key])));
+      const data={}, failed=[];
+      results.forEach((r,i)=>{const k=keys[i];if(r.status==='fulfilled')data[k]=r.value;else{failed.push(k);data[k]=null}});
+      if(data.bundle)APP.bundle=data.bundle;
+      // Critical data must succeed
+      if(!data.engine||!data.holdings){throw new Error('引擎或持倉資料無法載入')}
+      if(failed.length){$('healthMeta').textContent=`部分次要資料未載入: ${failed.join(', ')}`}
+      if(data.bundle)renderHealth(data.bundle);
+      if(data.market)renderMarket(data.market);
+      if(data.rotation)renderRotation(data.rotation);
+      if(data.engine&&data.holdings){
+        state.rows=enrichExternal(buildRows(data),data);render();
+        if(matchMedia('(min-width:821px)').matches){const first=filteredRows()[0];if(first)openInspector(first.code)}
+        const dates=data.engine.source_snapshot_dates||{};$('sourceDates').textContent=`CCASS ${dates.holdings||'—'} · 價格 ${dates.prices||'—'} · Kbar ${dates.daily_kbar||'—'} · 資金 ${dates.fundflow||'—'}`;
+      }else{$('tableStatus').className='status error';$('tableStatus').textContent='核心資料（引擎／持倉）未載入，請稍後再試。'}
     }catch(error){console.error(error);$('healthState').className='health-state fail';$('healthState').querySelector('b').textContent='資料載入失敗';$('healthMeta').textContent=error.message;$('tableStatus').className='status error';$('tableStatus').textContent='未能載入 canonical JSON，沒有顯示舊 cache。'}
   }
   $('searchInput').addEventListener('input',e=>{state.query=e.target.value;state.page=1;renderTable()});
