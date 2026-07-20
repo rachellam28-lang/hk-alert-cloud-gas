@@ -37,6 +37,20 @@ def test_night_session_crosses_midnight_and_incomplete_close_stays_missing() -> 
     assert sessions["2026-07-18"]["last_observed"] == 105
 
 
+def test_post_midnight_partial_night_session_is_not_complete() -> None:
+    builder = load_builder()
+    bars = [
+        {"time": "2026-07-18 17:15:00", "open": 100, "high": 102, "low": 99, "close": 101, "volume": 10},
+        {"time": "2026-07-19 00:15:00", "open": 101, "high": 103, "low": 100, "close": 102, "volume": 20},
+    ]
+
+    session = builder.aggregate_night_sessions(bars)["2026-07-18"]
+
+    assert session["complete"] is False
+    assert session["close"] is None
+    assert session["last_observed"] == 102
+
+
 def test_five_grid_and_stock_score_are_deterministic() -> None:
     builder = load_builder()
     daily = []
@@ -67,6 +81,10 @@ def test_five_grid_and_stock_score_are_deterministic() -> None:
     assert latest["reference_levels"]["below"] is not None
     assert latest["reference_levels"]["above"]["date"] < latest["date"]
     assert latest["reference_levels"]["below"]["date"] < latest["date"]
+    assert latest["magic_numbers"]["observed"]["ctr"] == round((latest["day"]["high"] + latest["day"]["low"]) / 2, 2)
+    assert latest["magic_numbers"]["is_forecast"] is False
+    assert latest["magic_numbers"]["levels"]["300"]
+    assert latest["magic_numbers"]["mirror"] is not None
     assert latest["trend"]["components"]["completed_night"] == 0
     assert latest["night"] is None
     assert latest["trend"]["state"] in {"bull", "strong_bull"}
@@ -83,9 +101,17 @@ def test_published_trend_snapshot_uses_real_futu_observations() -> None:
         assert len(item["rows"]) >= 50
         latest = item["rows"][-1]
         assert latest["day"]["close"] > 0
+        assert latest["magic_numbers"]["observed"]["ctr"] > 0
+        assert latest["magic_numbers"]["is_forecast"] is False
+        assert latest["magic_numbers"]["data_kind"] == "derived_reference_from_observed_bars"
         assert latest["trend"]["state"] in {"strong_bull", "bull", "range", "bear", "strong_bear"}
-        assert latest["night"]["complete"] is True
-        assert latest["night"]["close"] > 0
+        assert latest["night"]["high"] > 0
+        assert latest["night"]["low"] > 0
+        assert latest["night"]["last_observed"] > 0
+        if latest["night"]["complete"]:
+            assert latest["night"]["close"] > 0
+        else:
+            assert latest["night"]["close"] is None
 
     hsi_rows = payload["indexes"]["HSI"]["rows"]
     june_5 = next(row for row in hsi_rows if row["date"] == "2026-06-05")
@@ -110,12 +136,20 @@ def test_trend_page_is_wired_to_navigation_refresh_and_cloudflare() -> None:
     assert 'Path("data/trend_matrix.json")' in deploy
     assert "exportCsv" not in page
     table = page.split('<table id="matrixTable">', 1)[1].split("</table>", 1)[0]
-    assert table.count("<th ") == 6
-    assert 'data-session="day"' in page
-    assert 'data-session="night"' in page
+    assert table.count("data-sort=") == 16
+    assert "最大<br>60D" in page
+    assert "大<br>20D" in page
+    assert "Fib<br>20D" in page
+    assert "日市" in page
+    assert "夜期" in page
+    assert 'data-session="day"' not in page
+    assert 'data-session="night"' not in page
     assert "cycleRanges" in page
     assert "weekdayInfo" in page
-    assert "Daily=單日高低" in page
+    assert "最大=60日" in page
+    assert "alphaRangeMap" in page
+    assert "alpha-level-tag" in page
+    assert "Alpha 節點" in page
 
 
 def test_deployed_trend_page_switches_index_and_any_hk_stock(page) -> None:
@@ -125,36 +159,35 @@ def test_deployed_trend_page_switches_index_and_any_hk_stock(page) -> None:
     page.wait_for_function("() => document.querySelectorAll('#matrixBody tr').length === 20", timeout=45_000)
     assert "恒生指數" in page.locator("#status").inner_text()
     assert page.locator("#trend").inner_text() in {"吸納／偏多", "派發／偏空", "過渡／等確認"}
-    assert page.locator("#matrixBody tr").first.locator("td").count() == 6
+    assert page.locator("#matrixBody tr").first.locator("td").count() == 16
     assert "D " in page.locator("#swingRhythm").inner_text()
     assert "W " in page.locator("#swingRhythm").inner_text()
     assert "M " in page.locator("#swingRhythm").inner_text()
+    assert "A" in page.locator("#alphaLevel").inner_text()
+    assert "20D" in page.locator("#alphaMeta").inner_text()
     cycles = page.evaluate("() => cycleRanges(state.rows)")
     for item in cycles.values():
         assert item["current"] > 0
         assert item["q25"] <= item["median"] <= item["q75"]
     assert page.locator(".weekday-tag.turn-window").count() > 0
-    font_size = page.locator("#matrixBody tr td:nth-child(2)").first.evaluate(
+    font_size = page.locator("#matrixBody tr td:nth-child(7)").first.evaluate(
         "element => parseFloat(getComputedStyle(element).fontSize)"
     )
-    assert font_size >= 15
+    assert font_size >= 11
 
-    day_value = page.locator("#matrixBody tr").first.locator("td:nth-child(2)").inner_text()
-    page.locator("button[data-session='night']").click()
-    assert "夜期五格" in page.locator("#matrixTitle").inner_text()
-    assert page.locator("button[data-session='night']").get_attribute("class") == "active"
-    night_value = page.locator("#matrixBody tr").first.locator("td:nth-child(2)").inner_text()
+    day_value = page.locator("#matrixBody tr").first.locator("td:nth-child(7)").inner_text()
+    night_value = page.locator("#matrixBody tr").first.locator("td:nth-child(12)").inner_text()
     assert night_value != day_value
 
     page.locator("button[data-index='HSTECH']").click()
-    assert "恒生科技指數" in page.locator("#status").inner_text()
+    page.wait_for_function("() => (document.querySelector('#status')?.textContent || '').includes('恒生科技指數')", timeout=45_000)
 
     page.locator("#query").fill("01733")
     page.locator("#loadStock").click()
     page.wait_for_function("() => (document.querySelector('#status')?.textContent || '').includes('01733')", timeout=45_000)
     assert "Tencent public HK daily K-line" in page.locator("#sourceMeta").inner_text()
     assert page.locator("#nightClose").inner_text() == "不適用"
-    assert page.locator("button[data-session='night']").is_disabled()
+    assert page.locator("#matrixBody tr").first.locator("td:nth-child(12)").inner_text() == "—"
     assert not errors
 
 

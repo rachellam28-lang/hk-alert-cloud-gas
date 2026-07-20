@@ -1,13 +1,13 @@
 {
- "at": "2026-07-15T13:27:58.350464",
- "overall_status": "WARN",
+ "at": "2026-07-20T18:37:42.321479",
+ "overall_status": "PASS",
  "maintenance_status": "WARN",
  "ccass_publish": {
   "status": "🟢",
-  "detail": "bundle 2026-07-15 13:27:35 | DB 2026-07-13 rows=2765 cov=99.6% | publish 2026-07-13 | coverage 99.2% | signals 2026-07-15T02:07:20.942635 | alerts 2026-07-14 17:57 UTC | anns 2026-07-14 | rights 2026-07-14 | flow 2026-07-14 | transfers 2026-07-13 vs 2026-07-10 | verify_data PASS | verify_dashboard PASS | engine 2026-07-15 240/240 of 2722",
+  "detail": "bundle 2026-07-20 18:36:52 | DB 2026-07-17 rows=2767 cov=99.6% | publish 2026-07-17 | coverage 99.3% | signals 2026-07-20T18:35:48.285732 | alerts 2026-07-20 10:35 UTC | anns 2026-07-20 | rights 2026-07-20 | flow 2026-07-20 | transfers 2026-07-17 vs 2026-07-16 | verify_data PASS | verify_dashboard PASS | engine 2026-07-20 240/240 of 2725",
   "raw": {
    "schema_v": 1,
-   "generated_at": "2026-07-15T13:27:35",
+   "generated_at": "2026-07-20T18:36:52",
    "source_of_truth": {
     "db": "ccass/holdings.db",
     "primary_holdings": "holdings.json",
@@ -17,47 +17,47 @@
    "files": {
     "holdings": {
      "path": "holdings.json",
-     "updated": "2026-07-13",
+     "updated": "2026-07-17",
      "source": "holdings.db / holdings export",
-     "stock_count": 2765,
-     "coverage_pct": 99.2,
+     "stock_count": 2767,
+     "coverage_pct": 99.3,
      "first_date": "2026-04-30",
      "is_complete": false,
      "trend_reference_dates": {
-      "5": "2026-07-03",
-      "20": "2026-06-11",
+      "5": "2026-07-10",
+      "20": "2026-06-17",
       "60": null,
       "120": null
      },
-     "five_day_increase_count": 725,
-     "five_day_decrease_count": 571
+     "five_day_increase_count": 626,
+     "five_day_decrease_count": 504
     },
     "signals": {
      "path": "data/signals.json",
-     "updated": "2026-07-15T02:07:20.942635",
+     "updated": "2026-07-20T18:35:48.285732",
      "source": "announcements.json + rights_analysis.json + alerts.json + holdings.json",
-     "groups": 2765,
-     "with_signals": 499,
-     "with_corp": 286,
+     "groups": 2767,
+     "with_signals": 500,
+     "with_corp": 301,
      "ccass_five_day_increase_count": null
     },
     "alerts": {
      "path": "data/alerts.json",
-     "updated": "2026-07-14 17:57 UTC",
+     "updated": "2026-07-20 10:35 UTC",
      "source": "scanner / holdings events",
      "count": 500,
      "latest_event_date": "2026-07-06"
     },
     "watchlist": {
      "path": "data/watchlist.json",
-     "updated": "2026-07-14 17:57 UTC",
+     "updated": "2026-07-20 10:35 UTC",
      "source": "local alert store",
-     "count": 50,
-     "latest_event_date": "2026-07-10"
+     "count": 76,
+     "latest_event_date": "2026-07-20"
     },
     "history": {
      "path": "data/history.json",
-     "updated": "2026-07-14 17:57 UTC",
+     "updated": "2026-07-20 10:35 UTC",
      "source": "local alert store",
      "days": 1,
      "total": 6,
@@ -65,43 +65,43 @@
     },
     "announcements": {
      "path": "data/announcements.json",
-     "updated": "2026-07-14",
+     "updated": "2026-07-20",
      "source": "HKEXnews corporate action scanner",
-     "count": 903
+     "count": 965
     },
     "rights_analysis": {
      "path": "data/rights_analysis.json",
-     "updated": "2026-07-14",
+     "updated": "2026-07-20",
      "source": "announcements.json + placements_enriched.json + stock_prices.json",
-     "count": 543
+     "count": 564
     },
     "fundflow": {
      "path": "data/fundflow.json",
-     "updated": "2026-07-14",
+     "updated": "2026-07-20",
      "source": "westock-data-clawhub hkfund",
      "count": 500
     },
     "breakthroughs": {
      "path": "data/breakthroughs.json",
-     "updated": "2026-07-15T01:56:57.319316+08:00",
+     "updated": "2026-07-20T18:35:06.446014+08:00",
      "source": "scanner.breakthrough_detector",
-     "count": 53,
+     "count": 69,
      "active_price_count": 2771
     },
     "corp_graded_scan": {
      "path": "data/corp_graded_scan.json",
-     "updated": "2026-07-15",
+     "updated": "2026-07-20",
      "source": "same-day corporate action grading",
-     "total_raw": 70,
-     "same_day": 0,
+     "total_raw": 103,
+     "same_day": 14,
      "red_alerts": 0,
-     "watchlist": 0
+     "watchlist": 14
     },
     "transfers": {
      "path": "data/transfers.json",
-     "updated": "2026-07-13 vs 2026-07-10",
-     "date": "2026-07-13",
-     "previous_date": "2026-07-10",
+     "updated": "2026-07-17 vs 2026-07-16",
+     "date": "2026-07-17",
+     "previous_date": "2026-07-16",
      "source": "ccass participant holdings transfer monitor",
      "count": 428,
      "published_count": 50,
@@ -111,36 +111,37 @@
     },
     "participant_anomalies": {
      "path": "data/participant_anomalies.json",
-     "updated": "2026-07-13 vs 2026-07-10",
-     "date": "2026-07-13",
-     "previous_date": "2026-07-10",
+     "updated": "2026-07-17 vs 2026-07-16",
+     "date": "2026-07-17",
+     "previous_date": "2026-07-16",
      "source": "ccass participant delta/anomaly monitor",
-     "count": 2046,
+     "count": 1247,
      "published_count": 300,
-     "delta_rows": 405438,
+     "delta_rows": 405470,
      "ok": true,
      "status": "ok",
      "message": null,
      "summary": {
       "by_type": {
-       "accumulation_cluster": 36,
-       "distribution_cluster": 5,
-       "new_large_seat": 826,
-       "seat_decrease": 426,
-       "seat_exit": 3,
-       "seat_increase": 507,
-       "suspected_transfer": 243
+       "accumulation_cluster": 6,
+       "distribution_cluster": 3,
+       "fragmentation": 1,
+       "new_large_seat": 103,
+       "seat_decrease": 473,
+       "seat_exit": 4,
+       "seat_increase": 418,
+       "suspected_transfer": 239
       },
-      "severe_count": 587,
-      "high_count": 392,
-      "participant_scope_count": 1762,
-      "stock_scope_count": 284
+      "severe_count": 297,
+      "high_count": 238,
+      "participant_scope_count": 998,
+      "stock_scope_count": 249
      }
     },
     "timesfm": {
      "path": "data/timesfm.json",
-     "updated": "2026-07-13",
-     "generated_at": "2026-07-15T01:57:46",
+     "updated": "2026-07-17",
+     "generated_at": "2026-07-20T18:36:03",
      "source": "TimesFM daily multi-field forecast",
      "primary_field": "broker_top5_pct",
      "field_count": 3,
@@ -166,9 +167,9 @@
        "top_codes": [
         "04332",
         "02596",
-        "02687",
         "02520",
-        "02637"
+        "02637",
+        "02687"
        ]
       },
       {
@@ -193,37 +194,37 @@
     },
     "trade_engine": {
      "path": "data/trade_engine.json",
-     "updated": "2026-07-15T13:23:06",
-     "source_updated": "2026-07-15",
+     "updated": "2026-07-20T18:36:41",
+     "source_updated": "2026-07-20",
      "source": "CCASS + observed price snapshots + Tencent observed daily K-line",
-     "runtime_version": "two-stage-hk-trading-engine-v3-finance-chain",
+     "runtime_version": "two-stage-hk-trading-engine-v4-candidate-breadth",
      "data_kind": "derived_rule_output",
      "is_observed": false,
      "source_snapshot_dates": {
-      "holdings": "2026-07-13",
-      "prices": "2026-07-14",
-      "daily_kbar": "2026-07-15",
-      "signals": "2026-07-15T02:07:20.942635",
-      "fundflow": "2026-07-14",
-      "announcements": "2026-07-14",
-      "rights_analysis": "2026-07-14"
+      "holdings": "2026-07-17",
+      "prices": "2026-07-20",
+      "daily_kbar": "2026-07-20",
+      "signals": "2026-07-20T18:35:48.285732",
+      "fundflow": "2026-07-20",
+      "announcements": "2026-07-20",
+      "rights_analysis": "2026-07-20"
      },
-     "universe_count": 2722,
+     "universe_count": 2725,
      "candidate_count": 240,
      "analyzed_count": 240,
      "scope_count": 246,
      "momentum_count": 246,
      "setup_counts": {
-      "breakout": 113,
-      "base": 32,
-      "breaklow": 19,
-      "rebound": 82
+      "breakout": 127,
+      "base": 42,
+      "breaklow": 9,
+      "rebound": 68
      },
-     "top_momentum_symbol": "110.HK"
+     "top_momentum_symbol": "1703.HK"
     },
     "kbar_cache": {
      "path": "data/kbar_cache.json",
-     "updated": "2026-07-15T01:58:04",
+     "updated": "2026-07-20T18:36:06",
      "source": "Longbridge core + daily signal K-line cache",
      "symbol_count": 41,
      "symbols": [
@@ -277,51 +278,81 @@
       "1d",
       "1d_flip"
      ],
-     "errors": 0
+     "errors": 6
     },
     "prices": {
      "path": "data/stock_prices.json",
-     "updated": "2026-07-10T08:41:51.277026+00:00",
+     "updated": "2026-07-15T10:50:12.588978+00:00",
      "source": "Futu / Longbridge cache",
      "count": 2782,
      "provider": "longbridge:quote"
     },
     "sector_rotation": {
      "path": "data/sector_rotation.json",
-     "updated": "2026-07-14",
-     "source": "raw/prices_YYYYMMDD.json + holdings.json names",
-     "method": "equal-weight mean return; same-date non-stale closes only; missing prices excluded",
-     "sector_count": 8,
+     "updated": "2026-07-20",
+     "source": "raw/prices_YYYYMMDD.json + holdings.json names + index.html classification overrides",
+     "method": "RRG-style proxy using same-date non-stale closes: sector equal-weight median return relative to the equal-weight market median; RS-Ratio=100+long relative return; RS-Momentum=100+short relative return; pressure=0.65*long relative return + 0.35*short relative return; fund flow uses observed main_net only",
+     "schema_version": 3,
+     "sector_count": 12,
+     "coverage": {
+      "observed_named_stocks": 2663,
+      "classified_stocks": 1411,
+      "unclassified_stocks": 1252,
+      "classified_pct": 52.985
+     },
      "windows": {
       "5": {
-       "latest_date": "2026-07-14",
-       "latest_rows": 2660,
-       "reference_date": "2026-07-10",
-       "reference_rows": 1829
+       "latest_date": "2026-07-20",
+       "latest_rows": 2663,
+       "reference_date": "2026-07-15",
+       "reference_rows": 2723
       },
       "20": {
-       "latest_date": "2026-07-14",
-       "latest_rows": 2660,
-       "reference_date": "2026-06-22",
-       "reference_rows": 2737
+       "latest_date": "2026-07-20",
+       "latest_rows": 2663,
+       "reference_date": "2026-06-30",
+       "reference_rows": 2036
       },
       "60": {
-       "latest_date": "2026-07-14",
-       "latest_rows": 2660,
+       "latest_date": "2026-07-20",
+       "latest_rows": 2663,
        "reference_date": "2026-05-29",
        "reference_rows": 2732
       },
       "120": {
-       "latest_date": "2026-07-14",
-       "latest_rows": 2660,
+       "latest_date": "2026-07-20",
+       "latest_rows": 2663,
        "reference_date": null,
        "reference_rows": null
+      }
+     },
+     "profiles": {
+      "20": {
+       "available": true,
+       "as_of": "2026-07-20",
+       "short_reference_date": "2026-07-15",
+       "long_reference_date": "2026-06-30",
+       "market_stocks": 1979
+      },
+      "60": {
+       "available": true,
+       "as_of": "2026-07-20",
+       "short_reference_date": "2026-06-30",
+       "long_reference_date": "2026-05-29",
+       "market_stocks": 1979
+      },
+      "120": {
+       "available": false,
+       "as_of": "2026-07-20",
+       "short_reference_date": null,
+       "long_reference_date": null,
+       "market_stocks": 0
       }
      }
     },
     "market": {
      "path": "data/market.json",
-     "updated": "2026-07-14T17:54:08.590646+00:00",
+     "updated": "2026-07-20T10:32:48.316885+00:00",
      "source": "Longbridge / WorldPERatio / CNBC / HKMA / FRED market cache",
      "keys": 20,
      "stale": false,
@@ -331,38 +362,94 @@
     },
     "market_intel": {
      "path": "data/market_intel.json",
-     "updated": "2026-07-15T02:36:01+08:00",
+     "updated": "2026-07-20T18:33:23+08:00",
      "source": "Longbridge CLI",
      "data_kind": "observed_provider_snapshot",
      "is_observed": true,
      "stale": false,
      "rank_rows": 120,
      "anomaly_count": 100,
-     "mover_count": 46,
+     "mover_count": 45,
      "refresh_errors": []
+    },
+    "options_levels": {
+     "path": "data/options_levels.json",
+     "updated": "2026-07-20T18:36:22+08:00",
+     "observed_date": "2026-07-17",
+     "source": "HKEX official HSI daily report / Futu OpenD / MarketData.app observed option chains",
+     "data_kind": "observed_option_chain_derived_levels",
+     "is_observed": true,
+     "status": "PARTIAL",
+     "stale": false,
+     "symbols": [
+      "HSI",
+      "AAPL"
+     ],
+     "expiry_count": 6,
+     "refresh_errors": [
+      "SPY: Futu option chain unavailable",
+      "QQQ: Futu option chain unavailable",
+      "IWM: Futu option chain unavailable",
+      "GLD: Futu option chain unavailable",
+      "NVDA: Futu option chain unavailable",
+      "AAPL: Futu option chain unavailable",
+      "TSLA: Futu option chain unavailable",
+      "SPY: MARKETDATA_API_TOKEN not configured and Futu unavailable",
+      "QQQ: MARKETDATA_API_TOKEN not configured and Futu unavailable",
+      "IWM: MARKETDATA_API_TOKEN not configured and Futu unavailable",
+      "GLD: MARKETDATA_API_TOKEN not configured and Futu unavailable",
+      "NVDA: MARKETDATA_API_TOKEN not configured and Futu unavailable",
+      "TSLA: MARKETDATA_API_TOKEN not configured and Futu unavailable"
+     ]
+    },
+    "trend_matrix": {
+     "path": "data/trend_matrix.json",
+     "updated": "2026-07-20T18:36:21+08:00",
+     "source": "Futu OpenD observed index daily and main-contract night-session K-lines",
+     "data_kind": "derived_rule_output_from_observed_futu_kbars",
+     "is_observed": false,
+     "observations_are_real": true,
+     "status": "PASS",
+     "stale": false,
+     "indexes": [
+      "HSI",
+      "HSCEI",
+      "HSTECH"
+     ],
+     "daily_observed_through": {
+      "HSI": "2026-07-20",
+      "HSCEI": "2026-07-20",
+      "HSTECH": "2026-07-20"
+     },
+     "night_observed_through": {
+      "HSI": "2026-07-20 19:00:00",
+      "HSCEI": "2026-07-20 19:00:00",
+      "HSTECH": "2026-07-20 19:00:00"
+     },
+     "errors": []
     },
     "short_positions": {
      "path": "data/short_positions.json",
-     "updated": "2026-07-15T02:36:08+08:00",
-     "report_date": "2026-07-03",
-     "previous_report_date": null,
+     "updated": "2026-07-20T18:33:25+08:00",
+     "report_date": "2026-07-10",
+     "previous_report_date": "2026-07-03",
      "source": "Securities and Futures Commission (Hong Kong)",
      "data_kind": "official_weekly_reportable_short_positions",
      "is_observed": true,
      "stale": false,
-     "row_count": 1231,
+     "row_count": 1233,
      "coverage_note": "Specified shares above the SFC reporting threshold only. Missing code means not covered, not zero short interest."
     },
     "repo_audit": {
      "path": "data/repo_audit.json",
-     "updated": "2026-07-15T13:27:29",
+     "updated": "2026-07-20T18:36:45",
      "source": "repo-native audit snapshot",
-     "page_count": 21,
+     "page_count": 24,
      "missing_ref_pages": 0,
-     "date_spread_days": 2,
+     "date_spread_days": 3,
      "alias_mismatches": 0,
      "db_gap_count": 1,
-     "db_low_coverage_count": 12
+     "db_low_coverage_count": 9
     },
     "vqc_backtest": {
      "path": "data/vqc_backtest.json",
@@ -429,20 +516,20 @@
     "maintenance_status": "WARN",
     "current_warnings": [],
     "maintenance_warnings": [
-     "Historical DB gaps in range 2026-04-30..2026-07-13: 2026-05-13",
-     "Historical low-coverage DB dates below 98.0%: 2026-07-08, 2026-07-02, 2026-06-30, 2026-06-29, 2026-06-26, 2026-06-25, 2026-06-24, 2026-06-23, 2026-06-22, 2026-06-16, 2026-05-12, 2026-05-08",
+     "Historical DB gaps in range 2026-04-30..2026-07-17: 2026-05-13",
+     "Historical low-coverage DB dates below 98.0%: 2026-06-29, 2026-06-26, 2026-06-25, 2026-06-24, 2026-06-23, 2026-06-22, 2026-06-16, 2026-05-12, 2026-05-08",
      "Historical low participant-detail coverage below 98.0%: 2026-06-18, 2026-06-17"
     ],
-    "latest_db_date": "2026-07-13",
-    "latest_db_stock_count": 2765,
+    "latest_db_date": "2026-07-17",
+    "latest_db_stock_count": 2767,
     "latest_db_coverage_pct": 99.6,
-    "latest_publishable_date": "2026-07-13",
-    "latest_publishable_stock_count": 2765,
+    "latest_publishable_date": "2026-07-17",
+    "latest_publishable_stock_count": 2767,
     "latest_publishable_coverage_pct": 99.6,
-    "holdings_updated": "2026-07-13",
-    "coverage_pct": 99.2,
+    "holdings_updated": "2026-07-17",
+    "coverage_pct": 99.3,
     "verify_data": {
-     "date": "2026-07-13",
+     "date": "2026-07-17",
      "status": "PASS",
      "errors": 0,
      "warnings": 0
@@ -454,51 +541,51 @@
     }
    },
    "headline": {
-    "holdings_updated": "2026-07-13",
+    "holdings_updated": "2026-07-17",
     "ccass_trend_reference_dates": {
-     "5": "2026-07-03",
-     "20": "2026-06-11",
+     "5": "2026-07-10",
+     "20": "2026-06-17",
      "60": null,
      "120": null
     },
-    "ccass_five_day_increase_count": 725,
-    "latest_db_date": "2026-07-13",
-    "latest_db_stock_count": 2765,
+    "ccass_five_day_increase_count": 626,
+    "latest_db_date": "2026-07-17",
+    "latest_db_stock_count": 2767,
     "latest_db_coverage_pct": 99.6,
-    "latest_publishable_date": "2026-07-13",
-    "latest_publishable_stock_count": 2765,
+    "latest_publishable_date": "2026-07-17",
+    "latest_publishable_stock_count": 2767,
     "latest_publishable_coverage_pct": 99.6,
-    "signals_updated": "2026-07-15T02:07:20.942635",
-    "alerts_updated": "2026-07-14 17:57 UTC",
-    "watchlist_updated": "2026-07-14 17:57 UTC",
-    "history_updated": "2026-07-14 17:57 UTC",
-    "announcements_updated": "2026-07-14",
-    "rights_analysis_updated": "2026-07-14",
-    "fundflow_updated": "2026-07-14",
-    "breakthroughs_updated": "2026-07-15T01:56:57.319316+08:00",
-    "corp_graded_scan_updated": "2026-07-15",
-    "transfers_updated": "2026-07-13 vs 2026-07-10",
-    "transfers_date": "2026-07-13",
-    "participant_anomalies_updated": "2026-07-13 vs 2026-07-10",
-    "participant_anomalies_date": "2026-07-13",
-    "timesfm_updated": "2026-07-15T01:57:46",
+    "signals_updated": "2026-07-20T18:35:48.285732",
+    "alerts_updated": "2026-07-20 10:35 UTC",
+    "watchlist_updated": "2026-07-20 10:35 UTC",
+    "history_updated": "2026-07-20 10:35 UTC",
+    "announcements_updated": "2026-07-20",
+    "rights_analysis_updated": "2026-07-20",
+    "fundflow_updated": "2026-07-20",
+    "breakthroughs_updated": "2026-07-20T18:35:06.446014+08:00",
+    "corp_graded_scan_updated": "2026-07-20",
+    "transfers_updated": "2026-07-17 vs 2026-07-16",
+    "transfers_date": "2026-07-17",
+    "participant_anomalies_updated": "2026-07-17 vs 2026-07-16",
+    "participant_anomalies_date": "2026-07-17",
+    "timesfm_updated": "2026-07-20T18:36:03",
     "timesfm_primary_field": "broker_top5_pct",
-    "trade_engine_updated": "2026-07-15T13:23:06",
-    "trade_engine_source_updated": "2026-07-15",
-    "trade_engine_universe_count": 2722,
+    "trade_engine_updated": "2026-07-20T18:36:41",
+    "trade_engine_source_updated": "2026-07-20",
+    "trade_engine_universe_count": 2725,
     "trade_engine_candidate_count": 240,
     "trade_engine_analyzed_count": 240,
     "trade_engine_momentum_count": 246,
-    "kbar_cache_updated": "2026-07-15T01:58:04",
-    "prices_updated": "2026-07-10T08:41:51.277026+00:00",
-    "market_updated": "2026-07-14T17:54:08.590646+00:00",
+    "kbar_cache_updated": "2026-07-20T18:36:06",
+    "prices_updated": "2026-07-15T10:50:12.588978+00:00",
+    "market_updated": "2026-07-20T10:32:48.316885+00:00",
     "market_stale": false,
-    "market_intel_updated": "2026-07-15T02:36:01+08:00",
+    "market_intel_updated": "2026-07-20T18:33:23+08:00",
     "market_intel_stale": false,
-    "short_positions_report_date": "2026-07-03",
-    "repo_audit_updated": "2026-07-15T13:27:29",
+    "short_positions_report_date": "2026-07-10",
+    "repo_audit_updated": "2026-07-20T18:36:45",
     "repo_audit_missing_ref_pages": 0,
-    "repo_audit_date_spread_days": 2,
+    "repo_audit_date_spread_days": 3,
     "backtests_updated": {
      "vqc": "2026-07-12T23:20:23",
      "distribution_day": "2026-07-12T23:20:26",
@@ -506,7 +593,7 @@
     }
    },
    "telegram": {
-    "summary": "publish=PASS | holdings=2026-07-13 | latest_db=2026-07-13 (99.6%) | publishable=2026-07-13 | signals=2026-07-15T02:07:20.942635 | alerts=2026-07-14 17:57 UTC | anns=2026-07-14 | rights=2026-07-14 | flow=2026-07-14 | transfers=2026-07-13 vs 2026-07-10 | market=2026-07-14T17:54:08.590646+00:00 | engine=2026-07-15 240/240 of 2722"
+    "summary": "publish=PASS | holdings=2026-07-17 | latest_db=2026-07-17 (99.6%) | publishable=2026-07-17 | signals=2026-07-20T18:35:48.285732 | alerts=2026-07-20 10:35 UTC | anns=2026-07-20 | rights=2026-07-20 | flow=2026-07-20 | transfers=2026-07-17 vs 2026-07-16 | market=2026-07-20T10:32:48.316885+00:00 | engine=2026-07-20 240/240 of 2725"
    }
   }
  },
@@ -514,67 +601,72 @@
   {
    "name": "holdings.json",
    "status": "🟢",
-   "detail": "updated=2026-07-13 coverage=99.2% stock_count=2765 complete=False"
+   "detail": "updated=2026-07-17 coverage=99.3% stock_count=2767 complete=False"
   },
   {
    "name": "data/holdings.json",
    "status": "🟢",
-   "detail": "updated=2026-07-13 coverage=99.2% stock_count=2765 complete=False"
+   "detail": "updated=2026-07-17 coverage=99.3% stock_count=2767 complete=False"
   },
   {
    "name": "publish_bundle",
    "status": "🟢",
-   "detail": "generated=2026-07-15 13:27:35 publish=PASS holdings=2026-07-13 signals=2026-07-15T02:07:20.942635 alerts=2026-07-14 17:57 UTC"
+   "detail": "generated=2026-07-20 18:36:52 publish=PASS holdings=2026-07-17 signals=2026-07-20T18:35:48.285732 alerts=2026-07-20 10:35 UTC"
   },
   {
    "name": "signals.json",
    "status": "🟢",
-   "detail": "updated=2026-07-15 02:07:20 groups=2765"
+   "detail": "updated=2026-07-20 18:35:48 groups=2767"
   },
   {
    "name": "alerts.json",
    "status": "🟢",
-   "detail": "updated=2026-07-14 17:57 UTC count=500"
+   "detail": "updated=2026-07-20 10:35 UTC count=500"
   },
   {
    "name": "announcements.json",
    "status": "🟢",
-   "detail": "latest=2026-07-14 count=903"
+   "detail": "latest=2026-07-20 count=965"
   },
   {
    "name": "events.json",
    "status": "🟢",
-   "detail": "latest=2026-07-14 count=989"
+   "detail": "latest=2026-07-20 count=1077"
   },
   {
    "name": "price_snapshot",
    "status": "🟢",
-   "detail": "latest_price=2026-07-14T23:30:00+08:00 stocks=2783"
+   "detail": "latest_price=2026-07-20T18:30:03+08:00 stocks=2783"
   },
   {
    "name": "trade_engine",
    "status": "🟢",
-   "detail": "source=2026-07-15 built=2026-07-15T13:23:06 analyzed=240/240 universe=2722 momentum=246 errors=0 kind=derived_rule_output"
+   "detail": "source=2026-07-20 built=2026-07-20T18:36:41 analyzed=240/240 universe=2725 momentum=246 errors=0 kind=derived_rule_output"
   },
   {
    "name": "market_intel",
    "status": "🟢",
-   "detail": "10.9h old"
+   "detail": "0.1h old"
   },
   {
    "name": "sfc_short_positions",
    "status": "🟢",
-   "detail": "10.9h old"
+   "detail": "0.1h old"
   },
   {
    "name": "jieqi_backtest",
    "status": "🟢",
    "detail": "updated=2026-07-12 23:24:28 terms=24"
+  },
+  {
+   "name": "Futu/OpenD",
+   "status": "🟢",
+   "detail": "live HK quote snapshot verified"
   }
  ],
  "ann_volume": {
-  "status": "⚠️",
-  "detail": "today 0 vs median 16 — check scraper"
+  "status": "🟢",
+  "detail": "today 14 vs median 16"
  },
  "deepseek": {
   "status": "⚪",
@@ -584,22 +676,22 @@
   {
    "name": "holdings-sync",
    "status": "🟢",
-   "detail": "updated=2026-07-13 count=2765"
+   "detail": "updated=2026-07-17 count=2767"
   },
   {
    "name": "corpTypes",
    "status": "🟢",
-   "detail": "286/2765 stocks have corp actions"
+   "detail": "301/2767 stocks have corp actions"
   },
   {
    "name": "events",
    "status": "🟢",
-   "detail": "989 total, 22 recent, 852 filled"
+   "detail": "1077 total, 44 recent, 852 filled"
   },
   {
    "name": "repo_audit",
-   "status": "🟢",
-   "detail": "pages=21 missing_ref_pages=0 alias_mismatches=0 date_spread=2d db_gaps=1 db_low_cov=12"
+   "status": "⚠️",
+   "detail": "pages=24 missing_ref_pages=0 alias_mismatches=0 date_spread=3d db_gaps=1 db_low_cov=9"
   }
  ]
 }

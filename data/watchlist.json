@@ -1,7 +1,235 @@
 {
-  "updated": "2026-07-14 17:57 UTC",
-  "count": 50,
+  "updated": "2026-07-20 10:35 UTC",
+  "count": 76,
   "watchlist": [
+    {
+      "code": "00167",
+      "name": "IDT INT'L",
+      "types": [
+        "收購/要約",
+        "聯合公告"
+      ],
+      "ann_date": "2026-07-20"
+    },
+    {
+      "code": "00191",
+      "name": "LAI SUN INT'L",
+      "types": [
+        "聯合公告"
+      ],
+      "ann_date": "2026-07-20"
+    },
+    {
+      "code": "00488",
+      "name": "LAI SUN DEV",
+      "types": [
+        "聯合公告"
+      ],
+      "ann_date": "2026-07-20"
+    },
+    {
+      "code": "00571",
+      "name": "ESUN HOLDINGS",
+      "types": [
+        "聯合公告"
+      ],
+      "ann_date": "2026-07-20"
+    },
+    {
+      "code": "01125",
+      "name": "LAI FUNG HOLD",
+      "types": [
+        "聯合公告"
+      ],
+      "ann_date": "2026-07-20"
+    },
+    {
+      "code": "00195",
+      "name": "GREENTECH INTL",
+      "types": [
+        "收購/要約"
+      ],
+      "ann_date": "2026-07-06"
+    },
+    {
+      "code": "00419",
+      "name": "HONY MEDIA",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-06"
+    },
+    {
+      "code": "06083",
+      "name": "WORLD-LINK LOG",
+      "types": [
+        "復牌"
+      ],
+      "ann_date": "2026-07-20"
+    },
+    {
+      "code": "00736",
+      "name": "CHINA PPT INV",
+      "types": [
+        "復牌"
+      ],
+      "ann_date": "2026-07-20"
+    },
+    {
+      "code": "00064",
+      "name": "GET NICE",
+      "types": [
+        "復牌"
+      ],
+      "ann_date": "2026-07-20"
+    },
+    {
+      "code": "00643",
+      "name": "CARRY WEALTH",
+      "types": [
+        "配股",
+        "復牌"
+      ],
+      "ann_date": "2026-07-20"
+    },
+    {
+      "code": "09982",
+      "name": "CENTRALCHINA MT",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-20"
+    },
+    {
+      "code": "01003",
+      "name": "HUANXI MEDIA",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-20"
+    },
+    {
+      "code": "00751",
+      "name": "SKYWORTH GROUP",
+      "types": [
+        "收購/要約"
+      ],
+      "ann_date": "2026-07-17"
+    },
+    {
+      "code": "00548",
+      "name": "SHENZHENEXPRESS",
+      "types": [
+        "聯合公告"
+      ],
+      "ann_date": "2026-07-17"
+    },
+    {
+      "code": "03336",
+      "name": "JU TENG INTL",
+      "types": [
+        "收購/要約"
+      ],
+      "ann_date": "2026-07-17"
+    },
+    {
+      "code": "01520",
+      "name": "VIRTUAL MIND",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-17"
+    },
+    {
+      "code": "00152",
+      "name": "SHENZHEN INT'L",
+      "types": [
+        "聯合公告"
+      ],
+      "ann_date": "2026-07-17"
+    },
+    {
+      "code": "00607",
+      "name": "FULLSHARE",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-17"
+    },
+    {
+      "code": "00209",
+      "name": "POLY XVERSE IT",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-17"
+    },
+    {
+      "code": "01156",
+      "name": "CHINANEWENERGY",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-15"
+    },
+    {
+      "code": "01143",
+      "name": "CN ENGY STORAGE",
+      "types": [
+        "收購/要約",
+        "聯合公告"
+      ],
+      "ann_date": "2026-07-15"
+    },
+    {
+      "code": "03860",
+      "name": "EPS HEALTH TECH",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-15"
+    },
+    {
+      "code": "01932",
+      "name": "CPM GROUP",
+      "types": [
+        "收購/要約",
+        "聯合公告"
+      ],
+      "ann_date": "2026-07-15"
+    },
+    {
+      "code": "03700",
+      "name": "INKEVERSE",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-15"
+    },
+    {
+      "code": "00128",
+      "name": "ENM HOLDINGS",
+      "types": [
+        "收購/要約"
+      ],
+      "ann_date": "2026-07-15"
+    },
+    {
+      "code": "01776",
+      "name": "GF SEC",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-15"
+    },
+    {
+      "code": "02595",
+      "name": "GENFLEET-B",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-15"
+    },
     {
       "code": "00100",
       "name": "MINIMAX-W",
@@ -192,14 +420,6 @@
       "ann_date": "2026-07-06"
     },
     {
-      "code": "00195",
-      "name": "GREENTECH INTL",
-      "types": [
-        "收購/要約"
-      ],
-      "ann_date": "2026-07-06"
-    },
-    {
       "code": "01159",
       "name": "SMART DIGI TECH",
       "types": [
@@ -270,14 +490,6 @@
       "name": "CCIAM FUTURE EN",
       "types": [
         "復牌"
-      ],
-      "ann_date": "2026-07-06"
-    },
-    {
-      "code": "00419",
-      "name": "HONY MEDIA",
-      "types": [
-        "配股"
       ],
       "ann_date": "2026-07-06"
     },

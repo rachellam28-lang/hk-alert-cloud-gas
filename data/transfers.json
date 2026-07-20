@@ -1,3945 +1,4169 @@
 {
-  "updated": "2026-07-13 vs 2026-07-10",
-  "date": "2026-07-13",
-  "previous_date": "2026-07-10",
+  "updated": "2026-07-17 vs 2026-07-16",
+  "date": "2026-07-17",
+  "previous_date": "2026-07-16",
   "count": 428,
   "transfers": [
     {
-      "code": "01432",
-      "name": "中國聖牧",
-      "total_in": 4757000,
-      "total_out": 607427829,
-      "total_shares": 6390329302,
-      "outstanding_shares": 8441650332,
+      "code": "02789",
+      "name": "遠大中國",
+      "total_in": 3440489923,
+      "total_out": 3438815923,
+      "total_shares": 6083570567,
+      "outstanding_shares": 6251100048,
       "ins": [
+        {
+          "pid": "C00039",
+          "pname": "渣打银行(香港)",
+          "chg": 3438467923,
+          "pct_chg": 55.38,
+          "shares": 3467717923
+        },
         {
           "pid": "B01161",
           "pname": "UBS Securities Hong Kong Limited",
-          "chg": 4757000,
-          "pct_chg": 0.06,
-          "shares": 193182456
+          "chg": 2022000,
+          "pct_chg": 0.03,
+          "shares": 364074400
         }
       ],
       "outs": [
+        {
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": -3438815923,
+          "pct_chg": -55.39,
+          "shares": 1211829845
+        }
+      ]
+    },
+    {
+      "code": "01432",
+      "name": "中國聖牧",
+      "total_in": 1946602727,
+      "total_out": 2003200727,
+      "total_shares": 6265518030,
+      "outstanding_shares": 8437271788,
+      "ins": [
         {
           "pid": "JY0179",
           "pname": "香港中央結算有限公司",
-          "chg": -603565829,
-          "pct_chg": -7.2,
-          "shares": 416000
-        },
-        {
-          "pid": "B01955",
-          "pname": "富途证券国际香港",
-          "chg": -3862000,
-          "pct_chg": -0.05,
-          "shares": 206743648
+          "chg": 1946602727,
+          "pct_chg": 23.22,
+          "shares": 2013706727
         }
-      ]
-    },
-    {
-      "code": "00386",
-      "name": "中國石油化工股份",
-      "total_in": 151302176,
-      "total_out": 158485543,
-      "total_shares": 23603374091,
-      "outstanding_shares": 23977421872,
-      "ins": [
+      ],
+      "outs": [
         {
-          "pid": "C00019",
-          "pname": "香港上海汇丰银行",
-          "chg": 64747574,
-          "pct_chg": 0.28,
-          "shares": 6873684818
+          "pid": "B01938",
+          "pname": "兴证国际证券",
+          "chg": -1329623000,
+          "pct_chg": -15.86,
+          "shares": 1700000
         },
         {
-          "pid": "C00010",
-          "pname": "花旗银行",
-          "chg": 33764971,
-          "pct_chg": 0.14,
-          "shares": 2241349000
+          "pid": "B01130",
+          "pname": "中银国际证券",
+          "chg": -201133511,
+          "pct_chg": -2.4,
+          "shares": 466602130
         },
         {
-          "pid": "C00093",
-          "pname": "法国巴黎银行",
-          "chg": 21001177,
-          "pct_chg": 0.09,
-          "shares": 339676123
+          "pid": "B01161",
+          "pname": "UBS Securities Hong Kong Limited",
+          "chg": -182777256,
+          "pct_chg": -2.18,
+          "shares": 73041200
         },
         {
           "pid": "B01668",
           "pname": "耀才证券",
-          "chg": 15158000,
-          "pct_chg": 0.07,
-          "shares": 54829397
-        },
-        {
-          "pid": "B01161",
-          "pname": "UBS Securities Hong Kong Limited",
-          "chg": 10254454,
-          "pct_chg": 0.04,
-          "shares": 380406685
-        },
-        {
-          "pid": "B01138",
-          "pname": "中信里昂证券",
-          "chg": 4500000,
-          "pct_chg": 0.02,
-          "shares": 695387000
-        },
-        {
-          "pid": "A00004",
-          "pname": "港股通(深)",
-          "chg": 1876000,
-          "pct_chg": 0.01,
-          "shares": 2127399055
-        }
-      ],
-      "outs": [
-        {
-          "pid": "A00003",
-          "pname": "港股通(沪)",
-          "chg": -115330000,
-          "pct_chg": -0.49,
-          "shares": 5133963763
-        },
-        {
-          "pid": "C00003",
-          "pname": "东亚银行",
-          "chg": -14928000,
-          "pct_chg": -0.06,
-          "shares": 71919993
-        },
-        {
-          "pid": "B01224",
-          "pname": "Merrill Lynch Far East Limited",
-          "chg": -14655438,
-          "pct_chg": -0.06,
-          "shares": 82064344
-        },
-        {
-          "pid": "B01274",
-          "pname": "摩根士丹利香港证券",
-          "chg": -6541645,
-          "pct_chg": -0.03,
-          "shares": 34280642
-        },
-        {
-          "pid": "B01555",
-          "pname": "ABN AMRO Clearing Hong Kong Limited",
-          "chg": -3067152,
-          "pct_chg": -0.01,
-          "shares": 60999
-        },
-        {
-          "pid": "C00111",
-          "pname": "Societe Generale",
-          "chg": -2463308,
-          "pct_chg": -0.01,
-          "shares": 7606627
-        },
-        {
-          "pid": "B01777",
-          "pname": "大和资本市场香港",
-          "chg": -1500000,
-          "pct_chg": -0.01,
-          "shares": 4015000
-        }
-      ]
-    },
-    {
-      "code": "03988",
-      "name": "中國銀行",
-      "total_in": 128912818,
-      "total_out": 128377960,
-      "total_shares": 77710429699,
-      "outstanding_shares": 84376145167,
-      "ins": [
-        {
-          "pid": "C00019",
-          "pname": "香港上海汇丰银行",
-          "chg": 64128445,
-          "pct_chg": 0.07,
-          "shares": 20920160243
-        },
-        {
-          "pid": "C00039",
-          "pname": "渣打银行(香港)",
-          "chg": 42351200,
-          "pct_chg": 0.06,
-          "shares": 1990603035
-        },
-        {
-          "pid": "B01161",
-          "pname": "UBS Securities Hong Kong Limited",
-          "chg": 7707649,
-          "pct_chg": 0.01,
-          "shares": 1356087724
-        },
-        {
-          "pid": "B01345",
-          "pname": "辉立证券",
-          "chg": 6033000,
-          "pct_chg": 0.01,
-          "shares": 276793003
-        },
-        {
-          "pid": "C00093",
-          "pname": "法国巴黎银行",
-          "chg": 4336546,
-          "pct_chg": 0.0,
-          "shares": 575432279
-        },
-        {
-          "pid": "A00004",
-          "pname": "港股通(深)",
-          "chg": 2075000,
-          "pct_chg": 0.0,
-          "shares": 5007961653
-        },
-        {
-          "pid": "C00111",
-          "pname": "Societe Generale",
-          "chg": 1218438,
-          "pct_chg": 0.01,
-          "shares": 17266779
-        },
-        {
-          "pid": "B01451",
-          "pname": "高盛(亚洲)证券",
-          "chg": 1062540,
-          "pct_chg": 0.0,
-          "shares": 492491245
-        }
-      ],
-      "outs": [
-        {
-          "pid": "C00010",
-          "pname": "花旗银行",
-          "chg": -98893477,
-          "pct_chg": -0.12,
-          "shares": 6920906534
-        },
-        {
-          "pid": "A00003",
-          "pname": "港股通(沪)",
-          "chg": -18664000,
-          "pct_chg": -0.02,
-          "shares": 24318355078
-        },
-        {
-          "pid": "B01224",
-          "pname": "Merrill Lynch Far East Limited",
-          "chg": -4648061,
-          "pct_chg": -0.01,
-          "shares": 13638469
-        },
-        {
-          "pid": "B01555",
-          "pname": "ABN AMRO Clearing Hong Kong Limited",
-          "chg": -4490422,
-          "pct_chg": 0.0,
-          "shares": 2247336
+          "chg": -111791000,
+          "pct_chg": -1.34,
+          "shares": 15911500
         },
         {
           "pid": "B01590",
           "pname": "盈透证券",
-          "chg": -1682000,
-          "pct_chg": 0.0,
-          "shares": 119984872
-        }
-      ]
-    },
-    {
-      "code": "00939",
-      "name": "建設銀行",
-      "total_in": 116666956,
-      "total_out": 122804727,
-      "total_shares": 96215461347,
-      "outstanding_shares": 243706842317,
-      "ins": [
-        {
-          "pid": "C00033",
-          "pname": "中国银行(香港)",
-          "chg": 52196329,
-          "pct_chg": 0.03,
-          "shares": 3055734769
+          "chg": -105434000,
+          "pct_chg": -1.26,
+          "shares": 53870000
         },
         {
-          "pid": "C00019",
-          "pname": "香港上海汇丰银行",
-          "chg": 27174636,
-          "pct_chg": 0.02,
-          "shares": 32312794868
-        },
-        {
-          "pid": "C00093",
-          "pname": "法国巴黎银行",
-          "chg": 15429823,
-          "pct_chg": 0.0,
-          "shares": 863566182
-        },
-        {
-          "pid": "B01451",
-          "pname": "高盛(亚洲)证券",
-          "chg": 8033993,
-          "pct_chg": 0.0,
-          "shares": 105933169
-        },
-        {
-          "pid": "A00004",
-          "pname": "港股通(深)",
-          "chg": 4782000,
-          "pct_chg": 0.0,
-          "shares": 5053823618
-        },
-        {
-          "pid": "B01345",
-          "pname": "辉立证券",
-          "chg": 3790000,
-          "pct_chg": 0.0,
-          "shares": 110702414
-        },
-        {
-          "pid": "C00003",
-          "pname": "东亚银行",
-          "chg": 2825000,
-          "pct_chg": 0.0,
-          "shares": 181774556
+          "pid": "B01086",
+          "pname": "光大证券投资服务香港",
+          "chg": -50419960,
+          "pct_chg": -0.6,
+          "shares": 1023000
         },
         {
           "pid": "B01955",
           "pname": "富途证券国际香港",
-          "chg": 2435175,
-          "pct_chg": 0.0,
-          "shares": 222294055
-        }
-      ],
-      "outs": [
-        {
-          "pid": "C00010",
-          "pname": "花旗银行",
-          "chg": -101511639,
-          "pct_chg": -0.04,
-          "shares": 8591509135
-        },
-        {
-          "pid": "B01555",
-          "pname": "ABN AMRO Clearing Hong Kong Limited",
-          "chg": -6008335,
-          "pct_chg": 0.0,
-          "shares": 1739938
-        },
-        {
-          "pid": "B01161",
-          "pname": "UBS Securities Hong Kong Limited",
-          "chg": -4173959,
-          "pct_chg": 0.0,
-          "shares": 952274898
-        },
-        {
-          "pid": "B01224",
-          "pname": "Merrill Lynch Far East Limited",
-          "chg": -2957514,
-          "pct_chg": 0.0,
-          "shares": 10197976
-        },
-        {
-          "pid": "B01673",
-          "pname": "富昌证券",
-          "chg": -2452000,
-          "pct_chg": 0.0,
-          "shares": 13154232
-        },
-        {
-          "pid": "B01590",
-          "pname": "盈透证券",
-          "chg": -1761280,
-          "pct_chg": 0.0,
-          "shares": 108383332
-        },
-        {
-          "pid": "C00039",
-          "pname": "渣打银行(香港)",
-          "chg": -1540000,
-          "pct_chg": 0.0,
-          "shares": 2925993367
-        },
-        {
-          "pid": "B01138",
-          "pname": "中信里昂证券",
-          "chg": -1308000,
-          "pct_chg": 0.0,
-          "shares": 223560
-        },
-        {
-          "pid": "A00003",
-          "pname": "港股通(沪)",
-          "chg": -1092000,
-          "pct_chg": 0.0,
-          "shares": 31418756278
-        }
-      ]
-    },
-    {
-      "code": "01208",
-      "name": "五礦資源",
-      "total_in": 109056979,
-      "total_out": 110002318,
-      "total_shares": 12841520856,
-      "outstanding_shares": 12900864834,
-      "ins": [
-        {
-          "pid": "C00019",
-          "pname": "香港上海汇丰银行",
-          "chg": 101330229,
-          "pct_chg": 0.78,
-          "shares": 2335447300
-        },
-        {
-          "pid": "C00093",
-          "pname": "法国巴黎银行",
-          "chg": 2611199,
-          "pct_chg": 0.02,
-          "shares": 47313912
-        },
-        {
-          "pid": "B01274",
-          "pname": "摩根士丹利香港证券",
-          "chg": 2059551,
-          "pct_chg": 0.02,
-          "shares": 138185509
-        },
-        {
-          "pid": "B01161",
-          "pname": "UBS Securities Hong Kong Limited",
-          "chg": 1696000,
-          "pct_chg": 0.01,
-          "shares": 29286256
-        },
-        {
-          "pid": "A00004",
-          "pname": "港股通(深)",
-          "chg": 1360000,
-          "pct_chg": 0.01,
-          "shares": 689107340
-        }
-      ],
-      "outs": [
-        {
-          "pid": "C00010",
-          "pname": "花旗银行",
-          "chg": -107899191,
-          "pct_chg": -0.84,
-          "shares": 503031954
-        },
-        {
-          "pid": "B01345",
-          "pname": "辉立证券",
-          "chg": -2103127,
-          "pct_chg": -0.02,
-          "shares": 6153562
-        }
-      ]
-    },
-    {
-      "code": "02590",
-      "name": "極智嘉－Ｗ",
-      "total_in": 106024508,
-      "total_out": 109988148,
-      "total_shares": 953503379,
-      "outstanding_shares": 1030591633,
-      "ins": [
-        {
-          "pid": "B01654",
-          "pname": "中国国际金融香港证券",
-          "chg": 84093023,
-          "pct_chg": 8.21,
-          "shares": 171775678
-        },
-        {
-          "pid": "C00019",
-          "pname": "香港上海汇丰银行",
-          "chg": 6649293,
-          "pct_chg": 0.65,
-          "shares": 45761276
-        },
-        {
-          "pid": "C00010",
-          "pname": "花旗银行",
-          "chg": 6469792,
-          "pct_chg": 0.63,
-          "shares": 40121204
-        },
-        {
-          "pid": "A00003",
-          "pname": "港股通(沪)",
-          "chg": 4468000,
-          "pct_chg": 0.44,
-          "shares": 30883800
-        },
-        {
-          "pid": "A00004",
-          "pname": "港股通(深)",
-          "chg": 3005400,
-          "pct_chg": 0.3,
-          "shares": 18155600
-        },
-        {
-          "pid": "B01224",
-          "pname": "Merrill Lynch Far East Limited",
-          "chg": 1339000,
-          "pct_chg": 0.13,
-          "shares": 3139812
-        }
-      ],
-      "outs": [
-        {
-          "pid": "B01451",
-          "pname": "高盛(亚洲)证券",
-          "chg": -84255777,
-          "pct_chg": -8.22,
-          "shares": 30742245
-        },
-        {
-          "pid": "A00005",
-          "pname": "中国证券登记结算香港",
-          "chg": -24405887,
-          "pct_chg": -2.38,
-          "shares": 351149045
-        },
-        {
-          "pid": "B01274",
-          "pname": "摩根士丹利香港证券",
-          "chg": -1326484,
+          "chg": -10602000,
           "pct_chg": -0.13,
-          "shares": 163627367
-        }
-      ]
-    },
-    {
-      "code": "03800",
-      "name": "協鑫科技",
-      "total_in": 96151727,
-      "total_out": 98161159,
-      "total_shares": 33198257761,
-      "outstanding_shares": 33513282617,
-      "ins": [
-        {
-          "pid": "B01590",
-          "pname": "盈透证券",
-          "chg": 42588000,
-          "pct_chg": 0.12,
-          "shares": 2072673378
-        },
-        {
-          "pid": "A00003",
-          "pname": "港股通(沪)",
-          "chg": 28029000,
-          "pct_chg": 0.08,
-          "shares": 5676010223
-        },
-        {
-          "pid": "B01143",
-          "pname": "海通国际证券",
-          "chg": 8010000,
-          "pct_chg": 0.03,
-          "shares": 1372071623
-        },
-        {
-          "pid": "C00010",
-          "pname": "花旗银行",
-          "chg": 7412627,
-          "pct_chg": 0.03,
-          "shares": 2697626097
-        },
-        {
-          "pid": "B01955",
-          "pname": "富途证券国际香港",
-          "chg": 3359000,
-          "pct_chg": 0.01,
-          "shares": 3388781983
-        },
-        {
-          "pid": "B01130",
-          "pname": "中银国际证券",
-          "chg": 1608000,
-          "pct_chg": 0.01,
-          "shares": 478459665
-        },
-        {
-          "pid": "C00033",
-          "pname": "中国银行(香港)",
-          "chg": 1391000,
-          "pct_chg": 0.0,
-          "shares": 1171532350
-        },
-        {
-          "pid": "B01284",
-          "pname": "恒生证券",
-          "chg": 1275000,
-          "pct_chg": 0.01,
-          "shares": 299055402
-        },
-        {
-          "pid": "C00002",
-          "pname": "交通银行信托",
-          "chg": 1265000,
-          "pct_chg": 0.01,
-          "shares": 113676100
-        },
-        {
-          "pid": "B01451",
-          "pname": "高盛(亚洲)证券",
-          "chg": 1214100,
-          "pct_chg": 0.0,
-          "shares": 48166128
-        }
-      ],
-      "outs": [
-        {
-          "pid": "C00019",
-          "pname": "香港上海汇丰银行",
-          "chg": -69369479,
-          "pct_chg": -0.21,
-          "shares": 5790368365
-        },
-        {
-          "pid": "A00004",
-          "pname": "港股通(深)",
-          "chg": -21544000,
-          "pct_chg": -0.06,
-          "shares": 4740923909
-        },
-        {
-          "pid": "B01555",
-          "pname": "ABN AMRO Clearing Hong Kong Limited",
-          "chg": -2214680,
-          "pct_chg": 0.0,
-          "shares": 4576
-        },
-        {
-          "pid": "B01610",
-          "pname": "凯基证券亚洲",
-          "chg": -2095000,
-          "pct_chg": 0.0,
-          "shares": 27272000
-        },
-        {
-          "pid": "C00028",
-          "pname": "南洋商业银行",
-          "chg": -1670000,
-          "pct_chg": -0.01,
-          "shares": 72939200
-        },
-        {
-          "pid": "B01673",
-          "pname": "富昌证券",
-          "chg": -1268000,
-          "pct_chg": -0.01,
-          "shares": 9142010
-        }
-      ]
-    },
-    {
-      "code": "01918",
-      "name": "融創中國",
-      "total_in": 94519471,
-      "total_out": 96675427,
-      "total_shares": 19953719034,
-      "outstanding_shares": 20112608642,
-      "ins": [
-        {
-          "pid": "B01274",
-          "pname": "摩根士丹利香港证券",
-          "chg": 49851804,
-          "pct_chg": 0.25,
-          "shares": 95102332
-        },
-        {
-          "pid": "C00010",
-          "pname": "花旗银行",
-          "chg": 24288235,
-          "pct_chg": 0.12,
-          "shares": 3713489556
-        },
-        {
-          "pid": "B01565",
-          "pname": "国泰君安(香港)",
-          "chg": 10262131,
-          "pct_chg": 0.05,
-          "shares": 191003859
-        },
-        {
-          "pid": "B01555",
-          "pname": "ABN AMRO Clearing Hong Kong Limited",
-          "chg": 3350000,
-          "pct_chg": 0.02,
-          "shares": 6638750
-        },
-        {
-          "pid": "B01459",
-          "pname": "奕丰证券(香港)",
-          "chg": 2814301,
-          "pct_chg": 0.02,
-          "shares": 6451274
-        },
-        {
-          "pid": "A00004",
-          "pname": "港股通(深)",
-          "chg": 2320000,
-          "pct_chg": 0.02,
-          "shares": 1978741001
-        },
-        {
-          "pid": "A00003",
-          "pname": "港股通(沪)",
-          "chg": 1633000,
-          "pct_chg": 0.01,
-          "shares": 3834088002
-        }
-      ],
-      "outs": [
-        {
-          "pid": "C00019",
-          "pname": "香港上海汇丰银行",
-          "chg": -75044690,
-          "pct_chg": -0.37,
-          "shares": 4451067707
-        },
-        {
-          "pid": "C00074",
-          "pname": "德意志银行",
-          "chg": -10000000,
-          "pct_chg": -0.05,
-          "shares": 325155294
-        },
-        {
-          "pid": "B01813",
-          "pname": "建银国际证券",
-          "chg": -7000000,
-          "pct_chg": -0.04,
-          "shares": 198918880
-        },
-        {
-          "pid": "B01161",
-          "pname": "UBS Securities Hong Kong Limited",
-          "chg": -3439737,
-          "pct_chg": -0.02,
-          "shares": 95833727
-        },
-        {
-          "pid": "B01610",
-          "pname": "凯基证券亚洲",
-          "chg": -1191000,
-          "pct_chg": -0.01,
-          "shares": 9287056
-        }
-      ]
-    },
-    {
-      "code": "00020",
-      "name": "商湯－Ｗ",
-      "total_in": 87385224,
-      "total_out": 93575827,
-      "total_shares": 41202902477,
-      "outstanding_shares": 42622222485,
-      "ins": [
-        {
-          "pid": "A00004",
-          "pname": "港股通(深)",
-          "chg": 39956000,
-          "pct_chg": 0.09,
-          "shares": 6103892266
-        },
-        {
-          "pid": "A00003",
-          "pname": "港股通(沪)",
-          "chg": 25723000,
-          "pct_chg": 0.06,
-          "shares": 3717176000
-        },
-        {
-          "pid": "B01610",
-          "pname": "凯基证券亚洲",
-          "chg": 5545000,
-          "pct_chg": 0.02,
-          "shares": 152978786
-        },
-        {
-          "pid": "C00033",
-          "pname": "中国银行(香港)",
-          "chg": 3856554,
-          "pct_chg": 0.01,
-          "shares": 1977684645
-        },
-        {
-          "pid": "B01284",
-          "pname": "恒生证券",
-          "chg": 2064862,
-          "pct_chg": 0.0,
-          "shares": 838914592
-        },
-        {
-          "pid": "B01451",
-          "pname": "高盛(亚洲)证券",
-          "chg": 1985246,
-          "pct_chg": 0.01,
-          "shares": 97629177
-        },
-        {
-          "pid": "B01955",
-          "pname": "富途证券国际香港",
-          "chg": 1810868,
-          "pct_chg": 0.0,
-          "shares": 2893869552
-        },
-        {
-          "pid": "B01264",
-          "pname": "马银证券(香港)",
-          "chg": 1515000,
-          "pct_chg": 0.0,
-          "shares": 19082000
-        },
-        {
-          "pid": "B01148",
-          "pname": "招商证券香港",
-          "chg": 1310000,
-          "pct_chg": 0.0,
-          "shares": 6938590227
-        },
-        {
-          "pid": "B01161",
-          "pname": "UBS Securities Hong Kong Limited",
-          "chg": 1271232,
-          "pct_chg": 0.0,
-          "shares": 218977379
-        },
-        {
-          "pid": "B01183",
-          "pname": "创兴证券",
-          "chg": 1186000,
-          "pct_chg": 0.01,
-          "shares": 139600400
-        },
-        {
-          "pid": "B01224",
-          "pname": "Merrill Lynch Far East Limited",
-          "chg": 1161462,
-          "pct_chg": 0.01,
-          "shares": 50863228
-        }
-      ],
-      "outs": [
-        {
-          "pid": "C00019",
-          "pname": "香港上海汇丰银行",
-          "chg": -54820404,
-          "pct_chg": -0.13,
-          "shares": 6067789036
-        },
-        {
-          "pid": "B01274",
-          "pname": "摩根士丹利香港证券",
-          "chg": -9115241,
-          "pct_chg": -0.02,
-          "shares": 200840665
-        },
-        {
-          "pid": "C00010",
-          "pname": "花旗银行",
-          "chg": -7616764,
-          "pct_chg": -0.02,
-          "shares": 3375775944
-        },
-        {
-          "pid": "B01555",
-          "pname": "ABN AMRO Clearing Hong Kong Limited",
-          "chg": -5947079,
-          "pct_chg": -0.02,
-          "shares": 3761443
-        },
-        {
-          "pid": "B01668",
-          "pname": "耀才证券",
-          "chg": -3612000,
-          "pct_chg": -0.01,
-          "shares": 329928000
-        },
-        {
-          "pid": "C00093",
-          "pname": "法国巴黎银行",
-          "chg": -3564939,
-          "pct_chg": -0.01,
-          "shares": 112212208
-        },
-        {
-          "pid": "B01143",
-          "pname": "海通国际证券",
-          "chg": -3290000,
-          "pct_chg": -0.01,
-          "shares": 461222714
-        },
-        {
-          "pid": "C00111",
-          "pname": "Societe Generale",
-          "chg": -2166000,
-          "pct_chg": -0.01,
-          "shares": 6845142
-        },
-        {
-          "pid": "C00039",
-          "pname": "渣打银行(香港)",
-          "chg": -1943400,
-          "pct_chg": 0.0,
-          "shares": 448064833
-        },
-        {
-          "pid": "B01858",
-          "pname": "元大证券香港",
-          "chg": -1500000,
-          "pct_chg": 0.0,
-          "shares": 10136000
-        }
-      ]
-    },
-    {
-      "code": "00992",
-      "name": "聯想集團",
-      "total_in": 89274484,
-      "total_out": 89417259,
-      "total_shares": 11066667279,
-      "outstanding_shares": 12480734497,
-      "ins": [
-        {
-          "pid": "B01224",
-          "pname": "Merrill Lynch Far East Limited",
-          "chg": 34319375,
-          "pct_chg": 0.28,
-          "shares": 51514312
-        },
-        {
-          "pid": "A00004",
-          "pname": "港股通(深)",
-          "chg": 18668000,
-          "pct_chg": 0.15,
-          "shares": 731370050
-        },
-        {
-          "pid": "A00003",
-          "pname": "港股通(沪)",
-          "chg": 13174000,
-          "pct_chg": 0.1,
-          "shares": 338477549
-        },
-        {
-          "pid": "C00010",
-          "pname": "花旗银行",
-          "chg": 10523740,
-          "pct_chg": 0.09,
-          "shares": 2512425637
-        },
-        {
-          "pid": "B01274",
-          "pname": "摩根士丹利香港证券",
-          "chg": 4934309,
-          "pct_chg": 0.04,
-          "shares": 27758642
-        },
-        {
-          "pid": "B01161",
-          "pname": "UBS Securities Hong Kong Limited",
-          "chg": 3694326,
-          "pct_chg": 0.03,
-          "shares": 335246441
-        },
-        {
-          "pid": "B01555",
-          "pname": "ABN AMRO Clearing Hong Kong Limited",
-          "chg": 1518734,
-          "pct_chg": 0.01,
-          "shares": 4216561
-        },
-        {
-          "pid": "B01138",
-          "pname": "中信里昂证券",
-          "chg": 1296000,
-          "pct_chg": 0.01,
-          "shares": 441740000
-        },
-        {
-          "pid": "C00088",
-          "pname": "招商银行",
-          "chg": 1146000,
-          "pct_chg": 0.01,
-          "shares": 5838942
-        }
-      ],
-      "outs": [
-        {
-          "pid": "C00019",
-          "pname": "香港上海汇丰银行",
-          "chg": -87690537,
-          "pct_chg": -0.71,
-          "shares": 3611806954
-        },
-        {
-          "pid": "B01130",
-          "pname": "中银国际证券",
-          "chg": -1726722,
-          "pct_chg": -0.01,
-          "shares": 448481075
-        }
-      ]
-    },
-    {
-      "code": "00884",
-      "name": "旭輝控股集團",
-      "total_in": 80026000,
-      "total_out": 87736600,
-      "total_shares": 18148640982,
-      "outstanding_shares": 18319007754,
-      "ins": [
-        {
-          "pid": "B01590",
-          "pname": "盈透证券",
-          "chg": 22214000,
-          "pct_chg": 0.12,
-          "shares": 310026991
-        },
-        {
-          "pid": "B01130",
-          "pname": "中银国际证券",
-          "chg": 13366000,
-          "pct_chg": 0.08,
-          "shares": 1347137559
-        },
-        {
-          "pid": "B02142",
-          "pname": "老虎证券香港环球",
-          "chg": 9548000,
-          "pct_chg": 0.05,
-          "shares": 287653808
-        },
-        {
-          "pid": "B01814",
-          "pname": "立桥证券",
-          "chg": 4020000,
-          "pct_chg": 0.02,
-          "shares": 11977760
-        },
-        {
-          "pid": "C00042",
-          "pname": "永隆银行",
-          "chg": 3852000,
-          "pct_chg": 0.02,
-          "shares": 261380983
-        },
-        {
-          "pid": "C00033",
-          "pname": "中国银行(香港)",
-          "chg": 3750000,
-          "pct_chg": 0.02,
-          "shares": 898332747
-        },
-        {
-          "pid": "B01700",
-          "pname": "汇信理财",
-          "chg": 3120000,
-          "pct_chg": 0.02,
-          "shares": 105885584
-        },
-        {
-          "pid": "B01118",
-          "pname": "东亚证券",
-          "chg": 2720000,
-          "pct_chg": 0.02,
-          "shares": 109789188
-        },
-        {
-          "pid": "B01284",
-          "pname": "恒生证券",
-          "chg": 2600000,
-          "pct_chg": 0.02,
-          "shares": 314241904
-        },
-        {
-          "pid": "B01829",
-          "pname": "华泰香港",
-          "chg": 2282000,
-          "pct_chg": 0.01,
-          "shares": 85287489
-        },
-        {
-          "pid": "C00058",
-          "pname": "中信银行国际",
-          "chg": 2180000,
-          "pct_chg": 0.01,
-          "shares": 79079200
-        },
-        {
-          "pid": "B01955",
-          "pname": "富途证券国际香港",
-          "chg": 2154000,
-          "pct_chg": 0.01,
-          "shares": 1122420650
-        },
-        {
-          "pid": "B01668",
-          "pname": "耀才证券",
-          "chg": 2054000,
-          "pct_chg": 0.01,
-          "shares": 175342051
-        },
-        {
-          "pid": "C00003",
-          "pname": "东亚银行",
-          "chg": 1600000,
-          "pct_chg": 0.01,
-          "shares": 42048944
-        },
-        {
-          "pid": "B01565",
-          "pname": "国泰君安(香港)",
-          "chg": 1594000,
-          "pct_chg": 0.01,
-          "shares": 89180321
-        },
-        {
-          "pid": "B01904",
-          "pname": "华盛资本证券",
-          "chg": 1572000,
-          "pct_chg": 0.01,
-          "shares": 29938100
-        },
-        {
-          "pid": "B01584",
-          "pname": "致富证券",
-          "chg": 1400000,
-          "pct_chg": 0.01,
-          "shares": 69847007
-        }
-      ],
-      "outs": [
-        {
-          "pid": "C00010",
-          "pname": "花旗银行",
-          "chg": -41366200,
-          "pct_chg": -0.23,
-          "shares": 784105880
-        },
-        {
-          "pid": "C00039",
-          "pname": "渣打银行(香港)",
-          "chg": -28018000,
-          "pct_chg": -0.15,
-          "shares": 648250824
-        },
-        {
-          "pid": "B01224",
-          "pname": "Merrill Lynch Far East Limited",
-          "chg": -14130000,
-          "pct_chg": -0.08,
-          "shares": 146746138
+          "shares": 149892648
         },
         {
-          "pid": "C00019",
-          "pname": "香港上海汇丰银行",
-          "chg": -4222400,
+          "pid": "B02176",
+          "pname": "平证证券香港",
+          "chg": -3280000,
           "pct_chg": -0.03,
-          "shares": 1849153898
-        }
-      ]
-    },
-    {
-      "code": "06162",
-      "name": "天瑞汽車內飾",
-      "total_in": 84640000,
-      "total_out": 76728000,
-      "total_shares": 1781175900,
-      "outstanding_shares": 2414171726,
-      "ins": [
-        {
-          "pid": "C00010",
-          "pname": "花旗银行",
-          "chg": 78064000,
-          "pct_chg": 3.26,
-          "shares": 80408000
-        },
-        {
-          "pid": "B01556",
-          "pname": "六福证券(香港)",
-          "chg": 6576000,
-          "pct_chg": 0.27,
-          "shares": 96232000
-        }
-      ],
-      "outs": [
-        {
-          "pid": "B01955",
-          "pname": "富途证券国际香港",
-          "chg": -29712000,
-          "pct_chg": -1.24,
-          "shares": 285729098
+          "shares": 20000
         },
         {
           "pid": "C00019",
           "pname": "香港上海汇丰银行",
-          "chg": -16768000,
-          "pct_chg": -0.7,
-          "shares": 21096000
+          "chg": -2113000,
+          "pct_chg": -0.03,
+          "shares": 310850000
         },
         {
-          "pid": "C00042",
-          "pname": "永隆银行",
-          "chg": -5888000,
-          "pct_chg": -0.25,
-          "shares": 28440000
-        },
-        {
-          "pid": "B01565",
-          "pname": "国泰君安(香港)",
-          "chg": -5040000,
-          "pct_chg": -0.21,
-          "shares": 32824000
-        },
-        {
-          "pid": "B01904",
-          "pname": "华盛资本证券",
-          "chg": -4936000,
-          "pct_chg": -0.21,
-          "shares": 35416000
-        },
-        {
-          "pid": "B01673",
-          "pname": "富昌证券",
-          "chg": -4664000,
-          "pct_chg": -0.19,
-          "shares": 792000
-        },
-        {
-          "pid": "B01345",
-          "pname": "辉立证券",
-          "chg": -2640000,
-          "pct_chg": -0.11,
-          "shares": 15512000
-        },
-        {
-          "pid": "B01423",
-          "pname": "信诚证券",
-          "chg": -2208000,
-          "pct_chg": -0.09,
-          "shares": 55900
-        },
-        {
-          "pid": "B01228",
-          "pname": "中信证券经纪香港",
-          "chg": -1824000,
-          "pct_chg": -0.08,
-          "shares": 64528000
+          "pid": "B01347",
+          "pname": "中国银河证券香港",
+          "chg": -1940000,
+          "pct_chg": -0.03,
+          "shares": 837000
         },
         {
           "pid": "B02159",
           "pname": "盈立证券",
-          "chg": -1576000,
-          "pct_chg": -0.07,
-          "shares": 15784000
-        },
-        {
-          "pid": "B01885",
-          "pname": "哈富证券",
-          "chg": -1472000,
-          "pct_chg": -0.06,
-          "shares": 20304000
-        }
-      ]
-    },
-    {
-      "code": "01093",
-      "name": "石藥集團",
-      "total_in": 78698813,
-      "total_out": 77987651,
-      "total_shares": 11512962489,
-      "outstanding_shares": 11592953870,
-      "ins": [
-        {
-          "pid": "B01161",
-          "pname": "UBS Securities Hong Kong Limited",
-          "chg": 57295465,
-          "pct_chg": 0.49,
-          "shares": 2391878957
-        },
-        {
-          "pid": "A00003",
-          "pname": "港股通(沪)",
-          "chg": 11574000,
-          "pct_chg": 0.1,
-          "shares": 883617324
-        },
-        {
-          "pid": "B01224",
-          "pname": "Merrill Lynch Far East Limited",
-          "chg": 5670740,
-          "pct_chg": 0.05,
-          "shares": 18768762
-        },
-        {
-          "pid": "B01274",
-          "pname": "摩根士丹利香港证券",
-          "chg": 2299350,
-          "pct_chg": 0.02,
-          "shares": 36742939
-        },
-        {
-          "pid": "C00093",
-          "pname": "法国巴黎银行",
-          "chg": 1859258,
-          "pct_chg": 0.01,
-          "shares": 163453825
-        }
-      ],
-      "outs": [
-        {
-          "pid": "C00019",
-          "pname": "香港上海汇丰银行",
-          "chg": -50019735,
-          "pct_chg": -0.43,
-          "shares": 2140934520
-        },
-        {
-          "pid": "C00039",
-          "pname": "渣打银行(香港)",
-          "chg": -12848400,
-          "pct_chg": -0.11,
-          "shares": 190990051
-        },
-        {
-          "pid": "C00010",
-          "pname": "花旗银行",
-          "chg": -12047516,
-          "pct_chg": -0.11,
-          "shares": 679457483
-        },
-        {
-          "pid": "A00004",
-          "pname": "港股通(深)",
-          "chg": -3072000,
-          "pct_chg": -0.03,
-          "shares": 2223316171
-        }
-      ]
-    },
-    {
-      "code": "02007",
-      "name": "碧桂園",
-      "total_in": 74959722,
-      "total_out": 71430479,
-      "total_shares": 35959334857,
-      "outstanding_shares": 46883096293,
-      "ins": [
-        {
-          "pid": "C00039",
-          "pname": "渣打银行(香港)",
-          "chg": 32467000,
-          "pct_chg": 0.07,
-          "shares": 1726412020
-        },
-        {
-          "pid": "C00019",
-          "pname": "香港上海汇丰银行",
-          "chg": 21215780,
-          "pct_chg": 0.05,
-          "shares": 11176670202
-        },
-        {
-          "pid": "B01274",
-          "pname": "摩根士丹利香港证券",
-          "chg": 9179000,
-          "pct_chg": 0.02,
-          "shares": 429206628
-        },
-        {
-          "pid": "B01451",
-          "pname": "高盛(亚洲)证券",
-          "chg": 5884942,
-          "pct_chg": 0.01,
-          "shares": 21857544
-        },
-        {
-          "pid": "B01143",
-          "pname": "海通国际证券",
-          "chg": 4818000,
-          "pct_chg": 0.01,
-          "shares": 27359291
-        },
-        {
-          "pid": "B02142",
-          "pname": "老虎证券香港环球",
-          "chg": 1395000,
-          "pct_chg": 0.01,
-          "shares": 38425879
-        }
-      ],
-      "outs": [
-        {
-          "pid": "A00004",
-          "pname": "港股通(深)",
-          "chg": -17343000,
-          "pct_chg": -0.04,
-          "shares": 3568852660
-        },
-        {
-          "pid": "B01161",
-          "pname": "UBS Securities Hong Kong Limited",
-          "chg": -16106782,
-          "pct_chg": -0.04,
-          "shares": 2345827442
-        },
-        {
-          "pid": "A00003",
-          "pname": "港股通(沪)",
-          "chg": -12938000,
-          "pct_chg": -0.03,
-          "shares": 5449194282
-        },
-        {
-          "pid": "C00093",
-          "pname": "法国巴黎银行",
-          "chg": -6524862,
-          "pct_chg": -0.01,
-          "shares": 136231396
-        },
-        {
-          "pid": "B01224",
-          "pname": "Merrill Lynch Far East Limited",
-          "chg": -5957912,
-          "pct_chg": -0.01,
-          "shares": 20775993
-        },
-        {
-          "pid": "C00010",
-          "pname": "花旗银行",
-          "chg": -4917168,
-          "pct_chg": -0.01,
-          "shares": 1681702573
-        },
-        {
-          "pid": "B01284",
-          "pname": "恒生证券",
-          "chg": -3182000,
-          "pct_chg": -0.01,
-          "shares": 672195268
-        },
-        {
-          "pid": "B01955",
-          "pname": "富途证券国际香港",
-          "chg": -2676000,
-          "pct_chg": -0.01,
-          "shares": 810500197
-        },
-        {
-          "pid": "C00033",
-          "pname": "中国银行(香港)",
-          "chg": -1784755,
-          "pct_chg": -0.01,
-          "shares": 2154350802
-        }
-      ]
-    },
-    {
-      "code": "00136",
-      "name": "中國儒意",
-      "total_in": 71361853,
-      "total_out": 69697259,
-      "total_shares": 15556127090,
-      "outstanding_shares": 16919868490,
-      "ins": [
-        {
-          "pid": "C00010",
-          "pname": "花旗银行",
-          "chg": 26639626,
-          "pct_chg": 0.16,
-          "shares": 425640162
-        },
-        {
-          "pid": "B01274",
-          "pname": "摩根士丹利香港证券",
-          "chg": 12662360,
-          "pct_chg": 0.08,
-          "shares": 747689667
-        },
-        {
-          "pid": "C00019",
-          "pname": "香港上海汇丰银行",
-          "chg": 9319184,
-          "pct_chg": 0.05,
-          "shares": 3361100379
-        },
-        {
-          "pid": "B01224",
-          "pname": "Merrill Lynch Far East Limited",
-          "chg": 8843403,
-          "pct_chg": 0.05,
-          "shares": 13284432
-        },
-        {
-          "pid": "A00003",
-          "pname": "港股通(沪)",
-          "chg": 6355600,
-          "pct_chg": 0.04,
-          "shares": 2250107875
-        },
-        {
-          "pid": "A00004",
-          "pname": "港股通(深)",
-          "chg": 4707200,
-          "pct_chg": 0.02,
-          "shares": 2145209950
-        },
-        {
-          "pid": "B01885",
-          "pname": "哈富证券",
-          "chg": 1664000,
-          "pct_chg": 0.01,
-          "shares": 3292000
-        },
-        {
-          "pid": "C00111",
-          "pname": "Societe Generale",
-          "chg": 1170480,
-          "pct_chg": 0.01,
-          "shares": 5814000
-        }
-      ],
-      "outs": [
-        {
-          "pid": "C00093",
-          "pname": "法国巴黎银行",
-          "chg": -38921259,
-          "pct_chg": -0.23,
-          "shares": 53262877
-        },
-        {
-          "pid": "C00039",
-          "pname": "渣打银行(香港)",
-          "chg": -16903000,
-          "pct_chg": -0.1,
-          "shares": 1283632630
-        },
-        {
-          "pid": "C00015",
-          "pname": "星展银行香港",
-          "chg": -7364000,
-          "pct_chg": -0.04,
-          "shares": 15949889
-        },
-        {
-          "pid": "B01590",
-          "pname": "盈透证券",
-          "chg": -4780000,
-          "pct_chg": -0.03,
-          "shares": 13221522
-        },
-        {
-          "pid": "B01555",
-          "pname": "ABN AMRO Clearing Hong Kong Limited",
           "chg": -1729000,
-          "pct_chg": -0.01,
-          "shares": 2875100
-        }
-      ]
-    },
-    {
-      "code": "09660",
-      "name": "地平線機器人－Ｗ",
-      "total_in": 63132518,
-      "total_out": 61249355,
-      "total_shares": 12107825508,
-      "outstanding_shares": 14776452902,
-      "ins": [
-        {
-          "pid": "C00010",
-          "pname": "花旗银行",
-          "chg": 47898816,
-          "pct_chg": 0.33,
-          "shares": 630852388
-        },
-        {
-          "pid": "C00093",
-          "pname": "法国巴黎银行",
-          "chg": 4897079,
-          "pct_chg": 0.03,
-          "shares": 112014803
-        },
-        {
-          "pid": "A00003",
-          "pname": "港股通(沪)",
-          "chg": 2740800,
-          "pct_chg": 0.01,
-          "shares": 1629248934
-        },
-        {
-          "pid": "B01148",
-          "pname": "招商证券香港",
-          "chg": 2733600,
-          "pct_chg": 0.02,
-          "shares": 113334579
-        },
-        {
-          "pid": "A00004",
-          "pname": "港股通(深)",
-          "chg": 2365200,
-          "pct_chg": 0.02,
-          "shares": 1569943739
-        },
-        {
-          "pid": "B01955",
-          "pname": "富途证券国际香港",
-          "chg": 1309900,
-          "pct_chg": 0.01,
-          "shares": 1283574682
-        },
-        {
-          "pid": "B01451",
-          "pname": "高盛(亚洲)证券",
-          "chg": 1187123,
-          "pct_chg": 0.01,
-          "shares": 756225279
-        }
-      ],
-      "outs": [
-        {
-          "pid": "C00019",
-          "pname": "香港上海汇丰银行",
-          "chg": -48691684,
-          "pct_chg": -0.33,
-          "shares": 1421369127
-        },
-        {
-          "pid": "B01555",
-          "pname": "ABN AMRO Clearing Hong Kong Limited",
-          "chg": -7050713,
-          "pct_chg": -0.05,
-          "shares": 5775034
-        },
-        {
-          "pid": "B01224",
-          "pname": "Merrill Lynch Far East Limited",
-          "chg": -4429958,
           "pct_chg": -0.03,
-          "shares": 115972488
-        },
-        {
-          "pid": "B01565",
-          "pname": "国泰君安(香港)",
-          "chg": -1077000,
-          "pct_chg": -0.01,
-          "shares": 1083389206
-        }
-      ]
-    },
-    {
-      "code": "00689",
-      "name": "長盈集團（控股）",
-      "total_in": 18969908,
-      "total_out": 84474908,
-      "total_shares": 1368039150,
-      "outstanding_shares": 1873256401,
-      "ins": [
-        {
-          "pid": "C00010",
-          "pname": "花旗银行",
-          "chg": 9114908,
-          "pct_chg": 0.5,
-          "shares": 25079841
-        },
-        {
-          "pid": "B01826",
-          "pname": "广发证券香港",
-          "chg": 4500000,
-          "pct_chg": 0.24,
-          "shares": 26244276
-        },
-        {
-          "pid": "B01224",
-          "pname": "Merrill Lynch Far East Limited",
-          "chg": 2220000,
-          "pct_chg": 0.11,
-          "shares": 2220380
-        },
-        {
-          "pid": "B02091",
-          "pname": "星河证券",
-          "chg": 2025000,
-          "pct_chg": 0.11,
-          "shares": 8020500
-        },
-        {
-          "pid": "B02195",
-          "pname": "长桥证券香港",
-          "chg": 1110000,
-          "pct_chg": 0.06,
-          "shares": 6041862
-        }
-      ],
-      "outs": [
-        {
-          "pid": "B01590",
-          "pname": "盈透证券",
-          "chg": -75315000,
-          "pct_chg": -4.05,
-          "shares": 262180962
-        },
-        {
-          "pid": "B01555",
-          "pname": "ABN AMRO Clearing Hong Kong Limited",
-          "chg": -5595000,
-          "pct_chg": -0.3,
-          "shares": 780000
-        },
-        {
-          "pid": "C00093",
-          "pname": "法国巴黎银行",
-          "chg": -2394908,
-          "pct_chg": -0.13,
-          "shares": 2338792
-        },
-        {
-          "pid": "C00019",
-          "pname": "香港上海汇丰银行",
-          "chg": -1170000,
-          "pct_chg": -0.06,
-          "shares": 90326877
-        }
-      ]
-    },
-    {
-      "code": "01060",
-      "name": "大麥娛樂",
-      "total_in": 49242485,
-      "total_out": 50458829,
-      "total_shares": 13961236617,
-      "outstanding_shares": 30370321115,
-      "ins": [
-        {
-          "pid": "A00004",
-          "pname": "港股通(深)",
-          "chg": 29600000,
-          "pct_chg": 0.1,
-          "shares": 2493100000
-        },
-        {
-          "pid": "B01224",
-          "pname": "Merrill Lynch Far East Limited",
-          "chg": 9109485,
-          "pct_chg": 0.03,
-          "shares": 205183828
-        },
-        {
-          "pid": "C00111",
-          "pname": "Societe Generale",
-          "chg": 8520000,
-          "pct_chg": 0.02,
-          "shares": 14711537
-        },
-        {
-          "pid": "B01955",
-          "pname": "富途证券国际香港",
-          "chg": 2013000,
-          "pct_chg": 0.01,
-          "shares": 422831018
-        }
-      ],
-      "outs": [
-        {
-          "pid": "C00010",
-          "pname": "花旗银行",
-          "chg": -25791173,
-          "pct_chg": -0.09,
-          "shares": 451182583
-        },
-        {
-          "pid": "A00003",
-          "pname": "港股通(沪)",
-          "chg": -15640000,
-          "pct_chg": -0.05,
-          "shares": 5295197258
-        },
-        {
-          "pid": "C00019",
-          "pname": "香港上海汇丰银行",
-          "chg": -5367496,
-          "pct_chg": -0.02,
-          "shares": 1707588800
-        },
-        {
-          "pid": "B01555",
-          "pname": "ABN AMRO Clearing Hong Kong Limited",
-          "chg": -3660160,
-          "pct_chg": -0.01,
-          "shares": 4853908
-        }
-      ]
-    },
-    {
-      "code": "01810",
-      "name": "小米集團－Ｗ",
-      "total_in": 47083247,
-      "total_out": 52225565,
-      "total_shares": 21312476231,
-      "outstanding_shares": 26013030917,
-      "ins": [
-        {
-          "pid": "A00003",
-          "pname": "港股通(沪)",
-          "chg": 17967600,
-          "pct_chg": 0.07,
-          "shares": 2376421127
-        },
-        {
-          "pid": "C00093",
-          "pname": "法国巴黎银行",
-          "chg": 13072125,
-          "pct_chg": 0.05,
-          "shares": 158918017
-        },
-        {
-          "pid": "C00039",
-          "pname": "渣打银行(香港)",
-          "chg": 5372641,
-          "pct_chg": 0.02,
-          "shares": 441536380
-        },
-        {
-          "pid": "B01451",
-          "pname": "高盛(亚洲)证券",
-          "chg": 3073784,
-          "pct_chg": 0.01,
-          "shares": 671181644
-        },
-        {
-          "pid": "B01228",
-          "pname": "中信证券经纪香港",
-          "chg": 2108430,
-          "pct_chg": 0.01,
-          "shares": 89337554
-        },
-        {
-          "pid": "A00004",
-          "pname": "港股通(深)",
-          "chg": 1758200,
-          "pct_chg": 0.0,
-          "shares": 2745973682
-        },
-        {
-          "pid": "B01148",
-          "pname": "招商证券香港",
-          "chg": 1289000,
-          "pct_chg": 0.0,
-          "shares": 19646618
-        },
-        {
-          "pid": "C00042",
-          "pname": "永隆银行",
-          "chg": 1255303,
-          "pct_chg": 0.01,
-          "shares": 114330357
-        },
-        {
-          "pid": "C00074",
-          "pname": "德意志银行",
-          "chg": 1186164,
-          "pct_chg": 0.0,
-          "shares": 43137803
-        }
-      ],
-      "outs": [
-        {
-          "pid": "C00019",
-          "pname": "香港上海汇丰银行",
-          "chg": -29750458,
-          "pct_chg": -0.11,
-          "shares": 5196025547
-        },
-        {
-          "pid": "C00010",
-          "pname": "花旗银行",
-          "chg": -10442641,
-          "pct_chg": -0.04,
-          "shares": 2423994529
-        },
-        {
-          "pid": "B01224",
-          "pname": "Merrill Lynch Far East Limited",
-          "chg": -5953369,
-          "pct_chg": -0.02,
-          "shares": 18816719
-        },
-        {
-          "pid": "B01274",
-          "pname": "摩根士丹利香港证券",
-          "chg": -2858999,
-          "pct_chg": -0.01,
-          "shares": 161946974
-        },
-        {
-          "pid": "B01555",
-          "pname": "ABN AMRO Clearing Hong Kong Limited",
-          "chg": -1758185,
-          "pct_chg": -0.01,
-          "shares": 1004479
-        },
-        {
-          "pid": "C00111",
-          "pname": "Societe Generale",
-          "chg": -1461913,
-          "pct_chg": -0.01,
-          "shares": 7215600
-        }
-      ]
-    },
-    {
-      "code": "00209",
-      "name": "萬維智能科技",
-      "total_in": 42419131,
-      "total_out": 48210000,
-      "total_shares": 1155246833,
-      "outstanding_shares": 1495852431,
-      "ins": [
-        {
-          "pid": "B01955",
-          "pname": "富途证券国际香港",
-          "chg": 13600000,
-          "pct_chg": 0.92,
-          "shares": 96486600
-        },
-        {
-          "pid": "C00010",
-          "pname": "花旗银行",
-          "chg": 4859131,
-          "pct_chg": 0.32,
-          "shares": 20629214
-        },
-        {
-          "pid": "B01181",
-          "pname": "复星国际证券",
-          "chg": 4810000,
-          "pct_chg": 0.32,
-          "shares": 5926400
-        },
-        {
-          "pid": "B01224",
-          "pname": "Merrill Lynch Far East Limited",
-          "chg": 3450000,
-          "pct_chg": 0.24,
-          "shares": 4919600
-        },
-        {
-          "pid": "B02159",
-          "pname": "盈立证券",
-          "chg": 2850000,
-          "pct_chg": 0.2,
-          "shares": 3737440
-        },
-        {
-          "pid": "B01584",
-          "pname": "致富证券",
-          "chg": 2690000,
-          "pct_chg": 0.18,
-          "shares": 3620780
-        },
-        {
-          "pid": "B02142",
-          "pname": "老虎证券香港环球",
-          "chg": 2450000,
-          "pct_chg": 0.16,
-          "shares": 8153760
-        },
-        {
-          "pid": "C00019",
-          "pname": "香港上海汇丰银行",
-          "chg": 2400000,
-          "pct_chg": 0.16,
-          "shares": 21906590
-        },
-        {
-          "pid": "B01555",
-          "pname": "ABN AMRO Clearing Hong Kong Limited",
-          "chg": 2130000,
-          "pct_chg": 0.14,
-          "shares": 6380000
-        },
-        {
-          "pid": "B01947",
-          "pname": "富邦证券(香港)",
-          "chg": 1840000,
-          "pct_chg": 0.12,
-          "shares": 1841840
-        },
-        {
-          "pid": "B01858",
-          "pname": "元大证券香港",
-          "chg": 1340000,
-          "pct_chg": 0.09,
-          "shares": 1341440
-        }
-      ],
-      "outs": [
-        {
-          "pid": "B02114",
-          "pname": "远源证券",
-          "chg": -47010000,
-          "pct_chg": -3.16,
-          "shares": 238520000
-        },
-        {
-          "pid": "C00002",
-          "pname": "交通银行信托",
-          "chg": -1200000,
-          "pct_chg": -0.08,
-          "shares": 892160
-        }
-      ]
-    },
-    {
-      "code": "01508",
-      "name": "中國再保險",
-      "total_in": 43841706,
-      "total_out": 44347968,
-      "total_shares": 6660354025,
-      "outstanding_shares": 6730349661,
-      "ins": [
-        {
-          "pid": "C00019",
-          "pname": "香港上海汇丰银行",
-          "chg": 41602706,
-          "pct_chg": 0.62,
-          "shares": 2203455217
-        },
-        {
-          "pid": "B01274",
-          "pname": "摩根士丹利香港证券",
-          "chg": 2239000,
-          "pct_chg": 0.03,
-          "shares": 29734177
-        }
-      ],
-      "outs": [
-        {
-          "pid": "C00010",
-          "pname": "花旗银行",
-          "chg": -39620648,
-          "pct_chg": -0.59,
-          "shares": 532350553
-        },
-        {
-          "pid": "B01224",
-          "pname": "Merrill Lynch Far East Limited",
-          "chg": -3597320,
-          "pct_chg": -0.06,
-          "shares": 6442468
-        },
-        {
-          "pid": "B01590",
-          "pname": "盈透证券",
-          "chg": -1130000,
-          "pct_chg": -0.02,
-          "shares": 106472995
-        }
-      ]
-    },
-    {
-      "code": "00139",
-      "name": "小魚盈通",
-      "total_in": 34766800,
-      "total_out": 45890000,
-      "total_shares": 1470106710,
-      "outstanding_shares": 1486307461,
-      "ins": [
-        {
-          "pid": "B02159",
-          "pname": "盈立证券",
-          "chg": 5100000,
-          "pct_chg": 0.34,
-          "shares": 19750403
-        },
-        {
-          "pid": "B01668",
-          "pname": "耀才证券",
-          "chg": 4690000,
-          "pct_chg": 0.32,
-          "shares": 32344387
-        },
-        {
-          "pid": "C00033",
-          "pname": "中国银行(香港)",
-          "chg": 4550000,
-          "pct_chg": 0.31,
-          "shares": 174595712
-        },
-        {
-          "pid": "C00019",
-          "pname": "香港上海汇丰银行",
-          "chg": 4269600,
-          "pct_chg": 0.29,
-          "shares": 122379976
-        },
-        {
-          "pid": "B01955",
-          "pname": "富途证券国际香港",
-          "chg": 3217200,
-          "pct_chg": 0.22,
-          "shares": 117098401
-        },
-        {
-          "pid": "B01423",
-          "pname": "信诚证券",
-          "chg": 3050000,
-          "pct_chg": 0.21,
-          "shares": 8276068
-        },
-        {
-          "pid": "B01829",
-          "pname": "华泰香港",
-          "chg": 2230000,
-          "pct_chg": 0.16,
-          "shares": 2511151
-        },
-        {
-          "pid": "B01497",
-          "pname": "永丰金证券(亚洲)",
-          "chg": 2200000,
-          "pct_chg": 0.15,
-          "shares": 9192171
-        },
-        {
-          "pid": "B01284",
-          "pname": "恒生证券",
-          "chg": 2030000,
-          "pct_chg": 0.14,
-          "shares": 25064308
+          "shares": 20093000
         },
         {
           "pid": "B01695",
           "pname": "大新证券",
-          "chg": 1220000,
-          "pct_chg": 0.09,
-          "shares": 10468055
-        },
-        {
-          "pid": "B02047",
-          "pname": "艾德证券期货",
-          "chg": 1130000,
-          "pct_chg": 0.07,
-          "shares": 1897900
-        },
-        {
-          "pid": "B01590",
-          "pname": "盈透证券",
-          "chg": 1080000,
-          "pct_chg": 0.07,
-          "shares": 14509767
-        }
-      ],
-      "outs": [
-        {
-          "pid": "B01897",
-          "pname": "中达证券投资",
-          "chg": -40660000,
-          "pct_chg": -2.76,
-          "shares": 315598909
-        },
-        {
-          "pid": "B01555",
-          "pname": "ABN AMRO Clearing Hong Kong Limited",
-          "chg": -5230000,
-          "pct_chg": -0.35,
-          "shares": 197700
-        }
-      ]
-    },
-    {
-      "code": "03896",
-      "name": "金山雲",
-      "total_in": 37894000,
-      "total_out": 42472934,
-      "total_shares": 2799999663,
-      "outstanding_shares": 4580401869,
-      "ins": [
-        {
-          "pid": "A00003",
-          "pname": "港股通(沪)",
-          "chg": 21608000,
-          "pct_chg": 0.48,
-          "shares": 579224639
-        },
-        {
-          "pid": "A00004",
-          "pname": "港股通(深)",
-          "chg": 12550000,
-          "pct_chg": 0.28,
-          "shares": 726567310
-        },
-        {
-          "pid": "B01590",
-          "pname": "盈透证券",
-          "chg": 1922000,
-          "pct_chg": 0.05,
-          "shares": 5478815
-        },
-        {
-          "pid": "B01224",
-          "pname": "Merrill Lynch Far East Limited",
-          "chg": 1814000,
-          "pct_chg": 0.04,
-          "shares": 13309924
-        }
-      ],
-      "outs": [
-        {
-          "pid": "C00010",
-          "pname": "花旗银行",
-          "chg": -18114235,
-          "pct_chg": -0.4,
-          "shares": 150941078
-        },
-        {
-          "pid": "C00019",
-          "pname": "香港上海汇丰银行",
-          "chg": -12183000,
-          "pct_chg": -0.27,
-          "shares": 377662558
-        },
-        {
-          "pid": "B01555",
-          "pname": "ABN AMRO Clearing Hong Kong Limited",
-          "chg": -4206000,
-          "pct_chg": -0.1,
-          "shares": 904979
-        },
-        {
-          "pid": "C00058",
-          "pname": "中信银行国际",
-          "chg": -4054000,
-          "pct_chg": -0.09,
-          "shares": 4394000
-        },
-        {
-          "pid": "B01451",
-          "pname": "高盛(亚洲)证券",
-          "chg": -3915699,
-          "pct_chg": -0.09,
-          "shares": 16226510
-        }
-      ]
-    },
-    {
-      "code": "00314",
-      "name": "思派健康",
-      "total_in": 40061400,
-      "total_out": 39962200,
-      "total_shares": 755286904,
-      "outstanding_shares": 768896369,
-      "ins": [
-        {
-          "pid": "C00019",
-          "pname": "香港上海汇丰银行",
-          "chg": 40061400,
-          "pct_chg": 5.23,
-          "shares": 242626235
-        }
-      ],
-      "outs": [
-        {
-          "pid": "B01955",
-          "pname": "富途证券国际香港",
-          "chg": -39962200,
-          "pct_chg": -5.21,
-          "shares": 153463886
-        }
-      ]
-    },
-    {
-      "code": "01398",
-      "name": "工商銀行",
-      "total_in": 39510306,
-      "total_out": 40467820,
-      "total_shares": 79489728659,
-      "outstanding_shares": 87495573647,
-      "ins": [
-        {
-          "pid": "C00093",
-          "pname": "法国巴黎银行",
-          "chg": 19391477,
-          "pct_chg": 0.02,
-          "shares": 519693702
-        },
-        {
-          "pid": "B01451",
-          "pname": "高盛(亚洲)证券",
-          "chg": 7650005,
-          "pct_chg": 0.0,
-          "shares": 754099497
-        },
-        {
-          "pid": "B01345",
-          "pname": "辉立证券",
-          "chg": 4572000,
-          "pct_chg": 0.01,
-          "shares": 158429017
-        },
-        {
-          "pid": "B01274",
-          "pname": "摩根士丹利香港证券",
-          "chg": 2322800,
-          "pct_chg": 0.0,
-          "shares": 102239561
-        },
-        {
-          "pid": "B01955",
-          "pname": "富途证券国际香港",
-          "chg": 2206571,
-          "pct_chg": 0.0,
-          "shares": 147372949
-        },
-        {
-          "pid": "B01610",
-          "pname": "凯基证券亚洲",
-          "chg": 1893000,
-          "pct_chg": 0.0,
-          "shares": 45887001
-        },
-        {
-          "pid": "B01224",
-          "pname": "Merrill Lynch Far East Limited",
-          "chg": 1474453,
-          "pct_chg": 0.0,
-          "shares": 31743367
-        }
-      ],
-      "outs": [
-        {
-          "pid": "C00010",
-          "pname": "花旗银行",
-          "chg": -11387958,
-          "pct_chg": -0.02,
-          "shares": 6012871778
-        },
-        {
-          "pid": "C00039",
-          "pname": "渣打银行(香港)",
-          "chg": -9698200,
+          "chg": -1300000,
           "pct_chg": -0.01,
-          "shares": 1757284749
+          "shares": 1910000
         },
         {
-          "pid": "C00019",
-          "pname": "香港上海汇丰银行",
-          "chg": -9336814,
+          "pid": "B01556",
+          "pname": "六福证券(香港)",
+          "chg": -1058000,
           "pct_chg": -0.01,
-          "shares": 23647026851
-        },
-        {
-          "pid": "B01555",
-          "pname": "ABN AMRO Clearing Hong Kong Limited",
-          "chg": -8844344,
-          "pct_chg": -0.01,
-          "shares": 192719
-        },
-        {
-          "pid": "C00111",
-          "pname": "Societe Generale",
-          "chg": -1200504,
-          "pct_chg": 0.0,
-          "shares": 8935068
-        }
-      ]
-    },
-    {
-      "code": "09988",
-      "name": "阿里巴巴－Ｗ",
-      "total_in": 39266873,
-      "total_out": 37202997,
-      "total_shares": 14282492928,
-      "outstanding_shares": 19352971447,
-      "ins": [
-        {
-          "pid": "A00004",
-          "pname": "港股通(深)",
-          "chg": 13412695,
-          "pct_chg": 0.07,
-          "shares": 984096213
-        },
-        {
-          "pid": "C00019",
-          "pname": "香港上海汇丰银行",
-          "chg": 11802533,
-          "pct_chg": 0.06,
-          "shares": 6302432877
-        },
-        {
-          "pid": "B01274",
-          "pname": "摩根士丹利香港证券",
-          "chg": 6674005,
-          "pct_chg": 0.04,
-          "shares": 80848854
-        },
-        {
-          "pid": "A00003",
-          "pname": "港股通(沪)",
-          "chg": 6276514,
-          "pct_chg": 0.03,
-          "shares": 975519621
-        },
-        {
-          "pid": "B01130",
-          "pname": "中银国际证券",
-          "chg": 1101126,
-          "pct_chg": 0.0,
-          "shares": 120067140
-        }
-      ],
-      "outs": [
-        {
-          "pid": "C00010",
-          "pname": "花旗银行",
-          "chg": -19561093,
-          "pct_chg": -0.1,
-          "shares": 2426700838
-        },
-        {
-          "pid": "B01451",
-          "pname": "高盛(亚洲)证券",
-          "chg": -5524152,
-          "pct_chg": -0.03,
-          "shares": 129854230
-        },
-        {
-          "pid": "B01224",
-          "pname": "Merrill Lynch Far East Limited",
-          "chg": -4982515,
-          "pct_chg": -0.02,
-          "shares": 17446967
-        },
-        {
-          "pid": "B01161",
-          "pname": "UBS Securities Hong Kong Limited",
-          "chg": -3881870,
-          "pct_chg": -0.02,
-          "shares": 540044773
-        },
-        {
-          "pid": "B01555",
-          "pname": "ABN AMRO Clearing Hong Kong Limited",
-          "chg": -1829057,
-          "pct_chg": -0.01,
-          "shares": 1516470
-        },
-        {
-          "pid": "C00093",
-          "pname": "法国巴黎银行",
-          "chg": -1424310,
-          "pct_chg": -0.01,
-          "shares": 208035265
-        }
-      ]
-    },
-    {
-      "code": "00622",
-      "name": "威華達控股",
-      "total_in": 23516000,
-      "total_out": 52393151,
-      "total_shares": 6864402956,
-      "outstanding_shares": 6979565791,
-      "ins": [
-        {
-          "pid": "B01438",
-          "pname": "金利丰证券",
-          "chg": 12687000,
-          "pct_chg": 0.19,
-          "shares": 34821101
-        },
-        {
-          "pid": "B02134",
-          "pname": "希望证券",
-          "chg": 4601000,
-          "pct_chg": 0.07,
-          "shares": 474946400
-        },
-        {
-          "pid": "B01454",
-          "pname": "昊天国际证券",
-          "chg": 2859000,
-          "pct_chg": 0.04,
-          "shares": 143034000
-        },
-        {
-          "pid": "B01294",
-          "pname": "中策富汇证券",
-          "chg": 2100000,
-          "pct_chg": 0.03,
-          "shares": 71425250
-        },
-        {
-          "pid": "B01590",
-          "pname": "盈透证券",
-          "chg": 1269000,
-          "pct_chg": 0.02,
-          "shares": 5648513
-        }
-      ],
-      "outs": [
-        {
-          "pid": "B01751",
-          "pname": "Imagi Brokerage Limited",
-          "chg": -35067000,
-          "pct_chg": -0.51,
-          "shares": 1209397088
-        },
-        {
-          "pid": "C00010",
-          "pname": "花旗银行",
-          "chg": -10497595,
-          "pct_chg": -0.15,
-          "shares": 114434259
-        },
-        {
-          "pid": "B01161",
-          "pname": "UBS Securities Hong Kong Limited",
-          "chg": -5232556,
-          "pct_chg": -0.07,
-          "shares": 84026533
-        },
-        {
-          "pid": "B01274",
-          "pname": "摩根士丹利香港证券",
-          "chg": -1596000,
-          "pct_chg": -0.02,
-          "shares": 993001
-        }
-      ]
-    },
-    {
-      "code": "06082",
-      "name": "壁仞科技",
-      "total_in": 37050351,
-      "total_out": 38425936,
-      "total_shares": 989489747,
-      "outstanding_shares": 1363121293,
-      "ins": [
-        {
-          "pid": "C00010",
-          "pname": "花旗银行",
-          "chg": 12831316,
-          "pct_chg": 0.95,
-          "shares": 108274071
-        },
-        {
-          "pid": "A00003",
-          "pname": "港股通(沪)",
-          "chg": 11939600,
-          "pct_chg": 0.88,
-          "shares": 71983000
-        },
-        {
-          "pid": "C00019",
-          "pname": "香港上海汇丰银行",
-          "chg": 5680304,
-          "pct_chg": 0.42,
-          "shares": 69120430
-        },
-        {
-          "pid": "A00004",
-          "pname": "港股通(深)",
-          "chg": 4176400,
-          "pct_chg": 0.3,
-          "shares": 32338200
-        },
-        {
-          "pid": "B01224",
-          "pname": "Merrill Lynch Far East Limited",
-          "chg": 2422731,
-          "pct_chg": 0.18,
-          "shares": 6295948
-        }
-      ],
-      "outs": [
-        {
-          "pid": "B01274",
-          "pname": "摩根士丹利香港证券",
-          "chg": -17571875,
-          "pct_chg": -1.3,
-          "shares": 60188088
-        },
-        {
-          "pid": "B01555",
-          "pname": "ABN AMRO Clearing Hong Kong Limited",
-          "chg": -6884947,
-          "pct_chg": -0.5,
-          "shares": 380
-        },
-        {
-          "pid": "B01161",
-          "pname": "UBS Securities Hong Kong Limited",
-          "chg": -6222500,
-          "pct_chg": -0.46,
-          "shares": 14437231
-        },
-        {
-          "pid": "C00093",
-          "pname": "法国巴黎银行",
-          "chg": -2886449,
-          "pct_chg": -0.21,
-          "shares": 6159135
-        },
-        {
-          "pid": "B01143",
-          "pname": "海通国际证券",
-          "chg": -2496400,
-          "pct_chg": -0.19,
-          "shares": 753600
-        },
-        {
-          "pid": "B01451",
-          "pname": "高盛(亚洲)证券",
-          "chg": -2363765,
-          "pct_chg": -0.17,
-          "shares": 20483782
-        }
-      ]
-    },
-    {
-      "code": "02166",
-      "name": "芯智控股",
-      "total_in": 72558000,
-      "total_out": 1318000,
-      "total_shares": 393318620,
-      "outstanding_shares": 491034481,
-      "ins": [
-        {
-          "pid": "B01905",
-          "pname": "国证国际证券(香港)",
-          "chg": 54278000,
-          "pct_chg": 11.11,
-          "shares": 54316000
-        },
-        {
-          "pid": "B01353",
-          "pname": "大华继显(香港)",
-          "chg": 13070000,
-          "pct_chg": 2.68,
-          "shares": 13160000
-        },
-        {
-          "pid": "B01955",
-          "pname": "富途证券国际香港",
-          "chg": 5210000,
-          "pct_chg": 1.06,
-          "shares": 43726255
-        }
-      ],
-      "outs": [
-        {
-          "pid": "C00019",
-          "pname": "香港上海汇丰银行",
-          "chg": -1318000,
-          "pct_chg": -0.27,
-          "shares": 121320520
+          "shares": 1100000
         }
       ]
     },
     {
       "code": "02477",
       "name": "經緯天地",
-      "total_in": 35152901,
-      "total_out": 36351400,
-      "total_shares": 3458993241,
-      "outstanding_shares": 4026767451,
+      "total_in": 210444604,
+      "total_out": 213248588,
+      "total_shares": 3461489241,
+      "outstanding_shares": 4835157481,
       "ins": [
-        {
-          "pid": "A00004",
-          "pname": "港股通(深)",
-          "chg": 19341600,
-          "pct_chg": 0.48,
-          "shares": 723411200
-        },
-        {
-          "pid": "C00010",
-          "pname": "花旗银行",
-          "chg": 7708901,
-          "pct_chg": 0.2,
-          "shares": 20863872
-        },
-        {
-          "pid": "B01555",
-          "pname": "ABN AMRO Clearing Hong Kong Limited",
-          "chg": 5273600,
-          "pct_chg": 0.13,
-          "shares": 7499300
-        },
-        {
-          "pid": "B01130",
-          "pname": "中银国际证券",
-          "chg": 2828800,
-          "pct_chg": 0.07,
-          "shares": 20583200
-        }
-      ],
-      "outs": [
         {
           "pid": "A00003",
           "pname": "港股通(沪)",
-          "chg": -24410400,
-          "pct_chg": -0.61,
-          "shares": 1386693600
-        },
-        {
-          "pid": "C00019",
-          "pname": "香港上海汇丰银行",
-          "chg": -6201800,
-          "pct_chg": -0.15,
-          "shares": 76084877
-        },
-        {
-          "pid": "B01673",
-          "pname": "富昌证券",
-          "chg": -3067200,
-          "pct_chg": -0.07,
-          "shares": 457600
-        },
-        {
-          "pid": "B01584",
-          "pname": "致富证券",
-          "chg": -1398400,
-          "pct_chg": -0.03,
-          "shares": 7770405
-        },
-        {
-          "pid": "B01610",
-          "pname": "凯基证券亚洲",
-          "chg": -1273600,
-          "pct_chg": -0.03,
-          "shares": 6898400
-        }
-      ]
-    },
-    {
-      "code": "01339",
-      "name": "中國人民保險集團",
-      "total_in": 34629183,
-      "total_out": 35632717,
-      "total_shares": 8690627940,
-      "outstanding_shares": 8786399696,
-      "ins": [
-        {
-          "pid": "C00019",
-          "pname": "香港上海汇丰银行",
-          "chg": 26916038,
-          "pct_chg": 0.31,
-          "shares": 3895138117
-        },
-        {
-          "pid": "C00039",
-          "pname": "渣打银行(香港)",
-          "chg": 4485000,
-          "pct_chg": 0.05,
-          "shares": 309724550
-        },
-        {
-          "pid": "C00093",
-          "pname": "法国巴黎银行",
-          "chg": 1841145,
-          "pct_chg": 0.02,
-          "shares": 72906913
-        },
-        {
-          "pid": "A00003",
-          "pname": "港股通(沪)",
-          "chg": 1387000,
-          "pct_chg": 0.01,
-          "shares": 1405544136
-        }
-      ],
-      "outs": [
-        {
-          "pid": "C00010",
-          "pname": "花旗银行",
-          "chg": -20088336,
-          "pct_chg": -0.23,
-          "shares": 760888739
-        },
-        {
-          "pid": "B01274",
-          "pname": "摩根士丹利香港证券",
-          "chg": -6877941,
-          "pct_chg": -0.08,
-          "shares": 60509263
-        },
-        {
-          "pid": "B01555",
-          "pname": "ABN AMRO Clearing Hong Kong Limited",
-          "chg": -6826440,
-          "pct_chg": -0.07,
-          "shares": 67031
-        },
-        {
-          "pid": "C00111",
-          "pname": "Societe Generale",
-          "chg": -1840000,
-          "pct_chg": -0.02,
-          "shares": 3257291
-        }
-      ]
-    },
-    {
-      "code": "01932",
-      "name": "中漆集團",
-      "total_in": 35000000,
-      "total_out": 35000000,
-      "total_shares": 193417034,
-      "outstanding_shares": 1020670364,
-      "ins": [
-        {
-          "pid": "C00019",
-          "pname": "香港上海汇丰银行",
-          "chg": 35000000,
-          "pct_chg": 3.5,
-          "shares": 53222582
-        }
-      ],
-      "outs": [
-        {
-          "pid": "C00039",
-          "pname": "渣打银行(香港)",
-          "chg": -35000000,
-          "pct_chg": -3.5,
-          "shares": 819739
-        }
-      ]
-    },
-    {
-      "code": "00565",
-      "name": "錦藝集團控股",
-      "total_in": 35000000,
-      "total_out": 34945000,
-      "total_shares": 1768378525,
-      "outstanding_shares": 2710158659,
-      "ins": [
-        {
-          "pid": "C00039",
-          "pname": "渣打银行(香港)",
-          "chg": 25000000,
-          "pct_chg": 0.93,
-          "shares": 108561180
-        },
-        {
-          "pid": "B02141",
-          "pname": "新永安国际证券",
-          "chg": 10000000,
-          "pct_chg": 0.37,
-          "shares": 49835000
-        }
-      ],
-      "outs": [
-        {
-          "pid": "B02019",
-          "pname": "智易东方证券",
-          "chg": -25090000,
-          "pct_chg": -0.93,
-          "shares": 41770000
-        },
-        {
-          "pid": "B02052",
-          "pname": "圣衡金融控股",
-          "chg": -9855000,
-          "pct_chg": -0.36,
-          "shares": 106550000
-        }
-      ]
-    },
-    {
-      "code": "01519",
-      "name": "極兔速遞－Ｗ",
-      "total_in": 34414336,
-      "total_out": 32503327,
-      "total_shares": 7690486729,
-      "outstanding_shares": 9796798380,
-      "ins": [
-        {
-          "pid": "C00019",
-          "pname": "香港上海汇丰银行",
-          "chg": 24754305,
-          "pct_chg": 0.25,
-          "shares": 1847860864
-        },
-        {
-          "pid": "B01224",
-          "pname": "Merrill Lynch Far East Limited",
-          "chg": 6237509,
-          "pct_chg": 0.06,
-          "shares": 526119227
-        },
-        {
-          "pid": "C00093",
-          "pname": "法国巴黎银行",
-          "chg": 2338722,
-          "pct_chg": 0.03,
-          "shares": 12794248
-        },
-        {
-          "pid": "B01161",
-          "pname": "UBS Securities Hong Kong Limited",
-          "chg": 1083800,
-          "pct_chg": 0.01,
-          "shares": 118562895
-        }
-      ],
-      "outs": [
-        {
-          "pid": "B01274",
-          "pname": "摩根士丹利香港证券",
-          "chg": -11317509,
-          "pct_chg": -0.12,
-          "shares": 126589671
-        },
-        {
-          "pid": "C00010",
-          "pname": "花旗银行",
-          "chg": -7428218,
-          "pct_chg": -0.08,
-          "shares": 267312222
-        },
-        {
-          "pid": "A00003",
-          "pname": "港股通(沪)",
-          "chg": -6398000,
-          "pct_chg": -0.06,
-          "shares": 521386632
+          "chg": 114411200,
+          "pct_chg": -3.28,
+          "shares": 1479803200
         },
         {
           "pid": "A00004",
           "pname": "港股通(深)",
-          "chg": -6015600,
-          "pct_chg": -0.06,
-          "shares": 313199369
+          "chg": 84963200,
+          "pct_chg": -1.1,
+          "shares": 776672000
         },
         {
-          "pid": "C00040",
-          "pname": "中国工商银行亚洲",
-          "chg": -1344000,
-          "pct_chg": -0.01,
-          "shares": 57937400
-        }
-      ]
-    },
-    {
-      "code": "01288",
-      "name": "農業銀行",
-      "total_in": 31745212,
-      "total_out": 32721675,
-      "total_shares": 30523762275,
-      "outstanding_shares": 30969726334,
-      "ins": [
-        {
-          "pid": "C00019",
-          "pname": "香港上海汇丰银行",
-          "chg": 20287613,
-          "pct_chg": 0.06,
-          "shares": 6942752268
-        },
-        {
-          "pid": "C00039",
-          "pname": "渣打银行(香港)",
-          "chg": 3556000,
-          "pct_chg": 0.01,
-          "shares": 306697347
-        },
-        {
-          "pid": "B01451",
-          "pname": "高盛(亚洲)证券",
-          "chg": 3503000,
-          "pct_chg": 0.01,
-          "shares": 48813955
-        },
-        {
-          "pid": "B01161",
-          "pname": "UBS Securities Hong Kong Limited",
-          "chg": 1820476,
-          "pct_chg": 0.0,
-          "shares": 261211033
-        },
-        {
-          "pid": "B01224",
-          "pname": "Merrill Lynch Far East Limited",
-          "chg": 1296023,
-          "pct_chg": 0.0,
-          "shares": 7774993
-        },
-        {
-          "pid": "C00093",
-          "pname": "法国巴黎银行",
-          "chg": 1282100,
-          "pct_chg": 0.01,
-          "shares": 114634471
-        }
-      ],
-      "outs": [
-        {
-          "pid": "B01274",
-          "pname": "摩根士丹利香港证券",
-          "chg": -28194934,
-          "pct_chg": -0.1,
-          "shares": 30280488
-        },
-        {
-          "pid": "B01555",
-          "pname": "ABN AMRO Clearing Hong Kong Limited",
-          "chg": -2657633,
-          "pct_chg": 0.0,
-          "shares": 23903
-        },
-        {
-          "pid": "C00010",
-          "pname": "花旗银行",
-          "chg": -1869108,
-          "pct_chg": -0.01,
-          "shares": 4323227638
-        }
-      ]
-    },
-    {
-      "code": "01357",
-      "name": "美圖公司",
-      "total_in": 32055528,
-      "total_out": 31929481,
-      "total_shares": 4502821567,
-      "outstanding_shares": 4625869701,
-      "ins": [
-        {
-          "pid": "B01451",
-          "pname": "高盛(亚洲)证券",
-          "chg": 14788434,
-          "pct_chg": 0.32,
-          "shares": 36919334
-        },
-        {
-          "pid": "A00004",
-          "pname": "港股通(深)",
-          "chg": 11189500,
-          "pct_chg": 0.24,
-          "shares": 780897632
-        },
-        {
-          "pid": "B01224",
-          "pname": "Merrill Lynch Far East Limited",
-          "chg": 3650094,
-          "pct_chg": 0.08,
-          "shares": 126367022
-        },
-        {
-          "pid": "A00003",
-          "pname": "港股通(沪)",
-          "chg": 2427500,
-          "pct_chg": 0.05,
-          "shares": 708442212
-        }
-      ],
-      "outs": [
-        {
-          "pid": "C00010",
-          "pname": "花旗银行",
-          "chg": -13751351,
-          "pct_chg": -0.3,
-          "shares": 856079424
-        },
-        {
-          "pid": "C00019",
-          "pname": "香港上海汇丰银行",
-          "chg": -13706420,
-          "pct_chg": -0.3,
-          "shares": 646411994
-        },
-        {
-          "pid": "C00039",
-          "pname": "渣打银行(香港)",
-          "chg": -3319210,
-          "pct_chg": -0.08,
-          "shares": 126092948
-        },
-        {
-          "pid": "B01161",
-          "pname": "UBS Securities Hong Kong Limited",
-          "chg": -1152500,
-          "pct_chg": -0.03,
-          "shares": 120587573
-        }
-      ]
-    },
-    {
-      "code": "02600",
-      "name": "中國鋁業",
-      "total_in": 31625163,
-      "total_out": 30261408,
-      "total_shares": 3933617492,
-      "outstanding_shares": 3974153861,
-      "ins": [
-        {
-          "pid": "B01224",
-          "pname": "Merrill Lynch Far East Limited",
-          "chg": 15812781,
-          "pct_chg": 0.4,
-          "shares": 28226640
-        },
-        {
-          "pid": "C00019",
-          "pname": "香港上海汇丰银行",
-          "chg": 15812382,
-          "pct_chg": 0.4,
-          "shares": 1624859848
-        }
-      ],
-      "outs": [
-        {
-          "pid": "C00010",
-          "pname": "花旗银行",
-          "chg": -27321923,
-          "pct_chg": -0.69,
-          "shares": 509626409
-        },
-        {
-          "pid": "B01274",
-          "pname": "摩根士丹利香港证券",
-          "chg": -1710915,
-          "pct_chg": -0.04,
-          "shares": 35101701
-        },
-        {
-          "pid": "C00111",
-          "pname": "Societe Generale",
-          "chg": -1228570,
-          "pct_chg": -0.03,
-          "shares": 496897
-        }
-      ]
-    },
-    {
-      "code": "00981",
-      "name": "中芯國際",
-      "total_in": 35532572,
-      "total_out": 25893285,
-      "total_shares": 5998255994,
-      "outstanding_shares": 8648004604,
-      "ins": [
-        {
-          "pid": "A00004",
-          "pname": "港股通(深)",
-          "chg": 15421856,
-          "pct_chg": 0.18,
-          "shares": 1162917616
-        },
-        {
-          "pid": "B01161",
-          "pname": "UBS Securities Hong Kong Limited",
-          "chg": 10077175,
-          "pct_chg": 0.12,
-          "shares": 102206392
-        },
-        {
-          "pid": "B01224",
-          "pname": "Merrill Lynch Far East Limited",
-          "chg": 8959541,
-          "pct_chg": 0.11,
-          "shares": 25075248
-        },
-        {
-          "pid": "B01451",
-          "pname": "高盛(亚洲)证券",
-          "chg": 1074000,
-          "pct_chg": 0.01,
-          "shares": 13695368
-        }
-      ],
-      "outs": [
-        {
-          "pid": "C00019",
-          "pname": "香港上海汇丰银行",
-          "chg": -5620482,
-          "pct_chg": -0.07,
-          "shares": 570745265
+          "pid": "B01955",
+          "pname": "富途证券国际香港",
+          "chg": 4045600,
+          "pct_chg": -0.26,
+          "shares": 87448661
         },
         {
           "pid": "C00033",
           "pname": "中国银行(香港)",
-          "chg": -3988869,
-          "pct_chg": -0.05,
-          "shares": 122378356
+          "chg": 2954400,
+          "pct_chg": -0.25,
+          "shares": 80107200
         },
         {
-          "pid": "B01955",
-          "pname": "富途证券国际香港",
-          "chg": -3775280,
-          "pct_chg": -0.05,
-          "shares": 57347110
-        },
-        {
-          "pid": "A00003",
-          "pname": "港股通(沪)",
-          "chg": -2408000,
-          "pct_chg": -0.03,
-          "shares": 1420527661
-        },
-        {
-          "pid": "B01148",
-          "pname": "招商证券香港",
-          "chg": -2028000,
-          "pct_chg": -0.02,
-          "shares": 15588547
-        },
-        {
-          "pid": "B01284",
-          "pname": "恒生证券",
-          "chg": -1691500,
-          "pct_chg": -0.02,
-          "shares": 45051146
+          "pid": "B01590",
+          "pname": "盈透证券",
+          "chg": 1568604,
+          "pct_chg": 0.02,
+          "shares": 5769000
         },
         {
           "pid": "B01130",
           "pname": "中银国际证券",
-          "chg": -1666095,
-          "pct_chg": -0.02,
-          "shares": 606838988
-        },
-        {
-          "pid": "B01555",
-          "pname": "ABN AMRO Clearing Hong Kong Limited",
-          "chg": -1406737,
-          "pct_chg": -0.02,
-          "shares": 362790
-        },
-        {
-          "pid": "C00039",
-          "pname": "渣打银行(香港)",
-          "chg": -1130367,
-          "pct_chg": -0.02,
-          "shares": 81168563
-        },
-        {
-          "pid": "C00010",
-          "pname": "花旗银行",
-          "chg": -1091455,
-          "pct_chg": -0.01,
-          "shares": 86061520
+          "chg": 1281600,
+          "pct_chg": -0.07,
+          "shares": 23469600
         },
         {
           "pid": "B01668",
           "pname": "耀才证券",
-          "chg": -1086500,
-          "pct_chg": -0.02,
-          "shares": 5871040
+          "chg": 1220000,
+          "pct_chg": -0.04,
+          "shares": 19213600
         }
-      ]
-    },
-    {
-      "code": "08547",
-      "name": "PACIFIC LEGEND",
-      "total_in": 27501257,
-      "total_out": 31481257,
-      "total_shares": 883237556,
-      "outstanding_shares": 890539983,
-      "ins": [
+      ],
+      "outs": [
         {
-          "pid": "B02058",
-          "pname": "弘雅资本",
-          "chg": 10290000,
-          "pct_chg": 1.17,
-          "shares": 159260000
+          "pid": "B01447",
+          "pname": "贝塔国际证券",
+          "chg": -172628800,
+          "pct_chg": -6.91,
+          "shares": 623796000
         },
         {
           "pid": "C00010",
           "pname": "花旗银行",
-          "chg": 9671257,
-          "pct_chg": 1.09,
-          "shares": 31398757
+          "chg": -22935005,
+          "pct_chg": -0.66,
+          "shares": 22564462
+        },
+        {
+          "pid": "B01555",
+          "pname": "ABN AMRO Clearing Hong Kong Limited",
+          "chg": -7147300,
+          "pct_chg": -0.2,
+          "shares": 4220000
+        },
+        {
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": -3802200,
+          "pct_chg": -0.45,
+          "shares": 85254949
         },
         {
           "pid": "B01610",
           "pname": "凯基证券亚洲",
-          "chg": 5540000,
-          "pct_chg": 0.62,
-          "shares": 57973000
-        },
-        {
-          "pid": "B02032",
-          "pname": "方德证券",
-          "chg": 2000000,
-          "pct_chg": 0.22,
-          "shares": 2210000
-        }
-      ],
-      "outs": [
-        {
-          "pid": "B02212",
-          "pname": "华安证券香港经纪",
-          "chg": -16580000,
-          "pct_chg": -1.87,
-          "shares": 64000000
-        },
-        {
-          "pid": "C00093",
-          "pname": "法国巴黎银行",
-          "chg": -7621257,
-          "pct_chg": -0.85,
-          "shares": 3460743
-        },
-        {
-          "pid": "B01929",
-          "pname": "银河证券香港",
-          "chg": -4500000,
-          "pct_chg": -0.51,
-          "shares": 160000
-        },
-        {
-          "pid": "B01904",
-          "pname": "华盛资本证券",
-          "chg": -1570000,
-          "pct_chg": -0.17,
-          "shares": 1266000
-        },
-        {
-          "pid": "B02177",
-          "pname": "浙商国际金融",
-          "chg": -1210000,
+          "chg": -3736000,
           "pct_chg": -0.13,
-          "shares": 11290000
+          "shares": 7911200
+        },
+        {
+          "pid": "C00111",
+          "pname": "Societe Generale",
+          "chg": -1500504,
+          "pct_chg": -0.04,
+          "shares": 1670400
+        },
+        {
+          "pid": "C00093",
+          "pname": "法国巴黎银行",
+          "chg": -1498779,
+          "pct_chg": -0.04,
+          "shares": 417673
         }
       ]
     },
     {
-      "code": "00095",
-      "name": "綠景中國地產",
-      "total_in": 28556000,
-      "total_out": 27478000,
-      "total_shares": 6252410903,
-      "outstanding_shares": 6394365824,
+      "code": "00884",
+      "name": "旭輝控股集團",
+      "total_in": 224243780,
+      "total_out": 19198000,
+      "total_shares": 18354794762,
+      "outstanding_shares": 18354794762,
       "ins": [
         {
-          "pid": "B02142",
-          "pname": "老虎证券香港环球",
-          "chg": 28556000,
-          "pct_chg": 0.45,
-          "shares": 105698000
-        }
-      ],
-      "outs": [
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": 210247780,
+          "pct_chg": -10.26,
+          "shares": 2073431678
+        },
         {
-          "pid": "A00003",
-          "pname": "港股通(沪)",
-          "chg": -27478000,
+          "pid": "C00033",
+          "pname": "中国银行(香港)",
+          "chg": 7262000,
+          "pct_chg": -4.99,
+          "shares": 913887887
+        },
+        {
+          "pid": "C00093",
+          "pname": "法国巴黎银行",
+          "chg": 2158000,
+          "pct_chg": -0.38,
+          "shares": 72461561
+        },
+        {
+          "pid": "B01955",
+          "pname": "富途证券国际香港",
+          "chg": 1882000,
+          "pct_chg": -6.17,
+          "shares": 1122893640
+        },
+        {
+          "pid": "C00010",
+          "pname": "花旗银行",
+          "chg": 1694000,
+          "pct_chg": -4.23,
+          "shares": 770487880
+        },
+        {
+          "pid": "C00058",
+          "pname": "中信银行国际",
+          "chg": 1000000,
           "pct_chg": -0.44,
-          "shares": 156514000
+          "shares": 81199200
+        }
+      ],
+      "outs": [
+        {
+          "pid": "C00039",
+          "pname": "渣打银行(香港)",
+          "chg": -14600000,
+          "pct_chg": -3.15,
+          "shares": 557734824
+        },
+        {
+          "pid": "B01901",
+          "pname": "招银国际证券",
+          "chg": -1938000,
+          "pct_chg": -0.33,
+          "shares": 58276361
+        },
+        {
+          "pid": "B01584",
+          "pname": "致富证券",
+          "chg": -1646000,
+          "pct_chg": -0.38,
+          "shares": 67467007
+        },
+        {
+          "pid": "B01814",
+          "pname": "立桥证券",
+          "chg": -1014000,
+          "pct_chg": -0.04,
+          "shares": 6943760
         }
       ]
     },
     {
-      "code": "01177",
-      "name": "中國生物製藥",
-      "total_in": 28383374,
-      "total_out": 27077232,
-      "total_shares": 15306612970,
-      "outstanding_shares": 18815750424,
+      "code": "03800",
+      "name": "協鑫科技",
+      "total_in": 109644034,
+      "total_out": 114218560,
+      "total_shares": 33195327761,
+      "outstanding_shares": 33530634102,
       "ins": [
         {
-          "pid": "A00004",
-          "pname": "港股通(深)",
-          "chg": 10749000,
-          "pct_chg": 0.07,
-          "shares": 2035373353
+          "pid": "B01143",
+          "pname": "海通国际证券",
+          "chg": 45000000,
+          "pct_chg": 0.13,
+          "shares": 1417329623
         },
         {
-          "pid": "C00019",
-          "pname": "香港上海汇丰银行",
-          "chg": 7635075,
-          "pct_chg": 0.07,
-          "shares": 5157172307
+          "pid": "B01224",
+          "pname": "Merrill Lynch Far East Limited",
+          "chg": 27861655,
+          "pct_chg": 0.08,
+          "shares": 47843266
         },
         {
-          "pid": "B01161",
-          "pname": "UBS Securities Hong Kong Limited",
-          "chg": 3577515,
+          "pid": "A00003",
+          "pname": "港股通(沪)",
+          "chg": 15289000,
+          "pct_chg": 0.04,
+          "shares": 5712924223
+        },
+        {
+          "pid": "B01590",
+          "pname": "盈透证券",
+          "chg": 10811379,
           "pct_chg": 0.03,
-          "shares": 1769702992
+          "shares": 2071224091
         },
         {
-          "pid": "B01228",
-          "pname": "中信证券经纪香港",
-          "chg": 2133000,
-          "pct_chg": 0.01,
-          "shares": 4515650
-        },
-        {
-          "pid": "C00002",
-          "pname": "交通银行信托",
-          "chg": 1863000,
-          "pct_chg": 0.01,
-          "shares": 46168266
-        },
-        {
-          "pid": "C00093",
-          "pname": "法国巴黎银行",
-          "chg": 1265783,
-          "pct_chg": 0.01,
-          "shares": 79220778
-        },
-        {
-          "pid": "B01451",
-          "pname": "高盛(亚洲)证券",
-          "chg": 1160001,
-          "pct_chg": 0.01,
-          "shares": 348537135
-        }
-      ],
-      "outs": [
-        {
-          "pid": "C00010",
-          "pname": "花旗银行",
-          "chg": -11789154,
-          "pct_chg": -0.05,
-          "shares": 1377703195
-        },
-        {
-          "pid": "C00039",
-          "pname": "渣打银行(香港)",
-          "chg": -6038200,
-          "pct_chg": -0.03,
-          "shares": 777937283
-        },
-        {
-          "pid": "B01224",
-          "pname": "Merrill Lynch Far East Limited",
-          "chg": -3631162,
-          "pct_chg": -0.02,
-          "shares": 11962185
-        },
-        {
-          "pid": "B01555",
-          "pname": "ABN AMRO Clearing Hong Kong Limited",
-          "chg": -2489716,
-          "pct_chg": -0.01,
-          "shares": 23808
-        },
-        {
-          "pid": "A00003",
-          "pname": "港股通(沪)",
-          "chg": -2011000,
-          "pct_chg": -0.01,
-          "shares": 988061242
-        },
-        {
-          "pid": "B01148",
-          "pname": "招商证券香港",
-          "chg": -1118000,
-          "pct_chg": -0.01,
-          "shares": 8474497
-        }
-      ]
-    },
-    {
-      "code": "02228",
-      "name": "晶泰控股",
-      "total_in": 27895441,
-      "total_out": 27268968,
-      "total_shares": 4302132063,
-      "outstanding_shares": 4334641877,
-      "ins": [
-        {
-          "pid": "C00010",
-          "pname": "花旗银行",
-          "chg": 27895441,
-          "pct_chg": 0.65,
-          "shares": 138743830
-        }
-      ],
-      "outs": [
-        {
-          "pid": "C00019",
-          "pname": "香港上海汇丰银行",
-          "chg": -15604162,
-          "pct_chg": -0.36,
-          "shares": 422463128
-        },
-        {
-          "pid": "C00093",
-          "pname": "法国巴黎银行",
-          "chg": -6130806,
-          "pct_chg": -0.14,
-          "shares": 10508760
-        },
-        {
-          "pid": "B01955",
-          "pname": "富途证券国际香港",
-          "chg": -3472000,
-          "pct_chg": -0.08,
-          "shares": 356216574
-        },
-        {
-          "pid": "C00042",
-          "pname": "永隆银行",
-          "chg": -2062000,
-          "pct_chg": -0.05,
-          "shares": 29981799
-        }
-      ]
-    },
-    {
-      "code": "00805",
-      "name": "新吉奧房車",
-      "total_in": 4400000,
-      "total_out": 50000000,
-      "total_shares": 848115579,
-      "outstanding_shares": 963220419,
-      "ins": [
-        {
-          "pid": "B02214",
-          "pname": "盈宝证券国际香港",
-          "chg": 4400000,
-          "pct_chg": 0.45,
-          "shares": 21114000
-        }
-      ],
-      "outs": [
-        {
-          "pid": "B01686",
-          "pname": "第一上海证券公司",
-          "chg": -50000000,
-          "pct_chg": -5.21,
-          "shares": 317470122
-        }
-      ]
-    },
-    {
-      "code": "00241",
-      "name": "阿里健康",
-      "total_in": 24971871,
-      "total_out": 27693354,
-      "total_shares": 7563931568,
-      "outstanding_shares": 16429043370,
-      "ins": [
-        {
-          "pid": "A00004",
-          "pname": "港股通(深)",
-          "chg": 9766000,
-          "pct_chg": 0.06,
-          "shares": 1214154242
-        },
-        {
-          "pid": "A00003",
-          "pname": "港股通(沪)",
-          "chg": 9498000,
-          "pct_chg": 0.06,
-          "shares": 829315000
-        },
-        {
-          "pid": "C00010",
-          "pname": "花旗银行",
-          "chg": 3276420,
+          "pid": "B01842",
+          "pname": "交银国际证券",
+          "chg": 5313000,
           "pct_chg": 0.02,
-          "shares": 350136252
+          "shares": 26958000
         },
         {
-          "pid": "C00039",
-          "pname": "渣打银行(香港)",
-          "chg": 1307500,
-          "pct_chg": 0.01,
-          "shares": 215194072
-        },
-        {
-          "pid": "B01451",
-          "pname": "高盛(亚洲)证券",
-          "chg": 1123951,
-          "pct_chg": 0.01,
-          "shares": 5005073
-        }
-      ],
-      "outs": [
-        {
-          "pid": "C00019",
-          "pname": "香港上海汇丰银行",
-          "chg": -18924058,
-          "pct_chg": -0.12,
-          "shares": 1210852770
-        },
-        {
-          "pid": "B01161",
-          "pname": "UBS Securities Hong Kong Limited",
-          "chg": -3897431,
-          "pct_chg": -0.02,
-          "shares": 1255863465
-        },
-        {
-          "pid": "B01224",
-          "pname": "Merrill Lynch Far East Limited",
-          "chg": -2716531,
-          "pct_chg": -0.01,
-          "shares": 5353814
-        },
-        {
-          "pid": "B01265",
-          "pname": "华侨证券经纪",
-          "chg": -1092000,
+          "pid": "B01610",
+          "pname": "凯基证券亚洲",
+          "chg": 2175000,
           "pct_chg": 0.0,
-          "shares": 11384631
+          "shares": 28869000
+        },
+        {
+          "pid": "B01565",
+          "pname": "国泰君安(香港)",
+          "chg": 1886000,
+          "pct_chg": 0.01,
+          "shares": 772293000
         },
         {
           "pid": "B01555",
           "pname": "ABN AMRO Clearing Hong Kong Limited",
-          "chg": -1063334,
-          "pct_chg": -0.01,
-          "shares": 3150984
-        }
-      ]
-    },
-    {
-      "code": "01888",
-      "name": "建滔積層板",
-      "total_in": 24602683,
-      "total_out": 27217772,
-      "total_shares": 1355246705,
-      "outstanding_shares": 3197090599,
-      "ins": [
-        {
-          "pid": "B01224",
-          "pname": "Merrill Lynch Far East Limited",
-          "chg": 19157990,
-          "pct_chg": 0.61,
-          "shares": 57558350
-        },
-        {
-          "pid": "A00003",
-          "pname": "港股通(沪)",
-          "chg": 3470803,
-          "pct_chg": 0.11,
-          "shares": 301407280
-        },
-        {
-          "pid": "B01955",
-          "pname": "富途证券国际香港",
-          "chg": 1973890,
-          "pct_chg": 0.06,
-          "shares": 26690938
+          "chg": 1308000,
+          "pct_chg": 0.0,
+          "shares": 5753576
         }
       ],
       "outs": [
         {
           "pid": "C00010",
           "pname": "花旗银行",
-          "chg": -12877242,
-          "pct_chg": -0.4,
-          "shares": 247709273
-        },
-        {
-          "pid": "C00019",
-          "pname": "香港上海汇丰银行",
-          "chg": -4789142,
-          "pct_chg": -0.16,
-          "shares": 229424098
+          "chg": -38715250,
+          "pct_chg": -0.12,
+          "shares": 2570122928
         },
         {
           "pid": "B01274",
           "pname": "摩根士丹利香港证券",
-          "chg": -3520723,
-          "pct_chg": -0.11,
-          "shares": 31087272
-        },
-        {
-          "pid": "B01161",
-          "pname": "UBS Securities Hong Kong Limited",
-          "chg": -2164328,
-          "pct_chg": -0.07,
-          "shares": 32187135
+          "chg": -29076000,
+          "pct_chg": -0.09,
+          "shares": 12365816
         },
         {
           "pid": "A00004",
           "pname": "港股通(深)",
-          "chg": -2000000,
-          "pct_chg": -0.06,
-          "shares": 242683736
+          "chg": -21911000,
+          "pct_chg": -0.07,
+          "shares": 4698150909
         },
         {
-          "pid": "C00093",
-          "pname": "法国巴黎银行",
-          "chg": -1866337,
-          "pct_chg": -0.06,
-          "shares": 18627295
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": -12073315,
+          "pct_chg": -0.03,
+          "shares": 5764220108
+        },
+        {
+          "pid": "B01955",
+          "pname": "富途证券国际香港",
+          "chg": -7995000,
+          "pct_chg": -0.02,
+          "shares": 3393041983
+        },
+        {
+          "pid": "C00042",
+          "pname": "永隆银行",
+          "chg": -1608000,
+          "pct_chg": -0.01,
+          "shares": 145117000
+        },
+        {
+          "pid": "B01673",
+          "pname": "富昌证券",
+          "chg": -1564000,
+          "pct_chg": -0.01,
+          "shares": 9813010
+        },
+        {
+          "pid": "C00111",
+          "pname": "Societe Generale",
+          "chg": -1275995,
+          "pct_chg": -0.01,
+          "shares": 5675060
         }
       ]
     },
     {
       "code": "01024",
       "name": "快手－Ｗ",
-      "total_in": 26975619,
-      "total_out": 17868332,
-      "total_shares": 3640172406,
-      "outstanding_shares": 4381526728,
+      "total_in": 75374748,
+      "total_out": 75190346,
+      "total_shares": 3639870567,
+      "outstanding_shares": 4383273804,
       "ins": [
         {
-          "pid": "C00010",
-          "pname": "花旗银行",
-          "chg": 15921468,
-          "pct_chg": 0.37,
-          "shares": 402231790
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": 54350194,
+          "pct_chg": 1.25,
+          "shares": 1031666187
         },
         {
-          "pid": "B01161",
-          "pname": "UBS Securities Hong Kong Limited",
-          "chg": 4467630,
-          "pct_chg": 0.11,
-          "shares": 150307632
-        },
-        {
-          "pid": "B01224",
-          "pname": "Merrill Lynch Far East Limited",
-          "chg": 4094121,
-          "pct_chg": 0.1,
-          "shares": 29187419
-        },
-        {
-          "pid": "B01955",
-          "pname": "富途证券国际香港",
-          "chg": 1304600,
-          "pct_chg": 0.03,
-          "shares": 184291714
+          "pid": "A00004",
+          "pname": "港股通(深)",
+          "chg": 12858100,
+          "pct_chg": 0.3,
+          "shares": 578921410
         },
         {
           "pid": "A00003",
           "pname": "港股通(沪)",
-          "chg": 1187800,
-          "pct_chg": 0.02,
-          "shares": 284322802
+          "chg": 4504100,
+          "pct_chg": 0.1,
+          "shares": 282854102
+        },
+        {
+          "pid": "B01224",
+          "pname": "Merrill Lynch Far East Limited",
+          "chg": 1902279,
+          "pct_chg": 0.04,
+          "shares": 16042301
+        },
+        {
+          "pid": "C00039",
+          "pname": "渣打银行(香港)",
+          "chg": 1760075,
+          "pct_chg": 0.04,
+          "shares": 96647214
         }
       ],
       "outs": [
         {
-          "pid": "C00019",
-          "pname": "香港上海汇丰银行",
-          "chg": -15726563,
-          "pct_chg": -0.36,
-          "shares": 937345503
+          "pid": "B01161",
+          "pname": "UBS Securities Hong Kong Limited",
+          "chg": -69325586,
+          "pct_chg": -1.6,
+          "shares": 81177789
         },
         {
           "pid": "B01274",
           "pname": "摩根士丹利香港证券",
-          "chg": -2141769,
-          "pct_chg": -0.05,
-          "shares": 226953994
+          "chg": -5864760,
+          "pct_chg": -0.14,
+          "shares": 220431509
         }
       ]
     },
     {
-      "code": "06963",
-      "name": "陽光保險",
-      "total_in": 21753000,
-      "total_out": 21814600,
-      "total_shares": 3478703603,
-      "outstanding_shares": 3489171116,
+      "code": "00020",
+      "name": "商湯－Ｗ",
+      "total_in": 72457233,
+      "total_out": 70500546,
+      "total_shares": 41202912477,
+      "outstanding_shares": 42626642330,
       "ins": [
         {
-          "pid": "A00004",
-          "pname": "港股通(深)",
-          "chg": 21753000,
-          "pct_chg": 0.63,
-          "shares": 563922003
-        }
-      ],
-      "outs": [
-        {
-          "pid": "C00010",
-          "pname": "花旗银行",
-          "chg": -14742600,
-          "pct_chg": -0.42,
-          "shares": 352486076
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": 36177386,
+          "pct_chg": 0.09,
+          "shares": 6043577976
         },
-        {
-          "pid": "A00003",
-          "pname": "港股通(沪)",
-          "chg": -7072000,
-          "pct_chg": -0.2,
-          "shares": 423521418
-        }
-      ]
-    },
-    {
-      "code": "00297",
-      "name": "中化化肥",
-      "total_in": 20651317,
-      "total_out": 22790000,
-      "total_shares": 3380906944,
-      "outstanding_shares": 7114703164,
-      "ins": [
         {
           "pid": "B01224",
           "pname": "Merrill Lynch Far East Limited",
-          "chg": 8505240,
-          "pct_chg": 0.12,
-          "shares": 9915508
+          "chg": 15695848,
+          "pct_chg": 0.04,
+          "shares": 30470950
         },
         {
-          "pid": "A00003",
-          "pname": "港股通(沪)",
-          "chg": 4802000,
-          "pct_chg": 0.07,
-          "shares": 846658000
-        },
-        {
-          "pid": "C00010",
-          "pname": "花旗银行",
-          "chg": 2491977,
-          "pct_chg": 0.03,
-          "shares": 244270000
-        },
-        {
-          "pid": "B01161",
-          "pname": "UBS Securities Hong Kong Limited",
-          "chg": 1904000,
+          "pid": "C00016",
+          "pname": "星展银行",
+          "chg": 9910000,
           "pct_chg": 0.02,
-          "shares": 15281912
+          "shares": 35720152
         },
         {
           "pid": "B01555",
           "pname": "ABN AMRO Clearing Hong Kong Limited",
-          "chg": 1520000,
-          "pct_chg": 0.02,
-          "shares": 4868000
+          "chg": 5549999,
+          "pct_chg": 0.01,
+          "shares": 15823386
         },
         {
-          "pid": "C00093",
-          "pname": "法国巴黎银行",
-          "chg": 1428100,
-          "pct_chg": 0.02,
-          "shares": 22557023
+          "pid": "C00088",
+          "pname": "招商银行",
+          "chg": 2126000,
+          "pct_chg": 0.01,
+          "shares": 51537000
+        },
+        {
+          "pid": "B01264",
+          "pname": "马银证券(香港)",
+          "chg": 1918000,
+          "pct_chg": 0.0,
+          "shares": 19620000
+        },
+        {
+          "pid": "B01183",
+          "pname": "创兴证券",
+          "chg": 1080000,
+          "pct_chg": 0.0,
+          "shares": 145774400
         }
       ],
       "outs": [
+        {
+          "pid": "C00010",
+          "pname": "花旗银行",
+          "chg": -23550405,
+          "pct_chg": -0.06,
+          "shares": 3307628170
+        },
+        {
+          "pid": "B01451",
+          "pname": "高盛(亚洲)证券",
+          "chg": -18156131,
+          "pct_chg": -0.04,
+          "shares": 95792954
+        },
         {
           "pid": "A00004",
           "pname": "港股通(深)",
-          "chg": -21188000,
-          "pct_chg": -0.3,
-          "shares": 1113054200
+          "chg": -6610000,
+          "pct_chg": -0.02,
+          "shares": 6072714266
         },
         {
-          "pid": "C00019",
-          "pname": "香港上海汇丰银行",
-          "chg": -1602000,
-          "pct_chg": -0.02,
-          "shares": 440175507
-        }
-      ]
-    },
-    {
-      "code": "08131",
-      "name": "諾亞智能",
-      "total_in": 21060000,
-      "total_out": 21840000,
-      "total_shares": 699570080,
-      "outstanding_shares": 722099587,
-      "ins": [
-        {
-          "pid": "B01590",
-          "pname": "盈透证券",
-          "chg": 21060000,
-          "pct_chg": 2.92,
-          "shares": 79106000
-        }
-      ],
-      "outs": [
-        {
-          "pid": "B01660",
-          "pname": "国投证券香港",
-          "chg": -20000000,
-          "pct_chg": -2.78,
-          "shares": 64638523
+          "pid": "C00039",
+          "pname": "渣打银行(香港)",
+          "chg": -5196200,
+          "pct_chg": -0.01,
+          "shares": 456056653
         },
         {
           "pid": "B01955",
           "pname": "富途证券国际香港",
-          "chg": -1840000,
-          "pct_chg": -0.26,
-          "shares": 102038411
+          "chg": -3812000,
+          "pct_chg": -0.01,
+          "shares": 2897227298
+        },
+        {
+          "pid": "B01148",
+          "pname": "招商证券香港",
+          "chg": -2984000,
+          "pct_chg": -0.01,
+          "shares": 6935490227
+        },
+        {
+          "pid": "A00003",
+          "pname": "港股通(沪)",
+          "chg": -2710000,
+          "pct_chg": 0.0,
+          "shares": 3774849000
+        },
+        {
+          "pid": "B01929",
+          "pname": "银河证券香港",
+          "chg": -2160000,
+          "pct_chg": -0.01,
+          "shares": 10833000
+        },
+        {
+          "pid": "B01695",
+          "pname": "大新证券",
+          "chg": -1850000,
+          "pct_chg": -0.01,
+          "shares": 122170000
+        },
+        {
+          "pid": "C00093",
+          "pname": "法国巴黎银行",
+          "chg": -1267810,
+          "pct_chg": 0.0,
+          "shares": 146377580
+        },
+        {
+          "pid": "B01130",
+          "pname": "中银国际证券",
+          "chg": -1182000,
+          "pct_chg": 0.0,
+          "shares": 530286055
+        },
+        {
+          "pid": "C00111",
+          "pname": "Societe Generale",
+          "chg": -1022000,
+          "pct_chg": -0.01,
+          "shares": 12223042
+        }
+      ]
+    },
+    {
+      "code": "03988",
+      "name": "中國銀行",
+      "total_in": 71287980,
+      "total_out": 67459604,
+      "total_shares": 77710748268,
+      "outstanding_shares": 84394817841,
+      "ins": [
+        {
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": 27500336,
+          "pct_chg": 0.03,
+          "shares": 21025792346
+        },
+        {
+          "pid": "C00093",
+          "pname": "法国巴黎银行",
+          "chg": 15286858,
+          "pct_chg": 0.02,
+          "shares": 554516628
+        },
+        {
+          "pid": "B01161",
+          "pname": "UBS Securities Hong Kong Limited",
+          "chg": 11280499,
+          "pct_chg": 0.02,
+          "shares": 1381994872
+        },
+        {
+          "pid": "A00004",
+          "pname": "港股通(深)",
+          "chg": 9075000,
+          "pct_chg": 0.01,
+          "shares": 5052707653
+        },
+        {
+          "pid": "B01224",
+          "pname": "Merrill Lynch Far East Limited",
+          "chg": 5251429,
+          "pct_chg": 0.01,
+          "shares": 25504939
+        },
+        {
+          "pid": "C00111",
+          "pname": "Societe Generale",
+          "chg": 1766950,
+          "pct_chg": 0.0,
+          "shares": 16534795
+        },
+        {
+          "pid": "B01274",
+          "pname": "摩根士丹利香港证券",
+          "chg": 1126908,
+          "pct_chg": 0.0,
+          "shares": 160567674
+        }
+      ],
+      "outs": [
+        {
+          "pid": "C00010",
+          "pname": "花旗银行",
+          "chg": -37604379,
+          "pct_chg": -0.05,
+          "shares": 6786003324
+        },
+        {
+          "pid": "C00039",
+          "pname": "渣打银行(香港)",
+          "chg": -13169990,
+          "pct_chg": -0.01,
+          "shares": 1985217200
+        },
+        {
+          "pid": "B01555",
+          "pname": "ABN AMRO Clearing Hong Kong Limited",
+          "chg": -7436834,
+          "pct_chg": -0.01,
+          "shares": 1118808
+        },
+        {
+          "pid": "B01451",
+          "pname": "高盛(亚洲)证券",
+          "chg": -6293122,
+          "pct_chg": -0.01,
+          "shares": 492861943
+        },
+        {
+          "pid": "C00033",
+          "pname": "中国银行(香港)",
+          "chg": -1819279,
+          "pct_chg": 0.0,
+          "shares": 4415395169
+        },
+        {
+          "pid": "B01345",
+          "pname": "辉立证券",
+          "chg": -1136000,
+          "pct_chg": -0.01,
+          "shares": 275596003
+        }
+      ]
+    },
+    {
+      "code": "01060",
+      "name": "大麥娛樂",
+      "total_in": 70460412,
+      "total_out": 67863628,
+      "total_shares": 13961276617,
+      "outstanding_shares": 30363802994,
+      "ins": [
+        {
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": 35739860,
+          "pct_chg": 0.12,
+          "shares": 1795643987
+        },
+        {
+          "pid": "C00010",
+          "pname": "花旗银行",
+          "chg": 16241195,
+          "pct_chg": 0.06,
+          "shares": 434697827
+        },
+        {
+          "pid": "B01224",
+          "pname": "Merrill Lynch Far East Limited",
+          "chg": 9729357,
+          "pct_chg": 0.03,
+          "shares": 181560520
+        },
+        {
+          "pid": "C00039",
+          "pname": "渣打银行(香港)",
+          "chg": 7520000,
+          "pct_chg": 0.02,
+          "shares": 274541220
+        },
+        {
+          "pid": "C00093",
+          "pname": "法国巴黎银行",
+          "chg": 1230000,
+          "pct_chg": 0.0,
+          "shares": 17268033
+        }
+      ],
+      "outs": [
+        {
+          "pid": "A00003",
+          "pname": "港股通(沪)",
+          "chg": -25040000,
+          "pct_chg": -0.08,
+          "shares": 5348787258
+        },
+        {
+          "pid": "A00004",
+          "pname": "港股通(深)",
+          "chg": -21930000,
+          "pct_chg": -0.07,
+          "shares": 2352080000
+        },
+        {
+          "pid": "B01451",
+          "pname": "高盛(亚洲)证券",
+          "chg": -13230628,
+          "pct_chg": -0.04,
+          "shares": 20000
+        },
+        {
+          "pid": "B01555",
+          "pname": "ABN AMRO Clearing Hong Kong Limited",
+          "chg": -3643000,
+          "pct_chg": -0.01,
+          "shares": 10620908
+        },
+        {
+          "pid": "B01885",
+          "pname": "哈富证券",
+          "chg": -2840000,
+          "pct_chg": -0.01,
+          "shares": 7930000
+        },
+        {
+          "pid": "B02142",
+          "pname": "老虎证券香港环球",
+          "chg": -1180000,
+          "pct_chg": -0.01,
+          "shares": 2876992
+        }
+      ]
+    },
+    {
+      "code": "01222",
+      "name": "WANG ON GROUP",
+      "total_in": 64060000,
+      "total_out": 60620000,
+      "total_shares": 13702438431,
+      "outstanding_shares": 14286767209,
+      "ins": [
+        {
+          "pid": "B01438",
+          "pname": "金利丰证券",
+          "chg": 60000000,
+          "pct_chg": 0.43,
+          "shares": 595017111
+        },
+        {
+          "pid": "B01959",
+          "pname": "中泰国际证券",
+          "chg": 4060000,
+          "pct_chg": 0.03,
+          "shares": 7963068
+        }
+      ],
+      "outs": [
+        {
+          "pid": "B01948",
+          "pname": "财通国际",
+          "chg": -30000000,
+          "pct_chg": -0.21,
+          "shares": 220251322
+        },
+        {
+          "pid": "B01253",
+          "pname": "常汇证券",
+          "chg": -29620000,
+          "pct_chg": -0.2,
+          "shares": 5137
+        },
+        {
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": -1000000,
+          "pct_chg": -0.01,
+          "shares": 888195707
+        }
+      ]
+    },
+    {
+      "code": "00939",
+      "name": "建設銀行",
+      "total_in": 60574699,
+      "total_out": 52471296,
+      "total_shares": 96216089837,
+      "outstanding_shares": 243708434237,
+      "ins": [
+        {
+          "pid": "C00010",
+          "pname": "花旗银行",
+          "chg": 32630900,
+          "pct_chg": 0.01,
+          "shares": 8554623797
+        },
+        {
+          "pid": "C00093",
+          "pname": "法国巴黎银行",
+          "chg": 10553033,
+          "pct_chg": 0.0,
+          "shares": 833185116
+        },
+        {
+          "pid": "A00004",
+          "pname": "港股通(深)",
+          "chg": 7576000,
+          "pct_chg": 0.01,
+          "shares": 5098330618
+        },
+        {
+          "pid": "B01274",
+          "pname": "摩根士丹利香港证券",
+          "chg": 2097278,
+          "pct_chg": 0.0,
+          "shares": 91306336
+        },
+        {
+          "pid": "B02206",
+          "pname": "卓锐证券香港",
+          "chg": 1663000,
+          "pct_chg": 0.0,
+          "shares": 6282000
+        },
+        {
+          "pid": "B01673",
+          "pname": "富昌证券",
+          "chg": 1398000,
+          "pct_chg": 0.0,
+          "shares": 16698232
+        },
+        {
+          "pid": "B01143",
+          "pname": "海通国际证券",
+          "chg": 1302000,
+          "pct_chg": 0.0,
+          "shares": 18950955
+        },
+        {
+          "pid": "C00042",
+          "pname": "永隆银行",
+          "chg": 1166000,
+          "pct_chg": 0.0,
+          "shares": 210868384
+        },
+        {
+          "pid": "B01451",
+          "pname": "高盛(亚洲)证券",
+          "chg": 1153764,
+          "pct_chg": 0.0,
+          "shares": 107446685
+        },
+        {
+          "pid": "B01161",
+          "pname": "UBS Securities Hong Kong Limited",
+          "chg": 1034724,
+          "pct_chg": 0.0,
+          "shares": 972995144
+        }
+      ],
+      "outs": [
+        {
+          "pid": "C00039",
+          "pname": "渣打银行(香港)",
+          "chg": -22668700,
+          "pct_chg": -0.01,
+          "shares": 2868215768
+        },
+        {
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": -22182545,
+          "pct_chg": -0.01,
+          "shares": 32340757852
+        },
+        {
+          "pid": "A00003",
+          "pname": "港股通(沪)",
+          "chg": -4811000,
+          "pct_chg": 0.0,
+          "shares": 31436474278
+        },
+        {
+          "pid": "B01224",
+          "pname": "Merrill Lynch Far East Limited",
+          "chg": -1683909,
+          "pct_chg": 0.0,
+          "shares": 10389488
+        },
+        {
+          "pid": "B01423",
+          "pname": "信诚证券",
+          "chg": -1125142,
+          "pct_chg": 0.0,
+          "shares": 19411025
+        }
+      ]
+    },
+    {
+      "code": "01398",
+      "name": "工商銀行",
+      "total_in": 50866627,
+      "total_out": 52616821,
+      "total_shares": 79488668177,
+      "outstanding_shares": 87446279622,
+      "ins": [
+        {
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": 20195235,
+          "pct_chg": 0.03,
+          "shares": 23616820229
+        },
+        {
+          "pid": "B01224",
+          "pname": "Merrill Lynch Far East Limited",
+          "chg": 9562842,
+          "pct_chg": 0.02,
+          "shares": 43746062
+        },
+        {
+          "pid": "A00004",
+          "pname": "港股通(深)",
+          "chg": 7082000,
+          "pct_chg": 0.01,
+          "shares": 6549117808
+        },
+        {
+          "pid": "B01138",
+          "pname": "中信里昂证券",
+          "chg": 4373000,
+          "pct_chg": 0.01,
+          "shares": 30325594
+        },
+        {
+          "pid": "C00093",
+          "pname": "法国巴黎银行",
+          "chg": 4201439,
+          "pct_chg": 0.01,
+          "shares": 496300136
+        },
+        {
+          "pid": "B01451",
+          "pname": "高盛(亚洲)证券",
+          "chg": 4180111,
+          "pct_chg": 0.0,
+          "shares": 760841608
+        },
+        {
+          "pid": "B02206",
+          "pname": "卓锐证券香港",
+          "chg": 1272000,
+          "pct_chg": 0.0,
+          "shares": 5266000
+        }
+      ],
+      "outs": [
+        {
+          "pid": "C00039",
+          "pname": "渣打银行(香港)",
+          "chg": -24526149,
+          "pct_chg": -0.03,
+          "shares": 1725957964
+        },
+        {
+          "pid": "B01555",
+          "pname": "ABN AMRO Clearing Hong Kong Limited",
+          "chg": -17923520,
+          "pct_chg": -0.02,
+          "shares": 1297598
+        },
+        {
+          "pid": "A00003",
+          "pname": "港股通(沪)",
+          "chg": -3566000,
+          "pct_chg": 0.0,
+          "shares": 29857253998
+        },
+        {
+          "pid": "C00010",
+          "pname": "花旗银行",
+          "chg": -2159849,
+          "pct_chg": 0.0,
+          "shares": 6026637215
+        },
+        {
+          "pid": "B01161",
+          "pname": "UBS Securities Hong Kong Limited",
+          "chg": -2101303,
+          "pct_chg": 0.0,
+          "shares": 976704463
+        },
+        {
+          "pid": "B01610",
+          "pname": "凯基证券亚洲",
+          "chg": -1212000,
+          "pct_chg": 0.0,
+          "shares": 43982001
+        },
+        {
+          "pid": "B01963",
+          "pname": "天风国际证券与期货",
+          "chg": -1128000,
+          "pct_chg": 0.0,
+          "shares": 643316
+        }
+      ]
+    },
+    {
+      "code": "01177",
+      "name": "中國生物製藥",
+      "total_in": 49407250,
+      "total_out": 48031757,
+      "total_shares": 15306612970,
+      "outstanding_shares": 18820377437,
+      "ins": [
+        {
+          "pid": "A00004",
+          "pname": "港股通(深)",
+          "chg": 22848000,
+          "pct_chg": 0.12,
+          "shares": 2116545353
+        },
+        {
+          "pid": "A00003",
+          "pname": "港股通(沪)",
+          "chg": 16669250,
+          "pct_chg": 0.09,
+          "shares": 1019338992
+        },
+        {
+          "pid": "B01901",
+          "pname": "招银国际证券",
+          "chg": 6182000,
+          "pct_chg": 0.04,
+          "shares": 28049578
+        },
+        {
+          "pid": "B01130",
+          "pname": "中银国际证券",
+          "chg": 3708000,
+          "pct_chg": 0.02,
+          "shares": 641765969
+        }
+      ],
+      "outs": [
+        {
+          "pid": "C00010",
+          "pname": "花旗银行",
+          "chg": -26937746,
+          "pct_chg": -0.14,
+          "shares": 1274753765
+        },
+        {
+          "pid": "B01161",
+          "pname": "UBS Securities Hong Kong Limited",
+          "chg": -9768102,
+          "pct_chg": -0.05,
+          "shares": 1768355678
+        },
+        {
+          "pid": "C00039",
+          "pname": "渣打银行(香港)",
+          "chg": -5302280,
+          "pct_chg": -0.03,
+          "shares": 771525652
+        },
+        {
+          "pid": "B01224",
+          "pname": "Merrill Lynch Far East Limited",
+          "chg": -3343549,
+          "pct_chg": -0.02,
+          "shares": 12179891
+        },
+        {
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": -1564760,
+          "pct_chg": 0.0,
+          "shares": 5154839540
+        },
+        {
+          "pid": "B01555",
+          "pname": "ABN AMRO Clearing Hong Kong Limited",
+          "chg": -1115320,
+          "pct_chg": 0.0,
+          "shares": 510759
+        }
+      ]
+    },
+    {
+      "code": "01918",
+      "name": "融創中國",
+      "total_in": 48586652,
+      "total_out": 48352950,
+      "total_shares": 19953172656,
+      "outstanding_shares": 20116113172,
+      "ins": [
+        {
+          "pid": "A00003",
+          "pname": "港股通(沪)",
+          "chg": 31184000,
+          "pct_chg": 0.15,
+          "shares": 3928963002
+        },
+        {
+          "pid": "A00004",
+          "pname": "港股通(深)",
+          "chg": 7498000,
+          "pct_chg": 0.03,
+          "shares": 2018280001
+        },
+        {
+          "pid": "C00093",
+          "pname": "法国巴黎银行",
+          "chg": 5766652,
+          "pct_chg": 0.02,
+          "shares": 35854112
+        },
+        {
+          "pid": "B01565",
+          "pname": "国泰君安(香港)",
+          "chg": 2929000,
+          "pct_chg": 0.01,
+          "shares": 190696235
+        },
+        {
+          "pid": "C00033",
+          "pname": "中国银行(香港)",
+          "chg": 1209000,
+          "pct_chg": 0.01,
+          "shares": 574138672
+        }
+      ],
+      "outs": [
+        {
+          "pid": "C00010",
+          "pname": "花旗银行",
+          "chg": -13424050,
+          "pct_chg": -0.06,
+          "shares": 3574303844
+        },
+        {
+          "pid": "B01274",
+          "pname": "摩根士丹利香港证券",
+          "chg": -9448765,
+          "pct_chg": -0.04,
+          "shares": 66340518
+        },
+        {
+          "pid": "C00074",
+          "pname": "德意志银行",
+          "chg": -8845755,
+          "pct_chg": -0.04,
+          "shares": 318226840
+        },
+        {
+          "pid": "B01813",
+          "pname": "建银国际证券",
+          "chg": -7000000,
+          "pct_chg": -0.04,
+          "shares": 170928880
+        },
+        {
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": -5254929,
+          "pct_chg": -0.03,
+          "shares": 4305967080
+        },
+        {
+          "pid": "B01610",
+          "pname": "凯基证券亚洲",
+          "chg": -2468000,
+          "pct_chg": -0.01,
+          "shares": 10449719
+        },
+        {
+          "pid": "B01130",
+          "pname": "中银国际证券",
+          "chg": -1911451,
+          "pct_chg": -0.01,
+          "shares": 211506217
+        }
+      ]
+    },
+    {
+      "code": "01093",
+      "name": "石藥集團",
+      "total_in": 50132311,
+      "total_out": 46686498,
+      "total_shares": 11514040489,
+      "outstanding_shares": 11591704911,
+      "ins": [
+        {
+          "pid": "A00004",
+          "pname": "港股通(深)",
+          "chg": 23237340,
+          "pct_chg": 0.2,
+          "shares": 2316453211
+        },
+        {
+          "pid": "A00003",
+          "pname": "港股通(沪)",
+          "chg": 20506160,
+          "pct_chg": 0.18,
+          "shares": 940233484
+        },
+        {
+          "pid": "C00010",
+          "pname": "花旗银行",
+          "chg": 3515220,
+          "pct_chg": 0.03,
+          "shares": 656086020
+        },
+        {
+          "pid": "B01451",
+          "pname": "高盛(亚洲)证券",
+          "chg": 2873591,
+          "pct_chg": 0.03,
+          "shares": 44333434
+        }
+      ],
+      "outs": [
+        {
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": -16601369,
+          "pct_chg": -0.14,
+          "shares": 2153689717
+        },
+        {
+          "pid": "C00039",
+          "pname": "渣打银行(香港)",
+          "chg": -13436601,
+          "pct_chg": -0.12,
+          "shares": 134775770
+        },
+        {
+          "pid": "B01161",
+          "pname": "UBS Securities Hong Kong Limited",
+          "chg": -7032319,
+          "pct_chg": -0.06,
+          "shares": 2338321261
+        },
+        {
+          "pid": "C00093",
+          "pname": "法国巴黎银行",
+          "chg": -3868409,
+          "pct_chg": -0.04,
+          "shares": 160919111
+        },
+        {
+          "pid": "B01842",
+          "pname": "交银国际证券",
+          "chg": -1910000,
+          "pct_chg": -0.01,
+          "shares": 2517360
+        },
+        {
+          "pid": "C00033",
+          "pname": "中国银行(香港)",
+          "chg": -1413680,
+          "pct_chg": -0.01,
+          "shares": 882312871
+        },
+        {
+          "pid": "B01284",
+          "pname": "恒生证券",
+          "chg": -1323388,
+          "pct_chg": -0.01,
+          "shares": 4788130
+        },
+        {
+          "pid": "B01224",
+          "pname": "Merrill Lynch Far East Limited",
+          "chg": -1100732,
+          "pct_chg": -0.01,
+          "shares": 3854099
+        }
+      ]
+    },
+    {
+      "code": "00386",
+      "name": "中國石油化工股份",
+      "total_in": 45081868,
+      "total_out": 48623123,
+      "total_shares": 23607875999,
+      "outstanding_shares": 23979559166,
+      "ins": [
+        {
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": 18711644,
+          "pct_chg": 0.08,
+          "shares": 7049737971
+        },
+        {
+          "pid": "C00010",
+          "pname": "花旗银行",
+          "chg": 12327029,
+          "pct_chg": 0.05,
+          "shares": 2427995786
+        },
+        {
+          "pid": "B01161",
+          "pname": "UBS Securities Hong Kong Limited",
+          "chg": 3700000,
+          "pct_chg": 0.02,
+          "shares": 414040063
+        },
+        {
+          "pid": "B01138",
+          "pname": "中信里昂证券",
+          "chg": 3058000,
+          "pct_chg": 0.01,
+          "shares": 707869000
+        },
+        {
+          "pid": "A00004",
+          "pname": "港股通(深)",
+          "chg": 2998000,
+          "pct_chg": 0.01,
+          "shares": 2132585055
+        },
+        {
+          "pid": "B01130",
+          "pname": "中银国际证券",
+          "chg": 2099195,
+          "pct_chg": 0.01,
+          "shares": 458300154
+        },
+        {
+          "pid": "C00003",
+          "pname": "东亚银行",
+          "chg": 1100000,
+          "pct_chg": 0.0,
+          "shares": 73714493
+        },
+        {
+          "pid": "B01955",
+          "pname": "富途证券国际香港",
+          "chg": 1088000,
+          "pct_chg": 0.0,
+          "shares": 147080069
+        }
+      ],
+      "outs": [
+        {
+          "pid": "A00003",
+          "pname": "港股通(沪)",
+          "chg": -20546000,
+          "pct_chg": -0.09,
+          "shares": 4781231763
+        },
+        {
+          "pid": "C00093",
+          "pname": "法国巴黎银行",
+          "chg": -11920209,
+          "pct_chg": -0.05,
+          "shares": 313951847
+        },
+        {
+          "pid": "B01224",
+          "pname": "Merrill Lynch Far East Limited",
+          "chg": -9907218,
+          "pct_chg": -0.04,
+          "shares": 32162570
+        },
+        {
+          "pid": "B01274",
+          "pname": "摩根士丹利香港证券",
+          "chg": -5203696,
+          "pct_chg": -0.03,
+          "shares": 35353270
+        },
+        {
+          "pid": "C00040",
+          "pname": "中国工商银行亚洲",
+          "chg": -1046000,
+          "pct_chg": 0.0,
+          "shares": 272349827
+        }
+      ]
+    },
+    {
+      "code": "00883",
+      "name": "中國海洋石油",
+      "total_in": 44200017,
+      "total_out": 41903670,
+      "total_shares": 15286668229,
+      "outstanding_shares": 48268608238,
+      "ins": [
+        {
+          "pid": "A00004",
+          "pname": "港股通(深)",
+          "chg": 23592597,
+          "pct_chg": 0.05,
+          "shares": 3483340412
+        },
+        {
+          "pid": "A00003",
+          "pname": "港股通(沪)",
+          "chg": 13192920,
+          "pct_chg": 0.03,
+          "shares": 7116829006
+        },
+        {
+          "pid": "B01590",
+          "pname": "盈透证券",
+          "chg": 3349000,
+          "pct_chg": 0.01,
+          "shares": 139360993
+        },
+        {
+          "pid": "B01762",
+          "pname": "星展唯高达香港",
+          "chg": 2998000,
+          "pct_chg": 0.01,
+          "shares": 19888000
+        },
+        {
+          "pid": "B01654",
+          "pname": "中国国际金融香港证券",
+          "chg": 1067500,
+          "pct_chg": 0.0,
+          "shares": 10646625
+        }
+      ],
+      "outs": [
+        {
+          "pid": "C00039",
+          "pname": "渣打银行(香港)",
+          "chg": -16213500,
+          "pct_chg": -0.03,
+          "shares": 613665693
+        },
+        {
+          "pid": "C00093",
+          "pname": "法国巴黎银行",
+          "chg": -8545022,
+          "pct_chg": -0.02,
+          "shares": 149422769
+        },
+        {
+          "pid": "B01224",
+          "pname": "Merrill Lynch Far East Limited",
+          "chg": -7179868,
+          "pct_chg": -0.02,
+          "shares": 26462454
+        },
+        {
+          "pid": "B01555",
+          "pname": "ABN AMRO Clearing Hong Kong Limited",
+          "chg": -3810460,
+          "pct_chg": -0.01,
+          "shares": 1524495
+        },
+        {
+          "pid": "B01161",
+          "pname": "UBS Securities Hong Kong Limited",
+          "chg": -3473450,
+          "pct_chg": 0.0,
+          "shares": 989194912
+        },
+        {
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": -2681370,
+          "pct_chg": 0.0,
+          "shares": 1127784622
+        }
+      ]
+    },
+    {
+      "code": "09660",
+      "name": "地平線機器人－Ｗ",
+      "total_in": 41221049,
+      "total_out": 41770340,
+      "total_shares": 12107825508,
+      "outstanding_shares": 14785475037,
+      "ins": [
+        {
+          "pid": "A00003",
+          "pname": "港股通(沪)",
+          "chg": 14170800,
+          "pct_chg": 0.1,
+          "shares": 1643303934
+        },
+        {
+          "pid": "B01832",
+          "pname": "瑞穗证券亚洲",
+          "chg": 12159000,
+          "pct_chg": 0.08,
+          "shares": 12299800
+        },
+        {
+          "pid": "A00004",
+          "pname": "港股通(深)",
+          "chg": 5721600,
+          "pct_chg": 0.04,
+          "shares": 1581508139
+        },
+        {
+          "pid": "B01224",
+          "pname": "Merrill Lynch Far East Limited",
+          "chg": 3836643,
+          "pct_chg": 0.03,
+          "shares": 113701572
+        },
+        {
+          "pid": "C00016",
+          "pname": "星展银行",
+          "chg": 2421600,
+          "pct_chg": 0.02,
+          "shares": 125412341
+        },
+        {
+          "pid": "B01826",
+          "pname": "广发证券香港",
+          "chg": 1538006,
+          "pct_chg": 0.01,
+          "shares": 87459737
+        },
+        {
+          "pid": "B01668",
+          "pname": "耀才证券",
+          "chg": 1373400,
+          "pct_chg": 0.01,
+          "shares": 35055876
+        }
+      ],
+      "outs": [
+        {
+          "pid": "C00010",
+          "pname": "花旗银行",
+          "chg": -18543984,
+          "pct_chg": -0.13,
+          "shares": 595872485
+        },
+        {
+          "pid": "B01555",
+          "pname": "ABN AMRO Clearing Hong Kong Limited",
+          "chg": -7391194,
+          "pct_chg": -0.05,
+          "shares": 15765000
+        },
+        {
+          "pid": "C00033",
+          "pname": "中国银行(香港)",
+          "chg": -3589800,
+          "pct_chg": -0.03,
+          "shares": 211803599
+        },
+        {
+          "pid": "B01274",
+          "pname": "摩根士丹利香港证券",
+          "chg": -3514004,
+          "pct_chg": -0.02,
+          "shares": 320985659
+        },
+        {
+          "pid": "C00093",
+          "pname": "法国巴黎银行",
+          "chg": -2345527,
+          "pct_chg": -0.02,
+          "shares": 99619546
+        },
+        {
+          "pid": "B01451",
+          "pname": "高盛(亚洲)证券",
+          "chg": -2193589,
+          "pct_chg": -0.01,
+          "shares": 755010647
+        },
+        {
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": -1693242,
+          "pct_chg": -0.02,
+          "shares": 1416698732
+        },
+        {
+          "pid": "B02045",
+          "pname": "AAA Securities Co. Limited",
+          "chg": -1380000,
+          "pct_chg": -0.01,
+          "shares": 324000
+        },
+        {
+          "pid": "C00003",
+          "pname": "东亚银行",
+          "chg": -1119000,
+          "pct_chg": 0.0,
+          "shares": 23512052
+        }
+      ]
+    },
+    {
+      "code": "02007",
+      "name": "碧桂園",
+      "total_in": 39858614,
+      "total_out": 40176269,
+      "total_shares": 35959414185,
+      "outstanding_shares": 46870977821,
+      "ins": [
+        {
+          "pid": "A00004",
+          "pname": "港股通(深)",
+          "chg": 15960000,
+          "pct_chg": 0.03,
+          "shares": 3595792660
+        },
+        {
+          "pid": "B01904",
+          "pname": "华盛资本证券",
+          "chg": 6596000,
+          "pct_chg": 0.02,
+          "shares": 65451633
+        },
+        {
+          "pid": "A00003",
+          "pname": "港股通(沪)",
+          "chg": 5918000,
+          "pct_chg": 0.02,
+          "shares": 5434318282
+        },
+        {
+          "pid": "B01274",
+          "pname": "摩根士丹利香港证券",
+          "chg": 4558923,
+          "pct_chg": 0.01,
+          "shares": 418583551
+        },
+        {
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": 2435691,
+          "pct_chg": 0.0,
+          "shares": 11062380559
+        },
+        {
+          "pid": "C00033",
+          "pname": "中国银行(香港)",
+          "chg": 1657000,
+          "pct_chg": 0.0,
+          "shares": 2151054990
+        },
+        {
+          "pid": "B01610",
+          "pname": "凯基证券亚洲",
+          "chg": 1650000,
+          "pct_chg": 0.0,
+          "shares": 67977361
+        },
+        {
+          "pid": "B01584",
+          "pname": "致富证券",
+          "chg": 1083000,
+          "pct_chg": 0.0,
+          "shares": 57632040
+        }
+      ],
+      "outs": [
+        {
+          "pid": "C00010",
+          "pname": "花旗银行",
+          "chg": -23102111,
+          "pct_chg": -0.05,
+          "shares": 1715486890
+        },
+        {
+          "pid": "B01224",
+          "pname": "Merrill Lynch Far East Limited",
+          "chg": -6201930,
+          "pct_chg": -0.01,
+          "shares": 19398133
+        },
+        {
+          "pid": "C00093",
+          "pname": "法国巴黎银行",
+          "chg": -4123222,
+          "pct_chg": -0.01,
+          "shares": 133164610
+        },
+        {
+          "pid": "B01161",
+          "pname": "UBS Securities Hong Kong Limited",
+          "chg": -2246000,
+          "pct_chg": 0.0,
+          "shares": 2324422883
+        },
+        {
+          "pid": "B01555",
+          "pname": "ABN AMRO Clearing Hong Kong Limited",
+          "chg": -1537000,
+          "pct_chg": -0.01,
+          "shares": 8648632
+        },
+        {
+          "pid": "B01955",
+          "pname": "富途证券国际香港",
+          "chg": -1536000,
+          "pct_chg": 0.0,
+          "shares": 811751197
+        },
+        {
+          "pid": "B01130",
+          "pname": "中银国际证券",
+          "chg": -1430006,
+          "pct_chg": -0.01,
+          "shares": 527144339
         }
       ]
     },
     {
       "code": "03323",
       "name": "中國建材",
-      "total_in": 15979628,
-      "total_out": 25980398,
-      "total_shares": 3696115666,
-      "outstanding_shares": 3754307431,
+      "total_in": 34395852,
+      "total_out": 45482138,
+      "total_shares": 3695953516,
+      "outstanding_shares": 3752237072,
       "ins": [
         {
           "pid": "C00033",
           "pname": "中国银行(香港)",
-          "chg": 4022085,
-          "pct_chg": 0.11,
-          "shares": 232132249
+          "chg": 9762251,
+          "pct_chg": 0.27,
+          "shares": 243802076
         },
         {
-          "pid": "A00003",
-          "pname": "港股通(沪)",
-          "chg": 3782728,
+          "pid": "A00004",
+          "pname": "港股通(深)",
+          "chg": 3626961,
           "pct_chg": 0.1,
-          "shares": 636074362
+          "shares": 605552803
         },
         {
-          "pid": "C00093",
-          "pname": "法国巴黎银行",
-          "chg": 3073215,
-          "pct_chg": 0.08,
-          "shares": 30076475
+          "pid": "B01955",
+          "pname": "富途证券国际香港",
+          "chg": 3573000,
+          "pct_chg": 0.09,
+          "shares": 71642397
         },
         {
-          "pid": "B01813",
-          "pname": "建银国际证券",
-          "chg": 1872000,
-          "pct_chg": 0.05,
-          "shares": 5093032
-        },
-        {
-          "pid": "B01555",
-          "pname": "ABN AMRO Clearing Hong Kong Limited",
-          "chg": 1855600,
-          "pct_chg": 0.05,
-          "shares": 2725783
+          "pid": "B01089",
+          "pname": "汇丰金融证券",
+          "chg": 3130000,
+          "pct_chg": 0.09,
+          "shares": 10512754
         },
         {
           "pid": "B01284",
           "pname": "恒生证券",
-          "chg": 1374000,
+          "chg": 3010000,
+          "pct_chg": 0.08,
+          "shares": 38800476
+        },
+        {
+          "pid": "B01826",
+          "pname": "广发证券香港",
+          "chg": 2000000,
+          "pct_chg": 0.06,
+          "shares": 9731450
+        },
+        {
+          "pid": "B01130",
+          "pname": "中银国际证券",
+          "chg": 1981849,
+          "pct_chg": 0.06,
+          "shares": 47654732
+        },
+        {
+          "pid": "A00003",
+          "pname": "港股通(沪)",
+          "chg": 1728791,
+          "pct_chg": 0.05,
+          "shares": 624741830
+        },
+        {
+          "pid": "C00002",
+          "pname": "交通银行信托",
+          "chg": 1192000,
           "pct_chg": 0.03,
-          "shares": 32964476
+          "shares": 27792521
+        },
+        {
+          "pid": "C00039",
+          "pname": "渣打银行(香港)",
+          "chg": 1159000,
+          "pct_chg": 0.03,
+          "shares": 56544167
+        },
+        {
+          "pid": "C00111",
+          "pname": "Societe Generale",
+          "chg": 1100000,
+          "pct_chg": 0.03,
+          "shares": 2822422
+        },
+        {
+          "pid": "B01668",
+          "pname": "耀才证券",
+          "chg": 1078000,
+          "pct_chg": 0.03,
+          "shares": 24168884
+        },
+        {
+          "pid": "C00042",
+          "pname": "永隆银行",
+          "chg": 1054000,
+          "pct_chg": 0.03,
+          "shares": 23872137
+        }
+      ],
+      "outs": [
+        {
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": -27251647,
+          "pct_chg": -0.74,
+          "shares": 957627372
+        },
+        {
+          "pid": "C00010",
+          "pname": "花旗银行",
+          "chg": -9345183,
+          "pct_chg": -0.25,
+          "shares": 174834695
+        },
+        {
+          "pid": "B01590",
+          "pname": "盈透证券",
+          "chg": -3001470,
+          "pct_chg": -0.08,
+          "shares": 39103339
+        },
+        {
+          "pid": "B01555",
+          "pname": "ABN AMRO Clearing Hong Kong Limited",
+          "chg": -2385000,
+          "pct_chg": -0.06,
+          "shares": 783
+        },
+        {
+          "pid": "C00093",
+          "pname": "法国巴黎银行",
+          "chg": -1844720,
+          "pct_chg": -0.05,
+          "shares": 32062352
+        },
+        {
+          "pid": "B01224",
+          "pname": "Merrill Lynch Far East Limited",
+          "chg": -1654118,
+          "pct_chg": -0.05,
+          "shares": 4674734
+        }
+      ]
+    },
+    {
+      "code": "01171",
+      "name": "兗礦能源",
+      "total_in": 40358199,
+      "total_out": 39161605,
+      "total_shares": 4067377413,
+      "outstanding_shares": 4103488108,
+      "ins": [
+        {
+          "pid": "B01224",
+          "pname": "Merrill Lynch Far East Limited",
+          "chg": 16650660,
+          "pct_chg": 0.41,
+          "shares": 39379010
+        },
+        {
+          "pid": "A00003",
+          "pname": "港股通(沪)",
+          "chg": 15984648,
+          "pct_chg": 0.39,
+          "shares": 1173331637
+        },
+        {
+          "pid": "A00004",
+          "pname": "港股通(深)",
+          "chg": 7722891,
+          "pct_chg": 0.19,
+          "shares": 658482100
+        }
+      ],
+      "outs": [
+        {
+          "pid": "C00010",
+          "pname": "花旗银行",
+          "chg": -31032925,
+          "pct_chg": -0.76,
+          "shares": 287782786
+        },
+        {
+          "pid": "B01161",
+          "pname": "UBS Securities Hong Kong Limited",
+          "chg": -2946492,
+          "pct_chg": -0.07,
+          "shares": 22163772
+        },
+        {
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": -2323776,
+          "pct_chg": -0.06,
+          "shares": 546459690
+        },
+        {
+          "pid": "C00033",
+          "pname": "中国银行(香港)",
+          "chg": -1676412,
+          "pct_chg": -0.04,
+          "shares": 77351899
+        },
+        {
+          "pid": "B01345",
+          "pname": "辉立证券",
+          "chg": -1182000,
+          "pct_chg": -0.03,
+          "shares": 4201021
+        }
+      ]
+    },
+    {
+      "code": "00241",
+      "name": "阿里健康",
+      "total_in": 39148707,
+      "total_out": 40283339,
+      "total_shares": 7563865568,
+      "outstanding_shares": 16439612188,
+      "ins": [
+        {
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": 30174754,
+          "pct_chg": 0.19,
+          "shares": 1276899560
+        },
+        {
+          "pid": "C00039",
+          "pname": "渣打银行(香港)",
+          "chg": 3006087,
+          "pct_chg": 0.02,
+          "shares": 224532616
+        },
+        {
+          "pid": "C00010",
+          "pname": "花旗银行",
+          "chg": 2900259,
+          "pct_chg": 0.02,
+          "shares": 371035574
+        },
+        {
+          "pid": "B01555",
+          "pname": "ABN AMRO Clearing Hong Kong Limited",
+          "chg": 1951607,
+          "pct_chg": 0.01,
+          "shares": 3820919
+        },
+        {
+          "pid": "B01143",
+          "pname": "海通国际证券",
+          "chg": 1116000,
+          "pct_chg": 0.01,
+          "shares": 5039440
         }
       ],
       "outs": [
         {
           "pid": "A00004",
           "pname": "港股通(深)",
-          "chg": -19360092,
-          "pct_chg": -0.52,
-          "shares": 596117842
-        },
-        {
-          "pid": "C00010",
-          "pname": "花旗银行",
-          "chg": -5539890,
-          "pct_chg": -0.15,
-          "shares": 185933733
+          "chg": -17632000,
+          "pct_chg": -0.1,
+          "shares": 1090364242
         },
         {
           "pid": "B01451",
           "pname": "高盛(亚洲)证券",
-          "chg": -1080416,
+          "chg": -11446426,
+          "pct_chg": -0.07,
+          "shares": 3731111
+        },
+        {
+          "pid": "B01224",
+          "pname": "Merrill Lynch Far East Limited",
+          "chg": -3564960,
           "pct_chg": -0.02,
-          "shares": 1493997
+          "shares": 10532998
+        },
+        {
+          "pid": "C00093",
+          "pname": "法国巴黎银行",
+          "chg": -3135928,
+          "pct_chg": -0.02,
+          "shares": 36239944
+        },
+        {
+          "pid": "A00003",
+          "pname": "港股通(沪)",
+          "chg": -3070000,
+          "pct_chg": -0.02,
+          "shares": 831221000
+        },
+        {
+          "pid": "B01955",
+          "pname": "富途证券国际香港",
+          "chg": -1434025,
+          "pct_chg": -0.01,
+          "shares": 158947238
+        }
+      ]
+    },
+    {
+      "code": "01087",
+      "name": "威訊控股",
+      "total_in": 36838000,
+      "total_out": 39680200,
+      "total_shares": 171748985,
+      "outstanding_shares": 241491823,
+      "ins": [
+        {
+          "pid": "B01897",
+          "pname": "中达证券投资",
+          "chg": 28838000,
+          "pct_chg": 12.02,
+          "shares": 30915600
+        },
+        {
+          "pid": "B01298",
+          "pname": "结好证券",
+          "chg": 8000000,
+          "pct_chg": 3.33,
+          "shares": 8219700
+        }
+      ],
+      "outs": [
+        {
+          "pid": "B01955",
+          "pname": "富途证券国际香港",
+          "chg": -14746200,
+          "pct_chg": -6.15,
+          "shares": 14166123
+        },
+        {
+          "pid": "C00010",
+          "pname": "花旗银行",
+          "chg": -5282000,
+          "pct_chg": -2.2,
+          "shares": 22366925
+        },
+        {
+          "pid": "B01459",
+          "pname": "奕丰证券(香港)",
+          "chg": -4948000,
+          "pct_chg": -2.06,
+          "shares": 896000
+        },
+        {
+          "pid": "B01345",
+          "pname": "辉立证券",
+          "chg": -3876000,
+          "pct_chg": -1.62,
+          "shares": 1796100
+        },
+        {
+          "pid": "B02142",
+          "pname": "老虎证券香港环球",
+          "chg": -2858000,
+          "pct_chg": -1.19,
+          "shares": 2922000
+        },
+        {
+          "pid": "B01590",
+          "pname": "盈透证券",
+          "chg": -2282000,
+          "pct_chg": -0.95,
+          "shares": 4348500
+        },
+        {
+          "pid": "C00074",
+          "pname": "德意志银行",
+          "chg": -1850000,
+          "pct_chg": -0.77,
+          "shares": 5000
+        },
+        {
+          "pid": "B02195",
+          "pname": "长桥证券香港",
+          "chg": -1408000,
+          "pct_chg": -0.58,
+          "shares": 291696
+        },
+        {
+          "pid": "B01353",
+          "pname": "大华继显(香港)",
+          "chg": -1384000,
+          "pct_chg": -0.57,
+          "shares": 1369750
+        },
+        {
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": -1046000,
+          "pct_chg": -0.43,
+          "shares": 14472500
+        }
+      ]
+    },
+    {
+      "code": "00817",
+      "name": "中國金茂",
+      "total_in": 36954389,
+      "total_out": 36794590,
+      "total_shares": 9736371887,
+      "outstanding_shares": 13603984751,
+      "ins": [
+        {
+          "pid": "A00004",
+          "pname": "港股通(深)",
+          "chg": 25674000,
+          "pct_chg": 0.19,
+          "shares": 1154911623
+        },
+        {
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": 6367078,
+          "pct_chg": 0.04,
+          "shares": 810430034
+        },
+        {
+          "pid": "B01451",
+          "pname": "高盛(亚洲)证券",
+          "chg": 2258695,
+          "pct_chg": 0.02,
+          "shares": 29038351
+        },
+        {
+          "pid": "B01224",
+          "pname": "Merrill Lynch Far East Limited",
+          "chg": 1654616,
+          "pct_chg": 0.02,
+          "shares": 4246461
+        },
+        {
+          "pid": "B01829",
+          "pname": "华泰香港",
+          "chg": 1000000,
+          "pct_chg": 0.0,
+          "shares": 2448242
+        }
+      ],
+      "outs": [
+        {
+          "pid": "A00003",
+          "pname": "港股通(沪)",
+          "chg": -23084000,
+          "pct_chg": -0.17,
+          "shares": 1499615228
+        },
+        {
+          "pid": "C00093",
+          "pname": "法国巴黎银行",
+          "chg": -6638000,
+          "pct_chg": -0.05,
+          "shares": 55884557
+        },
+        {
+          "pid": "B01555",
+          "pname": "ABN AMRO Clearing Hong Kong Limited",
+          "chg": -4256000,
+          "pct_chg": -0.03,
+          "shares": 191592
+        },
+        {
+          "pid": "C00010",
+          "pname": "花旗银行",
+          "chg": -2816590,
+          "pct_chg": -0.02,
+          "shares": 526082103
+        }
+      ]
+    },
+    {
+      "code": "00875",
+      "name": "從玉智農",
+      "total_in": 36664000,
+      "total_out": 36664000,
+      "total_shares": 296329540,
+      "outstanding_shares": 708244598,
+      "ins": [
+        {
+          "pid": "B02142",
+          "pname": "老虎证券香港环球",
+          "chg": 36664000,
+          "pct_chg": 5.25,
+          "shares": 41338000
+        }
+      ],
+      "outs": [
+        {
+          "pid": "C00039",
+          "pname": "渣打银行(香港)",
+          "chg": -36664000,
+          "pct_chg": -5.24,
+          "shares": 4508702
+        }
+      ]
+    },
+    {
+      "code": "01378",
+      "name": "中國宏橋",
+      "total_in": 34885461,
+      "total_out": 37852130,
+      "total_shares": 9816848554,
+      "outstanding_shares": 9865187975,
+      "ins": [
+        {
+          "pid": "A00004",
+          "pname": "港股通(深)",
+          "chg": 20548000,
+          "pct_chg": 0.21,
+          "shares": 336640113
+        },
+        {
+          "pid": "A00003",
+          "pname": "港股通(沪)",
+          "chg": 6983500,
+          "pct_chg": 0.07,
+          "shares": 683743856
+        },
+        {
+          "pid": "C00039",
+          "pname": "渣打银行(香港)",
+          "chg": 3610486,
+          "pct_chg": 0.04,
+          "shares": 109589796
+        },
+        {
+          "pid": "C00093",
+          "pname": "法国巴黎银行",
+          "chg": 1450612,
+          "pct_chg": 0.01,
+          "shares": 926851322
+        },
+        {
+          "pid": "B01955",
+          "pname": "富途证券国际香港",
+          "chg": 1149863,
+          "pct_chg": 0.01,
+          "shares": 32789136
+        },
+        {
+          "pid": "B01654",
+          "pname": "中国国际金融香港证券",
+          "chg": 1143000,
+          "pct_chg": 0.01,
+          "shares": 5548300
+        }
+      ],
+      "outs": [
+        {
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": -23897910,
+          "pct_chg": -0.24,
+          "shares": 1330860486
+        },
+        {
+          "pid": "C00010",
+          "pname": "花旗银行",
+          "chg": -10062479,
+          "pct_chg": -0.11,
+          "shares": 1691649342
+        },
+        {
+          "pid": "B01161",
+          "pname": "UBS Securities Hong Kong Limited",
+          "chg": -1957126,
+          "pct_chg": -0.02,
+          "shares": 40937106
+        },
+        {
+          "pid": "B01224",
+          "pname": "Merrill Lynch Far East Limited",
+          "chg": -1934615,
+          "pct_chg": -0.02,
+          "shares": 19211316
+        }
+      ]
+    },
+    {
+      "code": "00968",
+      "name": "信義光能",
+      "total_in": 36476428,
+      "total_out": 36187119,
+      "total_shares": 4935077307,
+      "outstanding_shares": 9276461103,
+      "ins": [
+        {
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": 27842897,
+          "pct_chg": 0.3,
+          "shares": 1808144356
+        },
+        {
+          "pid": "A00004",
+          "pname": "港股通(深)",
+          "chg": 3486000,
+          "pct_chg": 0.04,
+          "shares": 926995995
+        },
+        {
+          "pid": "B01224",
+          "pname": "Merrill Lynch Far East Limited",
+          "chg": 2842463,
+          "pct_chg": 0.03,
+          "shares": 4498148
+        },
+        {
+          "pid": "C00093",
+          "pname": "法国巴黎银行",
+          "chg": 2305068,
+          "pct_chg": 0.03,
+          "shares": 75302906
+        }
+      ],
+      "outs": [
+        {
+          "pid": "C00010",
+          "pname": "花旗银行",
+          "chg": -27137333,
+          "pct_chg": -0.3,
+          "shares": 337029843
+        },
+        {
+          "pid": "A00003",
+          "pname": "港股通(沪)",
+          "chg": -4766000,
+          "pct_chg": -0.05,
+          "shares": 442355614
+        },
+        {
+          "pid": "C00033",
+          "pname": "中国银行(香港)",
+          "chg": -3166000,
+          "pct_chg": -0.03,
+          "shares": 212612858
+        },
+        {
+          "pid": "B01555",
+          "pname": "ABN AMRO Clearing Hong Kong Limited",
+          "chg": -1117786,
+          "pct_chg": -0.02,
+          "shares": 2658107
+        }
+      ]
+    },
+    {
+      "code": "09988",
+      "name": "阿里巴巴－Ｗ",
+      "total_in": 36974383,
+      "total_out": 34862804,
+      "total_shares": 14282696286,
+      "outstanding_shares": 19353247000,
+      "ins": [
+        {
+          "pid": "A00004",
+          "pname": "港股通(深)",
+          "chg": 16392100,
+          "pct_chg": 0.08,
+          "shares": 1002567204
+        },
+        {
+          "pid": "A00003",
+          "pname": "港股通(沪)",
+          "chg": 10811000,
+          "pct_chg": 0.06,
+          "shares": 994082346
+        },
+        {
+          "pid": "B01161",
+          "pname": "UBS Securities Hong Kong Limited",
+          "chg": 7504319,
+          "pct_chg": 0.04,
+          "shares": 556566528
+        },
+        {
+          "pid": "B01224",
+          "pname": "Merrill Lynch Far East Limited",
+          "chg": 2266964,
+          "pct_chg": 0.01,
+          "shares": 21028908
+        }
+      ],
+      "outs": [
+        {
+          "pid": "C00010",
+          "pname": "花旗银行",
+          "chg": -23753232,
+          "pct_chg": -0.12,
+          "shares": 2367109905
+        },
+        {
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": -6006610,
+          "pct_chg": -0.03,
+          "shares": 6367762275
+        },
+        {
+          "pid": "B01451",
+          "pname": "高盛(亚洲)证券",
+          "chg": -3093872,
+          "pct_chg": -0.02,
+          "shares": 118764275
+        },
+        {
+          "pid": "C00093",
+          "pname": "法国巴黎银行",
+          "chg": -2009090,
+          "pct_chg": -0.01,
+          "shares": 198267504
+        }
+      ]
+    },
+    {
+      "code": "00232",
+      "name": "大陸航空科技控股",
+      "total_in": 38719100,
+      "total_out": 31474000,
+      "total_shares": 6859290974,
+      "outstanding_shares": 9420808919,
+      "ins": [
+        {
+          "pid": "C00010",
+          "pname": "花旗银行",
+          "chg": 25508450,
+          "pct_chg": 0.27,
+          "shares": 572705176
+        },
+        {
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": 9042650,
+          "pct_chg": 0.09,
+          "shares": 1452123656
+        },
+        {
+          "pid": "B01224",
+          "pname": "Merrill Lynch Far East Limited",
+          "chg": 4168000,
+          "pct_chg": 0.04,
+          "shares": 8199801
+        }
+      ],
+      "outs": [
+        {
+          "pid": "B01955",
+          "pname": "富途证券国际香港",
+          "chg": -6854000,
+          "pct_chg": -0.08,
+          "shares": 98274705
+        },
+        {
+          "pid": "B01829",
+          "pname": "华泰香港",
+          "chg": -6100000,
+          "pct_chg": -0.06,
+          "shares": 43141268
+        },
+        {
+          "pid": "C00042",
+          "pname": "永隆银行",
+          "chg": -2842000,
+          "pct_chg": -0.03,
+          "shares": 65379022
+        },
+        {
+          "pid": "B01118",
+          "pname": "东亚证券",
+          "chg": -2800000,
+          "pct_chg": -0.03,
+          "shares": 30123429
+        },
+        {
+          "pid": "B01590",
+          "pname": "盈透证券",
+          "chg": -2760000,
+          "pct_chg": -0.03,
+          "shares": 96791438
+        },
+        {
+          "pid": "B01695",
+          "pname": "大新证券",
+          "chg": -2500000,
+          "pct_chg": -0.02,
+          "shares": 30933330
+        },
+        {
+          "pid": "B01668",
+          "pname": "耀才证券",
+          "chg": -1598000,
+          "pct_chg": -0.01,
+          "shares": 37457455
+        },
+        {
+          "pid": "B01284",
+          "pname": "恒生证券",
+          "chg": -1514000,
+          "pct_chg": -0.01,
+          "shares": 63445148
+        },
+        {
+          "pid": "B01673",
+          "pname": "富昌证券",
+          "chg": -1206000,
+          "pct_chg": -0.01,
+          "shares": 7761911
+        },
+        {
+          "pid": "B01885",
+          "pname": "哈富证券",
+          "chg": -1200000,
+          "pct_chg": -0.01,
+          "shares": 6229568
+        },
+        {
+          "pid": "B01115",
+          "pname": "申万宏源证券香港",
+          "chg": -1054000,
+          "pct_chg": -0.01,
+          "shares": 14612504
+        },
+        {
+          "pid": "B01929",
+          "pname": "银河证券香港",
+          "chg": -1046000,
+          "pct_chg": -0.01,
+          "shares": 10827319
+        }
+      ]
+    },
+    {
+      "code": "00136",
+      "name": "中國儒意",
+      "total_in": 35545149,
+      "total_out": 34092604,
+      "total_shares": 15556123090,
+      "outstanding_shares": 16914344992,
+      "ins": [
+        {
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": 17497182,
+          "pct_chg": 0.11,
+          "shares": 3409258907
+        },
+        {
+          "pid": "A00003",
+          "pname": "港股通(沪)",
+          "chg": 8308000,
+          "pct_chg": 0.05,
+          "shares": 2339067875
+        },
+        {
+          "pid": "B01274",
+          "pname": "摩根士丹利香港证券",
+          "chg": 4395521,
+          "pct_chg": 0.03,
+          "shares": 756898645
+        },
+        {
+          "pid": "C00010",
+          "pname": "花旗银行",
+          "chg": 2024446,
+          "pct_chg": 0.01,
+          "shares": 421067963
+        },
+        {
+          "pid": "B01590",
+          "pname": "盈透证券",
+          "chg": 1288000,
+          "pct_chg": 0.01,
+          "shares": 14603922
+        },
+        {
+          "pid": "B01955",
+          "pname": "富途证券国际香港",
+          "chg": 1032000,
+          "pct_chg": 0.01,
+          "shares": 296423601
+        },
+        {
+          "pid": "B01143",
+          "pname": "海通国际证券",
+          "chg": 1000000,
+          "pct_chg": 0.01,
+          "shares": 6023322
+        }
+      ],
+      "outs": [
+        {
+          "pid": "A00004",
+          "pname": "港股通(深)",
+          "chg": -23920000,
+          "pct_chg": -0.15,
+          "shares": 1962233950
+        },
+        {
+          "pid": "C00093",
+          "pname": "法国巴黎银行",
+          "chg": -6556604,
+          "pct_chg": -0.04,
+          "shares": 51575359
+        },
+        {
+          "pid": "C00111",
+          "pname": "Societe Generale",
+          "chg": -1976000,
+          "pct_chg": -0.01,
+          "shares": 5154000
+        },
+        {
+          "pid": "B01555",
+          "pname": "ABN AMRO Clearing Hong Kong Limited",
+          "chg": -1640000,
+          "pct_chg": -0.01,
+          "shares": 1120100
+        }
+      ]
+    },
+    {
+      "code": "00493",
+      "name": "國美零售",
+      "total_in": 32899999,
+      "total_out": 34502000,
+      "total_shares": 50088274785,
+      "outstanding_shares": 77464081016,
+      "ins": [
+        {
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": 10436999,
+          "pct_chg": 0.01,
+          "shares": 3117158345
+        },
+        {
+          "pid": "C00039",
+          "pname": "渣打银行(香港)",
+          "chg": 6200000,
+          "pct_chg": 0.01,
+          "shares": 963919464
+        },
+        {
+          "pid": "B02159",
+          "pname": "盈立证券",
+          "chg": 4133000,
+          "pct_chg": 0.0,
+          "shares": 134443137
+        },
+        {
+          "pid": "B01130",
+          "pname": "中银国际证券",
+          "chg": 3010000,
+          "pct_chg": 0.0,
+          "shares": 1073311772
+        },
+        {
+          "pid": "B01183",
+          "pname": "创兴证券",
+          "chg": 2200000,
+          "pct_chg": 0.0,
+          "shares": 91533444
+        },
+        {
+          "pid": "B01727",
+          "pname": "工银亚洲证券",
+          "chg": 2000000,
+          "pct_chg": 0.0,
+          "shares": 327807622
+        },
+        {
+          "pid": "C00042",
+          "pname": "永隆银行",
+          "chg": 1610000,
+          "pct_chg": 0.0,
+          "shares": 547536481
+        },
+        {
+          "pid": "C00033",
+          "pname": "中国银行(香港)",
+          "chg": 1310000,
+          "pct_chg": 0.0,
+          "shares": 5084635700
+        },
+        {
+          "pid": "C00088",
+          "pname": "招商银行",
+          "chg": 1000000,
+          "pct_chg": 0.0,
+          "shares": 334171524
+        },
+        {
+          "pid": "B01118",
+          "pname": "东亚证券",
+          "chg": 1000000,
+          "pct_chg": 0.0,
+          "shares": 96255732
+        }
+      ],
+      "outs": [
+        {
+          "pid": "A00004",
+          "pname": "港股通(深)",
+          "chg": -14461000,
+          "pct_chg": -0.01,
+          "shares": 8522544000
+        },
+        {
+          "pid": "A00003",
+          "pname": "港股通(沪)",
+          "chg": -7573000,
+          "pct_chg": -0.01,
+          "shares": 12502836000
+        },
+        {
+          "pid": "B01228",
+          "pname": "中信证券经纪香港",
+          "chg": -5000000,
+          "pct_chg": 0.0,
+          "shares": 414257116
+        },
+        {
+          "pid": "B01590",
+          "pname": "盈透证券",
+          "chg": -2429000,
+          "pct_chg": 0.0,
+          "shares": 278269384
+        },
+        {
+          "pid": "B01565",
+          "pname": "国泰君安(香港)",
+          "chg": -1601000,
+          "pct_chg": 0.0,
+          "shares": 3403606872
+        },
+        {
+          "pid": "B01875",
+          "pname": "国都香港",
+          "chg": -1330000,
+          "pct_chg": 0.0,
+          "shares": 2547000
+        },
+        {
+          "pid": "B01829",
+          "pname": "华泰香港",
+          "chg": -1083000,
+          "pct_chg": 0.0,
+          "shares": 71309842
+        },
+        {
+          "pid": "B01623",
+          "pname": "大丰崑泰证券",
+          "chg": -1025000,
+          "pct_chg": 0.0,
+          "shares": 47401472
+        }
+      ]
+    },
+    {
+      "code": "02628",
+      "name": "中國人壽",
+      "total_in": 30443922,
+      "total_out": 36942827,
+      "total_shares": 7322779076,
+      "outstanding_shares": 7515938700,
+      "ins": [
+        {
+          "pid": "A00003",
+          "pname": "港股通(沪)",
+          "chg": 9263423,
+          "pct_chg": 0.13,
+          "shares": 1746565540
+        },
+        {
+          "pid": "B01138",
+          "pname": "中信里昂证券",
+          "chg": 4800000,
+          "pct_chg": 0.06,
+          "shares": 6479000
+        },
+        {
+          "pid": "B01955",
+          "pname": "富途证券国际香港",
+          "chg": 2952500,
+          "pct_chg": 0.04,
+          "shares": 49046052
+        },
+        {
+          "pid": "C00039",
+          "pname": "渣打银行(香港)",
+          "chg": 2804787,
+          "pct_chg": 0.04,
+          "shares": 403372044
+        },
+        {
+          "pid": "B01130",
+          "pname": "中银国际证券",
+          "chg": 2776760,
+          "pct_chg": 0.04,
+          "shares": 47901060
+        },
+        {
+          "pid": "C00033",
+          "pname": "中国银行(香港)",
+          "chg": 2575750,
+          "pct_chg": 0.03,
+          "shares": 298808570
+        },
+        {
+          "pid": "C00093",
+          "pname": "法国巴黎银行",
+          "chg": 2309866,
+          "pct_chg": 0.03,
+          "shares": 83918780
+        },
+        {
+          "pid": "B01224",
+          "pname": "Merrill Lynch Far East Limited",
+          "chg": 1927836,
+          "pct_chg": 0.02,
+          "shares": 10178466
+        },
+        {
+          "pid": "B01668",
+          "pname": "耀才证券",
+          "chg": 1033000,
+          "pct_chg": 0.01,
+          "shares": 18408478
+        }
+      ],
+      "outs": [
+        {
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": -20673713,
+          "pct_chg": -0.28,
+          "shares": 2513598356
+        },
+        {
+          "pid": "C00010",
+          "pname": "花旗银行",
+          "chg": -8843414,
+          "pct_chg": -0.12,
+          "shares": 598829957
+        },
+        {
+          "pid": "A00004",
+          "pname": "港股通(深)",
+          "chg": -5220000,
+          "pct_chg": -0.07,
+          "shares": 506265627
+        },
+        {
+          "pid": "B01274",
+          "pname": "摩根士丹利香港证券",
+          "chg": -2205700,
+          "pct_chg": -0.03,
+          "shares": 24100419
+        }
+      ]
+    },
+    {
+      "code": "00433",
+      "name": "北方礦業",
+      "total_in": 33450000,
+      "total_out": 33808500,
+      "total_shares": 10439781711,
+      "outstanding_shares": 15136699595,
+      "ins": [
+        {
+          "pid": "B01900",
+          "pname": "东方证券(香港)",
+          "chg": 16600000,
+          "pct_chg": 0.11,
+          "shares": 54253503
+        },
+        {
+          "pid": "B01148",
+          "pname": "招商证券香港",
+          "chg": 15500000,
+          "pct_chg": 0.1,
+          "shares": 35475999
+        },
+        {
+          "pid": "B01955",
+          "pname": "富途证券国际香港",
+          "chg": 1350000,
+          "pct_chg": 0.01,
+          "shares": 277709711
+        }
+      ],
+      "outs": [
+        {
+          "pid": "B01904",
+          "pname": "华盛资本证券",
+          "chg": -13360000,
+          "pct_chg": -0.09,
+          "shares": 25905265
+        },
+        {
+          "pid": "B01947",
+          "pname": "富邦证券(香港)",
+          "chg": -12998500,
+          "pct_chg": -0.09,
+          "shares": 288609923
+        },
+        {
+          "pid": "B01590",
+          "pname": "盈透证券",
+          "chg": -2250000,
+          "pct_chg": -0.01,
+          "shares": 96328283
+        },
+        {
+          "pid": "B01785",
+          "pname": "博大证券",
+          "chg": -2000000,
+          "pct_chg": -0.01,
+          "shares": 182186000
+        },
+        {
+          "pid": "B01184",
+          "pname": "华富建业证券",
+          "chg": -2000000,
+          "pct_chg": -0.01,
+          "shares": 528335500
+        },
+        {
+          "pid": "C00042",
+          "pname": "永隆银行",
+          "chg": -1200000,
+          "pct_chg": -0.01,
+          "shares": 886073272
+        }
+      ]
+    },
+    {
+      "code": "00992",
+      "name": "聯想集團",
+      "total_in": 32371037,
+      "total_out": 31577329,
+      "total_shares": 11068094992,
+      "outstanding_shares": 12485160735,
+      "ins": [
+        {
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": 24686185,
+          "pct_chg": 0.2,
+          "shares": 3707097168
+        },
+        {
+          "pid": "C00039",
+          "pname": "渣打银行(香港)",
+          "chg": 1493311,
+          "pct_chg": 0.01,
+          "shares": 118153584
+        },
+        {
+          "pid": "B01161",
+          "pname": "UBS Securities Hong Kong Limited",
+          "chg": 1407541,
+          "pct_chg": 0.01,
+          "shares": 323361244
+        },
+        {
+          "pid": "B01668",
+          "pname": "耀才证券",
+          "chg": 1326000,
+          "pct_chg": 0.01,
+          "shares": 8052590
+        },
+        {
+          "pid": "A00004",
+          "pname": "港股通(深)",
+          "chg": 1210000,
+          "pct_chg": 0.01,
+          "shares": 731711417
+        },
+        {
+          "pid": "B01826",
+          "pname": "广发证券香港",
+          "chg": 1202000,
+          "pct_chg": 0.01,
+          "shares": 2128000
+        },
+        {
+          "pid": "B01089",
+          "pname": "汇丰金融证券",
+          "chg": 1046000,
+          "pct_chg": 0.01,
+          "shares": 8766000
+        }
+      ],
+      "outs": [
+        {
+          "pid": "C00010",
+          "pname": "花旗银行",
+          "chg": -14085369,
+          "pct_chg": -0.11,
+          "shares": 2491627843
+        },
+        {
+          "pid": "A00003",
+          "pname": "港股通(沪)",
+          "chg": -9658550,
+          "pct_chg": -0.08,
+          "shares": 309693537
+        },
+        {
+          "pid": "C00093",
+          "pname": "法国巴黎银行",
+          "chg": -3385025,
+          "pct_chg": -0.03,
+          "shares": 94255845
+        },
+        {
+          "pid": "B01224",
+          "pname": "Merrill Lynch Far East Limited",
+          "chg": -2418385,
+          "pct_chg": -0.02,
+          "shares": 44836798
+        },
+        {
+          "pid": "B01695",
+          "pname": "大新证券",
+          "chg": -2030000,
+          "pct_chg": -0.02,
+          "shares": 4899495
+        }
+      ]
+    },
+    {
+      "code": "01810",
+      "name": "小米集團－Ｗ",
+      "total_in": 29215277,
+      "total_out": 32846520,
+      "total_shares": 21312562914,
+      "outstanding_shares": 26013136719,
+      "ins": [
+        {
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": 20923625,
+          "pct_chg": 0.08,
+          "shares": 5290917120
+        },
+        {
+          "pid": "B01228",
+          "pname": "中信证券经纪香港",
+          "chg": 3973600,
+          "pct_chg": 0.02,
+          "shares": 96228554
+        },
+        {
+          "pid": "B01955",
+          "pname": "富途证券国际香港",
+          "chg": 2421452,
+          "pct_chg": 0.01,
+          "shares": 209359884
+        },
+        {
+          "pid": "B01138",
+          "pname": "中信里昂证券",
+          "chg": 1896600,
+          "pct_chg": 0.0,
+          "shares": 2466400
+        }
+      ],
+      "outs": [
+        {
+          "pid": "A00004",
+          "pname": "港股通(深)",
+          "chg": -17913093,
+          "pct_chg": -0.07,
+          "shares": 2691450989
+        },
+        {
+          "pid": "B01451",
+          "pname": "高盛(亚洲)证券",
+          "chg": -5025586,
+          "pct_chg": -0.02,
+          "shares": 668464146
+        },
+        {
+          "pid": "C00093",
+          "pname": "法国巴黎银行",
+          "chg": -4094529,
+          "pct_chg": -0.02,
+          "shares": 149039645
+        },
+        {
+          "pid": "C00039",
+          "pname": "渣打银行(香港)",
+          "chg": -3977841,
+          "pct_chg": -0.02,
+          "shares": 446097009
+        },
+        {
+          "pid": "C00010",
+          "pname": "花旗银行",
+          "chg": -1835471,
+          "pct_chg": 0.0,
+          "shares": 2419058492
+        }
+      ]
+    },
+    {
+      "code": "02799",
+      "name": "中信金融資產",
+      "total_in": 30852492,
+      "total_out": 29619428,
+      "total_shares": 21018228823,
+      "outstanding_shares": 35672486121,
+      "ins": [
+        {
+          "pid": "B01224",
+          "pname": "Merrill Lynch Far East Limited",
+          "chg": 14678000,
+          "pct_chg": 0.04,
+          "shares": 17315132
+        },
+        {
+          "pid": "A00004",
+          "pname": "港股通(深)",
+          "chg": 9719000,
+          "pct_chg": 0.03,
+          "shares": 2310600000
+        },
+        {
+          "pid": "C00010",
+          "pname": "花旗银行",
+          "chg": 4252492,
+          "pct_chg": 0.01,
+          "shares": 421880772
+        },
+        {
+          "pid": "B01555",
+          "pname": "ABN AMRO Clearing Hong Kong Limited",
+          "chg": 2203000,
+          "pct_chg": 0.0,
+          "shares": 9466839
+        }
+      ],
+      "outs": [
+        {
+          "pid": "A00003",
+          "pname": "港股通(沪)",
+          "chg": -24585000,
+          "pct_chg": -0.07,
+          "shares": 2819980000
+        },
+        {
+          "pid": "C00033",
+          "pname": "中国银行(香港)",
+          "chg": -2220000,
+          "pct_chg": 0.0,
+          "shares": 523739452
+        },
+        {
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": -1472400,
+          "pct_chg": -0.01,
+          "shares": 2407496825
+        },
+        {
+          "pid": "B01274",
+          "pname": "摩根士丹利香港证券",
+          "chg": -1342028,
+          "pct_chg": -0.01,
+          "shares": 575493521
+        }
+      ]
+    },
+    {
+      "code": "01357",
+      "name": "美圖公司",
+      "total_in": 29382428,
+      "total_out": 27976863,
+      "total_shares": 4502826567,
+      "outstanding_shares": 4623974704,
+      "ins": [
+        {
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": 17700679,
+          "pct_chg": 0.39,
+          "shares": 679326566
+        },
+        {
+          "pid": "B01161",
+          "pname": "UBS Securities Hong Kong Limited",
+          "chg": 7325445,
+          "pct_chg": 0.16,
+          "shares": 127710982
+        },
+        {
+          "pid": "B01451",
+          "pname": "高盛(亚洲)证券",
+          "chg": 4356304,
+          "pct_chg": 0.1,
+          "shares": 31697904
+        }
+      ],
+      "outs": [
+        {
+          "pid": "A00004",
+          "pname": "港股通(深)",
+          "chg": -10163500,
+          "pct_chg": -0.23,
+          "shares": 716340132
+        },
+        {
+          "pid": "C00010",
+          "pname": "花旗银行",
+          "chg": -7022192,
+          "pct_chg": -0.16,
+          "shares": 897965574
+        },
+        {
+          "pid": "B01224",
+          "pname": "Merrill Lynch Far East Limited",
+          "chg": -4718147,
+          "pct_chg": -0.1,
+          "shares": 122461517
+        },
+        {
+          "pid": "B01274",
+          "pname": "摩根士丹利香港证券",
+          "chg": -1834524,
+          "pct_chg": -0.04,
+          "shares": 44085430
+        },
+        {
+          "pid": "C00058",
+          "pname": "中信银行国际",
+          "chg": -1552000,
+          "pct_chg": -0.03,
+          "shares": 4279500
+        },
+        {
+          "pid": "B01555",
+          "pname": "ABN AMRO Clearing Hong Kong Limited",
+          "chg": -1413000,
+          "pct_chg": -0.03,
+          "shares": 2694160
+        },
+        {
+          "pid": "A00003",
+          "pname": "港股通(沪)",
+          "chg": -1273500,
+          "pct_chg": -0.03,
+          "shares": 707400712
+        }
+      ]
+    },
+    {
+      "code": "00338",
+      "name": "上海石油化工股份",
+      "total_in": 26102000,
+      "total_out": 31182914,
+      "total_shares": 2971194254,
+      "outstanding_shares": 3241892257,
+      "ins": [
+        {
+          "pid": "A00003",
+          "pname": "港股通(沪)",
+          "chg": 21078000,
+          "pct_chg": 0.66,
+          "shares": 857256000
+        },
+        {
+          "pid": "A00004",
+          "pname": "港股通(深)",
+          "chg": 5024000,
+          "pct_chg": 0.16,
+          "shares": 212282000
+        }
+      ],
+      "outs": [
+        {
+          "pid": "C00010",
+          "pname": "花旗银行",
+          "chg": -19207119,
+          "pct_chg": -0.6,
+          "shares": 198154782
+        },
+        {
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": -11975795,
+          "pct_chg": -0.37,
+          "shares": 547787991
+        }
+      ]
+    },
+    {
+      "code": "02600",
+      "name": "中國鋁業",
+      "total_in": 26641443,
+      "total_out": 28458832,
+      "total_shares": 3933573492,
+      "outstanding_shares": 3975716082,
+      "ins": [
+        {
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": 13605693,
+          "pct_chg": 0.34,
+          "shares": 1629584364
+        },
+        {
+          "pid": "A00003",
+          "pname": "港股通(沪)",
+          "chg": 5374000,
+          "pct_chg": 0.13,
+          "shares": 417959602
+        },
+        {
+          "pid": "A00004",
+          "pname": "港股通(深)",
+          "chg": 2988345,
+          "pct_chg": 0.08,
+          "shares": 309254947
+        },
+        {
+          "pid": "B01161",
+          "pname": "UBS Securities Hong Kong Limited",
+          "chg": 2585497,
+          "pct_chg": 0.07,
+          "shares": 27012398
+        },
+        {
+          "pid": "B01955",
+          "pname": "富途证券国际香港",
+          "chg": 2087908,
+          "pct_chg": 0.06,
+          "shares": 31258616
+        }
+      ],
+      "outs": [
+        {
+          "pid": "B01451",
+          "pname": "高盛(亚洲)证券",
+          "chg": -15178000,
+          "pct_chg": -0.38,
+          "shares": 21382655
+        },
+        {
+          "pid": "C00010",
+          "pname": "花旗银行",
+          "chg": -5115922,
+          "pct_chg": -0.13,
+          "shares": 484166406
+        },
+        {
+          "pid": "C00093",
+          "pname": "法国巴黎银行",
+          "chg": -4024780,
+          "pct_chg": -0.11,
+          "shares": 169174144
+        },
+        {
+          "pid": "B01224",
+          "pname": "Merrill Lynch Far East Limited",
+          "chg": -2698130,
+          "pct_chg": -0.07,
+          "shares": 28705897
+        },
+        {
+          "pid": "B01590",
+          "pname": "盈透证券",
+          "chg": -1442000,
+          "pct_chg": -0.04,
+          "shares": 11640077
+        }
+      ]
+    },
+    {
+      "code": "03896",
+      "name": "金山雲",
+      "total_in": 27255154,
+      "total_out": 27084334,
+      "total_shares": 2800003663,
+      "outstanding_shares": 4582657386,
+      "ins": [
+        {
+          "pid": "C00010",
+          "pname": "花旗银行",
+          "chg": 10215750,
+          "pct_chg": 0.23,
+          "shares": 151126470
+        },
+        {
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": 8724210,
+          "pct_chg": 0.19,
+          "shares": 395151670
+        },
+        {
+          "pid": "B01224",
+          "pname": "Merrill Lynch Far East Limited",
+          "chg": 4029576,
+          "pct_chg": 0.09,
+          "shares": 22780392
+        },
+        {
+          "pid": "B01451",
+          "pname": "高盛(亚洲)证券",
+          "chg": 2069600,
+          "pct_chg": 0.05,
+          "shares": 18304110
+        },
+        {
+          "pid": "B01274",
+          "pname": "摩根士丹利香港证券",
+          "chg": 1173218,
+          "pct_chg": 0.03,
+          "shares": 468147621
+        },
+        {
+          "pid": "B01161",
+          "pname": "UBS Securities Hong Kong Limited",
+          "chg": 1042800,
+          "pct_chg": 0.02,
+          "shares": 10832282
+        }
+      ],
+      "outs": [
+        {
+          "pid": "A00004",
+          "pname": "港股通(深)",
+          "chg": -17046000,
+          "pct_chg": -0.38,
+          "shares": 670026545
+        },
+        {
+          "pid": "A00003",
+          "pname": "港股通(沪)",
+          "chg": -5202000,
+          "pct_chg": -0.12,
+          "shares": 597988695
+        },
+        {
+          "pid": "C00093",
+          "pname": "法国巴黎银行",
+          "chg": -4836334,
+          "pct_chg": -0.11,
+          "shares": 2506287
+        }
+      ]
+    },
+    {
+      "code": "00632",
+      "name": "中港石油",
+      "total_in": 1416000,
+      "total_out": 52288000,
+      "total_shares": 833228301,
+      "outstanding_shares": 963603910,
+      "ins": [
+        {
+          "pid": "B02193",
+          "pname": "百惠证券",
+          "chg": 1416000,
+          "pct_chg": 0.14,
+          "shares": 43608000
+        }
+      ],
+      "outs": [
+        {
+          "pid": "B02114",
+          "pname": "远源证券",
+          "chg": -51000000,
+          "pct_chg": -5.33,
+          "shares": 10000
+        },
+        {
+          "pid": "B02128",
+          "pname": "元库证券",
+          "chg": -1288000,
+          "pct_chg": -0.13,
+          "shares": 1164000
+        }
+      ]
+    },
+    {
+      "code": "00681",
+      "name": "中民控股",
+      "total_in": 26938000,
+      "total_out": 26064000,
+      "total_shares": 5410822668,
+      "outstanding_shares": 9045173299,
+      "ins": [
+        {
+          "pid": "B01274",
+          "pname": "摩根士丹利香港证券",
+          "chg": 22000000,
+          "pct_chg": 0.25,
+          "shares": 86998000
+        },
+        {
+          "pid": "B01565",
+          "pname": "国泰君安(香港)",
+          "chg": 4938000,
+          "pct_chg": 0.06,
+          "shares": 771149546
+        }
+      ],
+      "outs": [
+        {
+          "pid": "B02177",
+          "pname": "浙商国际金融",
+          "chg": -20990000,
+          "pct_chg": -0.24,
+          "shares": 6000000
+        },
+        {
+          "pid": "B01115",
+          "pname": "申万宏源证券香港",
+          "chg": -2330000,
+          "pct_chg": -0.03,
+          "shares": 161347213
+        },
+        {
+          "pid": "B01555",
+          "pname": "ABN AMRO Clearing Hong Kong Limited",
+          "chg": -1744000,
+          "pct_chg": -0.02,
+          "shares": 6380000
+        },
+        {
+          "pid": "B01809",
+          "pname": "华信证券",
+          "chg": -1000000,
+          "pct_chg": -0.01,
+          "shares": 297769134
+        }
+      ]
+    },
+    {
+      "code": "02186",
+      "name": "綠葉製藥",
+      "total_in": 26364496,
+      "total_out": 23834145,
+      "total_shares": 3993843617,
+      "outstanding_shares": 4021592605,
+      "ins": [
+        {
+          "pid": "A00004",
+          "pname": "港股通(深)",
+          "chg": 11660500,
+          "pct_chg": 0.29,
+          "shares": 818822136
+        },
+        {
+          "pid": "A00003",
+          "pname": "港股通(沪)",
+          "chg": 9268000,
+          "pct_chg": 0.23,
+          "shares": 749213000
+        },
+        {
+          "pid": "B01274",
+          "pname": "摩根士丹利香港证券",
+          "chg": 2437496,
+          "pct_chg": 0.06,
+          "shares": 30650905
+        },
+        {
+          "pid": "B01228",
+          "pname": "中信证券经纪香港",
+          "chg": 1529000,
+          "pct_chg": 0.04,
+          "shares": 2587000
+        },
+        {
+          "pid": "B02159",
+          "pname": "盈立证券",
+          "chg": 1469500,
+          "pct_chg": 0.04,
+          "shares": 2426000
+        }
+      ],
+      "outs": [
+        {
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": -9003386,
+          "pct_chg": -0.23,
+          "shares": 233588601
+        },
+        {
+          "pid": "C00010",
+          "pname": "花旗银行",
+          "chg": -8015759,
+          "pct_chg": -0.2,
+          "shares": 95897320
+        },
+        {
+          "pid": "B01590",
+          "pname": "盈透证券",
+          "chg": -6815000,
+          "pct_chg": -0.17,
+          "shares": 20121652
+        }
+      ]
+    },
+    {
+      "code": "00268",
+      "name": "金蝶國際",
+      "total_in": 24143083,
+      "total_out": 24393264,
+      "total_shares": 3510658665,
+      "outstanding_shares": 3573553201,
+      "ins": [
+        {
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": 11685300,
+          "pct_chg": 0.33,
+          "shares": 1255169717
+        },
+        {
+          "pid": "C00010",
+          "pname": "花旗银行",
+          "chg": 8095783,
+          "pct_chg": 0.22,
+          "shares": 301704390
+        },
+        {
+          "pid": "A00003",
+          "pname": "港股通(沪)",
+          "chg": 4362000,
+          "pct_chg": 0.12,
+          "shares": 305441894
+        }
+      ],
+      "outs": [
+        {
+          "pid": "A00004",
+          "pname": "港股通(深)",
+          "chg": -8324000,
+          "pct_chg": -0.23,
+          "shares": 454702542
+        },
+        {
+          "pid": "B01224",
+          "pname": "Merrill Lynch Far East Limited",
+          "chg": -8190000,
+          "pct_chg": -0.23,
+          "shares": 12639552
+        },
+        {
+          "pid": "B01274",
+          "pname": "摩根士丹利香港证券",
+          "chg": -7879264,
+          "pct_chg": -0.22,
+          "shares": 3269947
+        }
+      ]
+    },
+    {
+      "code": "02225",
+      "name": "今海醫療科技",
+      "total_in": 20159323,
+      "total_out": 27556723,
+      "total_shares": 4430646748,
+      "outstanding_shares": 5324016760,
+      "ins": [
+        {
+          "pid": "C00010",
+          "pname": "花旗银行",
+          "chg": 10266723,
+          "pct_chg": 0.19,
+          "shares": 30655225
+        },
+        {
+          "pid": "B01848",
+          "pname": "国泰证券(香港)",
+          "chg": 2625000,
+          "pct_chg": 0.05,
+          "shares": 13825000
+        },
+        {
+          "pid": "B01955",
+          "pname": "富途证券国际香港",
+          "chg": 2522600,
+          "pct_chg": 0.05,
+          "shares": 23162000
+        },
+        {
+          "pid": "B01858",
+          "pname": "元大证券香港",
+          "chg": 2430000,
+          "pct_chg": 0.04,
+          "shares": 9520000
+        },
+        {
+          "pid": "B01497",
+          "pname": "永丰金证券(亚洲)",
+          "chg": 1285000,
+          "pct_chg": 0.02,
+          "shares": 6165000
+        },
+        {
+          "pid": "B01228",
+          "pname": "中信证券经纪香港",
+          "chg": 1030000,
+          "pct_chg": 0.02,
+          "shares": 3090000
+        }
+      ],
+      "outs": [
+        {
+          "pid": "B01447",
+          "pname": "贝塔国际证券",
+          "chg": -19240000,
+          "pct_chg": -0.37,
+          "shares": 8450000
+        },
+        {
+          "pid": "C00093",
+          "pname": "法国巴黎银行",
+          "chg": -8316723,
+          "pct_chg": -0.16,
+          "shares": 461110
+        }
+      ]
+    },
+    {
+      "code": "01339",
+      "name": "中國人民保險集團",
+      "total_in": 24340641,
+      "total_out": 21787609,
+      "total_shares": 8690629940,
+      "outstanding_shares": 8786401718,
+      "ins": [
+        {
+          "pid": "A00004",
+          "pname": "港股通(深)",
+          "chg": 8343000,
+          "pct_chg": 0.09,
+          "shares": 1075005395
+        },
+        {
+          "pid": "C00039",
+          "pname": "渣打银行(香港)",
+          "chg": 6747000,
+          "pct_chg": 0.08,
+          "shares": 336396750
+        },
+        {
+          "pid": "B01274",
+          "pname": "摩根士丹利香港证券",
+          "chg": 4540141,
+          "pct_chg": 0.05,
+          "shares": 61065345
+        },
+        {
+          "pid": "B01224",
+          "pname": "Merrill Lynch Far East Limited",
+          "chg": 3432000,
+          "pct_chg": 0.04,
+          "shares": 21719316
+        },
+        {
+          "pid": "C00111",
+          "pname": "Societe Generale",
+          "chg": 1278500,
+          "pct_chg": 0.01,
+          "shares": 3917741
+        }
+      ],
+      "outs": [
+        {
+          "pid": "C00010",
+          "pname": "花旗银行",
+          "chg": -14820060,
+          "pct_chg": -0.17,
+          "shares": 749266686
+        },
+        {
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": -3271449,
+          "pct_chg": -0.04,
+          "shares": 3878616263
+        },
+        {
+          "pid": "C00093",
+          "pname": "法国巴黎银行",
+          "chg": -2134100,
+          "pct_chg": -0.02,
+          "shares": 70927210
+        },
+        {
+          "pid": "B01086",
+          "pname": "光大证券投资服务香港",
+          "chg": -1562000,
+          "pct_chg": -0.02,
+          "shares": 8689050
+        }
+      ]
+    },
+    {
+      "code": "01928",
+      "name": "金沙中國有限公司",
+      "total_in": 19048368,
+      "total_out": 25143463,
+      "total_shares": 3825129947,
+      "outstanding_shares": 8185598003,
+      "ins": [
+        {
+          "pid": "B01451",
+          "pname": "高盛(亚洲)证券",
+          "chg": 8165110,
+          "pct_chg": 0.1,
+          "shares": 1803281783
+        },
+        {
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": 5995541,
+          "pct_chg": 0.07,
+          "shares": 990345881
+        },
+        {
+          "pid": "C00039",
+          "pname": "渣打银行(香港)",
+          "chg": 2331717,
+          "pct_chg": 0.03,
+          "shares": 56973698
+        },
+        {
+          "pid": "A00003",
+          "pname": "港股通(沪)",
+          "chg": 1334400,
+          "pct_chg": 0.01,
+          "shares": 46045000
+        },
+        {
+          "pid": "A00004",
+          "pname": "港股通(深)",
+          "chg": 1221600,
+          "pct_chg": 0.02,
+          "shares": 68008143
+        }
+      ],
+      "outs": [
+        {
+          "pid": "C00010",
+          "pname": "花旗银行",
+          "chg": -20195875,
+          "pct_chg": -0.25,
+          "shares": 314990515
+        },
+        {
+          "pid": "B01274",
+          "pname": "摩根士丹利香港证券",
+          "chg": -4947588,
+          "pct_chg": -0.06,
+          "shares": 45818702
+        }
+      ]
+    },
+    {
+      "code": "00857",
+      "name": "中國石油股份",
+      "total_in": 21603832,
+      "total_out": 19095164,
+      "total_shares": 20886621855,
+      "outstanding_shares": 21256484688,
+      "ins": [
+        {
+          "pid": "A00003",
+          "pname": "港股通(沪)",
+          "chg": 10354000,
+          "pct_chg": 0.05,
+          "shares": 5852916115
+        },
+        {
+          "pid": "A00004",
+          "pname": "港股通(深)",
+          "chg": 8422000,
+          "pct_chg": 0.04,
+          "shares": 2580360357
+        },
+        {
+          "pid": "B01224",
+          "pname": "Merrill Lynch Far East Limited",
+          "chg": 2827832,
+          "pct_chg": 0.02,
+          "shares": 61576875
+        }
+      ],
+      "outs": [
+        {
+          "pid": "C00010",
+          "pname": "花旗银行",
+          "chg": -12583031,
+          "pct_chg": -0.06,
+          "shares": 1709442292
+        },
+        {
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": -2720896,
+          "pct_chg": -0.02,
+          "shares": 7057471387
+        },
+        {
+          "pid": "C00093",
+          "pname": "法国巴黎银行",
+          "chg": -2356792,
+          "pct_chg": -0.01,
+          "shares": 176808991
+        },
+        {
+          "pid": "B01451",
+          "pname": "高盛(亚洲)证券",
+          "chg": -1434445,
+          "pct_chg": -0.01,
+          "shares": 33278544
+        }
+      ]
+    },
+    {
+      "code": "03996",
+      "name": "中國能源建設",
+      "total_in": 18777197,
+      "total_out": 21312613,
+      "total_shares": 9259136781,
+      "outstanding_shares": 9317839167,
+      "ins": [
+        {
+          "pid": "C00019",
+          "pname": "香港上海汇丰银行",
+          "chg": 5059027,
+          "pct_chg": 0.06,
+          "shares": 1911807801
+        },
+        {
+          "pid": "C00010",
+          "pname": "花旗银行",
+          "chg": 4650988,
+          "pct_chg": 0.05,
+          "shares": 740366995
+        },
+        {
+          "pid": "B01555",
+          "pname": "ABN AMRO Clearing Hong Kong Limited",
+          "chg": 2650000,
+          "pct_chg": 0.03,
+          "shares": 4197952
+        },
+        {
+          "pid": "B01224",
+          "pname": "Merrill Lynch Far East Limited",
+          "chg": 2455182,
+          "pct_chg": 0.03,
+          "shares": 8437906
+        },
+        {
+          "pid": "B01955",
+          "pname": "富途证券国际香港",
+          "chg": 2002000,
+          "pct_chg": 0.02,
+          "shares": 77199799
+        },
+        {
+          "pid": "A00004",
+          "pname": "港股通(深)",
+          "chg": 1960000,
+          "pct_chg": 0.02,
+          "shares": 500674000
+        }
+      ],
+      "outs": [
+        {
+          "pid": "A00003",
+          "pname": "港股通(沪)",
+          "chg": -14496000,
+          "pct_chg": -0.15,
+          "shares": 2027754880
+        },
+        {
+          "pid": "C00093",
+          "pname": "法国巴黎银行",
+          "chg": -6816613,
+          "pct_chg": -0.07,
+          "shares": 14975152
+        }
+      ]
+    },
+    {
+      "code": "01121",
+      "name": "金陽新能源",
+      "total_in": 20000000,
+      "total_out": 20002000,
+      "total_shares": 1213540240,
+      "outstanding_shares": 1940422513,
+      "ins": [
+        {
+          "pid": "B02192",
+          "pname": "华福国际证券",
+          "chg": 20000000,
+          "pct_chg": 1.04,
+          "shares": 297555792
+        }
+      ],
+      "outs": [
+        {
+          "pid": "C00010",
+          "pname": "花旗银行",
+          "chg": -20002000,
+          "pct_chg": -1.04,
+          "shares": 15677275
         }
       ]
     }

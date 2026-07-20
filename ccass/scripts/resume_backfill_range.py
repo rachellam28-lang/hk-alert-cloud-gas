@@ -120,21 +120,38 @@ def run(start: date, end: date, max_batches: int, provider: str, max_stocks: int
             env["PYTHONPATH"] = "."
             env["HOLDINGS_PROVIDER"] = selected_provider
             env["HOLDINGS_BACKFILL_FAST"] = env.get("HOLDINGS_BACKFILL_FAST", "1")
+            full_day_hkex = selected_provider == "hkex" and n == 0
             if selected_provider == "longbridge":
                 env["FILL_MISSING_WORKERS"] = env.get("FILL_MISSING_WORKERS", "4")
             else:
                 env["FILL_MISSING_WORKERS"] = env.get("FILL_MISSING_WORKERS", "1")
-            proc = subprocess.run(
-                [
-                    sys.executable,
-                    "scripts/fill_missing.py",
-                    trade_date,
-                    "--max-stocks",
-                    str(max_stocks),
-                ],
-                cwd=PROJECT,
-                env=env,
-            )
+            if full_day_hkex:
+                print(f"BATCH_MODE {trade_date} full_day_hkex", flush=True)
+                proc = subprocess.run(
+                    [
+                        sys.executable,
+                        "-m",
+                        "scripts.backfill",
+                        "--start",
+                        trade_date,
+                        "--end",
+                        trade_date,
+                    ],
+                    cwd=PROJECT,
+                    env=env,
+                )
+            else:
+                proc = subprocess.run(
+                    [
+                        sys.executable,
+                        "scripts/fill_missing.py",
+                        trade_date,
+                        "--max-stocks",
+                        str(max_stocks),
+                    ],
+                    cwd=PROJECT,
+                    env=env,
+                )
             if proc.returncode != 0:
                 print(f"BATCH_FAIL {trade_date} batch={batch} rc={proc.returncode}", flush=True)
                 return proc.returncode

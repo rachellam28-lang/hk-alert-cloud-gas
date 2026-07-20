@@ -140,7 +140,11 @@ def aggregate_night_sessions(bars: list[dict]) -> dict[str, dict]:
         items.sort(key=lambda item: item["time"])
         last_stamp = parse_time(items[-1]["time"])
         session_day = date.fromisoformat(session_date)
-        complete = bool(last_stamp and last_stamp.date() > session_day and last_stamp.time() <= time(3, 15))
+        complete = bool(
+            last_stamp
+            and last_stamp.date() > session_day
+            and time(2, 45) <= last_stamp.time() <= time(3, 15)
+        )
         result[session_date] = {
             "session_date": session_date,
             "open": items[0]["open"],
@@ -191,6 +195,91 @@ def nearest_observed_levels(previous: list[dict], price: float) -> dict[str, dic
     return {
         "above": {**above, "value": round_value(above["value"])} if above else None,
         "below": {**below, "value": round_value(below["value"])} if below else None,
+    }
+
+
+def stepped_levels(low: float | None, high: float | None, step: int) -> list[int]:
+    """Return observed-range reference levels; these are not price forecasts."""
+    if low is None or high is None or high < low or step <= 0:
+        return []
+    first = int(low // step) * step
+    last = int(high // step) * step
+    return list(range(first, last + step, step))
+
+
+def kenny_sequence(start: float | None, direction: str) -> list[float]:
+    """Expose the fixed 37/30/60 reference sequence from the source workbook."""
+    if start is None:
+        return []
+    current = float(start)
+    sign = 1 if direction == "up" else -1
+    values = [round_value(current)]
+    for step in (37, 37, 37, 37, 30, 30, 30, 30, 60, 60, 60):
+        current += sign * step
+        values.append(round_value(current))
+    return values
+
+
+def magic_numbers_for_row(daily: list[dict], index: int, *, lookback: int = 20) -> dict:
+    """Build auditable Magic Numbers from observed bars ending at ``index``.
+
+    DH/DL/CTR/OPEN/CL are the current observed day bar. The stepped levels,
+    NH/NL, mirror references and Kenny sequence are deterministic references;
+    none is presented as a forecast or an automatic trade signal.
+    """
+    bar = daily[index]
+    high = finite(bar.get("high"))
+    low = finite(bar.get("low"))
+    close = finite(bar.get("close"))
+    open_ = finite(bar.get("open"))
+    window = daily[max(0, index - lookback + 1): index + 1]
+    previous = daily[max(0, index - lookback):index]
+    window_high = max((finite(item.get("high")) for item in window), default=None)
+    window_low = min((finite(item.get("low")) for item in window), default=None)
+    previous_high = max((finite(item.get("high")) for item in previous), default=None)
+    previous_low = min((finite(item.get("low")) for item in previous), default=None)
+    prior_close = finite(daily[index - 1].get("close")) if index >= 1 else None
+    prior_prior_close = finite(daily[index - 2].get("close")) if index >= 2 else None
+    change = prior_close - prior_prior_close if prior_close is not None and prior_prior_close is not None else None
+    mirror = None
+    if prior_close is not None and change is not None:
+        distance = abs(change)
+        mirror = {
+            "axis_price": round_value(prior_close),
+            "prior_change": round_value(change),
+            "mirror_up": round_value(prior_close + distance),
+            "mirror_down": round_value(prior_close - distance),
+            "direction": "up" if change < 0 else "down" if change > 0 else "flat",
+            "source": "previous two observed daily closes",
+        }
+    return {
+        "observed": {
+            "dh": round_value(high),
+            "dl": round_value(low),
+            "ctr": round_value((high + low) / 2 if high is not None and low is not None else None),
+            "open": round_value(open_),
+            "close": round_value(close),
+        },
+        "status": {
+            "nh": bool(high is not None and previous_high is not None and high > previous_high),
+            "nl": bool(low is not None and previous_low is not None and low < previous_low),
+            "lookback": lookback,
+            "lookback_high": round_value(window_high),
+            "lookback_low": round_value(window_low),
+        },
+        "levels": {
+            "300": stepped_levels(window_low, window_high, 300),
+            "150": stepped_levels(window_low, window_high, 150),
+            "100": stepped_levels(window_low, window_high, 100),
+        },
+        "mirror": mirror,
+        "kenny": {
+            "up": kenny_sequence(close, "up"),
+            "down": kenny_sequence(close, "down"),
+            "steps": [37, 37, 37, 37, 30, 30, 30, 30, 60, 60, 60],
+        },
+        "data_kind": "derived_reference_from_observed_bars",
+        "is_forecast": False,
     }
 
 
@@ -258,6 +347,7 @@ def build_matrix(daily: list[dict], nights: dict[str, dict], jieqi: dict[str, st
                 "open": round_value(finite(bar.get("open"))),
                 "close": round_value(close),
             },
+            "magic_numbers": magic_numbers_for_row(daily, index),
             "reference_levels": references,
             "indicators": {
                 "ema20": round_value(ema20[index]),
@@ -348,8 +438,9 @@ def build_payload(days: int) -> dict:
             "five_grid": "observed High, observed Low, (High+Low)/2, observed Open, observed Close",
             "reference_levels": "nearest prior observed High/Low within 60 sessions; current and future bars excluded",
             "trend_score": "close/EMA20 + EMA20/EMA50 + 5D momentum + close/day midpoint + 20D channel + volume confirmation + completed night direction",
+            "magic_numbers": "observed DH/DL/OPEN/CL and CTR=(DH+DL)/2; 300/150/100 levels use the observed 20-session high-low range; NH/NL compare current high/low with prior 20 sessions; mirror uses the prior two observed closes; Kenny sequence is a fixed 37/30/60 reference sequence",
         },
-        "disclaimer": "Five-grid OHLC fields are observations. Trend and historical reference levels are deterministic derived rules, not a price forecast. Incomplete night sessions are excluded from the score.",
+        "disclaimer": "Five-grid OHLC fields are observations. Magic Numbers are transparent references derived from observed bars, not a price forecast or automatic trade signal. Trend and historical reference levels are deterministic derived rules. Incomplete night sessions are excluded from the score.",
         "indexes": indexes,
         "errors": errors,
     }

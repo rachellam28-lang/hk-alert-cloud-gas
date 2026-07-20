@@ -14,6 +14,7 @@ import json, os, sys, time, logging, subprocess, shutil
 from datetime import date
 from dataclasses import dataclass
 from typing import Optional
+from pathlib import Path
 
 import requests
 
@@ -39,30 +40,77 @@ CLI_RETRY_DELAY_SECONDS = float(os.environ.get("LONGBRIDGE_CLI_RETRY_DELAY_SECON
 
 # --- Token loading ---
 
-def _find_token() -> str:
-    """Read LONGBRIDGE_ACCESS_TOKEN from repo .env or environment."""
-    # Prefer this repo's local .env so one workspace cannot silently borrow
-    # another workspace's token.
-    env_paths = [
-        os.path.join(os.path.dirname(__file__), "..", "..", ".env"),
-        os.path.join(os.getcwd(), ".env"),
-    ]
-    for p in env_paths:
-        p = os.path.normpath(p)
-        if os.path.exists(p):
-            with open(p, encoding="utf-8-sig", errors="replace") as f:
-                for line in f:
-                    line = line.strip()
-                    if line.startswith("LONGBRIDGE_ACCESS_TOKEN="):
-                        token = line.split("=", 1)[1].strip()
-                        if token:
-                            return token
+def _read_env_token(path: Path) -> str:
+    try:
+        with path.open(encoding="utf-8-sig", errors="replace") as f:
+            for line in f:
+                line = line.strip()
+                if line.startswith("LONGBRIDGE_ACCESS_TOKEN="):
+                    token = line.split("=", 1)[1].strip()
+                    if token:
+                        return token
+    except OSError:
+        return ""
+    return ""
 
-    return os.environ.get("LONGBRIDGE_ACCESS_TOKEN", "").strip()
+
+def _read_token_file(path: Path) -> str:
+    try:
+        obj = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return ""
+    return str(obj.get("access_token") or "").strip()
+
+
+def _token_candidates() -> list[tuple[str, str]]:
+    home = Path.home()
+    repo_env = Path(__file__).resolve().parents[2] / ".env"
+    cwd_env = Path(os.getcwd()) / ".env"
+    candidates: list[tuple[str, str]] = []
+
+    explicit = os.environ.get("LONGBRIDGE_ACCESS_TOKEN", "").strip()
+    if explicit:
+        candidates.append(("envvar:LONGBRIDGE_ACCESS_TOKEN", explicit))
+
+    token_files = [
+        home / ".longbridge" / "openapi" / "tokens" / "mcp-auth" / "token.json",
+        home / ".longbridge" / "openapi" / "tokens" / "ccass_token.json",
+    ]
+    token_files.extend(
+        sorted(
+            (home / ".longbridge" / "openapi" / "tokens").glob("*/token.json"),
+            key=lambda p: p.stat().st_mtime if p.exists() else 0,
+            reverse=True,
+        )
+    )
+    for path in token_files:
+        token = _read_token_file(path)
+        if token:
+            candidates.append((f"file:{path}", token))
+
+    for path in (repo_env, cwd_env):
+        token = _read_env_token(path)
+        if token:
+            candidates.append((f"env:{path}", token))
+
+    seen = set()
+    deduped: list[tuple[str, str]] = []
+    for source, token in candidates:
+        if token in seen:
+            continue
+        seen.add(token)
+        deduped.append((source, token))
+    return deduped
+
+
+def _find_token() -> str:
+    """Read a usable Longbridge access token from local caches or env."""
+    candidates = _token_candidates()
+    return candidates[0][1] if candidates else ""
 
 
 def _load_token() -> str:
-    """Read LONGBRIDGE_ACCESS_TOKEN from .env in project root."""
+    """Read a Longbridge access token from local caches or env."""
     token = _find_token()
     if token:
         return token

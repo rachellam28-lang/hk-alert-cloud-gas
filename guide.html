@@ -144,7 +144,7 @@ ul,ol{margin:8px 0;padding-left:20px}li{margin:5px 0}.formula{display:inline-blo
       <div class="table-wrap"><table><thead><tr><th>輸入</th><th>系統點樣判斷</th></tr></thead><tbody>
         <tr><td>恒指／國指／科指</td><td>Futu 指數日線，加相應主連期貨 17:15 至翌日 03:00 的已完成夜期；進行中夜期不計分。</td></tr>
         <tr><td>任何港股</td><td>沿用系統的 Tencent 未調整真實日線；個股沒有夜期，該因子標示不適用並不計分。</td></tr>
-        <tr><td>日／夜五格</td><td>表格永遠只顯示日期加 High、Low、(High+Low)/2、Open、Close；日市與夜期用按鍵切換。未完成夜期只顯示最後觀察，不當正式收市計分。</td></tr>
+        <tr><td>日／夜五格</td><td>日期左邊先顯示 60D／20D／5D／1D 真實高低波幅，分別代表最大／大／中／小周期。右邊同一行顯示日市 High、Low、(High+Low)/2、Open、Close，再以金線分隔夜期 High、Low、(High+Low)/2、Open、Close。未完成夜期只顯示最後觀察，不當正式收市計分。</td></tr>
         <tr><td>三層 Cycle</td><td>Daily 是單日高低波幅；Weekly 是滾動 5 日最高減最低；Monthly 是滾動 20 日最高減最低。每層使用最近 60 個有效樣本顯示目前幅度、歷史中位及上四分位。</td></tr>
         <tr><td>派／吸顏色</td><td>完整 Trend score 先以最近 3 個交易日平滑；平均 ≥ +1.5 為吸納／偏多（藍），≤ -1.5 為派發／偏空（紅），其餘為過渡（灰）。每連續 3 日以金線分拍。</td></tr>
         <tr><td>價位標記</td><td>黃色只表示突破之前 20 個同類交易節的高／低極值；綠色只表示階段切換當日中位。數字及顏色均可由已觀察數據重算。</td></tr>

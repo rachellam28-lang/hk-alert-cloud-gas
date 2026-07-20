@@ -1,11 +1,11 @@
 {
   "schema_version": 3,
-  "updated": "2026-07-17",
+  "updated": "2026-07-20",
   "source": "raw/prices_YYYYMMDD.json + holdings.json names + index.html classification overrides",
   "method": "RRG-style proxy using same-date non-stale closes: sector equal-weight median return relative to the equal-weight market median; RS-Ratio=100+long relative return; RS-Momentum=100+short relative return; pressure=0.65*long relative return + 0.35*short relative return; fund flow uses observed main_net only",
   "is_vendor_rrg": false,
   "is_vendor_mse": false,
-  "fundflow_date": "2026-07-17",
+  "fundflow_date": "2026-07-20",
   "minimum_fresh_rows": 500,
   "coverage": {
     "observed_named_stocks": 2663,
@@ -15,25 +15,25 @@
   },
   "windows": {
     "5": {
-      "latest_date": "2026-07-17",
+      "latest_date": "2026-07-20",
       "latest_rows": 2663,
-      "reference_date": "2026-07-10",
-      "reference_rows": 1829
+      "reference_date": "2026-07-15",
+      "reference_rows": 2723
     },
     "20": {
-      "latest_date": "2026-07-17",
+      "latest_date": "2026-07-20",
       "latest_rows": 2663,
-      "reference_date": "2026-06-29",
-      "reference_rows": 2727
+      "reference_date": "2026-06-30",
+      "reference_rows": 2036
     },
     "60": {
-      "latest_date": "2026-07-17",
+      "latest_date": "2026-07-20",
       "latest_rows": 2663,
       "reference_date": "2026-05-29",
       "reference_rows": 2732
     },
     "120": {
-      "latest_date": "2026-07-17",
+      "latest_date": "2026-07-20",
       "latest_rows": 2663,
       "reference_date": null,
       "reference_rows": null
@@ -45,47 +45,42 @@
       "short_days": 5,
       "long_days": 20,
       "available": true,
-      "as_of": "2026-07-17",
-      "short_reference_date": "2026-07-10",
-      "long_reference_date": "2026-06-29",
-      "market_stocks": 1785,
+      "as_of": "2026-07-20",
+      "short_reference_date": "2026-07-15",
+      "long_reference_date": "2026-06-30",
+      "market_stocks": 1979,
       "sectors": {
         "tech": {
-          "rs_ratio": 100.0,
-          "rs_momentum": 98.101,
-          "relative_long_pct": 0.0,
-          "relative_short_pct": -1.899,
-          "sector_long_pct": 0.0,
-          "sector_short_pct": -1.899,
+          "rs_ratio": 98.919,
+          "rs_momentum": 99.125,
+          "relative_long_pct": -1.081,
+          "relative_short_pct": -0.875,
+          "sector_long_pct": -1.081,
+          "sector_short_pct": -0.875,
           "market_long_pct": 0.0,
           "market_short_pct": 0.0,
-          "stocks": 163,
+          "stocks": 179,
           "leaders": [
-            {
-              "code": "00809",
-              "name": "大成生化科技",
-              "return_pct": 950.0
-            },
             {
               "code": "02650",
               "name": "摯達科技",
-              "return_pct": 108.644
+              "return_pct": 91.447
             },
             {
-              "code": "00918",
-              "name": "龍翼航空科技",
-              "return_pct": 74.074
+              "code": "08131",
+              "name": "諾亞智能",
+              "return_pct": 75.0
+            },
+            {
+              "code": "01710",
+              "name": "致豐工業電子",
+              "return_pct": 50.0
             }
           ],
           "label": "科技／AI",
           "count": 242,
-          "quadrant": "weakening",
+          "quadrant": "lagging",
           "tail": [
-            {
-              "as_of": "2026-06-30",
-              "rs_ratio": 102.333,
-              "rs_momentum": 100.203
-            },
             {
               "as_of": "2026-07-03",
               "rs_ratio": 99.587,
@@ -110,53 +105,53 @@
               "as_of": "2026-07-17",
               "rs_ratio": 100.0,
               "rs_momentum": 98.101
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 98.919,
+              "rs_momentum": 99.125
             }
           ],
           "fundflow": {
-            "net": -3535220970.5,
+            "net": 910116266.0,
             "observed": 57,
-            "direction": "outflow"
+            "direction": "inflow"
           },
-          "pressure_pct": -0.665,
-          "acceleration": -1.703,
-          "lifecycle": "減速→轉弱"
+          "pressure_pct": -1.009,
+          "acceleration": 1.024,
+          "lifecycle": "改善→落後"
         },
         "healthcare": {
-          "rs_ratio": 105.0,
-          "rs_momentum": 98.537,
-          "relative_long_pct": 5.0,
-          "relative_short_pct": -1.463,
-          "sector_long_pct": 5.0,
-          "sector_short_pct": -1.463,
+          "rs_ratio": 103.397,
+          "rs_momentum": 98.748,
+          "relative_long_pct": 3.397,
+          "relative_short_pct": -1.252,
+          "sector_long_pct": 3.397,
+          "sector_short_pct": -1.252,
           "market_long_pct": 0.0,
           "market_short_pct": 0.0,
-          "stocks": 109,
+          "stocks": 107,
           "leaders": [
-            {
-              "code": "02595",
-              "name": "勁方醫藥－Ｂ",
-              "return_pct": 46.914
-            },
             {
               "code": "08143",
               "name": "金威醫療",
               "return_pct": 38.0
             },
             {
-              "code": "01332",
-              "name": "透雲生物",
-              "return_pct": 36.752
+              "code": "01477",
+              "name": "歐康維視生物－Ｂ",
+              "return_pct": 35.762
+            },
+            {
+              "code": "02410",
+              "name": "同源康醫藥－Ｂ",
+              "return_pct": 32.635
             }
           ],
           "label": "醫藥",
           "count": 140,
           "quadrant": "weakening",
           "tail": [
-            {
-              "as_of": "2026-06-30",
-              "rs_ratio": 101.71,
-              "rs_momentum": 101.842
-            },
             {
               "as_of": "2026-07-03",
               "rs_ratio": 104.762,
@@ -181,53 +176,53 @@
               "as_of": "2026-07-17",
               "rs_ratio": 105.0,
               "rs_momentum": 98.537
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 103.397,
+              "rs_momentum": 98.748
             }
           ],
           "fundflow": {
-            "net": -50532685.0,
+            "net": 273131976.0,
             "observed": 35,
-            "direction": "outflow"
+            "direction": "inflow"
           },
-          "pressure_pct": 2.738,
-          "acceleration": -2.758,
-          "lifecycle": "減速→轉弱"
+          "pressure_pct": 1.77,
+          "acceleration": 0.211,
+          "lifecycle": "反彈→轉弱"
         },
         "property": {
-          "rs_ratio": 101.845,
-          "rs_momentum": 101.351,
-          "relative_long_pct": 1.845,
-          "relative_short_pct": 1.351,
-          "sector_long_pct": 1.845,
-          "sector_short_pct": 1.351,
+          "rs_ratio": 103.42,
+          "rs_momentum": 100.0,
+          "relative_long_pct": 3.42,
+          "relative_short_pct": 0.0,
+          "sector_long_pct": 3.42,
+          "sector_short_pct": 0.0,
           "market_long_pct": 0.0,
           "market_short_pct": 0.0,
-          "stocks": 45,
+          "stocks": 56,
           "leaders": [
+            {
+              "code": "00095",
+              "name": "綠景中國地產",
+              "return_pct": 40.764
+            },
             {
               "code": "02423",
               "name": "貝殼－Ｗ",
-              "return_pct": 25.32
-            },
-            {
-              "code": "02777",
-              "name": "富力地產",
-              "return_pct": 14.216
+              "return_pct": 18.53
             },
             {
               "code": "01997",
               "name": "九龍倉置業",
-              "return_pct": 13.632
+              "return_pct": 17.025
             }
           ],
           "label": "地產／物管",
           "count": 68,
           "quadrant": "leading",
           "tail": [
-            {
-              "as_of": "2026-06-30",
-              "rs_ratio": 96.336,
-              "rs_momentum": 100.01
-            },
             {
               "as_of": "2026-07-03",
               "rs_ratio": 97.951,
@@ -252,53 +247,53 @@
               "as_of": "2026-07-17",
               "rs_ratio": 101.845,
               "rs_momentum": 101.351
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 103.42,
+              "rs_momentum": 100.0
             }
           ],
           "fundflow": {
-            "net": 131872478.0,
+            "net": 119242531.0,
             "observed": 17,
             "direction": "inflow"
           },
-          "pressure_pct": 1.672,
-          "acceleration": -0.891,
+          "pressure_pct": 2.223,
+          "acceleration": -1.351,
           "lifecycle": "減速→領先"
         },
         "finance": {
-          "rs_ratio": 100.527,
-          "rs_momentum": 100.524,
-          "relative_long_pct": 0.527,
-          "relative_short_pct": 0.524,
-          "sector_long_pct": 0.527,
-          "sector_short_pct": 0.524,
+          "rs_ratio": 102.832,
+          "rs_momentum": 100.468,
+          "relative_long_pct": 2.832,
+          "relative_short_pct": 0.468,
+          "sector_long_pct": 2.832,
+          "sector_short_pct": 0.468,
           "market_long_pct": 0.0,
           "market_short_pct": 0.0,
-          "stocks": 77,
+          "stocks": 82,
           "leaders": [
             {
               "code": "00133",
               "name": "招商局中國基金",
-              "return_pct": 29.268
+              "return_pct": 31.741
             },
             {
-              "code": "03360",
-              "name": "遠東宏信",
-              "return_pct": 25.781
+              "code": "08018",
+              "name": "匯財金融投資",
+              "return_pct": 26.316
             },
             {
               "code": "01461",
               "name": "中泰期貨",
-              "return_pct": 21.569
+              "return_pct": 23.636
             }
           ],
           "label": "金融／券商",
           "count": 111,
           "quadrant": "leading",
           "tail": [
-            {
-              "as_of": "2026-06-30",
-              "rs_ratio": 102.009,
-              "rs_momentum": 99.725
-            },
             {
               "as_of": "2026-07-03",
               "rs_ratio": 101.905,
@@ -323,53 +318,53 @@
               "as_of": "2026-07-17",
               "rs_ratio": 100.527,
               "rs_momentum": 100.524
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 102.832,
+              "rs_momentum": 100.468
             }
           ],
           "fundflow": {
-            "net": 431200731.0,
+            "net": 571851814.0,
             "observed": 58,
             "direction": "inflow"
           },
-          "pressure_pct": 0.526,
-          "acceleration": -0.649,
+          "pressure_pct": 2.005,
+          "acceleration": -0.056,
           "lifecycle": "減速→領先"
         },
         "energy": {
-          "rs_ratio": 100.0,
-          "rs_momentum": 99.273,
-          "relative_long_pct": 0.0,
-          "relative_short_pct": -0.727,
-          "sector_long_pct": 0.0,
-          "sector_short_pct": -0.727,
+          "rs_ratio": 100.273,
+          "rs_momentum": 100.0,
+          "relative_long_pct": 0.273,
+          "relative_short_pct": 0.0,
+          "sector_long_pct": 0.273,
+          "sector_short_pct": 0.0,
           "market_long_pct": 0.0,
           "market_short_pct": 0.0,
-          "stocks": 83,
+          "stocks": 94,
           "leaders": [
             {
               "code": "01815",
               "name": "珠峰黃金",
-              "return_pct": 57.576
+              "return_pct": 96.721
             },
             {
               "code": "00254",
               "name": "國家聯合資源",
-              "return_pct": 39.316
+              "return_pct": 57.009
             },
             {
-              "code": "03939",
-              "name": "萬國黃金集團",
-              "return_pct": 21.569
+              "code": "00159",
+              "name": "布萊克萬礦業",
+              "return_pct": 22.222
             }
           ],
           "label": "能源／資源",
           "count": 132,
-          "quadrant": "weakening",
+          "quadrant": "leading",
           "tail": [
-            {
-              "as_of": "2026-06-30",
-              "rs_ratio": 93.4,
-              "rs_momentum": 96.404
-            },
             {
               "as_of": "2026-07-03",
               "rs_ratio": 96.703,
@@ -394,53 +389,53 @@
               "as_of": "2026-07-17",
               "rs_ratio": 100.0,
               "rs_momentum": 99.273
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 100.273,
+              "rs_momentum": 100.0
             }
           ],
           "fundflow": {
-            "net": -105042030.0,
-            "observed": 48,
-            "direction": "outflow"
+            "net": 439319002.0,
+            "observed": 49,
+            "direction": "inflow"
           },
-          "pressure_pct": -0.254,
-          "acceleration": -0.727,
-          "lifecycle": "減速→轉弱"
+          "pressure_pct": 0.177,
+          "acceleration": 0.727,
+          "lifecycle": "加速→領先"
         },
         "auto": {
           "rs_ratio": 100.0,
-          "rs_momentum": 96.849,
+          "rs_momentum": 99.186,
           "relative_long_pct": 0.0,
-          "relative_short_pct": -3.151,
+          "relative_short_pct": -0.814,
           "sector_long_pct": 0.0,
-          "sector_short_pct": -3.151,
+          "sector_short_pct": -0.814,
           "market_long_pct": 0.0,
           "market_short_pct": 0.0,
-          "stocks": 24,
+          "stocks": 28,
           "leaders": [
             {
               "code": "06162",
               "name": "天瑞汽車內飾",
-              "return_pct": 86.441
+              "return_pct": 72.881
             },
             {
-              "code": "03836",
-              "name": "和諧汽車",
-              "return_pct": 48.889
+              "code": "01211",
+              "name": "比亞迪股份",
+              "return_pct": 24.431
             },
             {
-              "code": "03669",
-              "name": "永達汽車",
-              "return_pct": 25.714
+              "code": "02518",
+              "name": "汽車之家－Ｓ",
+              "return_pct": 20.581
             }
           ],
           "label": "汽車／新能源",
           "count": 35,
           "quadrant": "weakening",
           "tail": [
-            {
-              "as_of": "2026-06-30",
-              "rs_ratio": 92.931,
-              "rs_momentum": 96.764
-            },
             {
               "as_of": "2026-07-03",
               "rs_ratio": 98.745,
@@ -465,27 +460,32 @@
               "as_of": "2026-07-17",
               "rs_ratio": 100.0,
               "rs_momentum": 96.849
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 100.0,
+              "rs_momentum": 99.186
             }
           ],
           "fundflow": {
-            "net": 66524783.0,
+            "net": 375980051.0,
             "observed": 18,
             "direction": "inflow"
           },
-          "pressure_pct": -1.103,
-          "acceleration": -3.151,
-          "lifecycle": "減速→轉弱"
+          "pressure_pct": -0.285,
+          "acceleration": 2.337,
+          "lifecycle": "反彈→轉弱"
         },
         "consumer": {
-          "rs_ratio": 102.49,
-          "rs_momentum": 100.476,
-          "relative_long_pct": 2.49,
-          "relative_short_pct": 0.476,
-          "sector_long_pct": 2.49,
-          "sector_short_pct": 0.476,
+          "rs_ratio": 102.058,
+          "rs_momentum": 100.0,
+          "relative_long_pct": 2.058,
+          "relative_short_pct": 0.0,
+          "sector_long_pct": 2.058,
+          "sector_short_pct": 0.0,
           "market_long_pct": 0.0,
           "market_short_pct": 0.0,
-          "stocks": 92,
+          "stocks": 100,
           "leaders": [
             {
               "code": "01371",
@@ -493,25 +493,20 @@
               "return_pct": 747.458
             },
             {
-              "code": "01262",
-              "name": "蠟筆小新食品",
-              "return_pct": 33.761
+              "code": "06808",
+              "name": "高鑫零售",
+              "return_pct": 34.409
             },
             {
-              "code": "00524",
-              "name": "長城天下",
-              "return_pct": 31.579
+              "code": "01262",
+              "name": "蠟筆小新食品",
+              "return_pct": 31.513
             }
           ],
           "label": "消費／餐飲",
           "count": 123,
           "quadrant": "leading",
           "tail": [
-            {
-              "as_of": "2026-06-30",
-              "rs_ratio": 99.715,
-              "rs_momentum": 100.392
-            },
             {
               "as_of": "2026-07-03",
               "rs_ratio": 101.523,
@@ -536,53 +531,53 @@
               "as_of": "2026-07-17",
               "rs_ratio": 102.49,
               "rs_momentum": 100.476
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 102.058,
+              "rs_momentum": 100.0
             }
           ],
           "fundflow": {
-            "net": 283584711.0,
-            "observed": 43,
+            "net": 217256552.0,
+            "observed": 42,
             "direction": "inflow"
           },
-          "pressure_pct": 1.785,
-          "acceleration": -0.327,
+          "pressure_pct": 1.338,
+          "acceleration": -0.476,
           "lifecycle": "減速→領先"
         },
         "infra": {
-          "rs_ratio": 102.583,
-          "rs_momentum": 101.177,
-          "relative_long_pct": 2.583,
-          "relative_short_pct": 1.177,
-          "sector_long_pct": 2.583,
-          "sector_short_pct": 1.177,
+          "rs_ratio": 103.113,
+          "rs_momentum": 100.775,
+          "relative_long_pct": 3.113,
+          "relative_short_pct": 0.775,
+          "sector_long_pct": 3.113,
+          "sector_short_pct": 0.775,
           "market_long_pct": 0.0,
           "market_short_pct": 0.0,
-          "stocks": 48,
+          "stocks": 53,
           "leaders": [
             {
               "code": "08401",
               "name": "華夏水務集團",
-              "return_pct": 51.724
+              "return_pct": 31.25
             },
             {
               "code": "01452",
               "name": "迪諾斯環保",
-              "return_pct": 28.387
+              "return_pct": 21.341
             },
             {
               "code": "08320",
               "name": "沛然環保",
-              "return_pct": 27.632
+              "return_pct": 18.519
             }
           ],
           "label": "電訊／基建",
           "count": 75,
           "quadrant": "leading",
           "tail": [
-            {
-              "as_of": "2026-06-30",
-              "rs_ratio": 99.947,
-              "rs_momentum": 99.719
-            },
             {
               "as_of": "2026-07-03",
               "rs_ratio": 99.688,
@@ -607,53 +602,53 @@
               "as_of": "2026-07-17",
               "rs_ratio": 102.583,
               "rs_momentum": 101.177
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 103.113,
+              "rs_momentum": 100.775
             }
           ],
           "fundflow": {
-            "net": 67222490.0,
+            "net": 86939380.0,
             "observed": 25,
             "direction": "inflow"
           },
-          "pressure_pct": 2.091,
-          "acceleration": 0.177,
-          "lifecycle": "加速→領先"
+          "pressure_pct": 2.295,
+          "acceleration": -0.402,
+          "lifecycle": "減速→領先"
         },
         "shipping": {
-          "rs_ratio": 105.263,
-          "rs_momentum": 102.966,
-          "relative_long_pct": 5.263,
-          "relative_short_pct": 2.966,
-          "sector_long_pct": 5.263,
-          "sector_short_pct": 2.966,
+          "rs_ratio": 104.739,
+          "rs_momentum": 100.494,
+          "relative_long_pct": 4.739,
+          "relative_short_pct": 0.494,
+          "sector_long_pct": 4.739,
+          "sector_short_pct": 0.494,
           "market_long_pct": 0.0,
           "market_short_pct": 0.0,
-          "stocks": 24,
+          "stocks": 27,
           "leaders": [
             {
               "code": "00316",
               "name": "東方海外國際",
-              "return_pct": 19.048
+              "return_pct": 20.328
             },
             {
-              "code": "08348",
-              "name": "濱海泰達物流",
-              "return_pct": 16.667
+              "code": "00144",
+              "name": "招商局港口",
+              "return_pct": 18.963
             },
             {
-              "code": "06083",
-              "name": "環宇物流（亞洲）",
-              "return_pct": 16.049
+              "code": "01919",
+              "name": "中遠海控",
+              "return_pct": 16.756
             }
           ],
           "label": "航運物流",
           "count": 33,
           "quadrant": "leading",
           "tail": [
-            {
-              "as_of": "2026-06-30",
-              "rs_ratio": 97.181,
-              "rs_momentum": 99.237
-            },
             {
               "as_of": "2026-07-03",
               "rs_ratio": 100.145,
@@ -678,53 +673,53 @@
               "as_of": "2026-07-17",
               "rs_ratio": 105.263,
               "rs_momentum": 102.966
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 104.739,
+              "rs_momentum": 100.494
             }
           ],
           "fundflow": {
-            "net": 12374594.0,
+            "net": 173170291.0,
             "observed": 21,
             "direction": "inflow"
           },
-          "pressure_pct": 4.459,
-          "acceleration": 0.281,
-          "lifecycle": "加速→領先"
+          "pressure_pct": 3.253,
+          "acceleration": -2.472,
+          "lifecycle": "減速→領先"
         },
         "industrial": {
-          "rs_ratio": 100.0,
-          "rs_momentum": 97.438,
-          "relative_long_pct": 0.0,
-          "relative_short_pct": -2.562,
-          "sector_long_pct": 0.0,
-          "sector_short_pct": -2.562,
+          "rs_ratio": 100.039,
+          "rs_momentum": 100.0,
+          "relative_long_pct": 0.039,
+          "relative_short_pct": 0.0,
+          "sector_long_pct": 0.039,
+          "sector_short_pct": 0.0,
           "market_long_pct": 0.0,
           "market_short_pct": 0.0,
-          "stocks": 34,
+          "stocks": 40,
           "leaders": [
             {
-              "code": "00568",
-              "name": "山東墨龍",
-              "return_pct": 44.279
+              "code": "06655",
+              "name": "華新建材",
+              "return_pct": 26.43
             },
             {
               "code": "07618",
               "name": "京東工業",
-              "return_pct": 21.755
+              "return_pct": 22.96
             },
             {
-              "code": "06655",
-              "name": "華新建材",
-              "return_pct": 20.222
+              "code": "06969",
+              "name": "思摩爾國際",
+              "return_pct": 19.801
             }
           ],
           "label": "工業／製造",
           "count": 57,
-          "quadrant": "weakening",
+          "quadrant": "leading",
           "tail": [
-            {
-              "as_of": "2026-06-30",
-              "rs_ratio": 95.012,
-              "rs_momentum": 95.192
-            },
             {
               "as_of": "2026-07-03",
               "rs_ratio": 96.23,
@@ -749,53 +744,53 @@
               "as_of": "2026-07-17",
               "rs_ratio": 100.0,
               "rs_momentum": 97.438
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 100.039,
+              "rs_momentum": 100.0
             }
           ],
           "fundflow": {
-            "net": 74867584.0,
+            "net": 302674678.0,
             "observed": 26,
             "direction": "inflow"
           },
-          "pressure_pct": -0.897,
-          "acceleration": -1.199,
-          "lifecycle": "減速→轉弱"
+          "pressure_pct": 0.025,
+          "acceleration": 2.562,
+          "lifecycle": "加速→領先"
         },
         "conglomerate": {
-          "rs_ratio": 100.0,
+          "rs_ratio": 98.413,
           "rs_momentum": 100.0,
-          "relative_long_pct": 0.0,
+          "relative_long_pct": -1.587,
           "relative_short_pct": 0.0,
-          "sector_long_pct": 0.0,
+          "sector_long_pct": -1.587,
           "sector_short_pct": 0.0,
           "market_long_pct": 0.0,
           "market_short_pct": 0.0,
-          "stocks": 261,
+          "stocks": 289,
           "leaders": [
             {
               "code": "08071",
               "name": "中彩網通控股",
-              "return_pct": 3592.308
-            },
-            {
-              "code": "02295",
-              "name": "豐城控股",
-              "return_pct": 286.842
+              "return_pct": 3053.846
             },
             {
               "code": "00653",
               "name": "卓悅控股",
-              "return_pct": 257.143
+              "return_pct": 243.75
+            },
+            {
+              "code": "02017",
+              "name": "滄海控股",
+              "return_pct": 81.818
             }
           ],
           "label": "綜合／控股",
           "count": 395,
-          "quadrant": "leading",
+          "quadrant": "improving",
           "tail": [
-            {
-              "as_of": "2026-06-30",
-              "rs_ratio": 102.694,
-              "rs_momentum": 100.427
-            },
             {
               "as_of": "2026-07-03",
               "rs_ratio": 100.457,
@@ -820,53 +815,53 @@
               "as_of": "2026-07-17",
               "rs_ratio": 100.0,
               "rs_momentum": 100.0
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 98.413,
+              "rs_momentum": 100.0
             }
           ],
           "fundflow": {
-            "net": -27313953.0,
-            "observed": 17,
-            "direction": "outflow"
+            "net": 35360133.0,
+            "observed": 19,
+            "direction": "inflow"
           },
-          "pressure_pct": 0.0,
+          "pressure_pct": -1.032,
           "acceleration": 0.0,
-          "lifecycle": "加速→領先"
+          "lifecycle": "加速→改善"
         },
         "other": {
           "rs_ratio": 100.0,
-          "rs_momentum": 99.265,
+          "rs_momentum": 100.0,
           "relative_long_pct": 0.0,
-          "relative_short_pct": -0.735,
+          "relative_short_pct": 0.0,
           "sector_long_pct": 0.0,
-          "sector_short_pct": -0.735,
+          "sector_short_pct": 0.0,
           "market_long_pct": 0.0,
           "market_short_pct": 0.0,
-          "stocks": 825,
+          "stocks": 924,
           "leaders": [
+            {
+              "code": "00356",
+              "name": "鼎立資本",
+              "return_pct": 1571.429
+            },
             {
               "code": "01835",
               "name": "瑞威資管",
-              "return_pct": 211.364
+              "return_pct": 203.788
             },
             {
               "code": "00110",
               "name": "中國長遠",
-              "return_pct": 125.806
-            },
-            {
-              "code": "01327",
-              "name": "勵時集團",
-              "return_pct": 116.667
+              "return_pct": 89.474
             }
           ],
           "label": "其他／未分類",
           "count": 1252,
-          "quadrant": "weakening",
+          "quadrant": "leading",
           "tail": [
-            {
-              "as_of": "2026-06-30",
-              "rs_ratio": 100.11,
-              "rs_momentum": 100.203
-            },
             {
               "as_of": "2026-07-03",
               "rs_ratio": 99.747,
@@ -891,150 +886,155 @@
               "as_of": "2026-07-17",
               "rs_ratio": 100.0,
               "rs_momentum": 99.265
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 100.0,
+              "rs_momentum": 100.0
             }
           ],
           "fundflow": {
-            "net": -1177404.8,
-            "observed": 91,
-            "direction": "outflow"
+            "net": 251283280.6,
+            "observed": 89,
+            "direction": "inflow"
           },
-          "pressure_pct": -0.257,
-          "acceleration": -0.735,
-          "lifecycle": "減速→轉弱"
+          "pressure_pct": 0.0,
+          "acceleration": 0.735,
+          "lifecycle": "加速→領先"
         }
       },
       "caps": {
         "large_cap": {
-          "rs_ratio": 104.815,
-          "rs_momentum": 100.793,
-          "relative_long_pct": 4.815,
-          "relative_short_pct": 0.793,
-          "sector_long_pct": 4.815,
-          "sector_short_pct": 0.793,
+          "rs_ratio": 106.645,
+          "rs_momentum": 101.024,
+          "relative_long_pct": 6.645,
+          "relative_short_pct": 1.024,
+          "sector_long_pct": 6.645,
+          "sector_short_pct": 1.024,
           "market_long_pct": 0.0,
           "market_short_pct": 0.0,
-          "stocks": 344,
+          "stocks": 362,
           "leaders": [
             {
-              "code": "02687",
-              "name": "卓越睿新",
-              "return_pct": 57.099
-            },
-            {
-              "code": "02595",
-              "name": "勁方醫藥－Ｂ",
-              "return_pct": 46.914
+              "code": "06808",
+              "name": "高鑫零售",
+              "return_pct": 34.409
             },
             {
               "code": "02096",
               "name": "先聲藥業",
-              "return_pct": 36.03
+              "return_pct": 32.183
+            },
+            {
+              "code": "01810",
+              "name": "小米集團－Ｗ",
+              "return_pct": 28.189
             }
           ],
           "label": "大型股",
-          "count": 489,
+          "count": 494,
           "quadrant": "leading",
           "tail": [
             {
-              "as_of": "2026-06-30",
-              "rs_ratio": 97.185,
-              "rs_momentum": 98.302
-            },
-            {
               "as_of": "2026-07-03",
-              "rs_ratio": 98.873,
-              "rs_momentum": 102.703
+              "rs_ratio": 99.002,
+              "rs_momentum": 102.714
             },
             {
               "as_of": "2026-07-10",
-              "rs_ratio": 99.995,
-              "rs_momentum": 99.357
+              "rs_ratio": 100.0,
+              "rs_momentum": 99.354
             },
             {
               "as_of": "2026-07-14",
-              "rs_ratio": 100.697,
-              "rs_momentum": 100.188
+              "rs_ratio": 100.698,
+              "rs_momentum": 100.184
             },
             {
               "as_of": "2026-07-15",
-              "rs_ratio": 100.677,
-              "rs_momentum": 101.473
+              "rs_ratio": 100.691,
+              "rs_momentum": 101.437
             },
             {
               "as_of": "2026-07-17",
-              "rs_ratio": 104.815,
-              "rs_momentum": 100.793
+              "rs_ratio": 104.761,
+              "rs_momentum": 100.764
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 106.645,
+              "rs_momentum": 101.024
             }
           ],
           "fundflow": {
-            "net": -2651639672.3,
+            "net": 3756325954.6,
             "observed": 456,
-            "direction": "outflow"
+            "direction": "inflow"
           },
-          "pressure_pct": 3.407,
-          "acceleration": -0.68,
-          "lifecycle": "減速→領先"
+          "pressure_pct": 4.678,
+          "acceleration": 0.26,
+          "lifecycle": "加速→領先"
         },
         "mid_cap": {
-          "rs_ratio": 102.616,
-          "rs_momentum": 99.255,
-          "relative_long_pct": 2.616,
-          "relative_short_pct": -0.745,
-          "sector_long_pct": 2.616,
-          "sector_short_pct": -0.745,
+          "rs_ratio": 101.765,
+          "rs_momentum": 99.528,
+          "relative_long_pct": 1.765,
+          "relative_short_pct": -0.472,
+          "sector_long_pct": 1.765,
+          "sector_short_pct": -0.472,
           "market_long_pct": 0.0,
           "market_short_pct": 0.0,
-          "stocks": 296,
+          "stocks": 305,
           "leaders": [
-            {
-              "code": "02295",
-              "name": "豐城控股",
-              "return_pct": 286.842
-            },
             {
               "code": "02650",
               "name": "摯達科技",
-              "return_pct": 108.644
+              "return_pct": 91.447
             },
             {
-              "code": "01417",
-              "name": "浦江中國",
-              "return_pct": 100.772
+              "code": "02657",
+              "name": "林清軒",
+              "return_pct": 57.457
+            },
+            {
+              "code": "00301",
+              "name": "三和精化",
+              "return_pct": 54.613
             }
           ],
           "label": "中型股",
-          "count": 406,
+          "count": 405,
           "quadrant": "weakening",
           "tail": [
             {
-              "as_of": "2026-06-30",
-              "rs_ratio": 99.705,
-              "rs_momentum": 99.742
-            },
-            {
               "as_of": "2026-07-03",
-              "rs_ratio": 100.917,
-              "rs_momentum": 102.207
+              "rs_ratio": 100.723,
+              "rs_momentum": 102.047
             },
             {
               "as_of": "2026-07-10",
-              "rs_ratio": 101.201,
+              "rs_ratio": 101.161,
               "rs_momentum": 100.0
             },
             {
               "as_of": "2026-07-14",
-              "rs_ratio": 101.399,
-              "rs_momentum": 99.687
+              "rs_ratio": 101.191,
+              "rs_momentum": 99.675
             },
             {
               "as_of": "2026-07-15",
-              "rs_ratio": 101.447,
-              "rs_momentum": 100.881
+              "rs_ratio": 101.209,
+              "rs_momentum": 100.787
             },
             {
               "as_of": "2026-07-17",
-              "rs_ratio": 102.616,
-              "rs_momentum": 99.255
+              "rs_ratio": 102.326,
+              "rs_momentum": 99.238
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 101.765,
+              "rs_momentum": 99.528
             }
           ],
           "fundflow": {
@@ -1042,30 +1042,30 @@
             "observed": 0,
             "direction": "unavailable"
           },
-          "pressure_pct": 1.44,
-          "acceleration": -1.626,
-          "lifecycle": "減速→轉弱"
+          "pressure_pct": 0.982,
+          "acceleration": 0.29,
+          "lifecycle": "反彈→轉弱"
         },
         "small_cap": {
-          "rs_ratio": 100.0,
-          "rs_momentum": 99.457,
-          "relative_long_pct": 0.0,
-          "relative_short_pct": -0.543,
-          "sector_long_pct": 0.0,
-          "sector_short_pct": -0.543,
+          "rs_ratio": 99.178,
+          "rs_momentum": 100.0,
+          "relative_long_pct": -0.822,
+          "relative_short_pct": 0.0,
+          "sector_long_pct": -0.822,
+          "sector_short_pct": 0.0,
           "market_long_pct": 0.0,
           "market_short_pct": 0.0,
-          "stocks": 1143,
+          "stocks": 1310,
           "leaders": [
             {
               "code": "08071",
               "name": "中彩網通控股",
-              "return_pct": 3592.308
+              "return_pct": 3053.846
             },
             {
-              "code": "00809",
-              "name": "大成生化科技",
-              "return_pct": 950.0
+              "code": "00356",
+              "name": "鼎立資本",
+              "return_pct": 1571.429
             },
             {
               "code": "01371",
@@ -1074,38 +1074,38 @@
             }
           ],
           "label": "小型股",
-          "count": 1766,
-          "quadrant": "weakening",
+          "count": 1762,
+          "quadrant": "improving",
           "tail": [
             {
-              "as_of": "2026-06-30",
-              "rs_ratio": 101.064,
-              "rs_momentum": 100.561
-            },
-            {
               "as_of": "2026-07-03",
-              "rs_ratio": 100.0,
+              "rs_ratio": 100.024,
               "rs_momentum": 99.145
             },
             {
               "as_of": "2026-07-10",
-              "rs_ratio": 99.561,
+              "rs_ratio": 99.658,
               "rs_momentum": 100.0
             },
             {
               "as_of": "2026-07-14",
-              "rs_ratio": 99.422,
+              "rs_ratio": 99.431,
               "rs_momentum": 100.0
             },
             {
               "as_of": "2026-07-15",
-              "rs_ratio": 99.176,
+              "rs_ratio": 99.218,
               "rs_momentum": 100.0
             },
             {
               "as_of": "2026-07-17",
               "rs_ratio": 100.0,
-              "rs_momentum": 99.457
+              "rs_momentum": 99.497
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 99.178,
+              "rs_momentum": 100.0
             }
           ],
           "fundflow": {
@@ -1113,147 +1113,147 @@
             "observed": 0,
             "direction": "unavailable"
           },
-          "pressure_pct": -0.19,
-          "acceleration": -0.543,
-          "lifecycle": "減速→轉弱"
+          "pressure_pct": -0.534,
+          "acceleration": 0.503,
+          "lifecycle": "加速→改善"
         }
       },
       "lifecycle_rows": [
         {
           "key": "large_cap",
           "type": "cap",
-          "rs_ratio": 104.815,
-          "rs_momentum": 100.793,
-          "relative_long_pct": 4.815,
-          "relative_short_pct": 0.793,
-          "sector_long_pct": 4.815,
-          "sector_short_pct": 0.793,
+          "rs_ratio": 106.645,
+          "rs_momentum": 101.024,
+          "relative_long_pct": 6.645,
+          "relative_short_pct": 1.024,
+          "sector_long_pct": 6.645,
+          "sector_short_pct": 1.024,
           "market_long_pct": 0.0,
           "market_short_pct": 0.0,
-          "stocks": 344,
+          "stocks": 362,
           "leaders": [
             {
-              "code": "02687",
-              "name": "卓越睿新",
-              "return_pct": 57.099
-            },
-            {
-              "code": "02595",
-              "name": "勁方醫藥－Ｂ",
-              "return_pct": 46.914
+              "code": "06808",
+              "name": "高鑫零售",
+              "return_pct": 34.409
             },
             {
               "code": "02096",
               "name": "先聲藥業",
-              "return_pct": 36.03
+              "return_pct": 32.183
+            },
+            {
+              "code": "01810",
+              "name": "小米集團－Ｗ",
+              "return_pct": 28.189
             }
           ],
           "label": "大型股",
-          "count": 489,
+          "count": 494,
           "quadrant": "leading",
           "tail": [
             {
-              "as_of": "2026-06-30",
-              "rs_ratio": 97.185,
-              "rs_momentum": 98.302
-            },
-            {
               "as_of": "2026-07-03",
-              "rs_ratio": 98.873,
-              "rs_momentum": 102.703
+              "rs_ratio": 99.002,
+              "rs_momentum": 102.714
             },
             {
               "as_of": "2026-07-10",
-              "rs_ratio": 99.995,
-              "rs_momentum": 99.357
+              "rs_ratio": 100.0,
+              "rs_momentum": 99.354
             },
             {
               "as_of": "2026-07-14",
-              "rs_ratio": 100.697,
-              "rs_momentum": 100.188
+              "rs_ratio": 100.698,
+              "rs_momentum": 100.184
             },
             {
               "as_of": "2026-07-15",
-              "rs_ratio": 100.677,
-              "rs_momentum": 101.473
+              "rs_ratio": 100.691,
+              "rs_momentum": 101.437
             },
             {
               "as_of": "2026-07-17",
-              "rs_ratio": 104.815,
-              "rs_momentum": 100.793
+              "rs_ratio": 104.761,
+              "rs_momentum": 100.764
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 106.645,
+              "rs_momentum": 101.024
             }
           ],
           "fundflow": {
-            "net": -2651639672.3,
+            "net": 3756325954.6,
             "observed": 456,
-            "direction": "outflow"
+            "direction": "inflow"
           },
-          "pressure_pct": 3.407,
-          "acceleration": -0.68,
-          "lifecycle": "減速→領先"
+          "pressure_pct": 4.678,
+          "acceleration": 0.26,
+          "lifecycle": "加速→領先"
         },
         {
           "key": "mid_cap",
           "type": "cap",
-          "rs_ratio": 102.616,
-          "rs_momentum": 99.255,
-          "relative_long_pct": 2.616,
-          "relative_short_pct": -0.745,
-          "sector_long_pct": 2.616,
-          "sector_short_pct": -0.745,
+          "rs_ratio": 101.765,
+          "rs_momentum": 99.528,
+          "relative_long_pct": 1.765,
+          "relative_short_pct": -0.472,
+          "sector_long_pct": 1.765,
+          "sector_short_pct": -0.472,
           "market_long_pct": 0.0,
           "market_short_pct": 0.0,
-          "stocks": 296,
+          "stocks": 305,
           "leaders": [
-            {
-              "code": "02295",
-              "name": "豐城控股",
-              "return_pct": 286.842
-            },
             {
               "code": "02650",
               "name": "摯達科技",
-              "return_pct": 108.644
+              "return_pct": 91.447
             },
             {
-              "code": "01417",
-              "name": "浦江中國",
-              "return_pct": 100.772
+              "code": "02657",
+              "name": "林清軒",
+              "return_pct": 57.457
+            },
+            {
+              "code": "00301",
+              "name": "三和精化",
+              "return_pct": 54.613
             }
           ],
           "label": "中型股",
-          "count": 406,
+          "count": 405,
           "quadrant": "weakening",
           "tail": [
             {
-              "as_of": "2026-06-30",
-              "rs_ratio": 99.705,
-              "rs_momentum": 99.742
-            },
-            {
               "as_of": "2026-07-03",
-              "rs_ratio": 100.917,
-              "rs_momentum": 102.207
+              "rs_ratio": 100.723,
+              "rs_momentum": 102.047
             },
             {
               "as_of": "2026-07-10",
-              "rs_ratio": 101.201,
+              "rs_ratio": 101.161,
               "rs_momentum": 100.0
             },
             {
               "as_of": "2026-07-14",
-              "rs_ratio": 101.399,
-              "rs_momentum": 99.687
+              "rs_ratio": 101.191,
+              "rs_momentum": 99.675
             },
             {
               "as_of": "2026-07-15",
-              "rs_ratio": 101.447,
-              "rs_momentum": 100.881
+              "rs_ratio": 101.209,
+              "rs_momentum": 100.787
             },
             {
               "as_of": "2026-07-17",
-              "rs_ratio": 102.616,
-              "rs_momentum": 99.255
+              "rs_ratio": 102.326,
+              "rs_momentum": 99.238
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 101.765,
+              "rs_momentum": 99.528
             }
           ],
           "fundflow": {
@@ -1261,32 +1261,32 @@
             "observed": 0,
             "direction": "unavailable"
           },
-          "pressure_pct": 1.44,
-          "acceleration": -1.626,
-          "lifecycle": "減速→轉弱"
+          "pressure_pct": 0.982,
+          "acceleration": 0.29,
+          "lifecycle": "反彈→轉弱"
         },
         {
           "key": "small_cap",
           "type": "cap",
-          "rs_ratio": 100.0,
-          "rs_momentum": 99.457,
-          "relative_long_pct": 0.0,
-          "relative_short_pct": -0.543,
-          "sector_long_pct": 0.0,
-          "sector_short_pct": -0.543,
+          "rs_ratio": 99.178,
+          "rs_momentum": 100.0,
+          "relative_long_pct": -0.822,
+          "relative_short_pct": 0.0,
+          "sector_long_pct": -0.822,
+          "sector_short_pct": 0.0,
           "market_long_pct": 0.0,
           "market_short_pct": 0.0,
-          "stocks": 1143,
+          "stocks": 1310,
           "leaders": [
             {
               "code": "08071",
               "name": "中彩網通控股",
-              "return_pct": 3592.308
+              "return_pct": 3053.846
             },
             {
-              "code": "00809",
-              "name": "大成生化科技",
-              "return_pct": 950.0
+              "code": "00356",
+              "name": "鼎立資本",
+              "return_pct": 1571.429
             },
             {
               "code": "01371",
@@ -1295,38 +1295,38 @@
             }
           ],
           "label": "小型股",
-          "count": 1766,
-          "quadrant": "weakening",
+          "count": 1762,
+          "quadrant": "improving",
           "tail": [
             {
-              "as_of": "2026-06-30",
-              "rs_ratio": 101.064,
-              "rs_momentum": 100.561
-            },
-            {
               "as_of": "2026-07-03",
-              "rs_ratio": 100.0,
+              "rs_ratio": 100.024,
               "rs_momentum": 99.145
             },
             {
               "as_of": "2026-07-10",
-              "rs_ratio": 99.561,
+              "rs_ratio": 99.658,
               "rs_momentum": 100.0
             },
             {
               "as_of": "2026-07-14",
-              "rs_ratio": 99.422,
+              "rs_ratio": 99.431,
               "rs_momentum": 100.0
             },
             {
               "as_of": "2026-07-15",
-              "rs_ratio": 99.176,
+              "rs_ratio": 99.218,
               "rs_momentum": 100.0
             },
             {
               "as_of": "2026-07-17",
               "rs_ratio": 100.0,
-              "rs_momentum": 99.457
+              "rs_momentum": 99.497
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 99.178,
+              "rs_momentum": 100.0
             }
           ],
           "fundflow": {
@@ -1334,48 +1334,43 @@
             "observed": 0,
             "direction": "unavailable"
           },
-          "pressure_pct": -0.19,
-          "acceleration": -0.543,
-          "lifecycle": "減速→轉弱"
+          "pressure_pct": -0.534,
+          "acceleration": 0.503,
+          "lifecycle": "加速→改善"
         },
         {
           "key": "tech",
           "type": "sector",
-          "rs_ratio": 100.0,
-          "rs_momentum": 98.101,
-          "relative_long_pct": 0.0,
-          "relative_short_pct": -1.899,
-          "sector_long_pct": 0.0,
-          "sector_short_pct": -1.899,
+          "rs_ratio": 98.919,
+          "rs_momentum": 99.125,
+          "relative_long_pct": -1.081,
+          "relative_short_pct": -0.875,
+          "sector_long_pct": -1.081,
+          "sector_short_pct": -0.875,
           "market_long_pct": 0.0,
           "market_short_pct": 0.0,
-          "stocks": 163,
+          "stocks": 179,
           "leaders": [
-            {
-              "code": "00809",
-              "name": "大成生化科技",
-              "return_pct": 950.0
-            },
             {
               "code": "02650",
               "name": "摯達科技",
-              "return_pct": 108.644
+              "return_pct": 91.447
             },
             {
-              "code": "00918",
-              "name": "龍翼航空科技",
-              "return_pct": 74.074
+              "code": "08131",
+              "name": "諾亞智能",
+              "return_pct": 75.0
+            },
+            {
+              "code": "01710",
+              "name": "致豐工業電子",
+              "return_pct": 50.0
             }
           ],
           "label": "科技／AI",
           "count": 242,
-          "quadrant": "weakening",
+          "quadrant": "lagging",
           "tail": [
-            {
-              "as_of": "2026-06-30",
-              "rs_ratio": 102.333,
-              "rs_momentum": 100.203
-            },
             {
               "as_of": "2026-07-03",
               "rs_ratio": 99.587,
@@ -1400,55 +1395,55 @@
               "as_of": "2026-07-17",
               "rs_ratio": 100.0,
               "rs_momentum": 98.101
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 98.919,
+              "rs_momentum": 99.125
             }
           ],
           "fundflow": {
-            "net": -3535220970.5,
+            "net": 910116266.0,
             "observed": 57,
-            "direction": "outflow"
+            "direction": "inflow"
           },
-          "pressure_pct": -0.665,
-          "acceleration": -1.703,
-          "lifecycle": "減速→轉弱"
+          "pressure_pct": -1.009,
+          "acceleration": 1.024,
+          "lifecycle": "改善→落後"
         },
         {
           "key": "healthcare",
           "type": "sector",
-          "rs_ratio": 105.0,
-          "rs_momentum": 98.537,
-          "relative_long_pct": 5.0,
-          "relative_short_pct": -1.463,
-          "sector_long_pct": 5.0,
-          "sector_short_pct": -1.463,
+          "rs_ratio": 103.397,
+          "rs_momentum": 98.748,
+          "relative_long_pct": 3.397,
+          "relative_short_pct": -1.252,
+          "sector_long_pct": 3.397,
+          "sector_short_pct": -1.252,
           "market_long_pct": 0.0,
           "market_short_pct": 0.0,
-          "stocks": 109,
+          "stocks": 107,
           "leaders": [
-            {
-              "code": "02595",
-              "name": "勁方醫藥－Ｂ",
-              "return_pct": 46.914
-            },
             {
               "code": "08143",
               "name": "金威醫療",
               "return_pct": 38.0
             },
             {
-              "code": "01332",
-              "name": "透雲生物",
-              "return_pct": 36.752
+              "code": "01477",
+              "name": "歐康維視生物－Ｂ",
+              "return_pct": 35.762
+            },
+            {
+              "code": "02410",
+              "name": "同源康醫藥－Ｂ",
+              "return_pct": 32.635
             }
           ],
           "label": "醫藥",
           "count": 140,
           "quadrant": "weakening",
           "tail": [
-            {
-              "as_of": "2026-06-30",
-              "rs_ratio": 101.71,
-              "rs_momentum": 101.842
-            },
             {
               "as_of": "2026-07-03",
               "rs_ratio": 104.762,
@@ -1473,55 +1468,55 @@
               "as_of": "2026-07-17",
               "rs_ratio": 105.0,
               "rs_momentum": 98.537
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 103.397,
+              "rs_momentum": 98.748
             }
           ],
           "fundflow": {
-            "net": -50532685.0,
+            "net": 273131976.0,
             "observed": 35,
-            "direction": "outflow"
+            "direction": "inflow"
           },
-          "pressure_pct": 2.738,
-          "acceleration": -2.758,
-          "lifecycle": "減速→轉弱"
+          "pressure_pct": 1.77,
+          "acceleration": 0.211,
+          "lifecycle": "反彈→轉弱"
         },
         {
           "key": "property",
           "type": "sector",
-          "rs_ratio": 101.845,
-          "rs_momentum": 101.351,
-          "relative_long_pct": 1.845,
-          "relative_short_pct": 1.351,
-          "sector_long_pct": 1.845,
-          "sector_short_pct": 1.351,
+          "rs_ratio": 103.42,
+          "rs_momentum": 100.0,
+          "relative_long_pct": 3.42,
+          "relative_short_pct": 0.0,
+          "sector_long_pct": 3.42,
+          "sector_short_pct": 0.0,
           "market_long_pct": 0.0,
           "market_short_pct": 0.0,
-          "stocks": 45,
+          "stocks": 56,
           "leaders": [
+            {
+              "code": "00095",
+              "name": "綠景中國地產",
+              "return_pct": 40.764
+            },
             {
               "code": "02423",
               "name": "貝殼－Ｗ",
-              "return_pct": 25.32
-            },
-            {
-              "code": "02777",
-              "name": "富力地產",
-              "return_pct": 14.216
+              "return_pct": 18.53
             },
             {
               "code": "01997",
               "name": "九龍倉置業",
-              "return_pct": 13.632
+              "return_pct": 17.025
             }
           ],
           "label": "地產／物管",
           "count": 68,
           "quadrant": "leading",
           "tail": [
-            {
-              "as_of": "2026-06-30",
-              "rs_ratio": 96.336,
-              "rs_momentum": 100.01
-            },
             {
               "as_of": "2026-07-03",
               "rs_ratio": 97.951,
@@ -1546,55 +1541,55 @@
               "as_of": "2026-07-17",
               "rs_ratio": 101.845,
               "rs_momentum": 101.351
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 103.42,
+              "rs_momentum": 100.0
             }
           ],
           "fundflow": {
-            "net": 131872478.0,
+            "net": 119242531.0,
             "observed": 17,
             "direction": "inflow"
           },
-          "pressure_pct": 1.672,
-          "acceleration": -0.891,
+          "pressure_pct": 2.223,
+          "acceleration": -1.351,
           "lifecycle": "減速→領先"
         },
         {
           "key": "finance",
           "type": "sector",
-          "rs_ratio": 100.527,
-          "rs_momentum": 100.524,
-          "relative_long_pct": 0.527,
-          "relative_short_pct": 0.524,
-          "sector_long_pct": 0.527,
-          "sector_short_pct": 0.524,
+          "rs_ratio": 102.832,
+          "rs_momentum": 100.468,
+          "relative_long_pct": 2.832,
+          "relative_short_pct": 0.468,
+          "sector_long_pct": 2.832,
+          "sector_short_pct": 0.468,
           "market_long_pct": 0.0,
           "market_short_pct": 0.0,
-          "stocks": 77,
+          "stocks": 82,
           "leaders": [
             {
               "code": "00133",
               "name": "招商局中國基金",
-              "return_pct": 29.268
+              "return_pct": 31.741
             },
             {
-              "code": "03360",
-              "name": "遠東宏信",
-              "return_pct": 25.781
+              "code": "08018",
+              "name": "匯財金融投資",
+              "return_pct": 26.316
             },
             {
               "code": "01461",
               "name": "中泰期貨",
-              "return_pct": 21.569
+              "return_pct": 23.636
             }
           ],
           "label": "金融／券商",
           "count": 111,
           "quadrant": "leading",
           "tail": [
-            {
-              "as_of": "2026-06-30",
-              "rs_ratio": 102.009,
-              "rs_momentum": 99.725
-            },
             {
               "as_of": "2026-07-03",
               "rs_ratio": 101.905,
@@ -1619,55 +1614,55 @@
               "as_of": "2026-07-17",
               "rs_ratio": 100.527,
               "rs_momentum": 100.524
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 102.832,
+              "rs_momentum": 100.468
             }
           ],
           "fundflow": {
-            "net": 431200731.0,
+            "net": 571851814.0,
             "observed": 58,
             "direction": "inflow"
           },
-          "pressure_pct": 0.526,
-          "acceleration": -0.649,
+          "pressure_pct": 2.005,
+          "acceleration": -0.056,
           "lifecycle": "減速→領先"
         },
         {
           "key": "energy",
           "type": "sector",
-          "rs_ratio": 100.0,
-          "rs_momentum": 99.273,
-          "relative_long_pct": 0.0,
-          "relative_short_pct": -0.727,
-          "sector_long_pct": 0.0,
-          "sector_short_pct": -0.727,
+          "rs_ratio": 100.273,
+          "rs_momentum": 100.0,
+          "relative_long_pct": 0.273,
+          "relative_short_pct": 0.0,
+          "sector_long_pct": 0.273,
+          "sector_short_pct": 0.0,
           "market_long_pct": 0.0,
           "market_short_pct": 0.0,
-          "stocks": 83,
+          "stocks": 94,
           "leaders": [
             {
               "code": "01815",
               "name": "珠峰黃金",
-              "return_pct": 57.576
+              "return_pct": 96.721
             },
             {
               "code": "00254",
               "name": "國家聯合資源",
-              "return_pct": 39.316
+              "return_pct": 57.009
             },
             {
-              "code": "03939",
-              "name": "萬國黃金集團",
-              "return_pct": 21.569
+              "code": "00159",
+              "name": "布萊克萬礦業",
+              "return_pct": 22.222
             }
           ],
           "label": "能源／資源",
           "count": 132,
-          "quadrant": "weakening",
+          "quadrant": "leading",
           "tail": [
-            {
-              "as_of": "2026-06-30",
-              "rs_ratio": 93.4,
-              "rs_momentum": 96.404
-            },
             {
               "as_of": "2026-07-03",
               "rs_ratio": 96.703,
@@ -1692,55 +1687,55 @@
               "as_of": "2026-07-17",
               "rs_ratio": 100.0,
               "rs_momentum": 99.273
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 100.273,
+              "rs_momentum": 100.0
             }
           ],
           "fundflow": {
-            "net": -105042030.0,
-            "observed": 48,
-            "direction": "outflow"
+            "net": 439319002.0,
+            "observed": 49,
+            "direction": "inflow"
           },
-          "pressure_pct": -0.254,
-          "acceleration": -0.727,
-          "lifecycle": "減速→轉弱"
+          "pressure_pct": 0.177,
+          "acceleration": 0.727,
+          "lifecycle": "加速→領先"
         },
         {
           "key": "auto",
           "type": "sector",
           "rs_ratio": 100.0,
-          "rs_momentum": 96.849,
+          "rs_momentum": 99.186,
           "relative_long_pct": 0.0,
-          "relative_short_pct": -3.151,
+          "relative_short_pct": -0.814,
           "sector_long_pct": 0.0,
-          "sector_short_pct": -3.151,
+          "sector_short_pct": -0.814,
           "market_long_pct": 0.0,
           "market_short_pct": 0.0,
-          "stocks": 24,
+          "stocks": 28,
           "leaders": [
             {
               "code": "06162",
               "name": "天瑞汽車內飾",
-              "return_pct": 86.441
+              "return_pct": 72.881
             },
             {
-              "code": "03836",
-              "name": "和諧汽車",
-              "return_pct": 48.889
+              "code": "01211",
+              "name": "比亞迪股份",
+              "return_pct": 24.431
             },
             {
-              "code": "03669",
-              "name": "永達汽車",
-              "return_pct": 25.714
+              "code": "02518",
+              "name": "汽車之家－Ｓ",
+              "return_pct": 20.581
             }
           ],
           "label": "汽車／新能源",
           "count": 35,
           "quadrant": "weakening",
           "tail": [
-            {
-              "as_of": "2026-06-30",
-              "rs_ratio": 92.931,
-              "rs_momentum": 96.764
-            },
             {
               "as_of": "2026-07-03",
               "rs_ratio": 98.745,
@@ -1765,29 +1760,34 @@
               "as_of": "2026-07-17",
               "rs_ratio": 100.0,
               "rs_momentum": 96.849
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 100.0,
+              "rs_momentum": 99.186
             }
           ],
           "fundflow": {
-            "net": 66524783.0,
+            "net": 375980051.0,
             "observed": 18,
             "direction": "inflow"
           },
-          "pressure_pct": -1.103,
-          "acceleration": -3.151,
-          "lifecycle": "減速→轉弱"
+          "pressure_pct": -0.285,
+          "acceleration": 2.337,
+          "lifecycle": "反彈→轉弱"
         },
         {
           "key": "consumer",
           "type": "sector",
-          "rs_ratio": 102.49,
-          "rs_momentum": 100.476,
-          "relative_long_pct": 2.49,
-          "relative_short_pct": 0.476,
-          "sector_long_pct": 2.49,
-          "sector_short_pct": 0.476,
+          "rs_ratio": 102.058,
+          "rs_momentum": 100.0,
+          "relative_long_pct": 2.058,
+          "relative_short_pct": 0.0,
+          "sector_long_pct": 2.058,
+          "sector_short_pct": 0.0,
           "market_long_pct": 0.0,
           "market_short_pct": 0.0,
-          "stocks": 92,
+          "stocks": 100,
           "leaders": [
             {
               "code": "01371",
@@ -1795,25 +1795,20 @@
               "return_pct": 747.458
             },
             {
-              "code": "01262",
-              "name": "蠟筆小新食品",
-              "return_pct": 33.761
+              "code": "06808",
+              "name": "高鑫零售",
+              "return_pct": 34.409
             },
             {
-              "code": "00524",
-              "name": "長城天下",
-              "return_pct": 31.579
+              "code": "01262",
+              "name": "蠟筆小新食品",
+              "return_pct": 31.513
             }
           ],
           "label": "消費／餐飲",
           "count": 123,
           "quadrant": "leading",
           "tail": [
-            {
-              "as_of": "2026-06-30",
-              "rs_ratio": 99.715,
-              "rs_momentum": 100.392
-            },
             {
               "as_of": "2026-07-03",
               "rs_ratio": 101.523,
@@ -1838,55 +1833,55 @@
               "as_of": "2026-07-17",
               "rs_ratio": 102.49,
               "rs_momentum": 100.476
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 102.058,
+              "rs_momentum": 100.0
             }
           ],
           "fundflow": {
-            "net": 283584711.0,
-            "observed": 43,
+            "net": 217256552.0,
+            "observed": 42,
             "direction": "inflow"
           },
-          "pressure_pct": 1.785,
-          "acceleration": -0.327,
+          "pressure_pct": 1.338,
+          "acceleration": -0.476,
           "lifecycle": "減速→領先"
         },
         {
           "key": "infra",
           "type": "sector",
-          "rs_ratio": 102.583,
-          "rs_momentum": 101.177,
-          "relative_long_pct": 2.583,
-          "relative_short_pct": 1.177,
-          "sector_long_pct": 2.583,
-          "sector_short_pct": 1.177,
+          "rs_ratio": 103.113,
+          "rs_momentum": 100.775,
+          "relative_long_pct": 3.113,
+          "relative_short_pct": 0.775,
+          "sector_long_pct": 3.113,
+          "sector_short_pct": 0.775,
           "market_long_pct": 0.0,
           "market_short_pct": 0.0,
-          "stocks": 48,
+          "stocks": 53,
           "leaders": [
             {
               "code": "08401",
               "name": "華夏水務集團",
-              "return_pct": 51.724
+              "return_pct": 31.25
             },
             {
               "code": "01452",
               "name": "迪諾斯環保",
-              "return_pct": 28.387
+              "return_pct": 21.341
             },
             {
               "code": "08320",
               "name": "沛然環保",
-              "return_pct": 27.632
+              "return_pct": 18.519
             }
           ],
           "label": "電訊／基建",
           "count": 75,
           "quadrant": "leading",
           "tail": [
-            {
-              "as_of": "2026-06-30",
-              "rs_ratio": 99.947,
-              "rs_momentum": 99.719
-            },
             {
               "as_of": "2026-07-03",
               "rs_ratio": 99.688,
@@ -1911,55 +1906,55 @@
               "as_of": "2026-07-17",
               "rs_ratio": 102.583,
               "rs_momentum": 101.177
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 103.113,
+              "rs_momentum": 100.775
             }
           ],
           "fundflow": {
-            "net": 67222490.0,
+            "net": 86939380.0,
             "observed": 25,
             "direction": "inflow"
           },
-          "pressure_pct": 2.091,
-          "acceleration": 0.177,
-          "lifecycle": "加速→領先"
+          "pressure_pct": 2.295,
+          "acceleration": -0.402,
+          "lifecycle": "減速→領先"
         },
         {
           "key": "shipping",
           "type": "sector",
-          "rs_ratio": 105.263,
-          "rs_momentum": 102.966,
-          "relative_long_pct": 5.263,
-          "relative_short_pct": 2.966,
-          "sector_long_pct": 5.263,
-          "sector_short_pct": 2.966,
+          "rs_ratio": 104.739,
+          "rs_momentum": 100.494,
+          "relative_long_pct": 4.739,
+          "relative_short_pct": 0.494,
+          "sector_long_pct": 4.739,
+          "sector_short_pct": 0.494,
           "market_long_pct": 0.0,
           "market_short_pct": 0.0,
-          "stocks": 24,
+          "stocks": 27,
           "leaders": [
             {
               "code": "00316",
               "name": "東方海外國際",
-              "return_pct": 19.048
+              "return_pct": 20.328
             },
             {
-              "code": "08348",
-              "name": "濱海泰達物流",
-              "return_pct": 16.667
+              "code": "00144",
+              "name": "招商局港口",
+              "return_pct": 18.963
             },
             {
-              "code": "06083",
-              "name": "環宇物流（亞洲）",
-              "return_pct": 16.049
+              "code": "01919",
+              "name": "中遠海控",
+              "return_pct": 16.756
             }
           ],
           "label": "航運物流",
           "count": 33,
           "quadrant": "leading",
           "tail": [
-            {
-              "as_of": "2026-06-30",
-              "rs_ratio": 97.181,
-              "rs_momentum": 99.237
-            },
             {
               "as_of": "2026-07-03",
               "rs_ratio": 100.145,
@@ -1984,55 +1979,55 @@
               "as_of": "2026-07-17",
               "rs_ratio": 105.263,
               "rs_momentum": 102.966
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 104.739,
+              "rs_momentum": 100.494
             }
           ],
           "fundflow": {
-            "net": 12374594.0,
+            "net": 173170291.0,
             "observed": 21,
             "direction": "inflow"
           },
-          "pressure_pct": 4.459,
-          "acceleration": 0.281,
-          "lifecycle": "加速→領先"
+          "pressure_pct": 3.253,
+          "acceleration": -2.472,
+          "lifecycle": "減速→領先"
         },
         {
           "key": "industrial",
           "type": "sector",
-          "rs_ratio": 100.0,
-          "rs_momentum": 97.438,
-          "relative_long_pct": 0.0,
-          "relative_short_pct": -2.562,
-          "sector_long_pct": 0.0,
-          "sector_short_pct": -2.562,
+          "rs_ratio": 100.039,
+          "rs_momentum": 100.0,
+          "relative_long_pct": 0.039,
+          "relative_short_pct": 0.0,
+          "sector_long_pct": 0.039,
+          "sector_short_pct": 0.0,
           "market_long_pct": 0.0,
           "market_short_pct": 0.0,
-          "stocks": 34,
+          "stocks": 40,
           "leaders": [
             {
-              "code": "00568",
-              "name": "山東墨龍",
-              "return_pct": 44.279
+              "code": "06655",
+              "name": "華新建材",
+              "return_pct": 26.43
             },
             {
               "code": "07618",
               "name": "京東工業",
-              "return_pct": 21.755
+              "return_pct": 22.96
             },
             {
-              "code": "06655",
-              "name": "華新建材",
-              "return_pct": 20.222
+              "code": "06969",
+              "name": "思摩爾國際",
+              "return_pct": 19.801
             }
           ],
           "label": "工業／製造",
           "count": 57,
-          "quadrant": "weakening",
+          "quadrant": "leading",
           "tail": [
-            {
-              "as_of": "2026-06-30",
-              "rs_ratio": 95.012,
-              "rs_momentum": 95.192
-            },
             {
               "as_of": "2026-07-03",
               "rs_ratio": 96.23,
@@ -2057,55 +2052,55 @@
               "as_of": "2026-07-17",
               "rs_ratio": 100.0,
               "rs_momentum": 97.438
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 100.039,
+              "rs_momentum": 100.0
             }
           ],
           "fundflow": {
-            "net": 74867584.0,
+            "net": 302674678.0,
             "observed": 26,
             "direction": "inflow"
           },
-          "pressure_pct": -0.897,
-          "acceleration": -1.199,
-          "lifecycle": "減速→轉弱"
+          "pressure_pct": 0.025,
+          "acceleration": 2.562,
+          "lifecycle": "加速→領先"
         },
         {
           "key": "conglomerate",
           "type": "sector",
-          "rs_ratio": 100.0,
+          "rs_ratio": 98.413,
           "rs_momentum": 100.0,
-          "relative_long_pct": 0.0,
+          "relative_long_pct": -1.587,
           "relative_short_pct": 0.0,
-          "sector_long_pct": 0.0,
+          "sector_long_pct": -1.587,
           "sector_short_pct": 0.0,
           "market_long_pct": 0.0,
           "market_short_pct": 0.0,
-          "stocks": 261,
+          "stocks": 289,
           "leaders": [
             {
               "code": "08071",
               "name": "中彩網通控股",
-              "return_pct": 3592.308
-            },
-            {
-              "code": "02295",
-              "name": "豐城控股",
-              "return_pct": 286.842
+              "return_pct": 3053.846
             },
             {
               "code": "00653",
               "name": "卓悅控股",
-              "return_pct": 257.143
+              "return_pct": 243.75
+            },
+            {
+              "code": "02017",
+              "name": "滄海控股",
+              "return_pct": 81.818
             }
           ],
           "label": "綜合／控股",
           "count": 395,
-          "quadrant": "leading",
+          "quadrant": "improving",
           "tail": [
-            {
-              "as_of": "2026-06-30",
-              "rs_ratio": 102.694,
-              "rs_momentum": 100.427
-            },
             {
               "as_of": "2026-07-03",
               "rs_ratio": 100.457,
@@ -2130,23 +2125,28 @@
               "as_of": "2026-07-17",
               "rs_ratio": 100.0,
               "rs_momentum": 100.0
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 98.413,
+              "rs_momentum": 100.0
             }
           ],
           "fundflow": {
-            "net": -27313953.0,
-            "observed": 17,
-            "direction": "outflow"
+            "net": 35360133.0,
+            "observed": 19,
+            "direction": "inflow"
           },
-          "pressure_pct": 0.0,
+          "pressure_pct": -1.032,
           "acceleration": 0.0,
-          "lifecycle": "加速→領先"
+          "lifecycle": "加速→改善"
         }
       ],
       "lifecycle_summary": {
-        "state": "板塊分化 · 減速",
-        "breadth_pct": 54.545,
+        "state": "擴散偏強 · 平速",
+        "breadth_pct": 72.727,
         "leader": "航運物流",
-        "laggard": "汽車／新能源"
+        "laggard": "綜合／控股"
       }
     },
     "60": {
@@ -2154,26 +2154,26 @@
       "short_days": 20,
       "long_days": 60,
       "available": true,
-      "as_of": "2026-07-17",
-      "short_reference_date": "2026-06-29",
+      "as_of": "2026-07-20",
+      "short_reference_date": "2026-06-30",
       "long_reference_date": "2026-05-29",
-      "market_stocks": 2654,
+      "market_stocks": 1979,
       "sectors": {
         "tech": {
-          "rs_ratio": 98.31,
-          "rs_momentum": 100.0,
-          "relative_long_pct": -1.69,
-          "relative_short_pct": 0.0,
-          "sector_long_pct": -8.59,
-          "sector_short_pct": 0.0,
-          "market_long_pct": -7.019,
+          "rs_ratio": 98.573,
+          "rs_momentum": 98.919,
+          "relative_long_pct": -1.427,
+          "relative_short_pct": -1.081,
+          "sector_long_pct": -7.786,
+          "sector_short_pct": -1.081,
+          "market_long_pct": -6.452,
           "market_short_pct": 0.0,
-          "stocks": 241,
+          "stocks": 179,
           "leaders": [
             {
               "code": "00809",
               "name": "大成生化科技",
-              "return_pct": 624.138
+              "return_pct": 606.897
             },
             {
               "code": "08131",
@@ -2183,12 +2183,12 @@
             {
               "code": "00232",
               "name": "大陸航空科技控股",
-              "return_pct": 106.468
+              "return_pct": 108.955
             }
           ],
           "label": "科技／AI",
           "count": 242,
-          "quadrant": "improving",
+          "quadrant": "lagging",
           "tail": [
             {
               "as_of": "2026-07-14",
@@ -2204,42 +2204,47 @@
               "as_of": "2026-07-17",
               "rs_ratio": 98.31,
               "rs_momentum": 100.0
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 98.573,
+              "rs_momentum": 98.919
             }
           ],
           "fundflow": {
-            "net": -3535220970.5,
+            "net": 910116266.0,
             "observed": 57,
-            "direction": "outflow"
+            "direction": "inflow"
           },
-          "pressure_pct": -1.099,
-          "acceleration": 2.644,
-          "lifecycle": "加速→改善"
+          "pressure_pct": -1.306,
+          "acceleration": -1.081,
+          "lifecycle": "減速→落後"
         },
         "healthcare": {
-          "rs_ratio": 101.622,
-          "rs_momentum": 105.0,
-          "relative_long_pct": 1.622,
-          "relative_short_pct": 5.0,
-          "sector_long_pct": -5.511,
-          "sector_short_pct": 5.0,
-          "market_long_pct": -7.019,
+          "rs_ratio": 102.982,
+          "rs_momentum": 103.397,
+          "relative_long_pct": 2.982,
+          "relative_short_pct": 3.397,
+          "sector_long_pct": -3.662,
+          "sector_short_pct": 3.397,
+          "market_long_pct": -6.452,
           "market_short_pct": 0.0,
-          "stocks": 139,
+          "stocks": 107,
           "leaders": [
             {
               "code": "00876",
               "name": "佳兆業健康",
-              "return_pct": 1639.13
+              "return_pct": 1813.043
             },
             {
               "code": "01526",
               "name": "瑞慈醫療",
-              "return_pct": 62.857
+              "return_pct": 58.571
             },
             {
               "code": "02162",
               "name": "康諾亞－Ｂ",
-              "return_pct": 37.342
+              "return_pct": 46.678
             }
           ],
           "label": "醫藥",
@@ -2260,37 +2265,42 @@
               "as_of": "2026-07-17",
               "rs_ratio": 101.622,
               "rs_momentum": 105.0
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 102.982,
+              "rs_momentum": 103.397
             }
           ],
           "fundflow": {
-            "net": -50532685.0,
+            "net": 273131976.0,
             "observed": 35,
-            "direction": "outflow"
+            "direction": "inflow"
           },
-          "pressure_pct": 2.804,
-          "acceleration": 0.044,
-          "lifecycle": "加速→領先"
+          "pressure_pct": 3.127,
+          "acceleration": -1.603,
+          "lifecycle": "減速→領先"
         },
         "property": {
-          "rs_ratio": 99.654,
-          "rs_momentum": 101.845,
-          "relative_long_pct": -0.346,
-          "relative_short_pct": 1.845,
-          "sector_long_pct": -7.34,
-          "sector_short_pct": 1.845,
-          "market_long_pct": -7.019,
+          "rs_ratio": 99.231,
+          "rs_momentum": 103.42,
+          "relative_long_pct": -0.769,
+          "relative_short_pct": 3.42,
+          "sector_long_pct": -7.171,
+          "sector_short_pct": 3.42,
+          "market_long_pct": -6.452,
           "market_short_pct": 0.0,
-          "stocks": 68,
+          "stocks": 56,
           "leaders": [
             {
-              "code": "02423",
-              "name": "貝殼－Ｗ",
-              "return_pct": 4.018
+              "code": "00095",
+              "name": "綠景中國地產",
+              "return_pct": 10.5
             },
             {
               "code": "01997",
               "name": "九龍倉置業",
-              "return_pct": 3.414
+              "return_pct": 4.163
             },
             {
               "code": "01243",
@@ -2316,42 +2326,47 @@
               "as_of": "2026-07-17",
               "rs_ratio": 99.654,
               "rs_momentum": 101.845
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 99.231,
+              "rs_momentum": 103.42
             }
           ],
           "fundflow": {
-            "net": 131872478.0,
+            "net": 119242531.0,
             "observed": 17,
             "direction": "inflow"
           },
-          "pressure_pct": 0.421,
-          "acceleration": 0.427,
+          "pressure_pct": 0.697,
+          "acceleration": 1.575,
           "lifecycle": "加速→改善"
         },
         "finance": {
-          "rs_ratio": 103.861,
-          "rs_momentum": 100.527,
-          "relative_long_pct": 3.861,
-          "relative_short_pct": 0.527,
-          "sector_long_pct": -3.429,
-          "sector_short_pct": 0.527,
-          "market_long_pct": -7.019,
+          "rs_ratio": 104.277,
+          "rs_momentum": 102.832,
+          "relative_long_pct": 4.277,
+          "relative_short_pct": 2.832,
+          "sector_long_pct": -2.451,
+          "sector_short_pct": 2.832,
+          "market_long_pct": -6.452,
           "market_short_pct": 0.0,
-          "stocks": 111,
+          "stocks": 82,
           "leaders": [
             {
               "code": "00721",
               "name": "中國金融國際",
-              "return_pct": 205.455
+              "return_pct": 190.909
             },
             {
               "code": "00510",
               "name": "時富金融服務集團",
-              "return_pct": 45.679
+              "return_pct": 58.025
             },
             {
               "code": "08239",
               "name": "首都金融控股",
-              "return_pct": 39.124
+              "return_pct": 32.106
             }
           ],
           "label": "金融／券商",
@@ -2372,32 +2387,37 @@
               "as_of": "2026-07-17",
               "rs_ratio": 103.861,
               "rs_momentum": 100.527
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 104.277,
+              "rs_momentum": 102.832
             }
           ],
           "fundflow": {
-            "net": 431200731.0,
+            "net": 571851814.0,
             "observed": 58,
             "direction": "inflow"
           },
-          "pressure_pct": 2.694,
-          "acceleration": -0.235,
-          "lifecycle": "減速→領先"
+          "pressure_pct": 3.771,
+          "acceleration": 2.305,
+          "lifecycle": "加速→領先"
         },
         "energy": {
-          "rs_ratio": 92.129,
-          "rs_momentum": 100.0,
-          "relative_long_pct": -7.871,
-          "relative_short_pct": 0.0,
-          "sector_long_pct": -14.338,
-          "sector_short_pct": 0.0,
-          "market_long_pct": -7.019,
+          "rs_ratio": 93.103,
+          "rs_momentum": 100.273,
+          "relative_long_pct": -6.897,
+          "relative_short_pct": 0.273,
+          "sector_long_pct": -12.903,
+          "sector_short_pct": 0.273,
+          "market_long_pct": -6.452,
           "market_short_pct": 0.0,
-          "stocks": 132,
+          "stocks": 94,
           "leaders": [
             {
               "code": "01815",
               "name": "珠峰黃金",
-              "return_pct": 28.395
+              "return_pct": 48.148
             },
             {
               "code": "01685",
@@ -2405,9 +2425,9 @@
               "return_pct": 25.352
             },
             {
-              "code": "01051",
-              "name": "國際資源",
-              "return_pct": 22.761
+              "code": "02245",
+              "name": "力勤資源",
+              "return_pct": 22.139
             }
           ],
           "label": "能源／資源",
@@ -2428,42 +2448,47 @@
               "as_of": "2026-07-17",
               "rs_ratio": 92.129,
               "rs_momentum": 100.0
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 93.103,
+              "rs_momentum": 100.273
             }
           ],
           "fundflow": {
-            "net": -105042030.0,
-            "observed": 48,
-            "direction": "outflow"
+            "net": 439319002.0,
+            "observed": 49,
+            "direction": "inflow"
           },
-          "pressure_pct": -5.116,
-          "acceleration": 2.869,
+          "pressure_pct": -4.388,
+          "acceleration": 0.273,
           "lifecycle": "加速→改善"
         },
         "auto": {
-          "rs_ratio": 91.661,
+          "rs_ratio": 93.227,
           "rs_momentum": 100.0,
-          "relative_long_pct": -8.339,
+          "relative_long_pct": -6.773,
           "relative_short_pct": 0.0,
-          "sector_long_pct": -14.773,
+          "sector_long_pct": -12.787,
           "sector_short_pct": 0.0,
-          "market_long_pct": -7.019,
+          "market_long_pct": -6.452,
           "market_short_pct": 0.0,
-          "stocks": 35,
+          "stocks": 28,
           "leaders": [
             {
               "code": "06162",
               "name": "天瑞汽車內飾",
-              "return_pct": 111.538
+              "return_pct": 96.154
             },
             {
               "code": "02518",
               "name": "汽車之家－Ｓ",
-              "return_pct": 30.0
+              "return_pct": 29.625
             },
             {
               "code": "03669",
               "name": "永達汽車",
-              "return_pct": 10.0
+              "return_pct": 11.25
             }
           ],
           "label": "汽車／新能源",
@@ -2484,27 +2509,32 @@
               "as_of": "2026-07-17",
               "rs_ratio": 91.661,
               "rs_momentum": 100.0
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 93.227,
+              "rs_momentum": 100.0
             }
           ],
           "fundflow": {
-            "net": 66524783.0,
+            "net": 375980051.0,
             "observed": 18,
             "direction": "inflow"
           },
-          "pressure_pct": -5.42,
-          "acceleration": 2.201,
+          "pressure_pct": -4.402,
+          "acceleration": 0.0,
           "lifecycle": "加速→改善"
         },
         "consumer": {
-          "rs_ratio": 103.614,
-          "rs_momentum": 102.49,
-          "relative_long_pct": 3.614,
-          "relative_short_pct": 2.49,
-          "sector_long_pct": -3.659,
-          "sector_short_pct": 2.49,
-          "market_long_pct": -7.019,
+          "rs_ratio": 104.059,
+          "rs_momentum": 102.058,
+          "relative_long_pct": 4.059,
+          "relative_short_pct": 2.058,
+          "sector_long_pct": -2.655,
+          "sector_short_pct": 2.058,
+          "market_long_pct": -6.452,
           "market_short_pct": 0.0,
-          "stocks": 123,
+          "stocks": 100,
           "leaders": [
             {
               "code": "01371",
@@ -2514,12 +2544,12 @@
             {
               "code": "01525",
               "name": "建橋教育",
-              "return_pct": 20.321
+              "return_pct": 26.203
             },
             {
-              "code": "01758",
-              "name": "博駿教育",
-              "return_pct": 18.75
+              "code": "09858",
+              "name": "優然牧業",
+              "return_pct": 19.655
             }
           ],
           "label": "消費／餐飲",
@@ -2540,32 +2570,37 @@
               "as_of": "2026-07-17",
               "rs_ratio": 103.614,
               "rs_momentum": 102.49
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 104.059,
+              "rs_momentum": 102.058
             }
           ],
           "fundflow": {
-            "net": 283584711.0,
-            "observed": 43,
+            "net": 217256552.0,
+            "observed": 42,
             "direction": "inflow"
           },
-          "pressure_pct": 3.221,
-          "acceleration": 1.777,
-          "lifecycle": "加速→領先"
+          "pressure_pct": 3.359,
+          "acceleration": -0.432,
+          "lifecycle": "減速→領先"
         },
         "infra": {
-          "rs_ratio": 103.088,
-          "rs_momentum": 102.583,
-          "relative_long_pct": 3.088,
-          "relative_short_pct": 2.583,
-          "sector_long_pct": -4.148,
-          "sector_short_pct": 2.583,
-          "market_long_pct": -7.019,
+          "rs_ratio": 102.785,
+          "rs_momentum": 103.113,
+          "relative_long_pct": 2.785,
+          "relative_short_pct": 3.113,
+          "sector_long_pct": -3.846,
+          "sector_short_pct": 3.113,
+          "market_long_pct": -6.452,
           "market_short_pct": 0.0,
-          "stocks": 74,
+          "stocks": 53,
           "leaders": [
             {
               "code": "01613",
               "name": "協同通信",
-              "return_pct": 180.347
+              "return_pct": 189.017
             },
             {
               "code": "01452",
@@ -2596,42 +2631,47 @@
               "as_of": "2026-07-17",
               "rs_ratio": 103.088,
               "rs_momentum": 102.583
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 102.785,
+              "rs_momentum": 103.113
             }
           ],
           "fundflow": {
-            "net": 67222490.0,
+            "net": 86939380.0,
             "observed": 25,
             "direction": "inflow"
           },
-          "pressure_pct": 2.911,
-          "acceleration": 2.225,
+          "pressure_pct": 2.9,
+          "acceleration": 0.53,
           "lifecycle": "加速→領先"
         },
         "shipping": {
-          "rs_ratio": 105.6,
-          "rs_momentum": 105.263,
-          "relative_long_pct": 5.6,
-          "relative_short_pct": 5.263,
-          "sector_long_pct": -1.812,
-          "sector_short_pct": 5.263,
-          "market_long_pct": -7.019,
+          "rs_ratio": 104.86,
+          "rs_momentum": 104.739,
+          "relative_long_pct": 4.86,
+          "relative_short_pct": 4.739,
+          "sector_long_pct": -1.905,
+          "sector_short_pct": 4.739,
+          "market_long_pct": -6.452,
           "market_short_pct": 0.0,
-          "stocks": 33,
+          "stocks": 27,
           "leaders": [
-            {
-              "code": "06083",
-              "name": "環宇物流（亞洲）",
-              "return_pct": 16.049
-            },
             {
               "code": "01442",
               "name": "鷹輝物流",
               "return_pct": 12.963
             },
             {
+              "code": "06083",
+              "name": "環宇物流（亞洲）",
+              "return_pct": 9.877
+            },
+            {
               "code": "02057",
               "name": "中通快遞－Ｗ",
-              "return_pct": 8.923
+              "return_pct": 9.672
             }
           ],
           "label": "航運物流",
@@ -2652,42 +2692,47 @@
               "as_of": "2026-07-17",
               "rs_ratio": 105.6,
               "rs_momentum": 105.263
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 104.86,
+              "rs_momentum": 104.739
             }
           ],
           "fundflow": {
-            "net": 12374594.0,
+            "net": 173170291.0,
             "observed": 21,
             "direction": "inflow"
           },
-          "pressure_pct": 5.482,
-          "acceleration": 0.373,
-          "lifecycle": "加速→領先"
+          "pressure_pct": 4.818,
+          "acceleration": -0.524,
+          "lifecycle": "減速→領先"
         },
         "industrial": {
-          "rs_ratio": 99.276,
-          "rs_momentum": 100.0,
-          "relative_long_pct": -0.724,
-          "relative_short_pct": 0.0,
-          "sector_long_pct": -7.692,
-          "sector_short_pct": 0.0,
-          "market_long_pct": -7.019,
+          "rs_ratio": 99.561,
+          "rs_momentum": 100.039,
+          "relative_long_pct": -0.439,
+          "relative_short_pct": 0.039,
+          "sector_long_pct": -6.863,
+          "sector_short_pct": 0.039,
+          "market_long_pct": -6.452,
           "market_short_pct": 0.0,
-          "stocks": 57,
+          "stocks": 40,
           "leaders": [
-            {
-              "code": "00695",
-              "name": "東吳水泥",
-              "return_pct": 11.797
-            },
             {
               "code": "00568",
               "name": "山東墨龍",
-              "return_pct": 11.111
+              "return_pct": 12.261
             },
             {
               "code": "00669",
               "name": "創科實業",
-              "return_pct": 10.223
+              "return_pct": 11.34
+            },
+            {
+              "code": "00695",
+              "name": "東吳水泥",
+              "return_pct": 11.248
             }
           ],
           "label": "工業／製造",
@@ -2708,47 +2753,52 @@
               "as_of": "2026-07-17",
               "rs_ratio": 99.276,
               "rs_momentum": 100.0
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 99.561,
+              "rs_momentum": 100.039
             }
           ],
           "fundflow": {
-            "net": 74867584.0,
+            "net": 302674678.0,
             "observed": 26,
             "direction": "inflow"
           },
-          "pressure_pct": -0.471,
-          "acceleration": 2.405,
+          "pressure_pct": -0.272,
+          "acceleration": 0.039,
           "lifecycle": "加速→改善"
         },
         "conglomerate": {
-          "rs_ratio": 98.626,
-          "rs_momentum": 100.0,
-          "relative_long_pct": -1.374,
-          "relative_short_pct": 0.0,
-          "sector_long_pct": -8.297,
-          "sector_short_pct": 0.0,
-          "market_long_pct": -7.019,
+          "rs_ratio": 97.477,
+          "rs_momentum": 98.413,
+          "relative_long_pct": -2.523,
+          "relative_short_pct": -1.587,
+          "sector_long_pct": -8.812,
+          "sector_short_pct": -1.587,
+          "market_long_pct": -6.452,
           "market_short_pct": 0.0,
-          "stocks": 392,
+          "stocks": 289,
           "leaders": [
             {
               "code": "08071",
               "name": "中彩網通控股",
-              "return_pct": 4263.636
+              "return_pct": 3627.273
             },
             {
               "code": "00862",
               "name": "遠見控股",
-              "return_pct": 2400.0
+              "return_pct": 2325.926
             },
             {
               "code": "08471",
               "name": "新達控股",
-              "return_pct": 1072.414
+              "return_pct": 1089.655
             }
           ],
           "label": "綜合／控股",
           "count": 395,
-          "quadrant": "improving",
+          "quadrant": "lagging",
           "tail": [
             {
               "as_of": "2026-07-14",
@@ -2764,32 +2814,37 @@
               "as_of": "2026-07-17",
               "rs_ratio": 98.626,
               "rs_momentum": 100.0
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 97.477,
+              "rs_momentum": 98.413
             }
           ],
           "fundflow": {
-            "net": -27313953.0,
-            "observed": 17,
-            "direction": "outflow"
+            "net": 35360133.0,
+            "observed": 19,
+            "direction": "inflow"
           },
-          "pressure_pct": -0.893,
-          "acceleration": 0.546,
-          "lifecycle": "加速→改善"
+          "pressure_pct": -2.195,
+          "acceleration": -1.587,
+          "lifecycle": "減速→落後"
         },
         "other": {
-          "rs_ratio": 100.256,
+          "rs_ratio": 99.777,
           "rs_momentum": 100.0,
-          "relative_long_pct": 0.256,
+          "relative_long_pct": -0.223,
           "relative_short_pct": 0.0,
-          "sector_long_pct": -6.781,
+          "sector_long_pct": -6.66,
           "sector_short_pct": 0.0,
-          "market_long_pct": -7.019,
+          "market_long_pct": -6.452,
           "market_short_pct": 0.0,
-          "stocks": 1249,
+          "stocks": 924,
           "leaders": [
             {
               "code": "00309",
               "name": "新華通訊頻媒",
-              "return_pct": 4122.222
+              "return_pct": 3974.074
             },
             {
               "code": "02699",
@@ -2797,14 +2852,14 @@
               "return_pct": 1742.742
             },
             {
-              "code": "00986",
-              "name": "杜甫酒業集團",
-              "return_pct": 604.545
+              "code": "00356",
+              "name": "鼎立資本",
+              "return_pct": 944.643
             }
           ],
           "label": "其他／未分類",
           "count": 1252,
-          "quadrant": "leading",
+          "quadrant": "improving",
           "tail": [
             {
               "as_of": "2026-07-14",
@@ -2820,120 +2875,135 @@
               "as_of": "2026-07-17",
               "rs_ratio": 100.256,
               "rs_momentum": 100.0
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 99.777,
+              "rs_momentum": 100.0
             }
           ],
           "fundflow": {
-            "net": -1177404.8,
-            "observed": 91,
-            "direction": "outflow"
+            "net": 251283280.6,
+            "observed": 89,
+            "direction": "inflow"
           },
-          "pressure_pct": 0.166,
-          "acceleration": 0.012,
-          "lifecycle": "加速→領先"
+          "pressure_pct": -0.145,
+          "acceleration": 0.0,
+          "lifecycle": "加速→改善"
         }
       },
       "caps": {
         "large_cap": {
-          "rs_ratio": 100.69,
-          "rs_momentum": 104.815,
-          "relative_long_pct": 0.69,
-          "relative_short_pct": 4.815,
-          "sector_long_pct": -6.378,
-          "sector_short_pct": 4.815,
-          "market_long_pct": -7.019,
+          "rs_ratio": 101.759,
+          "rs_momentum": 106.645,
+          "relative_long_pct": 1.759,
+          "relative_short_pct": 6.645,
+          "sector_long_pct": -4.806,
+          "sector_short_pct": 6.645,
+          "market_long_pct": -6.452,
           "market_short_pct": 0.0,
-          "stocks": 489,
+          "stocks": 362,
           "leaders": [
             {
-              "code": "02687",
-              "name": "卓越睿新",
-              "return_pct": 64.725
+              "code": "02162",
+              "name": "康諾亞－Ｂ",
+              "return_pct": 46.678
             },
             {
               "code": "02442",
               "name": "怡俊集團控股",
-              "return_pct": 55.822
+              "return_pct": 46.119
             },
             {
               "code": "01626",
               "name": "嘉耀控股",
-              "return_pct": 38.54
+              "return_pct": 43.942
             }
           ],
           "label": "大型股",
-          "count": 489,
+          "count": 494,
           "quadrant": "leading",
           "tail": [
             {
               "as_of": "2026-07-14",
-              "rs_ratio": 99.646,
-              "rs_momentum": 100.697
+              "rs_ratio": 99.545,
+              "rs_momentum": 100.698
             },
             {
               "as_of": "2026-07-15",
-              "rs_ratio": 99.5,
-              "rs_momentum": 100.677
+              "rs_ratio": 99.483,
+              "rs_momentum": 100.691
             },
             {
               "as_of": "2026-07-17",
-              "rs_ratio": 100.69,
-              "rs_momentum": 104.815
+              "rs_ratio": 100.595,
+              "rs_momentum": 104.761
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 101.759,
+              "rs_momentum": 106.645
             }
           ],
           "fundflow": {
-            "net": -2651639672.3,
+            "net": 3756325954.6,
             "observed": 456,
-            "direction": "outflow"
+            "direction": "inflow"
           },
-          "pressure_pct": 2.134,
-          "acceleration": 4.138,
+          "pressure_pct": 3.469,
+          "acceleration": 1.884,
           "lifecycle": "加速→領先"
         },
         "mid_cap": {
-          "rs_ratio": 99.719,
-          "rs_momentum": 102.616,
-          "relative_long_pct": -0.281,
-          "relative_short_pct": 2.616,
-          "sector_long_pct": -7.28,
-          "sector_short_pct": 2.616,
-          "market_long_pct": -7.019,
+          "rs_ratio": 99.733,
+          "rs_momentum": 101.765,
+          "relative_long_pct": -0.267,
+          "relative_short_pct": 1.765,
+          "sector_long_pct": -6.701,
+          "sector_short_pct": 1.765,
+          "market_long_pct": -6.452,
           "market_short_pct": 0.0,
-          "stocks": 406,
+          "stocks": 305,
           "leaders": [
+            {
+              "code": "00789",
+              "name": "雅天妮集團",
+              "return_pct": 407.937
+            },
             {
               "code": "02295",
               "name": "豐城控股",
-              "return_pct": 286.842
+              "return_pct": 257.895
             },
             {
               "code": "00301",
               "name": "三和精化",
-              "return_pct": 243.258
-            },
-            {
-              "code": "01417",
-              "name": "浦江中國",
-              "return_pct": 215.152
+              "return_pct": 248.315
             }
           ],
           "label": "中型股",
-          "count": 406,
+          "count": 405,
           "quadrant": "improving",
           "tail": [
             {
               "as_of": "2026-07-14",
               "rs_ratio": 99.436,
-              "rs_momentum": 101.399
+              "rs_momentum": 101.191
             },
             {
               "as_of": "2026-07-15",
               "rs_ratio": 99.995,
-              "rs_momentum": 101.447
+              "rs_momentum": 101.209
             },
             {
               "as_of": "2026-07-17",
-              "rs_ratio": 99.719,
-              "rs_momentum": 102.616
+              "rs_ratio": 99.74,
+              "rs_momentum": 102.326
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 99.733,
+              "rs_momentum": 101.765
             }
           ],
           "fundflow": {
@@ -2941,55 +3011,60 @@
             "observed": 0,
             "direction": "unavailable"
           },
-          "pressure_pct": 0.733,
-          "acceleration": 1.169,
-          "lifecycle": "加速→改善"
+          "pressure_pct": 0.444,
+          "acceleration": -0.561,
+          "lifecycle": "減速→改善"
         },
         "small_cap": {
-          "rs_ratio": 99.867,
-          "rs_momentum": 100.0,
-          "relative_long_pct": -0.133,
-          "relative_short_pct": 0.0,
-          "sector_long_pct": -7.143,
-          "sector_short_pct": 0.0,
-          "market_long_pct": -7.019,
+          "rs_ratio": 99.362,
+          "rs_momentum": 99.178,
+          "relative_long_pct": -0.638,
+          "relative_short_pct": -0.822,
+          "sector_long_pct": -7.049,
+          "sector_short_pct": -0.822,
+          "market_long_pct": -6.452,
           "market_short_pct": 0.0,
-          "stocks": 1757,
+          "stocks": 1310,
           "leaders": [
-            {
-              "code": "08071",
-              "name": "中彩網通控股",
-              "return_pct": 4263.636
-            },
             {
               "code": "00309",
               "name": "新華通訊頻媒",
-              "return_pct": 4122.222
+              "return_pct": 3974.074
+            },
+            {
+              "code": "08071",
+              "name": "中彩網通控股",
+              "return_pct": 3627.273
             },
             {
               "code": "00862",
               "name": "遠見控股",
-              "return_pct": 2400.0
+              "return_pct": 2325.926
             }
           ],
           "label": "小型股",
-          "count": 1766,
-          "quadrant": "improving",
+          "count": 1762,
+          "quadrant": "lagging",
           "tail": [
             {
               "as_of": "2026-07-14",
               "rs_ratio": 100.53,
-              "rs_momentum": 99.422
+              "rs_momentum": 99.431
             },
             {
               "as_of": "2026-07-15",
-              "rs_ratio": 100.122,
-              "rs_momentum": 99.176
+              "rs_ratio": 100.168,
+              "rs_momentum": 99.218
             },
             {
               "as_of": "2026-07-17",
-              "rs_ratio": 99.867,
+              "rs_ratio": 99.921,
               "rs_momentum": 100.0
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 99.362,
+              "rs_momentum": 99.178
             }
           ],
           "fundflow": {
@@ -2997,117 +3072,127 @@
             "observed": 0,
             "direction": "unavailable"
           },
-          "pressure_pct": -0.086,
-          "acceleration": 0.824,
-          "lifecycle": "加速→改善"
+          "pressure_pct": -0.702,
+          "acceleration": -0.822,
+          "lifecycle": "減速→落後"
         }
       },
       "lifecycle_rows": [
         {
           "key": "large_cap",
           "type": "cap",
-          "rs_ratio": 100.69,
-          "rs_momentum": 104.815,
-          "relative_long_pct": 0.69,
-          "relative_short_pct": 4.815,
-          "sector_long_pct": -6.378,
-          "sector_short_pct": 4.815,
-          "market_long_pct": -7.019,
+          "rs_ratio": 101.759,
+          "rs_momentum": 106.645,
+          "relative_long_pct": 1.759,
+          "relative_short_pct": 6.645,
+          "sector_long_pct": -4.806,
+          "sector_short_pct": 6.645,
+          "market_long_pct": -6.452,
           "market_short_pct": 0.0,
-          "stocks": 489,
+          "stocks": 362,
           "leaders": [
             {
-              "code": "02687",
-              "name": "卓越睿新",
-              "return_pct": 64.725
+              "code": "02162",
+              "name": "康諾亞－Ｂ",
+              "return_pct": 46.678
             },
             {
               "code": "02442",
               "name": "怡俊集團控股",
-              "return_pct": 55.822
+              "return_pct": 46.119
             },
             {
               "code": "01626",
               "name": "嘉耀控股",
-              "return_pct": 38.54
+              "return_pct": 43.942
             }
           ],
           "label": "大型股",
-          "count": 489,
+          "count": 494,
           "quadrant": "leading",
           "tail": [
             {
               "as_of": "2026-07-14",
-              "rs_ratio": 99.646,
-              "rs_momentum": 100.697
+              "rs_ratio": 99.545,
+              "rs_momentum": 100.698
             },
             {
               "as_of": "2026-07-15",
-              "rs_ratio": 99.5,
-              "rs_momentum": 100.677
+              "rs_ratio": 99.483,
+              "rs_momentum": 100.691
             },
             {
               "as_of": "2026-07-17",
-              "rs_ratio": 100.69,
-              "rs_momentum": 104.815
+              "rs_ratio": 100.595,
+              "rs_momentum": 104.761
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 101.759,
+              "rs_momentum": 106.645
             }
           ],
           "fundflow": {
-            "net": -2651639672.3,
+            "net": 3756325954.6,
             "observed": 456,
-            "direction": "outflow"
+            "direction": "inflow"
           },
-          "pressure_pct": 2.134,
-          "acceleration": 4.138,
+          "pressure_pct": 3.469,
+          "acceleration": 1.884,
           "lifecycle": "加速→領先"
         },
         {
           "key": "mid_cap",
           "type": "cap",
-          "rs_ratio": 99.719,
-          "rs_momentum": 102.616,
-          "relative_long_pct": -0.281,
-          "relative_short_pct": 2.616,
-          "sector_long_pct": -7.28,
-          "sector_short_pct": 2.616,
-          "market_long_pct": -7.019,
+          "rs_ratio": 99.733,
+          "rs_momentum": 101.765,
+          "relative_long_pct": -0.267,
+          "relative_short_pct": 1.765,
+          "sector_long_pct": -6.701,
+          "sector_short_pct": 1.765,
+          "market_long_pct": -6.452,
           "market_short_pct": 0.0,
-          "stocks": 406,
+          "stocks": 305,
           "leaders": [
+            {
+              "code": "00789",
+              "name": "雅天妮集團",
+              "return_pct": 407.937
+            },
             {
               "code": "02295",
               "name": "豐城控股",
-              "return_pct": 286.842
+              "return_pct": 257.895
             },
             {
               "code": "00301",
               "name": "三和精化",
-              "return_pct": 243.258
-            },
-            {
-              "code": "01417",
-              "name": "浦江中國",
-              "return_pct": 215.152
+              "return_pct": 248.315
             }
           ],
           "label": "中型股",
-          "count": 406,
+          "count": 405,
           "quadrant": "improving",
           "tail": [
             {
               "as_of": "2026-07-14",
               "rs_ratio": 99.436,
-              "rs_momentum": 101.399
+              "rs_momentum": 101.191
             },
             {
               "as_of": "2026-07-15",
               "rs_ratio": 99.995,
-              "rs_momentum": 101.447
+              "rs_momentum": 101.209
             },
             {
               "as_of": "2026-07-17",
-              "rs_ratio": 99.719,
-              "rs_momentum": 102.616
+              "rs_ratio": 99.74,
+              "rs_momentum": 102.326
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 99.733,
+              "rs_momentum": 101.765
             }
           ],
           "fundflow": {
@@ -3115,57 +3200,62 @@
             "observed": 0,
             "direction": "unavailable"
           },
-          "pressure_pct": 0.733,
-          "acceleration": 1.169,
-          "lifecycle": "加速→改善"
+          "pressure_pct": 0.444,
+          "acceleration": -0.561,
+          "lifecycle": "減速→改善"
         },
         {
           "key": "small_cap",
           "type": "cap",
-          "rs_ratio": 99.867,
-          "rs_momentum": 100.0,
-          "relative_long_pct": -0.133,
-          "relative_short_pct": 0.0,
-          "sector_long_pct": -7.143,
-          "sector_short_pct": 0.0,
-          "market_long_pct": -7.019,
+          "rs_ratio": 99.362,
+          "rs_momentum": 99.178,
+          "relative_long_pct": -0.638,
+          "relative_short_pct": -0.822,
+          "sector_long_pct": -7.049,
+          "sector_short_pct": -0.822,
+          "market_long_pct": -6.452,
           "market_short_pct": 0.0,
-          "stocks": 1757,
+          "stocks": 1310,
           "leaders": [
-            {
-              "code": "08071",
-              "name": "中彩網通控股",
-              "return_pct": 4263.636
-            },
             {
               "code": "00309",
               "name": "新華通訊頻媒",
-              "return_pct": 4122.222
+              "return_pct": 3974.074
+            },
+            {
+              "code": "08071",
+              "name": "中彩網通控股",
+              "return_pct": 3627.273
             },
             {
               "code": "00862",
               "name": "遠見控股",
-              "return_pct": 2400.0
+              "return_pct": 2325.926
             }
           ],
           "label": "小型股",
-          "count": 1766,
-          "quadrant": "improving",
+          "count": 1762,
+          "quadrant": "lagging",
           "tail": [
             {
               "as_of": "2026-07-14",
               "rs_ratio": 100.53,
-              "rs_momentum": 99.422
+              "rs_momentum": 99.431
             },
             {
               "as_of": "2026-07-15",
-              "rs_ratio": 100.122,
-              "rs_momentum": 99.176
+              "rs_ratio": 100.168,
+              "rs_momentum": 99.218
             },
             {
               "as_of": "2026-07-17",
-              "rs_ratio": 99.867,
+              "rs_ratio": 99.921,
               "rs_momentum": 100.0
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 99.362,
+              "rs_momentum": 99.178
             }
           ],
           "fundflow": {
@@ -3173,27 +3263,27 @@
             "observed": 0,
             "direction": "unavailable"
           },
-          "pressure_pct": -0.086,
-          "acceleration": 0.824,
-          "lifecycle": "加速→改善"
+          "pressure_pct": -0.702,
+          "acceleration": -0.822,
+          "lifecycle": "減速→落後"
         },
         {
           "key": "tech",
           "type": "sector",
-          "rs_ratio": 98.31,
-          "rs_momentum": 100.0,
-          "relative_long_pct": -1.69,
-          "relative_short_pct": 0.0,
-          "sector_long_pct": -8.59,
-          "sector_short_pct": 0.0,
-          "market_long_pct": -7.019,
+          "rs_ratio": 98.573,
+          "rs_momentum": 98.919,
+          "relative_long_pct": -1.427,
+          "relative_short_pct": -1.081,
+          "sector_long_pct": -7.786,
+          "sector_short_pct": -1.081,
+          "market_long_pct": -6.452,
           "market_short_pct": 0.0,
-          "stocks": 241,
+          "stocks": 179,
           "leaders": [
             {
               "code": "00809",
               "name": "大成生化科技",
-              "return_pct": 624.138
+              "return_pct": 606.897
             },
             {
               "code": "08131",
@@ -3203,12 +3293,12 @@
             {
               "code": "00232",
               "name": "大陸航空科技控股",
-              "return_pct": 106.468
+              "return_pct": 108.955
             }
           ],
           "label": "科技／AI",
           "count": 242,
-          "quadrant": "improving",
+          "quadrant": "lagging",
           "tail": [
             {
               "as_of": "2026-07-14",
@@ -3224,44 +3314,49 @@
               "as_of": "2026-07-17",
               "rs_ratio": 98.31,
               "rs_momentum": 100.0
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 98.573,
+              "rs_momentum": 98.919
             }
           ],
           "fundflow": {
-            "net": -3535220970.5,
+            "net": 910116266.0,
             "observed": 57,
-            "direction": "outflow"
+            "direction": "inflow"
           },
-          "pressure_pct": -1.099,
-          "acceleration": 2.644,
-          "lifecycle": "加速→改善"
+          "pressure_pct": -1.306,
+          "acceleration": -1.081,
+          "lifecycle": "減速→落後"
         },
         {
           "key": "healthcare",
           "type": "sector",
-          "rs_ratio": 101.622,
-          "rs_momentum": 105.0,
-          "relative_long_pct": 1.622,
-          "relative_short_pct": 5.0,
-          "sector_long_pct": -5.511,
-          "sector_short_pct": 5.0,
-          "market_long_pct": -7.019,
+          "rs_ratio": 102.982,
+          "rs_momentum": 103.397,
+          "relative_long_pct": 2.982,
+          "relative_short_pct": 3.397,
+          "sector_long_pct": -3.662,
+          "sector_short_pct": 3.397,
+          "market_long_pct": -6.452,
           "market_short_pct": 0.0,
-          "stocks": 139,
+          "stocks": 107,
           "leaders": [
             {
               "code": "00876",
               "name": "佳兆業健康",
-              "return_pct": 1639.13
+              "return_pct": 1813.043
             },
             {
               "code": "01526",
               "name": "瑞慈醫療",
-              "return_pct": 62.857
+              "return_pct": 58.571
             },
             {
               "code": "02162",
               "name": "康諾亞－Ｂ",
-              "return_pct": 37.342
+              "return_pct": 46.678
             }
           ],
           "label": "醫藥",
@@ -3282,39 +3377,44 @@
               "as_of": "2026-07-17",
               "rs_ratio": 101.622,
               "rs_momentum": 105.0
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 102.982,
+              "rs_momentum": 103.397
             }
           ],
           "fundflow": {
-            "net": -50532685.0,
+            "net": 273131976.0,
             "observed": 35,
-            "direction": "outflow"
+            "direction": "inflow"
           },
-          "pressure_pct": 2.804,
-          "acceleration": 0.044,
-          "lifecycle": "加速→領先"
+          "pressure_pct": 3.127,
+          "acceleration": -1.603,
+          "lifecycle": "減速→領先"
         },
         {
           "key": "property",
           "type": "sector",
-          "rs_ratio": 99.654,
-          "rs_momentum": 101.845,
-          "relative_long_pct": -0.346,
-          "relative_short_pct": 1.845,
-          "sector_long_pct": -7.34,
-          "sector_short_pct": 1.845,
-          "market_long_pct": -7.019,
+          "rs_ratio": 99.231,
+          "rs_momentum": 103.42,
+          "relative_long_pct": -0.769,
+          "relative_short_pct": 3.42,
+          "sector_long_pct": -7.171,
+          "sector_short_pct": 3.42,
+          "market_long_pct": -6.452,
           "market_short_pct": 0.0,
-          "stocks": 68,
+          "stocks": 56,
           "leaders": [
             {
-              "code": "02423",
-              "name": "貝殼－Ｗ",
-              "return_pct": 4.018
+              "code": "00095",
+              "name": "綠景中國地產",
+              "return_pct": 10.5
             },
             {
               "code": "01997",
               "name": "九龍倉置業",
-              "return_pct": 3.414
+              "return_pct": 4.163
             },
             {
               "code": "01243",
@@ -3340,44 +3440,49 @@
               "as_of": "2026-07-17",
               "rs_ratio": 99.654,
               "rs_momentum": 101.845
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 99.231,
+              "rs_momentum": 103.42
             }
           ],
           "fundflow": {
-            "net": 131872478.0,
+            "net": 119242531.0,
             "observed": 17,
             "direction": "inflow"
           },
-          "pressure_pct": 0.421,
-          "acceleration": 0.427,
+          "pressure_pct": 0.697,
+          "acceleration": 1.575,
           "lifecycle": "加速→改善"
         },
         {
           "key": "finance",
           "type": "sector",
-          "rs_ratio": 103.861,
-          "rs_momentum": 100.527,
-          "relative_long_pct": 3.861,
-          "relative_short_pct": 0.527,
-          "sector_long_pct": -3.429,
-          "sector_short_pct": 0.527,
-          "market_long_pct": -7.019,
+          "rs_ratio": 104.277,
+          "rs_momentum": 102.832,
+          "relative_long_pct": 4.277,
+          "relative_short_pct": 2.832,
+          "sector_long_pct": -2.451,
+          "sector_short_pct": 2.832,
+          "market_long_pct": -6.452,
           "market_short_pct": 0.0,
-          "stocks": 111,
+          "stocks": 82,
           "leaders": [
             {
               "code": "00721",
               "name": "中國金融國際",
-              "return_pct": 205.455
+              "return_pct": 190.909
             },
             {
               "code": "00510",
               "name": "時富金融服務集團",
-              "return_pct": 45.679
+              "return_pct": 58.025
             },
             {
               "code": "08239",
               "name": "首都金融控股",
-              "return_pct": 39.124
+              "return_pct": 32.106
             }
           ],
           "label": "金融／券商",
@@ -3398,34 +3503,39 @@
               "as_of": "2026-07-17",
               "rs_ratio": 103.861,
               "rs_momentum": 100.527
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 104.277,
+              "rs_momentum": 102.832
             }
           ],
           "fundflow": {
-            "net": 431200731.0,
+            "net": 571851814.0,
             "observed": 58,
             "direction": "inflow"
           },
-          "pressure_pct": 2.694,
-          "acceleration": -0.235,
-          "lifecycle": "減速→領先"
+          "pressure_pct": 3.771,
+          "acceleration": 2.305,
+          "lifecycle": "加速→領先"
         },
         {
           "key": "energy",
           "type": "sector",
-          "rs_ratio": 92.129,
-          "rs_momentum": 100.0,
-          "relative_long_pct": -7.871,
-          "relative_short_pct": 0.0,
-          "sector_long_pct": -14.338,
-          "sector_short_pct": 0.0,
-          "market_long_pct": -7.019,
+          "rs_ratio": 93.103,
+          "rs_momentum": 100.273,
+          "relative_long_pct": -6.897,
+          "relative_short_pct": 0.273,
+          "sector_long_pct": -12.903,
+          "sector_short_pct": 0.273,
+          "market_long_pct": -6.452,
           "market_short_pct": 0.0,
-          "stocks": 132,
+          "stocks": 94,
           "leaders": [
             {
               "code": "01815",
               "name": "珠峰黃金",
-              "return_pct": 28.395
+              "return_pct": 48.148
             },
             {
               "code": "01685",
@@ -3433,9 +3543,9 @@
               "return_pct": 25.352
             },
             {
-              "code": "01051",
-              "name": "國際資源",
-              "return_pct": 22.761
+              "code": "02245",
+              "name": "力勤資源",
+              "return_pct": 22.139
             }
           ],
           "label": "能源／資源",
@@ -3456,44 +3566,49 @@
               "as_of": "2026-07-17",
               "rs_ratio": 92.129,
               "rs_momentum": 100.0
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 93.103,
+              "rs_momentum": 100.273
             }
           ],
           "fundflow": {
-            "net": -105042030.0,
-            "observed": 48,
-            "direction": "outflow"
+            "net": 439319002.0,
+            "observed": 49,
+            "direction": "inflow"
           },
-          "pressure_pct": -5.116,
-          "acceleration": 2.869,
+          "pressure_pct": -4.388,
+          "acceleration": 0.273,
           "lifecycle": "加速→改善"
         },
         {
           "key": "auto",
           "type": "sector",
-          "rs_ratio": 91.661,
+          "rs_ratio": 93.227,
           "rs_momentum": 100.0,
-          "relative_long_pct": -8.339,
+          "relative_long_pct": -6.773,
           "relative_short_pct": 0.0,
-          "sector_long_pct": -14.773,
+          "sector_long_pct": -12.787,
           "sector_short_pct": 0.0,
-          "market_long_pct": -7.019,
+          "market_long_pct": -6.452,
           "market_short_pct": 0.0,
-          "stocks": 35,
+          "stocks": 28,
           "leaders": [
             {
               "code": "06162",
               "name": "天瑞汽車內飾",
-              "return_pct": 111.538
+              "return_pct": 96.154
             },
             {
               "code": "02518",
               "name": "汽車之家－Ｓ",
-              "return_pct": 30.0
+              "return_pct": 29.625
             },
             {
               "code": "03669",
               "name": "永達汽車",
-              "return_pct": 10.0
+              "return_pct": 11.25
             }
           ],
           "label": "汽車／新能源",
@@ -3514,29 +3629,34 @@
               "as_of": "2026-07-17",
               "rs_ratio": 91.661,
               "rs_momentum": 100.0
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 93.227,
+              "rs_momentum": 100.0
             }
           ],
           "fundflow": {
-            "net": 66524783.0,
+            "net": 375980051.0,
             "observed": 18,
             "direction": "inflow"
           },
-          "pressure_pct": -5.42,
-          "acceleration": 2.201,
+          "pressure_pct": -4.402,
+          "acceleration": 0.0,
           "lifecycle": "加速→改善"
         },
         {
           "key": "consumer",
           "type": "sector",
-          "rs_ratio": 103.614,
-          "rs_momentum": 102.49,
-          "relative_long_pct": 3.614,
-          "relative_short_pct": 2.49,
-          "sector_long_pct": -3.659,
-          "sector_short_pct": 2.49,
-          "market_long_pct": -7.019,
+          "rs_ratio": 104.059,
+          "rs_momentum": 102.058,
+          "relative_long_pct": 4.059,
+          "relative_short_pct": 2.058,
+          "sector_long_pct": -2.655,
+          "sector_short_pct": 2.058,
+          "market_long_pct": -6.452,
           "market_short_pct": 0.0,
-          "stocks": 123,
+          "stocks": 100,
           "leaders": [
             {
               "code": "01371",
@@ -3546,12 +3666,12 @@
             {
               "code": "01525",
               "name": "建橋教育",
-              "return_pct": 20.321
+              "return_pct": 26.203
             },
             {
-              "code": "01758",
-              "name": "博駿教育",
-              "return_pct": 18.75
+              "code": "09858",
+              "name": "優然牧業",
+              "return_pct": 19.655
             }
           ],
           "label": "消費／餐飲",
@@ -3572,34 +3692,39 @@
               "as_of": "2026-07-17",
               "rs_ratio": 103.614,
               "rs_momentum": 102.49
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 104.059,
+              "rs_momentum": 102.058
             }
           ],
           "fundflow": {
-            "net": 283584711.0,
-            "observed": 43,
+            "net": 217256552.0,
+            "observed": 42,
             "direction": "inflow"
           },
-          "pressure_pct": 3.221,
-          "acceleration": 1.777,
-          "lifecycle": "加速→領先"
+          "pressure_pct": 3.359,
+          "acceleration": -0.432,
+          "lifecycle": "減速→領先"
         },
         {
           "key": "infra",
           "type": "sector",
-          "rs_ratio": 103.088,
-          "rs_momentum": 102.583,
-          "relative_long_pct": 3.088,
-          "relative_short_pct": 2.583,
-          "sector_long_pct": -4.148,
-          "sector_short_pct": 2.583,
-          "market_long_pct": -7.019,
+          "rs_ratio": 102.785,
+          "rs_momentum": 103.113,
+          "relative_long_pct": 2.785,
+          "relative_short_pct": 3.113,
+          "sector_long_pct": -3.846,
+          "sector_short_pct": 3.113,
+          "market_long_pct": -6.452,
           "market_short_pct": 0.0,
-          "stocks": 74,
+          "stocks": 53,
           "leaders": [
             {
               "code": "01613",
               "name": "協同通信",
-              "return_pct": 180.347
+              "return_pct": 189.017
             },
             {
               "code": "01452",
@@ -3630,44 +3755,49 @@
               "as_of": "2026-07-17",
               "rs_ratio": 103.088,
               "rs_momentum": 102.583
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 102.785,
+              "rs_momentum": 103.113
             }
           ],
           "fundflow": {
-            "net": 67222490.0,
+            "net": 86939380.0,
             "observed": 25,
             "direction": "inflow"
           },
-          "pressure_pct": 2.911,
-          "acceleration": 2.225,
+          "pressure_pct": 2.9,
+          "acceleration": 0.53,
           "lifecycle": "加速→領先"
         },
         {
           "key": "shipping",
           "type": "sector",
-          "rs_ratio": 105.6,
-          "rs_momentum": 105.263,
-          "relative_long_pct": 5.6,
-          "relative_short_pct": 5.263,
-          "sector_long_pct": -1.812,
-          "sector_short_pct": 5.263,
-          "market_long_pct": -7.019,
+          "rs_ratio": 104.86,
+          "rs_momentum": 104.739,
+          "relative_long_pct": 4.86,
+          "relative_short_pct": 4.739,
+          "sector_long_pct": -1.905,
+          "sector_short_pct": 4.739,
+          "market_long_pct": -6.452,
           "market_short_pct": 0.0,
-          "stocks": 33,
+          "stocks": 27,
           "leaders": [
-            {
-              "code": "06083",
-              "name": "環宇物流（亞洲）",
-              "return_pct": 16.049
-            },
             {
               "code": "01442",
               "name": "鷹輝物流",
               "return_pct": 12.963
             },
             {
+              "code": "06083",
+              "name": "環宇物流（亞洲）",
+              "return_pct": 9.877
+            },
+            {
               "code": "02057",
               "name": "中通快遞－Ｗ",
-              "return_pct": 8.923
+              "return_pct": 9.672
             }
           ],
           "label": "航運物流",
@@ -3688,44 +3818,49 @@
               "as_of": "2026-07-17",
               "rs_ratio": 105.6,
               "rs_momentum": 105.263
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 104.86,
+              "rs_momentum": 104.739
             }
           ],
           "fundflow": {
-            "net": 12374594.0,
+            "net": 173170291.0,
             "observed": 21,
             "direction": "inflow"
           },
-          "pressure_pct": 5.482,
-          "acceleration": 0.373,
-          "lifecycle": "加速→領先"
+          "pressure_pct": 4.818,
+          "acceleration": -0.524,
+          "lifecycle": "減速→領先"
         },
         {
           "key": "industrial",
           "type": "sector",
-          "rs_ratio": 99.276,
-          "rs_momentum": 100.0,
-          "relative_long_pct": -0.724,
-          "relative_short_pct": 0.0,
-          "sector_long_pct": -7.692,
-          "sector_short_pct": 0.0,
-          "market_long_pct": -7.019,
+          "rs_ratio": 99.561,
+          "rs_momentum": 100.039,
+          "relative_long_pct": -0.439,
+          "relative_short_pct": 0.039,
+          "sector_long_pct": -6.863,
+          "sector_short_pct": 0.039,
+          "market_long_pct": -6.452,
           "market_short_pct": 0.0,
-          "stocks": 57,
+          "stocks": 40,
           "leaders": [
-            {
-              "code": "00695",
-              "name": "東吳水泥",
-              "return_pct": 11.797
-            },
             {
               "code": "00568",
               "name": "山東墨龍",
-              "return_pct": 11.111
+              "return_pct": 12.261
             },
             {
               "code": "00669",
               "name": "創科實業",
-              "return_pct": 10.223
+              "return_pct": 11.34
+            },
+            {
+              "code": "00695",
+              "name": "東吳水泥",
+              "return_pct": 11.248
             }
           ],
           "label": "工業／製造",
@@ -3746,49 +3881,54 @@
               "as_of": "2026-07-17",
               "rs_ratio": 99.276,
               "rs_momentum": 100.0
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 99.561,
+              "rs_momentum": 100.039
             }
           ],
           "fundflow": {
-            "net": 74867584.0,
+            "net": 302674678.0,
             "observed": 26,
             "direction": "inflow"
           },
-          "pressure_pct": -0.471,
-          "acceleration": 2.405,
+          "pressure_pct": -0.272,
+          "acceleration": 0.039,
           "lifecycle": "加速→改善"
         },
         {
           "key": "conglomerate",
           "type": "sector",
-          "rs_ratio": 98.626,
-          "rs_momentum": 100.0,
-          "relative_long_pct": -1.374,
-          "relative_short_pct": 0.0,
-          "sector_long_pct": -8.297,
-          "sector_short_pct": 0.0,
-          "market_long_pct": -7.019,
+          "rs_ratio": 97.477,
+          "rs_momentum": 98.413,
+          "relative_long_pct": -2.523,
+          "relative_short_pct": -1.587,
+          "sector_long_pct": -8.812,
+          "sector_short_pct": -1.587,
+          "market_long_pct": -6.452,
           "market_short_pct": 0.0,
-          "stocks": 392,
+          "stocks": 289,
           "leaders": [
             {
               "code": "08071",
               "name": "中彩網通控股",
-              "return_pct": 4263.636
+              "return_pct": 3627.273
             },
             {
               "code": "00862",
               "name": "遠見控股",
-              "return_pct": 2400.0
+              "return_pct": 2325.926
             },
             {
               "code": "08471",
               "name": "新達控股",
-              "return_pct": 1072.414
+              "return_pct": 1089.655
             }
           ],
           "label": "綜合／控股",
           "count": 395,
-          "quadrant": "improving",
+          "quadrant": "lagging",
           "tail": [
             {
               "as_of": "2026-07-14",
@@ -3804,20 +3944,25 @@
               "as_of": "2026-07-17",
               "rs_ratio": 98.626,
               "rs_momentum": 100.0
+            },
+            {
+              "as_of": "2026-07-20",
+              "rs_ratio": 97.477,
+              "rs_momentum": 98.413
             }
           ],
           "fundflow": {
-            "net": -27313953.0,
-            "observed": 17,
-            "direction": "outflow"
+            "net": 35360133.0,
+            "observed": 19,
+            "direction": "inflow"
           },
-          "pressure_pct": -0.893,
-          "acceleration": 0.546,
-          "lifecycle": "加速→改善"
+          "pressure_pct": -2.195,
+          "acceleration": -1.587,
+          "lifecycle": "減速→落後"
         }
       ],
       "lifecycle_summary": {
-        "state": "板塊分化 · 加速",
+        "state": "板塊分化 · 平速",
         "breadth_pct": 54.545,
         "leader": "航運物流",
         "laggard": "汽車／新能源"
@@ -3828,7 +3973,7 @@
       "short_days": 60,
       "long_days": 120,
       "available": false,
-      "as_of": "2026-07-17",
+      "as_of": "2026-07-20",
       "short_reference_date": null,
       "long_reference_date": null,
       "market_stocks": 0,
@@ -3839,9 +3984,9 @@
           "quadrant": "unavailable",
           "tail": [],
           "fundflow": {
-            "net": -3535220970.5,
+            "net": 910116266.0,
             "observed": 57,
-            "direction": "outflow"
+            "direction": "inflow"
           },
           "pressure_pct": null,
           "acceleration": null,
@@ -3853,9 +3998,9 @@
           "quadrant": "unavailable",
           "tail": [],
           "fundflow": {
-            "net": -50532685.0,
+            "net": 273131976.0,
             "observed": 35,
-            "direction": "outflow"
+            "direction": "inflow"
           },
           "pressure_pct": null,
           "acceleration": null,
@@ -3867,7 +4012,7 @@
           "quadrant": "unavailable",
           "tail": [],
           "fundflow": {
-            "net": 131872478.0,
+            "net": 119242531.0,
             "observed": 17,
             "direction": "inflow"
           },
@@ -3881,7 +4026,7 @@
           "quadrant": "unavailable",
           "tail": [],
           "fundflow": {
-            "net": 431200731.0,
+            "net": 571851814.0,
             "observed": 58,
             "direction": "inflow"
           },
@@ -3895,9 +4040,9 @@
           "quadrant": "unavailable",
           "tail": [],
           "fundflow": {
-            "net": -105042030.0,
-            "observed": 48,
-            "direction": "outflow"
+            "net": 439319002.0,
+            "observed": 49,
+            "direction": "inflow"
           },
           "pressure_pct": null,
           "acceleration": null,
@@ -3909,7 +4054,7 @@
           "quadrant": "unavailable",
           "tail": [],
           "fundflow": {
-            "net": 66524783.0,
+            "net": 375980051.0,
             "observed": 18,
             "direction": "inflow"
           },
@@ -3923,8 +4068,8 @@
           "quadrant": "unavailable",
           "tail": [],
           "fundflow": {
-            "net": 283584711.0,
-            "observed": 43,
+            "net": 217256552.0,
+            "observed": 42,
             "direction": "inflow"
           },
           "pressure_pct": null,
@@ -3937,7 +4082,7 @@
           "quadrant": "unavailable",
           "tail": [],
           "fundflow": {
-            "net": 67222490.0,
+            "net": 86939380.0,
             "observed": 25,
             "direction": "inflow"
           },
@@ -3951,7 +4096,7 @@
           "quadrant": "unavailable",
           "tail": [],
           "fundflow": {
-            "net": 12374594.0,
+            "net": 173170291.0,
             "observed": 21,
             "direction": "inflow"
           },
@@ -3965,7 +4110,7 @@
           "quadrant": "unavailable",
           "tail": [],
           "fundflow": {
-            "net": 74867584.0,
+            "net": 302674678.0,
             "observed": 26,
             "direction": "inflow"
           },
@@ -3979,9 +4124,9 @@
           "quadrant": "unavailable",
           "tail": [],
           "fundflow": {
-            "net": -27313953.0,
-            "observed": 17,
-            "direction": "outflow"
+            "net": 35360133.0,
+            "observed": 19,
+            "direction": "inflow"
           },
           "pressure_pct": null,
           "acceleration": null,
@@ -3993,9 +4138,9 @@
           "quadrant": "unavailable",
           "tail": [],
           "fundflow": {
-            "net": -1177404.8,
-            "observed": 91,
-            "direction": "outflow"
+            "net": 251283280.6,
+            "observed": 89,
+            "direction": "inflow"
           },
           "pressure_pct": null,
           "acceleration": null,
@@ -4005,13 +4150,13 @@
       "caps": {
         "large_cap": {
           "label": "大型股",
-          "count": 489,
+          "count": 494,
           "quadrant": "unavailable",
           "tail": [],
           "fundflow": {
-            "net": -2651639672.3,
+            "net": 3756325954.6,
             "observed": 456,
-            "direction": "outflow"
+            "direction": "inflow"
           },
           "pressure_pct": null,
           "acceleration": null,
@@ -4019,7 +4164,7 @@
         },
         "mid_cap": {
           "label": "中型股",
-          "count": 406,
+          "count": 405,
           "quadrant": "unavailable",
           "tail": [],
           "fundflow": {
@@ -4033,7 +4178,7 @@
         },
         "small_cap": {
           "label": "小型股",
-          "count": 1766,
+          "count": 1762,
           "quadrant": "unavailable",
           "tail": [],
           "fundflow": {
@@ -4051,13 +4196,13 @@
           "key": "large_cap",
           "type": "cap",
           "label": "大型股",
-          "count": 489,
+          "count": 494,
           "quadrant": "unavailable",
           "tail": [],
           "fundflow": {
-            "net": -2651639672.3,
+            "net": 3756325954.6,
             "observed": 456,
-            "direction": "outflow"
+            "direction": "inflow"
           },
           "pressure_pct": null,
           "acceleration": null,
@@ -4067,7 +4212,7 @@
           "key": "mid_cap",
           "type": "cap",
           "label": "中型股",
-          "count": 406,
+          "count": 405,
           "quadrant": "unavailable",
           "tail": [],
           "fundflow": {
@@ -4083,7 +4228,7 @@
           "key": "small_cap",
           "type": "cap",
           "label": "小型股",
-          "count": 1766,
+          "count": 1762,
           "quadrant": "unavailable",
           "tail": [],
           "fundflow": {
@@ -4103,9 +4248,9 @@
           "quadrant": "unavailable",
           "tail": [],
           "fundflow": {
-            "net": -3535220970.5,
+            "net": 910116266.0,
             "observed": 57,
-            "direction": "outflow"
+            "direction": "inflow"
           },
           "pressure_pct": null,
           "acceleration": null,
@@ -4119,9 +4264,9 @@
           "quadrant": "unavailable",
           "tail": [],
           "fundflow": {
-            "net": -50532685.0,
+            "net": 273131976.0,
             "observed": 35,
-            "direction": "outflow"
+            "direction": "inflow"
           },
           "pressure_pct": null,
           "acceleration": null,
@@ -4135,7 +4280,7 @@
           "quadrant": "unavailable",
           "tail": [],
           "fundflow": {
-            "net": 131872478.0,
+            "net": 119242531.0,
             "observed": 17,
             "direction": "inflow"
           },
@@ -4151,7 +4296,7 @@
           "quadrant": "unavailable",
           "tail": [],
           "fundflow": {
-            "net": 431200731.0,
+            "net": 571851814.0,
             "observed": 58,
             "direction": "inflow"
           },
@@ -4167,9 +4312,9 @@
           "quadrant": "unavailable",
           "tail": [],
           "fundflow": {
-            "net": -105042030.0,
-            "observed": 48,
-            "direction": "outflow"
+            "net": 439319002.0,
+            "observed": 49,
+            "direction": "inflow"
           },
           "pressure_pct": null,
           "acceleration": null,
@@ -4183,7 +4328,7 @@
           "quadrant": "unavailable",
           "tail": [],
           "fundflow": {
-            "net": 66524783.0,
+            "net": 375980051.0,
             "observed": 18,
             "direction": "inflow"
           },
@@ -4199,8 +4344,8 @@
           "quadrant": "unavailable",
           "tail": [],
           "fundflow": {
-            "net": 283584711.0,
-            "observed": 43,
+            "net": 217256552.0,
+            "observed": 42,
             "direction": "inflow"
           },
           "pressure_pct": null,
@@ -4215,7 +4360,7 @@
           "quadrant": "unavailable",
           "tail": [],
           "fundflow": {
-            "net": 67222490.0,
+            "net": 86939380.0,
             "observed": 25,
             "direction": "inflow"
           },
@@ -4231,7 +4376,7 @@
           "quadrant": "unavailable",
           "tail": [],
           "fundflow": {
-            "net": 12374594.0,
+            "net": 173170291.0,
             "observed": 21,
             "direction": "inflow"
           },
@@ -4247,7 +4392,7 @@
           "quadrant": "unavailable",
           "tail": [],
           "fundflow": {
-            "net": 74867584.0,
+            "net": 302674678.0,
             "observed": 26,
             "direction": "inflow"
           },
@@ -4263,9 +4408,9 @@
           "quadrant": "unavailable",
           "tail": [],
           "fundflow": {
-            "net": -27313953.0,
-            "observed": 17,
-            "direction": "outflow"
+            "net": 35360133.0,
+            "observed": 19,
+            "direction": "inflow"
           },
           "pressure_pct": null,
           "acceleration": null,
