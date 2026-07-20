@@ -319,7 +319,9 @@
   function renderHealth(bundle){
     const status=String(bundle.publish?.status||'FAIL').toUpperCase();
     const el=$('healthState');el.className=`health-state ${status.toLowerCase()}`;el.querySelector('b').textContent=status==='PASS'?'當前資料可用':status==='WARN'?'當前資料有警告':'資料閘未通過';
-    $('healthMeta').textContent=`CCASS ${bundle.files?.holdings?.updated||'—'} · 價格 ${dateText(bundle.files?.prices?.latest_price_time)} · ${bundle.files?.holdings?.coverage_pct??'—'}% 覆蓋`;
+    const ccassDate=new Date(bundle.files?.holdings?.updated);const daysOld=ccassDate?Math.floor((Date.now()-ccassDate)/86400000):0;
+    const staleNote=daysOld>2?`<br><span style="color:var(--amber)">⚠️ CCASS ${daysOld} 日未更新</span>`:'';
+    $('healthMeta').innerHTML=`CCASS ${bundle.files?.holdings?.updated||'—'} · 價格 ${dateText(bundle.files?.prices?.latest_price_time)} · ${bundle.files?.holdings?.coverage_pct??'—'}% 覆蓋${staleNote}`;
   }
   function renderRotation(rotation){
     const rows=Object.entries(rotation.sectors||{}).map(([key,row])=>({key,name:SECTOR_NAMES[key]||row.name||key,d5:num(row.windows?.['5']?.pct),d20:num(row.windows?.['20']?.pct)})).filter(row=>row.d5!==null||row.d20!==null).sort((a,b)=>(b.d5??-999)-(a.d5??-999)).slice(0,6);

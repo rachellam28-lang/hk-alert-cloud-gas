@@ -44,7 +44,7 @@
   ];
 
   const path = location.pathname.toLowerCase().replace(/\/+$/, '');
-  const darkTools = ['/kbar_matrix', '/kbar_matrix.html', '/docs/ccass-warroom', '/docs/ccass-warroom.html'];
+  const darkTools = ['/kbar_matrix', '/kbar_matrix.html', '/docs/ccass-warroom', '/docs/ccass-warroom.html', '/trading_desk', '/trading_desk.html'];
   const useUnifiedLightTheme = !darkTools.some(item => path.endsWith(item));
   document.documentElement.classList.toggle('suite-light', useUnifiedLightTheme);
   const active = href => {
@@ -115,6 +115,12 @@
         --shadow:0 1px 2px rgba(31,48,52,.06)!important
       }
       html.suite-light body{background:#edf1f2!important;color:#172126!important}
+      html.suite-light #sharedSiteNav{background:#fff!important;border-bottom-color:#d5dddf!important;box-shadow:0 1px 3px rgba(0,0,0,.06)!important}
+      html.suite-light #sharedSiteNav a,html.suite-light #sharedSiteNav summary{color:#3f4d53!important}
+      html.suite-light #sharedSiteNav a:hover,html.suite-light #sharedSiteNav summary:hover{background:#f5f7f7!important;color:#172126!important}
+      html.suite-light #sharedSiteNav a.active,html.suite-light #sharedSiteNav summary.active{background:#e1f1ef!important;color:#075f60!important}
+      html.suite-light #sharedSiteNav .suite-nav-panel{background:#fff!important;border-color:#d5dddf!important;box-shadow:0 8px 24px rgba(0,0,0,.08)!important}
+      html.suite-light #sharedSiteNav .suite-nav-group strong{color:#68777d!important}
       html.suite-light .hero,html.suite-light .card,html.suite-light .panel,html.suite-light .mini,
       html.suite-light .detail,html.suite-light .event-card,html.suite-light .action-btn,
       html.suite-light .control,html.suite-light .pager button,html.suite-light .inspector-empty,
@@ -206,4 +212,22 @@
     const more = nav.querySelector('.suite-nav-more');
     if (more && more.open && !more.contains(event.target)) more.open = false;
   });
+  // PWA cache cleanup — apply site-wide
+  if('serviceWorker' in navigator){
+    window.addEventListener('load', async () => {
+      try{
+        const regs = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(regs.map(r => r.unregister()));
+        if('caches' in window){
+          const keys = await caches.keys();
+          await Promise.all(keys.map(k => caches.delete(k)));
+        }
+        console.log('PWA caches cleared via shared-nav');
+      }catch(e){}
+    }, {once:true});
+  }
+  // Shared error/loading helpers
+  window.showLoading=function(el,msg){if(!el)return;el.innerHTML='<div class=\"status-loading\">⏳ '+(msg||'載入中…')+'</div>';};
+  window.showError=function(el,err,retryFn){if(!el)return;const b=retryFn?'<button onclick=\"('+retryFn.toString()+')()\" style=\"margin-top:8px;padding:4px 12px;cursor:pointer;border:1px solid #d5dddf;border-radius:5px;background:#fff\">🔄 重試</button>':'';el.innerHTML='<div class=\"status-error\">❌ 載入失敗：'+String(err)+'<br>'+b+'</div>';};
+  window.showEmpty=function(el,msg){if(!el)return;el.innerHTML='<div class=\"status-empty\">'+(msg||'暫無數據')+'</div>';};
 })();
