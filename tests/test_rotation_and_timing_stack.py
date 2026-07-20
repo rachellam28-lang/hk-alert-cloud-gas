@@ -14,14 +14,19 @@ def read(path: str) -> str:
 def test_rotation_snapshot_is_observed_relative_market_schema() -> None:
     payload = json.loads(read("data/sector_rotation.json"))
 
-    assert payload["schema_version"] == 2
+    assert payload["schema_version"] == 3
     assert payload["is_vendor_rrg"] is False
+    assert payload["is_vendor_mse"] is False
     assert "relative to the equal-weight market" in payload["method"]
+    assert "fund flow uses observed main_net only" in payload["method"]
     assert payload["coverage"]["observed_named_stocks"] > 500
     assert payload["coverage"]["classified_stocks"] > 0
     assert set(payload["profiles"]) == {"20", "60", "120"}
     assert payload["profiles"]["20"]["available"] is True
     assert payload["profiles"]["20"]["long_reference_date"]
+    assert payload["profiles"]["20"]["caps"]
+    assert payload["profiles"]["20"]["lifecycle_rows"]
+    assert payload["profiles"]["20"]["lifecycle_summary"]["state"]
 
     for profile in payload["profiles"].values():
         for sector in profile["sectors"].values():
@@ -39,6 +44,8 @@ def test_rotation_page_uses_rrg_axes_and_explicit_unavailable_state() -> None:
 
     assert "RS-Ratio" in page
     assert "RS-Momentum" in page
+    assert "市場生命週期地圖" in page
+    assert "renderLifecycle" in page
     assert "此週期未有足夠真實歷史" in page
     assert "key!=='other'" in page
     assert "Math.random" not in page

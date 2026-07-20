@@ -19,6 +19,12 @@ OUT = ROOT / "data" / "sector_rotation.json"
 MIN_FRESH_ROWS = 500
 TAIL_POINTS = 6
 
+CAP_LABELS = {
+    "large_cap": "大型股",
+    "mid_cap": "中型股",
+    "small_cap": "小型股",
+}
+
 SECTOR_LABELS = {
     "tech": "科技／AI",
     "healthcare": "醫藥",
@@ -129,6 +135,97 @@ def rounded(value: float | None) -> float | None:
     return round(value, 3) if isinstance(value, (int, float)) else None
 
 
+def cap_group(market_cap: float | None) -> str | None:
+    if market_cap is None or market_cap <= 0:
+        return None
+    if market_cap >= 100:
+        return "large_cap"
+    if market_cap >= 20:
+        return "mid_cap"
+    return "small_cap"
+
+
+def load_fundflow() -> tuple[str | None, dict[str, float]]:
+    path = ROOT / "data" / "fundflow.json"
+    if not path.exists():
+        return None, {}
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    rows = payload.get("all") or {}
+    out: dict[str, float] = {}
+    for code, row in rows.items():
+        if not isinstance(row, dict):
+            continue
+        value = row.get("main_net")
+        if isinstance(value, (int, float)):
+            out[str(code).zfill(5)] = float(value)
+    return str(payload.get("updated") or "")[:10] or None, out
+
+
+def flow_summary(codes: set[str], fundflow: dict[str, float]) -> dict:
+    values = [fundflow[code] for code in codes if code in fundflow]
+    if not values:
+        return {"net": None, "observed": 0, "direction": "unavailable"}
+    net = sum(values)
+    direction = "inflow" if net > 0 else "outflow" if net < 0 else "flat"
+    return {
+        "net": rounded(net),
+        "observed": len(values),
+        "direction": direction,
+    }
+
+
+def decorate_signal(item: dict, previous: dict | None = None) -> dict:
+    rel_long = item.get("relative_long_pct")
+    rel_short = item.get("relative_short_pct")
+    pressure = None
+    if rel_long is not None and rel_short is not None:
+        pressure = 0.65 * rel_long + 0.35 * rel_short
+    accel = None
+    if previous and item.get("rs_momentum") is not None and previous.get("rs_momentum") is not None:
+        accel = item["rs_momentum"] - previous["rs_momentum"]
+    q = item.get("quadrant")
+    if q == "leading":
+        lifecycle = "加速→領先" if (accel or 0) >= 0 else "減速→領先"
+    elif q == "weakening":
+        lifecycle = "反彈→轉弱" if (accel or 0) >= 0 else "減速→轉弱"
+    elif q == "lagging":
+        lifecycle = "改善→落後" if (accel or 0) >= 0 else "減速→落後"
+    elif q == "improving":
+        lifecycle = "加速→改善" if (accel or 0) >= 0 else "減速→改善"
+    else:
+        lifecycle = "資料不足"
+    item["pressure_pct"] = rounded(pressure)
+    item["acceleration"] = rounded(accel)
+    item["lifecycle"] = lifecycle
+    return item
+
+
+def market_summary(rows: list[dict]) -> dict:
+    valid = [row for row in rows if row.get("pressure_pct") is not None]
+    if not valid:
+        return {"state": "資料不足", "breadth_pct": None, "leader": None, "laggard": None}
+    positive = [row for row in valid if row["pressure_pct"] > 0]
+    breadth = len(positive) / len(valid) * 100
+    median_pressure = statistics.median(row["pressure_pct"] for row in valid)
+    accelerations = [row["acceleration"] for row in valid if row.get("acceleration") is not None]
+    median_accel = statistics.median(accelerations) if accelerations else 0
+    if breadth >= 65 and median_pressure > 0:
+        state = "擴散偏強"
+    elif breadth <= 35 and median_pressure < 0:
+        state = "防守偏弱"
+    else:
+        state = "板塊分化"
+    state += " · 加速" if median_accel > 0.2 else " · 減速" if median_accel < -0.2 else " · 平速"
+    leader = max(valid, key=lambda row: row["pressure_pct"])
+    laggard = min(valid, key=lambda row: row["pressure_pct"])
+    return {
+        "state": state,
+        "breadth_pct": rounded(breadth),
+        "leader": leader["label"],
+        "laggard": laggard["label"],
+    }
+
+
 def point_for(
     as_of: date,
     snapshots: dict[date, dict[str, float]],
@@ -136,6 +233,7 @@ def point_for(
     classifications: dict[str, str],
     short_days: int,
     long_days: int,
+    labels: dict[str, str] = SECTOR_LABELS,
 ) -> dict | None:
     short_ref = nearest_reference(as_of, snapshots, short_days)
     long_ref = nearest_reference(as_of, snapshots, long_days)
@@ -147,14 +245,16 @@ def point_for(
     long_prices = snapshots[long_ref]
     short_market: list[float] = []
     long_market: list[float] = []
-    short_buckets = {key: [] for key in SECTOR_LABELS}
-    long_buckets = {key: [] for key in SECTOR_LABELS}
-    member_returns = {key: [] for key in SECTOR_LABELS}
+    short_buckets = {key: [] for key in labels}
+    long_buckets = {key: [] for key in labels}
+    member_returns = {key: [] for key in labels}
 
     for code, price in current.items():
         if code not in names:
             continue
-        sector = classifications.get(code, "other")
+        sector = classifications.get(code)
+        if sector not in labels:
+            continue
         old_short = short_prices.get(code)
         old_long = long_prices.get(code)
         if old_short and old_short > 0:
@@ -172,7 +272,7 @@ def point_for(
     market_short = statistics.median(short_market)
     market_long = statistics.median(long_market)
     sectors = {}
-    for key in SECTOR_LABELS:
+    for key in labels:
         short_values = short_buckets[key]
         long_values = long_buckets[key]
         sector_short = statistics.median(short_values) if short_values else None
@@ -225,12 +325,28 @@ def main() -> None:
         for row in holdings.get("stocks", [])
         if row.get("c") and row.get("n")
     }
+    market_caps = {
+        str(row.get("c", "")).zfill(5): float(row.get("mc"))
+        for row in holdings.get("stocks", [])
+        if row.get("c") and isinstance(row.get("mc"), (int, float)) and row.get("mc") > 0
+    }
+    fundflow_date, fundflow = load_fundflow()
     code_map = parse_main_page_code_map()
     classifications = {code: classify(code, name, code_map) for code, name in names.items()}
+    cap_classifications = {
+        code: group
+        for code, value in market_caps.items()
+        if (group := cap_group(value)) is not None
+    }
     current_codes = set(snapshots[latest]) & set(names)
     counts = {key: 0 for key in SECTOR_LABELS}
     for code in current_codes:
         counts[classifications.get(code, "other")] += 1
+    cap_counts = {key: 0 for key in CAP_LABELS}
+    for code in current_codes:
+        group = cap_classifications.get(code)
+        if group in cap_counts:
+            cap_counts[group] += 1
 
     profiles = {}
     days = sorted(snapshots)
@@ -251,9 +367,11 @@ def main() -> None:
                 break
         available.reverse()
         latest_point = available[-1] if available else None
+        previous_point = available[-2] if len(available) > 1 else None
         sectors = {}
         for sector_key, label in SECTOR_LABELS.items():
             item = dict((latest_point or {}).get("sectors", {}).get(sector_key, {}))
+            previous_item = (previous_point or {}).get("sectors", {}).get(sector_key, {})
             item.update({
                 "label": label,
                 "count": counts[sector_key],
@@ -269,7 +387,63 @@ def main() -> None:
                     and point["sectors"][sector_key]["rs_momentum"] is not None
                 ],
             })
-            sectors[sector_key] = item
+            item["fundflow"] = flow_summary(
+                {code for code in current_codes if classifications.get(code) == sector_key},
+                fundflow,
+            )
+            sectors[sector_key] = decorate_signal(item, previous_item)
+
+        cap_available = []
+        for as_of in reversed(days):
+            point = point_for(
+                as_of,
+                snapshots,
+                names,
+                cap_classifications,
+                config["short_days"],
+                config["long_days"],
+                CAP_LABELS,
+            )
+            if point:
+                cap_available.append(point)
+            if len(cap_available) >= TAIL_POINTS:
+                break
+        cap_available.reverse()
+        latest_cap_point = cap_available[-1] if cap_available else None
+        previous_cap_point = cap_available[-2] if len(cap_available) > 1 else None
+        caps = {}
+        for cap_key, label in CAP_LABELS.items():
+            item = dict((latest_cap_point or {}).get("sectors", {}).get(cap_key, {}))
+            previous_item = (previous_cap_point or {}).get("sectors", {}).get(cap_key, {})
+            item.update({
+                "label": label,
+                "count": cap_counts[cap_key],
+                "quadrant": quadrant(item.get("rs_ratio"), item.get("rs_momentum")),
+                "tail": [
+                    {
+                        "as_of": point["as_of"],
+                        "rs_ratio": point["sectors"][cap_key]["rs_ratio"],
+                        "rs_momentum": point["sectors"][cap_key]["rs_momentum"],
+                    }
+                    for point in cap_available
+                    if point["sectors"][cap_key]["rs_ratio"] is not None
+                    and point["sectors"][cap_key]["rs_momentum"] is not None
+                ],
+            })
+            item["fundflow"] = flow_summary(
+                {code for code in current_codes if cap_classifications.get(code) == cap_key},
+                fundflow,
+            )
+            caps[cap_key] = decorate_signal(item, previous_item)
+
+        lifecycle_rows = [
+            {"key": key, "type": "cap", **caps[key]}
+            for key in ("large_cap", "mid_cap", "small_cap")
+        ] + [
+            {"key": key, "type": "sector", **item}
+            for key, item in sectors.items()
+            if key != "other"
+        ]
         profiles[key] = {
             **config,
             "available": latest_point is not None,
@@ -278,6 +452,9 @@ def main() -> None:
             "long_reference_date": latest_point.get("long_reference_date") if latest_point else None,
             "market_stocks": latest_point.get("market_stocks") if latest_point else 0,
             "sectors": sectors,
+            "caps": caps,
+            "lifecycle_rows": lifecycle_rows,
+            "lifecycle_summary": market_summary(lifecycle_rows[3:]),
         }
 
     classified = len(current_codes) - counts["other"]
@@ -297,14 +474,17 @@ def main() -> None:
             "reference_rows": len(snapshots[reference_day]) if reference_day else None,
         }
     out = {
-        "schema_version": 2,
+        "schema_version": 3,
         "updated": latest.isoformat(),
         "source": "raw/prices_YYYYMMDD.json + holdings.json names + index.html classification overrides",
         "method": (
             "RRG-style proxy using same-date non-stale closes: sector equal-weight median return relative to the equal-weight market median; "
-            "RS-Ratio=100+long relative return; RS-Momentum=100+short relative return"
+            "RS-Ratio=100+long relative return; RS-Momentum=100+short relative return; "
+            "pressure=0.65*long relative return + 0.35*short relative return; fund flow uses observed main_net only"
         ),
         "is_vendor_rrg": False,
+        "is_vendor_mse": False,
+        "fundflow_date": fundflow_date,
         "minimum_fresh_rows": MIN_FRESH_ROWS,
         "coverage": {
             "observed_named_stocks": len(current_codes),

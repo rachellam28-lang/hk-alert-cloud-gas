@@ -10,6 +10,18 @@
 @media(max-width:820px){.page{padding:8px}.head{display:block}.status{text-align:left;margin-top:6px}.metrics{grid-template-columns:1fr 1fr}.quad-grid{grid-template-columns:1fr 1fr}.chart-wrap{overflow-x:auto}.chart-wrap svg{min-width:720px}}
 @media(max-width:480px){.quad-grid{grid-template-columns:1fr}.title{font-size:16px}}
 </style>
+<style>
+.life-head{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:10px 0}
+.life-card{background:#142126;color:#e8f1f2;border:1px solid #31444b;border-radius:7px;padding:9px 10px;min-height:58px}
+.life-card small{display:block;color:#9eafb5;font-size:11px}.life-card b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.life-panel{background:#111b21;color:#edf5f6;border:1px solid #26373f;border-radius:7px;overflow:hidden}
+.life-table{width:100%;border-collapse:collapse;font-size:12px}.life-table th{background:#202d34;color:#b9c8cd;border-color:#33464f}.life-table td{border-color:#26373f}
+.life-table tr.cap-row td{background:#17252b;font-weight:800}.life-table tr.sector-row td{background:#121d23}.pressure-cell{font-weight:900}
+.heat-pos{background:linear-gradient(90deg,rgba(17,122,73,.42),transparent)}.heat-neg{background:linear-gradient(90deg,rgba(180,58,66,.42),transparent)}
+.flow-bar{height:9px;width:96px;background:#263941;border-radius:999px;overflow:hidden}.flow-fill{display:block;height:100%;border-radius:999px}.flow-fill.inflow{background:#16a05f}.flow-fill.outflow{background:#c8434d}
+.state-pill{display:inline-block;border-radius:4px;padding:2px 6px;background:#203943;color:#d7edf2}.state-good{color:#2cc277}.state-bad{color:#ff6b76}.state-warn{color:#d7a545}
+@media(max-width:820px){.life-head{display:flex;overflow-x:auto}.life-card{min-width:138px}.life-panel{overflow-x:auto}.life-table{min-width:860px}}
+</style>
 </head>
 <body>
 <header><div id="sharedSiteNav" data-base="./"></div></header>
@@ -22,6 +34,22 @@
       <button class="btn" data-profile="120">120日</button>
     </div>
     <div class="metrics"><div class="metric"><b id="asOf">—</b><span>價格快照</span></div><div class="metric"><b id="sample">—</b><span>共同樣本</span></div><div class="metric"><b id="coverage">—</b><span>已分類覆蓋</span></div><div class="metric"><b id="references">—</b><span>短／長基準日</span></div></div>
+  </section>
+
+  <section class="band">
+    <div class="title">市場生命週期地圖</div>
+    <div class="sub">用同日真實收市、現有市值分組及 observed fundflow 計算；不是外部 MSE/SLS 私有公式。壓力 = 0.65×長窗相對回報 + 0.35×短窗相對回報。</div>
+    <div class="life-head">
+      <div class="life-card"><small>市場分佈</small><b id="lifeState">—</b></div>
+      <div class="life-card"><small>偏強比例</small><b id="lifeBreadth">—</b></div>
+      <div class="life-card"><small>領先板塊</small><b id="lifeLeader">—</b></div>
+      <div class="life-card"><small>落後板塊</small><b id="lifeLaggard">—</b></div>
+      <div class="life-card"><small>資金日期</small><b id="lifeFlowDate">—</b></div>
+    </div>
+    <div class="life-panel"><table class="life-table">
+      <thead><tr><th>分類</th><th>綜合壓力</th><th>相對動能 / 加速度</th><th>資金方向</th><th>生命週期</th></tr></thead>
+      <tbody id="lifeRows"></tbody>
+    </table></div>
   </section>
 
   <section class="band">
@@ -48,6 +76,33 @@ let payload=null,profileKey='20';
 const finite=value=>value!==null&&value!==''&&Number.isFinite(Number(value));
 const fmt=(value,suffix='')=>finite(value)?`${Number(value)>=0&&suffix==='%'?'+':''}${Number(value).toFixed(2)}${suffix}`:'—';
 const esc=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+const stateClass=value=>Number(value)>0?'state-good':Number(value)<0?'state-bad':'state-warn';
+function fmtFlow(value){
+  if(!finite(value))return '—';
+  const abs=Math.abs(Number(value));
+  if(abs>=100000000)return `${(Number(value)/100000000).toFixed(2)}億`;
+  if(abs>=10000)return `${(Number(value)/10000).toFixed(0)}萬`;
+  return Number(value).toFixed(0);
+}
+function renderLifecycle(profile){
+  const summary=profile.lifecycle_summary||{};
+  document.getElementById('lifeState').textContent=summary.state||'—';
+  document.getElementById('lifeBreadth').textContent=finite(summary.breadth_pct)?`${Number(summary.breadth_pct).toFixed(1)}%`:'—';
+  document.getElementById('lifeLeader').textContent=summary.leader||'—';
+  document.getElementById('lifeLaggard').textContent=summary.laggard||'—';
+  document.getElementById('lifeFlowDate').textContent=payload.fundflow_date||'—';
+  const rows=(profile.lifecycle_rows||[]).filter(row=>row.key!=='other');
+  const maxFlow=Math.max(1,...rows.map(row=>Math.abs(Number(row.fundflow?.net)||0)));
+  document.getElementById('lifeRows').innerHTML=rows.map(row=>{
+    const flow=row.fundflow||{};
+    const net=finite(flow.net)?Number(flow.net):null;
+    const width=net===null?0:Math.max(5,Math.min(100,Math.abs(net)/maxFlow*100));
+    const flowCls=net>=0?'inflow':'outflow';
+    const cls=row.type==='cap'?'cap-row':'sector-row';
+    const heat=Number(row.pressure_pct)>=0?'heat-pos':'heat-neg';
+    return `<tr class="${cls}"><td>${esc(row.label)}<br><small>${row.count||row.stocks||0} 隻</small></td><td class="pressure-cell ${heat} ${stateClass(row.pressure_pct)}">${fmt(row.pressure_pct,'%')}<br><small>長 ${fmt(row.relative_long_pct,'%')} / 短 ${fmt(row.relative_short_pct,'%')}</small></td><td>${fmt(row.rs_momentum)} <span class="${stateClass(row.acceleration)}">${fmt(row.acceleration)}</span><br><small>RS ${fmt(row.rs_ratio)}</small></td><td><span class="${net>=0?'state-good':'state-bad'}">${fmtFlow(net)}</span><br><div class="flow-bar"><span class="flow-fill ${flowCls}" style="width:${width}%"></span></div><small>觀察 ${flow.observed||0}</small></td><td><span class="state-pill">${esc(row.lifecycle||'資料不足')}</span></td></tr>`;
+  }).join('');
+}
 function sectorLink(key){location.href=`./index.html?sector=${encodeURIComponent(key)}`}
 function chart(profile){
   const svg=document.getElementById('rotationChart');
@@ -78,10 +133,11 @@ function render(){
   Object.entries(groups).forEach(([q,items])=>{items.sort((a,b)=>(b[1].rs_ratio||0)-(a[1].rs_ratio||0));document.getElementById(q).innerHTML=items.length?items.map(([key,item])=>`<div class="sector" data-sector="${key}"><div><strong>${esc(item.label)}</strong><small>${item.stocks||0} 隻 · ${fmt(item.relative_long_pct,'%')}</small></div><div class="score">${fmt(item.rs_ratio)}<small>${fmt(item.rs_momentum)}</small></div></div>`).join(''):'<div class="empty">目前沒有板塊</div>'});
   const entries=Object.entries(profile.sectors).filter(([key])=>key!=='other');
   document.getElementById('details').innerHTML=entries.map(([key,item])=>`<tr><td><button class="btn" data-sector="${key}">${esc(item.label)}</button></td><td><span class="pill">${QUADRANTS[item.quadrant]||item.quadrant}</span></td><td>${fmt(item.rs_ratio)}</td><td>${fmt(item.rs_momentum)}</td><td class="${Number(item.relative_long_pct)>=0?'up':'down'}">${fmt(item.relative_long_pct,'%')}</td><td class="${Number(item.relative_short_pct)>=0?'up':'down'}">${fmt(item.relative_short_pct,'%')}</td><td>${item.stocks||0}</td><td>${(item.leaders||[]).map(stock=>`<a href="./kbar_matrix.html?symbol=${stock.code}">${stock.code}</a>`).join(' · ')||'—'}</td></tr>`).join('');
+  renderLifecycle(profile);
   document.querySelectorAll('[data-sector]').forEach(el=>el.onclick=()=>sectorLink(el.dataset.sector));chart(profile);
 }
 document.querySelectorAll('[data-profile]').forEach(button=>button.onclick=()=>{document.querySelectorAll('[data-profile]').forEach(item=>item.classList.remove('active'));button.classList.add('active');profileKey=button.dataset.profile;render()});
-fetch('./data/sector_rotation.json?_='+Date.now(),{cache:'no-store'}).then(response=>{if(!response.ok)throw Error(response.status);return response.json()}).then(data=>{if(data.schema_version!==2)throw Error('old schema');payload=data;document.getElementById('status').textContent=`真實快照 ${data.updated} · 未分類 ${data.coverage?.unclassified_stocks||0} 隻`;render()}).catch(error=>{document.getElementById('status').textContent='輪動資料載入失敗';document.getElementById('rotationChart').innerHTML='<rect width="1000" height="560" fill="#0b151a"/><text x="500" y="280" fill="#afbec3" text-anchor="middle" font-size="18">輪動資料暫不可用</text>';console.error(error)});
+fetch('./data/sector_rotation.json?_='+Date.now(),{cache:'no-store'}).then(response=>{if(!response.ok)throw Error(response.status);return response.json()}).then(data=>{if(data.schema_version<2)throw Error('old schema');payload=data;document.getElementById('status').textContent=`真實快照 ${data.updated} · 未分類 ${data.coverage?.unclassified_stocks||0} 隻`;render()}).catch(error=>{document.getElementById('status').textContent='輪動資料載入失敗';document.getElementById('rotationChart').innerHTML='<rect width="1000" height="560" fill="#0b151a"/><text x="500" y="280" fill="#afbec3" text-anchor="middle" font-size="18">輪動資料暫不可用</text>';console.error(error)});
 </script>
 </body>
 </html>

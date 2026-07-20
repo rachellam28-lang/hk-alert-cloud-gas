@@ -2,6 +2,15 @@
 
 Last updated: 2026-07-18 HKT
 
+## 2026-07-20 sector rotation lifecycle panel
+
+- `scripts/build_sector_rotation.py` now emits `data/sector_rotation.json` schema v3. It keeps the existing observed RRG sector model, and adds a transparent lifecycle table for cap groups and sectors.
+- The new lifecycle rows are not a vendor MSE/SLS clone. They use disclosed rules only: `pressure = 0.65 * long relative return + 0.35 * short relative return`, acceleration = latest RS-Momentum minus the prior valid tail point, lifecycle state = quadrant plus acceleration direction.
+- Large/mid/small cap rows reuse `holdings.json` market-cap buckets: large `>=100億`, mid `20-100億`, small `<20億`. Sector rows still reuse the dashboard's existing classification overrides and keyword fallback; no duplicate heavy membership JSON was added.
+- Fund flow in the lifecycle table uses only observed `data/fundflow.json` `main_net`. Missing coverage remains `null/—`; the current fundflow feed covers mostly large-cap names, so mid/small cap flow may honestly show unavailable instead of zero.
+- `rotation_matrix.html` renders a compact dark lifecycle panel above the RRG: market state, breadth, leader, laggard, fundflow date, plus sortable/scroll-contained rows for cap groups and sectors. The original RRG chart, quadrant cards and sector detail table remain.
+- Tests now require schema v3, `is_vendor_mse=false`, lifecycle rows/summary, and the observed-fundflow method note.
+
 ## 2026-07-18 observed day/night Trend Matrix
 
 - Added `trend_matrix.html` as a primary navigation page after `板塊輪動`. It is an in-system automated table, not an Excel download. The visible matrix is deliberately reduced to `date + High / Low / Mid / Open / Close`; day and night sessions use a segmented switch instead of a 10-column mobile table.
