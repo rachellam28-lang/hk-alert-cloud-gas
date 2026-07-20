@@ -1,39 +1,19 @@
 """Daily: fetch ALL market data from Futu OpenD — lp, mc, hi52, lo52, pe, vol, chg, vr.
 Run after HK market close (~5pm HKT). Requires Futu gateway.
 """
-import json, os, socket, sys, time, math
+import json, sys, time, math
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).parent.parent.parent  # holdings-debug/
 PRICES = ROOT / "data" / "stock_prices.json"
 HOLDINGS = ROOT / "holdings.json"
 SUSPENDED = ROOT / "data" / "suspended_stocks.json"
+sys.path.insert(0, str(ROOT / "scripts"))
+from futu_env import ensure_futu_quote_backend_or_die
 
 
-def _load_env():
-    env_path = ROOT / ".env"
-    if not env_path.exists():
-        return
-    for line in env_path.read_text(encoding="utf-8").splitlines():
-        if not line or line.lstrip().startswith("#") or "=" not in line:
-            continue
-        key, val = line.split("=", 1)
-        os.environ.setdefault(key.strip(), val.strip().strip('"').strip("'"))
-
-
-_load_env()
-FUTU_HOST = os.environ.get("FUTU_HOST", "127.0.0.1")
-FUTU_PORT = int(os.environ.get("FUTU_PORT", "11111"))
-
-probe = socket.socket()
-probe.settimeout(float(os.environ.get("FUTU_CONNECT_TIMEOUT", "2")))
-try:
-    probe.connect((FUTU_HOST, FUTU_PORT))
-except OSError as exc:
-    print(f"ERROR: FutuOpenD not reachable at {FUTU_HOST}:{FUTU_PORT}: {exc}", file=sys.stderr)
-    sys.exit(2)
-finally:
-    probe.close()
+FUTU_HOST, FUTU_PORT = ensure_futu_quote_backend_or_die(ROOT)
 
 prices = json.loads(PRICES.read_text(encoding='utf-8'))
 codes = sorted(k for k,v in prices.items() if v.get('yo'))
@@ -70,6 +50,15 @@ for i in range(0, len(codes), BATCH):
                 e = prices.get(code, {})
                 changed = False
                 lp_seen = False
+                observed_at = None
+                raw_update_time = str(row.get('update_time') or '').strip()
+                if raw_update_time:
+                    try:
+                        observed_at = datetime.strptime(
+                            raw_update_time, '%Y-%m-%d %H:%M:%S'
+                        ).replace(tzinfo=timezone(timedelta(hours=8)))
+                    except ValueError:
+                        print(f"  WARN: invalid Futu update_time for {code}: {raw_update_time}")
 
                 for futu_key, our_key, scale in [
                     ('last_price','lp',1), ('total_market_val','mc',1e8),
@@ -95,6 +84,15 @@ for i in range(0, len(codes), BATCH):
                         e['chg'] = c
                         counts['chg'] += 1
 
+                # Timestamp the provider observation even when the numeric price
+                # is unchanged. Health checks must reflect Futu's market time,
+                # never the wall-clock time of this refresh process.
+                if lp_seen and observed_at is not None:
+                    e['lp_time'] = observed_at.date().isoformat()
+                    e['price_updated_at'] = observed_at.isoformat()
+                    e['price_source'] = 'futu:opend'
+                    changed = True
+
                 if changed:
                     prices[code] = e
                 if not lp_seen or not e.get('lp') or (e.get('vol') is not None and e.get('vol') == 0):
@@ -118,8 +116,14 @@ q.close()
 for code, e in prices.items():
     if e.get('lp') and e.get('hi52') and e.get('lo52') and e['hi52'] > e['lo52']:
         e['p52'] = round((e['lp'] - e['lo52']) / (e['hi52'] - e['lo52']) * 100, 1)
-    if e.get('lp') and e.get('py') and e['py'] > 0:
-        e['py_pct'] = round((e['lp'] - e['py']) / e['py'] * 100, 2)
+    effective_py = e.get('apy', e.get('py'))
+    if e.get('lp') and effective_py and effective_py > 0:
+        e['py_pct'] = round((e['lp'] - effective_py) / effective_py * 100, 2)
+        if e.get('apy'):
+            e['apy_pct'] = e['py_pct']
+    else:
+        e.pop('py_pct', None)
+        e.pop('apy_pct', None)
 
 def sanitize(obj):
     if isinstance(obj, dict): return {k: sanitize(v) for k,v in obj.items()}
@@ -136,6 +140,16 @@ holdings = json.loads(HOLDINGS.read_text(encoding='utf-8'))
 for s in holdings['stocks']:
     code = s['c']
     e = prices.get(code, {})
+    effective_py = e.get('apy', e.get('py'))
+    if effective_py is not None:
+        s['py'] = effective_py
+        if e.get('py_pct') is not None:
+            s['py_pct'] = e['py_pct']
+        else:
+            s.pop('py_pct', None)
+    else:
+        s.pop('py', None)
+        s.pop('py_pct', None)
     for k in ['lp','mc','hi52','lo52','pe','vol','vr','chg','p52','py_pct']:
         if e.get(k) is not None:
             s[k] = e[k]

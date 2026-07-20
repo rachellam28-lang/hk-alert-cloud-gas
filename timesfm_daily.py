@@ -1,198 +1,171 @@
-"""TimesFM Daily Forecast — Predict broker concentration trends for high-conc stocks.
+﻿"""Daily TimesFM forecast generator for CCASS concentration signals.
 
 Outputs:
-  1. data/timesfm.json — structured forecast data for dashboard
-  2. Markdown table to stdout — for Telegram cron delivery
+  1. data/timesfm.json - structured forecast data for dashboard or bot use
+  2. Markdown tables to stdout when not using --json-only
 
-Usage:
-    python timesfm_daily.py [--horizon 5] [--top 15] [--min-days 25]
+Examples:
+    python timesfm_daily.py
+    python timesfm_daily.py --field broker_top5_pct --field top10_pct
+    python timesfm_daily.py --fields broker_top5_pct,adj_hhi,total_pct
 """
-import argparse, sqlite3, json, sys, os
-import numpy as np
 
-DB_PATH = r"C:\Users\Administrator\Desktop\automatic\ccass-debug\ccass\ccass.db"
-OUTPUT_JSON = r"C:\Users\Administrator\Desktop\automatic\ccass-debug\data\timesfm.json"
+from __future__ import annotations
 
+import argparse
+import json
+from datetime import datetime
+from pathlib import Path
 
-def get_ccass_series(stock_code: str, field: str = "broker_top5_pct", min_days: int = 25):
-    ALLOWED_FIELDS = {"broker_top5_pct", "top5_pct", "total_pct", "adj_hhi",
-                      "futu_pct", "a00005_pct", "adjusted_float", "num_participants",
-                      "top10_pct", "top_broker_pct"}
-    if field not in ALLOWED_FIELDS:
-        raise ValueError(f"Illegal field: {field}. Allowed: {sorted(ALLOWED_FIELDS)}")
-    db = sqlite3.connect(DB_PATH)
-    cur = db.execute(f"""
-        SELECT trade_date, {field}
-        FROM ccass_daily
-        WHERE stock_code = ? AND {field} IS NOT NULL
-        ORDER BY trade_date
-    """, (stock_code,))
-    rows = list(cur)
-    if len(rows) < min_days:
-        return None, None
-    dates = [r[0] for r in rows]
-    values = np.array([r[1] for r in rows], dtype=np.float32)
-    return dates, values
+from ccass_timesfm_forecast import (
+    build_model,
+    build_record,
+    connect_db,
+    select_screen_codes,
+    validate_field,
+)
+
+ROOT = Path(__file__).resolve().parent
+OUTPUT_JSON = ROOT / "data" / "timesfm.json"
 
 
-def forecast_timesfm(values, horizon=5):
-    from timesfm import TimesFM_2p5_200M_torch, ForecastConfig
+def resolve_fields(args) -> list[str]:
+    fields: list[str] = []
+    for value in args.field or []:
+        if value:
+            fields.append(value.strip())
+    if args.fields:
+        for value in args.fields.split(","):
+            value = value.strip()
+            if value:
+                fields.append(value)
+    if not fields:
+        fields = ["broker_top5_pct"]
 
-    tfm = TimesFM_2p5_200M_torch.from_pretrained(
-        "google/timesfm-2.5-200m-pytorch",
-    )
-    cfg = ForecastConfig(max_context=len(values), max_horizon=horizon)
-    tfm.compile(cfg)
-
-    forecast_input = values.astype(np.float32).reshape(1, -1)
-    point_forecast, quantile_forecast = tfm.forecast(
-        horizon,
-        [forecast_input[0]],
-    )
-    return point_forecast[0], quantile_forecast
+    ordered: list[str] = []
+    seen = set()
+    for field in fields:
+        normalized = validate_field(field)
+        if normalized not in seen:
+            seen.add(normalized)
+            ordered.append(normalized)
+    return ordered
 
 
-def get_top_stocks(db, limit=15, min_days=25):
-    """Get stocks with high concentration AND recent movement (not static 99% zombies)."""
-    cur = db.execute("""
-        WITH latest AS (
-            SELECT stock_code, broker_top5_pct, trade_date,
-                   ROW_NUMBER() OVER (PARTITION BY stock_code ORDER BY trade_date DESC) as rn
-            FROM ccass_daily
-            WHERE broker_top5_pct IS NOT NULL
-        ),
-        stats AS (
-            SELECT stock_code,
-                   COUNT(DISTINCT trade_date) as days,
-                   MAX(broker_top5_pct) as max_conc,
-                   MIN(broker_top5_pct) as min_conc
-            FROM ccass_daily
-            WHERE broker_top5_pct IS NOT NULL
-            GROUP BY stock_code
-            HAVING COUNT(DISTINCT trade_date) >= ?
+def print_field_table(field: str, records: list[dict]):
+    print()
+    print(f"## {field}")
+    print("| Code | Name | Latest | Recent | F+1 | F+3 | F+N | Delta | Signal |")
+    print("|------|------|--------|--------|-----|-----|------|-------|--------|")
+    for record in records:
+        forecast = record.get("forecast", [])
+        first = forecast[0] if forecast else record.get("latest", 0.0)
+        third = forecast[2] if len(forecast) > 2 else record.get("forecast_end", first)
+        recent = "--" if record.get("recent_delta") is None else f"{record['recent_delta']:+.2f}"
+        print(
+            f"| {record['stock_code']} | {record['stock_name']} | {record['latest']:.2f} | "
+            f"{recent} | {first:.2f} | {third:.2f} | {record['forecast_end']:.2f} | "
+            f"{record['forecast_delta']:+.2f} | {record['signal']} |"
         )
-        SELECT l.stock_code, s.days, l.broker_top5_pct as latest_conc,
-               (s.max_conc - s.min_conc) as conc_range
-        FROM latest l
-        JOIN stats s ON l.stock_code = s.stock_code
-        WHERE l.rn = 1
-          AND l.broker_top5_pct BETWEEN 55 AND 95  -- dynamic range, exclude pegged
-          AND (s.max_conc - s.min_conc) >= 3        -- at least 3pp movement
-        ORDER BY l.broker_top5_pct DESC
-        LIMIT ?
-    """, (min_days, limit))
-    rows = list(cur)
-    # Return (code, days, latest_conc) — same shape as before
-    return [(r[0], r[1], r[2]) for r in rows]
-
-
-def get_stock_name(db, code):
-    cur = db.execute(
-        "SELECT stock_name FROM stock_universe WHERE stock_code = ?", (code,)
-    )
-    r = cur.fetchone()
-    return r[0] if r else code
 
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument("--field", action="append", help="Repeatable field selector")
+    parser.add_argument("--fields", help="Comma-separated field selector")
     parser.add_argument("--horizon", type=int, default=5)
     parser.add_argument("--top", type=int, default=15)
     parser.add_argument("--min-days", type=int, default=25)
-    parser.add_argument("--field", default="broker_top5_pct")
+    parser.add_argument("--lookback", type=int, default=5)
+    parser.add_argument("--json-out", default=str(OUTPUT_JSON))
     parser.add_argument("--json-only", action="store_true")
     args = parser.parse_args()
 
-    db = sqlite3.connect(DB_PATH)
-    latest_date = db.execute("SELECT MAX(trade_date) FROM ccass_daily").fetchone()[0]
-    top_stocks = get_top_stocks(db, args.top, args.min_days)
+    fields = resolve_fields(args)
 
-    if not top_stocks:
-        print("No stocks found with enough data.", file=sys.stderr)
-        sys.exit(1)
+    with connect_db() as conn:
+        latest_date = conn.execute("SELECT MAX(trade_date) FROM ccass_daily").fetchone()[0]
+        model, ForecastConfig = build_model()
 
-    print(
-        f"🔮 TimesFM Forecast — {len(top_stocks)} stocks, {args.horizon}d horizon"
-    )
-    print(f"   Data range: {args.min_days}+ days, latest: {latest_date}")
-    print()
-    print(
-        "| Code | Name | Latest | Day+1 | Day+3 | Day+5 | Trend | Signal |"
-    )
-    print(
-        "|------|------|--------|-------|-------|-------|-------|--------|"
-    )
+        by_field: dict[str, list[dict]] = {}
+        field_meta: list[dict] = []
+        total_errors = 0
 
-    forecasts = []
-    errors = 0
-
-    for code, days, latest_conc in top_stocks:
-        name = get_stock_name(db, code)
-        dates, vals = get_ccass_series(code, args.field, args.min_days)
-        if vals is None:
-            continue
-
-        try:
-            point_fc, quant_fc = forecast_timesfm(vals, args.horizon)
-        except Exception as e:
-            errors += 1
-            print(
-                f"| {code} | {name} | {latest_conc:.1f}% | ❌ {str(e)[:40]} | | | | |"
+        for field in fields:
+            codes = select_screen_codes(
+                conn=conn,
+                field=field,
+                screen="top",
+                limit=args.top,
+                min_days=args.min_days,
+                lookback=args.lookback,
             )
-            continue
+            records: list[dict] = []
+            error_items: list[dict] = []
+            for code in codes:
+                try:
+                    record = build_record(
+                        conn=conn,
+                        model=model,
+                        ForecastConfig=ForecastConfig,
+                        stock_code=code,
+                        field=field,
+                        horizon=args.horizon,
+                        min_days=args.min_days,
+                        lookback=args.lookback,
+                    )
+                except Exception as exc:
+                    error_items.append({"stock_code": code, "error": str(exc)})
+                    total_errors += 1
+                    continue
+                if record:
+                    records.append(record)
 
-        pred_end = float(point_fc[-1])
-        pred_d1 = float(point_fc[0]) if len(point_fc) > 0 else latest_conc
-        pred_d3 = float(point_fc[2]) if len(point_fc) > 2 else pred_end
-        delta = pred_end - latest_conc
+            by_field[field] = records
+            field_meta.append(
+                {
+                    "field": field,
+                    "count": len(records),
+                    "error_count": len(error_items),
+                    "top_codes": [item["stock_code"] for item in records[:5]],
+                    "records": records,
+                    "errors": error_items,
+                }
+            )
 
-        if delta > 2.0:
-            trend, signal = "⬆️⬆️", "🚨 UP"
-        elif delta > 0.5:
-            trend, signal = "⬆️", "↗️ rise"
-        elif delta < -2.0:
-            trend, signal = "⬇️⬇️", "📉 DOWN"
-        elif delta < -0.5:
-            trend, signal = "⬇️", "↘️ drop"
-        else:
-            trend, signal = "➡️", "stable"
-
-        print(
-            f"| {code} | {name} | {latest_conc:.1f}% | {pred_d1:.1f}% | {pred_d3:.1f}% | {pred_end:.1f}% | {trend} | {signal} |"
-        )
-
-        forecasts.append(
-            {
-                "c": code,
-                "n": name,
-                "tp": round(float(latest_conc), 1),
-                "f1": round(pred_d1, 1),
-                "f3": round(pred_d3, 1),
-                "f5": round(pred_end, 1),
-                "delta": round(float(delta), 1),
-                "trend": signal,
-                "days": days,
-            }
-        )
-
-    db.close()
-
-    output = {
+    payload = {
         "updated": latest_date,
+        "generated_at": datetime.now().isoformat(timespec="seconds"),
+        "source": "TimesFM model over observed CCASS holdings history",
+        "data_kind": "model_forecast",
+        "is_observed": False,
         "horizon": args.horizon,
-        "field": args.field,
-        "forecasts": forecasts,
-        "errors": errors,
+        "min_days": args.min_days,
+        "lookback": args.lookback,
+        "primary_field": fields[0] if fields else None,
+        "field_count": len(fields),
+        "fields": field_meta,
+        "by_field": by_field,
+        "forecasts": by_field.get(fields[0], []) if fields else [],
+        "errors": total_errors,
     }
-    os.makedirs(os.path.dirname(OUTPUT_JSON), exist_ok=True)
-    with open(OUTPUT_JSON, "w", encoding="utf-8") as f:
-        json.dump(output, f, ensure_ascii=False)
 
-    if not args.json_only:
-        print()
-        print(
-            f"📁 JSON: data/timesfm.json ({len(forecasts)} forecasts, {errors} errors)"
-        )
+    out_path = Path(args.json_out)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    if args.json_only:
+        return
+
+    print(f"TimesFM daily forecast: {len(fields)} field(s), latest {latest_date}, horizon {args.horizon}d")
+    for item in field_meta:
+        print_field_table(item["field"], item["records"])
+        if item["errors"]:
+            print("Errors:")
+            for err in item["errors"]:
+                print(f"- {err['stock_code']}: {err['error']}")
+    print()
+    print(f"JSON written to {out_path}")
 
 
 if __name__ == "__main__":

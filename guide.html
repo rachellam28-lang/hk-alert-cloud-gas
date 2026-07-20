@@ -1,228 +1,195 @@
 <!doctype html>
 <html lang="zh-HK"><head>
 <meta name="robots" content="noindex, nofollow">
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=0.5,maximum-scale=5,user-scalable=yes">
-<title>Market 使用說明書</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<title>CCASS 系統說明書</title>
 <style>
-:root{--bg:#f5f7fa;--surface:#fff;--surface-soft:#f8fafc;--text:#0f172a;--text-soft:#334155;--mute:#64748b;--line:#e2e8f0;--primary:#0284c7;--up:#15803d;--down:#b91c1c;--amber:#b45309;--radius:10px}
-*{box-sizing:border-box}html,body{margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font:14px/1.7 Inter,system-ui,"PingFang TC","Noto Sans TC",Arial,sans-serif;-webkit-font-smoothing:antialiased}
-.topbar{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.88);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
-.topbar-inner{max-width:1100px;margin:0 auto;padding:8px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
-.topbar a{font-size:12px;color:var(--primary);padding:3px 9px;border:1px solid var(--line);border-radius:6px;white-space:nowrap;font-weight:600;text-decoration:none}
-main{max-width:900px;margin:0 auto;padding:24px 20px}
-h1{font-size:24px;font-weight:700;margin:0 0 8px}
-h2{font-size:18px;font-weight:700;margin:32px 0 12px;padding-bottom:6px;border-bottom:2px solid var(--line);color:var(--text-soft)}
-h3{font-size:15px;font-weight:600;margin:20px 0 8px;color:var(--primary)}
-.subtitle{color:var(--mute);font-size:12px;margin-bottom:24px}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 20px;margin-bottom:16px}
-table{width:100%;border-collapse:collapse;font-size:13px}
-th,td{padding:6px 10px;text-align:left;border-bottom:1px solid var(--line)}
-th{font-weight:600;color:var(--mute);font-size:11px;text-transform:uppercase}
-td{color:var(--text-soft)}
-tr:last-child td{border-bottom:none}
-code{background:var(--surface-soft);padding:2px 6px;border-radius:4px;font:12px "JetBrains Mono",monospace;color:var(--down)}
-pre{background:var(--surface-soft);padding:14px;border-radius:8px;overflow-x:auto;font:12px/1.5 "JetBrains Mono",monospace;white-space:pre-wrap}
-.tag{display:inline-block;padding:1px 8px;border-radius:4px;font-size:11px;font-weight:600}
-.tag-up{background:#dcfce7;color:#15803d}
-.tag-dn{background:#fee2e2;color:#b91c1c}
-.tag-warn{background:#fef3c7;color:#b45309}
-ul,ol{padding-left:20px;line-height:1.8}
-a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
-.foot{margin-top:40px;padding:20px;text-align:center;font-size:12px;color:var(--mute)}
-@media(max-width:720px){main{padding:12px 10px}h1{font-size:20px}h2{font-size:16px}table{font-size:11px}th,td{padding:4px 6px}}
-@media(prefers-color-scheme:dark){:root{--bg:#0f172a;--surface:#1e293b;--surface-soft:#162032;--text:#f1f5f9;--text-soft:#cbd5e1;--mute:#64748b;--line:#334155;--primary:#38bdf8}.tag-up{background:#052e16;color:#4ade80}.tag-dn{background:#2d0a0a;color:#f87171}.topbar{background:rgba(15,23,42,.92)}}
-.site-nav{display:flex;flex-wrap:wrap;gap:6px 12px;padding:8px 12px;background:#0f172a;border-bottom:1px solid #1e293b;font-size:13px}
-.site-nav a{color:#94a3b8;text-decoration:none;white-space:nowrap}
-.site-nav a:hover{color:#e2e8f0}
-.site-nav a.active{color:#38bdf8;font-weight:600}
-.status-loading,.status-error,.status-empty{padding:24px;text-align:center;border-radius:8px;font-size:14px;color:#94a3b8}
-.status-error{background:#1e0a0a;border:1px solid #7f1d1d;color:#fca5a5}
-.status-loading{background:#0f172a}
-.status-empty{background:#0f1a2e}
-@media(max-width:640px){.site-nav{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:6px 8px;gap:6px}.site-nav a{flex:0 0 auto}.topbar-inner{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch}}
+:root{--bg:#edf1f2;--surface:#fff;--surface-soft:#f5f7f7;--text:#172126;--soft:#3f4d53;--muted:#68777d;--line:#d5dddf;--teal:#0b7475;--teal-soft:#e1f1ef;--green:#157a4b;--green-soft:#e2f2e9;--red:#b43a42;--red-soft:#f7e6e7;--amber:#986308;--amber-soft:#fff1d8;--blue:#286f91;--blue-soft:#e5f0f5}
+*{box-sizing:border-box}html{scroll-behavior:smooth}html,body{margin:0;min-width:100%;overflow-x:hidden}body{background:var(--bg);color:var(--text);font:14px/1.65 Inter,system-ui,"PingFang TC","Noto Sans TC",Arial,sans-serif;-webkit-font-smoothing:antialiased}a{color:var(--teal);text-decoration:none}a:hover{text-decoration:underline}
+.intro{border-bottom:1px solid var(--line);background:var(--surface)}.intro-inner{max-width:1180px;margin:auto;padding:28px 24px 24px}.eyebrow{color:var(--teal);font-size:11px;font-weight:800;text-transform:uppercase}.intro h1{margin:5px 0 7px;font-size:28px;line-height:1.2;letter-spacing:0}.intro p{max-width:760px;margin:0;color:var(--muted)}.truth-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:15px}.truth{padding:4px 8px;border:1px solid var(--line);border-radius:5px;background:var(--surface-soft);color:var(--soft);font-size:11px;font-weight:700}
+.layout{display:grid;grid-template-columns:190px minmax(0,1fr);gap:30px;max-width:1180px;margin:auto;padding:24px}.toc{position:sticky;top:54px;align-self:start;display:grid;gap:2px}.toc strong{padding:5px 8px;color:var(--muted);font-size:10px;text-transform:uppercase}.toc a{padding:6px 8px;border-left:2px solid transparent;color:var(--soft);font-size:12px}.toc a:hover{border-color:var(--teal);background:var(--teal-soft);text-decoration:none}.content{min-width:0;max-width:900px}.section{padding:0 0 28px;margin-bottom:28px;border-bottom:1px solid var(--line);scroll-margin-top:58px}.section:last-child{border-bottom:0}.section h2{margin:0 0 9px;font-size:19px;line-height:1.3}.section h3{margin:18px 0 7px;font-size:14px}.lead{margin:0 0 14px;color:var(--muted)}
+.steps{display:grid;grid-template-columns:repeat(4,minmax(180px,1fr));gap:6px;overflow-x:auto;padding-bottom:3px;counter-reset:step;scrollbar-width:thin}.step{min-width:0;padding:9px 10px;display:grid;grid-template-columns:22px minmax(0,1fr);grid-template-rows:auto auto;column-gap:8px;align-content:center;border:1px solid var(--line);border-radius:6px;background:var(--surface);counter-increment:step}.step:before{content:counter(step);grid-row:1/3;display:grid;place-items:center;width:22px;height:22px;margin:auto 0;border-radius:50%;background:var(--teal-soft);color:var(--teal);font-size:11px;font-weight:900}.step b{display:block;font-size:11px;line-height:1.25}.step span{display:block;margin-top:2px;color:var(--muted);font-size:10px;line-height:1.35}
+.status-grid,.page-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.status,.page-link{min-width:0;padding:12px;border:1px solid var(--line);border-radius:7px;background:var(--surface)}.status b,.page-link b{display:block;font-size:12px}.status span,.page-link span{display:block;margin-top:3px;color:var(--muted);font-size:11px}.status.pass{border-left:4px solid var(--green)}.status.warn{border-left:4px solid var(--amber)}.status.partial{border-left:4px solid var(--blue)}.status.fail{border-left:4px solid var(--red)}.page-link:hover{border-color:#9ccfca;background:#f7fbfa;text-decoration:none}.page-link b{color:var(--teal)}
+.table-wrap{width:100%;overflow-x:auto;border:1px solid var(--line);border-radius:7px;background:var(--surface)}table{width:100%;border-collapse:collapse;font-size:12px}th,td{padding:8px 10px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}th{background:var(--surface-soft);color:var(--muted);font-size:10px;white-space:nowrap}tr:last-child td{border-bottom:0}td:first-child{font-weight:700;white-space:nowrap}
+.callout{margin:12px 0;padding:11px 13px;border-left:4px solid var(--blue);background:var(--blue-soft);color:var(--soft)}.callout.warn{border-color:var(--amber);background:var(--amber-soft)}.callout.risk{border-color:var(--red);background:var(--red-soft)}.callout.good{border-color:var(--green);background:var(--green-soft)}
+ul,ol{margin:8px 0;padding-left:20px}li{margin:5px 0}.formula{display:inline-block;padding:2px 6px;border-radius:4px;background:var(--surface-soft);font:11px ui-monospace,Consolas,monospace;color:var(--soft)}.foot{padding:0 24px 28px;color:var(--muted);font-size:11px;text-align:center}
+@media(max-width:820px){.intro-inner{padding:20px 14px}.intro h1{font-size:23px}.layout{display:block;padding:14px 10px}.toc{position:static;display:flex;overflow-x:auto;gap:3px;margin-bottom:20px;padding-bottom:5px}.toc strong{display:none}.toc a{flex:0 0 auto;border:1px solid var(--line);border-radius:5px;background:var(--surface);padding:6px 8px}.steps{grid-template-columns:repeat(4,180px)}.section{scroll-margin-top:48px}}
+@media(max-width:480px){.status-grid,.page-grid{grid-template-columns:1fr}.table-wrap{border-left:0;border-right:0;border-radius:0}}
 </style>
 </head><body>
-  <nav class="site-nav">
-    <a href="./index.html">📦 Market</a>
-    <a href="./signals.html">🔔 訊號</a>
-    <a href="./watchlist.html">⭐ 自選</a>
-    <a href="./history.html">🕐 歷史</a>
-    <a href="./gap_fvg.html">⤴ Gap/FVG</a>
-    <a href="./fundflow.html">💰 資金</a>
-    <a href="./rights_analysis.html">📋 供配股</a>
-    <a href="./daily_trade_prompt.html">🚦 每日提示</a>
-    <a href="./timing_analysis.html">⏱ 時間窗口</a>
-    <a href="./jieqi_analysis.html">🧭 節氣窗口</a>
-    <a href="./distribution_day.html">📉 分佈日</a>
-    <a href="./vqc_analysis.html">📈 成交轉勢日</a>
-    <a href="./docs/ccass-warroom.html">⚡ 戰情室</a>
-    <a href="./guide.html">📖 說明</a>
-  </nav>
+<nav class="site-nav" id="sharedSiteNav"></nav>
 
-
-<header class="topbar"><div class="topbar-inner">
-  <div style="font-weight:700;font-size:15px">📖 Market 使用說明書</div>
-  <a href="./index.html">← 返回主頁</a>
-  <a href="./fundflow.html" style="color:#15803d;border-color:#86efac">💰 資金流向</a>
-  <a href="./rights_analysis.html" style="color:#0891b2;border-color:#67e8f9">📋 供配股</a>
-  <a href="./daily_trade_prompt.html" style="color:#b91c1c;border-color:#fca5a5">🚦 每日提示</a>
-  <a href="./timing_analysis.html" style="color:#1d4ed8;border-color:#93c5fd">⏱ 時間窗口</a>
-  <a href="./jieqi_analysis.html" style="color:#0f766e;border-color:#5eead4">🧭 節氣窗口</a>
-  <a href="./distribution_day.html" style="color:#a16207;border-color:#fde68a">📉 分佈日</a>
-  <a href="./vqc_analysis.html" style="color:#0f766e;border-color:#5eead4">📈 成交轉勢日</a>
+<header class="intro"><div class="intro-inner">
+  <div class="eyebrow">System Guide · 2026-07-16</div>
+  <h1>CCASS 交易研究系統說明書</h1>
+  <p>用 CCASS 貨源、公告財技、真實 K 線、成交量與市場參與度建立研究次序。系統提供證據與風險條件，不會把推算包裝成已發生事實。</p>
+  <div class="truth-row"><span class="truth">缺資料顯示 —</span><span class="truth">推導訊號有標示</span><span class="truth">CCASS 並非最終持有人</span><span class="truth">Cloudflare 直部署</span></div>
 </div></header>
 
-<main>
-<h1>📖 Market 使用說明書</h1>
-<div class="subtitle">港股 Market（中央結算系統）持倉追蹤 Dashboard · 最後更新：2026-06-20</div>
+<main class="layout">
+  <aside class="toc" aria-label="說明書章節">
+    <strong>章節</strong>
+    <a href="#workflow">使用次序</a><a href="#status">資料狀態</a><a href="#pages">頁面分工</a><a href="#market">Market 主頁</a><a href="#ccass">CCASS 解讀</a><a href="#events">財技事件</a><a href="#kbar">Kbar／時機</a><a href="#trend">日夜 Trend</a><a href="#options">期權大位</a><a href="#automation">更新機制</a><a href="#limits">限制</a>
+  </aside>
 
-<div class="card">
-<h2>🔍 呢個 Dashboard 係咩？</h2>
-<p>追蹤港股 Market 持倉數據 — 睇邊個大戶/券商正在收貨或散貨。</p>
+  <div class="content">
+    <section class="section" id="workflow">
+      <h2>每日使用次序</h2>
+      <p class="lead">先縮窄範圍，再核對貨源、事件、價格確認；唔用單一信號直接落判斷。</p>
+      <div class="steps">
+        <div class="step"><b>交易台排隊</b><span>先看高優先候選、資料日期與風險旗標。</span></div>
+        <div class="step"><b>Market 查貨源</b><span>核對合計持股、集中度、連續性與轉倉可能。</span></div>
+        <div class="step"><b>事件查條款</b><span>看供配股、折讓、攤薄、集資用途與除淨日。</span></div>
+        <div class="step"><b>Kbar 等確認</b><span>以價格邊界、成交量、VQC／節氣時間窗定入場與失效位。</span></div>
+      </div>
+      <div class="callout good">較完整的候選需要三條證據互相支持：貨源變化、事件催化、價格／成交量確認。</div>
+    </section>
 
-<h3>📊 數據來源</h3>
-<table>
-<tr><th>來源</th><th>說明</th></tr>
-<tr><td><b>Market 持倉</b></td><td>HKEX 每日 Market 持股報告（持倉%、Top5/Top10 集中度、HHI）</td></tr>
-<tr><td><b>股價</b></td><td>Futu 實時報價（今日Δ%、52週高低、PE、市值）</td></tr>
-<tr><td><b>信號</b></td><td>技術分析信號（POC、FVG、年開突破、IPO首日突破）</td></tr>
-<tr><td><b>配股/供股</b></td><td>配股價、供股價突破監測</td></tr>
-</table>
+    <section class="section" id="status">
+      <h2>資料狀態點睇</h2>
+      <div class="status-grid">
+        <div class="status pass"><b>PASS</b><span>當前發布核心檔案通過日期、完整性與格式閘門。</span></div>
+        <div class="status warn"><b>WARN</b><span>系統可用，但有歷史 maintenance 缺口或非核心來源要跟進。</span></div>
+        <div class="status partial"><b>PARTIAL</b><span>部分欄位沿用上一個成功快照；頁面會列出受影響來源。</span></div>
+        <div class="status fail"><b>FAIL</b><span>核心資料不符合發布條件；自動流程應停止部署。</span></div>
+      </div>
+      <div class="callout warn">頁面更新時間、報價交易日、CCASS 持倉日係三個不同時間。收市後報價可以係今日，但 CCASS 因交收與供應商發布節奏仍然較舊。</div>
+      <h3>主要真實來源</h3>
+      <div class="table-wrap"><table><thead><tr><th>資料</th><th>來源／口徑</th><th>注意</th></tr></thead><tbody>
+        <tr><td>CCASS</td><td>HKEX 公開持倉資料及已驗證供應商路徑</td><td>券商／中介人層面，並非最終投資者</td></tr>
+        <tr><td>港股報價</td><td>本機 Futu OpenD 日常快照；失敗時使用已標示 fallback</td><td>以 provider observation time 為準</td></tr>
+        <tr><td>K 線</td><td>靜態真實 cache；未 cache 港股由 Cloudflare 代理 Tencent 公開未復權日 K</td><td>不補燭、不合成缺失日期</td></tr>
+        <tr><td>跨市場</td><td>Longbridge 真實市場 cache</td><td>指數頁可使用可交易 ETF proxy，會明確標示</td></tr>
+        <tr><td>公告</td><td>港交所披露公告解析</td><td>原公告條款優先於系統評論</td></tr>
+      </tbody></table></div>
+    </section>
 
-<h3>🎯 點樣用嚟炒？</h3>
-<ol>
-<li><b>Market% ↑ + 股價 ↑</b> → 大戶收貨中，跟勢追入</li>
-<li><b>Market% ↑ + 股價 ↓</b> → 大戶壓價收貨，留意見底信號</li>
-<li><b>Market% ↓ + 股價 ↑</b> → 大戶散貨中，高位減持</li>
-<li><b>Top5% > 80%</b> → 高度集中，莊家股，大波動</li>
-<li><b>連續增持（🔥）</b> → 大戶持續買入，強勢信號</li>
-<li><b>連續減持（❄️）</b> → 大戶持續沽出，避開</li>
-<li><b>🔺 年開突破</b> → 現價高過今年開市價，多頭趨勢</li>
-<li><b>52週%近0%</b> → 股價近52週低位，可能見底</li>
-<li><b>52週%近100%</b> → 股價近52週高位，小心高追</li>
-</ol>
-</div>
+    <section class="section" id="pages">
+      <h2>頁面分工</h2>
+      <p class="lead">同一資料盡量只生成一次，再由不同頁面按用途呈現。</p>
+      <div class="page-grid">
+        <a class="page-link" href="./trading_desk.html"><b>交易台</b><span>公告、技術、CCASS 三線證據合流與優先隊列。</span></a>
+        <a class="page-link" href="./index.html"><b>Market</b><span>全表、Heatmap、市值分區、貨源與市場參與度。</span></a>
+        <a class="page-link" href="./signals.html"><b>訊號</b><span>POC、FVG、Gap、突破與已發布技術事件。</span></a>
+        <a class="page-link" href="./smallcap_playbook.html"><b>細價股</b><span>財技條款、貨源、價格確認與風險漏斗。</span></a>
+        <a class="page-link" href="./kbar_matrix.html"><b>Kbar</b><span>雙視覺 K 線、價位、VQC、節氣／消息卦與事件軸。</span></a>
+        <a class="page-link" href="./momentum_list.html"><b>動量</b><span>兩階段真實 K 線篩選後的跨市場候選名單。</span></a>
+        <a class="page-link" href="./rights_analysis.html"><b>事件</b><span>供股、配股、圈股／圈錢條款與市場反應。</span></a>
+        <a class="page-link" href="./watchlist.html"><b>自選</b><span>瀏覽器本機自選、匯入及匯出。</span></a>
+        <a class="page-link" href="./rotation_matrix.html"><b>板塊輪動</b><span>20／60／120 日相對強弱；歷史不足會停用。</span></a>
+        <a class="page-link" href="./trend_matrix.html"><b>日夜 Trend</b><span>日市／夜期五格、Daily／Weekly／Monthly 波幅 cycle、派吸階段及全港股日線。</span></a>
+        <a class="page-link" href="./fundflow.html"><b>資金流</b><span>已觀察資金流、沽空與市場情緒欄位。</span></a>
+        <a class="page-link" href="./options_levels.html"><b>期權大位</b><span>HKEX 恒指 CALL／PUT 倉位梯、OI 變化、成交、Wall、Max Pain 及 P/C 比率。</span></a>
+        <a class="page-link" href="./timing_stack.html"><b>時機疊加</b><span>價格週期、節氣、消息卦、VQC 與分佈日共振。</span></a>
+        <a class="page-link" href="./history.html"><b>訊號歷史</b><span>追查訊號與公告出現日期。</span></a>
+      </div>
+    </section>
 
-<div class="card">
-<h2>📌 主表 Columns 說明</h2>
-<table>
-<tr><th>欄位</th><th>說明</th></tr>
-<tr><td>代碼</td><td>股票代碼</td></tr>
-<tr><td>名稱</td><td>公司名</td></tr>
-<tr><td>😻</td><td>現價 > 前年開盤價，顯示喺 code 旁邊</td></tr>
-<tr><td>前年Δ%</td><td>(現價-前年開)/前年開×100，sortable</td></tr>
-<tr><td>量比</td><td>今日成交量 / 平均成交量，sortable</td></tr>
-<tr><td>現價</td><td>實時股價，sortable</td></tr>
-<tr><td>今年Δ%🔺</td><td>(現價-今年開)/今年開×100，🔺=現價>年開，sortable</td></tr>
-<tr><td>信號</td><td>IPO/POC/FVG/配股/供股 signal pills</td></tr>
-<tr><td>Market%</td><td>Market 總持倉%</td></tr>
-<tr><td>Top5%</td><td>Top5 集中度</td></tr>
-<tr><td>Top10%</td><td>Top10 集中度</td></tr>
-<tr><td>5日Δ</td><td>5日 Market% 變化，🟢增持 🔴減持</td></tr>
-<tr><td>20日Δ</td><td>20日 Market% 變化</td></tr>
-<tr><td>60日Δ</td><td>60日 Market% 變化</td></tr>
-<tr><td>120日Δ</td><td>120日 Market% 變化</td></tr>
-<tr><td>⭐評分</td><td>綜合趨勢+信號評分</td></tr>
-<tr><td>🔁連續</td><td>連續增持🔥/減持❄️日數</td></tr>
-<tr><td>市值(億)</td><td>市值（億港元）</td></tr>
-<tr><td>今日Δ%</td><td>今日股價變幅</td></tr>
-<tr><td>52週%</td><td>(現價-52低)/(52高-52低)×100，進度條</td></tr>
-<tr><td>PE</td><td>市盈率</td></tr>
-</table>
-</div>
+    <section class="section" id="market">
+      <h2>Market 主頁</h2>
+      <div class="table-wrap"><table><thead><tr><th>區域／欄位</th><th>正確解讀</th></tr></thead><tbody>
+        <tr><td>Heatmap</td><td>主題、板塊、資金流只改篩選／標記；下面股票表仍保留全表，不會假裝只得 Heatmap 股票。</td></tr>
+        <tr><td>小／中／大市值</td><td>各分區每頁 10 隻，獨立排序及分頁。</td></tr>
+        <tr><td>Market%</td><td>所有 CCASS 中介人合計持股佔已發行股本百分比。</td></tr>
+        <tr><td>Top5／Top10</td><td>持倉集中度；高集中代表供應集中及波動風險，不等於必升。</td></tr>
+        <tr><td>連續</td><td>同口徑下連續增持／減持日數，較單日變化有參考價值。</td></tr>
+        <tr><td>量比</td><td>當日成交量相對近期平均量；放量方向要配合價格邊界。</td></tr>
+        <tr><td>前年／今年開</td><td>現價相對前年及今年開市價的百分比位置。</td></tr>
+        <tr><td>FCF</td><td>公司自由現金流，唔係股票即日資金流。</td></tr>
+      </tbody></table></div>
+      <h3>市場寬度</h3>
+      <p>52 周高低位置係觀察樣本；EMA20／50／200 廣度來自已分析的港股候選池。候選池有 selection bias，<b>並非全港市場廣度</b>。5 日變化以百分點（pp）顯示。</p>
+    </section>
 
-<div class="card">
-<h2>📊 量比警報 (Volume Ratio)</h2>
-<p>量比 = 今日成交量 / 平均成交量</p>
-<table>
-<tr><th>量比</th><th>信號</th></tr>
-<tr><td>vr ≥ 2</td><td><span class="tag tag-warn">成交量異常放大</span></td></tr>
-<tr><td>vr ≥ 5</td><td><span class="tag tag-dn">極端放量</span></td></tr>
-</table>
-<br>
-<b>常見解讀：</b>
-<ul>
-<li>量比 > 2 + 股價 ↑ → 放量上漲，強勢信號</li>
-<li>量比 > 2 + 股價 ↓ → 放量下跌，小心沽壓</li>
-</ul>
-</div>
+    <section class="section" id="ccass">
+      <h2>CCASS 解讀底線</h2>
+      <ul>
+        <li>CCASS 只看到券商／中介人名下總持倉，看不到最終客戶姓名。</li>
+        <li>一個大戶可以分散在多個券商；同一券商亦包含大量不同客戶。</li>
+        <li>席位 A 減、席位 B 增可能只係轉倉，唔等於市場真買賣。</li>
+        <li>合計持股增加配合多日連續性、集中度改變與價格量能，證據先較完整。</li>
+        <li>5／20 日比較只在可信基準日存在時顯示；缺歷史必須係 <span class="formula">—</span>，唔可以當 <span class="formula">0</span>。</li>
+      </ul>
+      <div class="callout risk">「大戶席位增持」係研究假設，不是已確認持有人身份。T+2 與供應商發布延遲令 CCASS 不適合當即市盤口。</div>
+    </section>
 
-<div class="card">
-<h2>🔍 搜尋 + 信號篩選</h2>
-<p><b>搜尋欄：</b>支援股票代碼、名稱、信號類型關鍵字（如 "FVG"、"POC"、"配股"）</p>
-<p><b>信號 Dropdown：</b>主頁 toolbar 有下拉選單，可篩選特定信號類型：</p>
-<ul>
-<li>🎯 POC — 上破 POC（Point of Control）</li>
-<li>📅 半年POC / 3年POC — 不同時間框架</li>
-<li>📈 向上FVG — Fair Value Gap 向上</li>
-<li>🔺 年開突破 — 現價突破今年開盤價 ≥5%</li>
-<li>🆕 IPO首日突破 — 現價突破 IPO 首日高位</li>
-<li>📈 Market增持 / 📉 Market減持 — 5日持倉增減</li>
-</ul>
-<p><b>市值按鈕：</b>小市值 (&lt;20億) · 中市值 (20-100億) · 大市值 (≥100億) — 三個分表獨立排序/分頁</p>
-<p><b>Confluence Pattern：</b>🚀催化 · 💎雙向 · 🦆搶跑 — 三種型態 filter</p>
-</div>
+    <section class="section" id="events">
+      <h2>財技事件：圈股定圈錢</h2>
+      <p>系統評論要分開事件事實、規則推導與價格確認。單靠供股／配股公告不會自動產生「可炒」結論。</p>
+      <div class="table-wrap"><table><thead><tr><th>證據</th><th>要看甚麼</th></tr></thead><tbody>
+        <tr><td>供應結構</td><td>配售／供股比例、承配人、包銷、禁售、集中度與可能貨源控制。</td></tr>
+        <tr><td>集資壓力</td><td>折讓、攤薄、現金需要、所得款用途及短期再融資風險。</td></tr>
+        <tr><td>時間位置</td><td>公告日、除淨日、完成日、年開線與前年開線。</td></tr>
+        <tr><td>市場確認</td><td>除淨後能否守回關鍵價、成交量、VQC、Gap／FVG／POC。</td></tr>
+      </tbody></table></div>
+      <div class="callout">「圈股」偏向供應／控制權重整；「圈錢」偏向資金需要及攤薄壓力。兩者係規則分類，仍要由公告條款與後續價格驗證。</div>
+    </section>
 
-<div class="card">
-<h2>⚡ 快篩按鈕</h2>
-<table>
-<tr><th>按鈕</th><th>條件</th></tr>
-<tr><td><b>↑增持</b></td><td>5日Δ > 0</td></tr>
-<tr><td><b>↓減持</b></td><td>5日Δ < 0</td></tr>
-<tr><td><b>集中</b></td><td>Top5% ≥ 50</td></tr>
-<tr><td><b>配股</b></td><td>有配股記錄</td></tr>
-<tr><td><b>供股</b></td><td>有供股記錄</td></tr>
-</table>
-</div>
+    <section class="section" id="kbar">
+      <h2>Kbar 與時機標記</h2>
+      <ul>
+        <li>季、半年、年、週、日圖都提供正常及反向價格刻度；反向只倒轉股價高低，日期方向、紅綠燭與成交量不變。</li>
+        <li>週圖由真實日 K 按星期一至星期日聚合，不硬切每五根，亦不填補缺周。</li>
+        <li>圖內可顯示年開、IPO Open／High／Low、POC、VQC、破底翻及公告日期。</li>
+        <li>節氣與十二消息卦共用固定映射。近期顯示完整如 <span class="formula">小暑/姤</span>，歷史顯示精簡卦名。</li>
+        <li>消息卦只定義季節時間狀態，不能由卦名直接推斷升跌。方向仍需 20 日價格通道突破與真實成交量確認。</li>
+      </ul>
+      <div class="callout warn">節氣、消息卦、VQC、週期投影都係時間觀察窗；系統不生成未來 OHLC，也不把歷史命中率當樣本外保證。</div>
+    </section>
 
-<div class="card">
-<h2>🔄 更新頻率</h2>
-<table>
-<tr><th>數據</th><th>頻率</th></tr>
-<tr><td>Market 數據</td><td>每日 HKEX update 後（約 7am HKT）</td></tr>
-<tr><td>股價 + 市值</td><td>Futu 實時 + daily refresh</td></tr>
-<tr><td>信號</td><td>自動掃描推送</td></tr>
-</table>
-</div>
+    <section class="section" id="trend">
+      <h2>日夜 Trend Matrix</h2>
+      <div class="table-wrap"><table><thead><tr><th>輸入</th><th>系統點樣判斷</th></tr></thead><tbody>
+        <tr><td>恒指／國指／科指</td><td>Futu 指數日線，加相應主連期貨 17:15 至翌日 03:00 的已完成夜期；進行中夜期不計分。</td></tr>
+        <tr><td>任何港股</td><td>沿用系統的 Tencent 未調整真實日線；個股沒有夜期，該因子標示不適用並不計分。</td></tr>
+        <tr><td>日／夜五格</td><td>日期左邊先顯示 60D／20D／5D／1D 真實高低波幅，分別代表最大／大／中／小周期。右邊同一行顯示日市 High、Low、(High+Low)/2、Open、Close，再以金線分隔夜期 High、Low、(High+Low)/2、Open、Close。未完成夜期只顯示最後觀察，不當正式收市計分。</td></tr>
+        <tr><td>三層 Cycle</td><td>Daily 是單日高低波幅；Weekly 是滾動 5 日最高減最低；Monthly 是滾動 20 日最高減最低。每層使用最近 60 個有效樣本顯示目前幅度、歷史中位及上四分位。</td></tr>
+        <tr><td>派／吸顏色</td><td>完整 Trend score 先以最近 3 個交易日平滑；平均 ≥ +1.5 為吸納／偏多（藍），≤ -1.5 為派發／偏空（紅），其餘為過渡（灰）。每連續 3 日以金線分拍。</td></tr>
+        <tr><td>價位標記</td><td>黃色只表示突破之前 20 個同類交易節的高／低極值；綠色只表示階段切換當日中位。數字及顏色均可由已觀察數據重算。</td></tr>
+        <tr><td>星期三／四</td><td>特別標成「反轉觀察窗」，但只是時間風險提示；必須再看五格中位得失、cycle 是否已達上四分位及完成夜期方向。</td></tr>
+      </tbody></table></div>
+      <div class="callout warn">五欄數字已由 Futu 真實資料逐項驗證；參考圖作者的私有紅藍公式及日期 cycle 未公開，系統不冒認複製。Cycle 達上四分位只代表歷史上較常見出現反應的波幅區，不代表必然見頂、見底或反轉。</div>
+    </section>
 
-<div class="card">
-<h2>📋 相關頁面</h2>
-<table>
-<tr><th>頁面</th><th>功能</th></tr>
-<tr><td><a href="./index.html">主頁</a></td><td>Market 持倉主表 + 三大市值分區</td></tr>
-<tr><td><a href="./signals.html">港股訊號</a></td><td>技術信號篩選 (POC/FVG/Gap)</td></tr>
-<tr><td><a href="./history.html">歷史</a></td><td>每日訊號 + 公告歷史</td></tr>
-<tr><td><a href="./watchlist.html">自選</a></td><td>⭐ 自選股監察</td></tr>
-<tr><td><a href="./gap_fvg.html">Gap/FVG</a></td><td>跳空缺口 + FVG 警報中心</td></tr>
-</table>
+    <section class="section" id="options">
+      <h2>期權大位</h2>
+      <div class="table-wrap"><table><thead><tr><th>欄位</th><th>正確解讀</th></tr></thead><tbody>
+        <tr><td>左右倉位梯</td><td>CALL 在左、行使價置中、PUT 在右；即日／上日成交、結算價、OI、OI 變化及佔比來自 HKEX 恒指期權每日市場報告。</td></tr>
+        <tr><td>權利金估算</td><td>官方結算價 × 全日成交量 × 每點 HK$50；係統一比較口徑，並非逐筆成交額。</td></tr>
+        <tr><td>Call Wall</td><td>已觀察 Call 未平倉量最大的履約價，只係持倉集中區，未證實做市商淨 Gamma 方向。</td></tr>
+        <tr><td>Put Wall</td><td>已觀察 Put 未平倉量最大的履約價，不可以單獨當保證支持位。</td></tr>
+        <tr><td>Max Pain</td><td>在已上市履約價中，以公開 OI 計出總內在值派彩最小的位置；不是到期價預測。</td></tr>
+        <tr><td>P/C OI</td><td>Put OI 除以 Call OI；只表示倉位結構，不能分辨買方／賣方或開倉／平倉。</td></tr>
+      </tbody></table></div>
+      <div class="callout warn">恒指鏈以 HKEX 官方 EOD 日報為準；美股 options chain 仍受 OPRA／券商權限限制。頁面逐一標示 provider、observation date、delay 及 OI coverage；缺資料顯示 unavailable，永不補 0。</div>
+    </section>
 
-<h2>⤴ Gap/FVG 說明</h2>
-<table>
-<tr><th>類型</th><th>說明</th></tr>
-<tr><td>Bullish FVG</td><td>向上公平值缺口，股價回測後可能繼續上升</td></tr>
-<tr><td>量比異常</td><td>今日成交 / 平均量 ≥ 2，異常放量</td></tr>
-<tr><td>轉倉信號</td><td>Market 結算日前後大戶換倉跡象</td></tr>
-<tr><td>🎯 Confluence</td><td>公告＋技術訊號同時出現，信號疊加強化</td></tr>
-</table>
+    <section class="section" id="automation">
+      <h2>每日更新與部署</h2>
+      <ol>
+        <li>Windows 排程於港股收市後啟動本地 refresh；同日夜間設一次重試。</li>
+        <li>Futu OpenD、Longbridge fallback、CCASS、公告、報價及衍生頁面依序更新。</li>
+        <li>publish bundle 與 health gate 檢查日期、完整性、來源及核心檔案。</li>
+        <li>只在沒有核心 FAIL 時，以 Wrangler 直接部署 Cloudflare Pages。</li>
+      </ol>
+      <p>歷史 CCASS backfill maintenance 與當前發布健康分開處理；歷史缺口不應冒充今日資料失敗，亦不能靜默消失。</p>
+    </section>
 
-<h2>💰 資金流向說明</h2>
-<table>
-<tr><th>欄位</th><th>數據來源</th><th>更新頻率</th></tr>
-<tr><td>主力淨買/賣</td><td>etnet 大戶交易數據</td><td>每日收市後</td></tr>
-<tr><td>沽空比率</td><td>HKEX 沽空數據</td><td>每日</td></tr>
-<tr><td>港股通（北水）</td><td>HKEX 滬深港通持倉</td><td>每日</td></tr>
-</table>
-
-<h2>⭐ 自選功能說明</h2>
-<ul>
-<li>數據儲存於本機瀏覽器 localStorage</li>
-<li>清除瀏覽器緩存會刪除所有記錄</li>
-<li>建議定期「匯出」備份 JSON</li>
-<li>換設備時使用「匯入」還原</li>
-</ul>
-</div>
-
-<div class="foot">數據來源：HKEX Market · 僅供參考</div>
+    <section class="section" id="limits">
+      <h2>使用限制</h2>
+      <ul>
+        <li>所有評分、分類、入場區與失效位都係規則推導，不是交易保證。</li>
+        <li>未復權 K 線會受拆股、合股、供股及復牌跳空影響；極端變動只可標記，不能隨意改寫。</li>
+        <li>外部來源可能限流或暫時失敗；系統可以沿用上一個成功快照，但必須顯示 PARTIAL／stale。</li>
+        <li>自選資料存在瀏覽器 localStorage；清除網站資料會移除自選，換裝置前應先匯出。</li>
+      </ul>
+      <div class="callout risk">本系統係研究工具，不構成投資建議。落單前要自行核對港交所原公告、最新報價、流動性與可承受損失。</div>
+    </section>
+  </div>
 </main>
+
+<div class="foot">資料與功能以頁面標示的 observation date、source 及 health 狀態為準。</div>
+<script src="./shared-nav.js"></script>
 </body></html>

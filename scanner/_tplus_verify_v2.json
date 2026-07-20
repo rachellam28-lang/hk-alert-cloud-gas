@@ -301,14 +301,26 @@
     "ann_close": 1.79,
     "ann_vol_ratio": 0.4,
     "vol_source": "scanner",
-    "max_jump": 0.0,
-    "max_jump_t": 1,
+    "max_jump": 6.7,
+    "max_jump_t": 4,
     "tplus_data": [
       [
         1,
         "2026-06-12",
         1.79,
         0.0
+      ],
+      [
+        4,
+        "2026-06-15",
+        1.91,
+        6.7
+      ],
+      [
+        5,
+        "2026-06-16",
+        1.91,
+        6.7
       ]
     ],
     "is_red": false,

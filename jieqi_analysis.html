@@ -21,20 +21,7 @@ table{width:100%;border-collapse:collapse;min-width:900px}th,td{text-align:left;
 </style>
 </head>
 <body>
-<nav class="site-nav"><a href="index.html">🇭🇰 港股牌</a>
-<a href="signals.html">🔂 信號</a>
-<a href="watchlist.html">⭐ 自選</a>
-<a href="history.html">🕰 歷史</a>
-<a href="gap_fvg.html">🦅 Gap/FVG</a>
-<a href="fundflow.html">💵 資金</a>
-<a href="rights_analysis.html">📋 供配股</a>
-<a href="daily_trade_prompt.html">🚦 每日提示</a>
-<a href="timing_analysis.html">⏱ 時間窗口</a>
-<a href="jieqi_analysis.html" class="active">🧭 節氣窗口</a>
-<a href="distribution_day.html">📉 分佈日</a>
-<a href="vqc_analysis.html">📈 成交轉勢日</a>
-<a href="docs/ccass-warroom.html">⚔ 戰情室</a>
-<a href="guide.html">📉 說明書</a></nav>
+<nav class="site-nav" id="sharedSiteNav" data-base="./"></nav>
 <main class="wrap">
   <section class="hero">
     <div>
@@ -42,35 +29,35 @@ table{width:100%;border-collapse:collapse;min-width:900px}th,td{text-align:left;
       <div class="title">🧭 節氣窗口訊號表</div>
       <div class="subtitle">24 節氣只保留日期窗口；第一屏直接顯示下一批窗口日期、距離今日幾多日、歷史樣本 count。</div>
     </div>
-    <div class="hero-meta">更新：<b>2026-06-23 20:07</b><br>年份：<b>2018-2026</b><br>樣本：<b>5</b></div>
+    <div class="hero-meta">頁面更新：<b>2026-07-20 18:37</b><br>樣本更新：<b>2026-07-12 23:24</b><br>年份：<b>2018-2026</b><br>樣本：<b>71</b></div>
   </section>
   <section class="cards">
-    <div class="card"><div class="k">下一個窗口</div><div class="v">2026-07-07</div><div class="s">小暑</div></div>
-    <div class="card"><div class="k">窗口 Count</div><div class="v">40</div><div class="s">log bar 以此欄計</div></div>
+    <div class="card"><div class="k">下一個窗口</div><div class="v">2026-07-23</div><div class="s">大暑</div></div>
+    <div class="card"><div class="k">窗口 Count</div><div class="v">593</div><div class="s">log bar 以此欄計</div></div>
     <div class="card"><div class="k">節氣數</div><div class="v">216</div><div class="s">9 年 calendar</div></div>
-    <div class="card"><div class="k">今日</div><div class="v">2026-06-29</div><div class="s">按生成日計</div></div>
+    <div class="card"><div class="k">今日</div><div class="v">2026-07-20</div><div class="s">按生成日計</div></div>
   </section>
   <section class="panel">
     <div class="panel-title">下一批節氣窗口</div>
     <div class="table-wrap">
       <table>
         <thead><tr><th>日期</th><th>序號</th><th>節氣</th><th>月份</th><th>距離</th><th>Count (log)</th><th>窗口</th></tr></thead>
-        <tbody><tr class="next"><td>2026-07-07</td><td>13</td><td>小暑</td><td>2026-07</td><td><span class="pill state-green">下一個 · D+8</span></td><td><div class="count-cell"><span class="count-num">40</span><span class="log-track"><span class="log-fill" style="width:97%"></span></span></div></td><td>±2 交易日</td></tr>
-<tr><td>2026-07-23</td><td>14</td><td>大暑</td><td>2026-07</td><td><span class="pill state-blue">D+24</span></td><td><div class="count-cell"><span class="count-num">40</span><span class="log-track"><span class="log-fill" style="width:97%"></span></span></div></td><td>±2 交易日</td></tr>
-<tr><td>2026-08-07</td><td>15</td><td>立秋</td><td>2026-08</td><td><span class="pill state-blue">D+39</span></td><td><div class="count-cell"><span class="count-num">45</span><span class="log-track"><span class="log-fill" style="width:100%"></span></span></div></td><td>±2 交易日</td></tr>
-<tr><td>2026-08-23</td><td>16</td><td>處暑</td><td>2026-08</td><td><span class="pill state-blue">D+55</span></td><td><div class="count-cell"><span class="count-num">45</span><span class="log-track"><span class="log-fill" style="width:100%"></span></span></div></td><td>±2 交易日</td></tr>
-<tr><td>2026-09-07</td><td>17</td><td>白露</td><td>2026-09</td><td><span class="pill state-blue">D+70</span></td><td><div class="count-cell"><span class="count-num">45</span><span class="log-track"><span class="log-fill" style="width:100%"></span></span></div></td><td>±2 交易日</td></tr>
-<tr><td>2026-09-23</td><td>18</td><td>秋分</td><td>2026-09</td><td><span class="pill state-blue">D+86</span></td><td><div class="count-cell"><span class="count-num">45</span><span class="log-track"><span class="log-fill" style="width:100%"></span></span></div></td><td>±2 交易日</td></tr>
-<tr><td>2026-10-08</td><td>19</td><td>寒露</td><td>2026-10</td><td><span class="pill state-blue">D+101</span></td><td><div class="count-cell"><span class="count-num">45</span><span class="log-track"><span class="log-fill" style="width:100%"></span></span></div></td><td>±2 交易日</td></tr>
-<tr><td>2026-10-23</td><td>20</td><td>霜降</td><td>2026-10</td><td><span class="pill state-blue">D+116</span></td><td><div class="count-cell"><span class="count-num">45</span><span class="log-track"><span class="log-fill" style="width:100%"></span></span></div></td><td>±2 交易日</td></tr>
-<tr><td>2026-11-07</td><td>21</td><td>立冬</td><td>2026-11</td><td><span class="pill state-blue">D+131</span></td><td><div class="count-cell"><span class="count-num">44</span><span class="log-track"><span class="log-fill" style="width:99%"></span></span></div></td><td>±2 交易日</td></tr>
-<tr><td>2026-11-22</td><td>22</td><td>小雪</td><td>2026-11</td><td><span class="pill state-blue">D+146</span></td><td><div class="count-cell"><span class="count-num">44</span><span class="log-track"><span class="log-fill" style="width:99%"></span></span></div></td><td>±2 交易日</td></tr>
-<tr><td>2026-12-07</td><td>23</td><td>大雪</td><td>2026-12</td><td><span class="pill state-blue">D+161</span></td><td><div class="count-cell"><span class="count-num">44</span><span class="log-track"><span class="log-fill" style="width:99%"></span></span></div></td><td>±2 交易日</td></tr>
-<tr><td>2026-12-22</td><td>24</td><td>冬至</td><td>2026-12</td><td><span class="pill state-blue">D+176</span></td><td><div class="count-cell"><span class="count-num">44</span><span class="log-track"><span class="log-fill" style="width:99%"></span></span></div></td><td>±2 交易日</td></tr></tbody>
+        <tbody><tr class="next"><td>2026-07-23</td><td>14</td><td>大暑</td><td>2026-07</td><td><span class="pill state-green">下一個 · D+3</span></td><td><div class="count-cell"><span class="count-num">593</span><span class="log-track"><span class="log-fill" style="width:100%"></span></span></div></td><td>±2 交易日</td></tr>
+<tr><td>2026-08-07</td><td>15</td><td>立秋</td><td>2026-08</td><td><span class="pill state-blue">D+18</span></td><td><div class="count-cell"><span class="count-num">525</span><span class="log-track"><span class="log-fill" style="width:98%"></span></span></div></td><td>±2 交易日</td></tr>
+<tr><td>2026-08-23</td><td>16</td><td>處暑</td><td>2026-08</td><td><span class="pill state-blue">D+34</span></td><td><div class="count-cell"><span class="count-num">527</span><span class="log-track"><span class="log-fill" style="width:98%"></span></span></div></td><td>±2 交易日</td></tr>
+<tr><td>2026-09-07</td><td>17</td><td>白露</td><td>2026-09</td><td><span class="pill state-blue">D+49</span></td><td><div class="count-cell"><span class="count-num">527</span><span class="log-track"><span class="log-fill" style="width:98%"></span></span></div></td><td>±2 交易日</td></tr>
+<tr><td>2026-09-23</td><td>18</td><td>秋分</td><td>2026-09</td><td><span class="pill state-blue">D+65</span></td><td><div class="count-cell"><span class="count-num">590</span><span class="log-track"><span class="log-fill" style="width:100%"></span></span></div></td><td>±2 交易日</td></tr>
+<tr><td>2026-10-08</td><td>19</td><td>寒露</td><td>2026-10</td><td><span class="pill state-blue">D+80</span></td><td><div class="count-cell"><span class="count-num">591</span><span class="log-track"><span class="log-fill" style="width:100%"></span></span></div></td><td>±2 交易日</td></tr>
+<tr><td>2026-10-23</td><td>20</td><td>霜降</td><td>2026-10</td><td><span class="pill state-blue">D+95</span></td><td><div class="count-cell"><span class="count-num">525</span><span class="log-track"><span class="log-fill" style="width:98%"></span></span></div></td><td>±2 交易日</td></tr>
+<tr><td>2026-11-07</td><td>21</td><td>立冬</td><td>2026-11</td><td><span class="pill state-blue">D+110</span></td><td><div class="count-cell"><span class="count-num">526</span><span class="log-track"><span class="log-fill" style="width:98%"></span></span></div></td><td>±2 交易日</td></tr>
+<tr><td>2026-11-22</td><td>22</td><td>小雪</td><td>2026-11</td><td><span class="pill state-blue">D+125</span></td><td><div class="count-cell"><span class="count-num">591</span><span class="log-track"><span class="log-fill" style="width:100%"></span></span></div></td><td>±2 交易日</td></tr>
+<tr><td>2026-12-07</td><td>23</td><td>大雪</td><td>2026-12</td><td><span class="pill state-blue">D+140</span></td><td><div class="count-cell"><span class="count-num">592</span><span class="log-track"><span class="log-fill" style="width:100%"></span></span></div></td><td>±2 交易日</td></tr>
+<tr><td>2026-12-22</td><td>24</td><td>冬至</td><td>2026-12</td><td><span class="pill state-blue">D+155</span></td><td><div class="count-cell"><span class="count-num">591</span><span class="log-track"><span class="log-fill" style="width:100%"></span></span></div></td><td>±2 交易日</td></tr></tbody>
       </table>
     </div>
   </section>
   <div class="foot">來源：節氣 calendar + 節氣訊號 JSON。Count bar 使用 log1p 比例，真實數字仍顯示在左邊。</div>
 </main>
+<script src="./shared-nav.js"></script>
 </body>
 </html>

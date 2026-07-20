@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="zh-HK">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="description" content="港股交易台：融合 Kbar、CCASS、資金流、供配股與時間訊號。">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>交易台 | HK Alert</title>
+  <style>
+    :root{
+      --bg:#0c1219;--surface:#111a24;--surface-2:#16212d;--line:#273544;
+      --text:#e7edf3;--muted:#8796a7;--soft:#b9c4cf;--teal:#51c5b7;
+      --green:#63c58d;--amber:#e0b85b;--red:#e4767f;--blue:#70a9dc;
+      --shadow:0 16px 40px rgba(2,8,14,.28)
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,"Noto Sans HK","PingFang HK","Microsoft JhengHei",system-ui,sans-serif;font-size:13px;letter-spacing:0}
+    button,input,select{font:inherit}
+    button{color:inherit}
+    a{color:inherit}
+    .skip{position:absolute;left:-9999px;top:6px;z-index:120;background:#fff;color:#111;padding:8px}
+    .skip:focus{left:8px}
+    .shell{width:min(1480px,100%);margin:0 auto;padding:0 18px 44px}
+    .desk-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:end;padding:24px 0 14px;border-bottom:1px solid var(--line)}
+    .desk-head h1{font-size:26px;line-height:1.1;margin:0 0 8px;font-weight:780}
+    .desk-head p{margin:0;color:var(--muted);max-width:760px;line-height:1.55}
+    .health-box{text-align:right}
+    .health-state{display:inline-flex;align-items:center;gap:7px;font-weight:750}
+    .health-dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}
+    .health-state.pass .health-dot{background:var(--green);box-shadow:0 0 0 4px rgba(99,197,141,.12)}
+    .health-state.warn .health-dot{background:var(--amber)}
+    .health-state.fail .health-dot{background:var(--red)}
+    .health-meta{display:block;margin-top:5px;color:var(--muted);font-size:11px}
+    .market-tape{display:grid;grid-template-columns:repeat(8,minmax(112px,1fr));border-bottom:1px solid var(--line);overflow-x:auto}
+    .market-cell{min-width:112px;padding:13px 12px;border-right:1px solid var(--line)}
+    .market-cell:last-child{border-right:0}
+    .market-label{font-size:10px;color:var(--muted);margin-bottom:5px}
+    .market-value{font-weight:760;font-size:16px}
+    .market-change{font-size:11px;margin-top:3px;color:var(--muted)}
+    .up{color:var(--green)!important}.down{color:var(--red)!important}.flat{color:var(--muted)!important}
+    .context-band{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(280px,.7fr);gap:22px;padding:18px 0;border-bottom:1px solid var(--line)}
+    .section-kicker{font-size:10px;color:var(--teal);font-weight:750;margin-bottom:5px}
+    .section-title{margin:0;font-size:16px;font-weight:760}
+    .section-note{margin:5px 0 0;color:var(--muted);line-height:1.45}
+    .action-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-top:14px;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+    .action-btn{border:0;border-right:1px solid var(--line);background:var(--surface);text-align:left;padding:12px;cursor:pointer;min-height:72px}
+    .action-btn:last-child{border-right:0}.action-btn:hover{background:var(--surface-2)}
+    .action-btn.active{box-shadow:inset 0 -3px var(--teal);background:#13232a}
+    .action-btn strong{display:block;font-size:20px;line-height:1;margin-bottom:6px}
+    .action-btn span{font-size:11px;color:var(--muted)}
+    .rotation-list{display:grid;gap:7px;margin-top:13px}
+    .rotation-row{display:grid;grid-template-columns:minmax(72px,1fr) 62px 62px;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid rgba(39,53,68,.7)}
+    .rotation-row:last-child{border-bottom:0}.rotation-name{font-weight:650}.rotation-num{text-align:right;font-variant-numeric:tabular-nums}
+    .workspace{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:22px;padding-top:20px;align-items:start}
+    .queue-head{display:flex;align-items:end;justify-content:space-between;gap:14px;margin-bottom:12px}
+    .queue-count{color:var(--muted);font-size:11px;white-space:nowrap}
+    .toolbar{display:grid;grid-template-columns:minmax(180px,1fr) auto auto auto;gap:8px;padding:10px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+    .control{height:36px;border:1px solid var(--line);border-radius:5px;background:var(--surface);color:var(--text);padding:0 10px;min-width:0}
+    .control::placeholder{color:#687789}
+    .setup-tabs{display:flex;gap:4px;overflow-x:auto;padding:10px 0 8px;scrollbar-width:none}
+    .setup-tabs::-webkit-scrollbar{display:none}
+    .setup-btn{flex:0 0 auto;border:1px solid var(--line);border-radius:5px;background:transparent;padding:7px 10px;cursor:pointer;color:var(--soft)}
+    .setup-btn:hover{background:var(--surface)}.setup-btn.active{border-color:#397a78;background:#15302f;color:#81ded3}
+    .table-wrap{overflow-x:auto;border-bottom:1px solid var(--line)}
+    table{width:100%;border-collapse:collapse;min-width:1020px}
+    th{padding:9px 8px;text-align:left;color:var(--muted);font-size:10px;font-weight:700;border-bottom:1px solid var(--line);white-space:nowrap}
+    td{padding:10px 8px;border-bottom:1px solid rgba(39,53,68,.68);vertical-align:middle}
+    tbody tr{cursor:pointer;transition:background .16s}
+    tbody tr:hover{background:#101c27}tbody tr.selected{background:#142832;box-shadow:inset 3px 0 var(--teal)}
+    .stock-main{display:flex;align-items:center;gap:9px;min-width:170px}
+    .rank{width:24px;color:var(--muted);font-size:11px;text-align:right}
+    .stock-code{font-weight:780;font-size:13px}.stock-name{color:var(--muted);font-size:11px;margin-top:2px;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .tag{display:inline-flex;align-items:center;min-height:22px;padding:3px 6px;border-radius:4px;border:1px solid var(--line);font-size:10px;white-space:nowrap}
+    .tag.focus{color:#8ee0b0;border-color:#34704f;background:#12261b}.tag.confirm{color:#e7c973;border-color:#6d5928;background:#29220f}
+    .tag.tactical{color:#89bde8;border-color:#355e80;background:#132333}.tag.avoid{color:#ef9aa1;border-color:#753842;background:#2b1519}
+    .tag.breakout{color:#86dacf}.tag.base{color:#e3c479}.tag.breaklow{color:#8ab8e1}.tag.rebound{color:#d59aa0}
+    .metric-main{font-weight:700}.metric-sub{display:block;color:var(--muted);font-size:10px;margin-top:3px}
+    .evidence{font-weight:780}.risk-mark{color:var(--red);font-weight:700}.quiet{color:var(--muted)}
+    .pager{display:flex;justify-content:space-between;align-items:center;padding:12px 0;gap:10px}
+    .pager button{height:34px;border:1px solid var(--line);border-radius:5px;background:var(--surface);padding:0 12px;cursor:pointer}
+    .pager button:disabled{opacity:.35;cursor:not-allowed}
+    .inspector{position:sticky;top:54px;border-left:1px solid var(--line);padding-left:20px;min-height:560px}
+    .inspector-empty{padding:64px 18px;color:var(--muted);text-align:center;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+    .inspector-head{display:flex;justify-content:space-between;gap:12px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+    .inspector-title{font-size:19px;font-weight:780}.inspector-name{color:var(--muted);margin-top:3px}
+    .close-inspector{display:none;border:1px solid var(--line);background:var(--surface);border-radius:5px;width:34px;height:34px;cursor:pointer}
+    .plan-strip{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid var(--line)}
+    .plan-cell{padding:12px 8px;border-right:1px solid var(--line)}.plan-cell:last-child{border-right:0}
+    .plan-label{font-size:9px;color:var(--muted);margin-bottom:5px}.plan-value{font-size:14px;font-weight:750}
+    .lane-grid{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid var(--line)}
+    .lane{padding:11px 8px;border-right:1px solid var(--line);min-width:0}.lane:last-child{border-right:0}
+    .lane-label{font-size:9px;color:var(--muted);margin-bottom:5px}.lane-state{font-size:11px;font-weight:750}.lane-meta{font-size:9px;color:var(--muted);margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .detail-section{padding:14px 0;border-bottom:1px solid var(--line)}
+    .detail-section h3{font-size:11px;margin:0 0 9px;color:var(--soft);font-weight:760}
+    .fact-list{display:grid;gap:7px}.fact{display:flex;justify-content:space-between;gap:12px}.fact span:first-child{color:var(--muted)}.fact span:last-child{text-align:right}
+    .evidence-list{display:flex;flex-wrap:wrap;gap:5px}.evidence-chip{border:1px solid var(--line);border-radius:4px;padding:5px 6px;color:var(--soft);font-size:10px}.evidence-chip.yes{border-color:#32684c;color:#82d8a5}.evidence-chip.risk{border-color:#69333b;color:#e7949b}
+    .anomaly-row{padding:7px 0;border-bottom:1px solid rgba(39,53,68,.55)}.anomaly-row:last-child{border:0}.anomaly-type{font-weight:650}.anomaly-meta{font-size:10px;color:var(--muted);margin-top:3px}
+    .detail-links{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding-top:14px}
+    .detail-links a{display:flex;align-items:center;justify-content:center;min-height:36px;border:1px solid var(--line);border-radius:5px;text-decoration:none;color:var(--soft)}.detail-links a:hover{background:var(--surface-2);color:#fff}
+    .source-bar{margin-top:22px;padding:14px 0;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;color:var(--muted);font-size:10px;line-height:1.5}
+    .status{padding:30px 12px;text-align:center;color:var(--muted);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+    .status.error{color:var(--red)}
+    @media(max-width:1050px){.workspace{grid-template-columns:minmax(0,1fr) 320px}.market-tape{grid-template-columns:repeat(8,120px)}}
+    @media(max-width:820px){
+      .shell{padding:0 10px 32px}.desk-head{grid-template-columns:1fr;padding-top:18px}.health-box{text-align:left}
+      .context-band{grid-template-columns:1fr}.workspace{display:block}.action-grid{grid-template-columns:1fr 1fr}.action-btn:nth-child(2){border-right:0}.action-btn:nth-child(-n+2){border-bottom:1px solid var(--line)}
+      .toolbar{grid-template-columns:1fr 1fr}.toolbar .search{grid-column:1/-1}.table-wrap{overflow:visible}table{min-width:0}thead{display:none}tbody{display:grid;gap:8px}
+      tbody tr{display:grid;grid-template-columns:minmax(0,1.4fr) 1fr 1fr;gap:8px;border:1px solid var(--line);border-radius:6px;padding:10px;background:var(--surface)}
+      tbody td{padding:0;border:0;min-width:0}tbody td:nth-child(1){grid-column:1/3}tbody td:nth-child(2){justify-self:end}tbody td:nth-child(3){grid-column:1}tbody td:nth-child(4){grid-column:2}tbody td:nth-child(5){grid-column:3}tbody td:nth-child(6){grid-column:1}tbody td:nth-child(7){grid-column:2}tbody td:nth-child(8){grid-column:3}tbody td:nth-child(9){grid-column:1/4;text-align:right}
+      .stock-main{min-width:0}.stock-name{max-width:160px}.inspector{display:none;position:fixed;inset:42px 0 0 0;z-index:90;background:var(--bg);overflow:auto;padding:18px 16px 40px;border:0;box-shadow:var(--shadow)}
+      .inspector.open{display:block}.close-inspector{display:block}.source-bar{display:block}.source-bar span{display:block;margin-top:5px}
+    }
+    @media(max-width:460px){.desk-head h1{font-size:23px}.market-tape{margin:0 -10px;padding-left:10px}.toolbar{grid-template-columns:1fr 1fr}.action-btn{padding:10px}.action-btn strong{font-size:18px}.rotation-row{grid-template-columns:1fr 55px 55px}.detail-links{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<a class="skip" href="#candidateTable">跳到候選名單</a>
+<nav class="site-nav" id="sharedSiteNav" data-base="./"></nav>
+<main class="shell">
+  <header class="desk-head">
+    <div>
+      <h1>交易台</h1>
+      <p>由市場門檻開始，將 Kbar、CCASS、券商席位、資金流、供配股及時間訊號收斂成每日研究次序。原始觀測與衍生規則分開顯示。</p>
+    </div>
+    <div class="health-box">
+      <span class="health-state" id="healthState"><i class="health-dot"></i><b>讀取資料</b></span>
+      <span class="health-meta" id="healthMeta">正在核對 publish bundle</span>
+    </div>
+  </header>
+
+  <section class="market-tape" id="marketTape" aria-label="市場門檻"></section>
+
+  <section class="context-band">
+    <div>
+      <div class="section-kicker">每日行動隊列</div>
+      <h2 class="section-title">先揀行動，再睇股票</h2>
+      <p class="section-note">「優先研究」唔等於買入；必須再用圖表確認觸發位同失效位。圈錢、急跌及派發席位會先落風險隊列。</p>
+      <div class="action-grid" id="actionGrid"></div>
+    </div>
+    <div>
+      <div class="section-kicker">板塊脈搏</div>
+      <h2 class="section-title">短窗 / 中窗</h2>
+      <p class="section-note" id="rotationMeta">讀取板塊輪動</p>
+      <div class="rotation-list" id="rotationList"></div>
+    </div>
+  </section>
+
+  <section class="workspace">
+    <div>
+      <div class="queue-head">
+        <div>
+          <div class="section-kicker">規則合流候選</div>
+          <h2 class="section-title">今日研究名單</h2>
+        </div>
+        <div class="queue-count" id="queueCount">—</div>
+      </div>
+      <div class="toolbar">
+        <input id="searchInput" class="control search" type="search" inputmode="search" placeholder="搜尋代號 / 名稱" aria-label="搜尋代號或名稱">
+        <select id="bucketSelect" class="control" aria-label="市值分類">
+          <option value="all">所有市值</option><option value="small">小市值</option><option value="mid">中市值</option><option value="large">大市值</option>
+        </select>
+        <select id="sortSelect" class="control" aria-label="排序">
+          <option value="evidence">證據優先</option><option value="stock">股票</option><option value="action">行動</option><option value="setup">形態</option><option value="ccass">CCASS 連增</option><option value="d5">CCASS 5日</option><option value="d20">CCASS 20日</option><option value="flow">主力資金</option><option value="trigger">觸發價</option><option value="stage1">初篩分數</option><option value="vr">相對成交</option>
+        </select>
+        <select id="pageSizeSelect" class="control" aria-label="每頁數量">
+          <option value="10">每頁 10</option><option value="15" selected>每頁 15</option><option value="30">每頁 30</option>
+        </select>
+      </div>
+      <div class="setup-tabs" id="setupTabs" role="tablist" aria-label="Kbar setup"></div>
+      <div class="table-wrap" id="candidateTable">
+        <table>
+          <thead><tr><th data-sort="stock">股票<span class="suite-sort-indicator"></span></th><th data-sort="action">行動<span class="suite-sort-indicator"></span></th><th data-sort="setup">形態<span class="suite-sort-indicator"></span></th><th data-sort="evidence">三鏈證據<span class="suite-sort-indicator"></span></th><th data-sort="ccass">CCASS 連增<span class="suite-sort-indicator"></span></th><th data-sort="d5">CCASS 5日<span class="suite-sort-indicator"></span></th><th data-sort="d20">CCASS 20日<span class="suite-sort-indicator"></span></th><th data-sort="flow">資金<span class="suite-sort-indicator"></span></th><th data-sort="trigger">觸發 / 失效<span class="suite-sort-indicator"></span></th></tr></thead>
+          <tbody id="candidateBody"></tbody>
+        </table>
+        <div class="status" id="tableStatus">正在融合資料</div>
+      </div>
+      <div class="pager">
+        <button id="prevBtn" type="button">上一頁</button>
+        <span class="queue-count" id="pageMeta">—</span>
+        <button id="nextBtn" type="button">下一頁</button>
+      </div>
+    </div>
+
+    <aside class="inspector" id="inspector" aria-live="polite">
+      <div class="inspector-empty">撳一隻股票，右邊會顯示完整證據、交易位與資料日期。</div>
+    </aside>
+  </section>
+
+  <footer class="source-bar">
+    <div>觀測：Futu / Longbridge / HKEX / CCASS / westock。衍生：Kbar setup、證據數、行動隊列及交易位。</div>
+    <span id="sourceDates">資料日期：—</span>
+  </footer>
+</main>
+<script src="./shared-nav.js"></script>
+<script>
+(() => {
+  'use strict';
+  const URLS = {
+    bundle:'data/publish_bundle.json', market:'market.json', engine:'data/trade_engine.json',
+    holdings:'holdings.json', signals:'data/signals.json', flow:'data/fundflow.json',
+    rights:'data/rights_analysis.json', anomalies:'data/participant_anomalies.json',
+    rotation:'data/sector_rotation.json', intel:'data/market_intel.json',
+    shorts:'data/short_positions.json'
+  };
+  const SETUPS = {all:'全部形態',breakout:'追勢突破',base:'盤底築台',breaklow:'破底翻',rebound:'弱勢反抽'};
+  const ACTIONS = {
+    focus:{label:'優先研究',note:'趨勢、形態及外部證據較齊'},
+    confirm:{label:'等確認',note:'等觸發、收復或成交確認'},
+    tactical:{label:'反抽短打',note:'逆勢處理，不當趨勢倉'},
+    avoid:{label:'避開 / 高風險',note:'供應、派發或價格風險'}
+  };
+  const SECTOR_NAMES={tech:'科技 / 電訊',finance:'金融',property:'地產 / 物管',energy:'能源 / 資源',consumer:'消費 / 醫藥',industrial:'工業 / 航運',utilities:'公用 / 基建',other:'其他'};
+  const state={action:'focus',setup:'all',bucket:'all',sort:'evidence',sortDir:-1,query:'',page:1,pageSize:15,selected:null,rows:[]};
+  const $=id=>document.getElementById(id);
+  const esc=value=>String(value??'').replace(/[&<>'"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
+  const num=value=>Number.isFinite(Number(value))?Number(value):null;
+  const codeOf=value=>String(value||'').replace(/\.HK$/i,'').replace(/^HK\./i,'').replace(/\D/g,'').padStart(5,'0');
+  const money=value=>{const n=num(value);if(n===null)return '—';const a=Math.abs(n);if(a>=1e8)return `${n<0?'-':''}${(a/1e8).toFixed(2)}億`;if(a>=1e4)return `${n<0?'-':''}${(a/1e4).toFixed(0)}萬`;return n.toFixed(0)};
+  const shares=value=>{const n=num(value);if(n===null)return '—';const a=Math.abs(n);if(a>=1e8)return `${n<0?'-':''}${(a/1e8).toFixed(2)}億股`;if(a>=1e4)return `${n<0?'-':''}${(a/1e4).toFixed(0)}萬股`;return `${n.toLocaleString('en-US')}股`};
+  const pct=(value,digits=2)=>{const n=num(value);return n===null?'—':`${n>=0?'+':''}${n.toFixed(digits)}%`};
+  const price=value=>{const n=num(value);if(n===null)return '—';return n<1?n.toFixed(3):n<10?n.toFixed(2):n.toFixed(2)};
+  const tone=value=>{const n=num(value);return n===null?'flat':n>0?'up':n<0?'down':'flat'};
+  const dateText=value=>String(value||'—').slice(0,10);
+  const trendLabel=value=>({bull:'多頭同向',bear:'空頭排列',neutral:'方向待確認'})[value]||'方向待確認';
+  async function load(path){const r=await fetch(`${path}?v=${Date.now()}`,{cache:'no-store'});if(!r.ok)throw new Error(`${path} HTTP ${r.status}`);return r.json()}
+
+  function mapFlow(raw){
+    const out=new Map(), all=raw&&raw.all;
+    if(Array.isArray(all)) all.forEach(row=>out.set(codeOf(row.c||row.code),row));
+    else if(all&&typeof all==='object') Object.entries(all).forEach(([code,row])=>out.set(codeOf(code),row||{}));
+    return out;
+  }
+  function mapRights(rows){
+    const out=new Map();
+    (Array.isArray(rows)?rows:[]).forEach(row=>{const code=codeOf(row.code);const old=out.get(code);if(!old||String(row.date_parsed||'')>String(old.date_parsed||''))out.set(code,row)});
+    return out;
+  }
+  function mapAnomalies(raw){
+    const out=new Map();
+    ((raw&&raw.anomalies)||[]).forEach(row=>{const code=codeOf(row.code);if(!out.has(code))out.set(code,[]);out.get(code).push(row)});
+    out.forEach(rows=>rows.sort((a,b)=>(num(b.score)||0)-(num(a.score)||0)));
+    return out;
+  }
+  function mapMarketIntel(raw){
+    const out=new Map(), ensure=code=>{if(!out.has(code))out.set(code,{ranks:{},anomalies:[],movers:[]});return out.get(code)};
+    Object.entries(raw?.ranks||{}).forEach(([key,list])=>(list?.rows||[]).forEach(row=>{const code=codeOf(row.code);if(code)ensure(code).ranks[key]=row}));
+    (raw?.anomalies||[]).forEach(row=>{const code=codeOf(row.code);if(code)ensure(code).anomalies.push(row)});
+    (raw?.top_movers?.rows||[]).forEach(row=>{const code=codeOf(row.code);if(code)ensure(code).movers.push(row)});
+    return out;
+  }
+  function mapShorts(raw){return new Map((raw?.rows||[]).map(row=>[codeOf(row.code),row]))}
+  function enrichExternal(rows,data){
+    const intel=mapMarketIntel(data.intel), shorts=mapShorts(data.shorts);
+    rows.forEach(row=>{
+      row.live=intel.get(row.code)||{ranks:{},anomalies:[],movers:[]};
+      row.short=shorts.get(row.code)||null;
+      row.liveUpdated=data.intel?.generated_at;
+      row.shortReportDate=data.shorts?.report_date;
+      if(row.live.ranks['trade_heat-hk']?.rank<=20)row.evidence.push('LB 交易熱度前 20');
+      else if(row.live.ranks['hot_all-hk']?.rank<=20)row.evidence.push('LB 港股熱度前 20');
+      if(row.live.anomalies.some(item=>num(item.emotion)>0))row.evidence.push('LB 即市正面異動');
+      if(row.live.anomalies.some(item=>num(item.emotion)<0))row.risks.push('LB 即市負面異動');
+      if(num(row.short?.change_pct)!==null&&num(row.short.change_pct)>20)row.risks.push('SFC 申報淡倉周比增加');
+      if(row.action==='focus'&&row.risks.length)row.action='confirm';
+    });
+    return rows;
+  }
+  function signalText(signal){
+    if(typeof signal==='string')return signal;
+    return signal&&(signal.label||signal.type||signal.name||signal.signal)||'';
+  }
+  function eventDirectionLabel(value){return ({positive_supply:'圈股事件',negative_supply:'圈錢事件',shareholder_increase:'股東增持',watch:'事件待確認',neutral:'公告事件'})[value]||'未觸發'}
+  function ccassTierLabel(value){return ({strong:'強累積',building:'累積中',early:'初步增加',none:'未連增'})[value]||'資料不足'}
+  function supplyLabel(signal,right){return String(signal?.supply?.label||right?.supply?.label||right?.trade?.supply?.label||'')}
+  function buildRows(data){
+    const holdings=new Map((data.holdings.stocks||[]).map(row=>[codeOf(row.c),row]));
+    const signals=new Map((data.signals.groups||[]).map(row=>[codeOf(row.code),row]));
+    const flow=mapFlow(data.flow), rights=mapRights(data.rights), anomalies=mapAnomalies(data.anomalies);
+    return Object.values(data.engine.by_symbol||{}).map(engine=>{
+      const code=codeOf(engine.symbol), hold=holdings.get(code)||{}, signal=signals.get(code)||{}, f=flow.get(code)||{}, right=rights.get(code)||null, anoms=anomalies.get(code)||[];
+      const setup=engine.activeKey||'rebound', snap=engine.stage1?.snapshot||{}, label=supplyLabel(signal,right), lanes=engine.stage1?.evidence_lanes||{};
+      const d5=num(snap.ccass_d5_pct??hold.d5p), d20=num(snap.ccass_d20_pct??hold.d20p), mainNet=num(f.main_net??f.mainNetFlow), southNet=num(f.lgt_cap_chg_daily??f.southbound_net);
+      const signalLabels=(signal.signals||[]).map(signalText).filter(Boolean);
+      const eventLabels=(lanes.event?.labels||[]).map(signalText).filter(Boolean), technicalLabels=(lanes.technical?.labels||[]).map(signalText).filter(Boolean);
+      const ccassLane=lanes.ccass||{}, streak=num(ccassLane.consecutive_increase_days??snap.ccass_increase_days??hold.su)??0;
+      const tripleConfluence=Boolean(lanes.event?.active&&lanes.technical?.active&&ccassLane.tier==='strong');
+      const distribution=anoms.some(a=>['distribution_cluster','seat_exit','seat_decrease'].includes(a.type)&&['severe','high'].includes(a.severity));
+      const circleMoney=label.includes('圈錢'), circleStock=label.includes('圈股');
+      const evidence=[];
+      if(engine.trendGuard?.key==='bull')evidence.push('日線 / 長窗同向');
+      if((num(engine.scores?.[setup])||0)>=8)evidence.push('形態分數達標');
+      if(lanes.technical?.active)evidence.push('技術訊號觸發');
+      if(lanes.event?.active)evidence.push(eventDirectionLabel(lanes.event.direction));
+      if(ccassLane.tier==='strong')evidence.push(`CCASS 強累積 ${streak}日`);
+      else if(ccassLane.tier==='building')evidence.push(`CCASS 累積中 ${streak}日`);
+      if(mainNet!==null&&mainNet>0)evidence.push('主力淨流入');
+      if(southNet!==null&&southNet>0)evidence.push('南向增加');
+      if(tripleConfluence)evidence.push('事件 × 技術 × CCASS');
+      const risks=[];
+      if(circleMoney)risks.push('圈錢供應風險');
+      if((engine.stage1?.reasons||[]).includes('supply event risk')&&!circleStock&&!circleMoney)risks.push('供應事件待核實');
+      if(distribution)risks.push('席位派發 / 減持');
+      if(engine.extremeMove||engine.stage1?.extremeMove)risks.push('極端升跌');
+      if((num(snap.change_pct??hold.chg)||0)<=-15)risks.push('單日急跌');
+      if(engine.trendGuard?.key==='bear')risks.push('長窗向下');
+      let action='confirm';
+      if(circleMoney||distribution||(num(snap.change_pct??hold.chg)||0)<=-15)action='avoid';
+      else if(setup==='rebound')action='tactical';
+      else if(engine.trendGuard?.key==='bull'&&!risks.length&&((setup==='breakout'&&evidence.length>=4&&(num(engine.stage1?.score)||0)>=12)||(tripleConfluence&&['breakout','base','breaklow'].includes(setup)&&(num(engine.stage1?.score)||0)>=10)))action='focus';
+      return {code,name:engine.label||hold.n||signal.name||code,engine,hold,signal,flow:f,right,anoms,setup,action,evidence,risks,d5,d20,mainNet,southNet,supply:label,signalLabels,eventLabels,technicalLabels,lanes,ccassLane,streak,tripleConfluence};
+    });
+  }
+
+  function renderMarket(market){
+    const cells=[['恆指',market.hsi],['標普',market.spx],['道指',market.dow],['DXY',market.dxy],['VIX',market.vix],['港股 P/E',market.hsi_pe],['美股 P/E',market.spx_pe],['恐貪',market.fear_greed]];
+    $('marketTape').innerHTML=cells.map(([label,item])=>{const value=num(item?.value);const change=num(item?.changePct);return `<div class="market-cell"><div class="market-label">${esc(label)}</div><div class="market-value">${value===null?'—':value.toLocaleString('en-US',{maximumFractionDigits:2})}</div><div class="market-change ${tone(change)}">${change===null?esc(item?.eval?.label||'—'):pct(change)}</div></div>`}).join('');
+  }
+  function renderHealth(bundle){
+    const status=String(bundle.publish?.status||'FAIL').toUpperCase();
+    const el=$('healthState');el.className=`health-state ${status.toLowerCase()}`;el.querySelector('b').textContent=status==='PASS'?'當前資料可用':status==='WARN'?'當前資料有警告':'資料閘未通過';
+    const ccassDate=new Date(bundle.files?.holdings?.updated);const daysOld=ccassDate?Math.floor((Date.now()-ccassDate)/86400000):0;
+    const staleNote=daysOld>2?`<br><span style="color:var(--amber)">⚠️ CCASS ${daysOld} 日未更新</span>`:'';
+    $('healthMeta').innerHTML=`CCASS ${bundle.files?.holdings?.updated||'—'} · 價格 ${dateText(bundle.files?.prices?.latest_price_time)} · ${bundle.files?.holdings?.coverage_pct??'—'}% 覆蓋${staleNote}`;
+  }
+  function renderRotation(rotation){
+    const rows=Object.entries(rotation.sectors||{}).map(([key,row])=>({key,name:SECTOR_NAMES[key]||row.name||key,d5:num(row.windows?.['5']?.pct),d20:num(row.windows?.['20']?.pct)})).filter(row=>row.d5!==null||row.d20!==null).sort((a,b)=>(b.d5??-999)-(a.d5??-999)).slice(0,6);
+    $('rotationMeta').textContent=`${rotation.updated||'—'} · 等權平均實際收市回報`;
+    $('rotationList').innerHTML=rows.map(row=>`<div class="rotation-row"><span class="rotation-name">${esc(row.name)}</span><span class="rotation-num ${tone(row.d5)}">${pct(row.d5)}</span><span class="rotation-num ${tone(row.d20)}">${pct(row.d20)}</span></div>`).join('')||'<div class="quiet">暫無同日有效快照</div>';
+  }
+  function renderActions(){
+    const counts=Object.keys(ACTIONS).reduce((out,key)=>(out[key]=state.rows.filter(row=>row.action===key).length,out),{});
+    $('actionGrid').innerHTML=Object.entries(ACTIONS).map(([key,item])=>`<button type="button" class="action-btn ${state.action===key?'active':''}" data-action="${key}"><strong>${counts[key]||0}</strong><span>${item.label}<br>${item.note}</span></button>`).join('');
+    $('actionGrid').querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>{state.action=btn.dataset.action;state.page=1;render()}));
+  }
+  function renderSetupTabs(){
+    $('setupTabs').innerHTML=Object.entries(SETUPS).map(([key,label])=>`<button type="button" role="tab" aria-selected="${state.setup===key}" class="setup-btn ${state.setup===key?'active':''}" data-setup="${key}">${label}</button>`).join('');
+    $('setupTabs').querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>{state.setup=btn.dataset.setup;state.page=1;renderTable()}));
+  }
+  function sortValue(row,key){
+    const plan=row.engine.trade_plan||{}, snap=row.engine.stage1?.snapshot||{};
+    if(key==='stock')return row.code;
+    if(key==='action')return ({focus:4,confirm:3,tactical:2,avoid:1})[row.action]||0;
+    if(key==='setup')return num(row.engine.scores?.[row.setup])??0;
+    if(key==='evidence')return Number(row.tripleConfluence)*10000+row.evidence.length*100-row.risks.length*10+(num(row.engine.stage1?.score)||0);
+    if(key==='ccass')return row.streak;
+    if(key==='d5')return row.d5;
+    if(key==='d20')return row.d20;
+    if(key==='flow')return row.mainNet;
+    if(key==='trigger')return num(plan.entry);
+    if(key==='stage1')return num(row.engine.stage1?.score);
+    if(key==='vr')return num(snap.vr);
+    return null;
+  }
+  function compareRows(a,b){
+    const av=sortValue(a,state.sort),bv=sortValue(b,state.sort);
+    if(av==null&&bv==null)return 0;if(av==null)return 1;if(bv==null)return -1;
+    const result=typeof av==='string'?av.localeCompare(String(bv),'zh-HK',{numeric:true}):av-bv;
+    return state.sortDir===1?result:-result;
+  }
+  function updateSortHeaders(){
+    $('candidateTable').querySelectorAll('thead th[data-sort]').forEach(th=>{
+      const active=th.dataset.sort===state.sort,indicator=th.querySelector('.suite-sort-indicator');
+      th.classList.toggle('sort-active',active);th.setAttribute('aria-sort',active?(state.sortDir===1?'ascending':'descending'):'none');
+      if(indicator)indicator.textContent=active?(state.sortDir===1?'▲':'▼'):'';
+    });
+  }
+  function filteredRows(){
+    const q=state.query.trim().toLowerCase();
+    const rows=state.rows.filter(row=>row.action===state.action&&(state.setup==='all'||row.setup===state.setup)&&(state.bucket==='all'||row.engine.stage1?.bucket===state.bucket)&&(!q||row.code.includes(q)||String(row.name).toLowerCase().includes(q)));
+    return rows.sort(compareRows);
+  }
+  function renderTable(){
+    updateSortHeaders();
+    const rows=filteredRows(), pages=Math.max(1,Math.ceil(rows.length/state.pageSize));state.page=Math.min(state.page,pages);
+    const start=(state.page-1)*state.pageSize, visible=rows.slice(start,start+state.pageSize);
+    $('queueCount').textContent=`${rows.length} 隻 · 引擎分析 ${state.rows.length} 隻`;
+    $('candidateBody').innerHTML=visible.map((row,index)=>{
+      const plan=row.engine.trade_plan||{}, vr=num(row.engine.stage1?.snapshot?.vr), flowTone=tone(row.mainNet);
+      return `<tr data-code="${row.code}" class="${state.selected===row.code?'selected':''}">
+        <td><div class="stock-main"><span class="rank">${start+index+1}</span><div><div class="stock-code">${row.code}</div><div class="stock-name">${esc(row.name)}</div></div></div></td>
+        <td><span class="tag ${row.action}">${ACTIONS[row.action].label}</span></td>
+        <td><span class="tag ${row.setup}">${SETUPS[row.setup]}</span><span class="metric-sub">${trendLabel(row.engine.trendGuard?.key)}</span></td>
+        <td><span class="evidence">${row.tripleConfluence?'三鏈合流':`${row.evidence.length} 項`}</span><span class="metric-sub ${row.risks.length?'risk-mark':''}">${row.risks.length?`${row.risks.length} 風險`:'無硬風險'}</span></td>
+        <td><span class="metric-main ${tone(row.streak)}">${row.streak} 日</span><span class="metric-sub">連續增持</span></td>
+        <td><span class="metric-main ${tone(row.d5)}">${pct(row.d5)}</span><span class="metric-sub">${shares(row.ccassLane.d5_shares??row.engine.stage1?.snapshot?.ccass_d5_shares)}</span></td>
+        <td><span class="metric-main ${tone(row.d20)}">${pct(row.d20)}</span><span class="metric-sub">${shares(row.ccassLane.d20_shares??row.engine.stage1?.snapshot?.ccass_d20_shares)}</span></td>
+        <td><span class="metric-main ${flowTone}">${money(row.mainNet)}</span><span class="metric-sub">VR ${vr===null?'—':vr.toFixed(1)}</span></td>
+        <td><span class="metric-main">${price(plan.entry)} / ${price(plan.invalidation)}</span><span class="metric-sub">目標 ${price(plan.target)}</span></td>
+      </tr>`;
+    }).join('');
+    $('tableStatus').style.display=visible.length?'none':'block';$('tableStatus').textContent=rows.length?'本頁沒有資料':'此條件暫無候選，資料沒有補零。';
+    $('pageMeta').textContent=`第 ${state.page} / ${pages} 頁`;$('prevBtn').disabled=state.page<=1;$('nextBtn').disabled=state.page>=pages;
+    $('candidateBody').querySelectorAll('tr').forEach(tr=>tr.addEventListener('click',()=>openInspector(tr.dataset.code)));
+  }
+  function anomalyLabel(type){return ({accumulation_cluster:'多席位收集',distribution_cluster:'多席位派發',new_large_seat:'新大席位',seat_decrease:'席位減持',seat_exit:'席位退出',seat_increase:'席位增持',suspected_transfer:'疑似轉倉'})[type]||type||'席位異動'}
+  function openInspector(code){
+    const row=state.rows.find(item=>item.code===code);if(!row)return;state.selected=code;
+    const plan=row.engine.trade_plan||{}, snap=row.engine.stage1?.snapshot||{}, latestAnoms=row.anoms.slice(0,4);
+    const evidence=[...row.evidence.map(text=>`<span class="evidence-chip yes">${esc(text)}</span>`),...row.risks.map(text=>`<span class="evidence-chip risk">${esc(text)}</span>`)].join('')||'<span class="quiet">暫無額外證據</span>';
+    const technicalSignals=row.technicalLabels.length?row.technicalLabels.slice(0,6).map(text=>`<span class="evidence-chip">${esc(text)}</span>`).join(''):'<span class="quiet">未見技術觸發</span>';
+    const eventState=row.lanes.event?.active?eventDirectionLabel(row.lanes.event.direction):'未觸發', techState=row.lanes.technical?.active?`${SETUPS[row.lanes.technical.setup_key]||SETUPS[row.setup]}${row.lanes.technical.count?` + ${row.lanes.technical.count} 訊號`:''}`:'未觸發', ccassState=ccassTierLabel(row.ccassLane.tier);
+    const eventSignals=row.eventLabels.length?row.eventLabels.slice(0,6).map(text=>`<span class="evidence-chip">${esc(text)}</span>`).join(''):(row.lanes.event?.active?`<span class="evidence-chip">${esc(eventState)}</span>`:'<span class="quiet">未見公告觸發</span>');
+    const liveRanks=Object.entries(row.live?.ranks||{}).map(([key,item])=>`${key.replace('-hk','')} #${item.rank}`).join(' · ');
+    const liveMove=row.live?.movers?.[0], liveAnomaly=row.live?.anomalies?.[0];
+    const externalSection=`<section class="detail-section"><h3>外部市場證據（觀測）</h3><div class="fact-list"><div class="fact"><span>Longbridge 熱度</span><span>${esc(liveRanks||'未入榜')}</span></div><div class="fact"><span>Longbridge 異動</span><span>${esc(liveAnomaly?.type||liveMove?.reason||'未見異動')}</span></div><div class="fact"><span>SFC 申報淡倉</span><span>${row.short?`${Number(row.short.short_shares||0).toLocaleString('en-US')} 股 · ${money(row.short.short_value_hkd)}`:'未涵蓋 ≠ 0'}</span></div><div class="fact"><span>淡倉周比</span><span class="${tone(row.short?.change_pct)}">${row.short?.change_pct==null?'未有兩期資料':pct(row.short.change_pct)}</span></div><div class="fact"><span>來源日期</span><span>LB ${dateText(row.liveUpdated)} · SFC ${dateText(row.shortReportDate)}</span></div></div></section>`;
+    $('inspector').innerHTML=`
+      <div class="inspector-head"><div><div class="inspector-title">${row.code} <span class="tag ${row.action}">${ACTIONS[row.action].label}</span></div><div class="inspector-name">${esc(row.name)} · ${SETUPS[row.setup]}</div></div><button class="close-inspector" id="closeInspector" type="button" aria-label="關閉詳情">×</button></div>
+      <div class="plan-strip"><div class="plan-cell"><div class="plan-label">觸發</div><div class="plan-value">${price(plan.entry)}</div></div><div class="plan-cell"><div class="plan-label">失效</div><div class="plan-value down">${price(plan.invalidation)}</div></div><div class="plan-cell"><div class="plan-label">第一目標</div><div class="plan-value up">${price(plan.target)}</div></div></div>
+      <div class="lane-grid"><div class="lane"><div class="lane-label">1 公告事件</div><div class="lane-state ${row.lanes.event?.direction==='negative_supply'?'down':row.lanes.event?.active?'up':'flat'}">${esc(eventState)}</div><div class="lane-meta">只計一次 catalyst</div></div><div class="lane"><div class="lane-label">2 技術確認</div><div class="lane-state ${row.lanes.technical?.active?'up':'flat'}">${esc(techState)}</div><div class="lane-meta">POC / FVG / Kbar</div></div><div class="lane"><div class="lane-label">3 CCASS 累積</div><div class="lane-state ${row.ccassLane.tier==='strong'?'up':'flat'}">${esc(ccassState)}</div><div class="lane-meta">合計連增 ${row.streak} 日</div></div></div>
+      <section class="detail-section"><h3>合流證據（衍生規則）</h3><div class="evidence-list">${evidence}</div></section>
+      <section class="detail-section"><h3>價格 / CCASS 合計持股（觀測）</h3><div class="fact-list"><div class="fact"><span>現價 / 今日</span><span>${price(snap.price??row.hold.lp)} · <b class="${tone(snap.change_pct??row.hold.chg)}">${pct(snap.change_pct??row.hold.chg)}</b></span></div><div class="fact"><span>52周位置 / VR</span><span>${pct(snap.p52,1)} · ${num(snap.vr)===null?'—':num(snap.vr).toFixed(2)}</span></div><div class="fact"><span>連續增持</span><span class="${row.streak>=3?'up':'flat'}">${row.streak} 日 · ${ccassTierLabel(row.ccassLane.tier)}</span></div><div class="fact"><span>5日合計變化</span><span class="${tone(row.d5)}">${shares(row.ccassLane.d5_shares??snap.ccass_d5_shares)} · ${pct(row.d5)}</span></div><div class="fact"><span>20日合計變化</span><span class="${tone(row.d20)}">${shares(row.ccassLane.d20_shares??snap.ccass_d20_shares)} · ${pct(row.d20)}</span></div><div class="fact"><span>計算口徑</span><span>CCASS total_shares；不以券商身份代替最終投資者</span></div></div></section>
+      <section class="detail-section"><h3>資金 / 供應（觀測）</h3><div class="fact-list"><div class="fact"><span>主力淨流</span><span class="${tone(row.mainNet)}">${money(row.mainNet)}</span></div><div class="fact"><span>總資金淨流</span><span class="${tone(row.flow.total_net)}">${money(row.flow.total_net)}</span></div><div class="fact"><span>南向變化</span><span class="${tone(row.southNet)}">${money(row.southNet)}</span></div><div class="fact"><span>供配股判斷</span><span>${esc(row.supply||'—')}</span></div></div></section>
+      <section class="detail-section"><h3>公告事件觸發</h3><div class="evidence-list">${eventSignals}</div></section>
+      <section class="detail-section"><h3>技術訊號 / 時間觸發</h3><div class="evidence-list">${technicalSignals}</div></section>
+      <section class="detail-section"><h3>券商席位異動</h3>${latestAnoms.length?latestAnoms.map(a=>`<div class="anomaly-row"><div class="anomaly-type">${esc(anomalyLabel(a.type))} · ${esc(a.participant_name||'—')}</div><div class="anomaly-meta">${dateText(a.date)} · ${esc(a.severity||'—')} · 股數 ${Number(num(a.shares_delta)||0).toLocaleString('en-US')}</div></div>`).join(''):'<div class="quiet">今期沒有已發布席位異動</div>'}</section>
+      <section class="detail-section"><h3>資料口徑</h3><div class="fact-list"><div class="fact"><span>Kbar</span><span>${dateText(row.engine.observed_source?.trade_date)} · ${row.engine.observed_source?.bar_count||'—'} bars</span></div><div class="fact"><span>CCASS</span><span>${dateText(APP.bundle.files?.holdings?.updated)}</span></div><div class="fact"><span>資金流</span><span>${dateText(APP.bundle.files?.fundflow?.updated)}</span></div><div class="fact"><span>供配股</span><span>${dateText(row.right?.date_parsed)}</span></div></div></section>
+      <div class="detail-links"><a href="./kbar_matrix.html?mode=hk&symbol=${parseInt(row.code,10)}">開 Kbar</a><a href="./signals.html?code=${row.code}">訊號頁</a><a href="./fundflow.html?code=${row.code}">資金頁</a><a href="./rights_analysis.html?code=${row.code}">供配股頁</a></div>`;
+    $('inspector').querySelector('.detail-links')?.insertAdjacentHTML('beforebegin',externalSection);
+    $('inspector').classList.add('open');$('closeInspector')?.addEventListener('click',()=>{$('inspector').classList.remove('open')});renderTable();
+  }
+  function render(){renderActions();renderSetupTabs();renderTable()}
+  const APP={bundle:null};
+  async function init(){
+    try{
+      const keys=Object.keys(URLS);
+      const critical=new Set(['bundle','market','engine','holdings','signals']);
+      const results=await Promise.allSettled(keys.map(key=>load(URLS[key])));
+      const data={}, failed=[];
+      results.forEach((r,i)=>{const k=keys[i];if(r.status==='fulfilled')data[k]=r.value;else{failed.push(k);data[k]=null}});
+      if(data.bundle)APP.bundle=data.bundle;
+      // Critical data must succeed
+      if(!data.engine||!data.holdings){throw new Error('引擎或持倉資料無法載入')}
+      if(failed.length){$('healthMeta').textContent=`部分次要資料未載入: ${failed.join(', ')}`}
+      if(data.bundle)renderHealth(data.bundle);
+      if(data.market)renderMarket(data.market);
+      if(data.rotation)renderRotation(data.rotation);
+      if(data.engine&&data.holdings){
+        state.rows=enrichExternal(buildRows(data),data);render();
+        if(matchMedia('(min-width:821px)').matches){const first=filteredRows()[0];if(first)openInspector(first.code)}
+        const dates=data.engine.source_snapshot_dates||{};$('sourceDates').textContent=`CCASS ${dates.holdings||'—'} · 價格 ${dates.prices||'—'} · Kbar ${dates.daily_kbar||'—'} · 資金 ${dates.fundflow||'—'}`;
+      }else{$('tableStatus').className='status error';$('tableStatus').textContent='核心資料（引擎／持倉）未載入，請稍後再試。'}
+    }catch(error){console.error(error);$('healthState').className='health-state fail';$('healthState').querySelector('b').textContent='資料載入失敗';$('healthMeta').textContent=error.message;$('tableStatus').className='status error';$('tableStatus').textContent='未能載入 canonical JSON，沒有顯示舊 cache。'}
+  }
+  $('searchInput').addEventListener('input',e=>{state.query=e.target.value;state.page=1;renderTable()});
+  $('bucketSelect').addEventListener('change',e=>{state.bucket=e.target.value;state.page=1;renderTable()});
+  $('sortSelect').addEventListener('change',e=>{state.sort=e.target.value;state.sortDir=state.sort==='stock'?1:-1;state.page=1;renderTable()});
+  $('candidateTable').querySelector('thead').addEventListener('click',e=>{const th=e.target.closest('th[data-sort]');if(!th)return;const key=th.dataset.sort;if(state.sort===key)state.sortDir*=-1;else{state.sort=key;state.sortDir=key==='stock'?1:-1}state.page=1;const select=$('sortSelect');if([...select.options].some(o=>o.value===key))select.value=key;renderTable()});
+  $('pageSizeSelect').addEventListener('change',e=>{state.pageSize=Number(e.target.value)||15;state.page=1;renderTable()});
+  $('prevBtn').addEventListener('click',()=>{if(state.page>1){state.page--;renderTable();scrollTo({top:$('candidateTable').offsetTop-80,behavior:'smooth'})}});
+  $('nextBtn').addEventListener('click',()=>{state.page++;renderTable();scrollTo({top:$('candidateTable').offsetTop-80,behavior:'smooth'})});
+  init();
+})();
+</script>
+</body>
+</html>

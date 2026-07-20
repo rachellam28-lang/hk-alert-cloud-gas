@@ -4,7 +4,14 @@ import os, sys, json, time, requests
 from datetime import datetime, timedelta
 
 # === CONFIG ===
-TG_TOKEN = os.environ.get("TG_BOT_TOKEN", "<YOUR_TG_TOKEN>")
+TG_TOKEN = (
+    os.environ.get("HERMES_TELEGRAM_TOKEN")
+    or os.environ.get("HERMES_TELEGRAM_BOT_TOKEN")
+    or os.environ.get("HERMES_TG_BOT_TOKEN")
+    or os.environ.get("TG_BOT_TOKEN")
+    or os.environ.get("TELEGRAM_BOT_TOKEN")
+    or "<YOUR_TG_TOKEN>"
+)
 DEEPSEEK_KEY = os.environ.get("DEEPSEEK_API_KEY", "<YOUR_DEEPSEEK_KEY>")
 MODEL = os.environ.get("DEEPSEEK_MODEL", "deepseek-v4-pro")
 MAX_TOKENS = 4096

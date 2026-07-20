@@ -16,13 +16,21 @@ Checks:
 """
 
 import argparse
+import hashlib
 import json
 import os
 import statistics
 import subprocess
 import sys
+import time
 import urllib.request
 from datetime import datetime, timedelta
+
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+except AttributeError:
+    pass
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from schema import parse_announcement_date
@@ -38,13 +46,22 @@ WATCH_FILES = {
     "alerts.json":          {"path": os.path.join(BASE, "data", "alerts.json"),        "max_age_h": 26},
     "announcements.json":   {"path": os.path.join(BASE, "data", "announcements.json"), "max_age_h": 26},
     "events.json":          {"path": os.path.join(BASE, "events.json"),                "max_age_h": 26},
-    "price_snapshot":       {"path": os.path.join(BASE, "data", "prices.json"),        "max_age_h": 26},
+    "price_snapshot":       {"path": os.path.join(BASE, "data", "stock_prices.json"),  "max_age_h": 26},
+    "trade_engine":        {"path": os.path.join(BASE, "data", "trade_engine.json"),  "max_age_h": 30},
+    "market_intel":       {"path": os.path.join(BASE, "data", "market_intel.json"), "max_age_h": 30},
+    "sfc_short_positions": {"path": os.path.join(BASE, "data", "short_positions.json"), "max_age_h": 240},
     "jieqi_backtest":       {"path": os.path.join(BASE, "data", "jieqi_backtest.json"), "max_age_h": 72},
 }
 
 DEEPSEEK_BALANCE_WARN = 5.0
 ANN_DEVIATION_WARN = 0.7
+PUBLISH_COVERAGE_OK = 98.0
 HEALTH_OUT = os.path.join(BASE, "health.json")
+HEALTH_TELEGRAM_STATE = os.path.join(BASE, "logs", "health_telegram_state.json")
+ICON_OK = "🟢"
+ICON_WARN = "⚠️"
+ICON_FAIL = "🔴"
+ICON_SKIP = "⚪"
 
 
 def load_json(path, default=None):
@@ -55,6 +72,116 @@ def load_json(path, default=None):
             return json.load(f)
     except Exception:
         return default
+
+
+def save_json(path, payload):
+    try:
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(payload, f, ensure_ascii=False, indent=1)
+        return True
+    except Exception as exc:
+        print(f"{ICON_WARN} failed to save JSON {path}: {exc}")
+        return False
+
+
+def _env_int(name, default):
+    raw = str(os.environ.get(name, "")).strip()
+    if not raw:
+        return default
+    try:
+        return int(raw)
+    except ValueError:
+        return default
+
+
+def check_futu_dependency():
+    """Verify that OpenD can return a quote, not merely accept a TCP socket."""
+    enabled = str(os.environ.get("USE_FUTU", "true")).strip().lower()
+    if enabled in {"0", "false", "no", "off"}:
+        return {"name": "Futu/OpenD", "status": ICON_SKIP, "detail": "disabled by USE_FUTU"}
+
+    probe = os.path.join(BASE, "scripts", "check_futu_setup.py")
+    if not os.path.exists(probe):
+        return {"name": "Futu/OpenD", "status": ICON_WARN, "detail": "quote probe is missing"}
+    try:
+        proc = subprocess.run(
+            [sys.executable, probe],
+            cwd=BASE,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=20,
+        )
+    except subprocess.TimeoutExpired:
+        return {"name": "Futu/OpenD", "status": ICON_WARN, "detail": "quote probe timed out; Longbridge fallback required"}
+    except Exception as exc:
+        return {"name": "Futu/OpenD", "status": ICON_WARN, "detail": f"quote probe failed: {exc}"}
+
+    if proc.returncode == 0:
+        return {"name": "Futu/OpenD", "status": ICON_OK, "detail": "live HK quote snapshot verified"}
+
+    output = "\n".join(part for part in (proc.stdout, proc.stderr) if part)
+    reason = next(
+        (
+            line.split(":", 1)[1].strip()
+            for line in output.splitlines()
+            if line.lower().startswith("probe detail:") and ":" in line
+        ),
+        "quote snapshot unavailable",
+    )
+    return {
+        "name": "Futu/OpenD",
+        "status": ICON_WARN,
+        "detail": f"{reason}; Longbridge fallback required",
+    }
+
+
+def health_telegram_state_path():
+    return str(os.environ.get("HEALTH_TELEGRAM_STATE_PATH", "")).strip() or HEALTH_TELEGRAM_STATE
+
+
+def health_report_fingerprint(text):
+    lines = text.splitlines()
+    if lines and "System Health" in lines[0]:
+        lines = lines[1:]
+    normalized = "\n".join(line.rstrip() for line in lines).strip()
+    return hashlib.sha256(normalized.encode("utf-8")).hexdigest()
+
+
+def should_send_health_telegram(text, *, now=None, state_path=None):
+    ttl_seconds = max(0, _env_int("HEALTH_TELEGRAM_DEDUP_TTL_SECONDS", 21600))
+    fingerprint = health_report_fingerprint(text)
+    if ttl_seconds <= 0:
+        return True, fingerprint, "dedup disabled"
+
+    state = load_json(state_path or health_telegram_state_path(), default={}) or {}
+    last_fp = state.get("fingerprint")
+    last_sent_at = state.get("sent_at")
+    if last_fp != fingerprint or not last_sent_at:
+        return True, fingerprint, "new fingerprint"
+
+    current = now or datetime.now().astimezone()
+    try:
+        sent_at = datetime.fromisoformat(str(last_sent_at))
+        if sent_at.tzinfo is None:
+            sent_at = sent_at.replace(tzinfo=current.tzinfo)
+        age_seconds = (current - sent_at).total_seconds()
+    except Exception:
+        return True, fingerprint, "state timestamp unreadable"
+
+    if 0 <= age_seconds < ttl_seconds:
+        return False, fingerprint, f"duplicate fingerprint within {ttl_seconds}s"
+    return True, fingerprint, "duplicate fingerprint expired"
+
+
+def record_health_telegram_sent(text, *, fingerprint=None, now=None, state_path=None):
+    payload = {
+        "fingerprint": fingerprint or health_report_fingerprint(text),
+        "sent_at": (now or datetime.now().astimezone()).isoformat(),
+    }
+    return save_json(state_path or health_telegram_state_path(), payload)
 
 
 def _latest_date_from_items(items, keys):
@@ -71,21 +198,107 @@ def _latest_date_from_items(items, keys):
     return max(dates) if dates else None
 
 
+def _latest_price_time(data):
+    vals = []
+    if isinstance(data, dict):
+        rows = data.values()
+    elif isinstance(data, list):
+        rows = data
+    else:
+        rows = []
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        val = row.get("price_updated_at") or row.get("lp_time") or row.get("source_date")
+        if val:
+            vals.append(str(val))
+    return max(vals) if vals else None
+
+
+def _previous_weekday(d):
+    while d.weekday() >= 5:
+        d -= timedelta(days=1)
+    return d
+
+
+def _recent_trading_dates(now_dt: datetime, count: int = 2) -> set[str]:
+    days: list[str] = []
+    cur = now_dt.date()
+    while len(days) < count:
+        cur = _previous_weekday(cur)
+        iso = cur.isoformat()
+        if iso not in days:
+            days.append(iso)
+        cur -= timedelta(days=1)
+    return set(days)
+
+
+def _expected_latest_market_date(now_dt: datetime) -> date:
+    """Latest completed HK cash-market session at the observation time."""
+    current = now_dt.date()
+    if current.weekday() >= 5:
+        return _previous_weekday(current)
+    if now_dt.hour < 18:
+        return _previous_weekday(current - timedelta(days=1))
+    return current
+
+
 def check_freshness():
     rows = []
     for name, cfg in WATCH_FILES.items():
         if not os.path.exists(cfg["path"]):
             rows.append({"name": name, "status": "⚪", "detail": "file missing"})
             continue
-        if name == "holdings.json":
+        if name in ("holdings.json", "data/holdings.json"):
             data = load_json(cfg["path"], default={}) or {}
             updated = data.get("updated", "—")
             coverage = data.get("coverage_pct")
             stock_count = data.get("stock_count")
+            complete = data.get("is_complete")
+            coverage_ok = isinstance(coverage, (int, float)) and float(coverage) >= PUBLISH_COVERAGE_OK
+            if updated in (None, "", "—"):
+                status = ICON_FAIL
+            elif coverage_ok:
+                status = ICON_OK
+            else:
+                status = ICON_WARN
             rows.append({
                 "name": name,
-                "status": "🟢" if updated not in (None, "", "—") else "🔴",
-                "detail": f"updated={updated} coverage={coverage}% stock_count={stock_count}",
+                "status": status,
+                "detail": f"updated={updated} coverage={coverage}% stock_count={stock_count} complete={complete}",
+            })
+        elif name == "trade_engine":
+            data = load_json(cfg["path"], default={}) or {}
+            built_at = data.get("built_at") or data.get("updated_at")
+            source_date = str(data.get("source_updated_at") or "")[:10]
+            universe = int(data.get("universe_count") or 0)
+            candidates = int(data.get("candidate_count") or 0)
+            analyzed = int(data.get("analyzed_count") or 0)
+            momentum = int(data.get("momentum_count") or 0)
+            ratio = analyzed / candidates if candidates else 0
+            age_h = None
+            try:
+                parsed = datetime.fromisoformat(str(built_at).replace("Z", "+00:00"))
+                age_h = (
+                    (datetime.now().astimezone() - parsed).total_seconds() / 3600
+                    if parsed.tzinfo else (datetime.now() - parsed).total_seconds() / 3600
+                )
+            except Exception:
+                pass
+            if not built_at or not source_date or analyzed <= 0:
+                status = ICON_FAIL
+            elif ratio < 0.8 or (age_h is not None and age_h > cfg["max_age_h"]):
+                status = ICON_WARN
+            else:
+                status = ICON_OK
+            rows.append({
+                "name": name,
+                "status": status,
+                "detail": (
+                    f"source={source_date or 'n/a'} built={str(built_at or 'n/a')[:19]} "
+                    f"analyzed={analyzed}/{candidates} universe={universe} momentum={momentum} "
+                    f"errors={len(data.get('errors') or [])} kind={data.get('data_kind') or 'n/a'}"
+                ),
             })
         elif name == "publish_bundle":
             data = load_json(cfg["path"], default={}) or {}
@@ -95,9 +308,18 @@ def check_freshness():
             holdings = files.get("holdings", {}) or {}
             signals = files.get("signals", {}) or {}
             alerts = files.get("alerts", {}) or {}
+            publish_status = str(publish.get("status") or "").upper()
+            if generated == "—":
+                status = ICON_FAIL
+            elif publish_status == "PASS":
+                status = ICON_OK
+            elif publish_status == "WARN":
+                status = ICON_WARN
+            else:
+                status = ICON_FAIL
             rows.append({
                 "name": name,
-                "status": "🟢" if generated != "—" else "🔴",
+                "status": status,
                 "detail": (
                     f"generated={generated} publish={publish.get('status', '—')} "
                     f"holdings={holdings.get('updated', '—')} "
@@ -147,6 +369,31 @@ def check_freshness():
                 "status": "🟢" if updated != "—" else "⚪",
                 "detail": f"updated={updated} terms={len(data.get('term_stats', []))}",
             })
+        elif name == "price_snapshot":
+            data = load_json(cfg["path"], default={}) or {}
+            latest = _latest_price_time(data)
+            now_dt = datetime.now()
+            today = now_dt.date()
+            expected = _expected_latest_market_date(now_dt)
+            latest_date = None
+            if latest:
+                try:
+                    latest_date = datetime.fromisoformat(str(latest).replace("Z", "+00:00")[:10]).date()
+                except Exception:
+                    latest_date = None
+            if not latest_date:
+                status = ICON_FAIL
+            elif latest_date >= expected:
+                status = ICON_OK
+            elif today.weekday() >= 5 and latest_date >= expected:
+                status = ICON_OK
+            else:
+                status = ICON_WARN
+            rows.append({
+                "name": name,
+                "status": status,
+                "detail": f"latest_price={latest or '—'} stocks={len(data) if isinstance(data, dict) else '—'}",
+            })
         else:
             age_h = (datetime.now() - datetime.fromtimestamp(os.path.getmtime(cfg["path"]))).total_seconds() / 3600
             status = "🔴" if age_h > cfg["max_age_h"] else "🟢"
@@ -159,7 +406,8 @@ def check_announcement_volume():
     if not anns:
         return {"status": "⚪", "detail": "announcements.json empty"}
 
-    today = datetime.now().strftime("%Y-%m-%d")
+    now_dt = datetime.now()
+    today = now_dt.strftime("%Y-%m-%d")
     by_date = {}
     for a in anns:
         d = parse_announcement_date(a.get("date") or a.get("release_time"))
@@ -178,7 +426,11 @@ def check_announcement_volume():
         return {"status": "⚪", "detail": "baseline median=0"}
 
     dev = abs(today_n - med) / med
-    is_weekday = datetime.now().weekday() < 5
+    is_weekday = now_dt.weekday() < 5
+    if not is_weekday:
+        return {"status": "⚪", "detail": f"non-trading day, today={today_n}, median {med:.0f}"}
+    if now_dt.hour < 8:
+        return {"status": "⚪", "detail": f"before announcement window, today={today_n}, median {med:.0f}"}
     if today_n == 0 and is_weekday:
         return {"status": "⚠️", "detail": f"today 0 vs median {med:.0f} — check scraper"}
     elif dev > ANN_DEVIATION_WARN:
@@ -250,12 +502,43 @@ def check_integrity():
     if isinstance(events, dict):
         events = events.get("events", [])
     if events:
-        today = datetime.now().strftime("%Y-%m-%d")
-        yesterday = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
-        recent = sum(1 for e in events if e.get("alert_date") in (today, yesterday))
-        filled = sum(1 for e in events if e.get("outcome", {}).get("fwd_20d") is not None)
+        now_dt = datetime.now()
+        recent_dates = _recent_trading_dates(now_dt, 2)
+        recent = sum(1 for e in events if str(e.get("alert_date") or e.get("signal_date") or "")[:10] in recent_dates)
+        filled = 0
+        for e in events:
+            outcome = e.get("outcome", {}) or {}
+            if outcome.get("filled_at"):
+                filled += 1
+                continue
+            if any(outcome.get(key) is not None for key in ("fwd_20d", "fwd_60d", "max_gain_20d", "max_dd_20d", "benchmark_fwd_20d")):
+                filled += 1
         rows.append({"name": "events", "status": "🟢" if recent or filled else "⚠️",
                      "detail": f"{len(events)} total, {recent} recent, {filled} filled"})
+    repo_audit = load_json(os.path.join(BASE, "data", "repo_audit.json"), default={}) or {}
+    if repo_audit:
+        pages = repo_audit.get("pages", []) if isinstance(repo_audit.get("pages"), list) else []
+        dates = repo_audit.get("dates", {}) if isinstance(repo_audit.get("dates"), dict) else {}
+        db = repo_audit.get("db", {}) if isinstance(repo_audit.get("db"), dict) else {}
+        broken_pages = sum(1 for page in pages if isinstance(page, dict) and page.get("missing_refs"))
+        alias_mismatches = sum(
+            1 for pair in (dates.get("alias_pairs") or [])
+            if isinstance(pair, dict) and not pair.get("match")
+        )
+        spread_days = dates.get("spread_days")
+        detail = (
+            f"pages={len(pages)} missing_ref_pages={broken_pages} "
+            f"alias_mismatches={alias_mismatches} date_spread={spread_days}d "
+            f"db_gaps={db.get('missing_trading_day_count', 'n/a')} "
+            f"db_low_cov={db.get('low_coverage_count', 'n/a')}"
+        )
+        if broken_pages:
+            status = ICON_FAIL
+        elif alias_mismatches or (isinstance(spread_days, int) and spread_days > 2):
+            status = ICON_WARN
+        else:
+            status = ICON_OK
+        rows.append({"name": "repo_audit", "status": status, "detail": detail})
     return rows
 
 
@@ -268,6 +551,11 @@ def check_ccass_publish():
         holdings = files.get("holdings", {}) or {}
         signals = files.get("signals", {}) or {}
         alerts = files.get("alerts", {}) or {}
+        announcements = files.get("announcements", {}) or {}
+        rights = files.get("rights_analysis", {}) or {}
+        fundflow = files.get("fundflow", {}) or {}
+        transfers = files.get("transfers", {}) or {}
+        engine = files.get("trade_engine", {}) or {}
         latest_db = publish.get("latest_db_date", "—")
         latest_db_count = publish.get("latest_db_stock_count", "—")
         latest_db_cov = publish.get("latest_db_coverage_pct", "—")
@@ -283,6 +571,21 @@ def check_ccass_publish():
             f"publish {holdings_updated} | coverage {coverage_pct}% "
             f"| signals {signals.get('updated', '—')} | alerts {alerts.get('updated', '—')} "
             f"| verify_data {verify_data} | verify_dashboard {verify_dash}"
+        )
+        detail = detail.replace(
+            " | verify_data ",
+            (
+                f" | anns {announcements.get('updated', 'n/a')}"
+                f" | rights {rights.get('updated', 'n/a')}"
+                f" | flow {fundflow.get('updated', 'n/a')}"
+                f" | transfers {transfers.get('updated', 'n/a')}"
+                " | verify_data "
+            ),
+        )
+        detail += (
+            f" | engine {engine.get('source_updated') or 'n/a'} "
+            f"{engine.get('analyzed_count') or 0}/{engine.get('candidate_count') or 0} "
+            f"of {engine.get('universe_count') or 0}"
         )
         if publish.get("status") == "PASS":
             return {"status": "🟢", "detail": detail, "raw": bundle}
@@ -331,50 +634,97 @@ def check_ccass_publish():
         return {"status": "🔴", "detail": f"audit_gate error: {exc}", "raw": ""}
 
 
-def format_report(freshness, ann_vol, balance, integrity):
-    lines = [f"🏥 System Health — {datetime.now().strftime('%Y-%m-%d %H:%M')} HKT", ""]
-    lines.append("📁 Freshness")
+def classify_overall_status(freshness, publish, ann_vol, balance, integrity):
+    # Historical backlog remains visible under maintenance, but it must not turn
+    # a truthful, publishable current snapshot into an operational WARN.
+    operational_integrity = [item for item in integrity if item.get("name") != "repo_audit"]
+    items = list(freshness) + operational_integrity + [publish, ann_vol, balance]
+    if any(item.get("status") == ICON_FAIL for item in items):
+        return "FAIL"
+    if any(item.get("status") == ICON_WARN for item in items):
+        return "WARN"
+    return "PASS"
+
+
+def classify_maintenance_status(integrity, publish):
+    repo_items = [item for item in integrity if item.get("name") == "repo_audit"]
+    audit = publish.get("raw") if isinstance(publish.get("raw"), dict) else {}
+    if isinstance(audit.get("publish"), dict):
+        audit = audit["publish"]
+    maintenance = str(audit.get("maintenance_status") or "PASS").upper()
+    if any(item.get("status") == ICON_FAIL for item in repo_items):
+        return "FAIL"
+    if maintenance == "WARN" or any(item.get("status") == ICON_WARN for item in repo_items):
+        return "WARN"
+    return "PASS"
+
+
+def format_report(freshness, publish, ann_vol, balance, integrity):
+    lines = [f"System Health {datetime.now().strftime('%Y-%m-%d %H:%M')} HKT", ""]
+    lines.append("Freshness")
     for r in freshness:
         lines.append(f"  {r['status']} {r['name']}: {r['detail']}")
-    publish = check_ccass_publish()
-    lines.append(f"🗃 CCASS publish: {publish['status']} {publish['detail']}")
-    lines.append("ℹ️ Longbridge backfill: 只補歷史 holdings，不補 price / signals")
-    lines.append(f"📰 Announcements: {ann_vol['status']} {ann_vol['detail']}")
-    lines.append(f"💰 DeepSeek: {balance['status']} {balance['detail']}")
+    lines.append(f"CCASS publish: {publish['status']} {publish['detail']}")
+    lines.append("Longbridge backfill: history holdings only; does not refresh price / signals")
+    lines.append(f"Announcements: {ann_vol['status']} {ann_vol['detail']}")
+    lines.append(f"DeepSeek: {balance['status']} {balance['detail']}")
     if integrity:
-        lines.append("🔧 Integrity")
+        lines.append("Integrity")
         for r in integrity:
             lines.append(f"  {r['status']} {r['name']}: {r['detail']}")
-    bad = [x for x in freshness + integrity if x["status"] == "🔴"]
-    warn = [x for x in [ann_vol, balance] if x["status"] in ("⚠️", "🔴")]
+    overall = classify_overall_status(freshness, publish, ann_vol, balance, integrity)
+    lines.append(f"Maintenance backlog: {classify_maintenance_status(integrity, publish)}")
     lines.append("")
-    lines.append("❌ ISSUES" if bad else ("⚠️ WARNINGS" if warn else "✅ ALL OK"))
+    lines.append("ISSUES" if overall == "FAIL" else ("WARNINGS" if overall == "WARN" else "ALL OK"))
     return "\n".join(lines)
 
 
 def push_telegram(text):
     token = (
-        os.environ.get("TELEGRAM_TOKEN", "")
+        os.environ.get("HERMES_TELEGRAM_TOKEN", "")
+        or os.environ.get("HERMES_TELEGRAM_BOT_TOKEN", "")
+        or os.environ.get("HERMES_TG_BOT_TOKEN", "")
+        or os.environ.get("HERMES_BOT_TOKEN", "")
+        or os.environ.get("TELEGRAM_STATUS_TOKEN", "")
+        or os.environ.get("TELEGRAM_TOKEN", "")
         or os.environ.get("TELEGRAM_BOT_TOKEN", "")
         or os.environ.get("TG_BOT_TOKEN", "")
     )
     chat = (
-        os.environ.get("TELEGRAM_CHAT_ID", "")
+        os.environ.get("HERMES_TELEGRAM_CHAT_ID", "")
+        or os.environ.get("HERMES_TG_CHAT_ID", "")
+        or os.environ.get("HERMES_CHAT_ID", "")
+        or os.environ.get("TELEGRAM_STATUS_CHAT_ID", "")
+        or os.environ.get("TELEGRAM_CHAT_ID", "")
         or os.environ.get("TELEGRAM_ADMIN_CHAT_ID", "")
     )
     if not (token and chat):
         print("⚪ no Telegram config, skip push")
-        return
+        return False
+    should_send, fingerprint, reason = should_send_health_telegram(text)
+    if not should_send:
+        print(f"{ICON_SKIP} Telegram push skipped: {reason}")
+        return False
     data = json.dumps({"chat_id": chat, "text": text}).encode()
-    req = urllib.request.Request(
-        f"https://api.telegram.org/bot{token}/sendMessage",
-        data=data, headers={"Content-Type": "application/json"},
-    )
-    try:
-        urllib.request.urlopen(req, timeout=15)
-        print("✅ pushed to Telegram")
-    except Exception as exc:
-        print(f"🔴 Telegram push failed: {exc}")
+    url = f"https://api.telegram.org/bot{token}/sendMessage"
+    for attempt in range(1, 3):
+        req = urllib.request.Request(
+            url,
+            data=data,
+            headers={"Content-Type": "application/json"},
+        )
+        try:
+            urllib.request.urlopen(req, timeout=15)
+            record_health_telegram_sent(text, fingerprint=fingerprint)
+            print("✅ pushed to Telegram")
+            return True
+        except Exception as exc:
+            if attempt == 1:
+                print(f"⚠️ Telegram push failed (attempt {attempt}/2), retrying: {exc}")
+                time.sleep(2)
+            else:
+                print(f"⚠️ Telegram push failed after {attempt} attempts; health rc unchanged: {exc}")
+    return False
 
 
 def main():
@@ -383,16 +733,21 @@ def main():
     args = ap.parse_args()
 
     freshness = check_freshness()
+    freshness.append(check_futu_dependency())
     ann_vol = check_announcement_volume()
     balance = check_deepseek_balance()
     integrity = check_integrity()
 
-    report_text = format_report(freshness, ann_vol, balance, integrity)
+    publish = check_ccass_publish()
+    report_text = format_report(freshness, publish, ann_vol, balance, integrity)
     print(report_text)
 
     with open(HEALTH_OUT, "w", encoding="utf-8") as f:
         json.dump({
             "at": datetime.now().isoformat(),
+            "overall_status": classify_overall_status(freshness, publish, ann_vol, balance, integrity),
+            "maintenance_status": classify_maintenance_status(integrity, publish),
+            "ccass_publish": publish,
             "freshness": freshness, "ann_volume": ann_vol,
             "deepseek": balance, "integrity": integrity,
         }, f, ensure_ascii=False, indent=1)
@@ -405,4 +760,7 @@ def main():
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from scripts.sentry_cron import run_monitored_callable
+
+    sys.exit(run_monitored_callable("hk-alert-health-check", main))

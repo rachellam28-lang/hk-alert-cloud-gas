@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>恒指期權倉位梯</title>
+<style>
+:root{--bg:#edf1f2;--surface:#fff;--surface2:#f5f7f7;--line:#d5dddf;--text:#172126;--muted:#68777d;--teal:#0b7475;--green:#087f53;--green-soft:#dff2e9;--red:#c4313d;--red-soft:#f8e1e3;--amber:#986308;--amber-soft:#fff1bf;--purple:#6c5f91;--blue:#286f91}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:12px/1.4 system-ui,"Microsoft JhengHei",sans-serif}.page{max-width:1580px;margin:auto;padding:10px}.band{margin-bottom:8px;padding:11px;background:var(--surface);border:1px solid var(--line);border-radius:6px}.head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}.title{font-size:18px;font-weight:850}.sub,.note{color:var(--muted);font-size:11px}.status{display:flex;align-items:center;justify-content:flex-end;gap:7px;flex-wrap:wrap;text-align:right}.badge{display:inline-flex;align-items:center;min-height:23px;padding:2px 7px;border:1px solid var(--line);border-radius:4px;background:var(--surface2);font-size:10px;font-weight:800}.badge.pass{color:var(--green);background:var(--green-soft);border-color:#9dd3b5}.badge.partial{color:var(--amber);background:#fff1d8;border-color:#e3c27c}.badge.fail{color:var(--red);background:var(--red-soft);border-color:#e5a7ab}.controls{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:9px}.controls label{font-size:10px;font-weight:800;color:var(--muted)}select,button{min-height:32px;padding:5px 9px;border:1px solid #cbd5d6;border-radius:4px;background:#fff;color:var(--text);font:inherit}.expiry-tabs{display:flex;gap:4px;overflow:auto;scrollbar-width:none}.expiry-tabs::-webkit-scrollbar{display:none}.expiry-tabs button{white-space:nowrap;font-weight:750;cursor:pointer}.expiry-tabs button.active{color:var(--teal);background:#e1f1ef;border-color:#9ccfca}.metrics{display:grid;grid-template-columns:repeat(5,minmax(130px,1fr));gap:5px;margin-top:9px}.metric{min-height:58px;padding:7px 8px;border:1px solid var(--line);border-left:3px solid var(--blue);background:var(--surface2)}.metric.call{border-left-color:var(--green)}.metric.put{border-left-color:var(--red)}.metric.pain{border-left-color:var(--purple)}.metric.ratio{border-left-color:var(--amber)}.metric span{display:block;color:var(--muted);font-size:9px;font-weight:800}.metric b{display:block;margin-top:2px;font-size:16px;line-height:1.1}.metric small{color:var(--muted);font-size:9px}.section-title{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:6px}.section-title b{font-size:14px}.table-wrap{max-width:100%;overflow:auto;border:1px solid var(--line);border-radius:5px;overscroll-behavior-x:contain}table{width:100%;min-width:1440px;border-collapse:collapse;table-layout:fixed}th,td{height:30px;padding:4px 5px;border-right:1px solid #dde4e5;border-bottom:1px solid #dce3e4;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}thead th{position:sticky;top:0;z-index:3;background:#eef3f3;color:#536268;font-size:9px}.group-head{height:27px;text-align:center!important;font-size:11px!important;letter-spacing:0}.call-head{color:#075f40!important;background:#d7efdf!important}.put-head{color:#a62531!important;background:#f6d9dc!important}.strike-head{width:74px;text-align:center!important;color:#4e3f70!important;background:#e7e0f0!important}.leaf-call{background:#e8f5ed!important}.leaf-put{background:#faeaec!important}tbody tr:nth-child(even){background:#f4f7f8}tbody tr:hover{background:#fff7dc}.strike{position:sticky;left:0;z-index:2;text-align:center!important;font-size:12px;font-weight:850;color:#443768;background:#f0ebf6!important;box-shadow:1px 0 #d3cadf}.bar-cell{padding:3px 5px}.oi-bar{height:17px;min-width:2px;border-radius:2px}.oi-bar.call{margin-left:auto;background:linear-gradient(90deg,#37b77a,#07814f)}.oi-bar.put{margin-right:auto;background:linear-gradient(90deg,#d72d3d,#f05b65)}.hot{color:#7a5400;font-weight:850;background:var(--amber-soft)!important}.positive{color:#087449;font-weight:800;background:#dff2e9}.negative{color:#b32734;font-weight:800;background:#f7dfe1}.side-total{font-weight:850}.muted{color:var(--muted)}.cell-sub{margin-left:3px;color:var(--muted);font-size:8px}.empty{padding:45px 15px!important;text-align:center!important;color:var(--muted)}.disclosure{border-left:3px solid var(--amber)}.disclosure ul{margin:6px 0 0;padding-left:18px}.source-link{color:var(--blue)}
+@media(max-width:760px){.page{padding:6px}.band{padding:8px}.head{display:block}.status{justify-content:flex-start;margin-top:6px;text-align:left}.metrics{display:flex;overflow-x:auto;scroll-snap-type:x proximity}.metric{min-width:128px;flex:0 0 128px}.controls{align-items:flex-start}.controls label{width:auto}.controls label:first-child{width:100%}.table-wrap{width:100%}.section-title{align-items:flex-start}.section-title .note{max-width:55%;text-align:right}}
+</style>
+</head>
+<body>
+<header><div id="sharedSiteNav" data-base="./"></div></header>
+<main class="page">
+  <section class="band">
+    <div class="head">
+      <div><div class="title">恒指期權倉位梯</div><div class="sub">CALL 左、行使價中、PUT 右；恒指以 HKEX 官方日報顯示成交、結算、OI 及變化，沒有觀察值一律留空。</div></div>
+      <div id="status" class="status"><span class="badge">載入中</span></div>
+    </div>
+    <div class="controls">
+      <label for="symbolSelect">標的</label><select id="symbolSelect" aria-label="期權標的"></select>
+      <label>到期月</label><div id="expiryTabs" class="expiry-tabs"></div>
+    </div>
+    <div class="metrics">
+      <div class="metric"><span>日間收市／現貨</span><b id="spot">—</b><small id="spotMeta">—</small></div>
+      <div class="metric call"><span>Call Wall</span><b id="callWall">—</b><small id="callWallOi">—</small></div>
+      <div class="metric pain"><span>Max Pain</span><b id="maxPain">—</b><small>OI 加權最小派彩位</small></div>
+      <div class="metric put"><span>Put Wall</span><b id="putWall">—</b><small id="putWallOi">—</small></div>
+      <div class="metric ratio"><span>Put／Call OI</span><b id="pcRatio">—</b><small id="coverage">—</small></div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="section-title"><b id="chainTitle">CALL／PUT 倉位梯</b><span id="chainMeta" class="note">—</span></div>
+    <div class="table-wrap"><table id="chainTable">
+      <thead>
+        <tr><th class="group-head call-head" colspan="8">CALL 認購</th><th class="strike-head" rowspan="2" data-sort="strike">行使價</th><th class="group-head put-head" colspan="8">PUT 認沽</th></tr>
+        <tr>
+          <th class="leaf-call" data-sort="call_previous_volume">上日成交</th><th class="leaf-call" data-sort="call_volume">即日成交</th><th class="leaf-call" data-sort="call_last">結算價</th><th class="leaf-call" data-sort="call_premium_estimate">權利金估算</th><th class="leaf-call" data-sort="call_oi_change">OIΔ</th><th class="leaf-call" data-sort="call_oi_share_pct">OI%</th><th class="leaf-call" data-sort="call_oi">即日 OI</th><th class="leaf-call" data-sort="call_oi">倉位</th>
+          <th class="leaf-put" data-sort="put_oi">倉位</th><th class="leaf-put" data-sort="put_oi">即日 OI</th><th class="leaf-put" data-sort="put_oi_share_pct">OI%</th><th class="leaf-put" data-sort="put_oi_change">OIΔ</th><th class="leaf-put" data-sort="put_premium_estimate">權利金估算</th><th class="leaf-put" data-sort="put_last">結算價</th><th class="leaf-put" data-sort="put_volume">即日成交</th><th class="leaf-put" data-sort="put_previous_volume">上日成交</th>
+        </tr>
+      </thead>
+      <tbody id="levelsBody"><tr><td colspan="17" class="empty">載入中…</td></tr></tbody>
+    </table></div>
+  </section>
+
+  <section class="band disclosure note">
+    <b>口徑</b>
+    <ul>
+      <li>恒指成交量、結算價、IV、未平倉合約及 OI 變化來自 HKEX 官方每日市場報告；「上日 OI」等於即日 OI 減官方 OI 變化。</li>
+      <li>權利金估算 = 官方結算價 × 全日成交量 × 每點 HK$50，屬一致口徑估算，不冒認為逐筆實際成交額。</li>
+      <li>Call／Put Wall 係該到期月最大 OI 行使價；Max Pain 係機械計算，兩者都不是保證支持、阻力或到期價。</li>
+      <li>紅綠只標示 CALL／PUT 方向、OI 集中及增減，不代表買入或賣出指令。</li>
+    </ul>
+  </section>
+</main>
+<script src="./shared-nav.js"></script>
+<script>
+'use strict';
+const state={payload:null,symbol:null,expiry:null,sortKey:'strike',sortDir:1};
+const $=id=>document.getElementById(id);const esc=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+const finite=value=>value!==null&&value!==''&&Number.isFinite(Number(value));const value=(row,key)=>finite(row?.[key])?Number(row[key]):null;
+const price=value=>finite(value)?Number(value).toLocaleString('en-US',{minimumFractionDigits:Number(value)%1?2:0,maximumFractionDigits:2}):'—';
+const count=value=>finite(value)?Number(value).toLocaleString('en-US',{maximumFractionDigits:0}):'—';
+const compact=value=>finite(value)?new Intl.NumberFormat('zh-HK',{notation:'compact',maximumFractionDigits:2}).format(Number(value)):'—';
+const ratio=value=>finite(value)?Number(value).toFixed(2):'—';const signed=value=>finite(value)?`${Number(value)>0?'+':''}${count(value)}`:'—';
+function currentSymbol(){return state.payload?.underlyings?.find(item=>item.symbol===state.symbol)}
+function currentExpiry(){return currentSymbol()?.expiries?.find(exp=>exp.expiry===state.expiry)}
+function setStatus(){const p=state.payload,item=currentSymbol(),klass=String(p.status||'FAIL').toLowerCase();$('status').innerHTML=`<span class="badge ${klass}">${esc(p.status||'FAIL')}</span><span class="sub">觀察 ${esc(item?.observed_at||p.observed_date||'—')} · ${esc(item?.provider||'來源不可用')} · ${esc(item?.delay||'')}</span>`}
+function deltaClass(value){return !finite(value)?'':Number(value)>0?'positive':Number(value)<0?'negative':''}
+function td(raw,formatter=count,klass=''){return `<td class="${klass}" data-sort-value="${finite(raw)?Number(raw):''}">${formatter(raw)}</td>`}
+function deltaTd(raw){return `<td class="${deltaClass(raw)}" data-sort-value="${finite(raw)?Number(raw):''}">${signed(raw)}</td>`}
+function volumeTd(row,side){const current=row[`${side}_volume`],change=row[`${side}_volume_change`];return `<td data-sort-value="${finite(current)?Number(current):''}">${count(current)}${finite(change)?`<span class="cell-sub">(${signed(change)})</span>`:''}</td>`}
+function barTd(raw,max,side){const width=finite(raw)&&max?Math.max(1,Number(raw)/max*100):0;return `<td class="bar-cell" data-sort-value="${finite(raw)?Number(raw):''}">${width?`<div class="oi-bar ${side}" style="width:${width.toFixed(1)}%"></div>`:'—'}</td>`}
+function sortedRows(exp){return [...(exp.rows||[])].sort((a,b)=>{const av=value(a,state.sortKey),bv=value(b,state.sortKey);if(av===null&&bv===null)return 0;if(av===null)return 1;if(bv===null)return-1;return(av-bv)*state.sortDir})}
+function renderTable(exp){const body=$('levelsBody'),rows=sortedRows(exp);if(!rows.length){body.innerHTML='<tr><td colspan="17" class="empty">沒有可驗證期權倉位</td></tr>';return}const maxCall=Math.max(...rows.map(row=>value(row,'call_oi')||0),1),maxPut=Math.max(...rows.map(row=>value(row,'put_oi')||0),1);
+  body.innerHTML=rows.map(row=>{const callHot=exp.call_wall?.strike===row.strike||Number(row.call_oi_share_pct)>=4,putHot=exp.put_wall?.strike===row.strike||Number(row.put_oi_share_pct)>=4;return `<tr>
+    ${td(row.call_previous_volume)}${volumeTd(row,'call')}${td(row.call_last,price)}${td(row.call_premium_estimate,compact)}${deltaTd(row.call_oi_change)}${td(row.call_oi_share_pct,v=>finite(v)?Number(v).toFixed(2)+'%':'—',callHot?'hot':'')}${td(row.call_oi,count,callHot?'hot side-total':'side-total')}${barTd(row.call_oi,maxCall,'call')}
+    <td class="strike" data-sort-value="${row.strike}">${price(row.strike)}</td>
+    ${barTd(row.put_oi,maxPut,'put')}${td(row.put_oi,count,putHot?'hot side-total':'side-total')}${td(row.put_oi_share_pct,v=>finite(v)?Number(v).toFixed(2)+'%':'—',putHot?'hot':'')}${deltaTd(row.put_oi_change)}${td(row.put_premium_estimate,compact)}${td(row.put_last,price)}${volumeTd(row,'put')}${td(row.put_previous_volume)}
+  </tr>`}).join('');
+  document.querySelectorAll('#chainTable th[data-sort]').forEach(th=>{const active=th.dataset.sort===state.sortKey;th.classList.toggle('sort-active',active);th.setAttribute('aria-sort',active?(state.sortDir===1?'ascending':'descending'):'none')});
+}
+function render(){const item=currentSymbol(),exp=currentExpiry();if(!item||!exp)return;setStatus();$('spot').textContent=price(exp.spot);$('spotMeta').textContent=item.label;$('callWall').textContent=price(exp.call_wall?.strike);$('callWallOi').textContent=finite(exp.call_wall?.open_interest)?`OI ${count(exp.call_wall.open_interest)}`:'OI 不足';$('putWall').textContent=price(exp.put_wall?.strike);$('putWallOi').textContent=finite(exp.put_wall?.open_interest)?`OI ${count(exp.put_wall.open_interest)}`:'OI 不足';$('maxPain').textContent=price(exp.max_pain);$('pcRatio').textContent=ratio(exp.put_call_oi_ratio);$('coverage').textContent=`CALL ${count(exp.call_oi)} · PUT ${count(exp.put_oi)} · OI覆蓋 ${finite(exp.oi_coverage_pct)?Number(exp.oi_coverage_pct).toFixed(0)+'%':'不足'}`;$('chainTitle').textContent=`${item.symbol} ${exp.expiry} CALL／PUT 倉位梯`;const multiplier=finite(exp.contract_multiplier)?`每點 HK$${count(exp.contract_multiplier)}`:'合約乘數未提供';$('chainMeta').textContent=`${exp.rows?.length||0} 個行使價 · ${multiplier} · 上日 ${item.previous_observed_at||'未提供'}`;document.querySelectorAll('#expiryTabs button').forEach(button=>button.classList.toggle('active',button.dataset.expiry===state.expiry));renderTable(exp)}
+function selectSymbol(symbol){state.symbol=symbol;const item=currentSymbol();state.expiry=item?.expiries?.[0]?.expiry||null;state.sortKey='strike';state.sortDir=1;$('expiryTabs').innerHTML=(item?.expiries||[]).map(exp=>`<button type="button" data-expiry="${esc(exp.expiry)}">${esc(exp.expiry)} <small>${exp.rows?.length||exp.contracts}</small></button>`).join('');document.querySelectorAll('#expiryTabs button').forEach(button=>button.onclick=()=>{state.expiry=button.dataset.expiry;state.sortKey='strike';state.sortDir=1;render()});render()}
+document.querySelectorAll('#chainTable th[data-sort]').forEach(th=>{th.onclick=()=>{const key=th.dataset.sort;state.sortDir=state.sortKey===key?-state.sortDir:(key==='strike'?1:-1);state.sortKey=key;renderTable(currentExpiry())};th.onkeydown=event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();th.click()}}});
+fetch('./data/options_levels.json?_='+Date.now(),{cache:'no-store'}).then(response=>{if(!response.ok)throw Error(response.status);return response.json()}).then(payload=>{if(!payload.is_observed||!Array.isArray(payload.underlyings)||!payload.underlyings.length)throw Error('no observed options data');state.payload=payload;const select=$('symbolSelect');select.innerHTML=payload.underlyings.map(item=>`<option value="${esc(item.symbol)}">${esc(item.symbol)} · ${esc(item.label)}</option>`).join('');select.onchange=()=>selectSymbol(select.value);selectSymbol(payload.underlyings[0].symbol)}).catch(error=>{$('status').innerHTML='<span class="badge fail">FAIL</span><span class="sub">期權資料載入失敗</span>';$('levelsBody').innerHTML='<tr><td colspan="17" class="empty">沒有已驗證期權快照</td></tr>';console.error(error)});
+</script>
+</body>
+</html>

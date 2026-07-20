@@ -65,24 +65,47 @@ def load_dopamine_thresholds() -> tuple[float, int]:
         return DEFAULT_SPIKE_THRESHOLD, DEFAULT_CONSECUTIVE_DAYS
 
 TELEGRAM_API = "https://api.telegram.org/bot{token}/sendMessage"
+_CCASS_TOKEN_ENV = (
+    "CCASS_TELEGRAM_TOKEN",
+    "CCASS_TELEGRAM_BOT_TOKEN",
+    "CCASS_TG_BOT_TOKEN",
+    "ALERT_TELEGRAM_TOKEN",
+    "ALERT_TG_BOT_TOKEN",
+)
+_CCASS_CHAT_ENV = (
+    "CCASS_TELEGRAM_CHAT_ID",
+    "CCASS_TG_CHAT_ID",
+    "ALERT_TELEGRAM_CHAT_ID",
+    "ALERT_TG_CHAT_ID",
+)
+
+
+def _truthy_env(name: str) -> bool:
+    return os.getenv(name, "").strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _first_env(*names: str) -> str:
+    for name in names:
+        val = os.getenv(name, "").strip()
+        if val:
+            return val
+    return ""
 
 
 def _telegram_token() -> str:
-    return (
-        os.getenv("TELEGRAM_TOKEN")
-        or os.getenv("TELEGRAM_BOT_TOKEN")
-        or os.getenv("TG_BOT_TOKEN")
-        or ""
-    )
+    dedicated = _first_env(*_CCASS_TOKEN_ENV)
+    if dedicated or _first_env(*_CCASS_CHAT_ENV) or _truthy_env("CCASS_TELEGRAM_REQUIRE_DEDICATED"):
+        return dedicated
+    return _first_env("TELEGRAM_TOKEN", "TELEGRAM_BOT_TOKEN", "TG_BOT_TOKEN")
 
 
 def _telegram_chat_id(default: Optional[str] = None) -> str:
-    return (
-        default
-        or os.getenv("TELEGRAM_CHAT_ID")
-        or os.getenv("TELEGRAM_ADMIN_CHAT_ID")
-        or ""
-    )
+    if default:
+        return default
+    dedicated = _first_env(*_CCASS_CHAT_ENV)
+    if dedicated or _first_env(*_CCASS_TOKEN_ENV) or _truthy_env("CCASS_TELEGRAM_REQUIRE_DEDICATED"):
+        return dedicated
+    return _first_env("TELEGRAM_CHAT_ID", "TELEGRAM_ADMIN_CHAT_ID", "TG_CHAT_ID")
 
 
 def send_telegram(

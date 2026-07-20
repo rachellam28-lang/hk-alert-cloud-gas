@@ -10,17 +10,18 @@ Maps Longbridge broker_holding_detail fields to HOLDINGSSnapshot / holdings form
   ratio.value  -> pct_of_issued (float)
 """
 
-import json, os, sys, time, logging
+import json, os, sys, time, logging, subprocess, shutil
 from datetime import date
 from dataclasses import dataclass
 from typing import Optional
+from pathlib import Path
 
 import requests
 
 logger = logging.getLogger(__name__)
 
 ALLOWED_MCP_HOSTS = {"mcp.longbridge.com", "mcp.longbridge.global", "localhost", "127.0.0.1"}
-_raw = os.environ.get("LONGBRIDGE_MCP_URL", "https://mcp.longbridge.com/agent")
+_raw = os.environ.get("LONGBRIDGE_MCP_URL", "https://mcp.longbridge.com")
 from urllib.parse import urlparse as _urlparse
 _parsed = _urlparse(_raw)
 if _parsed.hostname not in ALLOWED_MCP_HOSTS:
@@ -31,31 +32,89 @@ BASE = _raw
 MAX_RETRIES = int(os.environ.get("LONGBRIDGE_MCP_MAX_RETRIES", "2"))
 RETRY_DELAY = float(os.environ.get("LONGBRIDGE_MCP_RETRY_DELAY_SECONDS", "3.0"))
 MCP_TIMEOUT_SECONDS = float(os.environ.get("LONGBRIDGE_MCP_TIMEOUT_SECONDS", "30"))
+CLI_TIMEOUT_SECONDS = float(os.environ.get("LONGBRIDGE_CLI_TIMEOUT_SECONDS", "45"))
+USE_CLI_FIRST = os.environ.get("LONGBRIDGE_USE_CLI", "1") != "0"
+ALLOW_MCP_FALLBACK = os.environ.get("LONGBRIDGE_ENABLE_MCP_FALLBACK", "0") == "1"
+CLI_RETRIES = max(1, int(os.environ.get("LONGBRIDGE_CLI_RETRIES", "2")))
+CLI_RETRY_DELAY_SECONDS = float(os.environ.get("LONGBRIDGE_CLI_RETRY_DELAY_SECONDS", "1.5"))
 
 # --- Token loading ---
 
+def _read_env_token(path: Path) -> str:
+    try:
+        with path.open(encoding="utf-8-sig", errors="replace") as f:
+            for line in f:
+                line = line.strip()
+                if line.startswith("LONGBRIDGE_ACCESS_TOKEN="):
+                    token = line.split("=", 1)[1].strip()
+                    if token:
+                        return token
+    except OSError:
+        return ""
+    return ""
+
+
+def _read_token_file(path: Path) -> str:
+    try:
+        obj = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return ""
+    return str(obj.get("access_token") or "").strip()
+
+
+def _token_candidates() -> list[tuple[str, str]]:
+    home = Path.home()
+    repo_env = Path(__file__).resolve().parents[2] / ".env"
+    cwd_env = Path(os.getcwd()) / ".env"
+    candidates: list[tuple[str, str]] = []
+
+    explicit = os.environ.get("LONGBRIDGE_ACCESS_TOKEN", "").strip()
+    if explicit:
+        candidates.append(("envvar:LONGBRIDGE_ACCESS_TOKEN", explicit))
+
+    token_files = [
+        home / ".longbridge" / "openapi" / "tokens" / "mcp-auth" / "token.json",
+        home / ".longbridge" / "openapi" / "tokens" / "ccass_token.json",
+    ]
+    token_files.extend(
+        sorted(
+            (home / ".longbridge" / "openapi" / "tokens").glob("*/token.json"),
+            key=lambda p: p.stat().st_mtime if p.exists() else 0,
+            reverse=True,
+        )
+    )
+    for path in token_files:
+        token = _read_token_file(path)
+        if token:
+            candidates.append((f"file:{path}", token))
+
+    for path in (repo_env, cwd_env):
+        token = _read_env_token(path)
+        if token:
+            candidates.append((f"env:{path}", token))
+
+    seen = set()
+    deduped: list[tuple[str, str]] = []
+    for source, token in candidates:
+        if token in seen:
+            continue
+        seen.add(token)
+        deduped.append((source, token))
+    return deduped
+
+
+def _find_token() -> str:
+    """Read a usable Longbridge access token from local caches or env."""
+    candidates = _token_candidates()
+    return candidates[0][1] if candidates else ""
+
+
 def _load_token() -> str:
-    """Read LONGBRIDGE_ACCESS_TOKEN from .env in project root."""
-    # Try environment first
-    token = os.environ.get("LONGBRIDGE_ACCESS_TOKEN")
+    """Read a Longbridge access token from local caches or env."""
+    token = _find_token()
     if token:
         return token
-
-    # Walk up to find .env
-    env_paths = [
-        os.path.join(os.path.dirname(__file__), "..", "..", ".env"),
-        os.path.join(os.getcwd(), ".env"),
-        os.path.expanduser("~/Desktop/automatic/holdings-debug/.env"),
-    ]
-    for p in env_paths:
-        p = os.path.normpath(p)
-        if os.path.exists(p):
-            with open(p) as f:
-                for line in f:
-                    line = line.strip()
-                    if line.startswith("LONGBRIDGE_ACCESS_TOKEN="):
-                        return line.split("=", 1)[1]
-    raise RuntimeError("LONGBRIDGE_ACCESS_TOKEN not found in env or .env files")
+    raise RuntimeError("LONGBRIDGE_ACCESS_TOKEN not found in repo .env or environment")
 
 
 # --- MCP client ---
@@ -78,14 +137,17 @@ class LongbridgeMCPClient:
         if params:
             body["params"] = params
 
+        saw_auth_error = False
         for attempt in range(MAX_RETRIES):
             try:
                 r = requests.post(BASE, headers=self.headers, json=body, timeout=MCP_TIMEOUT_SECONDS)
                 if r.status_code == 401:
+                    saw_auth_error = True
                     logger.warning("Longbridge token expired (401), reloading...")
                     self.token = _load_token()
                     self.headers["Authorization"] = "Bearer " + self.token
                     continue
+                saw_auth_error = False
                 raw = r.text.strip()
                 if raw.startswith("data: "):
                     raw = raw[6:]
@@ -108,6 +170,10 @@ class LongbridgeMCPClient:
                     time.sleep(delay)
                 else:
                     raise RuntimeError(f"MCP call failed after {MAX_RETRIES} attempts: {e}")
+
+        if saw_auth_error:
+            raise RuntimeError("Longbridge auth failed (401) after token reload")
+        raise RuntimeError("Longbridge MCP call failed without a usable response")
 
     def initialize(self):
         """Send initialize + initialized notification."""
@@ -163,23 +229,48 @@ def _stock_code_to_symbol(stock_code: str) -> str:
     return f"{code}.HK"
 
 
+def _parse_date(value: str | None) -> str | None:
+    if not value:
+        return None
+    text = str(value).strip()
+    for fmt in ("%Y.%m.%d", "%Y-%m-%d", "%Y/%m/%d"):
+        try:
+            from datetime import datetime as _dt
+
+            return _dt.strptime(text[:10], fmt).date().isoformat()
+        except ValueError:
+            continue
+    return None
+
+
+def _num(value) -> float:
+    if value is None:
+        return 0.0
+    text = str(value).replace(",", "").strip()
+    if not text:
+        return 0.0
+    try:
+        return float(text)
+    except (TypeError, ValueError):
+        return 0.0
+
+
+def _normalize_ratio(value) -> float:
+    ratio = _num(value)
+    # Longbridge broker-holding returns fractions such as 0.3239 for 32.39%.
+    # HKEX/dashboard fields use percentage points.
+    if abs(ratio) <= 1:
+        ratio *= 100
+    return ratio
+
+
 def _parse_holding(item: dict) -> dict:
     """Convert Longbridge holding item to HOLDINGS format."""
     shares_val = item.get("shares", {})
     ratio_val = item.get("ratio", {})
 
-    shares_str = (shares_val.get("value") or "0").replace(",", "")
-    ratio_str = (ratio_val.get("value") or "0").replace(",", "")
-
-    try:
-        shares = int(float(shares_str)) if shares_str else 0
-    except (ValueError, TypeError):
-        shares = 0
-
-    try:
-        pct = float(ratio_str) if ratio_str else 0.0
-    except (ValueError, TypeError):
-        pct = 0.0
+    shares = int(_num(shares_val.get("value")))
+    pct = _normalize_ratio(ratio_val.get("value"))
 
     return {
         "participant_id": item.get("parti_number", ""),
@@ -189,12 +280,97 @@ def _parse_holding(item: dict) -> dict:
     }
 
 
+def _payload_to_snapshot(stock_code: str, query_date: date, data: dict) -> Optional["HOLDINGSSnapshot"]:
+    from src.scraper import HOLDINGSSnapshot  # local import to avoid circular
+
+    actual_date = _parse_date(data.get("updated_at"))
+    requested = query_date.isoformat() if query_date else None
+    if requested and actual_date and actual_date != requested:
+        logger.warning(
+            "Longbridge broker holding date mismatch for %s: requested=%s actual=%s",
+            stock_code,
+            requested,
+            actual_date,
+        )
+        return None
+
+    items = data.get("list", [])
+    if not items:
+        logger.warning("Longbridge returned empty holdings for %s", stock_code)
+        return None
+
+    holdings = [_parse_holding(item) for item in items]
+    holdings = [h for h in holdings if h["shares"] > 0]
+    if not holdings:
+        return None
+
+    total_shares = sum(h["shares"] for h in holdings)
+    total_pct = sum(h["pct_of_issued"] for h in holdings)
+    return HOLDINGSSnapshot(
+        stock_code=stock_code.strip().zfill(5),
+        trade_date=actual_date or requested,
+        total_shares=total_shares,
+        total_pct=round(total_pct, 2) if total_pct else None,
+        num_participants=len(holdings),
+        holdings=holdings,
+    )
+
+
+def _scrape_stock_cli(stock_code: str, query_date: date) -> Optional["HOLDINGSSnapshot"]:
+    exe = shutil.which("longbridge")
+    if not exe:
+        logger.warning("Longbridge CLI not found in PATH")
+        return None
+    symbol = _stock_code_to_symbol(stock_code)
+    for attempt in range(1, CLI_RETRIES + 1):
+        try:
+            proc = subprocess.run(
+                [exe, "broker-holding", "detail", symbol, "--format", "json"],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                timeout=CLI_TIMEOUT_SECONDS,
+                check=False,
+            )
+        except subprocess.TimeoutExpired:
+            if attempt < CLI_RETRIES:
+                time.sleep(CLI_RETRY_DELAY_SECONDS * attempt)
+                continue
+            logger.warning("Longbridge CLI timeout for %s", symbol)
+            return None
+        if proc.returncode != 0:
+            err_text = (proc.stderr or proc.stdout or "")[-300:]
+            retryable = "timeout" in err_text.lower() or "connect" in err_text.lower()
+            if retryable and attempt < CLI_RETRIES:
+                time.sleep(CLI_RETRY_DELAY_SECONDS * attempt)
+                continue
+            logger.warning("Longbridge CLI failed for %s: %s", symbol, err_text)
+            return None
+        try:
+            data = json.loads(proc.stdout)
+        except json.JSONDecodeError as exc:
+            logger.warning("Longbridge CLI JSON parse failed for %s: %s", symbol, exc)
+            return None
+        return _payload_to_snapshot(stock_code, query_date, data)
+    return None
+
+
 def scrape_stock(stock_code: str, query_date: date) -> Optional["HOLDINGSSnapshot"]:
     """Scrape a single stock via Longbridge API.
 
     Returns HOLDINGSSnapshot (same shape as HOLDINGSScraper.scrape_stock) or None.
     """
-    from src.scraper import HOLDINGSSnapshot  # local import to avoid circular
+    if USE_CLI_FIRST:
+        snap = _scrape_stock_cli(stock_code, query_date)
+        if snap:
+            return snap
+        if not ALLOW_MCP_FALLBACK:
+            logger.debug("Longbridge CLI returned no usable snapshot for %s; MCP fallback disabled", stock_code)
+            return None
+        if not _find_token():
+            logger.debug("Longbridge MCP token unavailable; skip API fallback for %s", stock_code)
+            return None
 
     symbol = _stock_code_to_symbol(stock_code)
     date_str = query_date.strftime("%Y-%m-%d") if query_date else None
@@ -204,29 +380,9 @@ def scrape_stock(stock_code: str, query_date: date) -> Optional["HOLDINGSSnapsho
         data = client.broker_holding_detail(symbol, date_str)
     except Exception as e:
         logger.error("Longbridge API failed for %s: %s", symbol, e)
+        err = str(e).lower()
+        if any(marker in err for marker in ("auth", "401", "unauthorized", "forbidden", "rate", "quota", "429")):
+            raise RuntimeError(str(e))
         return None
 
-    items = data.get("list", [])
-    if not items:
-        logger.warning("Longbridge returned empty holdings for %s", symbol)
-        return None
-
-    holdings = [_parse_holding(item) for item in items]
-    # Filter out entries with zero shares (can happen with empty values)
-    holdings = [h for h in holdings if h["shares"] > 0]
-
-    if not holdings:
-        return None
-
-    total_shares = sum(h["shares"] for h in holdings)
-    total_pct = sum(h["pct_of_issued"] for h in holdings)
-    num_participants = len(holdings)
-
-    return HOLDINGSSnapshot(
-        stock_code=stock_code,
-        trade_date=date_str,
-        total_shares=total_shares,
-        total_pct=round(total_pct, 2) if total_pct else None,
-        num_participants=num_participants,
-        holdings=holdings,
-    )
+    return _payload_to_snapshot(stock_code, query_date, data)

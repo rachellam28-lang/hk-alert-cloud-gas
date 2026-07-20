@@ -4,13 +4,61 @@
 """
 from __future__ import annotations
 
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 
 from src.db import get_conn
 from src.logger import setup_logger
 from src.trading_calendar import last_n_trading_days
 
 logger = setup_logger("trend")
+
+
+def reference_dates_for_windows(
+    target_date: date,
+    windows: list[int] | None = None,
+    max_calendar_gap: int = 4,
+) -> dict[int, date | None]:
+    """Pick a nearby high-coverage trusted reference date for each window."""
+    if windows is None:
+        windows = [5, 20, 60, 120]
+    if not windows:
+        return {}
+    all_tdays = last_n_trading_days(target_date, max(windows) + 1)
+    expected = {
+        w: all_tdays[-(w + 1)] if len(all_tdays) > w else None
+        for w in windows
+    }
+    refs: dict[int, date | None] = {}
+    with get_conn() as conn:
+        active_row = conn.execute(
+            "SELECT COUNT(*) FROM stock_universe WHERE is_active = 1"
+        ).fetchone()
+        active_total = int(active_row[0] or 0) if active_row else 0
+        minimum_trusted = max(1, int(active_total * 0.90))
+        for window, expected_date in expected.items():
+            if expected_date is None:
+                refs[window] = None
+                continue
+            lower = (expected_date - timedelta(days=max_calendar_gap)).isoformat()
+            upper = min(target_date, expected_date + timedelta(days=max_calendar_gap)).isoformat()
+            row = conn.execute(
+                """
+                SELECT trade_date,
+                       SUM(CASE WHEN total_pct IS NOT NULL THEN 1 ELSE 0 END) AS trusted_count
+                FROM holdings_daily
+                WHERE trade_date BETWEEN ? AND ?
+                  AND validation_failed = 0
+                GROUP BY trade_date
+                HAVING trusted_count >= ?
+                ORDER BY ABS(julianday(trade_date) - julianday(?)) ASC,
+                         trusted_count DESC,
+                         trade_date DESC
+                LIMIT 1
+                """,
+                (lower, upper, minimum_trusted, expected_date.isoformat()),
+            ).fetchone()
+            refs[window] = date.fromisoformat(row[0]) if row else None
+    return refs
 
 
 def compute_trends_for_date(target_date: date, windows: list[int] | None = None) -> int:
@@ -24,15 +72,9 @@ def compute_trends_for_date(target_date: date, windows: list[int] | None = None)
     date_str = target_date.strftime("%Y-%m-%d")
     now_iso = datetime.utcnow().isoformat()
 
-    # Pre-compute reference dates: for each window, find the trading day N days back
-    ref_dates = {}
-    max_window = max(windows) if windows else 0
-    all_tdays = last_n_trading_days(target_date, max_window + 1)
-    for w in windows:
-        if len(all_tdays) > w:
-            ref_dates[w] = all_tdays[-(w + 1)]
-        else:
-            ref_dates[w] = None
+    # Use the nearest trusted high-coverage snapshot around each exact trading-day target.
+    # This tolerates one missing scrape without comparing incompatible fallback sources.
+    ref_dates = reference_dates_for_windows(target_date, windows)
 
     # Build SQL with date-based LEFT JOINs
     ref_joins = []
@@ -49,17 +91,18 @@ def compute_trends_for_date(target_date: date, windows: list[int] | None = None)
             )
             ref_selects.append(
                 "CASE "
-                "WHEN cur.total_shares IS NOT NULL AND ref{w}.total_shares IS NOT NULL AND ref{w}.total_shares != 0 "
-                "THEN (cur.total_shares - ref{w}.total_shares) * 100.0 / ref{w}.total_shares "
                 "WHEN cur.total_pct IS NOT NULL AND ref{w}.total_pct IS NOT NULL "
-                "THEN cur.total_pct - ref{w}.total_pct "
+                "AND cur.total_shares IS NOT NULL AND ref{w}.total_shares IS NOT NULL "
+                "AND ref{w}.total_shares != 0 "
+                "THEN (cur.total_shares - ref{w}.total_shares) * 100.0 / ref{w}.total_shares "
                 "ELSE NULL END AS delta_{w}d_pct, "
-                "cur.total_shares - ref{w}.total_shares AS delta_{w}d_shares".format(w=w)
+                "CASE WHEN cur.total_pct IS NOT NULL AND ref{w}.total_pct IS NOT NULL "
+                "THEN cur.total_shares - ref{w}.total_shares ELSE NULL END AS delta_{w}d_shares".format(w=w)
             )
             ref_params.append(rd)
         else:
             ref_selects.append(
-                "0.0 AS delta_{w}d_pct, 0 AS delta_{w}d_shares".format(w=w)
+                "NULL AS delta_{w}d_pct, NULL AS delta_{w}d_shares".format(w=w)
             )
 
     ref_join_block = "\n".join(ref_joins)
@@ -154,6 +197,7 @@ def _consecutive_streak(conn, stock_code: str, end_date: date) -> tuple[int, int
         """SELECT trade_date, total_pct, total_shares
            FROM holdings_daily
            WHERE stock_code = ? AND trade_date <= ? AND validation_failed = 0
+             AND total_pct IS NOT NULL
            ORDER BY trade_date DESC
            LIMIT 30""",
         (stock_code, end_str),

@@ -357,40 +357,58 @@
     "post_count": 1,
     "pre_types": [],
     "post_types": [
-      "觀察·配股"
+      "披露易公告 - 收購/要約 / 聯合公告"
     ],
     "signal_types_summary": [
-      "觀察·配股"
+      "披露易公告 - 收購/要約 / 聯合公告"
     ],
     "first_pre_days": null,
     "first_post_days": 0,
-    "pattern": "catalyst"
+    "pattern": "catalyst",
+    "data_kind": "derived_rule_signal",
+    "derived_from": [
+      "announcements.json",
+      "history.json"
+    ],
+    "method": "pre/post signal counts within 30 calendar days",
+    "score": 60,
+    "label": "📈 留意",
+    "label_class": "buy"
   },
   {
-    "code": "06651",
-    "name": "51WORLD",
+    "code": "00145",
+    "name": "CCIAM FUTURE EN",
     "types": [
-      "配股"
+      "復牌"
     ],
-    "title": "配股 OF NEW H SHARES（一般授權）",
+    "title": "公司公告：ANNOUNCEMENT IN RELATION TO (I) SUPPLEMENTAL INFORMATION REGARDING (1) APP…",
     "date": "2026-07-03",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0703/2026070300089.pdf",
-    "type": "placement",
-    "typeLabel": "配股",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0703/2026070302603.pdf",
+    "type": "resume",
+    "typeLabel": "復牌",
     "direction": "up",
     "signal_count": 1,
     "pre_count": 0,
     "post_count": 1,
     "pre_types": [],
     "post_types": [
-      "觀察·配股"
+      "披露易公告 - 復牌"
     ],
     "signal_types_summary": [
-      "觀察·配股"
+      "披露易公告 - 復牌"
     ],
     "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
+    "first_post_days": 3,
+    "pattern": "catalyst",
+    "data_kind": "derived_rule_signal",
+    "derived_from": [
+      "announcements.json",
+      "history.json"
+    ],
+    "method": "pre/post signal counts within 30 calendar days",
+    "score": 55,
+    "label": "📈 留意",
+    "label_class": "buy"
   },
   {
     "code": "02295",
@@ -415,47 +433,29 @@
       "披露易公告 - 復牌"
     ],
     "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
+    "first_post_days": 4,
+    "pattern": "catalyst",
+    "data_kind": "derived_rule_signal",
+    "derived_from": [
+      "announcements.json",
+      "history.json"
+    ],
+    "method": "pre/post signal counts within 30 calendar days",
+    "score": 55,
+    "label": "📈 留意",
+    "label_class": "buy"
   },
   {
-    "code": "01364",
-    "name": "GUMING",
+    "code": "01417",
+    "name": "RIVERINE CHINA",
     "types": [
-      "配股"
+      "復牌"
     ],
-    "title": "公司公告：COMPLETION OF THE OFFERING OF HK$1,960 MILLION ZERO COUPON GUARANTEED CONV…",
-    "date": "2026-07-02",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0702/2026070203750.pdf",
-    "type": "placement",
-    "typeLabel": "配股",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "觀察·配股"
-    ],
-    "signal_types_summary": [
-      "觀察·配股"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "00701",
-    "name": "CNT GROUP",
-    "types": [
-      "收購/要約",
-      "聯合公告"
-    ],
-    "title": "公司公告：JOINT ANNOUNCEMENT (1) CLOSE OF THE CNT OFFER; (2) RESULTS OF THE CNT OFFE…",
-    "date": "2026-07-02",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0702/2026070203177.pdf",
+    "title": "公司公告：APPOINTMENT OF JOINT INDEPENDENT FINANCIAL ADVISERS",
+    "date": "2026-06-18",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0618/2026061800518.pdf",
     "type": "acquisition",
-    "typeLabel": "收購/要約 / 聯合公告",
+    "typeLabel": "收購/要約",
     "direction": "up",
     "signal_count": 1,
     "pre_count": 0,
@@ -468,149 +468,27 @@
       "披露易公告 - 收購/要約 / 聯合公告"
     ],
     "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
+    "first_post_days": 18,
+    "pattern": "catalyst",
+    "data_kind": "derived_rule_signal",
+    "derived_from": [
+      "announcements.json",
+      "history.json"
+    ],
+    "method": "pre/post signal counts within 30 calendar days",
+    "score": 52,
+    "label": "📈 留意",
+    "label_class": "buy"
   },
   {
-    "code": "01709",
-    "name": "DL HOLDINGS GP",
-    "types": [
-      "配股"
-    ],
-    "title": "澄清公告 有關 PROPOSED BONUS 發行股份",
-    "date": "2026-07-02",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0702/2026070203155.pdf",
-    "type": "placement",
-    "typeLabel": "配股",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "觀察·配股"
-    ],
-    "signal_types_summary": [
-      "觀察·配股"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "00347",
-    "name": "ANGANG STEEL",
-    "types": [
-      "聯合公告"
-    ],
-    "title": "公司公告：COMPLETION OF ACQUISITION OF EQUITY INTEREST IN ANGANG YINGKOU PORT",
-    "date": "2026-07-02",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0702/2026070203063.pdf",
-    "type": "announcement",
-    "typeLabel": "聯合公告",
-    "direction": "neutral",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "觀察·聯合公告"
-    ],
-    "signal_types_summary": [
-      "觀察·聯合公告"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "01468",
-    "name": "JAKOTA CAPITAL",
-    "types": [
-      "配股"
-    ],
-    "title": "公司公告：SUPPLEMENTAL ANNOUNCEMENT CHANGE IN USE OF PROCEEDS FROM THE PLACING",
-    "date": "2026-07-02",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0702/2026070202963.pdf",
-    "type": "placement",
-    "typeLabel": "配股",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "觀察·配股"
-    ],
-    "signal_types_summary": [
-      "觀察·配股"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "00913",
-    "name": "HARBOUR DIGITAL",
-    "types": [
-      "供股",
-      "配股"
-    ],
-    "title": "公司公告：DELAY IN DESPATCH OF CIRCULAR AND REVISED TIMETABLE IN RELATION TO PROPOSE…",
-    "date": "2026-07-02",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0702/2026070202706.pdf",
-    "type": "rights",
-    "typeLabel": "供股 / 配股",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "觀察·供股 / 配股"
-    ],
-    "signal_types_summary": [
-      "觀察·供股 / 配股"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "06820",
-    "name": "FRIENDTIMES",
-    "types": [
-      "股東增持"
-    ],
-    "title": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING OF THE COMPANY BY A CONTRO…",
-    "date": "2026-07-02",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0702/2026070202460.pdf",
-    "type": "increase",
-    "typeLabel": "股東增持",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "披露易公告 - 股東增持"
-    ],
-    "signal_types_summary": [
-      "披露易公告 - 股東增持"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "00643",
-    "name": "CARRY WEALTH",
+    "code": "01417",
+    "name": "RIVERINE CHINA",
     "types": [
       "復牌"
     ],
     "title": "公司公告：EXCHANGE NOTICE - RESUMPTION OF TRADING",
-    "date": "2026-07-02",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0702/2026070200793.htm",
+    "date": "2026-06-16",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0616/2026061600165.htm",
     "type": "resume",
     "typeLabel": "復牌",
     "direction": "up",
@@ -619,10 +497,10 @@
     "post_count": 1,
     "pre_types": [],
     "post_types": [
-      "披露易公告 - 復牌"
+      "披露易公告 - 收購/要約 / 聯合公告"
     ],
     "signal_types_summary": [
-      "披露易公告 - 復牌"
+      "披露易公告 - 收購/要約 / 聯合公告"
     ],
     "first_pre_days": null,
     "first_post_days": 0,
@@ -660,77 +538,10 @@
     "types": [
       "復牌"
     ],
-    "title": "公司公告：EXCHANGE NOTICE - RESUMPTION OF TRADING",
-    "date": "2026-07-02",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0702/2026070200165.htm",
-    "type": "resume",
-    "typeLabel": "復牌",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "披露易公告 - 復牌"
-    ],
-    "signal_types_summary": [
-      "披露易公告 - 復牌"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "00377",
-    "name": "CHINA HUAJUN GP",
-    "types": [
-      "復牌"
-    ],
-    "title": "公司公告：EXCHANGE NOTICE - RESUMPTION OF TRADING",
-    "date": "2026-07-02",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0702/2026070200163.htm",
-    "type": "resume",
-    "typeLabel": "復牌",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "披露易公告 - 復牌"
-    ],
-    "signal_types_summary": [
-      "披露易公告 - 復牌"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "02322",
-    "name": "MODERN INNO DT",
-    "types": [
-      "復牌"
-    ],
-    "title": "公司公告：EXCHANGE NOTICE - RESUMPTION OF TRADING",
-    "date": "2026-07-02",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0702/2026070200129.htm",
-    "type": "resume",
-    "typeLabel": "復牌",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "披露易公告 - 復牌"
-    ],
-    "signal_types_summary": [
-      "披露易公告 - 復牌"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
+    "method": "pre/post signal counts within 30 calendar days",
+    "score": 52,
+    "label": "📈 留意",
+    "label_class": "buy"
   },
   {
     "code": "02295",
@@ -783,37 +594,54 @@
       "披露易公告 - 復牌"
     ],
     "first_pre_days": null,
-    "first_post_days": 0,
-    "pattern": "catalyst"
+    "first_post_days": 21,
+    "pattern": "catalyst",
+    "data_kind": "derived_rule_signal",
+    "derived_from": [
+      "announcements.json",
+      "history.json"
+    ],
+    "method": "pre/post signal counts within 30 calendar days",
+    "score": 52,
+    "label": "📈 留意",
+    "label_class": "buy"
   },
   {
-    "code": "01835",
-    "name": "REALWAY CAPITAL",
+    "code": "01417",
+    "name": "RIVERINE CHINA",
     "types": [
-      "配股",
       "收購/要約",
       "復牌",
       "聯合公告"
     ],
-    "title": "公司公告：JOINT ANNOUNCEMENT 1 CONNECTED TRANSACTION IN RELATION TO PROPOSED SHARE S…",
-    "date": "2026-06-30",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0630/2026063003989.pdf",
-    "type": "placement",
-    "typeLabel": "配股 / 收購/要約 / 復牌 / 聯合公告",
+    "title": "公司公告：JOINT ANNOUNCEMENT - (1) COMPLETION OF THE SALE AND PURCHASE OF THE SALE S…",
+    "date": "2026-06-15",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0615/2026061501110.pdf",
+    "type": "acquisition",
+    "typeLabel": "收購/要約 / 復牌 / 聯合公告",
     "direction": "up",
     "signal_count": 1,
     "pre_count": 0,
     "post_count": 1,
     "pre_types": [],
     "post_types": [
-      "披露易公告 - 復牌"
+      "披露易公告 - 收購/要約 / 聯合公告"
     ],
     "signal_types_summary": [
-      "披露易公告 - 復牌"
+      "披露易公告 - 收購/要約 / 聯合公告"
     ],
     "first_pre_days": null,
-    "first_post_days": 2,
-    "pattern": "catalyst"
+    "first_post_days": 21,
+    "pattern": "catalyst",
+    "data_kind": "derived_rule_signal",
+    "derived_from": [
+      "announcements.json",
+      "history.json"
+    ],
+    "method": "pre/post signal counts within 30 calendar days",
+    "score": 52,
+    "label": "📈 留意",
+    "label_class": "buy"
   },
   {
     "code": "01709",
@@ -832,303 +660,23 @@
     "post_count": 1,
     "pre_types": [],
     "post_types": [
-      "觀察·配股"
+      "披露易公告 - 配股"
     ],
     "signal_types_summary": [
-      "觀察·配股"
+      "披露易公告 - 配股"
     ],
     "first_pre_days": null,
-    "first_post_days": 2,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "00377",
-    "name": "CHINA HUAJUN GP",
-    "types": [
-      "配股",
-      "收購/要約",
-      "復牌"
+    "first_post_days": 0,
+    "pattern": "catalyst",
+    "data_kind": "derived_rule_signal",
+    "derived_from": [
+      "announcements.json",
+      "history.json"
     ],
-    "title": "公司公告：(1) ISSUE OF NEW SHARES UNDER SPECIFIC MANDATE FOR DEBT CAPITALISATION; (2…",
-    "date": "2026-06-30",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0630/2026063002431.pdf",
-    "type": "placement",
-    "typeLabel": "配股 / 收購/要約 / 復牌",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "披露易公告 - 復牌"
-    ],
-    "signal_types_summary": [
-      "披露易公告 - 復牌"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 2,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "02322",
-    "name": "MODERN INNO DT",
-    "types": [
-      "復牌"
-    ],
-    "title": "公司公告：ANNOUNCEMENT OF RESULTS FOR THE YEAR ENDED 31 MARCH 2026 AND RESUMPTION OF…",
-    "date": "2026-06-30",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0630/2026063002299.pdf",
-    "type": "resume",
-    "typeLabel": "復牌",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "披露易公告 - 復牌"
-    ],
-    "signal_types_summary": [
-      "披露易公告 - 復牌"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 2,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "06820",
-    "name": "FRIENDTIMES",
-    "types": [
-      "股東增持"
-    ],
-    "title": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING OF THE COMPANY BY A CONTRO…",
-    "date": "2026-06-30",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0630/2026063000920.pdf",
-    "type": "increase",
-    "typeLabel": "股東增持",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "披露易公告 - 股東增持"
-    ],
-    "signal_types_summary": [
-      "披露易公告 - 股東增持"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 2,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "00377",
-    "name": "CHINA HUAJUN GP",
-    "types": [
-      "配股"
-    ],
-    "title": "TERMINATION OF 認購新股（一般授權）",
-    "date": "2026-06-29",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0629/2026062902015.pdf",
-    "type": "placement",
-    "typeLabel": "配股",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "披露易公告 - 復牌"
-    ],
-    "signal_types_summary": [
-      "披露易公告 - 復牌"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 3,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "06820",
-    "name": "FRIENDTIMES",
-    "types": [
-      "股東增持"
-    ],
-    "title": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING OF THE COMPANY BY A CONTRO…",
-    "date": "2026-06-29",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0629/2026062900966.pdf",
-    "type": "increase",
-    "typeLabel": "股東增持",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "披露易公告 - 股東增持"
-    ],
-    "signal_types_summary": [
-      "披露易公告 - 股東增持"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 3,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "00377",
-    "name": "CHINA HUAJUN GP",
-    "types": [
-      "配股"
-    ],
-    "title": "認購新股（一般授權）",
-    "date": "2026-06-26",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0626/2026062602471.pdf",
-    "type": "placement",
-    "typeLabel": "配股",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "披露易公告 - 復牌"
-    ],
-    "signal_types_summary": [
-      "披露易公告 - 復牌"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 6,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "01364",
-    "name": "GUMING",
-    "types": [
-      "配股"
-    ],
-    "title": "公司公告：PROPOSED OFFERING OF HK$1,960 MILLION ZERO COUPON GUARANTEED CONVERTIBLE B…",
-    "date": "2026-06-24",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0624/2026062400045.pdf",
-    "type": "placement",
-    "typeLabel": "配股",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "觀察·配股"
-    ],
-    "signal_types_summary": [
-      "觀察·配股"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 8,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "06820",
-    "name": "FRIENDTIMES",
-    "types": [
-      "股東增持"
-    ],
-    "title": "公司公告：VOLUNTARY ANNOUNCEMENT INCREASE IN SHAREHOLDING OF THE COMPANY BY A CONTRO…",
-    "date": "2026-06-24",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0624/2026062400977.pdf",
-    "type": "increase",
-    "typeLabel": "股東增持",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "披露易公告 - 股東增持"
-    ],
-    "signal_types_summary": [
-      "披露易公告 - 股東增持"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 8,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "00377",
-    "name": "CHINA HUAJUN GP",
-    "types": [
-      "配股"
-    ],
-    "title": "公司公告：UPDATE ON ISSUE OF SCHEME SHARES UNDER SPECIFIC MANDATE FOR THE SCHEME OF …",
-    "date": "2026-06-23",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0623/2026062301459.pdf",
-    "type": "placement",
-    "typeLabel": "配股",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "披露易公告 - 復牌"
-    ],
-    "signal_types_summary": [
-      "披露易公告 - 復牌"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 9,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "01364",
-    "name": "GUMING",
-    "types": [
-      "配股"
-    ],
-    "title": "公司公告：VOLUNTARY ANNOUNCEMENT PROPOSED OFFERING OF HKD-DENOMINATED GUARANTEED CON…",
-    "date": "2026-06-23",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0623/2026062300482.pdf",
-    "type": "placement",
-    "typeLabel": "配股",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "觀察·配股"
-    ],
-    "signal_types_summary": [
-      "觀察·配股"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 9,
-    "pattern": "catalyst"
-  },
-  {
-    "code": "00701",
-    "name": "CNT GROUP",
-    "types": [
-      "收購/要約",
-      "聯合公告"
-    ],
-    "title": "公司公告：JOINT ANNOUNCEMENT (1) LEVEL OF ACCEPTANCE OF THE CNT OFFER; (2) CNT OFFER…",
-    "date": "2026-06-17",
-    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0617/2026061701516.pdf",
-    "type": "acquisition",
-    "typeLabel": "收購/要約 / 聯合公告",
-    "direction": "up",
-    "signal_count": 1,
-    "pre_count": 0,
-    "post_count": 1,
-    "pre_types": [],
-    "post_types": [
-      "披露易公告 - 收購/要約 / 聯合公告"
-    ],
-    "signal_types_summary": [
-      "披露易公告 - 收購/要約 / 聯合公告"
-    ],
-    "first_pre_days": null,
-    "first_post_days": 15,
-    "pattern": "catalyst"
+    "method": "pre/post signal counts within 30 calendar days",
+    "score": 60,
+    "label": "📈 留意",
+    "label_class": "buy"
   },
   {
     "code": "00419",

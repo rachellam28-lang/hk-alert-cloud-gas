@@ -33,6 +33,7 @@ MAX_SHARES_VS_HOLDINGS_PCT = 2.0  # Max % diff between total_shares and SUM(hold
 MIN_PARTICIPANTS = 1          # Minimum expected participants for a stock with shares
 MAX_TOTAL_PCT = 100.0
 MIN_TOTAL_PCT = 0.0
+PUBLISH_SCOPE_PATTERNS = ("029%", "04%", "8%")
 
 
 class VerificationResult:
@@ -58,35 +59,43 @@ class VerificationResult:
 
 def run_all_checks(conn: sqlite3.Connection, result: VerificationResult,
                    filter_stock: str | None = None,
-                   filter_date: str | None = None) -> None:
+                   filter_date: str | None = None,
+                   publish_scope: bool = False) -> None:
     """Run all verification checks in sequence."""
 
     # ── Check 1: Basic range validation ─────────────────────────────────
-    _check_range_validation(conn, result, filter_stock, filter_date)
+    _check_range_validation(conn, result, filter_stock, filter_date, publish_scope)
 
     # ── Check 2: Pct consistency — total_pct vs holdings SUM(pct_of_issued) ──
-    _check_pct_consistency(conn, result, filter_stock, filter_date)
+    _check_pct_consistency(conn, result, filter_stock, filter_date, publish_scope)
 
     # ── Check 3: Shares consistency — total_shares vs SUM(holdings.shares) ──
-    _check_shares_consistency(conn, result, filter_stock, filter_date)
+    _check_shares_consistency(conn, result, filter_stock, filter_date, publish_scope)
 
     # ── Check 4: Day-over-day anomaly detection ─────────────────────────
-    _check_daily_jumps(conn, result, filter_stock, filter_date)
+    _check_daily_jumps(conn, result, filter_stock, filter_date, publish_scope)
 
     # ── Check 5: Date coverage gaps ─────────────────────────────────────
-    _check_coverage_gaps(conn, result, filter_stock, filter_date)
+    _check_coverage_gaps(conn, result, filter_stock, filter_date, publish_scope)
 
     # ── Check 6: Zero/missing participant counts ─────────────────────────
-    _check_participant_counts(conn, result, filter_stock, filter_date)
+    _check_participant_counts(conn, result, filter_stock, filter_date, publish_scope)
 
     # ── Check 7: holdings per stock vs daily row existence ──────────────
-    _check_orphan_rows(conn, result, filter_stock, filter_date)
+    _check_orphan_rows(conn, result, filter_stock, filter_date, publish_scope)
 
     # ── Check 8: Concentration metrics sanity ───────────────────────────
-    _check_concentration_metrics(conn, result, filter_stock, filter_date)
+    _check_concentration_metrics(conn, result, filter_stock, filter_date, publish_scope)
 
 
-def _add_filter(stock: str | None, date_val: str | None) -> tuple[str, list]:
+def _publish_scope_clauses(alias: str | None = "d") -> list[str]:
+    col = f"{alias}.stock_code" if alias else "stock_code"
+    return [f"{col} NOT LIKE '{pattern}'" for pattern in PUBLISH_SCOPE_PATTERNS]
+
+
+def _add_filter(stock: str | None, date_val: str | None,
+                publish_scope: bool = False,
+                alias: str | None = "d") -> tuple[str, list]:
     """Build WHERE clause and params from optional filters.
     Returns (where_clause, params). When no filters, returns 'WHERE 1=1' so
     subsequent AND conditions work seamlessly."""
@@ -98,14 +107,16 @@ def _add_filter(stock: str | None, date_val: str | None) -> tuple[str, list]:
     if date_val:
         clauses.append("d.trade_date = ?")
         params.append(date_val)
+    if publish_scope:
+        clauses.extend(_publish_scope_clauses(alias))
     if clauses:
         return "WHERE " + " AND ".join(clauses), params
     return "WHERE 1=1", params
 
 
 # ── Check 1: Basic range validation ─────────────────────────────────────
-def _check_range_validation(conn, result, stock, date_val):
-    where, params = _add_filter(stock, date_val)
+def _check_range_validation(conn, result, stock, date_val, publish_scope=False):
+    where, params = _add_filter(stock, date_val, publish_scope)
 
     # total_pct out of range
     rows = conn.execute(f"""
@@ -145,8 +156,8 @@ def _check_range_validation(conn, result, stock, date_val):
 
 
 # ── Check 2: Pct consistency ────────────────────────────────────────────
-def _check_pct_consistency(conn, result, stock, date_val):
-    where, params = _add_filter(stock, date_val)
+def _check_pct_consistency(conn, result, stock, date_val, publish_scope=False):
+    where, params = _add_filter(stock, date_val, publish_scope)
     stock_where = "AND d.stock_code = ?" if stock else ""
     stock_params = [stock] if stock else []
 
@@ -170,6 +181,9 @@ def _check_pct_consistency(conn, result, stock, date_val):
 
     # Need to handle the double stock_code filter carefully
     if stock:
+        clauses = ["d.stock_code = ?"]
+        if publish_scope:
+            clauses.extend(_publish_scope_clauses("d"))
         rows = conn.execute(f"""
             SELECT d.stock_code, d.trade_date,
                    ROUND(d.total_pct, 2) as total_pct,
@@ -183,10 +197,13 @@ def _check_pct_consistency(conn, result, stock, date_val):
                 WHERE stock_code = ?
                 GROUP BY stock_code, trade_date
             ) h ON d.stock_code = h.stock_code AND d.trade_date = h.trade_date
-            WHERE d.stock_code = ?
+            WHERE {" AND ".join(clauses)}
             ORDER BY ABS(COALESCE(d.total_pct - h.sum_pct, 999)) DESC
         """, [stock, stock]).fetchall()
     elif date_val:
+        clauses = ["d.trade_date = ?"]
+        if publish_scope:
+            clauses.extend(_publish_scope_clauses("d"))
         rows = conn.execute(f"""
             SELECT d.stock_code, d.trade_date,
                    ROUND(d.total_pct, 2) as total_pct,
@@ -200,11 +217,14 @@ def _check_pct_consistency(conn, result, stock, date_val):
                 WHERE trade_date = ?
                 GROUP BY stock_code, trade_date
             ) h ON d.stock_code = h.stock_code AND d.trade_date = h.trade_date
-            WHERE d.trade_date = ?
+            WHERE {" AND ".join(clauses)}
             ORDER BY ABS(COALESCE(d.total_pct - h.sum_pct, 999)) DESC
         """, [date_val, date_val]).fetchall()
     else:
-        rows = conn.execute("""
+        scope_sql = ""
+        if publish_scope:
+            scope_sql = " AND " + " AND ".join(_publish_scope_clauses("d"))
+        rows = conn.execute(f"""
             SELECT d.stock_code, d.trade_date,
                    ROUND(d.total_pct, 2) as total_pct,
                    ROUND(COALESCE(h.sum_pct, 0), 2) as holdings_sum_pct,
@@ -217,6 +237,7 @@ def _check_pct_consistency(conn, result, stock, date_val):
                 GROUP BY stock_code, trade_date
             ) h ON d.stock_code = h.stock_code AND d.trade_date = h.trade_date
             WHERE d.total_pct > 0 AND COALESCE(h.sum_pct, 0) > 0
+              {scope_sql}
               AND ABS(COALESCE(d.total_pct - h.sum_pct, 999)) > ?
             ORDER BY ABS(COALESCE(d.total_pct - h.sum_pct, 999)) DESC
             LIMIT 100
@@ -232,7 +253,11 @@ def _check_pct_consistency(conn, result, stock, date_val):
             "holdings_sum_pct": hs,
             "diff": diff,
         }
-        if diff is None or diff > 999:
+        if tp is None:
+            entry["severity"] = "info"
+            entry["detail"] = f"total_pct unavailable for {sc} on {td}"
+            result.info.append(entry)
+        elif diff is None or diff >= 999:
             # No holdings data at all
             entry["severity"] = "warning"
             entry["detail"] = f"No holdings data exists for {sc} on {td}"
@@ -248,18 +273,21 @@ def _check_pct_consistency(conn, result, stock, date_val):
 
 
 # ── Check 3: Shares consistency ─────────────────────────────────────────
-def _check_shares_consistency(conn, result, stock, date_val):
-    base_where = ""
+def _check_shares_consistency(conn, result, stock, date_val, publish_scope=False):
+    base_clauses = []
     base_params = []
     if stock:
-        base_where = "AND d.stock_code = ?"
+        base_clauses.append("d.stock_code = ?")
         base_params = [stock]
     if date_val:
-        base_where += " AND d.trade_date = ?"
+        base_clauses.append("d.trade_date = ?")
         base_params.append(date_val)
+    if publish_scope:
+        base_clauses.extend(_publish_scope_clauses("d"))
+    base_where = f" AND {' AND '.join(base_clauses)}" if base_clauses else ""
 
     rows = conn.execute(f"""
-        SELECT d.stock_code, d.trade_date, d.total_shares,
+        SELECT d.stock_code, d.trade_date, d.total_shares, d.total_pct,
                COALESCE(h.sum_shares, 0) as holdings_sum,
                ROUND(ABS(d.total_shares - COALESCE(h.sum_shares, 0)) * 100.0 / d.total_shares, 2) as pct_diff
         FROM holdings_daily d
@@ -275,7 +303,12 @@ def _check_shares_consistency(conn, result, stock, date_val):
     """, base_params + [MAX_SHARES_VS_HOLDINGS_PCT]).fetchall()
 
     for r in rows:
-        sc, td, ts, hs, pd = r
+        sc, td, ts, tp, hs, pd = r
+        if tp is None:
+            # When total_pct is unavailable, total_shares behaves like the
+            # issued-share base rather than CCASS-held shares, so a direct
+            # shares comparison is not meaningful.
+            continue
         entry = {
             "check": "shares_consistency",
             "stock": sc,
@@ -295,9 +328,19 @@ def _check_shares_consistency(conn, result, stock, date_val):
 
 
 # ── Check 4: Day-over-day anomaly detection ─────────────────────────────
-def _check_daily_jumps(conn, result, stock, date_val):
-    stock_where = "WHERE stock_code = ?" if stock else ""
-    stock_params = [stock] if stock else []
+def _check_daily_jumps(conn, result, stock, date_val, publish_scope=False):
+    source_clauses = []
+    stock_params = []
+    if stock:
+        source_clauses.append("stock_code = ?")
+        stock_params.append(stock)
+    if publish_scope:
+        source_clauses.extend(_publish_scope_clauses(None))
+    source_where = f"WHERE {' AND '.join(source_clauses)}" if source_clauses else ""
+    date_filter = "AND trade_date = ?" if date_val else ""
+    params = stock_params + [MAX_PCT_JUMP_DAY]
+    if date_val:
+        params.append(date_val)
 
     # Limit scope for full-scan performance
     limit_clause = "" if (stock or date_val) else "LIMIT 50"
@@ -309,7 +352,7 @@ def _check_daily_jumps(conn, result, stock, date_val):
                    LAG(total_shares) OVER w as prev_shares,
                    LAG(trade_date) OVER w as prev_date
             FROM holdings_daily
-            {stock_where}
+            {source_where}
             WINDOW w AS (PARTITION BY stock_code ORDER BY trade_date)
         )
         SELECT stock_code, prev_date, trade_date,
@@ -320,14 +363,22 @@ def _check_daily_jumps(conn, result, stock, date_val):
         WHERE prev_pct IS NOT NULL
           AND total_pct > 0 AND prev_pct > 0
           AND ABS(total_pct - prev_pct) > ?
+          {date_filter}
         ORDER BY ABS(total_pct - prev_pct) DESC
         {limit_clause}
-    """, stock_params + [MAX_PCT_JUMP_DAY]).fetchall()
+    """, params).fetchall()
 
     for r in rows:
         sc, pd, td, pp, tp, delta, ps, ts = r
         # Check if shares also changed significantly (suggesting corp action)
         share_change = abs(ts - ps) / ps * 100 if ps and ps > 0 else 999
+        prev_issued_base = (ps / (pp / 100.0)) if ps and pp else None
+        curr_issued_base = (ts / (tp / 100.0)) if ts and tp else None
+        issued_base_change = (
+            abs(curr_issued_base - prev_issued_base) / prev_issued_base * 100
+            if prev_issued_base and curr_issued_base and prev_issued_base > 0
+            else None
+        )
 
         entry = {
             "check": "daily_jump",
@@ -338,16 +389,27 @@ def _check_daily_jumps(conn, result, stock, date_val):
             "curr_pct": tp,
             "delta_pct": delta,
             "share_change_pct": round(share_change, 2),
+            "issued_base_change_pct": round(issued_base_change, 2) if issued_base_change is not None else None,
         }
 
         if share_change < 5 and abs(delta) > 50:
-            # Large pct jump with nearly-unchanged shares = likely scraper bug
-            entry["severity"] = "error"
-            entry["detail"] = (
-                f"Pct swung {delta:+.1f}% ({pp}→{tp}) but shares barely changed "
-                f"({ps}→{ts}, {share_change:.2f}%). Likely SCRAPER BUG."
-            )
-            result.errors.append(entry)
+            if issued_base_change is not None and issued_base_change > 20:
+                entry["severity"] = "info"
+                entry["detail"] = (
+                    f"Pct swung {delta:+.1f}% ({pp}→{tp}) with nearly-unchanged shares "
+                    f"({ps}→{ts}, {share_change:.2f}%), but implied issued-share base moved "
+                    f"{issued_base_change:.1f}% — likely corporate action / denominator change."
+                )
+                result.info.append(entry)
+            else:
+                # Large pct jump with nearly-unchanged shares and stable denominator
+                # remains a strong scraper-bug signal.
+                entry["severity"] = "error"
+                entry["detail"] = (
+                    f"Pct swung {delta:+.1f}% ({pp}→{tp}) but shares barely changed "
+                    f"({ps}→{ts}, {share_change:.2f}%) and issued base stayed stable. Likely SCRAPER BUG."
+                )
+                result.errors.append(entry)
         elif share_change > 20:
             entry["severity"] = "info"
             entry["detail"] = (
@@ -364,13 +426,19 @@ def _check_daily_jumps(conn, result, stock, date_val):
 
 
 # ── Check 5: Date coverage gaps ─────────────────────────────────────────
-def _check_coverage_gaps(conn, result, stock, date_val):
+def _check_coverage_gaps(conn, result, stock, date_val, publish_scope=False):
     """Check for trading days with unexpectedly low stock coverage."""
     if date_val:
         return  # Not meaningful for single-date check
 
-    stock_where = "WHERE stock_code = ?" if stock else ""
-    stock_params = [stock] if stock else []
+    clauses = []
+    stock_params = []
+    if stock:
+        clauses.append("stock_code = ?")
+        stock_params.append(stock)
+    if publish_scope:
+        clauses.extend(_publish_scope_clauses(None))
+    stock_where = f"WHERE {' AND '.join(clauses)}" if clauses else ""
 
     # Get stock count per date
     rows = conn.execute(f"""
@@ -405,8 +473,8 @@ def _check_coverage_gaps(conn, result, stock, date_val):
 
 
 # ── Check 6: Zero participant counts ────────────────────────────────────
-def _check_participant_counts(conn, result, stock, date_val):
-    where, params = _add_filter(stock, date_val)
+def _check_participant_counts(conn, result, stock, date_val, publish_scope=False):
+    where, params = _add_filter(stock, date_val, publish_scope)
 
     rows = conn.execute(f"""
         SELECT stock_code, trade_date, total_shares, num_participants
@@ -439,7 +507,7 @@ def _check_participant_counts(conn, result, stock, date_val):
 
 
 # ── Check 7: Orphan rows ────────────────────────────────────────────────
-def _check_orphan_rows(conn, result, stock, date_val):
+def _check_orphan_rows(conn, result, stock, date_val, publish_scope=False):
     """Find daily rows without corresponding holdings, and vice versa."""
 
     # Daily without holdings
@@ -451,6 +519,8 @@ def _check_orphan_rows(conn, result, stock, date_val):
     if date_val:
         where_d += " AND d.trade_date = ?"
         params_d.append(date_val)
+    if publish_scope:
+        where_d += " AND " + " AND ".join(_publish_scope_clauses("d"))
 
     rows = conn.execute(f"""
         SELECT d.stock_code, d.trade_date, d.total_shares, d.total_pct
@@ -481,28 +551,8 @@ def _check_orphan_rows(conn, result, stock, date_val):
 
 
 # ── Check 8: Concentration metrics sanity ───────────────────────────────
-def _check_concentration_metrics(conn, result, stock, date_val):
-    where, params = _add_filter(stock, date_val)
-
-    # top5_pct > total_pct
-    rows = conn.execute(f"""
-        SELECT stock_code, trade_date, total_pct, top5_pct, top10_pct
-        FROM holdings_daily d
-        {where}
-        AND top5_pct IS NOT NULL AND total_pct IS NOT NULL
-        AND top5_pct > total_pct + 1
-        ORDER BY top5_pct - total_pct DESC
-        LIMIT 20
-    """, params).fetchall()
-
-    for r in rows:
-        result.warnings.append({
-            "check": "concentration_sanity",
-            "severity": "warning",
-            "stock": r[0],
-            "date": r[1],
-            "detail": f"top5_pct={r[3]} > total_pct={r[2]} (impossible unless computed against adjusted float)",
-        })
+def _check_concentration_metrics(conn, result, stock, date_val, publish_scope=False):
+    where, params = _add_filter(stock, date_val, publish_scope)
 
     # top5_pct > top10_pct
     rows = conn.execute(f"""
@@ -614,7 +664,7 @@ def deep_check_stock(conn, stock_code: str) -> dict:
 
 
 # ── Summary report ──────────────────────────────────────────────────────
-def _compute_summary_stats(conn, result: VerificationResult, stock, date_val):
+def _compute_summary_stats(conn, result: VerificationResult, stock, date_val, publish_scope=False):
     """Compute aggregate statistics."""
     base_where = ""
     base_params = []
@@ -625,6 +675,9 @@ def _compute_summary_stats(conn, result: VerificationResult, stock, date_val):
         prefix = "AND" if base_where else "WHERE"
         base_where += f" {prefix} trade_date = ?"
         base_params.append(date_val)
+    if publish_scope:
+        prefix = "AND" if base_where else "WHERE"
+        base_where += f" {prefix} " + " AND ".join(_publish_scope_clauses(None))
 
     def _and(cond):
         """Prefix with AND or WHERE depending on base_where."""
@@ -657,9 +710,13 @@ def _compute_summary_stats(conn, result: VerificationResult, stock, date_val):
 
     # total_pct = 0 by date (for full scan)
     if not date_val and not stock:
-        rows = conn.execute("""
+        zero_scope = ""
+        if publish_scope:
+            zero_scope = " AND " + " AND ".join(_publish_scope_clauses(None))
+        rows = conn.execute(f"""
             SELECT trade_date, COUNT(*) FROM holdings_daily
             WHERE total_pct = 0
+            {zero_scope}
             GROUP BY trade_date ORDER BY COUNT(*) DESC
         """).fetchall()
         result.stats["zero_pct_by_date"] = [(r[0], r[1]) for r in rows[:10]]
@@ -672,6 +729,7 @@ def main():
     parser.add_argument("--date", help="Check a single date (e.g. 2026-05-28)")
     parser.add_argument("--json", action="store_true", help="Machine-readable JSON output")
     parser.add_argument("--deep", action="store_true", help="Deep-check a single stock (requires --stock)")
+    parser.add_argument("--publish-scope", action="store_true", help="Limit checks to the publishable stock scope used by holdings.json")
     args = parser.parse_args()
 
     conn = sqlite3.connect(str(DB_PATH))
@@ -692,10 +750,10 @@ def main():
     result = VerificationResult()
 
     # Compute summary
-    _compute_summary_stats(conn, result, stock_code, args.date)
+    _compute_summary_stats(conn, result, stock_code, args.date, args.publish_scope)
 
     # Run all checks
-    run_all_checks(conn, result, stock_code, args.date)
+    run_all_checks(conn, result, stock_code, args.date, args.publish_scope)
 
     conn.close()
 
@@ -742,7 +800,7 @@ def _print_report(result: VerificationResult, stock: str | None, date_val: str |
         if len(result.errors) > 30:
             print(f"  ... and {len(result.errors) - 30} more")
     else:
-        print("  ✓ No errors found")
+        print("  [OK] No errors found")
 
     # Warnings
     print(f"\n── Warnings ({len(result.warnings)}) ──")
@@ -752,7 +810,7 @@ def _print_report(result: VerificationResult, stock: str | None, date_val: str |
         if len(result.warnings) > 20:
             print(f"  ... and {len(result.warnings) - 20} more")
     else:
-        print("  ✓ No warnings")
+        print("  [OK] No warnings")
 
     # Info
     print(f"\n── Info ({len(result.info)}) ──")
@@ -760,10 +818,10 @@ def _print_report(result: VerificationResult, stock: str | None, date_val: str |
         for i in result.info[:10]:
             print(f"  [{i['check']}] {i['stock']}: {i['detail']}")
     else:
-        print("  ✓ No info items")
+        print("  [OK] No info items")
 
     print(f"\n{'='*70}")
-    status = "❌ FAIL" if result.has_errors() else "✓ PASS"
+    status = "FAIL" if result.has_errors() else "PASS"
     print(f"  Overall: {status}  ({len(result.errors)} errors, {len(result.warnings)} warnings)")
     print(f"{'='*70}")
 

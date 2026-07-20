@@ -9,6 +9,7 @@ import subprocess, sys, os, datetime, tempfile, re, shutil, shlex
 PROJECT = sys.argv[2] if len(sys.argv) > 2 else os.getcwd()
 PROMPT = sys.argv[1] if len(sys.argv) > 1 else "Review this project for bugs"
 AUTO_COMMIT = "--auto-commit" in sys.argv
+ALLOW_GITHUB_WRITE = os.environ.get("ALLOW_GITHUB_WRITE") == "1"
 
 os.chdir(PROJECT)
 
@@ -145,18 +146,21 @@ with open(os.path.join(PROJECT, ".codex-pass2.log"), 'w', encoding='utf-8') as f
 print(out2[:3000])
 
 # ═══════════════════════════════════════════════════════════
-# Step 4: Git commit + push
+# Step 4: Git commit. GitHub push is blocked by default.
 # ═══════════════════════════════════════════════════════════
 if AUTO_COMMIT:
-    step("STEP 4: 📦 Commit + Push")
+    step("STEP 4: 📦 Commit")
     run("git add -A")
     out_diff, _ = run("git diff --cached --stat")
     print(out_diff)
     if applied > 0:
         commit_msg = f"fix: Codex auto-review — {applied} fixes\\n\\n{PROMPT}\\n\\nBranch: {BRANCH}"
         run(f'git commit -m {shlex.quote(commit_msg)}')
-        run(f"git push origin {BRANCH}")
-        print(f"✅ Pushed to {BRANCH}")
+        if ALLOW_GITHUB_WRITE:
+            run(f"git push origin {BRANCH}")
+            print(f"✅ Pushed to {BRANCH}")
+        else:
+            print("GitHub push skipped. Set ALLOW_GITHUB_WRITE=1 only if explicitly requested.")
     else:
         print("⚠️ No changes to commit")
 else:
@@ -169,7 +173,7 @@ Summary:
   PASS 1 (A LLM): {len(fixes)} issues found
   Applied:        {applied}/{len(fixes)} fixes
   PASS 2 (B LLM): Verify complete (see .codex-pass2.log)
-  Commit:         {'✅ Pushed to ' + BRANCH if AUTO_COMMIT else '⏸️ Skipped'}
+  Commit:         {'✅ Local commit on ' + BRANCH if AUTO_COMMIT else '⏸️ Skipped'}
 
 Logs:
   .codex-pass1.log  — Codex review output

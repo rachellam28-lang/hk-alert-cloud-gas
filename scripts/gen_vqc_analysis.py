@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import os
+from datetime import datetime
 from pathlib import Path
 
 BASE = Path(__file__).resolve().parent.parent
@@ -35,7 +36,18 @@ def load_data() -> dict:
 
 
 DATA = load_data()
-DATA_JSON = json.dumps(DATA, ensure_ascii=False)
+PAGE_DATA = {k: DATA.get(k) for k in (
+    "updated", "universe_total", "sample_total", "events_total", "summary", "edge",
+    "strength_stats", "mc_stats", "reference_examples", "lookback_months", "bucket_limit", "bars",
+)}
+PAGE_DATA["events"] = sorted(
+    DATA.get("events") or [],
+    key=lambda row: str(row.get("signal_date") or ""),
+    reverse=True,
+)
+DATA_JSON = json.dumps(PAGE_DATA, ensure_ascii=False)
+PAGE_UPDATED = datetime.now().strftime("%Y-%m-%d %H:%M")
+SAMPLE_UPDATED = str(DATA.get("updated", "")).replace("T", " ")[:16] or "—"
 
 html = f"""<!DOCTYPE html>
 <html lang="zh-HK">
@@ -144,10 +156,9 @@ tr:hover td {{ background: rgba(39,49,74,.22); }}
   <a href="index.html">🇭🇰 港股版</a>
   <a href="watchlist.html">⭐ 自選</a>
   <a href="history.html">🕐 歷史</a>
-  <a href="gap_fvg.html">⤴ Gap/FVG</a>
   <a href="fundflow.html">💰 資金</a>
   <a href="rights_analysis.html">📋 供配股</a>
-  <a href="daily_trade_prompt.html">🚦 每日提示</a>
+  <a href="trading_desk.html">交易台</a>
   <a href="timing_analysis.html">⏱ 時間窗口</a>
   <a class="active" href="vqc_analysis.html">📈 成交轉勢日</a>
   <a href="docs/ccass-warroom.html">⚡ 戰情室</a>
@@ -165,7 +176,8 @@ tr:hover td {{ background: rgba(39,49,74,.22); }}
       </div>
     </div>
     <div class="hero-meta">
-      更新：<b id="updatedAt">{DATA.get("updated", "")}</b><br>
+      頁面更新：<b>{PAGE_UPDATED}</b><br>
+      樣本更新：<b id="updatedAt">{SAMPLE_UPDATED}</b><br>
       樣本模式：<b id="sampleMode"></b><br>
       取數：<b id="sampleBars"></b> bars / stock
     </div>

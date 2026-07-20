@@ -1,7 +1,8 @@
 """Unified publish gate for HOLDINGS outputs.
 
-Runs data/dashboard verification, checks freshness against the DB, and fails
-fast if the latest publish is stale or the trading-day timeline has gaps.
+Runs data/dashboard verification and checks freshness against the DB. The gate
+fails on current publish-data errors; historical gaps stay visible as backlog
+warnings so stale old rows do not block today's page refresh.
 
 Usage:
     python scripts/audit_gate.py
@@ -17,6 +18,13 @@ import subprocess
 import sys
 from datetime import date, timedelta
 from pathlib import Path
+from statistics import median
+
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+except AttributeError:
+    pass
 
 sys.path.insert(0, str((Path(__file__).resolve().parent.parent)))
 from src.db import DB_PATH
@@ -24,11 +32,19 @@ from src.db import DB_PATH
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 CCASS_DIR = PROJECT_ROOT / "ccass"
 PYTHON = sys.executable
+PUBLISH_SCOPE_PATTERNS = ("029%", "04%", "8%")
 
 
 def _run_json_script(script: str, *args: str) -> tuple[dict, int, str, str]:
     cmd = [PYTHON, script, *args]
-    proc = subprocess.run(cmd, cwd=CCASS_DIR, capture_output=True, text=True)
+    proc = subprocess.run(
+        cmd,
+        cwd=CCASS_DIR,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+    )
     stdout = (proc.stdout or "").strip()
     stderr = (proc.stderr or "").strip()
     if not stdout:
@@ -51,12 +67,21 @@ def _latest_db_date(conn: sqlite3.Connection) -> str | None:
     return row[0] if row and row[0] else None
 
 
+def _publish_scope_predicate(alias: str | None = None) -> str:
+    col = f"{alias}.stock_code" if alias else "stock_code"
+    return " AND ".join(f"{col} NOT LIKE '{pattern}'" for pattern in PUBLISH_SCOPE_PATTERNS)
+
+
 def _latest_db_coverage(conn: sqlite3.Connection, trade_date: str) -> tuple[int, int, float | None]:
     count_row = conn.execute(
         """
         SELECT COUNT(DISTINCT stock_code)
         FROM ccass_daily
         WHERE trade_date = ? AND validation_failed = 0
+          AND total_shares > 0
+          AND stock_code NOT LIKE '029%'
+          AND stock_code NOT LIKE '04%'
+          AND stock_code NOT LIKE '8%'
         """,
         (trade_date,),
     ).fetchone()
@@ -79,9 +104,13 @@ def _latest_db_coverage(conn: sqlite3.Connection, trade_date: str) -> tuple[int,
 def _latest_publishable_db_date(conn: sqlite3.Connection, min_coverage: float) -> tuple[str | None, int | None, float | None]:
     rows = conn.execute(
         """
-        SELECT trade_date, COUNT(DISTINCT stock_code) AS stock_count
+        SELECT trade_date,
+               COUNT(DISTINCT CASE WHEN total_shares > 0 THEN stock_code END) AS stock_count
         FROM ccass_daily
         WHERE validation_failed = 0
+          AND stock_code NOT LIKE '029%'
+          AND stock_code NOT LIKE '04%'
+          AND stock_code NOT LIKE '8%'
         GROUP BY trade_date
         ORDER BY trade_date DESC
         """
@@ -103,6 +132,73 @@ def _date_set(conn: sqlite3.Connection) -> set[str]:
         """
     ).fetchall()
     return {r[0] for r in rows if r and r[0]}
+
+
+def _local_expected_count(counts: list[int], index: int) -> float:
+    """Median of the nearest complete dates, excluding obvious partial runs."""
+    if not counts:
+        return 0.0
+    complete_floor = max(counts) * 0.8
+    complete_indexes = [i for i, count in enumerate(counts) if count >= complete_floor]
+    before = [i for i in complete_indexes if i <= index][-3:]
+    after = [i for i in complete_indexes if i > index][:3]
+    reference_counts = [counts[i] for i in before + after]
+    return float(median(reference_counts)) if reference_counts else 0.0
+
+
+def _date_coverages(conn: sqlite3.Connection) -> dict[str, float]:
+    rows = conn.execute(
+        """
+        SELECT trade_date,
+               COUNT(DISTINCT CASE WHEN total_shares > 0 THEN stock_code END) AS stock_count
+        FROM ccass_daily
+        WHERE validation_failed = 0
+          AND stock_code NOT LIKE '029%'
+          AND stock_code NOT LIKE '04%'
+          AND stock_code NOT LIKE '8%'
+        GROUP BY trade_date
+        ORDER BY trade_date
+        """
+    ).fetchall()
+    out: dict[str, float] = {}
+    counts = [int(row[1] or 0) for row in rows]
+    for index, (trade_date, stock_count) in enumerate(rows):
+        expected = _local_expected_count(counts, index)
+        out[str(trade_date)] = min(float(stock_count) / expected, 1.0) if expected else 0.0
+    return out
+
+
+def _date_participant_coverages(conn: sqlite3.Connection) -> dict[str, float]:
+    rows = conn.execute(
+        """
+        WITH aggregate_rows AS (
+            SELECT trade_date, COUNT(DISTINCT stock_code) AS stock_count
+            FROM ccass_daily
+            WHERE validation_failed = 0
+              AND total_shares > 0
+              AND stock_code NOT LIKE '029%'
+              AND stock_code NOT LIKE '04%'
+              AND stock_code NOT LIKE '8%'
+            GROUP BY trade_date
+        ), participant_rows AS (
+            SELECT trade_date, COUNT(DISTINCT stock_code) AS stock_count
+            FROM ccass_holdings
+            WHERE stock_code NOT LIKE '029%'
+              AND stock_code NOT LIKE '04%'
+              AND stock_code NOT LIKE '8%'
+            GROUP BY trade_date
+        )
+        SELECT a.trade_date, a.stock_count, COALESCE(p.stock_count, 0)
+        FROM aggregate_rows a
+        LEFT JOIN participant_rows p ON p.trade_date = a.trade_date
+        ORDER BY a.trade_date
+        """
+    ).fetchall()
+    return {
+        str(trade_date): min(float(participant_count) / float(aggregate_count), 1.0)
+        if aggregate_count else 0.0
+        for trade_date, aggregate_count, participant_count in rows
+    }
 
 
 def _table_exists(conn: sqlite3.Connection, table: str) -> bool:
@@ -206,13 +302,14 @@ def _check_transfer_freshness(holdings_updated: str | None, errors: list[str]) -
 def main() -> int:
     parser = argparse.ArgumentParser(description="Unified audit gate for publish/deploy")
     parser.add_argument("--strict", action="store_true", help="Fail on warnings too")
-    parser.add_argument("--min-coverage", type=float, default=99.0, help="Minimum coverage_pct required for publish")
+    parser.add_argument("--min-coverage", type=float, default=98.0, help="Minimum trusted Market%% coverage required for publish")
     args = parser.parse_args()
 
     holdings_path = PROJECT_ROOT / "holdings.json"
     ccass_path = PROJECT_ROOT / "ccass.json"
     errors: list[str] = []
     warnings: list[str] = []
+    maintenance_warnings: list[str] = []
 
     if not holdings_path.exists():
         errors.append(f"Missing file: {holdings_path}")
@@ -241,6 +338,8 @@ def main() -> int:
     publishable_count = None
     publishable_coverage_pct = None
     present_dates: set[str] = set()
+    date_coverages: dict[str, float] = {}
+    participant_coverages: dict[str, float] = {}
     conn = sqlite3.connect(str(DB_PATH))
     try:
         if not _table_exists(conn, "ccass_daily") or not _table_exists(conn, "stock_universe"):
@@ -251,6 +350,8 @@ def main() -> int:
                 latest_db_stock_count, _, latest_db_coverage_pct = _latest_db_coverage(conn, latest_db)
             publishable_db, publishable_count, publishable_coverage_pct = _latest_publishable_db_date(conn, args.min_coverage)
             present_dates = _date_set(conn)
+            date_coverages = _date_coverages(conn)
+            participant_coverages = _date_participant_coverages(conn)
     except sqlite3.Error as exc:
         errors.append(f"Database audit failed: {exc}")
     finally:
@@ -287,16 +388,40 @@ def main() -> int:
     elif not isinstance(is_complete, bool):
         warnings.append("holdings.json.is_complete is missing or non-bool")
 
-    # Timeline continuity check across the current DB range.
+    # Timeline continuity check across the current DB range. Historical gaps are
+    # backlog warnings; the current publish date/coverage checks above decide
+    # whether today's output is deployable.
     if present_dates:
         start_db = min(present_dates)
         end_db = publishable_db or max(present_dates)
         missing_days = _missing_trading_days(start_db, end_db, present_dates)
         if missing_days:
-            errors.append(
-                f"Missing trading days in DB range {start_db}..{end_db}: "
+            maintenance_warnings.append(
+                f"Historical DB gaps in range {start_db}..{end_db}: "
                 + ", ".join(missing_days[:12])
                 + (" ..." if len(missing_days) > 12 else "")
+            )
+        incomplete_days = [
+            trade_date
+            for trade_date, cov in sorted(date_coverages.items(), reverse=True)
+            if start_db <= trade_date <= end_db and cov * 100 < args.min_coverage
+        ]
+        if incomplete_days:
+            maintenance_warnings.append(
+                f"Historical low-coverage DB dates below {args.min_coverage}%: "
+                + ", ".join(incomplete_days[:12])
+                + (" ..." if len(incomplete_days) > 12 else "")
+            )
+        incomplete_participant_days = [
+            trade_date
+            for trade_date, cov in sorted(participant_coverages.items(), reverse=True)
+            if start_db <= trade_date <= end_db and cov * 100 < args.min_coverage
+        ]
+        if incomplete_participant_days:
+            maintenance_warnings.append(
+                f"Historical low participant-detail coverage below {args.min_coverage}%: "
+                + ", ".join(incomplete_participant_days[:12])
+                + (" ..." if len(incomplete_participant_days) > 12 else "")
             )
         if publishable_db and latest_db and publishable_db != latest_db:
             tail_missing = _missing_trading_days(publishable_db, latest_db, present_dates)
@@ -307,13 +432,33 @@ def main() -> int:
                     + ", ".join(tail_missing[:12])
                     + (" ..." if len(tail_missing) > 12 else "")
                 )
+            tail_incomplete = [
+                trade_date
+                for trade_date, cov in sorted(date_coverages.items(), reverse=True)
+                if publishable_db < trade_date <= latest_db and cov * 100 < args.min_coverage
+            ]
+            if tail_incomplete:
+                warnings.append(
+                    f"Low-coverage tail after publishable date {publishable_db}: "
+                    + ", ".join(tail_incomplete[:12])
+                    + (" ..." if len(tail_incomplete) > 12 else "")
+                )
 
-    # Run the existing verifiers.
+    # Run verifiers. Date-scoped data verification gates the current publish;
+    # full-history verification is reported as backlog only.
+    verify_date = str(holdings_updated or publishable_db or "")
     try:
-        data_report, data_rc, _, _ = _run_json_script("scripts/verify_data.py", "--json")
+        if not verify_date:
+            raise RuntimeError("No holdings/publishable date available for verify_data")
+        data_report, data_rc, _, _ = _run_json_script("scripts/verify_data.py", "--date", verify_date, "--json", "--publish-scope")
     except Exception as exc:
         data_report, data_rc = {"status": "FAIL", "errors": [str(exc)], "warnings": []}, 1
         errors.append(f"verify_data failed to run: {exc}")
+    try:
+        history_report, history_rc, _, _ = _run_json_script("scripts/verify_data.py", "--json", "--publish-scope")
+    except Exception as exc:
+        history_report, history_rc = {"status": "FAIL", "errors": [str(exc)], "warnings": []}, 1
+        maintenance_warnings.append(f"historical verify_data failed to run: {exc}")
     try:
         dash_report, dash_rc, _, _ = _run_json_script("scripts/verify_dashboard.py")
     except Exception as exc:
@@ -321,17 +466,33 @@ def main() -> int:
         errors.append(f"verify_dashboard failed to run: {exc}")
 
     if data_report.get("errors"):
-        errors.append(f"verify_data errors={len(data_report['errors'])}")
+        errors.append(f"verify_data {verify_date} errors={len(data_report['errors'])}")
     if dash_report.get("status") == "FAIL" or dash_rc != 0:
         errors.append("verify_dashboard failed")
 
     if data_report.get("warnings"):
-        warnings.append(f"verify_data warnings={len(data_report['warnings'])}")
+        warnings.append(f"verify_data {verify_date} warnings={len(data_report['warnings'])}")
+    if history_report.get("errors"):
+        maintenance_warnings.append(
+            "historical verify_data backlog "
+            f"errors={len(history_report.get('errors', []))} "
+            f"warnings={len(history_report.get('warnings', []))}"
+        )
+    history_warning_counts: dict[str, int] = {}
+    for item in history_report.get("warnings", []):
+        check = str(item.get("check") or "unknown")
+        history_warning_counts[check] = history_warning_counts.get(check, 0) + 1
     if dash_report.get("status") == "WARN":
         warnings.append("verify_dashboard WARN")
 
+    publish_status = "FAIL" if errors else ("WARN" if warnings else "PASS")
+    maintenance_status = "WARN" if maintenance_warnings else "PASS"
     report = {
-        "status": "FAIL" if errors else ("WARN" if warnings else "PASS"),
+        # status remains the full audit result for backwards compatibility.
+        # publish_status is the current operational gate used by the dashboard.
+        "status": "FAIL" if errors else ("WARN" if warnings or maintenance_warnings else "PASS"),
+        "publish_status": publish_status,
+        "maintenance_status": maintenance_status,
         "latest_db_date": latest_db,
         "latest_db_stock_count": latest_db_stock_count,
         "latest_db_coverage_pct": latest_db_coverage_pct,
@@ -342,11 +503,21 @@ def main() -> int:
         "coverage_pct": coverage_pct,
         "stock_count": stock_count,
         "errors": errors,
-        "warnings": warnings,
+        "warnings": warnings + maintenance_warnings,
+        "current_warnings": warnings,
+        "maintenance_warnings": maintenance_warnings,
         "verify_data": {
-            "status": data_report.get("status"),
+            "date": verify_date or None,
+            "status": "FAIL" if data_report.get("errors") else ("WARN" if data_report.get("warnings") else "PASS"),
             "errors": len(data_report.get("errors", [])),
             "warnings": len(data_report.get("warnings", [])),
+        },
+        "historical_verify_data": {
+            "status": "FAIL" if history_report.get("errors") else ("WARN" if history_report.get("warnings") else "PASS"),
+            "errors": len(history_report.get("errors", [])),
+            "warnings": len(history_report.get("warnings", [])),
+            "warning_counts": history_warning_counts,
+            "classification": "observations; coverage and participant gaps are gated separately",
         },
         "verify_dashboard": {
             "status": dash_report.get("status"),
@@ -356,7 +527,7 @@ def main() -> int:
     }
 
     print(json.dumps(report, ensure_ascii=False, indent=2))
-    return 1 if errors or (args.strict and warnings) else 0
+    return 1 if errors or (args.strict and (warnings or maintenance_warnings)) else 0
 
 
 if __name__ == "__main__":

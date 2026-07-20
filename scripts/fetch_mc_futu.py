@@ -3,6 +3,7 @@
 import json, time
 from pathlib import Path
 from futu import OpenQuoteContext, RET_OK, SubType, KLType
+from futu_env import ensure_futu_quote_backend_or_die
 
 ROOT = Path(__file__).parent.parent
 MC_CACHE = ROOT / "ccass" / "cache" / "market_caps.json"
@@ -34,7 +35,8 @@ if not missing:
     import sys; sys.exit(0)
 
 # Connect to Futu
-quote_ctx = OpenQuoteContext(host='127.0.0.1', port=11111)
+FUTU_HOST, FUTU_PORT = ensure_futu_quote_backend_or_die(ROOT)
+quote_ctx = OpenQuoteContext(host=FUTU_HOST, port=FUTU_PORT)
 print("Connected to Futu gateway")
 
 BATCH_SIZE = 200

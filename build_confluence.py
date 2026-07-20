@@ -15,6 +15,11 @@ Run: python build_confluence.py [--no-alert]
 import json, os, sys
 from datetime import datetime, timedelta
 
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJ = SCRIPT_DIR
 DATA = os.path.join(PROJ, "data")
@@ -47,9 +52,9 @@ def build() -> list[dict]:
         print("[confluence] announcements.json not found, skip")
         return []
 
-    with open(ANN_PATH, "r") as f:
+    with open(ANN_PATH, "r", encoding="utf-8") as f:
         announcements = json.load(f)
-    with open(HIST_PATH, "r") as f:
+    with open(HIST_PATH, "r", encoding="utf-8") as f:
         history_data = json.load(f)
 
     # Build hist: code -> list of (type, date_str)
@@ -132,6 +137,9 @@ def build() -> list[dict]:
         a_copy["first_pre_days"] = first_pre_days
         a_copy["first_post_days"] = first_post_days
         a_copy["pattern"] = pattern
+        a_copy["data_kind"] = "derived_rule_signal"
+        a_copy["derived_from"] = ["announcements.json", "history.json"]
+        a_copy["method"] = f"pre/post signal counts within {SIGNAL_WINDOW_DAYS} calendar days"
         a_copy.pop("signal_types", None)
         confluence.append(a_copy)
 
@@ -145,7 +153,7 @@ def build() -> list[dict]:
         -x.get("signal_count", 0),
     ))
 
-    with open(CONF_PATH, "w") as f:
+    with open(CONF_PATH, "w", encoding="utf-8") as f:
         json.dump(confluence, f, ensure_ascii=False, indent=2)
     print(f"[confluence] saved {len(confluence)} records (dual-direction, {SIGNAL_WINDOW_DAYS}d window)")
 
@@ -162,6 +170,8 @@ def build() -> list[dict]:
             key = (c.get("code"), c.get("date"), c.get("type", ""))
             if key in score_map:
                 c.update(score_map[key])
+        with open(CONF_PATH, "w", encoding="utf-8") as f:
+            json.dump(confluence, f, ensure_ascii=False, indent=2)
     except Exception as exc:
         print(f"[confluence] scoring failed: {exc}")
 

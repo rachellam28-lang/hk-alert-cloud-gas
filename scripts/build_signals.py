@@ -23,8 +23,14 @@ Outputs:
 import argparse
 import json
 import os
+import re
 import sys
 from datetime import datetime, timedelta
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
 # Import from same directory
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -166,7 +172,63 @@ def build_issuer_map(placements, rights_analysis=None):
     return issuer_map
 
 
-def build_signals_json(holdings, events, corp_map, issuer_map):
+def compact_supply_payload(row):
+    supply = row.get("supply")
+    if not isinstance(supply, dict):
+        trade = row.get("trade") if isinstance(row.get("trade"), dict) else {}
+        supply = trade.get("supply") if isinstance(trade.get("supply"), dict) else None
+    if not isinstance(supply, dict):
+        return None
+
+    payload = {
+        "label": supply.get("label"),
+        "cls": supply.get("cls"),
+        "score": supply.get("score"),
+        "basis": supply.get("basis"),
+        "tradable": supply.get("tradable"),
+        "positive": (supply.get("positive") or [])[:4],
+        "negative": (supply.get("negative") or [])[:4],
+        "pending": (supply.get("pending") or [])[:4],
+        "date": str(row.get("date_parsed") or row.get("date") or "")[:10],
+        "category": row.get("category"),
+        "category_display": row.get("category_display"),
+        "method": row.get("method"),
+    }
+    trade = row.get("trade") if isinstance(row.get("trade"), dict) else {}
+    if trade:
+        payload["trade_signal"] = trade.get("signal")
+        payload["trade_verdict"] = trade.get("verdict_text")
+    year_open = supply.get("year_open") if isinstance(supply.get("year_open"), dict) else None
+    if year_open:
+        payload["year_open"] = {
+            "badge": year_open.get("badge"),
+            "cls": year_open.get("cls"),
+            "summary": year_open.get("summary"),
+            "basis_text": year_open.get("basis_text"),
+        }
+    return {k: v for k, v in payload.items() if v not in (None, "", [])}
+
+
+def build_supply_map(rights_analysis=None):
+    """Build {code: compact supply/cash judgement}; rights_analysis.json is authoritative."""
+    supply_map = {}
+    for row in rights_analysis or []:
+        code = str(row.get("code", "")).strip().lstrip("0").zfill(5)
+        if not code or code == "00000":
+            continue
+        date = str(row.get("date_parsed") or row.get("date") or "")[:10]
+        if not date:
+            continue
+        payload = compact_supply_payload(row)
+        if not payload:
+            continue
+        cur = supply_map.get(code)
+        if cur is None or date > cur.get("date", ""):
+            supply_map[code] = payload
+    return supply_map
+
+
+def build_signals_json(holdings, events, corp_map, issuer_map, supply_map):
     """Generate frontend signals.json with corpTypes from announcements.json."""
     stocks = holdings.get("stocks", []) if holdings else []
 
@@ -205,6 +267,7 @@ def build_signals_json(holdings, events, corp_map, issuer_map):
             "signals": sigs,
             "corpTypes": corp_types,
             "issuer": issuer_map.get(code),
+            "supply": supply_map.get(code),
             "hkexLink": hkex_link,
         })
 
@@ -214,6 +277,8 @@ def build_signals_json(holdings, events, corp_map, issuer_map):
     return {
         "ok": True,
         "schema_v": 1,
+        "source": "announcements.json + rights_analysis.json + alerts.json + holdings.json",
+        "data_kind": "derived_signal_index",
         "groups": groups,
         "updatedAt": datetime.now().isoformat(),
         "totalStocks": len(groups),
@@ -223,21 +288,58 @@ def build_signals_json(holdings, events, corp_map, issuer_map):
 
 
 def save_price_snapshot(holdings):
-    """Save today's price snapshot to raw/prices_YYYYMMDD.json.
+    """Save a provider-dated price snapshot to raw/prices_YYYYMMDD.json.
     Fields: lp (close), vol, hi52, lo52 — stored per code for zombie detection + future OHLC needs."""
-    today = datetime.now().strftime("%Y%m%d")
-    out_path = os.path.join(BASE, "raw", f"prices_{today}.json")
+    price_cache = load_json(os.path.join(BASE, "data", "stock_prices.json"), default={}) or {}
+
+    def source_date(entry):
+        for key in ("lp_time", "price_updated_at", "updated_at"):
+            val = entry.get(key) if isinstance(entry, dict) else None
+            if not val:
+                continue
+            text = str(val)
+            if re.match(r"^\d{4}-\d{2}-\d{2}", text):
+                return text[:10]
+        return None
     
     stocks = holdings.get("stocks", [])
+    source_dates = []
+    for stock in stocks:
+        code = str(stock.get("c", "")).zfill(5)
+        cache_entry = price_cache.get(code) if isinstance(price_cache, dict) else None
+        src = cache_entry if isinstance(cache_entry, dict) else stock
+        observed = source_date(src)
+        if observed and isinstance(src.get("lp"), (int, float)) and src.get("lp", 0) > 0:
+            source_dates.append(observed)
+    if not source_dates:
+        print("  price snapshot skipped: no provider-dated prices")
+        return
+
+    # The batch can run after midnight. Name the snapshot for the dominant
+    # provider session, not the process date, so rotation never treats old
+    # closes as a new trading day.
+    from collections import Counter
+    snapshot_date = Counter(source_dates).most_common(1)[0][0]
+    out_path = os.path.join(BASE, "raw", f"prices_{snapshot_date.replace('-', '')}.json")
     out = {}
     for s in stocks:
         code = str(s.get("c", "")).zfill(5)
-        out[code] = {
-            "close": s.get("lp"),
-            "vol": s.get("vol"),
-            "hi52": s.get("hi52"),
-            "lo52": s.get("lo52"),
+        cache_entry = price_cache.get(code) if isinstance(price_cache, dict) else None
+        src = cache_entry if isinstance(cache_entry, dict) else s
+        src_date = source_date(src)
+        row = {
+            "close": src.get("lp"),
+            "vol": src.get("vol"),
+            "hi52": src.get("hi52"),
+            "lo52": src.get("lo52"),
         }
+        if src_date:
+            row["source_date"] = src_date
+            if src_date != snapshot_date:
+                row["stale"] = True
+        if src.get("price_source"):
+            row["source"] = src.get("price_source")
+        out[code] = {k: v for k, v in row.items() if v is not None}
     
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     with open(out_path, "w", encoding="utf-8") as f:
@@ -274,7 +376,8 @@ def main():
 
     print("[4/4] build signals.json")
     issuer_map = build_issuer_map(placements, rights_analysis)
-    signals = build_signals_json(holdings, all_events, corp_map, issuer_map)
+    supply_map = build_supply_map(rights_analysis)
+    signals = build_signals_json(holdings, all_events, corp_map, issuer_map, supply_map)
 
     if args.dry_run:
         print("\nDRY RUN — nothing written")

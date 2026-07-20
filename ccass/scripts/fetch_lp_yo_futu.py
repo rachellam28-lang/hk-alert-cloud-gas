@@ -1,13 +1,32 @@
 """Fetch REAL data from Futu: lp (latest price) + yo (2026 year-open).
-Prerequisite: Futu OpenD running on 127.0.0.1:11111.
+Prerequisite: Futu OpenD running at FUTU_HOST:FUTU_PORT from repo .env.
 """
-import json, time, math
+import json, time, math, sys
 from pathlib import Path
 from futu import OpenQuoteContext, KLType, RET_OK
 
 ROOT = Path(__file__).parent.parent.parent  # holdings-debug/
 HOLDINGS = ROOT / "holdings.json"
 PRICES = ROOT / "data" / "stock_prices.json"
+sys.path.insert(0, str(ROOT / "scripts"))
+from futu_env import ensure_futu_quote_backend_or_die
+
+
+def sanitize(obj):
+    if isinstance(obj, dict):
+        return {key: sanitize(value) for key, value in obj.items()}
+    if isinstance(obj, list):
+        return [sanitize(value) for value in obj]
+    if isinstance(obj, float) and (math.isnan(obj) or math.isinf(obj)):
+        return None
+    return obj
+
+
+def save_prices():
+    PRICES.write_text(
+        json.dumps(sanitize(prices), ensure_ascii=False, indent=2, allow_nan=False),
+        encoding='utf-8',
+    )
 
 # Load
 prices = json.loads(PRICES.read_text(encoding='utf-8'))
@@ -15,7 +34,8 @@ holdings = json.loads(HOLDINGS.read_text(encoding='utf-8'))
 codes = sorted(k for k,v in prices.items() if v.get('yo'))  # only active stocks
 print(f"Total active stocks: {len(codes)}")
 
-q = OpenQuoteContext('127.0.0.1', 11111)
+FUTU_HOST, FUTU_PORT = ensure_futu_quote_backend_or_die(ROOT)
+q = OpenQuoteContext(FUTU_HOST, FUTU_PORT)
 updated_lp = 0
 updated_yo = 0
 failed = 0
@@ -44,7 +64,7 @@ for i in range(0, len(codes), BATCH):
     time.sleep(0.3)
 
 # Save checkpoint
-PRICES.write_text(json.dumps(prices, ensure_ascii=False, indent=2), encoding='utf-8')
+save_prices()
 
 # === PHASE 2: 2026 year-open via request_history_kline ===
 print("\n--- Phase 2: 2026 year-open ---")
@@ -64,13 +84,13 @@ with open(ROOT / 'py_yoyo_futu.log', 'w') as log:
         
         if (i+1) % 500 == 0:
             print(f"  {i+1}/{len(codes)} updated={updated_yo}")
-            PRICES.write_text(json.dumps(prices, ensure_ascii=False, indent=2), encoding='utf-8')
+            save_prices()
         time.sleep(0.3)
 
 q.close()
 
 # Final save
-PRICES.write_text(json.dumps(prices, ensure_ascii=False, indent=2), encoding='utf-8')
+save_prices()
 
 # === Update holdings.json ===
 print("\n--- Updating holdings.json ---")
@@ -92,16 +112,10 @@ for s in holdings['stocks']:
         if prices[code].get('py_pct') is not None:
             s['py_pct'] = prices[code]['py_pct']
 
-# Sanitize
-def sanitize(obj):
-    if isinstance(obj, dict): return {k: sanitize(v) for k,v in obj.items()}
-    if isinstance(obj, list): return [sanitize(v) for v in obj]
-    if isinstance(obj, float) and (math.isnan(obj) or math.isinf(obj)): return None
-    return obj
 holdings['stocks'] = sanitize(holdings['stocks'])
 
 tmp = HOLDINGS.with_suffix('.tmp')
-tmp.write_text(json.dumps(holdings, ensure_ascii=False, indent=2), encoding='utf-8')
+tmp.write_text(json.dumps(holdings, ensure_ascii=False, indent=2, allow_nan=False), encoding='utf-8')
 tmp.replace(HOLDINGS)
 
 # Verify

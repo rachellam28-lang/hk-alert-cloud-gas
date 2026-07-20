@@ -72,6 +72,7 @@ def _date_coverage(date_str: str) -> tuple[int, int, float]:
             SELECT COUNT(*) AS n
             FROM holdings_daily
             WHERE trade_date = ? AND validation_failed = 0
+              AND total_pct IS NOT NULL
               AND stock_code NOT LIKE '029%'
               AND stock_code NOT LIKE '04%'
               AND stock_code NOT LIKE '8%'
@@ -98,6 +99,12 @@ def _daily_budget_deadline() -> float | None:
     if minutes <= 0:
         return None
     return time.monotonic() + (minutes * 60.0)
+
+
+def _remaining_budget_seconds(deadline: float | None) -> int | None:
+    if deadline is None:
+        return None
+    return max(1, int(deadline - time.monotonic()))
 
 
 def load_config() -> dict:
@@ -250,7 +257,7 @@ def _shard_payload_from_snapshot(data: dict) -> dict:
         "trade_date": data["trade_date"],
         "total_shares": data.get("total_shares"),
         "total_pct": data.get("total_pct"),
-        "num_participants": data.get("num_participants", 0),
+        "num_participants": data.get("num_participants"),
         "holdings": data.get("holdings", []),
     }
 
@@ -272,8 +279,11 @@ def _run_child(cmd: list[str], timeout: int, input_text: str | None = None):
         return _sp.CompletedProcess(cmd, proc.returncode, stdout, stderr)
     except _sp.TimeoutExpired as e:
         try:
-            os.killpg(proc.pid, signal.SIGKILL)
-        except ProcessLookupError:
+            if os.name == "nt":
+                proc.kill()
+            else:
+                os.killpg(proc.pid, signal.SIGKILL)
+        except (ProcessLookupError, OSError):
             pass
         stdout, stderr = proc.communicate()
         raise _sp.TimeoutExpired(cmd, timeout, output=stdout, stderr=stderr) from e
@@ -289,6 +299,8 @@ def should_refresh_universe(force: bool = False) -> bool:
         ).fetchone()
         if row["n"] < 100:
             return True
+        if os.environ.get("HOLDINGS_BACKFILL_FAST", "0") == "1" and row["n"] >= 500:
+            return False
     return today_hk().weekday() == 0  # Monday
 
 
@@ -300,20 +312,27 @@ def _scrape_stock_worker(args: tuple) -> tuple[str, bool, str]:
     """
     stock_code, date_str, sc_cfg = args
     from datetime import date as dt_date
-    from src.scraper import HOLDINGSScraper
+    from src.scraper import save_snapshot
 
     query_date = dt_date.fromisoformat(date_str)
-    scraper = HOLDINGSScraper(
-        user_agent=sc_cfg["user_agent"],
-        delay_min=sc_cfg["delay_min_seconds"],
-        delay_max=sc_cfg["delay_max_seconds"],
-        timeout=sc_cfg["timeout_seconds"],
-        max_retries=sc_cfg["max_retries"],
-    )
+    provider = os.environ.get("HOLDINGS_PROVIDER", "hkex").lower()
     try:
-        snap = scraper.scrape_stock(stock_code, query_date)
+        if provider == "longbridge":
+            from src.longbridge_provider import scrape_stock as provider_scrape_stock
+
+            snap = provider_scrape_stock(stock_code, query_date)
+        else:
+            from src.scraper import HOLDINGSScraper
+
+            scraper = HOLDINGSScraper(
+                user_agent=sc_cfg["user_agent"],
+                delay_min=sc_cfg["delay_min_seconds"],
+                delay_max=sc_cfg["delay_max_seconds"],
+                timeout=sc_cfg["timeout_seconds"],
+                max_retries=sc_cfg["max_retries"],
+            )
+            snap = scraper.scrape_stock(stock_code, query_date)
         if snap:
-            from src.scraper import save_snapshot
             save_snapshot(snap)
             return (stock_code, True, "")
         return (stock_code, False, "no data")
@@ -574,6 +593,9 @@ def run_daily(
                         if done % 48 == 0 or done >= len(stocks):
                             logger.info("Progress: %d/%d (%.1f%%)", done, len(stocks), 100 * done / len(stocks))
                         batch_timeout = max(45, len(batch) * HARD_TIMEOUT + 15)
+                        remaining_budget = _remaining_budget_seconds(daily_budget_deadline)
+                        if remaining_budget is not None:
+                            batch_timeout = min(batch_timeout, remaining_budget)
                         try:
                             result = _run_child(
                                 [sys.executable, _scrape_batch, query_date.strftime("%Y-%m-%d"),
@@ -635,6 +657,10 @@ def run_daily(
                         if i % 50 == 0:
                             logger.info("Progress: %d/%d (%.1f%%)", i, len(stocks), 100 * i / len(stocks))
                         try:
+                            child_timeout = HARD_TIMEOUT
+                            remaining_budget = _remaining_budget_seconds(daily_budget_deadline)
+                            if remaining_budget is not None:
+                                child_timeout = min(child_timeout, remaining_budget)
                             result = _run_child(
                                 [sys.executable, _scrape_one, code, query_date.strftime("%Y-%m-%d"),
                                  sc_cfg["user_agent"],
@@ -642,7 +668,7 @@ def run_daily(
                                  str(sc_cfg["delay_max_seconds"]),
                                  str(sc_cfg["timeout_seconds"]),
                                  str(sc_cfg["max_retries"])],
-                                timeout=HARD_TIMEOUT,
+                                timeout=child_timeout,
                             )
                             if result.returncode != 0:
                                 failed_stocks.append(code)
@@ -807,6 +833,13 @@ def run_daily(
             else:
                 logger.error("No valid HOLDINGS rows scraped for %s; skipping holdings.json export", query_date)
                 return 1
+        if skip_alerts and query_date_override is not None:
+            logger.info(
+                "Historical backfill for %s is DB-only; dashboard aliases are unchanged",
+                query_date,
+            )
+            _clear_cooldown()
+            return 0
         if not _export_json(query_date, len(alerts_found)):
             logger.error("holdings.json export failed; returning failure")
             return 1
@@ -937,10 +970,10 @@ def _export_json(query_date: date, alerts_today: int) -> bool:
         for r in rows:
             # P3: Include Sentinel Option A concentration fields (matches merge_shards.py)
             sc = r["stock_code"]
-            tp_val = round(r["total_pct"] or 0, 2)
-            np_val = r["num_participants"] or 0
-            t5_val = round(r["top5_pct"] or 0, 2)
-            t10_val = round(r["top10_pct"] or 0, 2)
+            tp_val = round(r["total_pct"], 2) if r["total_pct"] is not None else None
+            np_val = r["num_participants"] if r["num_participants"] is not None else None
+            t5_val = round(r["top5_pct"], 2) if r["top5_pct"] is not None else None
+            t10_val = round(r["top10_pct"], 2) if r["top10_pct"] is not None else None
 
             stocks.append({
                 "c": sc,
@@ -1008,6 +1041,7 @@ def _export_json(query_date: date, alerts_today: int) -> bool:
                 SELECT COUNT(*) AS n
                 FROM holdings_daily
                 WHERE trade_date = ? AND validation_failed = 0
+                  AND total_pct IS NOT NULL
                   AND stock_code NOT LIKE '029%'
                   AND stock_code NOT LIKE '04%'
                   AND stock_code NOT LIKE '8%'
@@ -1149,7 +1183,7 @@ def _detect_and_log_events(t_date: date, y_date: date) -> list[dict]:
     """Compare per-broker HOLDINGS holdings between T and T-1 for all stocks.
 
     Queries holdings_holdings in bulk, groups by stock in Python, runs
-    detect_events(), logs new events to holdings_events, and returns
+    detect_events(), logs new events to ccass_events, and returns
     the list of newly logged events (with DB ids) for alert dispatch.
     """
     t_str = t_date.strftime("%Y-%m-%d")
@@ -1204,7 +1238,7 @@ def _detect_and_log_events(t_date: date, y_date: date) -> list[dict]:
 
             with get_conn() as conn:
                 cur = conn.execute(
-                    """INSERT INTO holdings_events
+                    """INSERT INTO ccass_events
                          (stock_code, trade_date, event_type, broker_from, broker_to,
                           pct, shares, detected_at, alerted)
                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0)""",

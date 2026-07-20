@@ -15,10 +15,12 @@ import json, sqlite3
 from pathlib import Path
 
 PROJECT = Path(__file__).parent.parent
+ROOT = PROJECT.parent
 DB = PROJECT / "holdings.db"
-PRICES_JSON = PROJECT.parent / "data" / "stock_prices.json"
+PRICES_JSON = ROOT / "data" / "stock_prices.json"
 LEGACY_PRICES_JSON = PROJECT / "data" / "stock_prices.json"
-OUT = PROJECT.parent / "data" / "prices.json"
+HOLDINGS_JSON = ROOT / "holdings.json"
+OUT = ROOT / "data" / "prices.json"
 
 
 def atomic_write_json(path, obj):
@@ -28,14 +30,27 @@ def atomic_write_json(path, obj):
 
 
 def get_names():
-    """Get stock names from stock_universe table."""
+    """Get stock names, preferring publish JSON to avoid DB encoding drift."""
+    names = {}
+    try:
+        holdings = json.loads(HOLDINGS_JSON.read_text(encoding="utf-8"))
+        for stock in holdings.get("stocks", []):
+            code = str(stock.get("c", "")).zfill(5)
+            name = stock.get("n") or ""
+            if code and name:
+                names[code] = name
+    except Exception:
+        pass
+
     try:
         db = sqlite3.connect(str(DB))
         rows = db.execute("SELECT stock_code, stock_name FROM stock_universe").fetchall()
         db.close()
-        return {r[0]: r[1] or "" for r in rows}
+        for code, name in rows:
+            names.setdefault(str(code).zfill(5), name or "")
     except Exception:
-        return {}
+        pass
+    return names
 
 
 def generate():

@@ -44,7 +44,12 @@
   {
    "name": "jieqi_backtest",
    "status": "🟢",
-   "detail": "updated=2026-06-23 20:07:01 terms=24"
+   "detail": "updated=2026-07-12 23:24:28 terms=24"
+  },
+  {
+   "name": "Futu/OpenD",
+   "status": "🟢",
+   "detail": "live HK quote snapshot verified"
   }
  ],
  "ann_volume": {

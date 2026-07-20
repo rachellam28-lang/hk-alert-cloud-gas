@@ -3,7 +3,7 @@ import argparse
 import json, random, sqlite3, subprocess, sys, os, time, signal
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timezone
 import yaml
 
 PROJECT = Path(__file__).parent.parent
@@ -17,6 +17,7 @@ def _load_scraping_config() -> dict:
     with open(CONFIG, encoding="utf-8") as f:
         cfg = yaml.safe_load(f) or {}
     sc = cfg.get("scraping", {})
+    provider = os.environ.get("HOLDINGS_PROVIDER", "hkex").lower()
     out = {
         "user_agent": sc.get("user_agent", "Mozilla/5.0"),
         "delay_min_seconds": float(sc.get("delay_min_seconds", 4.0)),
@@ -27,7 +28,8 @@ def _load_scraping_config() -> dict:
     if os.environ.get("HOLDINGS_BACKFILL_FAST", "0") == "1":
         out["delay_min_seconds"] = min(out["delay_min_seconds"], float(os.environ.get("FILL_DELAY_MIN", "1.5")))
         out["delay_max_seconds"] = min(out["delay_max_seconds"], float(os.environ.get("FILL_DELAY_MAX", "3.0")))
-        out["timeout_seconds"] = min(out["timeout_seconds"], int(os.environ.get("FILL_TIMEOUT", "20")))
+        default_timeout = "30" if provider == "hkex" else "20"
+        out["timeout_seconds"] = min(out["timeout_seconds"], int(os.environ.get("FILL_TIMEOUT", default_timeout)))
         out["max_retries"] = min(out["max_retries"], int(os.environ.get("FILL_RETRIES", "1")))
     return out
 
@@ -45,8 +47,11 @@ def _run_child(cmd: list[str], timeout: int) -> subprocess.CompletedProcess:
         return subprocess.CompletedProcess(cmd, proc.returncode, stdout, stderr)
     except subprocess.TimeoutExpired as e:
         try:
-            os.killpg(proc.pid, signal.SIGKILL)
-        except ProcessLookupError:
+            if os.name == "nt":
+                proc.kill()
+            else:
+                os.killpg(proc.pid, signal.SIGKILL)
+        except (ProcessLookupError, OSError):
             pass
         stdout, stderr = proc.communicate()
         raise subprocess.TimeoutExpired(cmd, timeout, output=stdout, stderr=stderr) from e
@@ -130,7 +135,7 @@ def _scrape_one_longbridge(code: str, target_date: str) -> tuple[str, dict | Non
 
 
 def _save_snapshot(db: sqlite3.Connection, data: dict) -> None:
-    now = datetime.utcnow().isoformat()
+    now = datetime.now(timezone.utc).isoformat()
     db.execute("BEGIN IMMEDIATE")
     db.execute("""
         INSERT OR REPLACE INTO ccass_daily
@@ -175,25 +180,19 @@ def fill_missing(target_date: str, max_stocks: int = 3000):
     db.execute("PRAGMA journal_mode=WAL")
     db.execute("PRAGMA foreign_keys=ON")
 
-    # Get full universe from the date with most stocks
+    # Use the active universe as the denominator. The previous implementation
+    # used the historical date with the most DB rows, which skipped newly
+    # listed/activated stocks and made coverage impossible to repair.
     EXCLUDE_PATTERNS = ["029%", "04%", "8%"]
     exclude_clauses = " AND ".join(["stock_code NOT LIKE ?" for _ in EXCLUDE_PATTERNS])
-    
-    # Find the date with the most stocks (reference universe)
-    ref_row = db.execute(
-        "SELECT trade_date, COUNT(*) AS n FROM holdings_daily "
-        "WHERE " + " AND ".join(["stock_code NOT LIKE ?" for _ in EXCLUDE_PATTERNS]) +
-        " GROUP BY trade_date ORDER BY n DESC LIMIT 1",
-        tuple(EXCLUDE_PATTERNS)
-    ).fetchone()
-    if not ref_row:
-        print("ERROR: No reference universe found")
-        return
-    ref_date = ref_row[0]
-    
+
     full = set(r[0] for r in db.execute(
-        f"SELECT DISTINCT stock_code FROM holdings_daily WHERE trade_date=? AND {exclude_clauses}",
-        (ref_date, *EXCLUDE_PATTERNS)
+        f"""
+        SELECT stock_code
+        FROM stock_universe
+        WHERE is_active=1 AND {exclude_clauses}
+        """,
+        tuple(EXCLUDE_PATTERNS),
     ))
     have = set(r[0] for r in db.execute(
         'SELECT DISTINCT stock_code FROM holdings_daily WHERE trade_date=?',

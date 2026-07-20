@@ -22,6 +22,8 @@ DEFAULT_BRANCH = "main"
 # Root files to deploy (relative to source dir). Keep this list tight: never
 # deploy the repo root directly because it contains local tools and backups.
 ROOT_DEPLOY_FILES = [
+    "trading_desk.html",
+    "smallcap_playbook.html",
     "index.html",
     "404.html",
     "ccass.html",
@@ -31,10 +33,16 @@ ROOT_DEPLOY_FILES = [
     "gap_fvg.html",
     "guide.html",
     "history.html",
+    "kbar_matrix.html",
+    "rotation_matrix.html",
     "jieqi_analysis.html",
+    "momentum_list.html",
+    "options_levels.html",
     "rights_analysis.html",
     "signals.html",
     "timing_analysis.html",
+    "timing_stack.html",
+    "trend_matrix.html",
     "vqc_analysis.html",
     "watchlist.html",
     "ccass.json",
@@ -46,9 +54,53 @@ ROOT_DEPLOY_FILES = [
     "events_watchlist.json",
     "fvg.json",
     "robots.txt",
+    "_headers",
     "service-worker.js",
     "shared-nav.js",
+    "shared-table-sort.js",
+    "timing-regime.js",
 ]
+
+DATA_DEPLOY_FILES = {
+    Path("data/alerts.json"),
+    Path("data/announcements.json"),
+    Path("data/breakthroughs.json"),
+    Path("data/confluence.json"),
+    Path("data/corp_graded_scan.json"),
+    Path("data/distribution_day_backtest.json"),
+    Path("data/fundflow.json"),
+    Path("data/history.json"),
+    Path("data/hk_symbols.json"),
+    Path("data/jieqi_backtest.json"),
+    Path("data/jieqi_calendar.json"),
+    Path("data/kbar_cache.json"),
+    Path("data/kbar_symbols/index.json"),
+    Path("data/market.json"),
+    Path("data/market_intel.json"),
+    Path("data/options_levels.json"),
+    Path("data/participant_anomalies.json"),
+    Path("data/prices.json"),
+    Path("data/publish_bundle.json"),
+    Path("data/repo_audit.json"),
+    Path("data/rights_analysis.json"),
+    Path("data/signals.json"),
+    Path("data/sector_rotation.json"),
+    Path("data/short_positions.json"),
+    Path("data/stock_prices.json"),
+    Path("data/trade_engine.json"),
+    Path("data/trend_matrix.json"),
+    Path("data/timesfm.json"),
+    Path("data/tradeable.json"),
+    Path("data/suspended_stocks.json"),
+    Path("data/transfers.json"),
+    Path("data/vqc_backtest.json"),
+    Path("data/watchlist.json"),
+}
+
+DATA_DEPLOY_SKIP = {
+    Path("data/holdings.json"),
+    Path("data/ccass.json"),
+}
 
 
 def load_env():
@@ -58,7 +110,7 @@ def load_env():
     for d in [Path.cwd(), Path.cwd().parent]:
         env_file = d / ".env"
         if env_file.exists():
-            for line in env_file.read_text().splitlines():
+            for line in env_file.read_text(encoding="utf-8-sig", errors="replace").splitlines():
                 line = line.strip()
                 if not token and line.startswith("CLOUDFLARE_API_TOKEN="):
                     token = line.split("=", 1)[1].strip()
@@ -78,7 +130,7 @@ def copy_site_files(src: Path, tmp: Path) -> int:
         shutil.copy2(src_file, dst)
         copied += 1
 
-    for rel_dir in ("icons", "data", "docs"):
+    for rel_dir in ("icons", "data", "docs", "functions"):
         src_dir = src / rel_dir
         if not src_dir.exists():
             continue
@@ -86,7 +138,12 @@ def copy_site_files(src: Path, tmp: Path) -> int:
             if not src_file.is_file():
                 continue
             rel = src_file.relative_to(src)
-            if rel.suffix.lower() not in {".html", ".json", ".png", ".webp", ".jpg", ".jpeg", ".svg", ".ico", ".txt"}:
+            if rel in DATA_DEPLOY_SKIP:
+                continue
+            is_kbar_shard = len(rel.parts) == 3 and rel.parts[:2] == ("data", "kbar_symbols") and rel.suffix.lower() == ".json"
+            if rel.parts and rel.parts[0] == "data" and rel not in DATA_DEPLOY_FILES and not is_kbar_shard:
+                continue
+            if rel.suffix.lower() not in {".html", ".json", ".js", ".png", ".webp", ".jpg", ".jpeg", ".svg", ".ico", ".txt"}:
                 continue
             if ".bak" in src_file.name or src_file.name == "scanner.db":
                 continue
@@ -136,9 +193,10 @@ def main():
         if account_id:
             env["CLOUDFLARE_ACCOUNT_ID"] = account_id
 
+        deploy_timeout = max(120, int(os.getenv("CLOUDFLARE_DEPLOY_TIMEOUT_SEC", "300")))
         r = subprocess.run(
             [
-                "cmd.exe", "/c", "npx", "wrangler", "pages", "deploy", str(tmp),
+                "cmd.exe", "/c", "wrangler", "pages", "deploy", str(tmp),
                 f"--project-name={args.project}",
                 f"--branch={args.branch}",
                 "--commit-dirty=true",
@@ -148,7 +206,7 @@ def main():
             text=True,
             encoding="utf-8",
             errors="replace",
-            timeout=120,
+            timeout=deploy_timeout,
         )
 
         output = (r.stderr or "") + "\n" + (r.stdout or "")

@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import os
+import shutil
 import subprocess
 import sys
 import time
@@ -23,7 +24,7 @@ CCASS_JSON = ROOT / "ccass.json"
 SUSPENDED = ROOT / "data" / "suspended_stocks.json"
 
 
-def load_token() -> str:
+def find_token() -> str:
     token = os.environ.get("LONGBRIDGE_ACCESS_TOKEN")
     if token:
         return token
@@ -32,8 +33,66 @@ def load_token() -> str:
             continue
         for line in path.read_text(encoding="utf-8").splitlines():
             if line.startswith("LONGBRIDGE_ACCESS_TOKEN="):
-                return line.split("=", 1)[1].strip()
+                token = line.split("=", 1)[1].strip()
+                if token:
+                    return token
+    return ""
+
+
+def load_token() -> str:
+    token = find_token()
+    if token:
+        return token
     raise RuntimeError("LONGBRIDGE_ACCESS_TOKEN not found")
+
+
+def longbridge_cli() -> str | None:
+    configured = os.environ.get("LONGBRIDGE_CLI")
+    if configured and Path(configured).exists():
+        return configured
+    found = shutil.which("longbridge")
+    if found:
+        return found
+    local = os.environ.get("LOCALAPPDATA")
+    if local:
+        exe = Path(local) / "Programs" / "longbridge" / "longbridge.exe"
+        if exe.exists():
+            return str(exe)
+    return None
+
+
+def lb_cli_quote(symbols: list[str]) -> list[dict]:
+    exe = longbridge_cli()
+    if not exe:
+        raise RuntimeError("Longbridge CLI not found")
+    retries = max(1, int(os.environ.get("LONGBRIDGE_QUOTE_RETRIES", "2")))
+    retry_delay = float(os.environ.get("LONGBRIDGE_QUOTE_RETRY_DELAY_SECONDS", "1.5"))
+    timeout_seconds = float(os.environ.get("LONGBRIDGE_QUOTE_TIMEOUT_SECONDS", "45"))
+    for attempt in range(1, retries + 1):
+        try:
+            proc = subprocess.run(
+                [exe, "quote", *symbols, "--format", "json"],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                timeout=timeout_seconds,
+                check=False,
+            )
+        except subprocess.TimeoutExpired as exc:
+            if attempt < retries:
+                time.sleep(retry_delay * attempt)
+                continue
+            raise RuntimeError(f"Longbridge CLI quote timeout after {exc.timeout}s") from exc
+        if proc.returncode != 0:
+            err = (proc.stderr or proc.stdout or "Longbridge CLI quote failed").strip()
+            retryable = "timeout" in err.lower() or "connect" in err.lower()
+            if retryable and attempt < retries:
+                time.sleep(retry_delay * attempt)
+                continue
+            raise RuntimeError(err)
+        return json.loads(proc.stdout.strip() or "[]")
+    return []
 
 
 def lb_mcp(tool: str, args: dict) -> list[dict] | dict:
@@ -81,6 +140,17 @@ def lb_mcp(tool: str, args: dict) -> list[dict] | dict:
     return json.loads(content[0]["text"])
 
 
+def lb_quote(symbols: list[str]) -> list[dict]:
+    try:
+        return lb_cli_quote(symbols)
+    except Exception as cli_exc:
+        if not find_token():
+            raise cli_exc
+        print(f"  Longbridge CLI quote unavailable: {cli_exc}; trying MCP token", file=sys.stderr)
+    data = lb_mcp("quote", {"symbols": symbols})
+    return data if isinstance(data, list) else data.get("items", data.get("lists", []))
+
+
 def to_float(value):
     try:
         if value in (None, ""):
@@ -104,14 +174,15 @@ def main() -> int:
     updated = 0
     suspended: dict[str, str] = {}
     latest_ts = None
+    run_ts = datetime.now(timezone.utc).isoformat()
+    trade_date = datetime.now().astimezone().strftime("%Y-%m-%d")
     batch_size = int(os.environ.get("LONGBRIDGE_QUOTE_BATCH_SIZE", "100"))
 
     for i in range(0, len(codes), batch_size):
         batch_codes = codes[i : i + batch_size]
         symbols = [f"{code}.HK" for code in batch_codes]
         try:
-            data = lb_mcp("quote", {"symbols": symbols})
-            items = data if isinstance(data, list) else data.get("items", data.get("lists", []))
+            items = lb_quote(symbols)
         except Exception as exc:
             print(f"  batch {i // batch_size + 1} failed: {exc}", file=sys.stderr)
             # Preserve existing prices on transient batch failure. Do not mark the
@@ -127,7 +198,7 @@ def main() -> int:
             seen.add(code)
             entry = prices.get(code, {})
             changed = False
-            lp = to_float(item.get("last_done"))
+            lp = to_float(item.get("last_done") or item.get("last"))
             prev = to_float(item.get("prev_close"))
             vol = to_float(item.get("volume"))
             turnover = to_float(item.get("turnover"))
@@ -148,13 +219,19 @@ def main() -> int:
                 changed = True
             if entry.get("lp") and entry.get("hi52") and entry.get("lo52") and entry["hi52"] > entry["lo52"]:
                 entry["p52"] = round((entry["lp"] - entry["lo52"]) / (entry["hi52"] - entry["lo52"]) * 100, 1)
-            if entry.get("lp") and entry.get("py") and entry["py"] > 0:
-                entry["py_pct"] = round((entry["lp"] - entry["py"]) / entry["py"] * 100, 2)
-            entry["price_source"] = "longbridge"
-            ts = item.get("timestamp")
-            if ts:
-                entry["price_updated_at"] = ts
-                latest_ts = max(latest_ts or ts, ts)
+            effective_py = entry.get("apy", entry.get("py"))
+            if entry.get("lp") and effective_py and effective_py > 0:
+                entry["py_pct"] = round((entry["lp"] - effective_py) / effective_py * 100, 2)
+                if entry.get("apy"):
+                    entry["apy_pct"] = entry["py_pct"]
+            else:
+                entry.pop("py_pct", None)
+                entry.pop("apy_pct", None)
+            entry["price_source"] = "longbridge:cli" if "last" in item else "longbridge:mcp"
+            ts = item.get("timestamp") or item.get("updated")
+            entry["lp_time"] = trade_date
+            entry["price_updated_at"] = ts or run_ts
+            latest_ts = max(latest_ts or entry["price_updated_at"], entry["price_updated_at"])
             if changed:
                 prices[code] = entry
                 updated += 1
@@ -179,7 +256,17 @@ def main() -> int:
         for stock in holdings.get("stocks", []):
             code = stock.get("c")
             entry = prices.get(code, {})
-            for key in ["lp", "vol", "chg", "p52", "py_pct", "prev_close", "turnover"]:
+            effective_py = entry.get("apy", entry.get("py"))
+            if effective_py is not None:
+                stock["py"] = effective_py
+                if entry.get("py_pct") is not None:
+                    stock["py_pct"] = entry["py_pct"]
+                else:
+                    stock.pop("py_pct", None)
+            else:
+                stock.pop("py", None)
+                stock.pop("py_pct", None)
+            for key in ["lp", "lp_time", "vol", "chg", "p52", "py_pct", "prev_close", "turnover"]:
                 if entry.get(key) is not None:
                     stock[key] = entry[key]
             if entry.get("price_source"):
