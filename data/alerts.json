@@ -1,7 +1,76 @@
 {
-  "updated": "2026-07-21 00:38 UTC",
+  "updated": "2026-07-22 01:48 UTC",
   "count": 500,
   "alerts": [
+    {
+      "source": "hkexnews",
+      "category": "corp_action",
+      "code": "00568",
+      "symbol": "0568.HK",
+      "name": "SHANDONG MOLONG",
+      "signal": "觀察·配股",
+      "timeframe": "公告",
+      "message": "配股 OF NEW H SHARES（一般授權）",
+      "strategy": "HKEXnews Corp Action (觀察)",
+      "chart_url": "",
+      "source_url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0722/2026072200057.pdf",
+      "announcement_date": "2026-07-22",
+      "release_time": "22/07/2026 07:35",
+      "tags": [
+        "公告",
+        "觀察",
+        "配股"
+      ],
+      "priority": 0,
+      "raw": "{\"code\": \"00568\", \"name\": \"SHANDONG MOLONG\", \"types\": [\"配股\"], \"title\": \"配股 OF NEW H SHARES（一般授權）\", \"title_en\": \"PLACING OF NEW H SHARES UNDER GENERAL MANDATE\", \"release_time\": \"22/07/2026 07:35\", \"release_date\": \"2026-07-22\", \"url\": \"https://www.hkexnews.hk/listedco/listconews/sehk/2026/0722/2026072200057.pdf\"}"
+    },
+    {
+      "source": "hkexnews",
+      "category": "corp_action",
+      "code": "01168",
+      "symbol": "1168.HK",
+      "name": "Z FIN",
+      "signal": "披露易公告 - 復牌",
+      "timeframe": "公告",
+      "message": "公司公告：EXCHANGE NOTICE - RESUMPTION OF TRADING",
+      "title_original": "公司公告：EXCHANGE NOTICE - RESUMPTION OF TRADING",
+      "strategy": "HKEXnews Corp Action",
+      "chart_url": "",
+      "source_url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0722/2026072200097.htm",
+      "announcement_date": "2026-07-22",
+      "release_time": "22/07/2026 08:53",
+      "tags": [
+        "公告",
+        "復牌"
+      ],
+      "priority": 2,
+      "raw": "{\"code\": \"01168\", \"name\": \"Z FIN\", \"types\": [\"復牌\"], \"title\": \"公司公告：EXCHANGE NOTICE - RESUMPTION OF TRADING\", \"title_en\": \"EXCHANGE NOTICE - RESUMPTION OF TRADING\", \"release_time\": \"22/07/2026 08:53\", \"release_date\": \"2026-07-22\", \"url\": \"https://www.hkexnews.hk/listedco/listconews/sehk/2026/0722/2026072200097.htm\"}",
+      "created_at": "2026-07-22T09:47:36"
+    },
+    {
+      "source": "hkexnews",
+      "category": "corp_action",
+      "code": "06939",
+      "symbol": "6939.HK",
+      "name": "MEGAIN",
+      "signal": "披露易公告 - 收購/要約 / 聯合公告",
+      "timeframe": "公告",
+      "message": "公司公告：JOINT ANNOUNCEMENT DESPATCH OF THE COMPOSITE DOCUMENT IN RELATION TO UNCON…",
+      "title_original": "公司公告：JOINT ANNOUNCEMENT DESPATCH OF THE COMPOSITE DOCUMENT IN RELATION TO UNCON…",
+      "strategy": "HKEXnews Corp Action",
+      "chart_url": "",
+      "source_url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0722/2026072200019.pdf",
+      "announcement_date": "2026-07-22",
+      "release_time": "22/07/2026 06:26",
+      "tags": [
+        "公告",
+        "收購/要約",
+        "聯合公告"
+      ],
+      "priority": 3,
+      "raw": "{\"code\": \"06939\", \"name\": \"MEGAIN\", \"types\": [\"收購/要約\", \"聯合公告\"], \"title\": \"公司公告：JOINT ANNOUNCEMENT DESPATCH OF THE COMPOSITE DOCUMENT IN RELATION TO UNCON…\", \"title_en\": \"JOINT ANNOUNCEMENT\\nDESPATCH OF THE COMPOSITE DOCUMENT\\nIN RELATION TO\\nUNCONDITIONAL MANDATORY CASH OFFER BY ICBC\\nINTERNATIONAL CAPITAL LIMITED FOR AND ON BEHALF OF\\nTHE OFFEROR TO ACQUIRE ALL THE ISSUED SHARES OF THE\\nCOMPANY\\n(OTHER THAN THOSE ALREADY OWNED AND/OR AGREED\\nTO BE ACQUIRED BY THE OFFEROR AND PARTIES ACTING IN\\nCONCERT WITH IT)\", \"release_time\": \"22/07/2026 06:26\", \"release_date\": \"2026-07-22\", \"url\": \"https://www.hkexnews.hk/listedco/listconews/sehk/2026/0722/2026072200019.pdf\"}",
+      "created_at": "2026-07-22T06:37:45"
+    },
     {
       "source": "hkexnews",
       "category": "corp_action",
@@ -11086,84 +11155,6 @@
       "priority": 1,
       "raw": "{\"Code\": \"02270\", \"Name\": \"德商產投服務\", \"Signal\": \"半年POC\", \"Crossed Short\": \"6M\", \"POC\": 4.013, \"POC 6M\": 4.013, \"POC 12M\": 3.267, \"POC 3Y\": 1.192, \"Today High\": 4.5, \"Today Close\": 4.0, \"Break Field\": \"high\", \"Break Value\": 4.5, \"Break %\": 12.13, \"Data Date\": \"2026-06-08\", \"All POC\": [{\"label\": \"半年POC\", \"short\": \"6M\", \"poc\": 4.013, \"break_pct\": 12.13, \"crossed\": \"True\"}, {\"label\": \"12個月POC\", \"short\": \"12M\", \"poc\": 3.267, \"break_pct\": 37.76, \"crossed\": \"False\"}, {\"label\": \"3年POC\", \"short\": \"3Y\", \"poc\": 1.192, \"break_pct\": 277.55, \"crossed\": \"False\"}]}",
       "created_at": "2026-06-09T08:37:23"
-    },
-    {
-      "source": "cloud_scanner",
-      "category": "poc",
-      "code": "01993",
-      "symbol": "1993.HK",
-      "name": "雅仕維",
-      "signal": "半年POC",
-      "timeframe": "1D",
-      "price": 0.68,
-      "message": "觸發 6M；突破價 0.73；高 0.73；幅度 2.98%",
-      "strategy": "POC Breakout",
-      "chart_url": "",
-      "source_url": "",
-      "tags": [
-        "POC",
-        "Breakout",
-        "半年POC"
-      ],
-      "poc_6m": 0.709,
-      "poc_12m": 1.053,
-      "poc_3y": 1.043,
-      "announcement_labels": [],
-      "priority": 1,
-      "raw": "{\"Code\": \"01993\", \"Name\": \"雅仕維\", \"Signal\": \"半年POC\", \"Crossed Short\": \"6M\", \"POC\": 0.709, \"POC 6M\": 0.709, \"POC 12M\": 1.053, \"POC 3Y\": 1.043, \"Today High\": 0.73, \"Today Close\": 0.68, \"Break Field\": \"high\", \"Break Value\": 0.73, \"Break %\": 2.98, \"Data Date\": \"2026-06-08\", \"All POC\": [{\"label\": \"半年POC\", \"short\": \"6M\", \"poc\": 0.709, \"break_pct\": 2.98, \"crossed\": \"True\"}, {\"label\": \"12個月POC\", \"short\": \"12M\", \"poc\": 1.053, \"break_pct\": -30.65, \"crossed\": \"False\"}, {\"label\": \"3年POC\", \"short\": \"3Y\", \"poc\": 1.043, \"break_pct\": -30.04, \"crossed\": \"False\"}]}",
-      "created_at": "2026-06-09T08:37:14"
-    },
-    {
-      "source": "cloud_scanner",
-      "category": "poc",
-      "code": "01843",
-      "symbol": "1843.HK",
-      "name": "快餐帝國",
-      "signal": "半年POC + 12個月POC + 3年POC",
-      "timeframe": "1D",
-      "price": 0.226,
-      "message": "觸發 6M / 12M / 3Y；突破價 0.229；高 0.229；幅度 1.28%",
-      "strategy": "POC Breakout",
-      "chart_url": "",
-      "source_url": "",
-      "tags": [
-        "POC",
-        "Breakout",
-        "半年POC + 12個月POC + 3年POC"
-      ],
-      "poc_6m": 0.226,
-      "poc_12m": 0.226,
-      "poc_3y": 0.227,
-      "announcement_labels": [],
-      "priority": 2,
-      "raw": "{\"Code\": \"01843\", \"Name\": \"快餐帝國\", \"Signal\": \"半年POC + 12個月POC + 3年POC\", \"Crossed Short\": \"6M / 12M / 3Y\", \"POC\": 0.226, \"POC 6M\": 0.226, \"POC 12M\": 0.226, \"POC 3Y\": 0.227, \"Today High\": 0.229, \"Today Close\": 0.226, \"Break Field\": \"high\", \"Break Value\": 0.229, \"Break %\": 1.28, \"Data Date\": \"2026-06-08\", \"All POC\": [{\"label\": \"半年POC\", \"short\": \"6M\", \"poc\": 0.226, \"break_pct\": 1.28, \"crossed\": \"True\"}, {\"label\": \"12個月POC\", \"short\": \"12M\", \"poc\": 0.226, \"break_pct\": 1.28, \"crossed\": \"True\"}, {\"label\": \"3年POC\", \"short\": \"3Y\", \"poc\": 0.227, \"break_pct\": 1.06, \"crossed\": \"True\"}]}",
-      "created_at": "2026-06-09T08:37:06"
-    },
-    {
-      "source": "cloud_scanner",
-      "category": "poc",
-      "code": "01827",
-      "symbol": "1827.HK",
-      "name": "卓珈控股",
-      "signal": "半年POC + 12個月POC",
-      "timeframe": "1D",
-      "price": 0.91,
-      "message": "觸發 6M / 12M；突破價 0.91；高 0.91；幅度 11.31%",
-      "strategy": "POC Breakout",
-      "chart_url": "",
-      "source_url": "",
-      "tags": [
-        "POC",
-        "Breakout",
-        "半年POC + 12個月POC"
-      ],
-      "poc_6m": 0.818,
-      "poc_12m": 0.814,
-      "poc_3y": 1.388,
-      "announcement_labels": [],
-      "priority": 2,
-      "raw": "{\"Code\": \"01827\", \"Name\": \"卓珈控股\", \"Signal\": \"半年POC + 12個月POC\", \"Crossed Short\": \"6M / 12M\", \"POC\": 0.818, \"POC 6M\": 0.818, \"POC 12M\": 0.814, \"POC 3Y\": 1.388, \"Today High\": 0.91, \"Today Close\": 0.91, \"Break Field\": \"high\", \"Break Value\": 0.91, \"Break %\": 11.31, \"Data Date\": \"2026-06-08\", \"All POC\": [{\"label\": \"半年POC\", \"short\": \"6M\", \"poc\": 0.818, \"break_pct\": 11.31, \"crossed\": \"True\"}, {\"label\": \"12個月POC\", \"short\": \"12M\", \"poc\": 0.814, \"break_pct\": 11.86, \"crossed\": \"True\"}, {\"label\": \"3年POC\", \"short\": \"3Y\", \"poc\": 1.388, \"break_pct\": -34.42, \"crossed\": \"False\"}]}",
-      "created_at": "2026-06-09T08:37:03"
     }
   ]
 }

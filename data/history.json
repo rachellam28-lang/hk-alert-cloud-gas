@@ -1,8 +1,87 @@
 {
   "ok": true,
-  "updated": "2026-07-21 00:38 UTC",
-  "total": 21,
+  "updated": "2026-07-22 01:48 UTC",
+  "total": 24,
   "days": [
+    {
+      "date": "2026-07-22",
+      "alerts": [
+        {
+          "source": "hkexnews",
+          "category": "corp_action",
+          "code": "00568",
+          "symbol": "0568.HK",
+          "name": "SHANDONG MOLONG",
+          "signal": "觀察·配股",
+          "timeframe": "公告",
+          "message": "配股 OF NEW H SHARES（一般授權）",
+          "strategy": "HKEXnews Corp Action (觀察)",
+          "chart_url": "",
+          "source_url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0722/2026072200057.pdf",
+          "announcement_date": "2026-07-22",
+          "release_time": "22/07/2026 07:35",
+          "tags": [
+            "公告",
+            "觀察",
+            "配股"
+          ],
+          "priority": 0,
+          "raw": "{\"code\": \"00568\", \"name\": \"SHANDONG MOLONG\", \"types\": [\"配股\"], \"title\": \"配股 OF NEW H SHARES（一般授權）\", \"title_en\": \"PLACING OF NEW H SHARES UNDER GENERAL MANDATE\", \"release_time\": \"22/07/2026 07:35\", \"release_date\": \"2026-07-22\", \"url\": \"https://www.hkexnews.hk/listedco/listconews/sehk/2026/0722/2026072200057.pdf\"}"
+        },
+        {
+          "source": "hkexnews",
+          "category": "corp_action",
+          "code": "01168",
+          "symbol": "1168.HK",
+          "name": "Z FIN",
+          "signal": "披露易公告 - 復牌",
+          "timeframe": "公告",
+          "message": "公司公告：EXCHANGE NOTICE - RESUMPTION OF TRADING",
+          "title_original": "公司公告：EXCHANGE NOTICE - RESUMPTION OF TRADING",
+          "strategy": "HKEXnews Corp Action",
+          "chart_url": "",
+          "source_url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0722/2026072200097.htm",
+          "announcement_date": "2026-07-22",
+          "release_time": "22/07/2026 08:53",
+          "tags": [
+            "公告",
+            "復牌"
+          ],
+          "priority": 2,
+          "raw": "{\"code\": \"01168\", \"name\": \"Z FIN\", \"types\": [\"復牌\"], \"title\": \"公司公告：EXCHANGE NOTICE - RESUMPTION OF TRADING\", \"title_en\": \"EXCHANGE NOTICE - RESUMPTION OF TRADING\", \"release_time\": \"22/07/2026 08:53\", \"release_date\": \"2026-07-22\", \"url\": \"https://www.hkexnews.hk/listedco/listconews/sehk/2026/0722/2026072200097.htm\"}",
+          "created_at": "2026-07-22T09:47:36"
+        }
+      ]
+    },
+    {
+      "date": "2026-07-21",
+      "alerts": [
+        {
+          "source": "hkexnews",
+          "category": "corp_action",
+          "code": "06939",
+          "symbol": "6939.HK",
+          "name": "MEGAIN",
+          "signal": "披露易公告 - 收購/要約 / 聯合公告",
+          "timeframe": "公告",
+          "message": "公司公告：JOINT ANNOUNCEMENT DESPATCH OF THE COMPOSITE DOCUMENT IN RELATION TO UNCON…",
+          "title_original": "公司公告：JOINT ANNOUNCEMENT DESPATCH OF THE COMPOSITE DOCUMENT IN RELATION TO UNCON…",
+          "strategy": "HKEXnews Corp Action",
+          "chart_url": "",
+          "source_url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0722/2026072200019.pdf",
+          "announcement_date": "2026-07-22",
+          "release_time": "22/07/2026 06:26",
+          "tags": [
+            "公告",
+            "收購/要約",
+            "聯合公告"
+          ],
+          "priority": 3,
+          "raw": "{\"code\": \"06939\", \"name\": \"MEGAIN\", \"types\": [\"收購/要約\", \"聯合公告\"], \"title\": \"公司公告：JOINT ANNOUNCEMENT DESPATCH OF THE COMPOSITE DOCUMENT IN RELATION TO UNCON…\", \"title_en\": \"JOINT ANNOUNCEMENT\\nDESPATCH OF THE COMPOSITE DOCUMENT\\nIN RELATION TO\\nUNCONDITIONAL MANDATORY CASH OFFER BY ICBC\\nINTERNATIONAL CAPITAL LIMITED FOR AND ON BEHALF OF\\nTHE OFFEROR TO ACQUIRE ALL THE ISSUED SHARES OF THE\\nCOMPANY\\n(OTHER THAN THOSE ALREADY OWNED AND/OR AGREED\\nTO BE ACQUIRED BY THE OFFEROR AND PARTIES ACTING IN\\nCONCERT WITH IT)\", \"release_time\": \"22/07/2026 06:26\", \"release_date\": \"2026-07-22\", \"url\": \"https://www.hkexnews.hk/listedco/listconews/sehk/2026/0722/2026072200019.pdf\"}",
+          "created_at": "2026-07-22T06:37:45"
+        }
+      ]
+    },
     {
       "date": "2026-07-20",
       "alerts": [

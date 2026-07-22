@@ -1,7 +1,97 @@
 {
-  "updated": "2026-07-21 00:38 UTC",
-  "count": 66,
+  "updated": "2026-07-22 01:48 UTC",
+  "count": 74,
   "watchlist": [
+    {
+      "code": "00568",
+      "name": "SHANDONG MOLONG",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-22"
+    },
+    {
+      "code": "06939",
+      "name": "MEGAIN",
+      "types": [
+        "收購/要約",
+        "聯合公告"
+      ],
+      "ann_date": "2026-07-22"
+    },
+    {
+      "code": "01168",
+      "name": "Z FIN",
+      "types": [
+        "復牌"
+      ],
+      "ann_date": "2026-07-22"
+    },
+    {
+      "code": "01432",
+      "name": "CHINA SHENGMU",
+      "types": [
+        "收購/要約"
+      ],
+      "ann_date": "2026-07-03"
+    },
+    {
+      "code": "01416",
+      "name": "CTR HOLDINGS",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-21"
+    },
+    {
+      "code": "02685",
+      "name": "QUANTGROUP",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-21"
+    },
+    {
+      "code": "01117",
+      "name": "CH MODERN D",
+      "types": [
+        "收購/要約",
+        "聯合公告"
+      ],
+      "ann_date": "2026-07-20"
+    },
+    {
+      "code": "02410",
+      "name": "TYK MEDICINES-B",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-21"
+    },
+    {
+      "code": "00586",
+      "name": "CONCH VENTURE",
+      "types": [
+        "股東增持"
+      ],
+      "ann_date": "2026-07-21"
+    },
+    {
+      "code": "01835",
+      "name": "REALWAY CAPITAL",
+      "types": [
+        "復牌"
+      ],
+      "ann_date": "2026-07-02"
+    },
+    {
+      "code": "01943",
+      "name": "KING'S STONE",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-21"
+    },
     {
       "code": "01417",
       "name": "RIVERINE CHINA",
@@ -22,23 +112,6 @@
     {
       "code": "00780",
       "name": "TONGCHENGTRAVEL",
-      "types": [
-        "收購/要約",
-        "聯合公告"
-      ],
-      "ann_date": "2026-07-20"
-    },
-    {
-      "code": "01432",
-      "name": "CHINA SHENGMU",
-      "types": [
-        "收購/要約"
-      ],
-      "ann_date": "2026-07-03"
-    },
-    {
-      "code": "01117",
-      "name": "CH MODERN D",
       "types": [
         "收購/要約",
         "聯合公告"
@@ -418,14 +491,6 @@
       "name": "LEAPMOTOR",
       "types": [
         "股東增持"
-      ],
-      "ann_date": "2026-07-02"
-    },
-    {
-      "code": "01835",
-      "name": "REALWAY CAPITAL",
-      "types": [
-        "復牌"
       ],
       "ann_date": "2026-07-02"
     },
