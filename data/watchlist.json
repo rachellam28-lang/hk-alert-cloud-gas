@@ -1,7 +1,23 @@
 {
-  "updated": "2026-07-22 01:48 UTC",
-  "count": 74,
+  "updated": "2026-07-23 00:38 UTC",
+  "count": 75,
   "watchlist": [
+    {
+      "code": "09660",
+      "name": "HORIZONROBOT-W",
+      "types": [
+        "配股"
+      ],
+      "ann_date": "2026-07-23"
+    },
+    {
+      "code": "01168",
+      "name": "Z FIN",
+      "types": [
+        "復牌"
+      ],
+      "ann_date": "2026-07-22"
+    },
     {
       "code": "00568",
       "name": "SHANDONG MOLONG",
@@ -16,14 +32,6 @@
       "types": [
         "收購/要約",
         "聯合公告"
-      ],
-      "ann_date": "2026-07-22"
-    },
-    {
-      "code": "01168",
-      "name": "Z FIN",
-      "types": [
-        "復牌"
       ],
       "ann_date": "2026-07-22"
     },

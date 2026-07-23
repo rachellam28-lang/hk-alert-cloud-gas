@@ -1,8 +1,35 @@
 {
   "ok": true,
-  "updated": "2026-07-22 01:48 UTC",
-  "total": 24,
+  "updated": "2026-07-23 00:38 UTC",
+  "total": 25,
   "days": [
+    {
+      "date": "2026-07-23",
+      "alerts": [
+        {
+          "source": "hkexnews",
+          "category": "corp_action",
+          "code": "09660",
+          "symbol": "9660.HK",
+          "name": "HORIZONROBOT-W",
+          "signal": "觀察·配股",
+          "timeframe": "公告",
+          "message": "公司公告：PRICING OF US$450,000,000 ZERO COUPON CONVERTIBLE BONDS DUE 2027",
+          "strategy": "HKEXnews Corp Action (觀察)",
+          "chart_url": "",
+          "source_url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0723/2026072300027.pdf",
+          "announcement_date": "2026-07-23",
+          "release_time": "23/07/2026 07:00",
+          "tags": [
+            "公告",
+            "觀察",
+            "配股"
+          ],
+          "priority": 0,
+          "raw": "{\"code\": \"09660\", \"name\": \"HORIZONROBOT-W\", \"types\": [\"配股\"], \"title\": \"公司公告：PRICING OF US$450,000,000 ZERO COUPON CONVERTIBLE BONDS DUE 2027\", \"title_en\": \"PRICING OF US$450,000,000 ZERO COUPON CONVERTIBLE BONDS DUE 2027\", \"release_time\": \"23/07/2026 07:00\", \"release_date\": \"2026-07-23\", \"url\": \"https://www.hkexnews.hk/listedco/listconews/sehk/2026/0723/2026072300027.pdf\"}"
+        }
+      ]
+    },
     {
       "date": "2026-07-22",
       "alerts": [

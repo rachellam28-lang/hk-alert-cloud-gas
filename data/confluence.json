@@ -71,6 +71,41 @@
     "label_class": "avoid"
   },
   {
+    "code": "01835",
+    "name": "REALWAY CAPITAL",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：FURTHER DELAY IN DESPATCH OF CIRCULAR IN RELATION TO DISCLOSEABLE AND CONN…",
+    "date": "2026-07-22",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0722/2026072200352.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "披露易公告 - 復牌"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "披露易公告 - 復牌"
+    ],
+    "first_pre_days": 20,
+    "first_post_days": null,
+    "pattern": "frontrun",
+    "data_kind": "derived_rule_signal",
+    "derived_from": [
+      "announcements.json",
+      "history.json"
+    ],
+    "method": "pre/post signal counts within 30 calendar days",
+    "score": 10,
+    "label": "🛑 回避",
+    "label_class": "avoid"
+  },
+  {
     "code": "01417",
     "name": "RIVERINE CHINA",
     "types": [
@@ -412,6 +447,113 @@
     ],
     "first_pre_days": null,
     "first_post_days": 0,
+    "pattern": "catalyst",
+    "data_kind": "derived_rule_signal",
+    "derived_from": [
+      "announcements.json",
+      "history.json"
+    ],
+    "method": "pre/post signal counts within 30 calendar days",
+    "score": 60,
+    "label": "📈 留意",
+    "label_class": "buy"
+  },
+  {
+    "code": "01168",
+    "name": "Z FIN",
+    "types": [
+      "復牌"
+    ],
+    "title": "公司公告：EXCHANGE NOTICE - RESUMPTION OF TRADING",
+    "date": "2026-07-22",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0722/2026072200097.htm",
+    "type": "resume",
+    "typeLabel": "復牌",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "披露易公告 - 復牌"
+    ],
+    "signal_types_summary": [
+      "披露易公告 - 復牌"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst",
+    "data_kind": "derived_rule_signal",
+    "derived_from": [
+      "announcements.json",
+      "history.json"
+    ],
+    "method": "pre/post signal counts within 30 calendar days",
+    "score": 60,
+    "label": "📈 留意",
+    "label_class": "buy"
+  },
+  {
+    "code": "00568",
+    "name": "SHANDONG MOLONG",
+    "types": [
+      "配股"
+    ],
+    "title": "配股 OF NEW H SHARES（一般授權）",
+    "date": "2026-07-22",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0722/2026072200057.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "觀察·配股"
+    ],
+    "signal_types_summary": [
+      "觀察·配股"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst",
+    "data_kind": "derived_rule_signal",
+    "derived_from": [
+      "announcements.json",
+      "history.json"
+    ],
+    "method": "pre/post signal counts within 30 calendar days",
+    "score": 60,
+    "label": "📈 留意",
+    "label_class": "buy"
+  },
+  {
+    "code": "01168",
+    "name": "Z FIN",
+    "types": [
+      "收購/要約",
+      "復牌",
+      "聯合公告"
+    ],
+    "title": "公司公告：JOINT ANNOUNCEMENT (1) PROPOSAL FOR THE PRIVATISATION OF Z FIN LIMITED BY …",
+    "date": "2026-07-21",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0721/2026072101177.pdf",
+    "type": "acquisition",
+    "typeLabel": "收購/要約 / 復牌 / 聯合公告",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "披露易公告 - 復牌"
+    ],
+    "signal_types_summary": [
+      "披露易公告 - 復牌"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 1,
     "pattern": "catalyst",
     "data_kind": "derived_rule_signal",
     "derived_from": [

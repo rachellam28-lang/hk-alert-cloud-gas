@@ -1,7 +1,29 @@
 {
-  "updated": "2026-07-22 01:48 UTC",
+  "updated": "2026-07-23 00:38 UTC",
   "count": 500,
   "alerts": [
+    {
+      "source": "hkexnews",
+      "category": "corp_action",
+      "code": "09660",
+      "symbol": "9660.HK",
+      "name": "HORIZONROBOT-W",
+      "signal": "觀察·配股",
+      "timeframe": "公告",
+      "message": "公司公告：PRICING OF US$450,000,000 ZERO COUPON CONVERTIBLE BONDS DUE 2027",
+      "strategy": "HKEXnews Corp Action (觀察)",
+      "chart_url": "",
+      "source_url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0723/2026072300027.pdf",
+      "announcement_date": "2026-07-23",
+      "release_time": "23/07/2026 07:00",
+      "tags": [
+        "公告",
+        "觀察",
+        "配股"
+      ],
+      "priority": 0,
+      "raw": "{\"code\": \"09660\", \"name\": \"HORIZONROBOT-W\", \"types\": [\"配股\"], \"title\": \"公司公告：PRICING OF US$450,000,000 ZERO COUPON CONVERTIBLE BONDS DUE 2027\", \"title_en\": \"PRICING OF US$450,000,000 ZERO COUPON CONVERTIBLE BONDS DUE 2027\", \"release_time\": \"23/07/2026 07:00\", \"release_date\": \"2026-07-23\", \"url\": \"https://www.hkexnews.hk/listedco/listconews/sehk/2026/0723/2026072300027.pdf\"}"
+    },
     {
       "source": "hkexnews",
       "category": "corp_action",
@@ -11129,32 +11151,6 @@
       "priority": 2,
       "raw": "{\"Code\": \"02317\", \"Name\": \"味丹國際\", \"Signal\": \"半年POC + 12個月POC\", \"Crossed Short\": \"6M / 12M\", \"POC\": 0.786, \"POC 6M\": 0.786, \"POC 12M\": 0.743, \"POC 3Y\": 0.452, \"Today High\": 0.85, \"Today Close\": 0.84, \"Break Field\": \"high\", \"Break Value\": 0.85, \"Break %\": 8.21, \"Data Date\": \"2026-06-08\", \"All POC\": [{\"label\": \"半年POC\", \"short\": \"6M\", \"poc\": 0.786, \"break_pct\": 8.21, \"crossed\": \"True\"}, {\"label\": \"12個月POC\", \"short\": \"12M\", \"poc\": 0.743, \"break_pct\": 14.39, \"crossed\": \"True\"}, {\"label\": \"3年POC\", \"short\": \"3Y\", \"poc\": 0.452, \"break_pct\": 88.01, \"crossed\": \"False\"}]}",
       "created_at": "2026-06-09T08:37:30"
-    },
-    {
-      "source": "cloud_scanner",
-      "category": "poc",
-      "code": "02270",
-      "symbol": "2270.HK",
-      "name": "德商產投服務",
-      "signal": "半年POC",
-      "timeframe": "1D",
-      "price": 4.0,
-      "message": "觸發 6M；突破價 4.5；高 4.5；幅度 12.13%",
-      "strategy": "POC Breakout",
-      "chart_url": "",
-      "source_url": "",
-      "tags": [
-        "POC",
-        "Breakout",
-        "半年POC"
-      ],
-      "poc_6m": 4.013,
-      "poc_12m": 3.267,
-      "poc_3y": 1.192,
-      "announcement_labels": [],
-      "priority": 1,
-      "raw": "{\"Code\": \"02270\", \"Name\": \"德商產投服務\", \"Signal\": \"半年POC\", \"Crossed Short\": \"6M\", \"POC\": 4.013, \"POC 6M\": 4.013, \"POC 12M\": 3.267, \"POC 3Y\": 1.192, \"Today High\": 4.5, \"Today Close\": 4.0, \"Break Field\": \"high\", \"Break Value\": 4.5, \"Break %\": 12.13, \"Data Date\": \"2026-06-08\", \"All POC\": [{\"label\": \"半年POC\", \"short\": \"6M\", \"poc\": 4.013, \"break_pct\": 12.13, \"crossed\": \"True\"}, {\"label\": \"12個月POC\", \"short\": \"12M\", \"poc\": 3.267, \"break_pct\": 37.76, \"crossed\": \"False\"}, {\"label\": \"3年POC\", \"short\": \"3Y\", \"poc\": 1.192, \"break_pct\": 277.55, \"crossed\": \"False\"}]}",
-      "created_at": "2026-06-09T08:37:23"
     }
   ]
 }
