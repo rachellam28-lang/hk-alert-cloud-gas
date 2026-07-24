@@ -1,7 +1,34 @@
 {
-  "updated": "2026-07-23 00:38 UTC",
-  "count": 75,
+  "updated": "2026-07-24 02:09 UTC",
+  "count": 77,
   "watchlist": [
+    {
+      "code": "01657",
+      "name": "SG GROUP HLDGS",
+      "types": [
+        "收購/要約",
+        "聯合公告"
+      ],
+      "ann_date": "2026-07-24"
+    },
+    {
+      "code": "02350",
+      "name": "MTT GROUP",
+      "types": [
+        "供股",
+        "配股"
+      ],
+      "ann_date": "2026-07-23"
+    },
+    {
+      "code": "00913",
+      "name": "HARBOUR DIGITAL",
+      "types": [
+        "供股",
+        "配股"
+      ],
+      "ann_date": "2026-07-02"
+    },
     {
       "code": "09660",
       "name": "HORIZONROBOT-W",
@@ -473,15 +500,6 @@
       "code": "01468",
       "name": "JAKOTA CAPITAL",
       "types": [
-        "配股"
-      ],
-      "ann_date": "2026-07-02"
-    },
-    {
-      "code": "00913",
-      "name": "HARBOUR DIGITAL",
-      "types": [
-        "供股",
         "配股"
       ],
       "ann_date": "2026-07-02"

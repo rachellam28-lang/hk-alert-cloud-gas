@@ -1,11 +1,35 @@
 {
   "ok": true,
-  "updated": "2026-07-23 00:38 UTC",
-  "total": 25,
+  "updated": "2026-07-24 02:09 UTC",
+  "total": 26,
   "days": [
     {
       "date": "2026-07-23",
       "alerts": [
+        {
+          "source": "hkexnews",
+          "category": "corp_action",
+          "code": "01657",
+          "symbol": "1657.HK",
+          "name": "SG GROUP HLDGS",
+          "signal": "披露易公告 - 收購/要約 / 聯合公告",
+          "timeframe": "公告",
+          "message": "公司公告：JOINT ANNOUNCEMENT (1)DESPATCH OF THE COMPOSITE DOCUMENT RELATING TO UNCON…",
+          "title_original": "公司公告：JOINT ANNOUNCEMENT (1)DESPATCH OF THE COMPOSITE DOCUMENT RELATING TO UNCON…",
+          "strategy": "HKEXnews Corp Action",
+          "chart_url": "",
+          "source_url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0724/2026072400009.pdf",
+          "announcement_date": "2026-07-24",
+          "release_time": "24/07/2026 06:22",
+          "tags": [
+            "公告",
+            "收購/要約",
+            "聯合公告"
+          ],
+          "priority": 3,
+          "raw": "{\"code\": \"01657\", \"name\": \"SG GROUP HLDGS\", \"types\": [\"收購/要約\", \"聯合公告\"], \"title\": \"公司公告：JOINT ANNOUNCEMENT (1)DESPATCH OF THE COMPOSITE DOCUMENT RELATING TO UNCON…\", \"title_en\": \"JOINT ANNOUNCEMENT (1)DESPATCH OF THE COMPOSITE DOCUMENT RELATING TO UNCONDITIONAL MANDATORY CASH OFFER BY DL SECURITIES (HK) LIMITED FOR AND ON BEHALF OF THE OFFEROR TO ACQUIRE ALL THE ISSUED SHARES OF THE COMPANY (OTHER THAN THOSE ALREADY OWNED AND/OR AGREED TO BE ACQUIRED BY THE OFFEROR AND THE OFFEROR CONCERT PARTIES); (2)APPOINTMENT OF EXECUTIVE DIRECTORS AND CHANGE IN COMPOSITION OF BOARD COMMITTEES; (3)CHANGE OF CHAIRMAN OF THE BOARD, CHIEF EXECUTIVE OFFICER AND AUTHORISED REPRESENTATIVE\", \"release_time\": \"24/07/2026 06:22\", \"release_date\": \"2026-07-24\", \"url\": \"https://www.hkexnews.hk/listedco/listconews/sehk/2026/0724/2026072400009.pdf\"}",
+          "created_at": "2026-07-24T06:37:21"
+        },
         {
           "source": "hkexnews",
           "category": "corp_action",

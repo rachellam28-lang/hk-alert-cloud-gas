@@ -1,7 +1,31 @@
 {
-  "updated": "2026-07-23 00:38 UTC",
+  "updated": "2026-07-24 02:09 UTC",
   "count": 500,
   "alerts": [
+    {
+      "source": "hkexnews",
+      "category": "corp_action",
+      "code": "01657",
+      "symbol": "1657.HK",
+      "name": "SG GROUP HLDGS",
+      "signal": "披露易公告 - 收購/要約 / 聯合公告",
+      "timeframe": "公告",
+      "message": "公司公告：JOINT ANNOUNCEMENT (1)DESPATCH OF THE COMPOSITE DOCUMENT RELATING TO UNCON…",
+      "title_original": "公司公告：JOINT ANNOUNCEMENT (1)DESPATCH OF THE COMPOSITE DOCUMENT RELATING TO UNCON…",
+      "strategy": "HKEXnews Corp Action",
+      "chart_url": "",
+      "source_url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0724/2026072400009.pdf",
+      "announcement_date": "2026-07-24",
+      "release_time": "24/07/2026 06:22",
+      "tags": [
+        "公告",
+        "收購/要約",
+        "聯合公告"
+      ],
+      "priority": 3,
+      "raw": "{\"code\": \"01657\", \"name\": \"SG GROUP HLDGS\", \"types\": [\"收購/要約\", \"聯合公告\"], \"title\": \"公司公告：JOINT ANNOUNCEMENT (1)DESPATCH OF THE COMPOSITE DOCUMENT RELATING TO UNCON…\", \"title_en\": \"JOINT ANNOUNCEMENT (1)DESPATCH OF THE COMPOSITE DOCUMENT RELATING TO UNCONDITIONAL MANDATORY CASH OFFER BY DL SECURITIES (HK) LIMITED FOR AND ON BEHALF OF THE OFFEROR TO ACQUIRE ALL THE ISSUED SHARES OF THE COMPANY (OTHER THAN THOSE ALREADY OWNED AND/OR AGREED TO BE ACQUIRED BY THE OFFEROR AND THE OFFEROR CONCERT PARTIES); (2)APPOINTMENT OF EXECUTIVE DIRECTORS AND CHANGE IN COMPOSITION OF BOARD COMMITTEES; (3)CHANGE OF CHAIRMAN OF THE BOARD, CHIEF EXECUTIVE OFFICER AND AUTHORISED REPRESENTATIVE\", \"release_time\": \"24/07/2026 06:22\", \"release_date\": \"2026-07-24\", \"url\": \"https://www.hkexnews.hk/listedco/listconews/sehk/2026/0724/2026072400009.pdf\"}",
+      "created_at": "2026-07-24T06:37:21"
+    },
     {
       "source": "hkexnews",
       "category": "corp_action",
@@ -11125,32 +11149,6 @@
       "priority": 1,
       "raw": "{\"Code\": \"02329\", \"Name\": \"國瑞健康\", \"Signal\": \"半年POC\", \"Crossed Short\": \"6M\", \"POC\": 0.116, \"POC 6M\": 0.116, \"POC 12M\": 0.061, \"POC 3Y\": 0.04, \"Today High\": 0.138, \"Today Close\": 0.1, \"Break Field\": \"high\", \"Break Value\": 0.138, \"Break %\": 18.66, \"Data Date\": \"2026-06-08\", \"All POC\": [{\"label\": \"半年POC\", \"short\": \"6M\", \"poc\": 0.116, \"break_pct\": 18.66, \"crossed\": \"True\"}, {\"label\": \"12個月POC\", \"short\": \"12M\", \"poc\": 0.061, \"break_pct\": 125.49, \"crossed\": \"False\"}, {\"label\": \"3年POC\", \"short\": \"3Y\", \"poc\": 0.04, \"break_pct\": 248.48, \"crossed\": \"False\"}]}",
       "created_at": "2026-06-09T08:37:34"
-    },
-    {
-      "source": "cloud_scanner",
-      "category": "poc",
-      "code": "02317",
-      "symbol": "2317.HK",
-      "name": "味丹國際",
-      "signal": "半年POC + 12個月POC",
-      "timeframe": "1D",
-      "price": 0.84,
-      "message": "觸發 6M / 12M；突破價 0.85；高 0.85；幅度 8.21%",
-      "strategy": "POC Breakout",
-      "chart_url": "",
-      "source_url": "",
-      "tags": [
-        "POC",
-        "Breakout",
-        "半年POC + 12個月POC"
-      ],
-      "poc_6m": 0.786,
-      "poc_12m": 0.743,
-      "poc_3y": 0.452,
-      "announcement_labels": [],
-      "priority": 2,
-      "raw": "{\"Code\": \"02317\", \"Name\": \"味丹國際\", \"Signal\": \"半年POC + 12個月POC\", \"Crossed Short\": \"6M / 12M\", \"POC\": 0.786, \"POC 6M\": 0.786, \"POC 12M\": 0.743, \"POC 3Y\": 0.452, \"Today High\": 0.85, \"Today Close\": 0.84, \"Break Field\": \"high\", \"Break Value\": 0.85, \"Break %\": 8.21, \"Data Date\": \"2026-06-08\", \"All POC\": [{\"label\": \"半年POC\", \"short\": \"6M\", \"poc\": 0.786, \"break_pct\": 8.21, \"crossed\": \"True\"}, {\"label\": \"12個月POC\", \"short\": \"12M\", \"poc\": 0.743, \"break_pct\": 14.39, \"crossed\": \"True\"}, {\"label\": \"3年POC\", \"short\": \"3Y\", \"poc\": 0.452, \"break_pct\": 88.01, \"crossed\": \"False\"}]}",
-      "created_at": "2026-06-09T08:37:30"
     }
   ]
 }

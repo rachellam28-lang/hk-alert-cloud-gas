@@ -35,6 +35,114 @@
     "label_class": "avoid"
   },
   {
+    "code": "01657",
+    "name": "SG GROUP HLDGS",
+    "types": [
+      "收購/要約",
+      "聯合公告"
+    ],
+    "title": "公司公告：JOINT ANNOUNCEMENT (1)DESPATCH OF THE COMPOSITE DOCUMENT RELATING TO UNCON…",
+    "date": "2026-07-24",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0724/2026072400009.pdf",
+    "type": "acquisition",
+    "typeLabel": "收購/要約 / 聯合公告",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "披露易公告 - 收購/要約 / 聯合公告"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "披露易公告 - 收購/要約 / 聯合公告"
+    ],
+    "first_pre_days": 1,
+    "first_post_days": null,
+    "pattern": "frontrun",
+    "data_kind": "derived_rule_signal",
+    "derived_from": [
+      "announcements.json",
+      "history.json"
+    ],
+    "method": "pre/post signal counts within 30 calendar days",
+    "score": 10,
+    "label": "🛑 回避",
+    "label_class": "avoid"
+  },
+  {
+    "code": "02295",
+    "name": "MAXICITY",
+    "types": [
+      "收購/要約",
+      "聯合公告"
+    ],
+    "title": "公司公告：JOINT ANNOUNCEMENT DESPATCH OF COMPOSITE DOCUMENT RELATING TO MANDATORY UN…",
+    "date": "2026-07-23",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0723/2026072301290.pdf",
+    "type": "acquisition",
+    "typeLabel": "收購/要約 / 聯合公告",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "披露易公告 - 復牌"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "披露易公告 - 復牌"
+    ],
+    "first_pre_days": 20,
+    "first_post_days": null,
+    "pattern": "frontrun",
+    "data_kind": "derived_rule_signal",
+    "derived_from": [
+      "announcements.json",
+      "history.json"
+    ],
+    "method": "pre/post signal counts within 30 calendar days",
+    "score": 10,
+    "label": "🛑 回避",
+    "label_class": "avoid"
+  },
+  {
+    "code": "00913",
+    "name": "HARBOUR DIGITAL",
+    "types": [
+      "供股",
+      "配股"
+    ],
+    "title": "公司公告：FURTHER DELAY IN DESPATCH OF CIRCULAR AND REVISED TIMETABLE IN RELATION TO…",
+    "date": "2026-07-23",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0723/2026072300310.pdf",
+    "type": "rights",
+    "typeLabel": "供股 / 配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 1,
+    "post_count": 0,
+    "pre_types": [
+      "觀察·供股 / 配股"
+    ],
+    "post_types": [],
+    "signal_types_summary": [
+      "觀察·供股 / 配股"
+    ],
+    "first_pre_days": 21,
+    "first_post_days": null,
+    "pattern": "frontrun",
+    "data_kind": "derived_rule_signal",
+    "derived_from": [
+      "announcements.json",
+      "history.json"
+    ],
+    "method": "pre/post signal counts within 30 calendar days",
+    "score": 10,
+    "label": "🛑 回避",
+    "label_class": "avoid"
+  },
+  {
     "code": "06939",
     "name": "MEGAIN",
     "types": [
@@ -459,6 +567,41 @@
     "label_class": "buy"
   },
   {
+    "code": "09660",
+    "name": "HORIZONROBOT-W",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：PRICING OF US$450,000,000 ZERO COUPON CONVERTIBLE BONDS DUE 2027",
+    "date": "2026-07-23",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0723/2026072300027.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "觀察·配股"
+    ],
+    "signal_types_summary": [
+      "觀察·配股"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 0,
+    "pattern": "catalyst",
+    "data_kind": "derived_rule_signal",
+    "derived_from": [
+      "announcements.json",
+      "history.json"
+    ],
+    "method": "pre/post signal counts within 30 calendar days",
+    "score": 60,
+    "label": "📈 留意",
+    "label_class": "buy"
+  },
+  {
     "code": "01168",
     "name": "Z FIN",
     "types": [
@@ -517,6 +660,41 @@
     ],
     "first_pre_days": null,
     "first_post_days": 0,
+    "pattern": "catalyst",
+    "data_kind": "derived_rule_signal",
+    "derived_from": [
+      "announcements.json",
+      "history.json"
+    ],
+    "method": "pre/post signal counts within 30 calendar days",
+    "score": 60,
+    "label": "📈 留意",
+    "label_class": "buy"
+  },
+  {
+    "code": "09660",
+    "name": "HORIZONROBOT-W",
+    "types": [
+      "配股"
+    ],
+    "title": "公司公告：INSIDE INFORMATION PROPOSED ISSUE OF CONVERTIBLE BOND UNDER GENERAL MANDATE",
+    "date": "2026-07-22",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0722/2026072200995.pdf",
+    "type": "placement",
+    "typeLabel": "配股",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "觀察·配股"
+    ],
+    "signal_types_summary": [
+      "觀察·配股"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 1,
     "pattern": "catalyst",
     "data_kind": "derived_rule_signal",
     "derived_from": [
@@ -1592,6 +1770,42 @@
     "label_class": "buy"
   },
   {
+    "code": "01657",
+    "name": "SG GROUP HLDGS",
+    "types": [
+      "收購/要約",
+      "聯合公告"
+    ],
+    "title": "公司公告：JOINT ANNOUNCEMENT - DELAY IN DESPATCH OF THE COMPOSITE DOCUMENT RELATING …",
+    "date": "2026-06-25",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0625/2026062501176.pdf",
+    "type": "acquisition",
+    "typeLabel": "收購/要約 / 聯合公告",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "披露易公告 - 收購/要約 / 聯合公告"
+    ],
+    "signal_types_summary": [
+      "披露易公告 - 收購/要約 / 聯合公告"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 28,
+    "pattern": "catalyst",
+    "data_kind": "derived_rule_signal",
+    "derived_from": [
+      "announcements.json",
+      "history.json"
+    ],
+    "method": "pre/post signal counts within 30 calendar days",
+    "score": 52,
+    "label": "📈 留意",
+    "label_class": "buy"
+  },
+  {
     "code": "01364",
     "name": "GUMING",
     "types": [
@@ -1627,6 +1841,41 @@
     "label_class": "buy"
   },
   {
+    "code": "01657",
+    "name": "SG GROUP HLDGS",
+    "types": [
+      "收購/要約"
+    ],
+    "title": "公司公告：APPOINTMENT OF INDEPENDENT FINANCIAL ADVISER",
+    "date": "2026-06-24",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0624/2026062401778.pdf",
+    "type": "acquisition",
+    "typeLabel": "收購/要約",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "披露易公告 - 收購/要約 / 聯合公告"
+    ],
+    "signal_types_summary": [
+      "披露易公告 - 收購/要約 / 聯合公告"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 29,
+    "pattern": "catalyst",
+    "data_kind": "derived_rule_signal",
+    "derived_from": [
+      "announcements.json",
+      "history.json"
+    ],
+    "method": "pre/post signal counts within 30 calendar days",
+    "score": 52,
+    "label": "📈 留意",
+    "label_class": "buy"
+  },
+  {
     "code": "06820",
     "name": "FRIENDTIMES",
     "types": [
@@ -1650,6 +1899,42 @@
     ],
     "first_pre_days": null,
     "first_post_days": 8,
+    "pattern": "catalyst",
+    "data_kind": "derived_rule_signal",
+    "derived_from": [
+      "announcements.json",
+      "history.json"
+    ],
+    "method": "pre/post signal counts within 30 calendar days",
+    "score": 52,
+    "label": "📈 留意",
+    "label_class": "buy"
+  },
+  {
+    "code": "01657",
+    "name": "SG GROUP HLDGS",
+    "types": [
+      "收購/要約",
+      "聯合公告"
+    ],
+    "title": "公司公告：JOINT ANNOUNCEMENT (1) COMPLETION OF THE SHARE PURCHASE AGREEMENT BETWEEN …",
+    "date": "2026-06-23",
+    "url": "https://www.hkexnews.hk/listedco/listconews/sehk/2026/0623/2026062300327.pdf",
+    "type": "acquisition",
+    "typeLabel": "收購/要約 / 聯合公告",
+    "direction": "up",
+    "signal_count": 1,
+    "pre_count": 0,
+    "post_count": 1,
+    "pre_types": [],
+    "post_types": [
+      "披露易公告 - 收購/要約 / 聯合公告"
+    ],
+    "signal_types_summary": [
+      "披露易公告 - 收購/要約 / 聯合公告"
+    ],
+    "first_pre_days": null,
+    "first_post_days": 30,
     "pattern": "catalyst",
     "data_kind": "derived_rule_signal",
     "derived_from": [
